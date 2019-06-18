@@ -48,6 +48,7 @@
 バッカー</string>
   <string name="Backers_count_separator_backers_one" formatted="false">%{backers_count}\n
 バッカー</string>
+  <string name="Backers_count_separator_backers_other" formatted="false">%{backers_count} バッカー</string>
   <string name="Backers_count_separator_backers_two" formatted="false">%{backers_count}\n
 バッカー</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count} バッカー</string>
@@ -165,6 +166,7 @@
   <string name="Filter_name_project_count_live_projects_few" formatted="false">%{filter_name}：%{project_count} の進行中プロジェクト</string>
   <string name="Filter_name_project_count_live_projects_many" formatted="false">%{filter_name}：%{project_count} の進行中プロジェクト</string>
   <string name="Filter_name_project_count_live_projects_one" formatted="false">%{filter_name}：%{project_count} の進行中プロジェクト</string>
+  <string name="Filter_name_project_count_live_projects_other" formatted="false">%{filter_name}：%{project_count} の進行中プロジェクト</string>
   <string name="Filter_name_project_count_live_projects_two" formatted="false">%{filter_name}：%{project_count} の進行中プロジェクト</string>
   <string name="Filter_name_project_count_live_projects_zero" formatted="false">%{filter_name}：%{project_count} の進行中プロジェクト</string>
   <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">近日公開予定、または過去のライブ配信含むプロジェクトに絞る</string>
@@ -173,6 +175,7 @@
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="First_created" formatted="false">1つめのプロジェクト</string>
+  <string name="Fix" formatted="false">修正する</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} をフォロー</string>
   <string name="Follow_friends" formatted="false">友達をフォロー</string>
   <string name="Follow_more_friends" formatted="false">もっと友達をフォローする</string>
@@ -222,7 +225,7 @@
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
-  <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトを実現するためのプラットフォームです。</string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Its_our_birthday" formatted="false">Kickstarter の誕生日です！過去10年の間に、16万以上のクリエイティブなプロジェクトが、1600万人以上のバッカーの支援のもと、Kickstarter で実現化しました。</string>
@@ -234,13 +237,14 @@
   <string name="Keep_up_with_future_live_streams" formatted="false">ライブ配信を通知</string>
   <string name="Kickstarter_Music" formatted="false">Kickstarter Music</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
-  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter is not a store.</string>
+  <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarterはオンラインストアではありません。</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。</string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
   <string name="Left_count_left_few" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_many" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_one" formatted="false">残り%{left_count}</string>
+  <string name="Left_count_left_other" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_two" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_zero" formatted="false">残り%{left_count}</string>
   <string name="Live" formatted="false">ライブ</string>
@@ -270,6 +274,7 @@
   <string name="Message_creator" formatted="false">クリエーターにメッセージする</string>
   <string name="Message_user_name" formatted="false">%{user_name} にメッセージ</string>
   <string name="Messages" formatted="false">メッセージ</string>
+  <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
   <string name="New_email" formatted="false">新しいメールアドレス</string>
@@ -280,7 +285,7 @@
   <string name="Newsletters" formatted="false">ニュースレター</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
-  <string name="No_longer_available" formatted="false">No longer available</string>
+  <string name="No_longer_available" formatted="false">利用できなくなりました</string>
   <string name="No_messages" formatted="false">メッセージがありません。</string>
   <string name="No_nevermind" formatted="false">いいえ、削除しません</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">まだアップデートの投稿はありません。</string>
@@ -380,6 +385,7 @@
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_one" formatted="false">リワードサーベイ</string>
+  <string name="Reward_Surveys_other" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_delivered" formatted="false">リワードを受け取りましたか？</string>
@@ -389,11 +395,13 @@
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} 種類のリワード</string>
+  <string name="Rewards_count_rewards_colon_other" formatted="false">%{rewards_count} のリワード：</string>
   <string name="Rewards_count_rewards_colon_two" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_colon_zero" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_few" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_many" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_one" formatted="false">%{rewards_count} 種類のリワード</string>
+  <string name="Rewards_count_rewards_other" formatted="false">%{rewards_count} のリワード</string>
   <string name="Rewards_count_rewards_two" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Rewards_count_rewards_zero" formatted="false">%{rewards_count} 種類のリワード</string>
   <string name="Save" formatted="false">保存</string>
@@ -486,6 +494,7 @@
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>
   <string name="View" formatted="false">みる</string>
   <string name="View_project" formatted="false">プロジェクトを見る</string>
+  <string name="View_rewards" formatted="false">リワードを見る</string>
   <string name="View_your_pledge" formatted="false">プレッジをみる</string>
   <string name="View_your_reward" formatted="false">リワードをみる</string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
@@ -513,7 +522,7 @@
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">バックした友達はまだいませんが、今後こちらに表示されます。</string>
-  <string name="Your_message_has_been_sent" formatted="false">Your message has been sent!</string>
+  <string name="Your_message_has_been_sent" formatted="false">メッセージが送信されました！</string>
   <string name="Your_name_displayed" formatted="false">あなたの名前はプロフィールに常に表示されます。</string>
   <string name="Your_payment_method_was_successfully_charged" formatted="false">支払方法の登録完了。</string>
   <string name="Your_pledge" formatted="false">プレッジ</string>
@@ -550,6 +559,7 @@
   <string name="accessibility_projects_buttons_star" formatted="false">お気に入り</string>
   <string name="accessibility_projects_buttons_star_hint_favorites_this_project" formatted="false">このプロジェクトをお気に入り</string>
   <string name="accessibility_projects_buttons_star_hint_reminds_you" formatted="false">プロジェクトが終了する48時間前に知らせる</string>
+  <string name="activities_badge_value_plus" formatted="false">%{activities_badge_value}+</string>
   <string name="activity_by_creator" formatted="false">by %{creator_name}</string>
   <string name="activity_creator_actions_user_name_adjusted_their_pledge" formatted="false">%{user_name} はプレッジを変更済：</string>
   <string name="activity_creator_actions_user_name_canceled_their_pledge" formatted="false">%{user_name} がプレッジをキャンセル：</string>
@@ -644,6 +654,7 @@
   <string name="comments_count_comments_few" formatted="false">%{comments_count} のコメント</string>
   <string name="comments_count_comments_many" formatted="false">%{comments_count} のコメント</string>
   <string name="comments_count_comments_one" formatted="false">%{comments_count} のコメント</string>
+  <string name="comments_count_comments_other" formatted="false">%{comments_count} のコメント</string>
   <string name="comments_count_comments_two" formatted="false">%{comments_count} のコメント</string>
   <string name="comments_count_comments_zero" formatted="false">%{comments_count} のコメント</string>
   <string name="creator_project_preview_subtitle_days_to_go_percent_funded" formatted="false">%{days_to_go} 日で締切、%{percent_funded} 達成</string>
@@ -690,11 +701,13 @@
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_few" formatted="false">%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_many" formatted="false">%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_one" formatted="false">%{goal} のゴール中%{pledged} 、1人のバッカー、 %{time_left} 日締切</string>
+  <string name="dashboard_graphs_funding_accessibility_live_stat_value_other" formatted="false">%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_two" formatted="false">%{goal} のゴール中%{pledged} 、3人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_zero" formatted="false">%{goal} のゴール中%{pledged} 、0人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_few" formatted="false">%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_many" formatted="false">%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_one" formatted="false">%{goal} のゴール中%{pledged} 、1人のバッカー、 %{time_left} 日締切</string>
+  <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_other" formatted="false">%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_two" formatted="false">%{goal} のゴール中%{pledged} 、2人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_zero" formatted="false">%{goal} のゴール中%{pledged} 、0人のバッカー、 %{time_left} 日に締切</string>
   <string name="dashboard_graphs_funding_backers" formatted="false">バッカー</string>
@@ -738,6 +751,7 @@
   <string name="dashboard_graphs_video_stats_total_plays_count_few" formatted="false">&lt;b>%{total_start_count}&lt;/b>人がプレイ</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_many" formatted="false">&lt;b>%{total_start_count}&lt;/b>人がプレイ</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_one" formatted="false">&lt;b>1&lt;/b>人がプレイ</string>
+  <string name="dashboard_graphs_video_stats_total_plays_count_other" formatted="false">&lt;b>%{total_start_count}&lt;/b>人がプレイ</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_two" formatted="false">&lt;b>2&lt;/b>人がプレイ</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_zero" formatted="false">&lt;b>O&lt;/b>人がプレイ</string>
   <string name="dashboard_graphs_video_title" formatted="false">ビデオ再生</string>
@@ -775,6 +789,7 @@
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_few" formatted="false">最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_many" formatted="false">最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_one" formatted="false">最新情報を1人のバッカーに通知します。投稿しますか？</string>
+  <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_other" formatted="false">最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_two" formatted="false">最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_zero" formatted="false">最新情報を0人のバッカーに通知します。投稿しますか？</string>
   <string name="dashboard_post_update_preview_confirmation_alert_title" formatted="false">準備OK?</string>
@@ -792,127 +807,152 @@
   <string name="dates_time_days_abbreviated_few" formatted="false">%{time_count} 日</string>
   <string name="dates_time_days_abbreviated_many" formatted="false">%{time_count} 日</string>
   <string name="dates_time_days_abbreviated_one" formatted="false">1日</string>
+  <string name="dates_time_days_abbreviated_other" formatted="false">%{time_count} 日</string>
   <string name="dates_time_days_abbreviated_two" formatted="false">2日</string>
   <string name="dates_time_days_abbreviated_zero" formatted="false">0日</string>
   <string name="dates_time_days_ago_abbreviated_few" formatted="false">%{time_count} 日前</string>
   <string name="dates_time_days_ago_abbreviated_many" formatted="false">%{time_count} 日前</string>
   <string name="dates_time_days_ago_abbreviated_one" formatted="false">1日前</string>
+  <string name="dates_time_days_ago_abbreviated_other" formatted="false">%{time_count} 日前</string>
   <string name="dates_time_days_ago_abbreviated_two" formatted="false">2日前</string>
   <string name="dates_time_days_ago_abbreviated_zero" formatted="false">0日前</string>
   <string name="dates_time_days_ago_few" formatted="false">%{time_count} 日前</string>
   <string name="dates_time_days_ago_many" formatted="false">%{time_count} 日前</string>
   <string name="dates_time_days_ago_one" formatted="false">1日前</string>
+  <string name="dates_time_days_ago_other" formatted="false">%{time_count} 日前</string>
   <string name="dates_time_days_ago_two" formatted="false">2日前</string>
   <string name="dates_time_days_ago_zero" formatted="false">0日前</string>
   <string name="dates_time_days_few" formatted="false">%{time_count} 日</string>
   <string name="dates_time_days_many" formatted="false">%{time_count} 日</string>
   <string name="dates_time_days_one" formatted="false">1日</string>
+  <string name="dates_time_days_other" formatted="false">%{time_count} 日</string>
   <string name="dates_time_days_two" formatted="false">2日</string>
   <string name="dates_time_days_zero" formatted="false">0日</string>
   <string name="dates_time_hours_abbreviated_few" formatted="false">%{time_count} 時間</string>
   <string name="dates_time_hours_abbreviated_many" formatted="false">%{time_count} 時間</string>
   <string name="dates_time_hours_abbreviated_one" formatted="false">1時間</string>
+  <string name="dates_time_hours_abbreviated_other" formatted="false">%{time_count} 時間</string>
   <string name="dates_time_hours_abbreviated_two" formatted="false">2時間</string>
   <string name="dates_time_hours_abbreviated_zero" formatted="false">0 時間</string>
   <string name="dates_time_hours_ago_abbreviated_few" formatted="false">%{time_count} 時間前</string>
   <string name="dates_time_hours_ago_abbreviated_many" formatted="false">%{time_count} 時間前</string>
   <string name="dates_time_hours_ago_abbreviated_one" formatted="false">1時間前</string>
+  <string name="dates_time_hours_ago_abbreviated_other" formatted="false">%{time_count} 時間前</string>
   <string name="dates_time_hours_ago_abbreviated_two" formatted="false">2時間前</string>
   <string name="dates_time_hours_ago_abbreviated_zero" formatted="false">0時間前</string>
   <string name="dates_time_hours_ago_few" formatted="false">%{time_count} 時間前</string>
   <string name="dates_time_hours_ago_many" formatted="false">%{time_count} 時間前</string>
   <string name="dates_time_hours_ago_one" formatted="false">1時間前</string>
+  <string name="dates_time_hours_ago_other" formatted="false">%{time_count} 時間前</string>
   <string name="dates_time_hours_ago_two" formatted="false">2時間前</string>
   <string name="dates_time_hours_ago_zero" formatted="false">0時間前</string>
   <string name="dates_time_hours_few" formatted="false">%{time_count} 時間</string>
   <string name="dates_time_hours_many" formatted="false">%{time_count} 時間</string>
   <string name="dates_time_hours_one" formatted="false">1時間</string>
+  <string name="dates_time_hours_other" formatted="false">%{time_count} 時間</string>
   <string name="dates_time_hours_two" formatted="false">2時間</string>
   <string name="dates_time_hours_zero" formatted="false">0 時間</string>
   <string name="dates_time_in_days_abbreviated_few" formatted="false">あと%{time_count} 日</string>
   <string name="dates_time_in_days_abbreviated_many" formatted="false">あと%{time_count} 日</string>
   <string name="dates_time_in_days_abbreviated_one" formatted="false">あと1日</string>
+  <string name="dates_time_in_days_abbreviated_other" formatted="false">あと%{time_count} 日</string>
   <string name="dates_time_in_days_abbreviated_two" formatted="false">あと2日</string>
   <string name="dates_time_in_days_abbreviated_zero" formatted="false">あと0日</string>
   <string name="dates_time_in_days_few" formatted="false">あと%{time_count} 日</string>
   <string name="dates_time_in_days_many" formatted="false">あと%{time_count} 日</string>
   <string name="dates_time_in_days_one" formatted="false">あと1日</string>
+  <string name="dates_time_in_days_other" formatted="false">あと%{time_count} 日</string>
   <string name="dates_time_in_days_two" formatted="false">あと2日</string>
   <string name="dates_time_in_days_zero" formatted="false">あと0日</string>
   <string name="dates_time_in_hours_abbreviated_few" formatted="false">あと%{time_count} 時間</string>
   <string name="dates_time_in_hours_abbreviated_many" formatted="false">あと%{time_count} 時間</string>
   <string name="dates_time_in_hours_abbreviated_one" formatted="false">あと1時間</string>
+  <string name="dates_time_in_hours_abbreviated_other" formatted="false">あと%{time_count} 時間</string>
   <string name="dates_time_in_hours_abbreviated_two" formatted="false">あと2時間</string>
   <string name="dates_time_in_hours_abbreviated_zero" formatted="false">あと0時間</string>
   <string name="dates_time_in_hours_few" formatted="false">あと%{time_count} 時間</string>
   <string name="dates_time_in_hours_many" formatted="false">あと%{time_count} 時間</string>
   <string name="dates_time_in_hours_one" formatted="false">あと1時間</string>
+  <string name="dates_time_in_hours_other" formatted="false">あと%{time_count} 時間</string>
   <string name="dates_time_in_hours_two" formatted="false">あと2時間</string>
   <string name="dates_time_in_hours_zero" formatted="false">あと0時間</string>
   <string name="dates_time_in_minutes_abbreviated_few" formatted="false">あと%{time_count} 分</string>
   <string name="dates_time_in_minutes_abbreviated_many" formatted="false">あと%{time_count} 分</string>
   <string name="dates_time_in_minutes_abbreviated_one" formatted="false">あと1分</string>
+  <string name="dates_time_in_minutes_abbreviated_other" formatted="false">あと%{time_count} 分</string>
   <string name="dates_time_in_minutes_abbreviated_two" formatted="false">あと2分</string>
   <string name="dates_time_in_minutes_abbreviated_zero" formatted="false">あと0分</string>
   <string name="dates_time_in_minutes_few" formatted="false">あと%{time_count} 分</string>
   <string name="dates_time_in_minutes_many" formatted="false">あと%{time_count} 分</string>
   <string name="dates_time_in_minutes_one" formatted="false">あと1分</string>
+  <string name="dates_time_in_minutes_other" formatted="false">あと%{time_count} 分</string>
   <string name="dates_time_in_minutes_two" formatted="false">あと2分</string>
   <string name="dates_time_in_minutes_zero" formatted="false">あと0分</string>
   <string name="dates_time_in_seconds_abbreviated_few" formatted="false">あと "%{time_count} 秒"</string>
   <string name="dates_time_in_seconds_abbreviated_many" formatted="false">あと "%{time_count} 秒"</string>
   <string name="dates_time_in_seconds_abbreviated_one" formatted="false">あと1秒</string>
+  <string name="dates_time_in_seconds_abbreviated_other" formatted="false">あと "%{time_count} 秒"</string>
   <string name="dates_time_in_seconds_abbreviated_two" formatted="false">あと2秒</string>
   <string name="dates_time_in_seconds_abbreviated_zero" formatted="false">あと0秒</string>
   <string name="dates_time_in_seconds_few" formatted="false">あと "%{time_count} 秒"</string>
   <string name="dates_time_in_seconds_many" formatted="false">あと "%{time_count} 秒"</string>
   <string name="dates_time_in_seconds_one" formatted="false">あと1秒</string>
+  <string name="dates_time_in_seconds_other" formatted="false">あと "%{time_count} 秒"</string>
   <string name="dates_time_in_seconds_two" formatted="false">あと2秒</string>
   <string name="dates_time_in_seconds_zero" formatted="false">あと0秒</string>
   <string name="dates_time_minutes_abbreviated_few" formatted="false">%{time_count} 分</string>
   <string name="dates_time_minutes_abbreviated_many" formatted="false">%{time_count} 分</string>
   <string name="dates_time_minutes_abbreviated_one" formatted="false">1分</string>
+  <string name="dates_time_minutes_abbreviated_other" formatted="false">%{time_count}</string>
   <string name="dates_time_minutes_abbreviated_two" formatted="false">2分</string>
   <string name="dates_time_minutes_abbreviated_zero" formatted="false">0分</string>
   <string name="dates_time_minutes_ago_abbreviated_few" formatted="false">%{time_count} 分前</string>
   <string name="dates_time_minutes_ago_abbreviated_many" formatted="false">%{time_count} 分前</string>
   <string name="dates_time_minutes_ago_abbreviated_one" formatted="false">1分前</string>
+  <string name="dates_time_minutes_ago_abbreviated_other" formatted="false">分前</string>
   <string name="dates_time_minutes_ago_abbreviated_two" formatted="false">2分前</string>
   <string name="dates_time_minutes_ago_abbreviated_zero" formatted="false">0分前</string>
   <string name="dates_time_minutes_ago_few" formatted="false">%{time_count} 分前</string>
   <string name="dates_time_minutes_ago_many" formatted="false">%{time_count} 分前</string>
   <string name="dates_time_minutes_ago_one" formatted="false">1分前</string>
+  <string name="dates_time_minutes_ago_other" formatted="false">%{time_count} 分前</string>
   <string name="dates_time_minutes_ago_two" formatted="false">2分前</string>
   <string name="dates_time_minutes_ago_zero" formatted="false">0分前</string>
   <string name="dates_time_minutes_few" formatted="false">%{time_count} 分</string>
   <string name="dates_time_minutes_many" formatted="false">%{time_count} 分</string>
   <string name="dates_time_minutes_one" formatted="false">1分</string>
+  <string name="dates_time_minutes_other" formatted="false">%{time_count} 分</string>
   <string name="dates_time_minutes_two" formatted="false">2分</string>
   <string name="dates_time_minutes_zero" formatted="false">0分</string>
   <string name="dates_time_seconds_abbreviated_few" formatted="false">%{time_count} 秒</string>
   <string name="dates_time_seconds_abbreviated_many" formatted="false">%{time_count} 秒</string>
   <string name="dates_time_seconds_abbreviated_one" formatted="false">1秒</string>
+  <string name="dates_time_seconds_abbreviated_other" formatted="false">%{time_count} 秒</string>
   <string name="dates_time_seconds_abbreviated_two" formatted="false">2秒</string>
   <string name="dates_time_seconds_abbreviated_zero" formatted="false">0秒</string>
   <string name="dates_time_seconds_ago_abbreviated_few" formatted="false">%{time_count} 秒前</string>
   <string name="dates_time_seconds_ago_abbreviated_many" formatted="false">%{time_count} 秒前</string>
   <string name="dates_time_seconds_ago_abbreviated_one" formatted="false">1秒前</string>
+  <string name="dates_time_seconds_ago_abbreviated_other" formatted="false">%{time_count} 秒前</string>
   <string name="dates_time_seconds_ago_abbreviated_two" formatted="false">2秒前</string>
   <string name="dates_time_seconds_ago_abbreviated_zero" formatted="false">0秒前</string>
   <string name="dates_time_seconds_ago_few" formatted="false">%{time_count} 秒前</string>
   <string name="dates_time_seconds_ago_many" formatted="false">%{time_count} 秒前</string>
   <string name="dates_time_seconds_ago_one" formatted="false">1秒前</string>
+  <string name="dates_time_seconds_ago_other" formatted="false">%{time_count} 秒前</string>
   <string name="dates_time_seconds_ago_two" formatted="false">2秒前</string>
   <string name="dates_time_seconds_ago_zero" formatted="false">0秒前</string>
   <string name="dates_time_seconds_few" formatted="false">%{time_count} 秒</string>
   <string name="dates_time_seconds_many" formatted="false">%{time_count} 秒</string>
   <string name="dates_time_seconds_one" formatted="false">1秒</string>
+  <string name="dates_time_seconds_other" formatted="false">%{time_count} 秒</string>
   <string name="dates_time_seconds_two" formatted="false">2秒</string>
   <string name="dates_time_seconds_zero" formatted="false">0秒</string>
   <string name="dates_yesterday" formatted="false">昨日</string>
   <string name="days_few" formatted="false">日</string>
   <string name="days_many" formatted="false">日</string>
   <string name="days_one" formatted="false">日</string>
+  <string name="days_other" formatted="false">日</string>
   <string name="days_plural" formatted="false">日</string>
   <string name="days_two" formatted="false">日</string>
   <string name="days_zero" formatted="false">日</string>
@@ -947,16 +987,19 @@
   <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー</string>
   <string name="discovery_baseball_card_social_friends_are_backers_many" formatted="false">%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー</string>
   <string name="discovery_baseball_card_social_friends_are_backers_one" formatted="false">%{friend_name} がバッカー</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_other" formatted="false">%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー</string>
   <string name="discovery_baseball_card_social_friends_are_backers_two" formatted="false">%{friend_name} と%{second_friend_name} がバッカー</string>
   <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">友達にバッカーはいません。</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_few" formatted="false">現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_many" formatted="false">現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_one" formatted="false">現在バッカー1人です。%{percent_funded} 達成、%{time_left} で締切</string>
+  <string name="discovery_baseball_card_stats_accessibility_live_stat_value_other" formatted="false">現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_two" formatted="false">現在バッカー2人。%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_zero" formatted="false">現在バッカー0人。%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_few" formatted="false">バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_many" formatted="false">バッカー%{backers_count} 人、%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_one" formatted="false">バッカー1人。%{percent_funded} 達成、%{time_left} で締切</string>
+  <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_other" formatted="false">バッカー%{backers_count} 人、%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_two" formatted="false">バッカーは2人です。%{percent_funded} 達成し、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_zero" formatted="false">バッカー0人。%{percent_funded} 達成、%{time_left} で締切</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">バッカー</string>
@@ -1045,6 +1088,7 @@
   <string name="general_backer_count_backers_few" formatted="false">%{backer_count} バッカー</string>
   <string name="general_backer_count_backers_many" formatted="false">%{backer_count} バッカー</string>
   <string name="general_backer_count_backers_one" formatted="false">1バッカー</string>
+  <string name="general_backer_count_backers_other" formatted="false">%{backer_count} バッカー</string>
   <string name="general_backer_count_backers_two" formatted="false">2バッカー</string>
   <string name="general_backer_count_backers_zero" formatted="false">0バッカー</string>
   <string name="general_error_oops" formatted="false">おっと！</string>
@@ -1071,6 +1115,7 @@
   <string name="hours_few" formatted="false">時間</string>
   <string name="hours_many" formatted="false">時間</string>
   <string name="hours_one" formatted="false">時間</string>
+  <string name="hours_other" formatted="false">時間</string>
   <string name="hours_plural" formatted="false">時間</string>
   <string name="hours_two" formatted="false">時間</string>
   <string name="hours_zero" formatted="false">時間</string>
@@ -1153,9 +1198,11 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="minutes_few" formatted="false">分</string>
   <string name="minutes_many" formatted="false">分</string>
   <string name="minutes_one" formatted="false">分</string>
+  <string name="minutes_other" formatted="false">分</string>
   <string name="minutes_plural" formatted="false">分</string>
   <string name="minutes_two" formatted="false">分</string>
   <string name="minutes_zero" formatted="false">分</string>
+  <string name="number_of_items_items" formatted="false">%{number_of_items} items</string>
   <string name="percentage_funded" formatted="false">%{percentage} 達成</string>
   <string name="pledge_amount_pledged_on_pledge_date" formatted="false">%{pledge_date} に&lt;b>%{pledge_amount}&lt;/b>のプレッジをしました</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
@@ -1164,12 +1211,14 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="profile_category_count_categories_backed_few" formatted="false">%{category_count} カテゴリーへバック</string>
   <string name="profile_category_count_categories_backed_many" formatted="false">%{category_count} カテゴリーへバック</string>
   <string name="profile_category_count_categories_backed_one" formatted="false">1カテゴリーへバック</string>
+  <string name="profile_category_count_categories_backed_other" formatted="false">%{category_count} カテゴリーへバック</string>
   <string name="profile_category_count_categories_backed_two" formatted="false">2カテゴリーへバック</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">0 カテゴリーへバック</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name}（%{backed_projects_count}）</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">%{project_count} プロジェクトへバック済</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">%{project_count} プロジェクトへバック済</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">1プロジェクトへバック</string>
+  <string name="profile_projects_backed_project_count_projects_other" formatted="false">%{project_count} プロジェクトへバック済</string>
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">2プロジェクトへバック</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">0プロジェクトへバック</string>
   <string name="profile_projects_backed_projects" formatted="false">バック済プロジェクト</string>
@@ -1308,6 +1357,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_count_projects_few" formatted="false">%{project_count} 件のプロジェクト</string>
   <string name="project_count_projects_many" formatted="false">%{project_count} 件のプロジェクト</string>
   <string name="project_count_projects_one" formatted="false">%{project_count} 件のプロジェクト</string>
+  <string name="project_count_projects_other" formatted="false">%{project_count} 件のプロジェクト</string>
   <string name="project_count_projects_two" formatted="false">%{project_count} 件のプロジェクト</string>
   <string name="project_count_projects_zero" formatted="false">%{project_count} 件のプロジェクト</string>
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
@@ -1328,10 +1378,12 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="project_social_friends_are_backers_and_more_bold_few" formatted="false">%{backer_count} 人以上</string>
   <string name="project_social_friends_are_backers_and_more_bold_many" formatted="false">%{backer_count} 人以上</string>
   <string name="project_social_friends_are_backers_and_more_bold_one" formatted="false">１人以上</string>
+  <string name="project_social_friends_are_backers_and_more_bold_other" formatted="false">%{backer_count} 人以上</string>
   <string name="project_social_friends_are_backers_and_more_bold_two" formatted="false">２人以上</string>
   <string name="project_social_friends_are_backers_and_more_count_few" formatted="false">%{friends} と他%{backer_count} 人がバッカー</string>
   <string name="project_social_friends_are_backers_and_more_count_many" formatted="false">%{friends} と他%{backer_count} 人がバッカー</string>
   <string name="project_social_friends_are_backers_and_more_count_one" formatted="false">%{friends} と他１人がバッカーになっています。</string>
+  <string name="project_social_friends_are_backers_and_more_count_other" formatted="false">%{friends} と他%{backer_count} 人がバッカー</string>
   <string name="project_social_friends_are_backers_and_more_count_two" formatted="false">%{friends} と他２人がバッカーになっています。</string>
   <string name="project_social_friends_are_backers_and_more_count_zero" formatted="false">%{friends} と%{friend_name} がバッカー</string>
   <string name="project_social_friends_separator" formatted="false">、 </string>
@@ -1367,6 +1419,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="projects_count_newline_backed_few" formatted="false">%{projects_count} \n件バック済み</string>
   <string name="projects_count_newline_backed_many" formatted="false">%{projects_count}\n件バック済み</string>
   <string name="projects_count_newline_backed_one" formatted="false">1\n件バック済み</string>
+  <string name="projects_count_newline_backed_other" formatted="false">%{projects_count} \n件バック済み</string>
   <string name="projects_count_newline_backed_two" formatted="false">2\n件バック済み</string>
   <string name="projects_count_newline_backed_zero" formatted="false">0\n件バック済み</string>
   <string name="projects_count_newline_saved_few" formatted="false">%{projects_count} \n
@@ -1374,6 +1427,8 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="projects_count_newline_saved_many" formatted="false">%{projects_count} \n
 保存済み</string>
   <string name="projects_count_newline_saved_one" formatted="false">1\n件保存済み</string>
+  <string name="projects_count_newline_saved_other" formatted="false">%{projects_count} \n
+保存済み</string>
   <string name="projects_count_newline_saved_two" formatted="false">2\n件保存済み</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\n件保存済み</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">閉じる</string>
@@ -1382,6 +1437,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="rewards_info_backer_count_backers_few" formatted="false">%{backer_count} バッカー</string>
   <string name="rewards_info_backer_count_backers_many" formatted="false">%{backer_count} バッカー</string>
   <string name="rewards_info_backer_count_backers_one" formatted="false">1バッカー</string>
+  <string name="rewards_info_backer_count_backers_other" formatted="false">%{backer_count} バッカー</string>
   <string name="rewards_info_backer_count_backers_two" formatted="false">2バッカー</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0バッカー</string>
   <string name="rewards_info_estimated_delivery" formatted="false">配達予定日</string>
@@ -1389,6 +1445,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="rewards_info_item_quantity_title_few" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_many" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
+  <string name="rewards_info_item_quantity_title_other" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_two" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_zero" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">数量限定 (%{reward_limit} 中残り%{rewards_remaining}）</string>
@@ -1426,11 +1483,13 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="social_following_friend_projects_count_backed_few" formatted="false">%{backed_count} バック済</string>
   <string name="social_following_friend_projects_count_backed_many" formatted="false">%{backed_count} バック済</string>
   <string name="social_following_friend_projects_count_backed_one" formatted="false">1バック済</string>
+  <string name="social_following_friend_projects_count_backed_other" formatted="false">%{backed_count} バック済</string>
   <string name="social_following_friend_projects_count_backed_two" formatted="false">2バック済</string>
   <string name="social_following_friend_projects_count_backed_zero" formatted="false">バッカーがいません</string>
   <string name="social_following_friend_projects_count_created_few" formatted="false">%{created_count} プロジェクト</string>
   <string name="social_following_friend_projects_count_created_many" formatted="false">%{created_count}プロジェクト</string>
   <string name="social_following_friend_projects_count_created_one" formatted="false">1プロジェクト</string>
+  <string name="social_following_friend_projects_count_created_other" formatted="false">%{created_count}プロジェクト</string>
   <string name="social_following_friend_projects_count_created_two" formatted="false">2プロジェクト</string>
   <string name="social_following_friend_projects_count_created_zero" formatted="false">0 プロジェクト</string>
   <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">閉じる</string>
@@ -1444,6 +1503,8 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="social_following_stats_backed_projects" formatted="false">バック済</string>
   <string name="social_following_stats_button_follow_all_friends_few" formatted="false">%{remote_friends_count} 人を全員フォロー</string>
   <string name="social_following_stats_button_follow_all_friends_many" formatted="false">%{remote_friends_count} 人を全員フォロー</string>
+  <string name="social_following_stats_button_follow_all_friends_one" formatted="false">友達をフォロー</string>
+  <string name="social_following_stats_button_follow_all_friends_other" formatted="false">%{remote_friends_count} 人を全員フォロー</string>
   <string name="social_following_stats_button_follow_all_friends_two" formatted="false">全員フォロー</string>
   <string name="social_following_stats_friends" formatted="false">友達</string>
   <string name="social_message_creator" formatted="false">クリエイターに連絡</string>
@@ -1491,6 +1552,7 @@ iOSの場合、設定からFacebookのアクセスを許可してください。
   <string name="updates_count_updates_few" formatted="false">%{updates_count} 件のアップデート</string>
   <string name="updates_count_updates_many" formatted="false">%{updates_count} 件のアップデート</string>
   <string name="updates_count_updates_one" formatted="false">%{updates_count} 件のアップデート</string>
+  <string name="updates_count_updates_other" formatted="false">%{updates_count} 件のアップデート</string>
   <string name="updates_count_updates_two" formatted="false">%{updates_count} 件のアップデート</string>
   <string name="updates_count_updates_zero" formatted="false">%{updates_count} 件のアップデート</string>
   <string name="via_custom" formatted="false">リファラー経由</string>

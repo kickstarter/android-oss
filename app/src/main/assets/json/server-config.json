@@ -5,6 +5,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "A weekly roundup of the best and brightest projects on Kickstarter, handpicked by our team.",
       "About_reward_amount": "About %{reward_amount}",
       "Account": "Account",
+      "activities_badge_value_plus": "%{activities_badge_value}+",
       "Add": "Add",
       "Add_new_card": "Add new card",
       "Add_attachments": "Add attachments…",
@@ -47,7 +48,8 @@
         "one": "%{backers_count}\nbacker",
         "two": "%{backers_count}\nbackers",
         "few": "%{backers_count}\nbackers",
-        "many": "%{backers_count}\nbackers"
+        "many": "%{backers_count}\nbackers",
+        "other": "%{backers_count}\nbackers"
       },
       "Become_a_backer_to_leave_a_comment": "Become a backer to leave a comment.",
       "Big_Kickstarter_news_and_events_near_you": "Big Kickstarter news and events near you, delivered just a few times a year.",
@@ -79,7 +81,8 @@
         "one": "%{comments_count} comment",
         "two": "%{comments_count} comments",
         "few": "%{comments_count} comments",
-        "many": "%{comments_count} comments"
+        "many": "%{comments_count} comments",
+        "other": "%{comments_count} comments"
       },
       "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Complete payment",
@@ -131,7 +134,8 @@
         "one": "day",
         "two": "days",
         "few": "days",
-        "many": "days"
+        "many": "days",
+        "other": "days"
       },
       "days_plural": "days",
       "Delete_my_Kickstarter_Account": "Delete my Kickstarter account",
@@ -182,7 +186,8 @@
         "one": "%{filter_name}: %{project_count} live project",
         "two": "%{filter_name}: %{project_count} live projects",
         "few": "%{filter_name}: %{project_count} live projects",
-        "many": "%{filter_name}: %{project_count} live projects"
+        "many": "%{filter_name}: %{project_count} live projects",
+        "other": "%{filter_name}: %{project_count} live projects"
       },
       "Filters_by_projects_with_upcoming_and_past_live_streams": "Filters by projects with upcoming and past live streams.",
       "Find_and_follow_friends": "Find and follow friends",
@@ -190,6 +195,7 @@
       "Find_projects_youll_love_and_help_bring": "Find projects you’ll love and help bring creative ideas to life.",
       "Find_projects_youll_love_in_art_design_film": "Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.",
       "First_created": "First created",
+      "Fix": "Fix",
       "Friend_backed_art_project": "<b>%{friend_name}</b> backed an <i>Art</i> project.",
       "Friend_backed_comics_project": "<b>%{friend_name}</b> backed a <i>Comics</i> project.",
       "Friend_backed_crafts_project": "<b>%{friend_name}</b> backed a <i>Crafts</i> project.",
@@ -236,7 +242,8 @@
         "one": "hour",
         "two": "hours",
         "few": "hours",
-        "many": "hours"
+        "many": "hours",
+        "other": "hours"
       },
       "hours_plural": "hours",
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
@@ -268,7 +275,8 @@
         "one": "%{left_count} left",
         "two": "%{left_count} left",
         "few": "%{left_count} left",
-        "many": "%{left_count} left"
+        "many": "%{left_count} left",
+        "other": "%{left_count} left"
       },
       "Live": "Live",
       "Live_now": "Live now",
@@ -305,10 +313,12 @@
         "one": "minute",
         "two": "minutes",
         "few": "minutes",
-        "many": "minutes"
+        "many": "minutes",
+        "other": "minutes"
       },
       "minutes_plural": "minutes",
       "MMYY": "MM/YY",
+      "More_than_number_of_items_items": "More than %{number_of_items} items",
       "Name": "Name",
       "Newsletters": "Newsletters",
       "News_events": "Big news and events happening near you, delivered just a few times a year.",
@@ -335,6 +345,7 @@
       "Notification_push_notification_off": "%{notification}, push notification, off",
       "Notification_push_notification_on": "%{notification}, push notification, on",
       "Notifications": "Notifications",
+      "number_of_items_items": "%{number_of_items} items",
       "Once_you_back_a_project_well_share": "Once you back a project, we’ll share personalized recommendations in this space.",
       "Only_amount_of_time_left_to_watch_this": "Only %{amount_of_time} left to watch this.",
       "Opens_comments": "Opens comments.",
@@ -389,21 +400,24 @@
         "one": "%{project_count} project",
         "two": "%{project_count} projects",
         "few": "%{project_count} projects",
-        "many": "%{project_count} projects"
+        "many": "%{project_count} projects",
+        "other": "%{project_count} projects"
       },
       "projects_count_newline_backed": {
         "zero": "0\\nbacked",
         "one": "1\\nbacked",
         "two": "2\\nbacked",
         "few": "%{projects_count}\nbacked",
-        "many": "%{projects_count}\nbacked"
+        "many": "%{projects_count}\nbacked",
+        "other": "%{projects_count}\nbacked"
       },
       "projects_count_newline_saved": {
         "zero": "0\\nsaved",
         "one": "1\\nsaved",
         "two": "2\\nsaved",
         "few": "%{projects_count}\nsaved",
-        "many": "%{projects_count}\nsaved"
+        "many": "%{projects_count}\nsaved",
+        "other": "%{projects_count}\nsaved"
       },
       "Project_goal_and_pledge": "Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.",
       "Project_reminders": "Project reminders",
@@ -447,21 +461,24 @@
         "one": "%{rewards_count} reward",
         "two": "%{rewards_count} rewards",
         "few": "%{rewards_count} rewards",
-        "many": "%{rewards_count} rewards"
+        "many": "%{rewards_count} rewards",
+        "other": "%{rewards_count} rewards"
       },
       "Rewards_count_rewards_colon": {
         "zero": "%{rewards_count} rewards:",
         "one": "%{rewards_count} reward:",
         "two": "%{rewards_count} rewards:",
         "few": "%{rewards_count} rewards:",
-        "many": "%{rewards_count} rewards:"
+        "many": "%{rewards_count} rewards:",
+        "other": "%{rewards_count} rewards:"
       },
       "Reward_Surveys": {
         "zero": "%{reward_survey_count} Reward Surveys",
         "one": "Reward Survey",
         "two": "%{reward_survey_count} Reward Surveys",
         "few": "%{reward_survey_count} Reward Surveys",
-        "many": "%{reward_survey_count} Reward Surveys"
+        "many": "%{reward_survey_count} Reward Surveys",
+        "other": "%{reward_survey_count} Reward Surveys"
       },
       "Reward_selected": "Reward selected",
       "Save": "Save",
@@ -542,7 +559,8 @@
         "one": "%{updates_count} update",
         "two": "%{updates_count} updates",
         "few": "%{updates_count} updates",
-        "many": "%{updates_count} updates"
+        "many": "%{updates_count} updates",
+        "other": "%{updates_count} updates"
       },
       "Unable_to_request": "Unable to request data.",
       "Unsaved": "Unsaved",
@@ -566,6 +584,7 @@
       "Video_disabled_until_the_internet_connection_improves": "Video disabled until the internet connection improves",
       "View": "View",
       "View_project": "View project",
+      "View_rewards": "View rewards",
       "View_your_pledge": "View your pledge",
       "View_your_reward": "View your reward",
       "Watch_live": "Watch live",
@@ -682,7 +701,8 @@
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
-              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "other": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
             }
           },
           "metadata": {
@@ -708,14 +728,16 @@
                 "one": "1 backer so far, %{percent_funded} funded, %{time_left} to go",
                 "two": "2 backers so far, %{percent_funded} funded, %{time_left} to go",
                 "few": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go",
-                "many": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go"
+                "many": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go",
+                "other": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go"
               },
               "non_live_stat_value": {
                 "zero": "0 backers total, %{percent_funded} funded, %{time_left} to go",
                 "one": "1 backer total, %{percent_funded} funded, %{time_left} to go",
                 "two": "2 backers total, %{percent_funded} funded, %{time_left} to go",
                 "few": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go",
-                "many": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go"
+                "many": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go",
+                "other": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go"
               }
             },
             "backers": "backers",
@@ -932,7 +954,8 @@
           "one": "1 category backed",
           "two": "2 categories backed",
           "few": "%{category_count} categories backed",
-          "many": "%{category_count} categories backed"
+          "many": "%{category_count} categories backed",
+          "other": "%{category_count} categories backed"
         },
         "buttons": {
           "settings": "Settings",
@@ -947,7 +970,8 @@
             "one": "BACKED 1 PROJECT",
             "two": "BACKED 2 PROJECTS",
             "few": "BACKED %{project_count} PROJECTS",
-            "many": "BACKED %{project_count} PROJECTS"
+            "many": "BACKED %{project_count} PROJECTS",
+            "other": "BACKED %{project_count} PROJECTS"
           },
           "empty_state": {
             "message": "You haven't backed any projects yet.\nLet's change that!",
@@ -1057,7 +1081,7 @@
         "to": "app@kickstarter.com",
         "to_android": "android@kickstarter.com",
         "subject": "Hello Kickstarter App Support",
-        "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n",
+        "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n\n",
         "noemail": {
           "title": "Support",
           "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.",
@@ -1330,7 +1354,7 @@
           },
           "android_pay": {
             "pledge_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
-            "terms_and_privacy": "By pledging you agree to Kickstarter’s <u>terms of use</u> and <u>privacy policy</u>.",
+            "terms_and_privacy": "By pledging you agree to Kickstarter's <u>terms of use</u> and <u>privacy policy</u>.",
             "backer_101": "<b>Questions?</b> Read the <u>backer 101</u>.",
             "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirm",
@@ -1401,13 +1425,15 @@
             "one": "%{friends} and 1 more are backers.",
             "two": "%{friends} and 2 more are backers.",
             "few": "%{friends} and %{backer_count} more are backers.",
-            "many": "%{friends} and %{backer_count} more are backers."
+            "many": "%{friends} and %{backer_count} more are backers.",
+            "other": "%{friends} and %{backer_count} more are backers."
           },
           "friends_are_backers_and_more_bold": {
             "one": "1 more",
             "two": "2 more",
             "few": "%{backer_count} more",
-            "many": "%{backer_count} more"
+            "many": "%{backer_count} more",
+            "other": "%{backer_count} more"
           }
         },
         "view_pledge": {
@@ -1487,14 +1513,16 @@
             "one": "1 backer",
             "two": "2 backers",
             "few": "%{backer_count} backers",
-            "many": "%{backer_count} backers"
+            "many": "%{backer_count} backers",
+            "other": "%{backer_count} backers"
           },
           "item_quantity_title": {
             "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
             "two": "%{title} (x%{quantity})",
             "few": "%{title} (x%{quantity})",
-            "many": "%{title} (x%{quantity})"
+            "many": "%{title} (x%{quantity})",
+            "other": "%{title} (x%{quantity})"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
@@ -1591,14 +1619,16 @@
                 "one": "%{pledged} of %{goal} goal, 1 backer so far, %{time_left} to go",
                 "two": "%{pledged} of %{goal} goal, 2 backers so far, %{time_left} to go",
                 "few": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go",
-                "many": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go"
+                "many": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go",
+                "other": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go"
               },
               "non_live_stat_value": {
                 "zero": "%{pledged} of %{goal} goal, 0 backers total, %{time_left} to go",
                 "one": "%{pledged} of %{goal} goal, 1 backer total, %{time_left} to go",
                 "two": "%{pledged} of %{goal} goal, 2 backers total, %{time_left} to go",
                 "few": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go",
-                "many": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go"
+                "many": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go",
+                "other": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go"
               }
             },
             "goal": "Goal",
@@ -1652,7 +1682,8 @@
                 "one": "<b>1</b> total play",
                 "two": "<b>2</b> total plays",
                 "few": "<b>%{total_start_count}</b> total plays",
-                "many": "<b>%{total_start_count}</b> total plays"
+                "many": "<b>%{total_start_count}</b> total plays",
+                "other": "<b>%{total_start_count}</b> total plays"
               },
               "percent_plays_completed": "%{percent_plays_completed} of plays completed"
             }
@@ -1722,7 +1753,8 @@
                 "one": "This will notify 1 backer that a new update is available. Are you sure you want to post?",
                 "two": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
                 "few": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
-                "many": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?"
+                "many": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
+                "other": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?"
               },
               "cancel_button": "Cancel",
               "confirm_button": "Let’s do it!",
@@ -1805,14 +1837,16 @@
             "one": "1 backed",
             "two": "2 backed",
             "few": "%{backed_count} backed",
-            "many": "%{backed_count} backed"
+            "many": "%{backed_count} backed",
+            "other": "%{backed_count} backed"
           },
           "projects_count_created": {
             "zero": "0 created",
             "one": "1 created",
             "two": "2 created",
             "few": "%{created_count} created",
-            "many": "%{created_count} created"
+            "many": "%{created_count} created",
+            "other": "%{created_count} created"
           },
           "buttons": {
             "following": "Following",
@@ -1824,9 +1858,11 @@
           "backed_projects": "Backed projects",
           "button": {
             "follow_all_friends": {
+              "one": "Follow your friend",
               "two": "Follow all 2 friends",
               "few": "Follow all %{remote_friends_count} friends",
-              "many": "Follow all %{remote_friends_count} friends"
+              "many": "Follow all %{remote_friends_count} friends",
+              "other": "Follow all %{remote_friends_count} friends"
             }
           }
         },
@@ -1849,7 +1885,8 @@
           "one": "1 backer",
           "two": "2 backers",
           "few": "%{backer_count} backers",
-          "many": "%{backer_count} backers"
+          "many": "%{backer_count} backers",
+          "other": "%{backer_count} backers"
         },
         "navigation": {
           "buttons": {
@@ -1907,168 +1944,192 @@
           "one": "in 1 min",
           "two": "in 2 mins",
           "few": "in %{time_count} mins",
-          "many": "in %{time_count} mins"
+          "many": "in %{time_count} mins",
+          "other": "in %{time_count} mins"
         },
         "time_in_minutes": {
           "zero": "in 0 minutes",
           "one": "in 1 minute",
           "two": "in 2 minutes",
           "few": "in %{time_count} minutes",
-          "many": "in %{time_count} minutes"
+          "many": "in %{time_count} minutes",
+          "other": "in %{time_count} minutes"
         },
         "time_in_hours_abbreviated": {
           "zero": "in 0 hrs",
           "one": "in 1 hr",
           "two": "in 2 hrs",
           "few": "in %{time_count} hrs",
-          "many": "in %{time_count} hrs"
+          "many": "in %{time_count} hrs",
+          "other": "in %{time_count} hrs"
         },
         "time_in_hours": {
           "zero": "in 0 hours",
           "one": "in 1 hour",
           "two": "in 2 hours",
           "few": "in %{time_count} hours",
-          "many": "in %{time_count} hours"
+          "many": "in %{time_count} hours",
+          "other": "in %{time_count} hours"
         },
         "time_in_days_abbreviated": {
           "zero": "in 0 days",
           "one": "in 1 day",
           "two": "in 2 days",
           "few": "in %{time_count} days",
-          "many": "in %{time_count} days"
+          "many": "in %{time_count} days",
+          "other": "in %{time_count} days"
         },
         "time_in_days": {
           "zero": "in 0 days",
           "one": "in 1 day",
           "two": "in 2 days",
           "few": "in %{time_count} days",
-          "many": "in %{time_count} days"
+          "many": "in %{time_count} days",
+          "other": "in %{time_count} days"
         },
         "time_in_seconds_abbreviated": {
           "zero": "in 0 secs",
           "one": "in 1 sec",
           "two": "in 2 secs",
           "few": "in \"%{time_count} secs\"",
-          "many": "in \"%{time_count} secs\""
+          "many": "in \"%{time_count} secs\"",
+          "other": "in \"%{time_count} secs\""
         },
         "time_in_seconds": {
           "zero": "in 0 seconds",
           "one": "in 1 second",
           "two": "in 2 seconds",
           "few": "in \"%{time_count} seconds\"",
-          "many": "in \"%{time_count} seconds\""
+          "many": "in \"%{time_count} seconds\"",
+          "other": "in \"%{time_count} seconds\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "0 mins ago",
           "one": "1 min ago",
           "two": "2 mins ago",
           "few": "%{time_count} mins ago",
-          "many": "%{time_count} mins ago"
+          "many": "%{time_count} mins ago",
+          "other": "%{time_count} mins ago"
         },
         "time_minutes_ago": {
           "zero": "0 minutes ago",
           "one": "1 minute ago",
           "two": "2 minutes ago",
           "few": "%{time_count} minutes ago",
-          "many": "%{time_count} minutes ago"
+          "many": "%{time_count} minutes ago",
+          "other": "%{time_count} minutes ago"
         },
         "time_hours_ago_abbreviated": {
           "zero": "0 hrs ago",
           "one": "1 hr ago",
           "two": "2 hrs ago",
           "few": "%{time_count} hrs ago",
-          "many": "%{time_count} hrs ago"
+          "many": "%{time_count} hrs ago",
+          "other": "%{time_count} hrs ago"
         },
         "time_hours_ago": {
           "zero": "0 hours ago",
           "one": "1 hour ago",
           "two": "2 hours ago",
           "few": "%{time_count} hours ago",
-          "many": "%{time_count} hours ago"
+          "many": "%{time_count} hours ago",
+          "other": "%{time_count} hours ago"
         },
         "time_days_ago_abbreviated": {
           "zero": "0 days ago",
           "one": "1 day ago",
           "two": "2 days ago",
           "few": "%{time_count} days ago",
-          "many": "%{time_count} days ago"
+          "many": "%{time_count} days ago",
+          "other": "%{time_count} days ago"
         },
         "time_days_ago": {
           "zero": "0 days ago",
           "one": "1 day ago",
           "two": "2 days ago",
           "few": "%{time_count} days ago",
-          "many": "%{time_count} days ago"
+          "many": "%{time_count} days ago",
+          "other": "%{time_count} days ago"
         },
         "time_seconds_ago_abbreviated": {
           "zero": "0 seconds ago",
           "one": "1 second ago",
           "two": "2 seconds ago",
           "few": "%{time_count} seconds ago",
-          "many": "%{time_count} seconds ago"
+          "many": "%{time_count} seconds ago",
+          "other": "%{time_count} seconds ago"
         },
         "time_seconds_ago": {
           "zero": "0 secs ago",
           "one": "1 sec ago",
           "two": "2 secs ago",
           "few": "%{time_count} secs ago",
-          "many": "%{time_count} secs ago"
+          "many": "%{time_count} secs ago",
+          "other": "%{time_count} secs ago"
         },
         "time_minutes_abbreviated": {
           "zero": "0 mins",
           "one": "1 min",
           "two": "2 mins",
           "few": "%{time_count} mins",
-          "many": "%{time_count} mins"
+          "many": "%{time_count} mins",
+          "other": "%{time_count} mins"
         },
         "time_minutes": {
           "zero": "0 minutes",
           "one": "1 minute",
           "two": "2 minutes",
           "few": "%{time_count} minutes",
-          "many": "%{time_count} minutes"
+          "many": "%{time_count} minutes",
+          "other": "%{time_count} minutes"
         },
         "time_hours_abbreviated": {
           "zero": "0 hrs",
           "one": "1 hr",
           "two": "2 hrs",
           "few": "%{time_count} hrs",
-          "many": "%{time_count} hrs"
+          "many": "%{time_count} hrs",
+          "other": "%{time_count} hrs"
         },
         "time_hours": {
           "zero": "0 hours",
           "one": "1 hour",
           "two": "2 hours",
           "few": "%{time_count} hours",
-          "many": "%{time_count} hours"
+          "many": "%{time_count} hours",
+          "other": "%{time_count} hours"
         },
         "time_days_abbreviated": {
           "zero": "0 days",
           "one": "1 day",
           "two": "2 days",
           "few": "%{time_count} days",
-          "many": "%{time_count} days"
+          "many": "%{time_count} days",
+          "other": "%{time_count} days"
         },
         "time_days": {
           "zero": "0 days",
           "one": "1 day",
           "two": "2 days",
           "few": "%{time_count} days",
-          "many": "%{time_count} days"
+          "many": "%{time_count} days",
+          "other": "%{time_count} days"
         },
         "time_seconds_abbreviated": {
           "zero": "0 seconds",
           "one": "1 second",
           "two": "2 seconds",
           "few": "%{time_count} seconds",
-          "many": "%{time_count} seconds"
+          "many": "%{time_count} seconds",
+          "other": "%{time_count} seconds"
         },
         "time_seconds": {
           "zero": "0 secs",
           "one": "1 sec",
           "two": "2 secs",
           "few": "%{time_count} secs",
-          "many": "%{time_count} secs"
+          "many": "%{time_count} secs",
+          "other": "%{time_count} secs"
         },
         "just_now": "just now",
         "right_now": "right now",
@@ -2120,6 +2181,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Eine wöchentliche Zusammenfassung der besten und cleversten Projekte auf Kickstarter, handverlesen von unserem Team.",
       "About_reward_amount": "Ungefähr %{reward_amount}",
       "Account": "Konto",
+      "activities_badge_value_plus": "%{activities_badge_value}+",
       "Add": "Hinzufügen",
       "Add_new_card": "Kreditkarte hinzufügen",
       "Add_attachments": "Anhänge hinzufügen ...",
@@ -2162,7 +2224,8 @@
         "one": "%{backers_count}\nUnterstützer",
         "two": "%{backers_count}\nUnterstützer",
         "few": "%{backers_count}\nUnterstützer",
-        "many": "%{backers_count}\nUnterstützer"
+        "many": "%{backers_count}\nUnterstützer",
+        "other": "%{backers_count}\nUnterstützer"
       },
       "Become_a_backer_to_leave_a_comment": "Werde Unterstützer, um einen Kommentar zu hinterlassen.",
       "Big_Kickstarter_news_and_events_near_you": "Ein paar Mal pro Jahr: Kickstarter-Neuigkeiten und Events in deiner Nähe.",
@@ -2194,7 +2257,8 @@
         "one": "%{comments_count} Kommentar",
         "two": "%{comments_count} Kommentare",
         "few": "%{comments_count} Kommentare",
-        "many": "%{comments_count} Kommentare"
+        "many": "%{comments_count} Kommentare",
+        "other": "%{comments_count} Kommentare"
       },
       "Comment_reply_digest": "Tägliche Zusammenfassung Kommentare",
       "Complete_payment": "Zahlung abschließen",
@@ -2246,7 +2310,8 @@
         "one": "Tag",
         "two": "Tg",
         "few": "Tg",
-        "many": "Tg"
+        "many": "Tg",
+        "other": "Tg"
       },
       "days_plural": "Tg",
       "Delete_my_Kickstarter_Account": "Mein Kickstarter-Konto löschen",
@@ -2297,7 +2362,8 @@
         "one": "%{filter_name}: %{project_count} Live-Projekt",
         "two": "%{filter_name}: %{project_count} Live-Projekte",
         "few": "%{filter_name}: %{project_count} Live-Projekte",
-        "many": "%{filter_name}: %{project_count} Live-Projekte"
+        "many": "%{filter_name}: %{project_count} Live-Projekte",
+        "other": "%{filter_name}: %{project_count} Live-Projekte"
       },
       "Filters_by_projects_with_upcoming_and_past_live_streams": "Filtert nach zukünftigen und vergangenen Live-Streams.",
       "Find_and_follow_friends": "Freunde finden und folgen",
@@ -2305,6 +2371,7 @@
       "Find_projects_youll_love_and_help_bring": "Finde Projekte, die zu dir passen und hilf mit bei der Umsetzung neuer, kreativer Ideen.",
       "Find_projects_youll_love_in_art_design_film": "Finde Projekte nach deinem Geschmack - in Kunst, Design, Film, Spiele, Musik und vielen anderen Kategorien. Wenn du ein Projekt unterstützt hast, wird deren Aktivität hier angezeigt.",
       "First_created": "Erstes Projekt",
+      "Fix": "Korrigieren",
       "Friend_backed_art_project": "<b>%{friend_name}</b> hat ein <i>Kunst-Projekt</i> unterstützt.",
       "Friend_backed_comics_project": "<b>%{friend_name}</b> hat ein <i>Comics-Projekt</i> unterstützt.",
       "Friend_backed_crafts_project": "<b>%{friend_name}</b> hat ein <i>Kunsthandwerk-Projekt</i> unterstützt.",
@@ -2351,7 +2418,8 @@
         "one": "Std",
         "two": "Std",
         "few": "Std",
-        "many": "Std"
+        "many": "Std",
+        "other": "Stunden"
       },
       "hours_plural": "Std",
       "Id_just_like_to_support_the_project": "Ich möchte das Projekt einfach nur unterstützen.",
@@ -2383,7 +2451,8 @@
         "one": "%{left_count} übrig",
         "two": "%{left_count} übrig",
         "few": "%{left_count} übrig",
-        "many": "%{left_count} übrig"
+        "many": "%{left_count} übrig",
+        "other": "%{left_count} verbleibend"
       },
       "Live": "Live",
       "Live_now": "Jetzt live",
@@ -2420,10 +2489,12 @@
         "one": "Min",
         "two": "Min",
         "few": "Min",
-        "many": "Min"
+        "many": "Min",
+        "other": "Min"
       },
       "minutes_plural": "Min",
       "MMYY": "MM/JJ",
+      "More_than_number_of_items_items": "More than %{number_of_items} items",
       "Name": "Name",
       "Newsletters": "Newsletter",
       "News_events": "Ein paar Mal pro Jahr: Neuigkeiten und Events in deiner Nähe.",
@@ -2433,7 +2504,7 @@
       "New_pledge_activity": "Neue Finanzierungsbeiträge",
       "New_work_and_big_ideas_from_established_and": "Neue Arbeiten und großartige Ideen von etablierten und neuen Künstlern.",
       "No_comments_yet": "Bisher noch keine Kommentare.",
-      "No_longer_available": "No longer available",
+      "No_longer_available": "Nicht mehr verfügbar",
       "No_messages": "Keine Nachrichten",
       "No_nevermind": "Nein, ich habe es mir anders überlegt",
       "No_one_has_posted_an_update_yet": "Es wurden noch keine Updates gepostet.",
@@ -2450,6 +2521,7 @@
       "Notification_push_notification_off": "%{notification}, Push-Benachrichtigung, Aus",
       "Notification_push_notification_on": "%{notification}, Push-Benachrichtigung, An",
       "Notifications": "Benachrichtigungen",
+      "number_of_items_items": "%{number_of_items} items",
       "Once_you_back_a_project_well_share": "Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.",
       "Only_amount_of_time_left_to_watch_this": "Nur noch %{amount_of_time} live!",
       "Opens_comments": "Öffnet Kommentare.",
@@ -2504,21 +2576,24 @@
         "one": "%{project_count} Projekt",
         "two": "%{project_count} Projekte",
         "few": "%{project_count} Projekte",
-        "many": "%{project_count} Projekte"
+        "many": "%{project_count} Projekte",
+        "other": "%{project_count} Projekte"
       },
       "projects_count_newline_backed": {
         "zero": "0\\nunterstützt",
         "one": "1\\nunterstützt",
         "two": "2\\nunterstützt",
         "few": "%{projects_count}\nunterstützt",
-        "many": "%{projects_count}\nunterstützt"
+        "many": "%{projects_count}\nunterstützt",
+        "other": "%{project_count}\nunterstützt"
       },
       "projects_count_newline_saved": {
         "zero": "0\\ngespeichert",
         "one": "1\\ngespeichert",
         "two": "2\\ngespeichert",
         "few": "%{projects_count}\ngespeichert",
-        "many": "%{projects_count}\ngespeichert"
+        "many": "%{projects_count}\ngespeichert",
+        "other": "%{projects_count}\ngespeichert"
       },
       "Project_goal_and_pledge": "Es wird eine ungefähre Umrechnung des Finanzierungsziels und der Finanzierungsbeiträge angezeigt. Nach erfolgreicher Finanzierung des Projekts wird dein Finanzierungsbeitrag in der Währung des Erstellungslandes abgebucht.",
       "Project_reminders": "Projekt-Erinnerungen",
@@ -2562,21 +2637,24 @@
         "one": "%{rewards_count} Belohnung",
         "two": "%{rewards_count} Belohnungen",
         "few": "%{rewards_count} Belohnungen",
-        "many": "%{rewards_count} Belohnungen"
+        "many": "%{rewards_count} Belohnungen",
+        "other": "%{rewards_count} Belohnungen"
       },
       "Rewards_count_rewards_colon": {
         "zero": "%{rewards_count} Belohnungen:",
         "one": "%{rewards_count} Belohnung:",
         "two": "%{rewards_count} Belohnungen:",
         "few": "%{rewards_count} Belohnungen:",
-        "many": "%{rewards_count} Belohnungen:"
+        "many": "%{rewards_count} Belohnungen:",
+        "other": "%{rewards_count} Belohnungen:"
       },
       "Reward_Surveys": {
         "zero": "%{reward_survey_count} Befragungen",
         "one": "Befragung",
         "two": "%{reward_survey_count} Befragungen",
         "few": "%{reward_survey_count} Befragungen",
-        "many": "%{reward_survey_count} Befragungen"
+        "many": "%{reward_survey_count} Befragungen",
+        "other": "%{reward_survey_count} Befragungen"
       },
       "Reward_selected": "Ausgewählte Belohnung",
       "Save": "Speichern",
@@ -2657,7 +2735,8 @@
         "one": "%{updates_count} Update",
         "two": "%{updates_count} Updates",
         "few": "%{updates_count} Updates",
-        "many": "%{updates_count} Updates"
+        "many": "%{updates_count} Updates",
+        "other": "%{updates_count} Updates"
       },
       "Unable_to_request": "Daten konnten nicht angefordert werden.",
       "Unsaved": "Speichern wurde rückgängig gemacht",
@@ -2681,6 +2760,7 @@
       "Video_disabled_until_the_internet_connection_improves": "Video bis zur Wiederherstellung der Internetverbindung deaktiviert",
       "View": "Anzeigen",
       "View_project": "Projekt ansehen",
+      "View_rewards": "Belohnungen ansehen",
       "View_your_pledge": "Deinen Finanzierungsbeitrag ansehen",
       "View_your_reward": "Belohnung ansehen",
       "Watch_live": "Live ansehen",
@@ -2707,7 +2787,7 @@
       "Youll_receive_an_email_at_email_when_your_download_is_ready": "Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.",
       "Your_chat_message_wasnt_sent_successfully": "Deine Chat-Nachricht konnte leider nicht gesendet werden.",
       "Your_friends_havent_backed_any_projects_yet": "Deine Freunde haben bisher noch kein Projekt unterstützt. Aber sobald sie das tun, wird es hier angezeigt.",
-      "Your_message_has_been_sent": "Your message has been sent!",
+      "Your_message_has_been_sent": "Deine Nachricht wurde versandt!",
       "Your_name_displayed": "Dein Name wird auf deinem Profil angezeigt.",
       "Your_payment_method_was_successfully_charged": "Deine Zahlungsmethode wurde erfolgreich belastet.",
       "Your_pledge": "Dein Beitrag",
@@ -2797,7 +2877,8 @@
               "one": "%{friend_name} unterstützt dieses Projekt.",
               "two": "%{friend_name} und %{second_friend_name} unterstützen dieses Projekt.",
               "few": "%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt.",
-              "many": "%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt."
+              "many": "%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt.",
+              "other": "%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt."
             }
           },
           "metadata": {
@@ -2823,14 +2904,16 @@
                 "one": "Bisher 1 Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
                 "two": "Bisher 2 Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
                 "few": "Bisher %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
-                "many": "Bisher %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}"
+                "many": "Bisher %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
+                "other": "Bisher %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}"
               },
               "non_live_stat_value": {
                 "zero": "Gesamt 0 Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
                 "one": "Gesamt 1 Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
                 "two": "Gesamt 2 Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
                 "few": "Gesamt %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
-                "many": "Gesamt %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}"
+                "many": "Gesamt %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}",
+                "other": "Gesamt %{backers_count} Unterstützer, %{percent_funded} finanziert, noch %{time_left}"
               }
             },
             "backers": "Unterstützer",
@@ -3047,7 +3130,8 @@
           "one": "In 1 Kategorie",
           "two": "In 2 Kategorien",
           "few": "In %{category_count} Kategorien",
-          "many": "In %{category_count} Kategorien"
+          "many": "In %{category_count} Kategorien",
+          "other": "In %{category_count} Kategorien"
         },
         "buttons": {
           "settings": "Einstellungen",
@@ -3062,7 +3146,8 @@
             "one": "HAT 1 PROJEKT UNTERSTÜTZT ",
             "two": "HAT 2 PROJEKTE UNTERSTÜTZT",
             "few": "HAT %{project_count} PROJEKTE UNTERSTÜTZT",
-            "many": "HAT %{project_count} PROJEKTE UNTERSTÜTZT"
+            "many": "HAT %{project_count} PROJEKTE UNTERSTÜTZT",
+            "other": "HAT %{project_count} PROJEKTE UNTERSTÜTZT"
           },
           "empty_state": {
             "message": "Du hast noch keine Projekte unterstützt. Das sollten wir ändern!",
@@ -3516,13 +3601,15 @@
             "one": "%{friends} und 1 weitere Person unterstützen dieses Projekt.",
             "two": "%{friends} und 2 weitere Personen unterstützen dieses Projekt.",
             "few": "%{friends} und %{backer_count} weitere Personen unterstützen dieses Projekt.",
-            "many": "%{friends} und %{backer_count} weitere Personen unterstützen dieses Projekt."
+            "many": "%{friends} und %{backer_count} weitere Personen unterstützen dieses Projekt.",
+            "other": "%{friends} und %{backer_count} weitere Personen unterstützen dieses Projekt."
           },
           "friends_are_backers_and_more_bold": {
             "one": "1 weitere",
             "two": "2 weitere",
             "few": "%{backer_count} weitere",
-            "many": "%{backer_count} weitere"
+            "many": "%{backer_count} weitere",
+            "other": "%{backer_count} weitere"
           }
         },
         "view_pledge": {
@@ -3602,14 +3689,16 @@
             "one": "1 Unterstützer",
             "two": "2 Unterstützer",
             "few": "%{backer_count} Unterstützer",
-            "many": "%{backer_count} Unterstützer"
+            "many": "%{backer_count} Unterstützer",
+            "other": "%{backer_count} Unterstützer"
           },
           "item_quantity_title": {
             "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
             "two": "%{title} (x%{quantity})",
             "few": "%{title} (x%{quantity})",
-            "many": "%{title} (x%{quantity})"
+            "many": "%{title} (x%{quantity})",
+            "other": "(%{quantity}) %{title}"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Begrenzt (%{rewards_remaining} von %{reward_limit} übrig)",
           "all_gone": "Alle weg",
@@ -3706,14 +3795,16 @@
                 "one": "%{pledged} von %{goal} erreicht, bisher 1 Unterstützer, noch %{time_left}",
                 "two": "%{pledged} von %{goal} erreicht, bisher 2 Unterstützer, noch %{time_left}",
                 "few": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}",
-                "many": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}"
+                "many": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}",
+                "other": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}"
               },
               "non_live_stat_value": {
                 "zero": "%{pledged} von %{goal} erreicht, bisher 0 Unterstützer, noch %{time_left}",
                 "one": "%{pledged} von %{goal} erreicht, bisher 1 Unterstützer, noch %{time_left}",
                 "two": "%{pledged} von %{goal} erreicht, bisher 2 Unterstützer, noch %{time_left}",
                 "few": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}",
-                "many": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}"
+                "many": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}",
+                "other": "%{pledged} von %{goal} erreicht, bisher %{backers_count} Unterstützer, noch %{time_left}"
               }
             },
             "goal": "Finanzierungsziel",
@@ -3767,7 +3858,8 @@
                 "one": "<b>0</b>Aufruf",
                 "two": "<b>0</b>Aufrufe",
                 "few": "<b>%{total_start_count}</b> Aufrufe",
-                "many": "<b>%{total_start_count}</b> Aufrufe"
+                "many": "<b>%{total_start_count}</b> Aufrufe",
+                "other": "<b>%{total_start_count}</b> Aufrufe"
               },
               "percent_plays_completed": "%{percent_plays_completed} aller Aufrufe wurden bis zum Ende wiedergegeben"
             }
@@ -3837,7 +3929,8 @@
                 "one": "1 Unterstützer wird über das neue Update benachrichtigt. Bist du sicher, dass du es veröffentlichen willst?",
                 "two": "%{backer_count} Unterstützer werden über das neue Update benachrichtigt. Bist du sicher, dass du es veröffentlichen willst?",
                 "few": "%{backer_count} Unterstützer werden über das neue Update benachrichtigt. Bist du sicher, dass du es veröffentlichen willst?",
-                "many": "%{backer_count} Unterstützer werden über das neue Update benachrichtigt. Bist du sicher, dass du es veröffentlichen willst?"
+                "many": "%{backer_count} Unterstützer werden über das neue Update benachrichtigt. Bist du sicher, dass du es veröffentlichen willst?",
+                "other": "%{backer_count} Unterstützer werden über das neue Update benachrichtigt. Bist du sicher, dass du es veröffentlichen willst?"
               },
               "cancel_button": "Abbrechen",
               "confirm_button": "Los gehts!",
@@ -3920,14 +4013,16 @@
             "one": "1 unterstützt",
             "two": "2 unterstützt",
             "few": "%{backed_count} unterstützt",
-            "many": "%{backed_count} unterstützt"
+            "many": "%{backed_count} unterstützt",
+            "other": "%{backed_count} unterstützt"
           },
           "projects_count_created": {
             "zero": "0 erstellt",
             "one": "1 erstellt",
             "two": "2 erstellt",
             "few": "%{created_count} erstellt",
-            "many": "%{created_count} erstellt"
+            "many": "%{created_count} erstellt",
+            "other": "%{created_count} erstellt"
           },
           "buttons": {
             "following": "Abonniert",
@@ -3939,9 +4034,11 @@
           "backed_projects": "Unterstützte Projekte",
           "button": {
             "follow_all_friends": {
+              "one": "Folgen",
               "two": "2 Freunden folgen",
               "few": "Allen %{remote_friends_count} Freunden folgen",
-              "many": "Allen %{remote_friends_count} Freunden folgen"
+              "many": "Allen %{remote_friends_count} Freunden folgen",
+              "other": "Allen %{remote_friends_count} Freunden folgen"
             }
           }
         },
@@ -3964,7 +4061,8 @@
           "one": "1 Unterstützer",
           "two": "2 Unterstützer",
           "few": "%{backer_count} Unterstützer",
-          "many": "%{backer_count} Unterstützer"
+          "many": "%{backer_count} Unterstützer",
+          "other": "%{backer_count} Unterstützer"
         },
         "navigation": {
           "buttons": {
@@ -4022,168 +4120,192 @@
           "one": "in 1 Min",
           "two": "in 2 Min",
           "few": "in %{time_count} Min",
-          "many": "in %{time_count} Min"
+          "many": "in %{time_count} Min",
+          "other": "in %{time_count} Min"
         },
         "time_in_minutes": {
           "zero": "in 0 Minuten",
           "one": "in 1 Minute",
           "two": "in 2 Minuten",
           "few": "in %{time_count} Minuten",
-          "many": "in %{time_count} Minuten"
+          "many": "in %{time_count} Minuten",
+          "other": "in %{time_count} Minuten"
         },
         "time_in_hours_abbreviated": {
           "zero": "in 0 Std",
           "one": "in 1 Std",
           "two": "in 2 Std",
           "few": "in %{time_count} Std",
-          "many": "in %{time_count} Std"
+          "many": "in %{time_count} Std",
+          "other": "in %{time_count} Std"
         },
         "time_in_hours": {
           "zero": "in 0 Stunden",
           "one": "in 1 Stunde",
           "two": "in 2 Stunden",
           "few": "in %{time_count} Stunden",
-          "many": "in %{time_count} Stunden"
+          "many": "in %{time_count} Stunden",
+          "other": "in %{time_count} Stunden"
         },
         "time_in_days_abbreviated": {
           "zero": "in 0 Tagen",
           "one": "in 1 Tag",
           "two": "in 2 Tagen",
           "few": "in %{time_count} Tagen",
-          "many": "in %{time_count} Tagen"
+          "many": "in %{time_count} Tagen",
+          "other": "in %{time_count} Tagen"
         },
         "time_in_days": {
           "zero": "in 0 Tagen",
           "one": "in 1 Tag",
           "two": "in 2 Tagen",
           "few": "in %{time_count} Tagen",
-          "many": "in %{time_count} Tagen"
+          "many": "in %{time_count} Tagen",
+          "other": "in %{time_count} Tagen"
         },
         "time_in_seconds_abbreviated": {
           "zero": "in 0 Sek",
           "one": "in 1 Sek",
           "two": "in 2 Sek",
           "few": "in \"%{time_count} Sek\"",
-          "many": "in \"%{time_count} Sek\""
+          "many": "in \"%{time_count} Sek\"",
+          "other": "in \"%{time_count} Sek\""
         },
         "time_in_seconds": {
           "zero": "in 0 Sekunden",
           "one": "in 1 Sekunde",
           "two": "in 2 Sekunden",
           "few": "in \"%{time_count} Sekunden\"",
-          "many": "in \"%{time_count} Sekunden\""
+          "many": "in \"%{time_count} Sekunden\"",
+          "other": "in \"%{time_count} Sekunden\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "vor 0 Min",
           "one": "vor 1 Min",
           "two": "vor 2 Min",
           "few": "vor %{time_count} Min",
-          "many": "vor %{time_count} Min"
+          "many": "vor %{time_count} Min",
+          "other": "vor %{time_count} Min"
         },
         "time_minutes_ago": {
           "zero": "vor 0 Minuten",
           "one": "vor 1 Minute",
           "two": "vor 2 Minuten",
           "few": "vor %{time_count} Minuten",
-          "many": "vor %{time_count} Minuten"
+          "many": "vor %{time_count} Minuten",
+          "other": "vor %{time_count} Minuten"
         },
         "time_hours_ago_abbreviated": {
           "zero": "vor 0 Std",
           "one": "vor 1 Std",
           "two": "vor 2 Std",
           "few": "vor %{time_count} Std",
-          "many": "vor %{time_count} Std"
+          "many": "vor %{time_count} Std",
+          "other": "vor %{time_count} Std"
         },
         "time_hours_ago": {
           "zero": "vor 0 Std",
           "one": "vor 1 Stunde",
           "two": "vor 2 Stunden",
           "few": "vor %{time_count} Stunden",
-          "many": "vor %{time_count} Stunden"
+          "many": "vor %{time_count} Stunden",
+          "other": "vor %{time_count} Stunden"
         },
         "time_days_ago_abbreviated": {
           "zero": "vor 0 Tagen",
           "one": "vor 1 Tag",
           "two": "vor 2 Tagen",
           "few": "vor %{time_count} Tagen",
-          "many": "vor %{time_count} Tagen"
+          "many": "vor %{time_count} Tagen",
+          "other": "vor %{time_count} Tagen"
         },
         "time_days_ago": {
           "zero": "vor 0 Tagen",
           "one": "vor 1 Tag",
           "two": "vor 2 Tagen",
           "few": "vor %{time_count} Tagen",
-          "many": "vor %{time_count} Tagen"
+          "many": "vor %{time_count} Tagen",
+          "other": "vor %{time_count} Tagen"
         },
         "time_seconds_ago_abbreviated": {
           "zero": "vor 0 Sekunden",
           "one": "vor 1 Sekunde",
           "two": "vor 2 Sekunden",
           "few": "vor %{time_count} Sekunden",
-          "many": "vor %{time_count} Sekunden"
+          "many": "vor %{time_count} Sekunden",
+          "other": "vor %{time_count} Sekunden"
         },
         "time_seconds_ago": {
           "zero": "vor 0 Sekunden",
           "one": "vor 1 Sekunde",
           "two": "vor 2 Sek",
           "few": "vor %{time_count} Sek",
-          "many": "vor %{time_count} Sek"
+          "many": "vor %{time_count} Sek",
+          "other": "vor %{time_count} Sek"
         },
         "time_minutes_abbreviated": {
           "zero": "0 Min",
           "one": "1 MIn",
           "two": "2 Min",
           "few": "%{time_count} Min",
-          "many": "%{time_count} Min"
+          "many": "%{time_count} Min",
+          "other": "%{time_count} Min"
         },
         "time_minutes": {
           "zero": "0 Minuten",
           "one": "1 Minute",
           "two": "2 MInuten",
           "few": "%{time_count} Minuten",
-          "many": "%{time_count} Minuten"
+          "many": "%{time_count} Minuten",
+          "other": "%{time_count} Minuten"
         },
         "time_hours_abbreviated": {
           "zero": "0 Std",
           "one": "1 Std",
           "two": "2 Std",
           "few": "%{time_count} Std",
-          "many": "%{time_count} Std"
+          "many": "%{time_count} Std",
+          "other": "%{time_count} Std"
         },
         "time_hours": {
           "zero": "0 Stunden",
           "one": "1 Stunde",
           "two": "2 Stunden",
           "few": "%{time_count} Stunden",
-          "many": "%{time_count} Stunden"
+          "many": "%{time_count} Stunden",
+          "other": "%{time_count} Stunden"
         },
         "time_days_abbreviated": {
           "zero": "0 Tage",
           "one": "1 Tag",
           "two": "2 Tage",
           "few": "%{time_count} Tage",
-          "many": "%{time_count} Tage"
+          "many": "%{time_count} Tage",
+          "other": "%{time_count} Tage"
         },
         "time_days": {
           "zero": "0 Tage",
           "one": "1 Tag",
           "two": "2 Tage",
           "few": "%{time_count} Tage",
-          "many": "%{time_count} Tage"
+          "many": "%{time_count} Tage",
+          "other": "%{time_count} Tage"
         },
         "time_seconds_abbreviated": {
           "zero": "0 Sekunden",
           "one": "1 Sekunde",
           "two": "2 Sekunden",
           "few": "%{time_count} Sekunden",
-          "many": "%{time_count} Sekunden"
+          "many": "%{time_count} Sekunden",
+          "other": "%{time_count} Sekunden"
         },
         "time_seconds": {
           "zero": "0 Sek",
           "one": "1 Sek",
           "two": "2 Sek",
           "few": "%{time_count} Sek",
-          "many": "%{time_count} Sek"
+          "many": "%{time_count} Sek",
+          "other": "%{time_count} Sek"
         },
         "just_now": "Gerade eben",
         "right_now": "Gerade eben",
@@ -4235,6 +4357,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Un resumen semanal de los mejores y más brillantes proyectos de Kickstarter, seleccionados por nuestro equipo.",
       "About_reward_amount": "Aprox. %{reward_amount}",
       "Account": "Cuenta",
+      "activities_badge_value_plus": "%{activities_badge_value}+",
       "Add": "Añadir",
       "Add_new_card": "Añadir una nueva tarjeta",
       "Add_attachments": "Agregar anexos …",
@@ -4277,7 +4400,8 @@
         "one": "%{backers_count}\npatrocinador",
         "two": "%{backers_count}\npatrocinadores",
         "few": "%{backers_count}\npatrocinadores",
-        "many": "%{backers_count}\npatrocinadores"
+        "many": "%{backers_count}\npatrocinadores",
+        "other": "%{backers_count}\npatrocinadores"
       },
       "Become_a_backer_to_leave_a_comment": "Conviértete en patrocinador y deja un comentario.",
       "Big_Kickstarter_news_and_events_near_you": "Unas cuantas veces al año: Noticias sobresalientes de Kickstarter y eventos cerca de ti.",
@@ -4309,7 +4433,8 @@
         "one": "%{comments_count} commentario",
         "two": "%{comments_count} commentarios",
         "few": "%{comments_count} commentarios",
-        "many": "%{comments_count} commentarios"
+        "many": "%{comments_count} commentarios",
+        "other": "%{comments_count} commentarios"
       },
       "Comment_reply_digest": "Resumen de respuestas a comentarios",
       "Complete_payment": "Completar pago",
@@ -4361,7 +4486,8 @@
         "one": "día",
         "two": "días",
         "few": "días",
-        "many": "días"
+        "many": "días",
+        "other": "días"
       },
       "days_plural": "días",
       "Delete_my_Kickstarter_Account": "Eliminar mi cuenta de Kickstarter",
@@ -4412,7 +4538,8 @@
         "one": "%{filter_name}: %{project_count} proyecto activo",
         "two": "%{filter_name}: %{project_count} proyectos activos",
         "few": "%{filter_name}: %{project_count} proyectos activos",
-        "many": "%{filter_name}: %{project_count} proyectos activos"
+        "many": "%{filter_name}: %{project_count} proyectos activos",
+        "other": "%{filter_name}: %{project_count} proyectos activos"
       },
       "Filters_by_projects_with_upcoming_and_past_live_streams": "Ordenar por proyectos con live streams futuros/pasados.",
       "Find_and_follow_friends": "Encontrar y seguir a amigos",
@@ -4420,6 +4547,7 @@
       "Find_projects_youll_love_and_help_bring": "Aquí encuentras proyectos a tu gusto - ¡tu contribución ayudará a hacerlos realidad!",
       "Find_projects_youll_love_in_art_design_film": "Proyectos a tu gusto - en arte, diseño, cine, juegos, música y otras categorías. Una vez que hayas patrocinado un proyecto, verás todas las actividades pertinentes aquí.",
       "First_created": "Primer proyecto creado",
+      "Fix": "Corregir",
       "Friend_backed_art_project": "<b>%{friend_name}</b> patrocinó un proyecto de <i>Arte</i>.",
       "Friend_backed_comics_project": "<b>%{friend_name}</b> patrocinó un proyecto de <i>Comics</i>.",
       "Friend_backed_crafts_project": "<b>%{friend_name}</b> patrocinó un proyecto de <i>Artesanías</i>.",
@@ -4466,7 +4594,8 @@
         "one": "hora",
         "two": "horas",
         "few": "horas",
-        "many": "horas"
+        "many": "horas",
+        "other": "horas"
       },
       "hours_plural": "horas",
       "Id_just_like_to_support_the_project": "Sólo quiero apoyar este proyecto.",
@@ -4498,7 +4627,8 @@
         "one": "%{left_count} restante",
         "two": "%{left_count} restantes",
         "few": "%{left_count} restantes",
-        "many": "%{left_count} restantes"
+        "many": "%{left_count} restantes",
+        "other": "%{left_count} restantes"
       },
       "Live": "En vivo",
       "Live_now": "En vivo",
@@ -4535,10 +4665,12 @@
         "one": "minuto",
         "two": "minutos",
         "few": "minutos",
-        "many": "minutos"
+        "many": "minutos",
+        "other": "minutos"
       },
       "minutes_plural": "minutos",
       "MMYY": "MM/AA",
+      "More_than_number_of_items_items": "More than %{number_of_items} items",
       "Name": "Nombre",
       "Newsletters": "Boletines informativos",
       "News_events": "Unas cuantas veces al año: Noticias sobresalientes y eventos cerca de ti.",
@@ -4548,7 +4680,7 @@
       "New_pledge_activity": "Nueva actividad de contribución",
       "New_work_and_big_ideas_from_established_and": "Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.",
       "No_comments_yet": "No hay comentarios todavia.",
-      "No_longer_available": "No longer available",
+      "No_longer_available": "Ya no está disponible",
       "No_messages": "No hay mensajes",
       "No_nevermind": "No, ignorar",
       "No_one_has_posted_an_update_yet": "Todavía no se han publicado actualizaciones.",
@@ -4565,6 +4697,7 @@
       "Notification_push_notification_off": "%{notification}, notificación push, desactivada",
       "Notification_push_notification_on": "%{notification}, notificación push, activada",
       "Notifications": "Notificaciones",
+      "number_of_items_items": "%{number_of_items} items",
       "Once_you_back_a_project_well_share": "Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.",
       "Only_amount_of_time_left_to_watch_this": "Queda poco tiempo para verlo (%{amount_of_time}).",
       "Opens_comments": "Abre comentarios.",
@@ -4619,21 +4752,24 @@
         "one": "%{project_count} proyecto",
         "two": "%{project_count} proyectos",
         "few": "%{project_count} proyectos",
-        "many": "%{project_count} proyectos"
+        "many": "%{project_count} proyectos",
+        "other": "%{project_count} proyectos"
       },
       "projects_count_newline_backed": {
         "zero": "0\\npatrocinados",
         "one": "1\\npatrocinados",
         "two": "2\\npatrocinados",
         "few": "%{projects_count}\npatrocinados",
-        "many": "%{projects_count}\npatrocinados"
+        "many": "%{projects_count}\npatrocinados",
+        "other": "%{project_count}\npatrocinados"
       },
       "projects_count_newline_saved": {
         "zero": "0\\nguardados",
         "one": "1\\nguardados",
         "two": "2\\nguardados",
         "few": "%{projects_count}\nguardados",
-        "many": "%{projects_count}\nguardados"
+        "many": "%{projects_count}\nguardados",
+        "other": "%{projects_count}\nguardados"
       },
       "Project_goal_and_pledge": "La meta del proyecto y los montos de contribución se mostrarán en conversiones aproximadas. Un proyecto financiado con éxito cobrará tu contribución en su moneda nativa.",
       "Project_reminders": "Recordatorios del proyecto",
@@ -4677,21 +4813,24 @@
         "one": "%{rewards_count} recompensa",
         "two": "%{rewards_count} recompensas",
         "few": "%{rewards_count} recompensas",
-        "many": "%{rewards_count} recompensas"
+        "many": "%{rewards_count} recompensas",
+        "other": "%{rewards_count} recompensas"
       },
       "Rewards_count_rewards_colon": {
         "zero": "%{rewards_count} recompensas:",
         "one": "%{rewards_count} recompensa:",
         "two": "%{rewards_count} recompensas:",
         "few": "%{rewards_count} recompensas:",
-        "many": "%{rewards_count} recompensas:"
+        "many": "%{rewards_count} recompensas:",
+        "other": "%{rewards_count} recompensas:"
       },
       "Reward_Surveys": {
         "zero": "%{reward_survey_count} cuestionarios",
         "one": "Cuestionario",
         "two": "%{reward_survey_count} cuestionarios",
         "few": "%{reward_survey_count} cuestionarios",
-        "many": "%{reward_survey_count} cuestionarios"
+        "many": "%{reward_survey_count} cuestionarios",
+        "other": "%{reward_survey_count} cuestionarios"
       },
       "Reward_selected": "Recompensa seleccionada",
       "Save": "Guardar",
@@ -4772,7 +4911,8 @@
         "one": "%{updates_count} actualización",
         "two": "%{updates_count} actualizaciones",
         "few": "%{updates_count} actualizaciones",
-        "many": "%{updates_count} actualizaciones"
+        "many": "%{updates_count} actualizaciones",
+        "other": "%{updates_count} actualizaciones"
       },
       "Unable_to_request": "No se pueden solicitar datos.",
       "Unsaved": "Sin guardar",
@@ -4796,6 +4936,7 @@
       "Video_disabled_until_the_internet_connection_improves": "Video desactivado hasta se reestablezca la conexión de internet",
       "View": "Ver",
       "View_project": "Ver proyecto",
+      "View_rewards": "Ver recompensas",
       "View_your_pledge": "Revisa tu contribución",
       "View_your_reward": "Mostrar recompensa",
       "Watch_live": "Ver en vivo",
@@ -4822,7 +4963,7 @@
       "Youll_receive_an_email_at_email_when_your_download_is_ready": "Recibirás un correo electrónico en %{email} cuando la descarga esté lista.",
       "Your_chat_message_wasnt_sent_successfully": "Tu mensaje no fue enviado.",
       "Your_friends_havent_backed_any_projects_yet": "Tus amigos todavía no han hecho contribuciones, pero en cuanto lo hagan, se verán reflejadas aquí.",
-      "Your_message_has_been_sent": "Your message has been sent!",
+      "Your_message_has_been_sent": "Se envió tu mensaje.",
       "Your_name_displayed": "Tu nombre siempre se muestra en tu perfil.",
       "Your_payment_method_was_successfully_charged": "Se efectuó el cargo a tu método de pago.",
       "Your_pledge": "Tu contribución",
@@ -4912,7 +5053,8 @@
               "one": "%{friend_name} patrocina este proyecto.",
               "two": "%{friend_name} y %{second_friend_name} patrocinan este proyecto.",
               "few": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto.",
-              "many": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto."
+              "many": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto.",
+              "other": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto."
             }
           },
           "metadata": {
@@ -4938,14 +5080,16 @@
                 "one": "De momento tiene 1 patrocinador, financiado al %{percent_funded}, tiempo restante: %{time_left}",
                 "two": "De momento tiene 2 patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}",
                 "few": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}",
-                "many": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}"
+                "many": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}",
+                "other": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}"
               },
               "non_live_stat_value": {
                 "zero": "De momento tiene 0 patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}",
                 "one": "De momento tiene 1 patrocinador, financiado al %{percent_funded}, tiempo restante: %{time_left}",
                 "two": "De momento tiene 2 patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}",
                 "few": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}",
-                "many": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}"
+                "many": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}",
+                "other": "De momento tiene %{backers_count} patrocinadores, financiado al %{percent_funded}, tiempo restante: %{time_left}"
               }
             },
             "backers": "patrocinadores",
@@ -5162,7 +5306,8 @@
           "one": "en 1 categoría",
           "two": "en 2 categorías",
           "few": "en %{category_count} categorías",
-          "many": "en %{category_count} categorías"
+          "many": "en %{category_count} categorías",
+          "other": "en %{category_count} categorías"
         },
         "buttons": {
           "settings": "Configuración",
@@ -5177,7 +5322,8 @@
             "one": "1 PROYECTO PATROCINADO",
             "two": "2 PROYECTOS PATROCINADOS",
             "few": "%{project_count} PROYECTOS PATROCINADOS",
-            "many": "%{project_count} PROYECTOS APOYADOS"
+            "many": "%{project_count} PROYECTOS APOYADOS",
+            "other": "%{project_count} PROYECTOS APOYADOS"
           },
           "empty_state": {
             "message": "Aún no has patrocinado ningún proyecto.\n¡Es hora de cambiar esto!",
@@ -5631,13 +5777,15 @@
             "one": "%{friends} y 1 persona más patrocinan este proyecto.",
             "two": "%{friends} y 2 personas más patrocinan este proyecto.",
             "few": "%{friends} y %{backer_count} personas más patrocinan este proyecto.",
-            "many": "%{friends} y %{backer_count} personas más patrocinan este proyecto."
+            "many": "%{friends} y %{backer_count} personas más patrocinan este proyecto.",
+            "other": "%{friends} y %{backer_count} personas más patrocinan este proyecto."
           },
           "friends_are_backers_and_more_bold": {
             "one": "1 más",
             "two": "2 más",
             "few": "%{backer_count} más",
-            "many": "%{backer_count} más"
+            "many": "%{backer_count} más",
+            "other": "%{backer_count} más"
           }
         },
         "view_pledge": {
@@ -5717,14 +5865,16 @@
             "one": "1 patrocinador",
             "two": "2 patrocinadores",
             "few": "%{backer_count} patrocinadores",
-            "many": "%{backer_count} patrocinadores"
+            "many": "%{backer_count} patrocinadores",
+            "other": "%{backer_count} patrocinadores"
           },
           "item_quantity_title": {
             "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
             "two": "%{title} (x%{quantity})",
             "few": "%{title} (x%{quantity})",
-            "many": "%{title} (x%{quantity})"
+            "many": "%{title} (x%{quantity})",
+            "other": "(%{quantity}) %{title}"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Limitado (quedan %{rewards_remaining} de %{reward_limit})",
           "all_gone": "¡Recompensas agotadas!",
@@ -5821,14 +5971,16 @@
                 "one": "%{pledged} de %{goal} recaudado, 1 patrocinador hasta ahora, tiempo restante: %{time_left}",
                 "two": "%{pledged} de %{goal} recaudado, 2 patrocinadores hasta ahora, tiempo restante: %{time_left}",
                 "few": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}",
-                "many": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}"
+                "many": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}",
+                "other": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}"
               },
               "non_live_stat_value": {
                 "zero": "%{pledged} de %{goal} recaudado, 0 patrocinadores hasta ahora, tiempo restante: %{time_left}",
                 "one": "%{pledged} de %{goal} recaudado, 1 patrocinador hasta ahora, tiempo restante: %{time_left}",
                 "two": "%{pledged} de %{goal} recaudado, 2 patrocinadores hasta ahora, tiempo restante: %{time_left}",
                 "few": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}",
-                "many": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}"
+                "many": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}",
+                "other": "%{pledged} de %{goal} recaudado, %{backers_count} patrocinadores hasta ahora, tiempo restante: %{time_left}"
               }
             },
             "goal": "Meta",
@@ -5882,7 +6034,8 @@
                 "one": "<b>1</b> reproducciones",
                 "two": "<b>2</b> reproducciones",
                 "few": "<b>%{total_start_count}</b> reproducciones",
-                "many": "<b>%{total_start_count}</b> reproducciones"
+                "many": "<b>%{total_start_count}</b> reproducciones",
+                "other": "<b>%{total_start_count}</b> reproducciones"
               },
               "percent_plays_completed": "%{percent_plays_completed} de reproducciones completadas"
             }
@@ -5952,7 +6105,8 @@
                 "one": "Esto notificará a 1 patrocinador que existe una actualización disponible. ¿Seguro de que quieres publicarla?",
                 "two": "Esto notificará a %{backer_count} patrocinadores que existe una nueva actualización. ¿Seguro de que quieres publicarla?",
                 "few": "Esto notificará a %{backer_count} patrocinadores que existe una nueva actualización. ¿Seguro de que quieres publicarla?",
-                "many": "Esto notificará a %{backer_count} patrocinadores que existe una nueva actualización. ¿Seguro de que quieres publicarla?"
+                "many": "Esto notificará a %{backer_count} patrocinadores que existe una nueva actualización. ¿Seguro de que quieres publicarla?",
+                "other": "Esto notificará a %{backer_count} patrocinadores que existe una nueva actualización. ¿Seguro de que quieres publicarla?"
               },
               "cancel_button": "Cancelar",
               "confirm_button": "¡Manos a la obra!",
@@ -6035,14 +6189,16 @@
             "one": "1 patrocinado",
             "two": "2 patrocinados",
             "few": "%{backed_count} patrocinados",
-            "many": "%{backed_count} patrocinados"
+            "many": "%{backed_count} patrocinados",
+            "other": "%{backed_count} proyectos patrocinados"
           },
           "projects_count_created": {
             "zero": "0 creados",
             "one": "1 creado",
             "two": "2 creados",
             "few": "%{created_count} creados",
-            "many": "%{created_count} creados"
+            "many": "%{created_count} creados",
+            "other": "%{created_count} proyectos creados"
           },
           "buttons": {
             "following": "Siguiendo",
@@ -6054,9 +6210,11 @@
           "backed_projects": "Proyectos patrocinados",
           "button": {
             "follow_all_friends": {
+              "one": "Sigue a tu amigo",
               "two": "Seguir a ambos",
               "few": "Seguir a %{remote_friends_count} amigos",
-              "many": "Seguir a %{remote_friends_count} amigos"
+              "many": "Seguir a %{remote_friends_count} amigos",
+              "other": "Seguir a %{remote_friends_count} amigos"
             }
           }
         },
@@ -6079,7 +6237,8 @@
           "one": "1 patrocinador",
           "two": "2 patrocinadores",
           "few": "%{backer_count} patrocinadores",
-          "many": "%{backer_count} patrocinadores"
+          "many": "%{backer_count} patrocinadores",
+          "other": "%{backer_count} patrocinadores"
         },
         "navigation": {
           "buttons": {
@@ -6137,168 +6296,192 @@
           "one": "en 1 min",
           "two": "en 2 mins",
           "few": "en %{time_count} mins",
-          "many": "en %{time_count} mins"
+          "many": "en %{time_count} mins",
+          "other": "en %{time_count} mins"
         },
         "time_in_minutes": {
           "zero": "en 0 minutes",
           "one": "en 1 minuto",
           "two": "en 2 minutos",
           "few": "en %{time_count} minutos",
-          "many": "en %{time_count} minutos"
+          "many": "en %{time_count} minutos",
+          "other": "en %{time_count} minutos"
         },
         "time_in_hours_abbreviated": {
           "zero": "en 0 hrs",
           "one": "en 1 hr",
           "two": "en 2 hrs",
           "few": "en %{time_count} hrs",
-          "many": "en %{time_count} hrs"
+          "many": "en %{time_count} hrs",
+          "other": "en %{time_count} hrs"
         },
         "time_in_hours": {
           "zero": "en 0 horas",
           "one": "en 1 hora",
           "two": "en 2 horas",
           "few": "en %{time_count} horas",
-          "many": "en %{time_count} horas"
+          "many": "en %{time_count} horas",
+          "other": "en %{time_count} horas"
         },
         "time_in_days_abbreviated": {
           "zero": "en 0 días",
           "one": "en 1 día",
           "two": "en 2 días",
           "few": "en %{time_count} días",
-          "many": "en %{time_count} días"
+          "many": "en %{time_count} días",
+          "other": "en %{time_count} días"
         },
         "time_in_days": {
           "zero": "en 0 días",
           "one": "en 1 día",
           "two": "en 2 días",
           "few": "en %{time_count} días",
-          "many": "en %{time_count} días"
+          "many": "en %{time_count} días",
+          "other": "en %{time_count} días"
         },
         "time_in_seconds_abbreviated": {
           "zero": "en 0 segs",
           "one": "en 1 seg",
           "two": "en 2 segs",
           "few": "en \"%{time_count} segs\"",
-          "many": "en \"%{time_count} segs\""
+          "many": "en \"%{time_count} segs\"",
+          "other": "en \"%{time_count} segs\""
         },
         "time_in_seconds": {
           "zero": "en 0 segundos",
           "one": "en 1 segundo",
           "two": "en 2 segundos",
           "few": "en \"%{time_count} segundos\"",
-          "many": "en \"%{time_count} segundos\""
+          "many": "en \"%{time_count} segundos\"",
+          "other": "en \"%{time_count} segundos\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "hace 0 mins",
           "one": "hace 1 min",
           "two": "hace 2 mins",
           "few": "hace %{time_count} mins",
-          "many": "hace %{time_count} mins"
+          "many": "hace %{time_count} mins",
+          "other": "hace %{time_count} mins"
         },
         "time_minutes_ago": {
           "zero": "hace 0 minutos",
           "one": "hace 1 minuto",
           "two": "hace 2 minutos",
           "few": "hace %{time_count} minutos",
-          "many": "hace %{time_count} minutos"
+          "many": "hace %{time_count} minutos",
+          "other": "hace %{time_count} minutos"
         },
         "time_hours_ago_abbreviated": {
           "zero": "hace 0 hrs",
           "one": "hace 1 hr",
           "two": "hace 2 hrs",
           "few": "hace %{time_count} hrs",
-          "many": "hace %{time_count} hrs"
+          "many": "hace %{time_count} hrs",
+          "other": "hace %{time_count} hrs"
         },
         "time_hours_ago": {
           "zero": "hace 0 horas",
           "one": "hace 1 hora",
           "two": "hace 2 horas",
           "few": "hace %{time_count} horas",
-          "many": "hace %{time_count} horas"
+          "many": "hace %{time_count} horas",
+          "other": "hace %{time_count} horas"
         },
         "time_days_ago_abbreviated": {
           "zero": "hace 0 días",
           "one": "hace 1 día",
           "two": "hace 2 días",
           "few": "hace %{time_count} días",
-          "many": "hace %{time_count} días"
+          "many": "hace %{time_count} días",
+          "other": "hace %{time_count} días"
         },
         "time_days_ago": {
           "zero": "hace 0 días",
           "one": "hace 1 día",
           "two": "hace 2 días",
           "few": "hace %{time_count} días",
-          "many": "hace %{time_count} días"
+          "many": "hace %{time_count} días",
+          "other": "hace %{time_count} días"
         },
         "time_seconds_ago_abbreviated": {
           "zero": "hace 0 segundos",
           "one": "hace 1 segundo",
           "two": "hace 2 segundos",
           "few": "hace %{time_count} segundos",
-          "many": "hace %{time_count} segundos"
+          "many": "hace %{time_count} segundos",
+          "other": "hace %{time_count} segundos"
         },
         "time_seconds_ago": {
           "zero": "hace 0 segs",
           "one": "hace 1 seg",
           "two": "hace 2 segs",
           "few": "hace %{time_count} segs",
-          "many": "hace %{time_count} segs"
+          "many": "hace %{time_count} segs",
+          "other": "hace %{time_count} segs"
         },
         "time_minutes_abbreviated": {
           "zero": "0 mins",
           "one": "1 min",
           "two": "2 mins",
           "few": "%{time_count} mins",
-          "many": "%{time_count} mins"
+          "many": "%{time_count} mins",
+          "other": "%{time_count} mins"
         },
         "time_minutes": {
           "zero": "0 minutos",
           "one": "1 minuto",
           "two": "2 minutos",
           "few": "%{time_count} minutos",
-          "many": "%{time_count} minutos"
+          "many": "%{time_count} minutos",
+          "other": "%{time_count} minutos"
         },
         "time_hours_abbreviated": {
           "zero": "0 hrs",
           "one": "1 hr",
           "two": "2 hrs",
           "few": "%{time_count} hrs",
-          "many": "%{time_count} hrs"
+          "many": "%{time_count} hrs",
+          "other": "%{time_count} hrs"
         },
         "time_hours": {
           "zero": "0 horas",
           "one": "1 hora",
           "two": "2 horas",
           "few": "%{time_count} horas",
-          "many": "%{time_count} horas"
+          "many": "%{time_count} horas",
+          "other": "%{time_count} horas"
         },
         "time_days_abbreviated": {
           "zero": "0 días",
           "one": "1 dia",
           "two": "2 días",
           "few": "%{time_count} días",
-          "many": "%{time_count} días"
+          "many": "%{time_count} días",
+          "other": "%{time_count} días"
         },
         "time_days": {
           "zero": "0 días",
           "one": "1 día",
           "two": "2 días",
           "few": "%{time_count} días",
-          "many": "%{time_count} días"
+          "many": "%{time_count} días",
+          "other": "%{time_count} días"
         },
         "time_seconds_abbreviated": {
           "zero": "0 segundos",
           "one": "1 segundo",
           "two": "2 segundos",
           "few": "%{time_count} segundos",
-          "many": "%{time_count} segundos"
+          "many": "%{time_count} segundos",
+          "other": "%{time_count} segundos"
         },
         "time_seconds": {
           "zero": "0 segs",
           "one": "1 seg",
           "two": "2 segs",
           "few": "%{time_count} segs",
-          "many": "%{time_count} segs"
+          "many": "%{time_count} segs",
+          "other": "%{time_count} segs"
         },
         "just_now": "En este momento",
         "right_now": "En este momento",
@@ -6350,6 +6533,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Un tour d'horizon hebdomadaire des meilleurs projets Kickstarter, triés sur le volet par nos soins.",
       "About_reward_amount": "Environ %{reward_amount}",
       "Account": "Votre compte",
+      "activities_badge_value_plus": "%{activities_badge_value}+",
       "Add": "Ajouter",
       "Add_new_card": "Ajouter une autre carte",
       "Add_attachments": "Ajouter des pièces jointes...",
@@ -6392,7 +6576,8 @@
         "one": "%{backers_count}\ncontributeur",
         "two": "%{backers_count}\ncontributeurs",
         "few": "%{backers_count}\ncontributeurs",
-        "many": "%{backers_count}\ncontributeurs"
+        "many": "%{backers_count}\ncontributeurs",
+        "other": "%{backers_count}\ncontributeurs"
       },
       "Become_a_backer_to_leave_a_comment": "Soutenez ce projet pour laisser un commentaire.",
       "Big_Kickstarter_news_and_events_near_you": "Les grandes nouvelles et les événements près de chez vous, quelques fois par an.",
@@ -6424,7 +6609,8 @@
         "one": "%{comments_count} commentaire",
         "two": "%{comments_count} commentaires",
         "few": "%{comments_count} commentaires",
-        "many": "%{comments_count} commentaires"
+        "many": "%{comments_count} commentaires",
+        "other": "%{comments_count} commentaires"
       },
       "Comment_reply_digest": "Résumé des réponses aux commentaires",
       "Complete_payment": "Payer",
@@ -6476,7 +6662,8 @@
         "one": "jour",
         "two": "jours",
         "few": "jours",
-        "many": "jours"
+        "many": "jours",
+        "other": "jours"
       },
       "days_plural": "jours",
       "Delete_my_Kickstarter_Account": "Supprimer mon compte Kickstarter",
@@ -6527,7 +6714,8 @@
         "one": "%{filter_name} : %{project_count} projet en cours",
         "two": "%{filter_name} : %{project_count} projets en cours",
         "few": "%{filter_name} : %{project_count} projets en cours",
-        "many": "%{filter_name} : %{project_count} projets en cours"
+        "many": "%{filter_name} : %{project_count} projets en cours",
+        "other": "%{filter_name} : %{project_count} projets en cours"
       },
       "Filters_by_projects_with_upcoming_and_past_live_streams": "Filtrage des projets ayant des diffusions en direct à venir et passées.",
       "Find_and_follow_friends": "Retrouver et suivre mes amis",
@@ -6535,6 +6723,7 @@
       "Find_projects_youll_love_and_help_bring": "Découvrez de beaux projets et participez à la concrétisation d'idées créatives.",
       "Find_projects_youll_love_in_art_design_film": "Découvrez des projets que vous allez adorer : art, design, cinéma, jeux, musique et plus encore. L'activité des projets que vous soutenez s'affichera ici.",
       "First_created": "Premier projet créé",
+      "Fix": "Corriger",
       "Friend_backed_art_project": "<b>%{friend_name}</b> a soutenu un projet <i>artistique</i>.",
       "Friend_backed_comics_project": "<b>%{friend_name}</b> a soutenu un projet de <i>BD</i>.",
       "Friend_backed_crafts_project": "<b>%{friend_name}</b> a soutenu un projet <i>d'artisanat</i>.",
@@ -6552,7 +6741,7 @@
       "Friend_backed_theater_project": "<b>%{friend_name}</b> a soutenu un projet de <i>théâtre</i>.",
       "Friend_name_launched_a_project": "%{friend_name} a lancé un projet !",
       "Follow_friend_name": "Suivre %{friend_name}",
-      "Follow_friends": "Suivez vos amis",
+      "Follow_friends": "Suivre vos amis",
       "Follows_friend_name": "Abonnement aux actus de %{friend_name}.",
       "Follow_more_friends": "Suivre plus d'amis",
       "Follow_your_Facebook_friends_and_get_notified": "Rejoignez-les et découvrez ensemble de nouveaux projets.",
@@ -6581,7 +6770,8 @@
         "one": "heure",
         "two": "heures",
         "few": "heures",
-        "many": "heures"
+        "many": "heures",
+        "other": "heures"
       },
       "hours_plural": "heures",
       "Id_just_like_to_support_the_project": "Je souhaite simplement soutenir le projet.",
@@ -6613,7 +6803,8 @@
         "one": "%{left_count} restante",
         "two": "%{left_count} restantes",
         "few": "%{left_count} restantes",
-        "many": "%{left_count} restantes"
+        "many": "%{left_count} restantes",
+        "other": "%{left_count} restantes"
       },
       "Live": "En direct",
       "Live_now": "En direct en ce moment",
@@ -6650,10 +6841,12 @@
         "one": "minute",
         "two": "minutes",
         "few": "minutes",
-        "many": "minutes"
+        "many": "minutes",
+        "other": "minutes"
       },
       "minutes_plural": "minutes",
       "MMYY": "MM/AA",
+      "More_than_number_of_items_items": "More than %{number_of_items} items",
       "Name": "Nom",
       "Newsletters": "Lettres d'information",
       "News_events": "Les grandes nouvelles et événements près de chez vous, quelques fois par an.",
@@ -6680,6 +6873,7 @@
       "Notification_push_notification_off": "%{notification}, notifications push désactivées",
       "Notification_push_notification_on": "%{notification}, notifications push activées",
       "Notifications": "Notifications",
+      "number_of_items_items": "%{number_of_items} items",
       "Once_you_back_a_project_well_share": "Une fois que vous aurez soutenu un projet, des recommandations personnalisées s'afficheront ici.",
       "Only_amount_of_time_left_to_watch_this": "Plus que %{amount_of_time} pour regarder cette diffusion.",
       "Opens_comments": "Ouvre les commentaires.",
@@ -6734,21 +6928,24 @@
         "one": "%{project_count} projet",
         "two": "%{project_count} projets",
         "few": "%{project_count} projets",
-        "many": "%{project_count} projets"
+        "many": "%{project_count} projets",
+        "other": "%{project_count} projets"
       },
       "projects_count_newline_backed": {
         "zero": "0\\nprojets soutenus",
         "one": "1\\nprojet soutenu",
         "two": "2\\nprojets soutenus",
         "few": "%{projects_count}\nprojets soutenus",
-        "many": "%{projects_count}\nprojets soutenus"
+        "many": "%{projects_count}\nprojets soutenus",
+        "other": "%{project_count}\nprojets soutenus"
       },
       "projects_count_newline_saved": {
         "zero": "0\\nprojets enregistrés",
         "one": "1\\nprojet enregistré",
         "two": "2\\nprojets enregistrés",
         "few": "%{projects_count}\nprojets enregistrés",
-        "many": "%{projects_count}\nprojets enregistrés"
+        "many": "%{projects_count}\nprojets enregistrés",
+        "other": "%{projects_count}\nprojets enregistrés"
       },
       "Project_goal_and_pledge": "La valeur de l'objectif de financement et des montants engagés sera convertie (approximativement). Si le projet est intégralement financé, votre engagement vous sera débité dans la devise d'origine du projet.",
       "Project_reminders": "Rappels",
@@ -6792,21 +6989,24 @@
         "one": "%{rewards_count} récompense",
         "two": "%{rewards_count} récompenses",
         "few": "%{rewards_count} récompenses",
-        "many": "%{rewards_count} récompenses"
+        "many": "%{rewards_count} récompenses",
+        "other": "%{rewards_count} récompenses"
       },
       "Rewards_count_rewards_colon": {
         "zero": "%{rewards_count} récompenses :",
         "one": "%{rewards_count} récompense :",
         "two": "%{rewards_count} récompenses :",
         "few": "%{rewards_count} récompenses :",
-        "many": "%{rewards_count} récompenses :"
+        "many": "%{rewards_count} récompenses :",
+        "other": "%{rewards_count} récompenses :"
       },
       "Reward_Surveys": {
         "zero": "%{reward_survey_count} questionnaires",
         "one": "Questionnaire",
         "two": "%{reward_survey_count} questionnaires",
         "few": "%{reward_survey_count} questionnaires",
-        "many": "%{reward_survey_count} questionnaires"
+        "many": "%{reward_survey_count} questionnaires",
+        "other": "%{reward_survey_count} questionnaires"
       },
       "Reward_selected": "Récompense sélectionnée",
       "Save": "Enregistrer",
@@ -6887,7 +7087,8 @@
         "one": "%{updates_count} actu",
         "two": "%{updates_count} actus",
         "few": "%{updates_count} actus",
-        "many": "%{updates_count} actus"
+        "many": "%{updates_count} actus",
+        "other": "%{updates_count} actus"
       },
       "Unable_to_request": "Demande de données impossible.",
       "Unsaved": "Non enregistré",
@@ -6911,6 +7112,7 @@
       "Video_disabled_until_the_internet_connection_improves": "Vidéo désactivée en attente d'une meilleure connexion Internet",
       "View": "Afficher",
       "View_project": "Afficher le projet",
+      "View_rewards": "Afficher les récompenses",
       "View_your_pledge": "Afficher mon engagement",
       "View_your_reward": "Afficher ma récompense",
       "Watch_live": "Regarder en direct",
@@ -6937,7 +7139,7 @@
       "Youll_receive_an_email_at_email_when_your_download_is_ready": "Dès que votre téléchargement sera prêt, vous recevrez un e-mail à l'adresse %{email}.",
       "Your_chat_message_wasnt_sent_successfully": "Votre message n'a pas été envoyé.",
       "Your_friends_havent_backed_any_projects_yet": "Vos amis n'ont encore rien soutenu, mais dès qu'ils s'y seront mis, leurs engagements s'afficheront ici.",
-      "Your_message_has_been_sent": "Your message has been sent!",
+      "Your_message_has_been_sent": "Votre message a été envoyé.",
       "Your_name_displayed": "Votre nom s'affichera toujours sur votre profil.",
       "Your_payment_method_was_successfully_charged": "Votre moyen de paiement a bien été débité.",
       "Your_pledge": "Mon engagement",
@@ -7027,7 +7229,8 @@
               "one": "%{friend_name} est contributeur.",
               "two": "%{friend_name} et %{second_friend_name} sont contributeurs.",
               "few": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs.",
-              "many": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs."
+              "many": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs.",
+              "other": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs."
             }
           },
           "metadata": {
@@ -7053,14 +7256,16 @@
                 "one": "Pour le moment, 1 contributeur, projet financé à %{percent_funded}, plus que %{time_left}",
                 "two": "Pour le moment, 2 contributeurs, projet financé à %{percent_funded}, plus que %{time_left}",
                 "few": "Pour le moment, %{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}",
-                "many": "Pour le moment, %{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}"
+                "many": "Pour le moment, %{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}",
+                "other": "Pour le moment, %{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}"
               },
               "non_live_stat_value": {
                 "zero": "0 contributeurs, projet financé à %{percent_funded}, plus que %{time_left}",
                 "one": "1 contributeur, projet financé à %{percent_funded}, plus que %{time_left}",
                 "two": "2 contributeurs, projet financé à %{percent_funded}, plus que %{time_left}",
                 "few": "%{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}",
-                "many": "%{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}"
+                "many": "%{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}",
+                "other": "%{backers_count} contributeurs, projet financé à %{percent_funded}, plus que %{time_left}"
               }
             },
             "backers": "contributeurs",
@@ -7277,7 +7482,8 @@
           "one": "1 catégorie soutenue",
           "two": "2 catégories soutenues",
           "few": "%{category_count} catégories soutenues",
-          "many": "%{category_count} catégories soutenues"
+          "many": "%{category_count} catégories soutenues",
+          "other": "%{category_count} catégories soutenues"
         },
         "buttons": {
           "settings": "Paramètres",
@@ -7292,7 +7498,8 @@
             "one": "1 PROJET SOUTENU",
             "two": "2 PROJETS SOUTENUS",
             "few": "%{project_count} PROJETS SOUTENUS",
-            "many": "%{project_count} PROJETS SOUTENUS"
+            "many": "%{project_count} PROJETS SOUTENUS",
+            "other": "%{project_count} PROJETS SOUTENUS"
           },
           "empty_state": {
             "message": "Vous n'avez pas encore soutenu de projets. On change ça ?",
@@ -7746,13 +7953,15 @@
             "one": "%{friends} et 1 autre personne sont contributeurs.",
             "two": "%{friends} et 2 autres personnes sont contributeurs.",
             "few": "%{friends} et %{backer_count} autres personnes sont contributeurs.",
-            "many": "%{friends} et %{backer_count} autres personnes sont contributeurs."
+            "many": "%{friends} et %{backer_count} autres personnes sont contributeurs.",
+            "other": "%{friends} et %{backer_count} autres personnes sont contributeurs."
           },
           "friends_are_backers_and_more_bold": {
             "one": "1 autre personne",
             "two": "2 autres personnes",
             "few": "%{backer_count} autres personnes",
-            "many": "%{backer_count} autres personnes"
+            "many": "%{backer_count} autres personnes",
+            "other": "%{backer_count} autres personnes"
           }
         },
         "view_pledge": {
@@ -7832,14 +8041,16 @@
             "one": "1 contributeur",
             "two": "2 contributeurs",
             "few": "%{backer_count} contributeurs",
-            "many": "%{backer_count} contributeurs"
+            "many": "%{backer_count} contributeurs",
+            "other": "%{backer_count} contributeurs"
           },
           "item_quantity_title": {
             "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
             "two": "%{title} (x%{quantity})",
             "few": "%{title} (x%{quantity})",
-            "many": "%{title} (x%{quantity})"
+            "many": "%{title} (x%{quantity})",
+            "other": "(%{quantity}) %{title}"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Stock limité (il en reste %{rewards_remaining} sur %{reward_limit})",
           "all_gone": "Épuisé",
@@ -7936,14 +8147,16 @@
                 "one": "%{pledged} engagés sur %{goal}, 1 contributeur pour le moment, plus que %{time_left}",
                 "two": "%{pledged} engagés sur %{goal}, 2 contributeurs pour le moment, plus que %{time_left}",
                 "few": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs pour le moment, plus que %{time_left}",
-                "many": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs pour le moment, plus que %{time_left}"
+                "many": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs pour le moment, plus que %{time_left}",
+                "other": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs pour le moment, plus que %{time_left}"
               },
               "non_live_stat_value": {
                 "zero": "%{pledged} engagés sur %{goal}, 0 contributeurs, plus que %{time_left}",
                 "one": "%{pledged} engagés sur %{goal}, 1 contributeur, plus que %{time_left}",
                 "two": "%{pledged} engagés sur %{goal}, 2 contributeurs, plus que %{time_left}",
                 "few": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs, plus que %{time_left}",
-                "many": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs, plus que %{time_left}"
+                "many": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs, plus que %{time_left}",
+                "other": "%{pledged} engagés sur %{goal}, %{backers_count} contributeurs, plus que %{time_left}"
               }
             },
             "goal": "Objectif",
@@ -7997,7 +8210,8 @@
                 "one": "<b>1</b> lecture (total)",
                 "two": "<b>0</b> lectures (total)",
                 "few": "<b>%{total_start_count}</b> lectures (total)",
-                "many": "<b>%{total_start_count}</b> lectures (total)"
+                "many": "<b>%{total_start_count}</b> lectures (total)",
+                "other": "<b>%{total_start_count}</b> lectures (total)"
               },
               "percent_plays_completed": "%{percent_plays_completed} des personnes qui ont vu la vidéo l'ont regardée jusqu'à la fin"
             }
@@ -8067,7 +8281,8 @@
                 "one": "1 contributeur sera prévenu qu'une nouvelle actu est disponible. Publier quand-même ?",
                 "two": "%{backer_count} contributeurs seront prévenus qu'une nouvelle actu est disponible. Publier quand-même ?",
                 "few": "%{backer_count} contributeurs seront prévenus qu'une nouvelle actu est disponible. Publier quand-même ?",
-                "many": "%{backer_count} contributeurs seront prévenus qu'une nouvelle actu est disponible. Publier quand-même ?"
+                "many": "%{backer_count} contributeurs seront prévenus qu'une nouvelle actu est disponible. Publier quand-même ?",
+                "other": "%{backer_count} contributeurs seront prévenus qu'une nouvelle actu est disponible. Publier quand-même ?"
               },
               "cancel_button": "Annuler",
               "confirm_button": "Allons-y !",
@@ -8125,7 +8340,7 @@
       "social_following": {
         "navigation": {
           "title": {
-            "follow_your_friends": "Suivez vos amis"
+            "follow_your_friends": "Suivre vos amis"
           }
         },
         "header": {
@@ -8150,14 +8365,16 @@
             "one": "1 projet soutenu",
             "two": "2 projets soutenus",
             "few": "%{backed_count} projets soutenus",
-            "many": "%{backed_count} projets soutenus"
+            "many": "%{backed_count} projets soutenus",
+            "other": "%{backed_count} projets soutenus"
           },
           "projects_count_created": {
             "zero": "0 projets créés",
             "one": "1 projet créé",
             "two": "2 projets créés",
             "few": "%{created_count} projets créés",
-            "many": "%{created_count} projets créés"
+            "many": "%{created_count} projets créés",
+            "other": "%{created_count} projets créés"
           },
           "buttons": {
             "following": "Abonné",
@@ -8169,9 +8386,11 @@
           "backed_projects": "projets soutenus",
           "button": {
             "follow_all_friends": {
+              "one": "Suivre votre ami",
               "two": "Suivre ces 2 amis",
               "few": "Suivre ces %{remote_friends_count} amis",
-              "many": "Suivre ces %{remote_friends_count} amis"
+              "many": "Suivre ces %{remote_friends_count} amis",
+              "other": "Suivre ces %{remote_friends_count} amis"
             }
           }
         },
@@ -8194,7 +8413,8 @@
           "one": "1 contributeur",
           "two": "2 contributeurs",
           "few": "%{backer_count} contributeurs",
-          "many": "%{backer_count} contributeurs"
+          "many": "%{backer_count} contributeurs",
+          "other": "%{backer_count} contributeurs"
         },
         "navigation": {
           "buttons": {
@@ -8252,168 +8472,192 @@
           "one": "dans 1 min",
           "two": "dans 2 min",
           "few": "dans %{time_count} min",
-          "many": "dans %{time_count} min"
+          "many": "dans %{time_count} min",
+          "other": "dans %{time_count} min"
         },
         "time_in_minutes": {
           "zero": "dans 0 minutes",
           "one": "dans 1 minute",
           "two": "dans 2 minutes",
           "few": "dans %{time_count} minutes",
-          "many": "dans %{time_count} minutes"
+          "many": "dans %{time_count} minutes",
+          "other": "dans %{time_count} minutes"
         },
         "time_in_hours_abbreviated": {
           "zero": "dans 0 h",
           "one": "dans 1 h",
           "two": "dans 2 h",
           "few": "dans %{time_count} h",
-          "many": "dans %{time_count} h"
+          "many": "dans %{time_count} h",
+          "other": "dans %{time_count} h"
         },
         "time_in_hours": {
           "zero": "dans 0 heures",
           "one": "dans 1 heure",
           "two": "dans 2 heures",
           "few": "dans %{time_count} heures",
-          "many": "dans %{time_count} heures"
+          "many": "dans %{time_count} heures",
+          "other": "dans %{time_count} heures"
         },
         "time_in_days_abbreviated": {
           "zero": "dans 0 jours",
           "one": "dans 1 jour",
           "two": "dans 2 jours",
           "few": "dans %{time_count} jours",
-          "many": "dans %{time_count} jours"
+          "many": "dans %{time_count} jours",
+          "other": "dans %{time_count} jours"
         },
         "time_in_days": {
           "zero": "dans 0 jours",
           "one": "dans 1 jour",
           "two": "dans 2 jours",
           "few": "dans %{time_count} jours",
-          "many": "dans %{time_count} jours"
+          "many": "dans %{time_count} jours",
+          "other": "dans %{time_count} jours"
         },
         "time_in_seconds_abbreviated": {
           "zero": "dans 0 s",
           "one": "dans 1 s",
           "two": "dans 2 s",
           "few": "dans %{time_count} s",
-          "many": "dans %{time_count} s"
+          "many": "dans %{time_count} s",
+          "other": "dans %{time_count} s"
         },
         "time_in_seconds": {
           "zero": "dans 0 secondes",
           "one": "dans 1 seconde",
           "two": "dans 2 secondes",
           "few": "dans %{time_count} secondes",
-          "many": "dans %{time_count} secondes"
+          "many": "dans %{time_count} secondes",
+          "other": "dans %{time_count} secondes"
         },
         "time_minutes_ago_abbreviated": {
           "zero": "il y a 0 min",
           "one": "il y a 1 min",
           "two": "il y a 2 min",
           "few": "il y a %{time_count} min",
-          "many": "il y a %{time_count} min"
+          "many": "il y a %{time_count} min",
+          "other": "il y a %{time_count} min"
         },
         "time_minutes_ago": {
           "zero": "il y a 0 minutes",
           "one": "il y a 1 minute",
           "two": "il y a 2 minutes",
           "few": "il y a %{time_count} minutes",
-          "many": "il y a %{time_count} minutes"
+          "many": "il y a %{time_count} minutes",
+          "other": "il y a %{time_count} minutes"
         },
         "time_hours_ago_abbreviated": {
           "zero": "il y a 0 h",
           "one": "il y a 1 h",
           "two": "il y a 2 h",
           "few": "il y a %{time_count} h",
-          "many": "il y a %{time_count} h"
+          "many": "il y a %{time_count} h",
+          "other": "il y a %{time_count} h"
         },
         "time_hours_ago": {
           "zero": "il y a 0 heures",
           "one": "il y a 1 heure",
           "two": "il y a 2 heures",
           "few": "il y a %{time_count} heures",
-          "many": "il y a %{time_count} heures"
+          "many": "il y a %{time_count} heures",
+          "other": "il y a %{time_count} heures"
         },
         "time_days_ago_abbreviated": {
           "zero": "il y a 0 jours",
           "one": "il y a 1 jour",
           "two": "il y a 2 jours",
           "few": "il y a %{time_count} jours",
-          "many": "il y a %{time_count} jours"
+          "many": "il y a %{time_count} jours",
+          "other": "il y a %{time_count} jours"
         },
         "time_days_ago": {
           "zero": "il y a 0 jours",
           "one": "il y a 1 jour",
           "two": "il y a 2 jours",
           "few": "il y a %{time_count} jours",
-          "many": "il y a %{time_count} jours"
+          "many": "il y a %{time_count} jours",
+          "other": "il y a %{time_count} jours"
         },
         "time_seconds_ago_abbreviated": {
           "zero": "il y a 0 secondes",
           "one": "il y a 1 seconde",
           "two": "il y a 2 secondes",
           "few": "il y a %{time_count} secondes",
-          "many": "il y a %{time_count} secondes"
+          "many": "il y a %{time_count} secondes",
+          "other": "il y a %{time_count} secondes"
         },
         "time_seconds_ago": {
           "zero": "il y a 0 s",
           "one": "il y a 1 sec",
           "two": "il y a 2 s",
           "few": "il y a %{time_count} s",
-          "many": "il y a %{time_count} s"
+          "many": "il y a %{time_count} s",
+          "other": "il y a %{time_count} s"
         },
         "time_minutes_abbreviated": {
           "zero": "0 min",
           "one": "1 min",
           "two": "2 min",
           "few": "%{time_count} min",
-          "many": "%{time_count} min"
+          "many": "%{time_count} min",
+          "other": "%{time_count} min"
         },
         "time_minutes": {
           "zero": "0 minutes",
           "one": "1 minute",
           "two": "2 minutes",
           "few": "%{time_count} minutes",
-          "many": "%{time_count} minutes"
+          "many": "%{time_count} minutes",
+          "other": "%{time_count} minutes"
         },
         "time_hours_abbreviated": {
           "zero": "0 h",
           "one": "1 h",
           "two": "2 h",
           "few": "%{time_count} h",
-          "many": "%{time_count} h"
+          "many": "%{time_count} h",
+          "other": "%{time_count} h"
         },
         "time_hours": {
           "zero": "0 heures",
           "one": "1 heure",
           "two": "2 heures",
           "few": "%{time_count} heures",
-          "many": "%{time_count} heures"
+          "many": "%{time_count} heures",
+          "other": "%{time_count} heures"
         },
         "time_days_abbreviated": {
           "zero": "0 jours",
           "one": "1 jour",
           "two": "2 jours",
           "few": "%{time_count} jours",
-          "many": "%{time_count} jours"
+          "many": "%{time_count} jours",
+          "other": "%{time_count} jours"
         },
         "time_days": {
           "zero": "0 jours",
           "one": "1 jour",
           "two": "2 jours",
           "few": "%{time_count} jours",
-          "many": "%{time_count} jours"
+          "many": "%{time_count} jours",
+          "other": "%{time_count} jours"
         },
         "time_seconds_abbreviated": {
           "zero": "0 secondes",
           "one": "1 seconde",
           "two": "2 secondes",
           "few": "%{time_count} secondes",
-          "many": "%{time_count} secondes"
+          "many": "%{time_count} secondes",
+          "other": "%{time_count} secondes"
         },
         "time_seconds": {
           "zero": "0 s",
           "one": "1 s",
           "two": "2 s",
           "few": "%{time_count} s",
-          "many": "%{time_count} s"
+          "many": "%{time_count} s",
+          "other": "%{time_count} s"
         },
         "just_now": "il y a quelques secondes",
         "right_now": "à l'instant",
@@ -8465,6 +8709,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "A weekly roundup of the best and brightest projects on Kickstarter, handpicked by our team.",
       "About_reward_amount": "About %{reward_amount}",
       "Account": "Account",
+      "activities_badge_value_plus": "%{activities_badge_value}+",
       "Add": "Add",
       "Add_new_card": "Add new card",
       "Add_attachments": "Add attachments…",
@@ -8507,7 +8752,8 @@
         "one": "%{backers_count}\nbacker",
         "two": "%{backers_count}\nbackers",
         "few": "%{backers_count}\nbackers",
-        "many": "%{backers_count}\nbackers"
+        "many": "%{backers_count}\nbackers",
+        "other": "%{backers_count}\nbackers"
       },
       "Become_a_backer_to_leave_a_comment": "Become a backer to leave a comment.",
       "Big_Kickstarter_news_and_events_near_you": "Big Kickstarter news and events near you, delivered just a few times a year.",
@@ -8539,7 +8785,8 @@
         "one": "%{comments_count} comment",
         "two": "%{comments_count} comments",
         "few": "%{comments_count} comments",
-        "many": "%{comments_count} comments"
+        "many": "%{comments_count} comments",
+        "other": "%{comments_count} comments"
       },
       "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Complete payment",
@@ -8591,7 +8838,8 @@
         "one": "day",
         "two": "days",
         "few": "days",
-        "many": "days"
+        "many": "days",
+        "other": "days"
       },
       "days_plural": "days",
       "Delete_my_Kickstarter_Account": "Delete my Kickstarter account",
@@ -8642,7 +8890,8 @@
         "one": "%{filter_name}: %{project_count} live project",
         "two": "%{filter_name}: %{project_count} live projects",
         "few": "%{filter_name}: %{project_count} live projects",
-        "many": "%{filter_name}: %{project_count} live projects"
+        "many": "%{filter_name}: %{project_count} live projects",
+        "other": "%{filter_name}: %{project_count} live projects"
       },
       "Filters_by_projects_with_upcoming_and_past_live_streams": "Filters by projects with upcoming and past live streams.",
       "Find_and_follow_friends": "Find and follow friends",
@@ -8650,6 +8899,7 @@
       "Find_projects_youll_love_and_help_bring": "Find projects you’ll love and help bring creative ideas to life.",
       "Find_projects_youll_love_in_art_design_film": "Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.",
       "First_created": "First created",
+      "Fix": "Fix",
       "Friend_backed_art_project": "<b>%{friend_name}</b> backed an <i>Art</i> project.",
       "Friend_backed_comics_project": "<b>%{friend_name}</b> backed a <i>Comics</i> project.",
       "Friend_backed_crafts_project": "<b>%{friend_name}</b> backed a <i>Crafts</i> project.",
@@ -8696,7 +8946,8 @@
         "one": "hour",
         "two": "hours",
         "few": "hours",
-        "many": "hours"
+        "many": "hours",
+        "other": "hours"
       },
       "hours_plural": "hours",
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
@@ -8728,7 +8979,8 @@
         "one": "%{left_count} left",
         "two": "%{left_count} left",
         "few": "%{left_count} left",
-        "many": "%{left_count} left"
+        "many": "%{left_count} left",
+        "other": "%{left_count} left"
       },
       "Live": "Live",
       "Live_now": "Live now",
@@ -8765,10 +9017,12 @@
         "one": "minute",
         "two": "minutes",
         "few": "minutes",
-        "many": "minutes"
+        "many": "minutes",
+        "other": "minutes"
       },
       "minutes_plural": "minutes",
       "MMYY": "MM/YY",
+      "More_than_number_of_items_items": "More than %{number_of_items} items",
       "Name": "Name",
       "Newsletters": "Newsletters",
       "News_events": "Big news and events happening near you, delivered just a few times a year.",
@@ -8795,6 +9049,7 @@
       "Notification_push_notification_off": "%{notification}, push notification, off",
       "Notification_push_notification_on": "%{notification}, push notification, on",
       "Notifications": "Notifications",
+      "number_of_items_items": "%{number_of_items} items",
       "Once_you_back_a_project_well_share": "Once you back a project, we’ll share personalized recommendations in this space.",
       "Only_amount_of_time_left_to_watch_this": "Only %{amount_of_time} left to watch this.",
       "Opens_comments": "Opens comments.",
@@ -8849,21 +9104,24 @@
         "one": "%{project_count} project",
         "two": "%{project_count} projects",
         "few": "%{project_count} projects",
-        "many": "%{project_count} projects"
+        "many": "%{project_count} projects",
+        "other": "%{project_count} projects"
       },
       "projects_count_newline_backed": {
         "zero": "0\\nbacked",
         "one": "1\\nbacked",
         "two": "2\\nbacked",
         "few": "%{projects_count}\nbacked",
-        "many": "%{projects_count}\nbacked"
+        "many": "%{projects_count}\nbacked",
+        "other": "%{projects_count}\nbacked"
       },
       "projects_count_newline_saved": {
         "zero": "0\\nsaved",
         "one": "1\\nsaved",
         "two": "2\\nsaved",
         "few": "%{projects_count}\nsaved",
-        "many": "%{projects_count}\nsaved"
+        "many": "%{projects_count}\nsaved",
+        "other": "%{projects_count}\nsaved"
       },
       "Project_goal_and_pledge": "Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.",
       "Project_reminders": "Project reminders",
@@ -8907,21 +9165,24 @@
         "one": "%{rewards_count} reward",
         "two": "%{rewards_count} rewards",
         "few": "%{rewards_count} rewards",
-        "many": "%{rewards_count} rewards"
+        "many": "%{rewards_count} rewards",
+        "other": "%{rewards_count} rewards"
       },
       "Rewards_count_rewards_colon": {
         "zero": "%{rewards_count} rewards:",
         "one": "%{rewards_count} reward:",
         "two": "%{rewards_count} rewards:",
         "few": "%{rewards_count} rewards:",
-        "many": "%{rewards_count} rewards:"
+        "many": "%{rewards_count} rewards:",
+        "other": "%{rewards_count} rewards:"
       },
       "Reward_Surveys": {
         "zero": "%{reward_survey_count} Reward Surveys",
         "one": "Reward Survey",
         "two": "%{reward_survey_count} Reward Surveys",
         "few": "%{reward_survey_count} Reward Surveys",
-        "many": "%{reward_survey_count} Reward Surveys"
+        "many": "%{reward_survey_count} Reward Surveys",
+        "other": "%{reward_survey_count} Reward Surveys"
       },
       "Reward_selected": "Reward selected",
       "Save": "Save",
@@ -9002,7 +9263,8 @@
         "one": "%{updates_count} update",
         "two": "%{updates_count} updates",
         "few": "%{updates_count} updates",
-        "many": "%{updates_count} updates"
+        "many": "%{updates_count} updates",
+        "other": "%{updates_count} updates"
       },
       "Unable_to_request": "Unable to request data.",
       "Unsaved": "Unsaved",
@@ -9026,6 +9288,7 @@
       "Video_disabled_until_the_internet_connection_improves": "Video disabled until the internet connection improves",
       "View": "View",
       "View_project": "View project",
+      "View_rewards": "View rewards",
       "View_your_pledge": "View your pledge",
       "View_your_reward": "View your reward",
       "Watch_live": "Watch live",
@@ -9142,7 +9405,8 @@
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
-              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "other": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
             }
           },
           "metadata": {
@@ -9168,14 +9432,16 @@
                 "one": "1 backer so far, %{percent_funded} funded, %{time_left} to go",
                 "two": "2 backers so far, %{percent_funded} funded, %{time_left} to go",
                 "few": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go",
-                "many": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go"
+                "many": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go",
+                "other": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go"
               },
               "non_live_stat_value": {
                 "zero": "0 backers total, %{percent_funded} funded, %{time_left} to go",
                 "one": "1 backer total, %{percent_funded} funded, %{time_left} to go",
                 "two": "2 backers total, %{percent_funded} funded, %{time_left} to go",
                 "few": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go",
-                "many": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go"
+                "many": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go",
+                "other": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go"
               }
             },
             "backers": "backers",
@@ -9392,7 +9658,8 @@
           "one": "1 category backed",
           "two": "2 categories backed",
           "few": "%{category_count} categories backed",
-          "many": "%{category_count} categories backed"
+          "many": "%{category_count} categories backed",
+          "other": "%{category_count} categories backed"
         },
         "buttons": {
           "settings": "Settings",
@@ -9407,7 +9674,8 @@
             "one": "BACKED 1 PROJECT",
             "two": "BACKED 2 PROJECTS",
             "few": "BACKED %{project_count} PROJECTS",
-            "many": "BACKED %{project_count} PROJECTS"
+            "many": "BACKED %{project_count} PROJECTS",
+            "other": "BACKED %{project_count} PROJECTS"
           },
           "empty_state": {
             "message": "You haven't backed any projects yet.\nLet's change that!",
@@ -9517,7 +9785,7 @@
         "to": "app@kickstarter.com",
         "to_android": "android@kickstarter.com",
         "subject": "Hello Kickstarter App Support",
-        "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n",
+        "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n\n",
         "noemail": {
           "title": "Support",
           "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.",
@@ -9790,7 +10058,7 @@
           },
           "android_pay": {
             "pledge_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
-            "terms_and_privacy": "By pledging you agree to Kickstarter’s <u>terms of use</u> and <u>privacy policy</u>.",
+            "terms_and_privacy": "By pledging you agree to Kickstarter's <u>terms of use</u> and <u>privacy policy</u>.",
             "backer_101": "<b>Questions?</b> Read the <u>backer 101</u>.",
             "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirm",
@@ -9861,13 +10129,15 @@
             "one": "%{friends} and 1 more are backers.",
             "two": "%{friends} and 2 more are backers.",
             "few": "%{friends} and %{backer_count} more are backers.",
-            "many": "%{friends} and %{backer_count} more are backers."
+            "many": "%{friends} and %{backer_count} more are backers.",
+            "other": "%{friends} and %{backer_count} more are backers."
           },
           "friends_are_backers_and_more_bold": {
             "one": "1 more",
             "two": "2 more",
             "few": "%{backer_count} more",
-            "many": "%{backer_count} more"
+            "many": "%{backer_count} more",
+            "other": "%{backer_count} more"
           }
         },
         "view_pledge": {
@@ -9947,14 +10217,16 @@
             "one": "1 backer",
             "two": "2 backers",
             "few": "%{backer_count} backers",
-            "many": "%{backer_count} backers"
+            "many": "%{backer_count} backers",
+            "other": "%{backer_count} backers"
           },
           "item_quantity_title": {
             "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
             "two": "%{title} (x%{quantity})",
             "few": "%{title} (x%{quantity})",
-            "many": "%{title} (x%{quantity})"
+            "many": "%{title} (x%{quantity})",
+            "other": "%{title} (x%{quantity})"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
@@ -10051,14 +10323,16 @@
                 "one": "%{pledged} of %{goal} goal, 1 backer so far, %{time_left} to go",
                 "two": "%{pledged} of %{goal} goal, 2 backers so far, %{time_left} to go",
                 "few": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go",
-                "many": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go"
+                "many": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go",
+                "other": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go"
               },
               "non_live_stat_value": {
                 "zero": "%{pledged} of %{goal} goal, 0 backers total, %{time_left} to go",
                 "one": "%{pledged} of %{goal} goal, 1 backer total, %{time_left} to go",
                 "two": "%{pledged} of %{goal} goal, 2 backers total, %{time_left} to go",
                 "few": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go",
-                "many": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go"
+                "many": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go",
+                "other": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go"
               }
             },
             "goal": "Goal",
@@ -10112,7 +10386,8 @@
                 "one": "<b>1</b> total play",
                 "two": "<b>2</b> total plays",
                 "few": "<b>%{total_start_count}</b> total plays",
-                "many": "<b>%{total_start_count}</b> total plays"
+                "many": "<b>%{total_start_count}</b> total plays",
+                "other": "<b>%{total_start_count}</b> total plays"
               },
               "percent_plays_completed": "%{percent_plays_completed} of plays completed"
             }
@@ -10182,7 +10457,8 @@
                 "one": "This will notify 1 backer that a new update is available. Are you sure you want to post?",
                 "two": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
                 "few": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
-                "many": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?"
+                "many": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
+                "other": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?"
               },
               "cancel_button": "Cancel",
               "confirm_button": "Let’s do it!",
@@ -10265,14 +10541,16 @@
             "one": "1 backed",
             "two": "2 backed",
             "few": "%{backed_count} backed",
-            "many": "%{backed_count} backed"
+            "many": "%{backed_count} backed",
+            "other": "%{backed_count} backed"
           },
           "projects_count_created": {
             "zero": "0 created",
             "one": "1 created",
             "two": "2 created",
             "few": "%{created_count} created",
-            "many": "%{created_count} created"
+            "many": "%{created_count} created",
+            "other": "%{created_count} created"
           },
           "buttons": {
             "following": "Following",
@@ -10284,9 +10562,11 @@
           "backed_projects": "Backed projects",
           "button": {
             "follow_all_friends": {
+              "one": "Follow your friend",
               "two": "Follow all 2 friends",
               "few": "Follow all %{remote_friends_count} friends",
-              "many": "Follow all %{remote_friends_count} friends"
+              "many": "Follow all %{remote_friends_count} friends",
+              "other": "Follow all %{remote_friends_count} friends"
             }
           }
         },
@@ -10309,7 +10589,8 @@
           "one": "1 backer",
           "two": "2 backers",
           "few": "%{backer_count} backers",
-          "many": "%{backer_count} backers"
+          "many": "%{backer_count} backers",
+          "other": "%{backer_count} backers"
         },
         "navigation": {
           "buttons": {
@@ -10367,168 +10648,192 @@
           "one": "in 1 min",
           "two": "in 2 mins",
           "few": "in %{time_count} mins",
-          "many": "in %{time_count} mins"
+          "many": "in %{time_count} mins",
+          "other": "in %{time_count} mins"
         },
         "time_in_minutes": {
           "zero": "in 0 minutes",
           "one": "in 1 minute",
           "two": "in 2 minutes",
           "few": "in %{time_count} minutes",
-          "many": "in %{time_count} minutes"
+          "many": "in %{time_count} minutes",
+          "other": "in %{time_count} minutes"
         },
         "time_in_hours_abbreviated": {
           "zero": "in 0 hrs",
           "one": "in 1 hr",
           "two": "in 2 hrs",
           "few": "in %{time_count} hrs",
-          "many": "in %{time_count} hrs"
+          "many": "in %{time_count} hrs",
+          "other": "in %{time_count} hrs"
         },
         "time_in_hours": {
           "zero": "in 0 hours",
           "one": "in 1 hour",
           "two": "in 2 hours",
           "few": "in %{time_count} hours",
-          "many": "in %{time_count} hours"
+          "many": "in %{time_count} hours",
+          "other": "in %{time_count} hours"
         },
         "time_in_days_abbreviated": {
           "zero": "in 0 days",
           "one": "in 1 day",
           "two": "in 2 days",
           "few": "in %{time_count} days",
-          "many": "in %{time_count} days"
+          "many": "in %{time_count} days",
+          "other": "in %{time_count} days"
         },
         "time_in_days": {
           "zero": "in 0 days",
           "one": "in 1 day",
           "two": "in 2 days",
           "few": "in %{time_count} days",
-          "many": "in %{time_count} days"
+          "many": "in %{time_count} days",
+          "other": "in %{time_count} days"
         },
         "time_in_seconds_abbreviated": {
           "zero": "in 0 secs",
           "one": "in 1 sec",
           "two": "in 2 secs",
           "few": "in \"%{time_count} secs\"",
-          "many": "in \"%{time_count} secs\""
+          "many": "in \"%{time_count} secs\"",
+          "other": "in \"%{time_count} secs\""
         },
         "time_in_seconds": {
           "zero": "in 0 seconds",
           "one": "in 1 second",
           "two": "in 2 seconds",
           "few": "in \"%{time_count} seconds\"",
-          "many": "in \"%{time_count} seconds\""
+          "many": "in \"%{time_count} seconds\"",
+          "other": "in \"%{time_count} seconds\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "0 mins ago",
           "one": "1 min ago",
           "two": "2 mins ago",
           "few": "%{time_count} mins ago",
-          "many": "%{time_count} mins ago"
+          "many": "%{time_count} mins ago",
+          "other": "%{time_count} mins ago"
         },
         "time_minutes_ago": {
           "zero": "0 minutes ago",
           "one": "1 minute ago",
           "two": "2 minutes ago",
           "few": "%{time_count} minutes ago",
-          "many": "%{time_count} minutes ago"
+          "many": "%{time_count} minutes ago",
+          "other": "%{time_count} minutes ago"
         },
         "time_hours_ago_abbreviated": {
           "zero": "0 hrs ago",
           "one": "1 hr ago",
           "two": "2 hrs ago",
           "few": "%{time_count} hrs ago",
-          "many": "%{time_count} hrs ago"
+          "many": "%{time_count} hrs ago",
+          "other": "%{time_count} hrs ago"
         },
         "time_hours_ago": {
           "zero": "0 hours ago",
           "one": "1 hour ago",
           "two": "2 hours ago",
           "few": "%{time_count} hours ago",
-          "many": "%{time_count} hours ago"
+          "many": "%{time_count} hours ago",
+          "other": "%{time_count} hours ago"
         },
         "time_days_ago_abbreviated": {
           "zero": "0 days ago",
           "one": "1 day ago",
           "two": "2 days ago",
           "few": "%{time_count} days ago",
-          "many": "%{time_count} days ago"
+          "many": "%{time_count} days ago",
+          "other": "%{time_count} days ago"
         },
         "time_days_ago": {
           "zero": "0 days ago",
           "one": "1 day ago",
           "two": "2 days ago",
           "few": "%{time_count} days ago",
-          "many": "%{time_count} days ago"
+          "many": "%{time_count} days ago",
+          "other": "%{time_count} days ago"
         },
         "time_seconds_ago_abbreviated": {
           "zero": "0 seconds ago",
           "one": "1 second ago",
           "two": "2 seconds ago",
           "few": "%{time_count} seconds ago",
-          "many": "%{time_count} seconds ago"
+          "many": "%{time_count} seconds ago",
+          "other": "%{time_count} seconds ago"
         },
         "time_seconds_ago": {
           "zero": "0 secs ago",
           "one": "1 sec ago",
           "two": "2 secs ago",
           "few": "%{time_count} secs ago",
-          "many": "%{time_count} secs ago"
+          "many": "%{time_count} secs ago",
+          "other": "%{time_count} secs ago"
         },
         "time_minutes_abbreviated": {
           "zero": "0 mins",
           "one": "1 min",
           "two": "2 mins",
           "few": "%{time_count} mins",
-          "many": "%{time_count} mins"
+          "many": "%{time_count} mins",
+          "other": "%{time_count} mins"
         },
         "time_minutes": {
           "zero": "0 minutes",
           "one": "1 minute",
           "two": "2 minutes",
           "few": "%{time_count} minutes",
-          "many": "%{time_count} minutes"
+          "many": "%{time_count} minutes",
+          "other": "%{time_count} minutes"
         },
         "time_hours_abbreviated": {
           "zero": "0 hrs",
           "one": "1 hr",
           "two": "2 hrs",
           "few": "%{time_count} hrs",
-          "many": "%{time_count} hrs"
+          "many": "%{time_count} hrs",
+          "other": "%{time_count} hrs"
         },
         "time_hours": {
           "zero": "0 hours",
           "one": "1 hour",
           "two": "2 hours",
           "few": "%{time_count} hours",
-          "many": "%{time_count} hours"
+          "many": "%{time_count} hours",
+          "other": "%{time_count} hours"
         },
         "time_days_abbreviated": {
           "zero": "0 days",
           "one": "1 day",
           "two": "2 days",
           "few": "%{time_count} days",
-          "many": "%{time_count} days"
+          "many": "%{time_count} days",
+          "other": "%{time_count} days"
         },
         "time_days": {
           "zero": "0 days",
           "one": "1 day",
           "two": "2 days",
           "few": "%{time_count} days",
-          "many": "%{time_count} days"
+          "many": "%{time_count} days",
+          "other": "%{time_count} days"
         },
         "time_seconds_abbreviated": {
           "zero": "0 seconds",
           "one": "1 second",
           "two": "2 seconds",
           "few": "%{time_count} seconds",
-          "many": "%{time_count} seconds"
+          "many": "%{time_count} seconds",
+          "other": "%{time_count} seconds"
         },
         "time_seconds": {
           "zero": "0 secs",
           "one": "1 sec",
           "two": "2 secs",
           "few": "%{time_count} secs",
-          "many": "%{time_count} secs"
+          "many": "%{time_count} secs",
+          "other": "%{time_count} secs"
         },
         "just_now": "just now",
         "right_now": "right now",
@@ -10580,6 +10885,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "Kickstarter スタッフがセレクトした今週のおすすめプロジェクト総まとめ。",
       "About_reward_amount": "約 %{reward_amount}　",
       "Account": "アカウント",
+      "activities_badge_value_plus": "%{activities_badge_value}+",
       "Add": "追加",
       "Add_new_card": "新しいカードを追加",
       "Add_attachments": "添付ファイルを追加...",
@@ -10622,7 +10928,8 @@
         "one": "%{backers_count}\nバッカー",
         "two": "%{backers_count}\nバッカー",
         "few": "%{backers_count}\nバッカー",
-        "many": "%{backers_count}\nバッカー"
+        "many": "%{backers_count}\nバッカー",
+        "other": "%{backers_count} バッカー"
       },
       "Become_a_backer_to_leave_a_comment": "コメントを残すためにバッカーになる。",
       "Big_Kickstarter_news_and_events_near_you": "Kickstarter に関するビッグニュースやお近くのイベントについて、年に数回お届け。",
@@ -10654,7 +10961,8 @@
         "one": "%{comments_count} のコメント",
         "two": "%{comments_count} のコメント",
         "few": "%{comments_count} のコメント",
-        "many": "%{comments_count} のコメント"
+        "many": "%{comments_count} のコメント",
+        "other": "%{comments_count} のコメント"
       },
       "Comment_reply_digest": "コメント返信のダイジェスト",
       "Complete_payment": "支払いを完了",
@@ -10706,7 +11014,8 @@
         "one": "日",
         "two": "日",
         "few": "日",
-        "many": "日"
+        "many": "日",
+        "other": "日"
       },
       "days_plural": "日",
       "Delete_my_Kickstarter_Account": "Kickstarter アカウントを削除",
@@ -10757,7 +11066,8 @@
         "one": "%{filter_name}：%{project_count} の進行中プロジェクト",
         "two": "%{filter_name}：%{project_count} の進行中プロジェクト",
         "few": "%{filter_name}：%{project_count} の進行中プロジェクト",
-        "many": "%{filter_name}：%{project_count} の進行中プロジェクト"
+        "many": "%{filter_name}：%{project_count} の進行中プロジェクト",
+        "other": "%{filter_name}：%{project_count} の進行中プロジェクト"
       },
       "Filters_by_projects_with_upcoming_and_past_live_streams": "近日公開予定、または過去のライブ配信含むプロジェクトに絞る",
       "Find_and_follow_friends": "友達を見つけてフォロー",
@@ -10765,6 +11075,7 @@
       "Find_projects_youll_love_and_help_bring": "お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。",
       "Find_projects_youll_love_in_art_design_film": "お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。",
       "First_created": "1つめのプロジェクト",
+      "Fix": "修正する",
       "Friend_backed_art_project": "<b>%{friend_name}</b> は<i>アート</i> プロジェクトをバックしています。",
       "Friend_backed_comics_project": "<b>%{friend_name}</b> は<i>コミック</i> プロジェクトをバックしています。",
       "Friend_backed_crafts_project": "<b>%{friend_name}</b>は<i>クラフト</i>のプロジェクトのバッカーです",
@@ -10811,7 +11122,8 @@
         "one": "時間",
         "two": "時間",
         "few": "時間",
-        "many": "時間"
+        "many": "時間",
+        "other": "時間"
       },
       "hours_plural": "時間",
       "Id_just_like_to_support_the_project": "プロジェクトをサポートしたい",
@@ -10822,7 +11134,7 @@
       "Info": "インフォメーション",
       "Introduce_yourself": "自己紹介",
       "It_may_take_up_to_24_hours_to_collect_your_data": "データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。",
-      "Its_a_way_to_bring_creative_projects_to_life": "It's a way to bring creative projects to life.",
+      "Its_a_way_to_bring_creative_projects_to_life": "クリエイティブなプロジェクトを実現するためのプラットフォームです。",
       "Its_better_with_friends": "友達にとってより良い。",
       "Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter": "ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。",
       "Its_our_birthday": "Kickstarter の誕生日です！過去10年の間に、16万以上のクリエイティブなプロジェクトが、1600万人以上のバッカーの支援のもと、Kickstarter で実現化しました。",
@@ -10833,7 +11145,7 @@
       "Keep_up_with_future_live_streams": "ライブ配信を通知",
       "Keep_in_touch_after_your_campaign": "キャンペーン終了後もニュースレターで最新情報をチェックし、次のプロジェクトに備えましょう。",
       "Kickstarter_if_funded": "Kickstarter (達成した時)",
-      "Kickstarter_is_not_a_store": "Kickstarter is not a store.",
+      "Kickstarter_is_not_a_store": "Kickstarterはオンラインストアではありません。",
       "Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life": "Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。",
       "Kickstarter_Music": "Kickstarter Music",
       "Know_when_creators_and_backers_message_you": "クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。",
@@ -10843,7 +11155,8 @@
         "one": "残り%{left_count}",
         "two": "残り%{left_count}",
         "few": "残り%{left_count}",
-        "many": "残り%{left_count}"
+        "many": "残り%{left_count}",
+        "other": "残り%{left_count}"
       },
       "Live": "ライブ",
       "Live_now": "ライブ配信中",
@@ -10880,10 +11193,12 @@
         "one": "分",
         "two": "分",
         "few": "分",
-        "many": "分"
+        "many": "分",
+        "other": "分"
       },
       "minutes_plural": "分",
       "MMYY": "月月/年年",
+      "More_than_number_of_items_items": "More than %{number_of_items} items",
       "Name": "名前",
       "Newsletters": "ニュースレター",
       "News_events": "1年に数回だけ、お近くのニュースやイベント情報をお届け。",
@@ -10893,7 +11208,7 @@
       "New_pledge_activity": "新しいプレッジ",
       "New_work_and_big_ideas_from_established_and": "新進アーティストや著名アーティストの最新プロジェクトやアイデアをご紹介。",
       "No_comments_yet": "まだコメントはありません。",
-      "No_longer_available": "No longer available",
+      "No_longer_available": "利用できなくなりました",
       "No_messages": "メッセージがありません。",
       "No_nevermind": "いいえ、削除しません",
       "No_one_has_posted_an_update_yet": "まだアップデートの投稿はありません。",
@@ -10910,6 +11225,7 @@
       "Notification_push_notification_off": "%{notification}、プッシュ通知、オフ",
       "Notification_push_notification_on": "%{notification}、プッシュ通知、オン",
       "Notifications": "通知",
+      "number_of_items_items": "%{number_of_items} items",
       "Once_you_back_a_project_well_share": "プロジェクトをバックするとこのスペースにあなたへのオススメを表示します",
       "Only_amount_of_time_left_to_watch_this": "あと%{amount_of_time} のみ視聴可能",
       "Opens_comments": "コメントをみる",
@@ -10964,21 +11280,24 @@
         "one": "%{project_count} 件のプロジェクト",
         "two": "%{project_count} 件のプロジェクト",
         "few": "%{project_count} 件のプロジェクト",
-        "many": "%{project_count} 件のプロジェクト"
+        "many": "%{project_count} 件のプロジェクト",
+        "other": "%{project_count} 件のプロジェクト"
       },
       "projects_count_newline_backed": {
         "zero": "0\\n件バック済み",
         "one": "1\\n件バック済み",
         "two": "2\\n件バック済み",
         "few": "%{projects_count} \\n件バック済み",
-        "many": "%{projects_count}\\n件バック済み"
+        "many": "%{projects_count}\\n件バック済み",
+        "other": "%{projects_count} \\n件バック済み"
       },
       "projects_count_newline_saved": {
         "zero": "0\\n件保存済み",
         "one": "1\\n件保存済み",
         "two": "2\\n件保存済み",
         "few": "%{projects_count} \n保存済み",
-        "many": "%{projects_count} \n保存済み"
+        "many": "%{projects_count} \n保存済み",
+        "other": "%{projects_count} \n保存済み"
       },
       "Project_goal_and_pledge": "プロジェクトのゴール額とプレッジ額はおおよその換算金額で表示されます。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められます。",
       "Project_reminders": "プロジェクトのリマインダー",
@@ -11022,21 +11341,24 @@
         "one": "%{rewards_count} 種類のリワード",
         "two": "%{rewards_count} 種類のリワード",
         "few": "%{rewards_count} 種類のリワード",
-        "many": "%{rewards_count} 種類のリワード"
+        "many": "%{rewards_count} 種類のリワード",
+        "other": "%{rewards_count} のリワード"
       },
       "Rewards_count_rewards_colon": {
         "zero": "%{rewards_count} 種類のリワード",
         "one": "%{rewards_count} 種類のリワード",
         "two": "%{rewards_count} 種類のリワード",
         "few": "%{rewards_count} 種類のリワード",
-        "many": "%{rewards_count} 種類のリワード"
+        "many": "%{rewards_count} 種類のリワード",
+        "other": "%{rewards_count} のリワード："
       },
       "Reward_Surveys": {
         "zero": "%{reward_survey_count} リワードのサーベイ",
         "one": "リワードサーベイ",
         "two": "%{reward_survey_count} リワードのサーベイ",
         "few": "%{reward_survey_count} リワードのサーベイ",
-        "many": "%{reward_survey_count} リワードのサーベイ"
+        "many": "%{reward_survey_count} リワードのサーベイ",
+        "other": "%{reward_survey_count} リワードのサーベイ"
       },
       "Reward_selected": "選択中のリワード",
       "Save": "保存",
@@ -11117,7 +11439,8 @@
         "one": "%{updates_count} 件のアップデート",
         "two": "%{updates_count} 件のアップデート",
         "few": "%{updates_count} 件のアップデート",
-        "many": "%{updates_count} 件のアップデート"
+        "many": "%{updates_count} 件のアップデート",
+        "other": "%{updates_count} 件のアップデート"
       },
       "Unable_to_request": "データをリクエストできません。",
       "Unsaved": "未保存",
@@ -11141,6 +11464,7 @@
       "Video_disabled_until_the_internet_connection_improves": "インターネット通信状態が向上するまでビデオはご利用いいただけません。",
       "View": "みる",
       "View_project": "プロジェクトを見る",
+      "View_rewards": "リワードを見る",
       "View_your_pledge": "プレッジをみる",
       "View_your_reward": "リワードをみる",
       "Watch_live": "ライブをみる",
@@ -11167,7 +11491,7 @@
       "Youll_receive_an_email_at_email_when_your_download_is_ready": "ダウンロードの準備が整い次第、%{email} にメールが届きます。",
       "Your_chat_message_wasnt_sent_successfully": "メッセージの送信に失敗。",
       "Your_friends_havent_backed_any_projects_yet": "バックした友達はまだいませんが、今後こちらに表示されます。",
-      "Your_message_has_been_sent": "Your message has been sent!",
+      "Your_message_has_been_sent": "メッセージが送信されました！",
       "Your_name_displayed": "あなたの名前はプロフィールに常に表示されます。",
       "Your_payment_method_was_successfully_charged": "支払方法の登録完了。",
       "Your_pledge": "プレッジ",
@@ -11257,7 +11581,8 @@
               "one": "%{friend_name} がバッカー",
               "two": "%{friend_name} と%{second_friend_name} がバッカー",
               "few": "%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー",
-              "many": "%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー"
+              "many": "%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー",
+              "other": "%{friend_name} 、%{second_friend_name} 、他%{remaining_count} 人がバッカー"
             }
           },
           "metadata": {
@@ -11283,14 +11608,16 @@
                 "one": "現在バッカー1人です。%{percent_funded} 達成、%{time_left} で締切",
                 "two": "現在バッカー2人。%{percent_funded} 達成、%{time_left} で締切",
                 "few": "現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切",
-                "many": "現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切"
+                "many": "現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切",
+                "other": "現在バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切"
               },
               "non_live_stat_value": {
                 "zero": "バッカー0人。%{percent_funded} 達成、%{time_left} で締切",
                 "one": "バッカー1人。%{percent_funded} 達成、%{time_left} で締切",
                 "two": "バッカーは2人です。%{percent_funded} 達成し、%{time_left} で締切",
                 "few": "バッカー%{backers_count} 人。%{percent_funded} 達成、%{time_left} で締切",
-                "many": "バッカー%{backers_count} 人、%{percent_funded} 達成、%{time_left} で締切"
+                "many": "バッカー%{backers_count} 人、%{percent_funded} 達成、%{time_left} で締切",
+                "other": "バッカー%{backers_count} 人、%{percent_funded} 達成、%{time_left} で締切"
               }
             },
             "backers": "バッカー",
@@ -11507,7 +11834,8 @@
           "one": "1カテゴリーへバック",
           "two": "2カテゴリーへバック",
           "few": "%{category_count} カテゴリーへバック",
-          "many": "%{category_count} カテゴリーへバック"
+          "many": "%{category_count} カテゴリーへバック",
+          "other": "%{category_count} カテゴリーへバック"
         },
         "buttons": {
           "settings": "設定",
@@ -11522,7 +11850,8 @@
             "one": "1プロジェクトへバック",
             "two": "2プロジェクトへバック",
             "few": "%{project_count} プロジェクトへバック済",
-            "many": "%{project_count} プロジェクトへバック済"
+            "many": "%{project_count} プロジェクトへバック済",
+            "other": "%{project_count} プロジェクトへバック済"
           },
           "empty_state": {
             "message": "まだバックしてません。\nバックしてみよう！",
@@ -11976,13 +12305,15 @@
             "one": "%{friends} と他１人がバッカーになっています。",
             "two": "%{friends} と他２人がバッカーになっています。",
             "few": "%{friends} と他%{backer_count} 人がバッカー",
-            "many": "%{friends} と他%{backer_count} 人がバッカー"
+            "many": "%{friends} と他%{backer_count} 人がバッカー",
+            "other": "%{friends} と他%{backer_count} 人がバッカー"
           },
           "friends_are_backers_and_more_bold": {
             "one": "１人以上",
             "two": "２人以上",
             "few": "%{backer_count} 人以上",
-            "many": "%{backer_count} 人以上"
+            "many": "%{backer_count} 人以上",
+            "other": "%{backer_count} 人以上"
           }
         },
         "view_pledge": {
@@ -12062,14 +12393,16 @@
             "one": "1バッカー",
             "two": "2バッカー",
             "few": "%{backer_count} バッカー",
-            "many": "%{backer_count} バッカー"
+            "many": "%{backer_count} バッカー",
+            "other": "%{backer_count} バッカー"
           },
           "item_quantity_title": {
             "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
             "two": "%{title} (x%{quantity})",
             "few": "%{title} (x%{quantity})",
-            "many": "%{title} (x%{quantity})"
+            "many": "%{title} (x%{quantity})",
+            "other": "%{title} (x%{quantity})"
           },
           "limited_rewards_remaining_left_of_reward_limit": "数量限定 (%{reward_limit} 中残り%{rewards_remaining}）",
           "all_gone": "終了",
@@ -12166,14 +12499,16 @@
                 "one": "%{goal} のゴール中%{pledged} 、1人のバッカー、 %{time_left} 日締切",
                 "two": "%{goal} のゴール中%{pledged} 、3人のバッカー、 %{time_left} 日に締切",
                 "few": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切",
-                "many": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切"
+                "many": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切",
+                "other": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切"
               },
               "non_live_stat_value": {
                 "zero": "%{goal} のゴール中%{pledged} 、0人のバッカー、 %{time_left} 日に締切",
                 "one": "%{goal} のゴール中%{pledged} 、1人のバッカー、 %{time_left} 日締切",
                 "two": "%{goal} のゴール中%{pledged} 、2人のバッカー、 %{time_left} 日に締切",
                 "few": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切",
-                "many": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切"
+                "many": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切",
+                "other": "%{goal} のゴール中%{pledged} 、%{backers_count} 人のバッカー、 %{time_left} 日に締切"
               }
             },
             "goal": "目標",
@@ -12227,7 +12562,8 @@
                 "one": "<b>1</b>人がプレイ",
                 "two": "<b>2</b>人がプレイ",
                 "few": "<b>%{total_start_count}</b>人がプレイ",
-                "many": "<b>%{total_start_count}</b>人がプレイ"
+                "many": "<b>%{total_start_count}</b>人がプレイ",
+                "other": "<b>%{total_start_count}</b>人がプレイ"
               },
               "percent_plays_completed": "%{percent_plays_completed}％完遂"
             }
@@ -12297,7 +12633,8 @@
                 "one": "最新情報を1人のバッカーに通知します。投稿しますか？",
                 "two": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？",
                 "few": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？",
-                "many": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？"
+                "many": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？",
+                "other": "最新情報を%{backer_count} 人のバッカーに通知します。投稿しますか？"
               },
               "cancel_button": "キャンセル",
               "confirm_button": "挑戦！",
@@ -12380,14 +12717,16 @@
             "one": "1バック済",
             "two": "2バック済",
             "few": "%{backed_count} バック済",
-            "many": "%{backed_count} バック済"
+            "many": "%{backed_count} バック済",
+            "other": "%{backed_count} バック済"
           },
           "projects_count_created": {
             "zero": "0 プロジェクト",
             "one": "1プロジェクト",
             "two": "2プロジェクト",
             "few": "%{created_count} プロジェクト",
-            "many": "%{created_count}プロジェクト"
+            "many": "%{created_count}プロジェクト",
+            "other": "%{created_count}プロジェクト"
           },
           "buttons": {
             "following": "フォロー中",
@@ -12399,9 +12738,11 @@
           "backed_projects": "バック済",
           "button": {
             "follow_all_friends": {
+              "one": "友達をフォロー",
               "two": "全員フォロー",
               "few": "%{remote_friends_count} 人を全員フォロー",
-              "many": "%{remote_friends_count} 人を全員フォロー"
+              "many": "%{remote_friends_count} 人を全員フォロー",
+              "other": "%{remote_friends_count} 人を全員フォロー"
             }
           }
         },
@@ -12424,7 +12765,8 @@
           "one": "1バッカー",
           "two": "2バッカー",
           "few": "%{backer_count} バッカー",
-          "many": "%{backer_count} バッカー"
+          "many": "%{backer_count} バッカー",
+          "other": "%{backer_count} バッカー"
         },
         "navigation": {
           "buttons": {
@@ -12482,168 +12824,192 @@
           "one": "あと1分",
           "two": "あと2分",
           "few": "あと%{time_count} 分",
-          "many": "あと%{time_count} 分"
+          "many": "あと%{time_count} 分",
+          "other": "あと%{time_count} 分"
         },
         "time_in_minutes": {
           "zero": "あと0分",
           "one": "あと1分",
           "two": "あと2分",
           "few": "あと%{time_count} 分",
-          "many": "あと%{time_count} 分"
+          "many": "あと%{time_count} 分",
+          "other": "あと%{time_count} 分"
         },
         "time_in_hours_abbreviated": {
           "zero": "あと0時間",
           "one": "あと1時間",
           "two": "あと2時間",
           "few": "あと%{time_count} 時間",
-          "many": "あと%{time_count} 時間"
+          "many": "あと%{time_count} 時間",
+          "other": "あと%{time_count} 時間"
         },
         "time_in_hours": {
           "zero": "あと0時間",
           "one": "あと1時間",
           "two": "あと2時間",
           "few": "あと%{time_count} 時間",
-          "many": "あと%{time_count} 時間"
+          "many": "あと%{time_count} 時間",
+          "other": "あと%{time_count} 時間"
         },
         "time_in_days_abbreviated": {
           "zero": "あと0日",
           "one": "あと1日",
           "two": "あと2日",
           "few": "あと%{time_count} 日",
-          "many": "あと%{time_count} 日"
+          "many": "あと%{time_count} 日",
+          "other": "あと%{time_count} 日"
         },
         "time_in_days": {
           "zero": "あと0日",
           "one": "あと1日",
           "two": "あと2日",
           "few": "あと%{time_count} 日",
-          "many": "あと%{time_count} 日"
+          "many": "あと%{time_count} 日",
+          "other": "あと%{time_count} 日"
         },
         "time_in_seconds_abbreviated": {
           "zero": "あと0秒",
           "one": "あと1秒",
           "two": "あと2秒",
           "few": "あと \"%{time_count} 秒\"",
-          "many": "あと \"%{time_count} 秒\""
+          "many": "あと \"%{time_count} 秒\"",
+          "other": "あと \"%{time_count} 秒\""
         },
         "time_in_seconds": {
           "zero": "あと0秒",
           "one": "あと1秒",
           "two": "あと2秒",
           "few": "あと \"%{time_count} 秒\"",
-          "many": "あと \"%{time_count} 秒\""
+          "many": "あと \"%{time_count} 秒\"",
+          "other": "あと \"%{time_count} 秒\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "0分前",
           "one": "1分前",
           "two": "2分前",
           "few": "%{time_count} 分前",
-          "many": "%{time_count} 分前"
+          "many": "%{time_count} 分前",
+          "other": "分前"
         },
         "time_minutes_ago": {
           "zero": "0分前",
           "one": "1分前",
           "two": "2分前",
           "few": "%{time_count} 分前",
-          "many": "%{time_count} 分前"
+          "many": "%{time_count} 分前",
+          "other": "%{time_count} 分前"
         },
         "time_hours_ago_abbreviated": {
           "zero": "0時間前",
           "one": "1時間前",
           "two": "2時間前",
           "few": "%{time_count} 時間前",
-          "many": "%{time_count} 時間前"
+          "many": "%{time_count} 時間前",
+          "other": "%{time_count} 時間前"
         },
         "time_hours_ago": {
           "zero": "0時間前",
           "one": "1時間前",
           "two": "2時間前",
           "few": "%{time_count} 時間前",
-          "many": "%{time_count} 時間前"
+          "many": "%{time_count} 時間前",
+          "other": "%{time_count} 時間前"
         },
         "time_days_ago_abbreviated": {
           "zero": "0日前",
           "one": "1日前",
           "two": "2日前",
           "few": "%{time_count} 日前",
-          "many": "%{time_count} 日前"
+          "many": "%{time_count} 日前",
+          "other": "%{time_count} 日前"
         },
         "time_days_ago": {
           "zero": "0日前",
           "one": "1日前",
           "two": "2日前",
           "few": "%{time_count} 日前",
-          "many": "%{time_count} 日前"
+          "many": "%{time_count} 日前",
+          "other": "%{time_count} 日前"
         },
         "time_seconds_ago_abbreviated": {
           "zero": "0秒前",
           "one": "1秒前",
           "two": "2秒前",
           "few": "%{time_count} 秒前",
-          "many": "%{time_count} 秒前"
+          "many": "%{time_count} 秒前",
+          "other": "%{time_count} 秒前"
         },
         "time_seconds_ago": {
           "zero": "0秒前",
           "one": "1秒前",
           "two": "2秒前",
           "few": "%{time_count} 秒前",
-          "many": "%{time_count} 秒前"
+          "many": "%{time_count} 秒前",
+          "other": "%{time_count} 秒前"
         },
         "time_minutes_abbreviated": {
           "zero": "0分",
           "one": "1分",
           "two": "2分",
           "few": "%{time_count} 分",
-          "many": "%{time_count} 分"
+          "many": "%{time_count} 分",
+          "other": "%{time_count}"
         },
         "time_minutes": {
           "zero": "0分",
           "one": "1分",
           "two": "2分",
           "few": "%{time_count} 分",
-          "many": "%{time_count} 分"
+          "many": "%{time_count} 分",
+          "other": "%{time_count} 分"
         },
         "time_hours_abbreviated": {
           "zero": "0 時間",
           "one": "1時間",
           "two": "2時間",
           "few": "%{time_count} 時間",
-          "many": "%{time_count} 時間"
+          "many": "%{time_count} 時間",
+          "other": "%{time_count} 時間"
         },
         "time_hours": {
           "zero": "0 時間",
           "one": "1時間",
           "two": "2時間",
           "few": "%{time_count} 時間",
-          "many": "%{time_count} 時間"
+          "many": "%{time_count} 時間",
+          "other": "%{time_count} 時間"
         },
         "time_days_abbreviated": {
           "zero": "0日",
           "one": "1日",
           "two": "2日",
           "few": "%{time_count} 日",
-          "many": "%{time_count} 日"
+          "many": "%{time_count} 日",
+          "other": "%{time_count} 日"
         },
         "time_days": {
           "zero": "0日",
           "one": "1日",
           "two": "2日",
           "few": "%{time_count} 日",
-          "many": "%{time_count} 日"
+          "many": "%{time_count} 日",
+          "other": "%{time_count} 日"
         },
         "time_seconds_abbreviated": {
           "zero": "0秒",
           "one": "1秒",
           "two": "2秒",
           "few": "%{time_count} 秒",
-          "many": "%{time_count} 秒"
+          "many": "%{time_count} 秒",
+          "other": "%{time_count} 秒"
         },
         "time_seconds": {
           "zero": "0秒",
           "one": "1秒",
           "two": "2秒",
           "few": "%{time_count} 秒",
-          "many": "%{time_count} 秒"
+          "many": "%{time_count} 秒",
+          "other": "%{time_count} 秒"
         },
         "just_now": "今すぐ",
         "right_now": "たった今",
@@ -12695,6 +13061,7 @@
       "A_weekly_roundup_of_the_best_and_brightest": "A weekly roundup of the best and brightest projects on Kickstarter, handpicked by our team.",
       "About_reward_amount": "About %{reward_amount}",
       "Account": "Account",
+      "activities_badge_value_plus": "%{activities_badge_value}+",
       "Add": "Add",
       "Add_new_card": "Add new card",
       "Add_attachments": "Add attachments…",
@@ -12737,7 +13104,8 @@
         "one": "%{backers_count}\nbacker",
         "two": "%{backers_count}\nbackers",
         "few": "%{backers_count}\nbackers",
-        "many": "%{backers_count}\nbackers"
+        "many": "%{backers_count}\nbackers",
+        "other": "%{backers_count}\nbackers"
       },
       "Become_a_backer_to_leave_a_comment": "Become a backer to leave a comment.",
       "Big_Kickstarter_news_and_events_near_you": "Big Kickstarter news and events near you, delivered just a few times a year.",
@@ -12769,7 +13137,8 @@
         "one": "%{comments_count} comment",
         "two": "%{comments_count} comments",
         "few": "%{comments_count} comments",
-        "many": "%{comments_count} comments"
+        "many": "%{comments_count} comments",
+        "other": "%{comments_count} comments"
       },
       "Comment_reply_digest": "Comment reply digest",
       "Complete_payment": "Complete payment",
@@ -12821,7 +13190,8 @@
         "one": "day",
         "two": "days",
         "few": "days",
-        "many": "days"
+        "many": "days",
+        "other": "days"
       },
       "days_plural": "days",
       "Delete_my_Kickstarter_Account": "Delete my Kickstarter account",
@@ -12872,7 +13242,8 @@
         "one": "%{filter_name}: %{project_count} live project",
         "two": "%{filter_name}: %{project_count} live projects",
         "few": "%{filter_name}: %{project_count} live projects",
-        "many": "%{filter_name}: %{project_count} live projects"
+        "many": "%{filter_name}: %{project_count} live projects",
+        "other": "%{filter_name}: %{project_count} live projects"
       },
       "Filters_by_projects_with_upcoming_and_past_live_streams": "Filters by projects with upcoming and past live streams.",
       "Find_and_follow_friends": "Find and follow friends",
@@ -12880,6 +13251,7 @@
       "Find_projects_youll_love_and_help_bring": "Find projects you’ll love and help bring creative ideas to life.",
       "Find_projects_youll_love_in_art_design_film": "Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.",
       "First_created": "First created",
+      "Fix": "Fix",
       "Friend_backed_art_project": "<b>%{friend_name}</b> backed an <i>Art</i> project.",
       "Friend_backed_comics_project": "<b>%{friend_name}</b> backed a <i>Comics</i> project.",
       "Friend_backed_crafts_project": "<b>%{friend_name}</b> backed a <i>Crafts</i> project.",
@@ -12926,7 +13298,8 @@
         "one": "hour",
         "two": "hours",
         "few": "hours",
-        "many": "hours"
+        "many": "hours",
+        "other": "hours"
       },
       "hours_plural": "hours",
       "Id_just_like_to_support_the_project": "I’d just like to support the project.",
@@ -12958,7 +13331,8 @@
         "one": "%{left_count} left",
         "two": "%{left_count} left",
         "few": "%{left_count} left",
-        "many": "%{left_count} left"
+        "many": "%{left_count} left",
+        "other": "%{left_count} left"
       },
       "Live": "Live",
       "Live_now": "Live now",
@@ -12995,10 +13369,12 @@
         "one": "minute",
         "two": "minutes",
         "few": "minutes",
-        "many": "minutes"
+        "many": "minutes",
+        "other": "minutes"
       },
       "minutes_plural": "minutes",
       "MMYY": "MM/YY",
+      "More_than_number_of_items_items": "More than %{number_of_items} items",
       "Name": "Name",
       "Newsletters": "Newsletters",
       "News_events": "Big news and events happening near you, delivered just a few times a year.",
@@ -13025,6 +13401,7 @@
       "Notification_push_notification_off": "%{notification}, push notification, off",
       "Notification_push_notification_on": "%{notification}, push notification, on",
       "Notifications": "Notifications",
+      "number_of_items_items": "%{number_of_items} items",
       "Once_you_back_a_project_well_share": "Once you back a project, we’ll share personalized recommendations in this space.",
       "Only_amount_of_time_left_to_watch_this": "Only %{amount_of_time} left to watch this.",
       "Opens_comments": "Opens comments.",
@@ -13079,21 +13456,24 @@
         "one": "%{project_count} project",
         "two": "%{project_count} projects",
         "few": "%{project_count} projects",
-        "many": "%{project_count} projects"
+        "many": "%{project_count} projects",
+        "other": "%{project_count} projects"
       },
       "projects_count_newline_backed": {
         "zero": "0\\nbacked",
         "one": "1\\nbacked",
         "two": "2\\nbacked",
         "few": "%{projects_count}\nbacked",
-        "many": "%{projects_count}\nbacked"
+        "many": "%{projects_count}\nbacked",
+        "other": "%{projects_count}\nbacked"
       },
       "projects_count_newline_saved": {
         "zero": "0\\nsaved",
         "one": "1\\nsaved",
         "two": "2\\nsaved",
         "few": "%{projects_count}\nsaved",
-        "many": "%{projects_count}\nsaved"
+        "many": "%{projects_count}\nsaved",
+        "other": "%{projects_count}\nsaved"
       },
       "Project_goal_and_pledge": "Project goal and pledge amounts will be shown in approximate conversions. A successfully funded project will collect your pledge in its native currency.",
       "Project_reminders": "Project reminders",
@@ -13137,21 +13517,24 @@
         "one": "%{rewards_count} reward",
         "two": "%{rewards_count} rewards",
         "few": "%{rewards_count} rewards",
-        "many": "%{rewards_count} rewards"
+        "many": "%{rewards_count} rewards",
+        "other": "%{rewards_count} rewards"
       },
       "Rewards_count_rewards_colon": {
         "zero": "%{rewards_count} rewards:",
         "one": "%{rewards_count} reward:",
         "two": "%{rewards_count} rewards:",
         "few": "%{rewards_count} rewards:",
-        "many": "%{rewards_count} rewards:"
+        "many": "%{rewards_count} rewards:",
+        "other": "%{rewards_count} rewards:"
       },
       "Reward_Surveys": {
         "zero": "%{reward_survey_count} Reward Surveys",
         "one": "Reward Survey",
         "two": "%{reward_survey_count} Reward Surveys",
         "few": "%{reward_survey_count} Reward Surveys",
-        "many": "%{reward_survey_count} Reward Surveys"
+        "many": "%{reward_survey_count} Reward Surveys",
+        "other": "%{reward_survey_count} Reward Surveys"
       },
       "Reward_selected": "Reward selected",
       "Save": "Save",
@@ -13232,7 +13615,8 @@
         "one": "%{updates_count} update",
         "two": "%{updates_count} updates",
         "few": "%{updates_count} updates",
-        "many": "%{updates_count} updates"
+        "many": "%{updates_count} updates",
+        "other": "%{updates_count} updates"
       },
       "Unable_to_request": "Unable to request data.",
       "Unsaved": "Unsaved",
@@ -13256,6 +13640,7 @@
       "Video_disabled_until_the_internet_connection_improves": "Video disabled until the internet connection improves",
       "View": "View",
       "View_project": "View project",
+      "View_rewards": "View rewards",
       "View_your_pledge": "View your pledge",
       "View_your_reward": "View your reward",
       "Watch_live": "Watch live",
@@ -13372,7 +13757,8 @@
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
-              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "other": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
             }
           },
           "metadata": {
@@ -13398,14 +13784,16 @@
                 "one": "1 backer so far, %{percent_funded} funded, %{time_left} to go",
                 "two": "2 backers so far, %{percent_funded} funded, %{time_left} to go",
                 "few": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go",
-                "many": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go"
+                "many": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go",
+                "other": "%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go"
               },
               "non_live_stat_value": {
                 "zero": "0 backers total, %{percent_funded} funded, %{time_left} to go",
                 "one": "1 backer total, %{percent_funded} funded, %{time_left} to go",
                 "two": "2 backers total, %{percent_funded} funded, %{time_left} to go",
                 "few": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go",
-                "many": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go"
+                "many": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go",
+                "other": "%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go"
               }
             },
             "backers": "backers",
@@ -13622,7 +14010,8 @@
           "one": "1 category backed",
           "two": "2 categories backed",
           "few": "%{category_count} categories backed",
-          "many": "%{category_count} categories backed"
+          "many": "%{category_count} categories backed",
+          "other": "%{category_count} categories backed"
         },
         "buttons": {
           "settings": "Settings",
@@ -13637,7 +14026,8 @@
             "one": "BACKED 1 PROJECT",
             "two": "BACKED 2 PROJECTS",
             "few": "BACKED %{project_count} PROJECTS",
-            "many": "BACKED %{project_count} PROJECTS"
+            "many": "BACKED %{project_count} PROJECTS",
+            "other": "BACKED %{project_count} PROJECTS"
           },
           "empty_state": {
             "message": "You haven't backed any projects yet.\nLet's change that!",
@@ -13747,7 +14137,7 @@
         "to": "app@kickstarter.com",
         "to_android": "android@kickstarter.com",
         "subject": "Hello Kickstarter App Support",
-        "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n",
+        "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n\n",
         "noemail": {
           "title": "Support",
           "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.",
@@ -14020,7 +14410,7 @@
           },
           "android_pay": {
             "pledge_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
-            "terms_and_privacy": "By pledging you agree to Kickstarter’s <u>terms of use</u> and <u>privacy policy</u>.",
+            "terms_and_privacy": "By pledging you agree to Kickstarter's <u>terms of use</u> and <u>privacy policy</u>.",
             "backer_101": "<b>Questions?</b> Read the <u>backer 101</u>.",
             "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirm",
@@ -14091,13 +14481,15 @@
             "one": "%{friends} and 1 more are backers.",
             "two": "%{friends} and 2 more are backers.",
             "few": "%{friends} and %{backer_count} more are backers.",
-            "many": "%{friends} and %{backer_count} more are backers."
+            "many": "%{friends} and %{backer_count} more are backers.",
+            "other": "%{friends} and %{backer_count} more are backers."
           },
           "friends_are_backers_and_more_bold": {
             "one": "1 more",
             "two": "2 more",
             "few": "%{backer_count} more",
-            "many": "%{backer_count} more"
+            "many": "%{backer_count} more",
+            "other": "%{backer_count} more"
           }
         },
         "view_pledge": {
@@ -14177,14 +14569,16 @@
             "one": "1 backer",
             "two": "2 backers",
             "few": "%{backer_count} backers",
-            "many": "%{backer_count} backers"
+            "many": "%{backer_count} backers",
+            "other": "%{backer_count} backers"
           },
           "item_quantity_title": {
             "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
             "two": "%{title} (x%{quantity})",
             "few": "%{title} (x%{quantity})",
-            "many": "%{title} (x%{quantity})"
+            "many": "%{title} (x%{quantity})",
+            "other": "%{title} (x%{quantity})"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
@@ -14281,14 +14675,16 @@
                 "one": "%{pledged} of %{goal} goal, 1 backer so far, %{time_left} to go",
                 "two": "%{pledged} of %{goal} goal, 2 backers so far, %{time_left} to go",
                 "few": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go",
-                "many": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go"
+                "many": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go",
+                "other": "%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go"
               },
               "non_live_stat_value": {
                 "zero": "%{pledged} of %{goal} goal, 0 backers total, %{time_left} to go",
                 "one": "%{pledged} of %{goal} goal, 1 backer total, %{time_left} to go",
                 "two": "%{pledged} of %{goal} goal, 2 backers total, %{time_left} to go",
                 "few": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go",
-                "many": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go"
+                "many": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go",
+                "other": "%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go"
               }
             },
             "goal": "Goal",
@@ -14342,7 +14738,8 @@
                 "one": "<b>1</b> total play",
                 "two": "<b>2</b> total plays",
                 "few": "<b>%{total_start_count}</b> total plays",
-                "many": "<b>%{total_start_count}</b> total plays"
+                "many": "<b>%{total_start_count}</b> total plays",
+                "other": "<b>%{total_start_count}</b> total plays"
               },
               "percent_plays_completed": "%{percent_plays_completed} of plays completed"
             }
@@ -14412,7 +14809,8 @@
                 "one": "This will notify 1 backer that a new update is available. Are you sure you want to post?",
                 "two": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
                 "few": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
-                "many": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?"
+                "many": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?",
+                "other": "This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?"
               },
               "cancel_button": "Cancel",
               "confirm_button": "Let’s do it!",
@@ -14495,14 +14893,16 @@
             "one": "1 backed",
             "two": "2 backed",
             "few": "%{backed_count} backed",
-            "many": "%{backed_count} backed"
+            "many": "%{backed_count} backed",
+            "other": "%{backed_count} backed"
           },
           "projects_count_created": {
             "zero": "0 created",
             "one": "1 created",
             "two": "2 created",
             "few": "%{created_count} created",
-            "many": "%{created_count} created"
+            "many": "%{created_count} created",
+            "other": "%{created_count} created"
           },
           "buttons": {
             "following": "Following",
@@ -14514,9 +14914,11 @@
           "backed_projects": "Backed projects",
           "button": {
             "follow_all_friends": {
+              "one": "Follow your friend",
               "two": "Follow all 2 friends",
               "few": "Follow all %{remote_friends_count} friends",
-              "many": "Follow all %{remote_friends_count} friends"
+              "many": "Follow all %{remote_friends_count} friends",
+              "other": "Follow all %{remote_friends_count} friends"
             }
           }
         },
@@ -14539,7 +14941,8 @@
           "one": "1 backer",
           "two": "2 backers",
           "few": "%{backer_count} backers",
-          "many": "%{backer_count} backers"
+          "many": "%{backer_count} backers",
+          "other": "%{backer_count} backers"
         },
         "navigation": {
           "buttons": {
@@ -14597,168 +15000,192 @@
           "one": "in 1 min",
           "two": "in 2 mins",
           "few": "in %{time_count} mins",
-          "many": "in %{time_count} mins"
+          "many": "in %{time_count} mins",
+          "other": "in %{time_count} mins"
         },
         "time_in_minutes": {
           "zero": "in 0 minutes",
           "one": "in 1 minute",
           "two": "in 2 minutes",
           "few": "in %{time_count} minutes",
-          "many": "in %{time_count} minutes"
+          "many": "in %{time_count} minutes",
+          "other": "in %{time_count} minutes"
         },
         "time_in_hours_abbreviated": {
           "zero": "in 0 hrs",
           "one": "in 1 hr",
           "two": "in 2 hrs",
           "few": "in %{time_count} hrs",
-          "many": "in %{time_count} hrs"
+          "many": "in %{time_count} hrs",
+          "other": "in %{time_count} hrs"
         },
         "time_in_hours": {
           "zero": "in 0 hours",
           "one": "in 1 hour",
           "two": "in 2 hours",
           "few": "in %{time_count} hours",
-          "many": "in %{time_count} hours"
+          "many": "in %{time_count} hours",
+          "other": "in %{time_count} hours"
         },
         "time_in_days_abbreviated": {
           "zero": "in 0 days",
           "one": "in 1 day",
           "two": "in 2 days",
           "few": "in %{time_count} days",
-          "many": "in %{time_count} days"
+          "many": "in %{time_count} days",
+          "other": "in %{time_count} days"
         },
         "time_in_days": {
           "zero": "in 0 days",
           "one": "in 1 day",
           "two": "in 2 days",
           "few": "in %{time_count} days",
-          "many": "in %{time_count} days"
+          "many": "in %{time_count} days",
+          "other": "in %{time_count} days"
         },
         "time_in_seconds_abbreviated": {
           "zero": "in 0 secs",
           "one": "in 1 sec",
           "two": "in 2 secs",
           "few": "in \"%{time_count} secs\"",
-          "many": "in \"%{time_count} secs\""
+          "many": "in \"%{time_count} secs\"",
+          "other": "in \"%{time_count} secs\""
         },
         "time_in_seconds": {
           "zero": "in 0 seconds",
           "one": "in 1 second",
           "two": "in 2 seconds",
           "few": "in \"%{time_count} seconds\"",
-          "many": "in \"%{time_count} seconds\""
+          "many": "in \"%{time_count} seconds\"",
+          "other": "in \"%{time_count} seconds\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "0 mins ago",
           "one": "1 min ago",
           "two": "2 mins ago",
           "few": "%{time_count} mins ago",
-          "many": "%{time_count} mins ago"
+          "many": "%{time_count} mins ago",
+          "other": "%{time_count} mins ago"
         },
         "time_minutes_ago": {
           "zero": "0 minutes ago",
           "one": "1 minute ago",
           "two": "2 minutes ago",
           "few": "%{time_count} minutes ago",
-          "many": "%{time_count} minutes ago"
+          "many": "%{time_count} minutes ago",
+          "other": "%{time_count} minutes ago"
         },
         "time_hours_ago_abbreviated": {
           "zero": "0 hrs ago",
           "one": "1 hr ago",
           "two": "2 hrs ago",
           "few": "%{time_count} hrs ago",
-          "many": "%{time_count} hrs ago"
+          "many": "%{time_count} hrs ago",
+          "other": "%{time_count} hrs ago"
         },
         "time_hours_ago": {
           "zero": "0 hours ago",
           "one": "1 hour ago",
           "two": "2 hours ago",
           "few": "%{time_count} hours ago",
-          "many": "%{time_count} hours ago"
+          "many": "%{time_count} hours ago",
+          "other": "%{time_count} hours ago"
         },
         "time_days_ago_abbreviated": {
           "zero": "0 days ago",
           "one": "1 day ago",
           "two": "2 days ago",
           "few": "%{time_count} days ago",
-          "many": "%{time_count} days ago"
+          "many": "%{time_count} days ago",
+          "other": "%{time_count} days ago"
         },
         "time_days_ago": {
           "zero": "0 days ago",
           "one": "1 day ago",
           "two": "2 days ago",
           "few": "%{time_count} days ago",
-          "many": "%{time_count} days ago"
+          "many": "%{time_count} days ago",
+          "other": "%{time_count} days ago"
         },
         "time_seconds_ago_abbreviated": {
           "zero": "0 seconds ago",
           "one": "1 second ago",
           "two": "2 seconds ago",
           "few": "%{time_count} seconds ago",
-          "many": "%{time_count} seconds ago"
+          "many": "%{time_count} seconds ago",
+          "other": "%{time_count} seconds ago"
         },
         "time_seconds_ago": {
           "zero": "0 secs ago",
           "one": "1 sec ago",
           "two": "2 secs ago",
           "few": "%{time_count} secs ago",
-          "many": "%{time_count} secs ago"
+          "many": "%{time_count} secs ago",
+          "other": "%{time_count} secs ago"
         },
         "time_minutes_abbreviated": {
           "zero": "0 mins",
           "one": "1 min",
           "two": "2 mins",
           "few": "%{time_count} mins",
-          "many": "%{time_count} mins"
+          "many": "%{time_count} mins",
+          "other": "%{time_count} mins"
         },
         "time_minutes": {
           "zero": "0 minutes",
           "one": "1 minute",
           "two": "2 minutes",
           "few": "%{time_count} minutes",
-          "many": "%{time_count} minutes"
+          "many": "%{time_count} minutes",
+          "other": "%{time_count} minutes"
         },
         "time_hours_abbreviated": {
           "zero": "0 hrs",
           "one": "1 hr",
           "two": "2 hrs",
           "few": "%{time_count} hrs",
-          "many": "%{time_count} hrs"
+          "many": "%{time_count} hrs",
+          "other": "%{time_count} hrs"
         },
         "time_hours": {
           "zero": "0 hours",
           "one": "1 hour",
           "two": "2 hours",
           "few": "%{time_count} hours",
-          "many": "%{time_count} hours"
+          "many": "%{time_count} hours",
+          "other": "%{time_count} hours"
         },
         "time_days_abbreviated": {
           "zero": "0 days",
           "one": "1 day",
           "two": "2 days",
           "few": "%{time_count} days",
-          "many": "%{time_count} days"
+          "many": "%{time_count} days",
+          "other": "%{time_count} days"
         },
         "time_days": {
           "zero": "0 days",
           "one": "1 day",
           "two": "2 days",
           "few": "%{time_count} days",
-          "many": "%{time_count} days"
+          "many": "%{time_count} days",
+          "other": "%{time_count} days"
         },
         "time_seconds_abbreviated": {
           "zero": "0 seconds",
           "one": "1 second",
           "two": "2 seconds",
           "few": "%{time_count} seconds",
-          "many": "%{time_count} seconds"
+          "many": "%{time_count} seconds",
+          "other": "%{time_count} seconds"
         },
         "time_seconds": {
           "zero": "0 secs",
           "one": "1 sec",
           "two": "2 secs",
           "few": "%{time_count} secs",
-          "many": "%{time_count} secs"
+          "many": "%{time_count} secs",
+          "other": "%{time_count} secs"
         },
         "just_now": "just now",
         "right_now": "right now",
@@ -14822,6 +15249,7 @@
     "ios_live_stream_chat": true,
     "ios_scroll_output_observe_for_ui": false,
     "ios_backer_dashboard": true,
+    "ios_notification_badge": false,
     "android_creator_view": false,
     "android_native_checkout": false
   },
@@ -15005,7 +15433,7 @@
   ],
   "ab_experiments": {
     "new_project_header": "experimental",
-    "featured_reward": "pinned_image_text_border",
+    "featured_reward": "control",
     "checkout_ksr_not_a_store_refresh_v2": "control"
   },
   "stripe": {

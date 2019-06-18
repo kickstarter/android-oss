@@ -48,6 +48,8 @@ backers</string>
 backers</string>
   <string name="Backers_count_separator_backers_one" formatted="false">%{backers_count}\n
 backer</string>
+  <string name="Backers_count_separator_backers_other" formatted="false">%{backers_count}\n
+backers</string>
   <string name="Backers_count_separator_backers_two" formatted="false">%{backers_count}\n
 backers</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
@@ -166,6 +168,7 @@ backers</string>
   <string name="Filter_name_project_count_live_projects_few" formatted="false">%{filter_name}: %{project_count} live projects</string>
   <string name="Filter_name_project_count_live_projects_many" formatted="false">%{filter_name}: %{project_count} live projects</string>
   <string name="Filter_name_project_count_live_projects_one" formatted="false">%{filter_name}: %{project_count} live project</string>
+  <string name="Filter_name_project_count_live_projects_other" formatted="false">%{filter_name}: %{project_count} live projects</string>
   <string name="Filter_name_project_count_live_projects_two" formatted="false">%{filter_name}: %{project_count} live projects</string>
   <string name="Filter_name_project_count_live_projects_zero" formatted="false">%{filter_name}: %{project_count} live projects</string>
   <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">Filters by projects with upcoming and past live streams.</string>
@@ -174,6 +177,7 @@ backers</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Find projects you’ll love and help bring creative ideas to life.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.</string>
   <string name="First_created" formatted="false">First created</string>
+  <string name="Fix" formatted="false">Fix</string>
   <string name="Follow_friend_name" formatted="false">Follow %{friend_name}</string>
   <string name="Follow_friends" formatted="false">Follow friends</string>
   <string name="Follow_more_friends" formatted="false">Follow more friends</string>
@@ -243,6 +247,7 @@ with friends.</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_many" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_one" formatted="false">%{left_count} left</string>
+  <string name="Left_count_left_other" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_two" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_zero" formatted="false">%{left_count} left</string>
   <string name="Live" formatted="false">Live</string>
@@ -272,6 +277,7 @@ with friends.</string>
   <string name="Message_creator" formatted="false">Message creator</string>
   <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="Messages" formatted="false">Messages</string>
+  <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_email" formatted="false">New email</string>
@@ -383,6 +389,7 @@ daring ideas.</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
+  <string name="Reward_Surveys_other" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_two" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_delivered" formatted="false">Reward delivered?</string>
@@ -392,11 +399,13 @@ daring ideas.</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_many" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_one" formatted="false">%{rewards_count} reward:</string>
+  <string name="Rewards_count_rewards_colon_other" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_two" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_colon_zero" formatted="false">%{rewards_count} rewards:</string>
   <string name="Rewards_count_rewards_few" formatted="false">%{rewards_count} rewards</string>
   <string name="Rewards_count_rewards_many" formatted="false">%{rewards_count} rewards</string>
   <string name="Rewards_count_rewards_one" formatted="false">%{rewards_count} reward</string>
+  <string name="Rewards_count_rewards_other" formatted="false">%{rewards_count} rewards</string>
   <string name="Rewards_count_rewards_two" formatted="false">%{rewards_count} rewards</string>
   <string name="Rewards_count_rewards_zero" formatted="false">%{rewards_count} rewards</string>
   <string name="Save" formatted="false">Save</string>
@@ -490,6 +499,7 @@ catch your eye?</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>
   <string name="View" formatted="false">View</string>
   <string name="View_project" formatted="false">View project</string>
+  <string name="View_rewards" formatted="false">View rewards</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="Watch_live" formatted="false">Watch live</string>
@@ -554,6 +564,7 @@ Please try again later.</string>
   <string name="accessibility_projects_buttons_star" formatted="false">Star</string>
   <string name="accessibility_projects_buttons_star_hint_favorites_this_project" formatted="false">Favorites this project.</string>
   <string name="accessibility_projects_buttons_star_hint_reminds_you" formatted="false">Reminds you 48 hours before this project ends.</string>
+  <string name="activities_badge_value_plus" formatted="false">%{activities_badge_value}+</string>
   <string name="activity_by_creator" formatted="false">by %{creator_name}</string>
   <string name="activity_creator_actions_user_name_adjusted_their_pledge" formatted="false">%{user_name} adjusted their pledge:</string>
   <string name="activity_creator_actions_user_name_canceled_their_pledge" formatted="false">%{user_name} canceled their pledge:</string>
@@ -648,6 +659,7 @@ Please try again later.</string>
   <string name="comments_count_comments_few" formatted="false">%{comments_count} comments</string>
   <string name="comments_count_comments_many" formatted="false">%{comments_count} comments</string>
   <string name="comments_count_comments_one" formatted="false">%{comments_count} comment</string>
+  <string name="comments_count_comments_other" formatted="false">%{comments_count} comments</string>
   <string name="comments_count_comments_two" formatted="false">%{comments_count} comments</string>
   <string name="comments_count_comments_zero" formatted="false">%{comments_count} comments</string>
   <string name="creator_project_preview_subtitle_days_to_go_percent_funded" formatted="false">%{days_to_go} to go · %{percent_funded} funded</string>
@@ -694,11 +706,13 @@ Please try again later.</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_few" formatted="false">%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_many" formatted="false">%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_one" formatted="false">%{pledged} of %{goal} goal, 1 backer so far, %{time_left} to go</string>
+  <string name="dashboard_graphs_funding_accessibility_live_stat_value_other" formatted="false">%{pledged} of %{goal} goal, %{backers_count} backers so far, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_two" formatted="false">%{pledged} of %{goal} goal, 2 backers so far, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_live_stat_value_zero" formatted="false">%{pledged} of %{goal} goal, 0 backers so far, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_few" formatted="false">%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_many" formatted="false">%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_one" formatted="false">%{pledged} of %{goal} goal, 1 backer total, %{time_left} to go</string>
+  <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_other" formatted="false">%{pledged} of %{goal} goal, %{backers_count} backers total, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_two" formatted="false">%{pledged} of %{goal} goal, 2 backers total, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_accessibility_non_live_stat_value_zero" formatted="false">%{pledged} of %{goal} goal, 0 backers total, %{time_left} to go</string>
   <string name="dashboard_graphs_funding_backers" formatted="false">Backers</string>
@@ -742,6 +756,7 @@ Please try again later.</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_few" formatted="false">&lt;b>%{total_start_count}&lt;/b> total plays</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_many" formatted="false">&lt;b>%{total_start_count}&lt;/b> total plays</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_one" formatted="false">&lt;b>1&lt;/b> total play</string>
+  <string name="dashboard_graphs_video_stats_total_plays_count_other" formatted="false">&lt;b>%{total_start_count}&lt;/b> total plays</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_two" formatted="false">&lt;b>2&lt;/b> total plays</string>
   <string name="dashboard_graphs_video_stats_total_plays_count_zero" formatted="false">&lt;b>0&lt;/b> total plays</string>
   <string name="dashboard_graphs_video_title" formatted="false">VIDEO PLAYS</string>
@@ -779,6 +794,7 @@ Please try again later.</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_few" formatted="false">This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_many" formatted="false">This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_one" formatted="false">This will notify 1 backer that a new update is available. Are you sure you want to post?</string>
+  <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_other" formatted="false">This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_two" formatted="false">This will notify %{backer_count} backers that a new update is available. Are you sure you want to post?</string>
   <string name="dashboard_post_update_preview_confirmation_alert_this_will_notify_backers_that_a_new_update_is_available_zero" formatted="false">This will notify 0 backers that a new update is available. Are you sure you want to post?</string>
   <string name="dashboard_post_update_preview_confirmation_alert_title" formatted="false">Ready?</string>
@@ -796,127 +812,152 @@ Please try again later.</string>
   <string name="dates_time_days_abbreviated_few" formatted="false">%{time_count} days</string>
   <string name="dates_time_days_abbreviated_many" formatted="false">%{time_count} days</string>
   <string name="dates_time_days_abbreviated_one" formatted="false">1 day</string>
+  <string name="dates_time_days_abbreviated_other" formatted="false">%{time_count} days</string>
   <string name="dates_time_days_abbreviated_two" formatted="false">2 days</string>
   <string name="dates_time_days_abbreviated_zero" formatted="false">0 days</string>
   <string name="dates_time_days_ago_abbreviated_few" formatted="false">%{time_count} days ago</string>
   <string name="dates_time_days_ago_abbreviated_many" formatted="false">%{time_count} days ago</string>
   <string name="dates_time_days_ago_abbreviated_one" formatted="false">1 day ago</string>
+  <string name="dates_time_days_ago_abbreviated_other" formatted="false">%{time_count} days ago</string>
   <string name="dates_time_days_ago_abbreviated_two" formatted="false">2 days ago</string>
   <string name="dates_time_days_ago_abbreviated_zero" formatted="false">0 days ago</string>
   <string name="dates_time_days_ago_few" formatted="false">%{time_count} days ago</string>
   <string name="dates_time_days_ago_many" formatted="false">%{time_count} days ago</string>
   <string name="dates_time_days_ago_one" formatted="false">1 day ago</string>
+  <string name="dates_time_days_ago_other" formatted="false">%{time_count} days ago</string>
   <string name="dates_time_days_ago_two" formatted="false">2 days ago</string>
   <string name="dates_time_days_ago_zero" formatted="false">0 days ago</string>
   <string name="dates_time_days_few" formatted="false">%{time_count} days</string>
   <string name="dates_time_days_many" formatted="false">%{time_count} days</string>
   <string name="dates_time_days_one" formatted="false">1 day</string>
+  <string name="dates_time_days_other" formatted="false">%{time_count} days</string>
   <string name="dates_time_days_two" formatted="false">2 days</string>
   <string name="dates_time_days_zero" formatted="false">0 days</string>
   <string name="dates_time_hours_abbreviated_few" formatted="false">%{time_count} hrs</string>
   <string name="dates_time_hours_abbreviated_many" formatted="false">%{time_count} hrs</string>
   <string name="dates_time_hours_abbreviated_one" formatted="false">1 hr</string>
+  <string name="dates_time_hours_abbreviated_other" formatted="false">%{time_count} hrs</string>
   <string name="dates_time_hours_abbreviated_two" formatted="false">2 hrs</string>
   <string name="dates_time_hours_abbreviated_zero" formatted="false">0 hrs</string>
   <string name="dates_time_hours_ago_abbreviated_few" formatted="false">%{time_count} hrs ago</string>
   <string name="dates_time_hours_ago_abbreviated_many" formatted="false">%{time_count} hrs ago</string>
   <string name="dates_time_hours_ago_abbreviated_one" formatted="false">1 hr ago</string>
+  <string name="dates_time_hours_ago_abbreviated_other" formatted="false">%{time_count} hrs ago</string>
   <string name="dates_time_hours_ago_abbreviated_two" formatted="false">2 hrs ago</string>
   <string name="dates_time_hours_ago_abbreviated_zero" formatted="false">0 hrs ago</string>
   <string name="dates_time_hours_ago_few" formatted="false">%{time_count} hours ago</string>
   <string name="dates_time_hours_ago_many" formatted="false">%{time_count} hours ago</string>
   <string name="dates_time_hours_ago_one" formatted="false">1 hour ago</string>
+  <string name="dates_time_hours_ago_other" formatted="false">%{time_count} hours ago</string>
   <string name="dates_time_hours_ago_two" formatted="false">2 hours ago</string>
   <string name="dates_time_hours_ago_zero" formatted="false">0 hours ago</string>
   <string name="dates_time_hours_few" formatted="false">%{time_count} hours</string>
   <string name="dates_time_hours_many" formatted="false">%{time_count} hours</string>
   <string name="dates_time_hours_one" formatted="false">1 hour</string>
+  <string name="dates_time_hours_other" formatted="false">%{time_count} hours</string>
   <string name="dates_time_hours_two" formatted="false">2 hours</string>
   <string name="dates_time_hours_zero" formatted="false">0 hours</string>
   <string name="dates_time_in_days_abbreviated_few" formatted="false">in %{time_count} days</string>
   <string name="dates_time_in_days_abbreviated_many" formatted="false">in %{time_count} days</string>
   <string name="dates_time_in_days_abbreviated_one" formatted="false">in 1 day</string>
+  <string name="dates_time_in_days_abbreviated_other" formatted="false">in %{time_count} days</string>
   <string name="dates_time_in_days_abbreviated_two" formatted="false">in 2 days</string>
   <string name="dates_time_in_days_abbreviated_zero" formatted="false">in 0 days</string>
   <string name="dates_time_in_days_few" formatted="false">in %{time_count} days</string>
   <string name="dates_time_in_days_many" formatted="false">in %{time_count} days</string>
   <string name="dates_time_in_days_one" formatted="false">in 1 day</string>
+  <string name="dates_time_in_days_other" formatted="false">in %{time_count} days</string>
   <string name="dates_time_in_days_two" formatted="false">in 2 days</string>
   <string name="dates_time_in_days_zero" formatted="false">in 0 days</string>
   <string name="dates_time_in_hours_abbreviated_few" formatted="false">in %{time_count} hrs</string>
   <string name="dates_time_in_hours_abbreviated_many" formatted="false">in %{time_count} hrs</string>
   <string name="dates_time_in_hours_abbreviated_one" formatted="false">in 1 hr</string>
+  <string name="dates_time_in_hours_abbreviated_other" formatted="false">in %{time_count} hrs</string>
   <string name="dates_time_in_hours_abbreviated_two" formatted="false">in 2 hrs</string>
   <string name="dates_time_in_hours_abbreviated_zero" formatted="false">in 0 hrs</string>
   <string name="dates_time_in_hours_few" formatted="false">in %{time_count} hours</string>
   <string name="dates_time_in_hours_many" formatted="false">in %{time_count} hours</string>
   <string name="dates_time_in_hours_one" formatted="false">in 1 hour</string>
+  <string name="dates_time_in_hours_other" formatted="false">in %{time_count} hours</string>
   <string name="dates_time_in_hours_two" formatted="false">in 2 hours</string>
   <string name="dates_time_in_hours_zero" formatted="false">in 0 hours</string>
   <string name="dates_time_in_minutes_abbreviated_few" formatted="false">in %{time_count} mins</string>
   <string name="dates_time_in_minutes_abbreviated_many" formatted="false">in %{time_count} mins</string>
   <string name="dates_time_in_minutes_abbreviated_one" formatted="false">in 1 min</string>
+  <string name="dates_time_in_minutes_abbreviated_other" formatted="false">in %{time_count} mins</string>
   <string name="dates_time_in_minutes_abbreviated_two" formatted="false">in 2 mins</string>
   <string name="dates_time_in_minutes_abbreviated_zero" formatted="false">in 0 mins</string>
   <string name="dates_time_in_minutes_few" formatted="false">in %{time_count} minutes</string>
   <string name="dates_time_in_minutes_many" formatted="false">in %{time_count} minutes</string>
   <string name="dates_time_in_minutes_one" formatted="false">in 1 minute</string>
+  <string name="dates_time_in_minutes_other" formatted="false">in %{time_count} minutes</string>
   <string name="dates_time_in_minutes_two" formatted="false">in 2 minutes</string>
   <string name="dates_time_in_minutes_zero" formatted="false">in 0 minutes</string>
   <string name="dates_time_in_seconds_abbreviated_few" formatted="false">in "%{time_count} secs"</string>
   <string name="dates_time_in_seconds_abbreviated_many" formatted="false">in "%{time_count} secs"</string>
   <string name="dates_time_in_seconds_abbreviated_one" formatted="false">in 1 sec</string>
+  <string name="dates_time_in_seconds_abbreviated_other" formatted="false">in "%{time_count} secs"</string>
   <string name="dates_time_in_seconds_abbreviated_two" formatted="false">in 2 secs</string>
   <string name="dates_time_in_seconds_abbreviated_zero" formatted="false">in 0 secs</string>
   <string name="dates_time_in_seconds_few" formatted="false">in "%{time_count} seconds"</string>
   <string name="dates_time_in_seconds_many" formatted="false">in "%{time_count} seconds"</string>
   <string name="dates_time_in_seconds_one" formatted="false">in 1 second</string>
+  <string name="dates_time_in_seconds_other" formatted="false">in "%{time_count} seconds"</string>
   <string name="dates_time_in_seconds_two" formatted="false">in 2 seconds</string>
   <string name="dates_time_in_seconds_zero" formatted="false">in 0 seconds</string>
   <string name="dates_time_minutes_abbreviated_few" formatted="false">%{time_count} mins</string>
   <string name="dates_time_minutes_abbreviated_many" formatted="false">%{time_count} mins</string>
   <string name="dates_time_minutes_abbreviated_one" formatted="false">1 min</string>
+  <string name="dates_time_minutes_abbreviated_other" formatted="false">%{time_count} mins</string>
   <string name="dates_time_minutes_abbreviated_two" formatted="false">2 mins</string>
   <string name="dates_time_minutes_abbreviated_zero" formatted="false">0 mins</string>
   <string name="dates_time_minutes_ago_abbreviated_few" formatted="false">%{time_count} mins ago</string>
   <string name="dates_time_minutes_ago_abbreviated_many" formatted="false">%{time_count} mins ago</string>
   <string name="dates_time_minutes_ago_abbreviated_one" formatted="false">1 min ago</string>
+  <string name="dates_time_minutes_ago_abbreviated_other" formatted="false">%{time_count} mins ago</string>
   <string name="dates_time_minutes_ago_abbreviated_two" formatted="false">2 mins ago</string>
   <string name="dates_time_minutes_ago_abbreviated_zero" formatted="false">0 mins ago</string>
   <string name="dates_time_minutes_ago_few" formatted="false">%{time_count} minutes ago</string>
   <string name="dates_time_minutes_ago_many" formatted="false">%{time_count} minutes ago</string>
   <string name="dates_time_minutes_ago_one" formatted="false">1 minute ago</string>
+  <string name="dates_time_minutes_ago_other" formatted="false">%{time_count} minutes ago</string>
   <string name="dates_time_minutes_ago_two" formatted="false">2 minutes ago</string>
   <string name="dates_time_minutes_ago_zero" formatted="false">0 minutes ago</string>
   <string name="dates_time_minutes_few" formatted="false">%{time_count} minutes</string>
   <string name="dates_time_minutes_many" formatted="false">%{time_count} minutes</string>
   <string name="dates_time_minutes_one" formatted="false">1 minute</string>
+  <string name="dates_time_minutes_other" formatted="false">%{time_count} minutes</string>
   <string name="dates_time_minutes_two" formatted="false">2 minutes</string>
   <string name="dates_time_minutes_zero" formatted="false">0 minutes</string>
   <string name="dates_time_seconds_abbreviated_few" formatted="false">%{time_count} seconds</string>
   <string name="dates_time_seconds_abbreviated_many" formatted="false">%{time_count} seconds</string>
   <string name="dates_time_seconds_abbreviated_one" formatted="false">1 second</string>
+  <string name="dates_time_seconds_abbreviated_other" formatted="false">%{time_count} seconds</string>
   <string name="dates_time_seconds_abbreviated_two" formatted="false">2 seconds</string>
   <string name="dates_time_seconds_abbreviated_zero" formatted="false">0 seconds</string>
   <string name="dates_time_seconds_ago_abbreviated_few" formatted="false">%{time_count} seconds ago</string>
   <string name="dates_time_seconds_ago_abbreviated_many" formatted="false">%{time_count} seconds ago</string>
   <string name="dates_time_seconds_ago_abbreviated_one" formatted="false">1 second ago</string>
+  <string name="dates_time_seconds_ago_abbreviated_other" formatted="false">%{time_count} seconds ago</string>
   <string name="dates_time_seconds_ago_abbreviated_two" formatted="false">2 seconds ago</string>
   <string name="dates_time_seconds_ago_abbreviated_zero" formatted="false">0 seconds ago</string>
   <string name="dates_time_seconds_ago_few" formatted="false">%{time_count} secs ago</string>
   <string name="dates_time_seconds_ago_many" formatted="false">%{time_count} secs ago</string>
   <string name="dates_time_seconds_ago_one" formatted="false">1 sec ago</string>
+  <string name="dates_time_seconds_ago_other" formatted="false">%{time_count} secs ago</string>
   <string name="dates_time_seconds_ago_two" formatted="false">2 secs ago</string>
   <string name="dates_time_seconds_ago_zero" formatted="false">0 secs ago</string>
   <string name="dates_time_seconds_few" formatted="false">%{time_count} secs</string>
   <string name="dates_time_seconds_many" formatted="false">%{time_count} secs</string>
   <string name="dates_time_seconds_one" formatted="false">1 sec</string>
+  <string name="dates_time_seconds_other" formatted="false">%{time_count} secs</string>
   <string name="dates_time_seconds_two" formatted="false">2 secs</string>
   <string name="dates_time_seconds_zero" formatted="false">0 secs</string>
   <string name="dates_yesterday" formatted="false">yesterday</string>
   <string name="days_few" formatted="false">days</string>
   <string name="days_many" formatted="false">days</string>
   <string name="days_one" formatted="false">day</string>
+  <string name="days_other" formatted="false">days</string>
   <string name="days_plural" formatted="false">days</string>
   <string name="days_two" formatted="false">days</string>
   <string name="days_zero" formatted="false">days</string>
@@ -951,16 +992,19 @@ Please try again later.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_many" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_one" formatted="false">%{friend_name} is a backer.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_other" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_two" formatted="false">%{friend_name} and %{second_friend_name} are backers.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">None of your friends are backers.</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_few" formatted="false">%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_many" formatted="false">%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_one" formatted="false">1 backer so far, %{percent_funded} funded, %{time_left} to go</string>
+  <string name="discovery_baseball_card_stats_accessibility_live_stat_value_other" formatted="false">%{backers_count} backers so far, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_two" formatted="false">2 backers so far, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_live_stat_value_zero" formatted="false">0 backers so far, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_few" formatted="false">%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_many" formatted="false">%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_one" formatted="false">1 backer total, %{percent_funded} funded, %{time_left} to go</string>
+  <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_other" formatted="false">%{backers_count} backers total, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_two" formatted="false">2 backers total, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_accessibility_non_live_stat_value_zero" formatted="false">0 backers total, %{percent_funded} funded, %{time_left} to go</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">backers</string>
@@ -1048,6 +1092,7 @@ Please try again later.</string>
   <string name="general_backer_count_backers_few" formatted="false">%{backer_count} backers</string>
   <string name="general_backer_count_backers_many" formatted="false">%{backer_count} backers</string>
   <string name="general_backer_count_backers_one" formatted="false">1 backer</string>
+  <string name="general_backer_count_backers_other" formatted="false">%{backer_count} backers</string>
   <string name="general_backer_count_backers_two" formatted="false">2 backers</string>
   <string name="general_backer_count_backers_zero" formatted="false">0 backers</string>
   <string name="general_error_oops" formatted="false">Oops!</string>
@@ -1074,6 +1119,7 @@ Please try again later.</string>
   <string name="hours_few" formatted="false">hours</string>
   <string name="hours_many" formatted="false">hours</string>
   <string name="hours_one" formatted="false">hour</string>
+  <string name="hours_other" formatted="false">hours</string>
   <string name="hours_plural" formatted="false">hours</string>
   <string name="hours_two" formatted="false">hours</string>
   <string name="hours_zero" formatted="false">hours</string>
@@ -1156,9 +1202,11 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="minutes_few" formatted="false">minutes</string>
   <string name="minutes_many" formatted="false">minutes</string>
   <string name="minutes_one" formatted="false">minute</string>
+  <string name="minutes_other" formatted="false">minutes</string>
   <string name="minutes_plural" formatted="false">minutes</string>
   <string name="minutes_two" formatted="false">minutes</string>
   <string name="minutes_zero" formatted="false">minutes</string>
+  <string name="number_of_items_items" formatted="false">%{number_of_items} items</string>
   <string name="percentage_funded" formatted="false">%{percentage} funded</string>
   <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> pledged on %{pledge_date}</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
@@ -1167,12 +1215,14 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="profile_category_count_categories_backed_few" formatted="false">%{category_count} categories backed</string>
   <string name="profile_category_count_categories_backed_many" formatted="false">%{category_count} categories backed</string>
   <string name="profile_category_count_categories_backed_one" formatted="false">1 category backed</string>
+  <string name="profile_category_count_categories_backed_other" formatted="false">%{category_count} categories backed</string>
   <string name="profile_category_count_categories_backed_two" formatted="false">2 categories backed</string>
   <string name="profile_category_count_categories_backed_zero" formatted="false">0 categories backed</string>
   <string name="profile_pie_slice_category_name_backed_projects_count" formatted="false">%{category_name} (%{backed_projects_count})</string>
   <string name="profile_projects_backed_project_count_projects_few" formatted="false">BACKED %{project_count} PROJECTS</string>
   <string name="profile_projects_backed_project_count_projects_many" formatted="false">BACKED %{project_count} PROJECTS</string>
   <string name="profile_projects_backed_project_count_projects_one" formatted="false">BACKED 1 PROJECT</string>
+  <string name="profile_projects_backed_project_count_projects_other" formatted="false">BACKED %{project_count} PROJECTS</string>
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">BACKED 2 PROJECTS</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">BACKED 0 PROJECTS</string>
   <string name="profile_projects_backed_projects" formatted="false">Backed projects</string>
@@ -1266,7 +1316,7 @@ Thank you for your support!</string>
   <string name="project_checkout_android_pay_payment_method" formatted="false">Payment Method</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.</string>
   <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.</string>
-  <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">By pledging you agree to Kickstarter’s &lt;u>terms of use&lt;/u> and &lt;u>privacy policy&lt;/u>.</string>
+  <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">By pledging you agree to Kickstarter\'s &lt;u>terms of use&lt;/u> and &lt;u>privacy policy&lt;/u>.</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Error</string>
   <string name="project_checkout_backing_navbar_title" formatted="false">Back this project</string>
@@ -1314,6 +1364,7 @@ Thank you for your support!</string>
   <string name="project_count_projects_few" formatted="false">%{project_count} projects</string>
   <string name="project_count_projects_many" formatted="false">%{project_count} projects</string>
   <string name="project_count_projects_one" formatted="false">%{project_count} project</string>
+  <string name="project_count_projects_other" formatted="false">%{project_count} projects</string>
   <string name="project_count_projects_two" formatted="false">%{project_count} projects</string>
   <string name="project_count_projects_zero" formatted="false">%{project_count} projects</string>
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
@@ -1334,10 +1385,12 @@ Thank you for your support!</string>
   <string name="project_social_friends_are_backers_and_more_bold_few" formatted="false">%{backer_count} more</string>
   <string name="project_social_friends_are_backers_and_more_bold_many" formatted="false">%{backer_count} more</string>
   <string name="project_social_friends_are_backers_and_more_bold_one" formatted="false">1 more</string>
+  <string name="project_social_friends_are_backers_and_more_bold_other" formatted="false">%{backer_count} more</string>
   <string name="project_social_friends_are_backers_and_more_bold_two" formatted="false">2 more</string>
   <string name="project_social_friends_are_backers_and_more_count_few" formatted="false">%{friends} and %{backer_count} more are backers.</string>
   <string name="project_social_friends_are_backers_and_more_count_many" formatted="false">%{friends} and %{backer_count} more are backers.</string>
   <string name="project_social_friends_are_backers_and_more_count_one" formatted="false">%{friends} and 1 more are backers.</string>
+  <string name="project_social_friends_are_backers_and_more_count_other" formatted="false">%{friends} and %{backer_count} more are backers.</string>
   <string name="project_social_friends_are_backers_and_more_count_two" formatted="false">%{friends} and 2 more are backers.</string>
   <string name="project_social_friends_are_backers_and_more_count_zero" formatted="false">%{friends} and %{friend_name} are backers.</string>
   <string name="project_social_friends_separator" formatted="false">, </string>
@@ -1375,6 +1428,8 @@ backed</string>
   <string name="projects_count_newline_backed_many" formatted="false">%{projects_count}\n
 backed</string>
   <string name="projects_count_newline_backed_one" formatted="false">1\nbacked</string>
+  <string name="projects_count_newline_backed_other" formatted="false">%{projects_count}\n
+backed</string>
   <string name="projects_count_newline_backed_two" formatted="false">2\nbacked</string>
   <string name="projects_count_newline_backed_zero" formatted="false">0\nbacked</string>
   <string name="projects_count_newline_saved_few" formatted="false">%{projects_count}\n
@@ -1382,6 +1437,8 @@ saved</string>
   <string name="projects_count_newline_saved_many" formatted="false">%{projects_count}\n
 saved</string>
   <string name="projects_count_newline_saved_one" formatted="false">1\nsaved</string>
+  <string name="projects_count_newline_saved_other" formatted="false">%{projects_count}\n
+saved</string>
   <string name="projects_count_newline_saved_two" formatted="false">2\nsaved</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\nsaved</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Close</string>
@@ -1390,6 +1447,7 @@ saved</string>
   <string name="rewards_info_backer_count_backers_few" formatted="false">%{backer_count} backers</string>
   <string name="rewards_info_backer_count_backers_many" formatted="false">%{backer_count} backers</string>
   <string name="rewards_info_backer_count_backers_one" formatted="false">1 backer</string>
+  <string name="rewards_info_backer_count_backers_other" formatted="false">%{backer_count} backers</string>
   <string name="rewards_info_backer_count_backers_two" formatted="false">2 backers</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 backers</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Estimated delivery</string>
@@ -1397,6 +1455,7 @@ saved</string>
   <string name="rewards_info_item_quantity_title_few" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_many" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
+  <string name="rewards_info_item_quantity_title_other" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_two" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_zero" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Limited (%{rewards_remaining} left of %{reward_limit})</string>
@@ -1434,11 +1493,13 @@ saved</string>
   <string name="social_following_friend_projects_count_backed_few" formatted="false">%{backed_count} backed</string>
   <string name="social_following_friend_projects_count_backed_many" formatted="false">%{backed_count} backed</string>
   <string name="social_following_friend_projects_count_backed_one" formatted="false">1 backed</string>
+  <string name="social_following_friend_projects_count_backed_other" formatted="false">%{backed_count} backed</string>
   <string name="social_following_friend_projects_count_backed_two" formatted="false">2 backed</string>
   <string name="social_following_friend_projects_count_backed_zero" formatted="false">0 backed</string>
   <string name="social_following_friend_projects_count_created_few" formatted="false">%{created_count} created</string>
   <string name="social_following_friend_projects_count_created_many" formatted="false">%{created_count} created</string>
   <string name="social_following_friend_projects_count_created_one" formatted="false">1 created</string>
+  <string name="social_following_friend_projects_count_created_other" formatted="false">%{created_count} created</string>
   <string name="social_following_friend_projects_count_created_two" formatted="false">2 created</string>
   <string name="social_following_friend_projects_count_created_zero" formatted="false">0 created</string>
   <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">Close Facebook connect header</string>
@@ -1452,6 +1513,8 @@ saved</string>
   <string name="social_following_stats_backed_projects" formatted="false">Backed projects</string>
   <string name="social_following_stats_button_follow_all_friends_few" formatted="false">Follow all %{remote_friends_count} friends</string>
   <string name="social_following_stats_button_follow_all_friends_many" formatted="false">Follow all %{remote_friends_count} friends</string>
+  <string name="social_following_stats_button_follow_all_friends_one" formatted="false">Follow your friend</string>
+  <string name="social_following_stats_button_follow_all_friends_other" formatted="false">Follow all %{remote_friends_count} friends</string>
   <string name="social_following_stats_button_follow_all_friends_two" formatted="false">Follow all 2 friends</string>
   <string name="social_following_stats_friends" formatted="false">Friends</string>
   <string name="social_message_creator" formatted="false">Message creator</string>
@@ -1466,6 +1529,7 @@ saved</string>
 \n
 \n
 --------\n
+\n
 </string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_chooser" formatted="false">Select email application:</string>
@@ -1504,6 +1568,7 @@ saved</string>
   <string name="updates_count_updates_few" formatted="false">%{updates_count} updates</string>
   <string name="updates_count_updates_many" formatted="false">%{updates_count} updates</string>
   <string name="updates_count_updates_one" formatted="false">%{updates_count} update</string>
+  <string name="updates_count_updates_other" formatted="false">%{updates_count} updates</string>
   <string name="updates_count_updates_two" formatted="false">%{updates_count} updates</string>
   <string name="updates_count_updates_zero" formatted="false">%{updates_count} updates</string>
   <string name="via_custom" formatted="false">via custom</string>

@@ -3,24 +3,107 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-class HorizontalNoRewardViewHolderViewModelTest: KSRobolectricTestCase() {
+class HorizontalNoRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: HorizontalNoRewardViewHolderViewModel.ViewModel
+    private val buttonCTA = TestSubscriber<Int>()
+    private val buttonIsGone = TestSubscriber.create<Boolean>()
+    private val buttonTint = TestSubscriber.create<Int>()
+    private val checkIsGone = TestSubscriber.create<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = HorizontalNoRewardViewHolderViewModel.ViewModel(environment)
+        this.vm.outputs.buttonCTA().subscribe(this.buttonCTA)
+        this.vm.outputs.buttonIsGone().subscribe(this.buttonIsGone)
+        this.vm.outputs.buttonTint().subscribe(this.buttonTint)
+        this.vm.outputs.checkIsGone().subscribe(this.checkIsGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
+    }
+
+    @Test
+    fun testButtonOutputs() {
+        setUpEnvironment(environment())
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.noReward()
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.buttonIsGone.assertValue(false)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.buttonCTA.assertValue(R.string.Pledge_without_a_reward)
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.projectAndReward(backedLiveProject, reward)
+        this.buttonIsGone.assertValues(false)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.buttonCTA.assertValue(R.string.Pledge_without_a_reward)
+
+        val noRewardLiveBackedProject = ProjectFactory.backedProject().toBuilder()
+                .backing(BackingFactory.backing(backedLiveProject, UserFactory.user(), reward))
+                .build()
+        this.vm.inputs.projectAndReward(noRewardLiveBackedProject, reward)
+        this.buttonIsGone.assertValues(false)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.buttonCTA.assertValue(R.string.Pledge_without_a_reward)
+
+        val successfulProject = ProjectFactory.successfulProject()
+        this.vm.inputs.projectAndReward(successfulProject, reward)
+        this.buttonIsGone.assertValues(false, true)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.buttonCTA.assertValue(R.string.Pledge_without_a_reward)
+
+        val noRewardSuccessfulBackedProject = ProjectFactory.backedProject().toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .backing(BackingFactory.backing(backedLiveProject, UserFactory.user(), reward))
+                .build()
+        this.vm.inputs.projectAndReward(noRewardSuccessfulBackedProject, reward)
+        this.buttonIsGone.assertValues(false, true, false)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.buttonCTA.assertValues(R.string.Pledge_without_a_reward, R.string.View_your_pledge)
+    }
+
+    @Test
+    fun testCheckIsGone() {
+        setUpEnvironment(environment())
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.noReward()
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.checkIsGone.assertValue(true)
+
+        val successfulProject = ProjectFactory.successfulProject()
+        this.vm.inputs.projectAndReward(successfulProject, reward)
+        this.checkIsGone.assertValue(true)
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.projectAndReward(backedLiveProject, reward)
+        this.checkIsGone.assertValue(true)
+
+        val noRewardBackedProject = ProjectFactory.backedProject().toBuilder()
+                .backing(BackingFactory.backing(backedLiveProject, UserFactory.user(), reward))
+                .build()
+        this.vm.inputs.projectAndReward(noRewardBackedProject, reward)
+        this.checkIsGone.assertValues(true)
+
+        val noRewardSuccessfulBackedProject = ProjectFactory.backedProject().toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .backing(BackingFactory.backing(backedLiveProject, UserFactory.user(), reward))
+                .build()
+        this.vm.inputs.projectAndReward(noRewardSuccessfulBackedProject, reward)
+        this.checkIsGone.assertValues(true, false)
     }
 
     @Test

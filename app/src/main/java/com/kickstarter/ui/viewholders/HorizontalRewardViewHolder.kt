@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -41,17 +42,17 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
 
         val rewardItemAdapter = setUpRewardItemsAdapter()
 
-        this.viewModel.outputs.conversionTextViewIsGone()
+        this.viewModel.outputs.conversionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(this.view.horizontal_reward_usd_conversion_text_view))
 
-        this.viewModel.outputs.conversionText()
+        this.viewModel.outputs.conversion()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setConversionTextView(it) }
 
-        this.viewModel.outputs.descriptionText()
+        this.viewModel.outputs.description()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.horizontal_reward_description_text_view.text = it }
@@ -61,17 +62,22 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
                 .compose(observeForUI())
                 .subscribe { configureRewardButton(it) }
 
-        this.viewModel.outputs.limitAndRemainingTextViewIsGone()
+        this.viewModel.outputs.remainingIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(this.view.horizontal_reward_remaining_text_view))
 
-        this.viewModel.outputs.limitAndRemainingText()
+        this.viewModel.outputs.limitContainerIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setRemainingRewardsTextView(it.second) }
+                .subscribe { ViewUtils.setGone(this.view.reward_limit_container, it) }
 
-        this.viewModel.outputs.limitReachedButtonTextIsVisible()
+        this.viewModel.outputs.remaining()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setRemainingRewardsTextView(it) }
+
+        this.viewModel.outputs.limitReachedIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.horizontal_reward_pledge_button.text = this.noLongerAvailableString }
@@ -89,9 +95,9 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.reward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_ending_text_view.text = formattedDeadlineString(it) }
+                .subscribe { this.view.horizontal_reward_ending_text_view.text = formattedExpirationString(it) }
 
-        this.viewModel.outputs.rewardEndDateSectionIsGone()
+        this.viewModel.outputs.endDateSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.horizontal_reward_ending_text_view, it) }
@@ -106,12 +112,12 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(this.view.horizontal_rewards_item_section))
 
-        this.viewModel.outputs.titleText()
+        this.viewModel.outputs.title()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.horizontal_reward_title_text_view.text = it }
 
-        this.viewModel.outputs.titleTextViewIsGone()
+        this.viewModel.outputs.titleIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.horizontal_reward_title_text_view, it) }
@@ -125,6 +131,26 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.startBackingActivity(it) }
+
+        this.viewModel.outputs.buttonTint()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.horizontal_reward_pledge_button.backgroundTintList = ContextCompat.getColorStateList(context(), it) }
+
+        this.viewModel.outputs.buttonIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setPledgeButtonVisibility(it) }
+
+        this.viewModel.outputs.checkIsInvisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setInvisible(this.view.reward_check, it) }
+
+        this.viewModel.outputs.viewYourPledgeIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.horizontal_reward_pledge_button.setText(R.string.View_your_pledge) }
 
         view.horizontal_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()
@@ -144,7 +170,7 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.view.horizontal_reward_pledge_button.isEnabled = isRewardAvailable
     }
 
-    private fun formattedDeadlineString(@NonNull reward: Reward): String {
+    private fun formattedExpirationString(@NonNull reward: Reward): String {
         val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
         val value = RewardUtils.deadlineCountdownValue(reward)
         return "$value $detail"
@@ -158,6 +184,14 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     private fun setMinimumButtonText(@NonNull minimum: String) {
         this.view.horizontal_reward_pledge_button.text = this.ksString.format(this.pledgeRewardCurrencyOrMoreString,
                 "reward_currency", minimum)
+    }
+
+    private fun setPledgeButtonVisibility(gone: Boolean) {
+        ViewUtils.setGone(this.view.reward_button_container, gone)
+        when {
+            gone -> ViewUtils.setGone(this.view.reward_button_placeholder, true)
+            else -> ViewUtils.setInvisible(this.view.reward_button_placeholder, true)
+        }
     }
 
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {

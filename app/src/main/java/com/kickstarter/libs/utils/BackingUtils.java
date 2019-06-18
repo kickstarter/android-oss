@@ -19,7 +19,7 @@ public final class BackingUtils {
 
     final Long rewardId = backing.rewardId();
     if (rewardId == null) {
-      return false;
+      return RewardUtils.isNoReward(reward);
     }
 
     return rewardId == reward.id();

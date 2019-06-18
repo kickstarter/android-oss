@@ -175,7 +175,8 @@
   <dimen name="indicator_radius">4dp</dimen>
   <dimen name="pledge_margin">@dimen/grid_4</dimen>
   <dimen name="mini_reward_width">@dimen/grid_15</dimen>
-  <dimen name="item_reward_layout_width">@dimen/grid_49</dimen>
+  <dimen name="item_reward_width">@dimen/grid_49</dimen>
+  <dimen name="reward_margin">@dimen/grid_3</dimen>
   <dimen name="reward_fragment_guideline_constraint_end">100dp</dimen>
   <dimen name="fragment_rewards_parent_min_height">@dimen/grid_20</dimen>
   <dimen name="stored_card_radius">16dp</dimen>

@@ -17,6 +17,7 @@ import org.joda.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -128,6 +129,21 @@ public final class ProjectUtils {
    */
   public static int photoHeightFromWidthRatio(final int width) {
     return width * 9 / 16;
+  }
+
+  /**
+   * Returns the color resource ID of the rewards button based on project and backing status.
+   */
+  public static @ColorRes int pledgeButtonColor(final @NonNull Project project) {
+    if (project.isBacking() && project.isLive()) {
+      //todo: manage my pledge will be blue
+      return R.color.button_pledge_live;
+    } else if (project.isBacking() && !project.isLive()) {
+      //todo: view rewards will be black
+      return R.color.button_pledge_ended;
+    } else {
+      return R.color.button_pledge_live;
+    }
   }
 
   /**

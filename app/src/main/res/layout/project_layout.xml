@@ -15,18 +15,17 @@
     android:id="@+id/project_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
     android:layout_above="@+id/project_action_buttons"
-    android:layout_below="@id/project_toolbar"/>
+    android:layout_below="@id/project_toolbar"
+    android:clipToPadding="false" />
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
     android:focusable="true"
-    android:visibility="gone"
-    tools:visibility="visible"
-    android:layout_alignParentBottom="true">
+    tools:visibility="visible">
 
     <Button
       android:id="@+id/back_project_button"
@@ -55,6 +54,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="invisible"
+    tools:visibility="visible"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="30dp"
     app:cardElevation="@dimen/grid_2">
@@ -64,6 +64,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:alpha="0"
+      tools:alpha="1"
       android:orientation="vertical">
 
       <com.google.android.material.appbar.AppBarLayout
@@ -98,15 +99,49 @@
 
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-      android:id="@+id/native_back_this_project_button"
-      style="@style/ExtendedFab"
+    <LinearLayout
+      android:id="@+id/action_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textAllCaps="false"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:text="@string/project_back_button" />
+      android:orientation="horizontal">
+
+      <LinearLayout
+        android:id="@+id/backing_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/you_backer_text"
+          style="@style/SubheadlineMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:text="@string/Youre_a_backer" />
+
+        <TextView
+          android:id="@+id/reward_infos"
+          style="@style/Caption1Secondary"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:ellipsize="end"
+          android:lines="1"
+          tools:text="$20 . Funky Reward Title..." />
+      </LinearLayout>
+
+      <com.google.android.material.button.MaterialButton
+        android:id="@+id/native_project_action_button"
+        style="@style/ExtendedFab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/project_back_button"
+        android:textAllCaps="false"
+        tools:visibility="visible"/>
+    </LinearLayout>
 
   </androidx.cardview.widget.CardView>
 

@@ -453,6 +453,10 @@
     <item name="android:textSize">@dimen/subheadline</item>
   </style>
 
+  <style name="SubheadlineMedium" parent="Subheadline">
+    <item name="android:textStyle">bold</item>
+  </style>
+
   <style name="Headline" parent="TextPrimary">
     <item name="android:textSize">@dimen/headline</item>
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>

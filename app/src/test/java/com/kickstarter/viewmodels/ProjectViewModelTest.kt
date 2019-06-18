@@ -7,10 +7,10 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.preferences.BooleanPreferenceType
+import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
@@ -19,6 +19,8 @@ import rx.observers.TestSubscriber
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
+    private val backingDetails = TestSubscriber<String>()
+    private val backingDetailsIsVisible = TestSubscriber<Boolean>()
     private val heartDrawableId = TestSubscriber<Int>()
     private val projectTest = TestSubscriber<Project>()
     private val rewardsButtonColor = TestSubscriber<Int>()
@@ -40,6 +42,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
+        this.vm.outputs.backingDetails().subscribe(this.backingDetails)
+        this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
@@ -353,17 +357,35 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_HideRewardsFragment() {
+    fun testProjectViewModel_SetRewardButtonStringAndColor_Backed_Live_Project() {
         setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .isBacking(true)
+                .build()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.rewardsButtonColor.assertValue(R.color.button_manage_pledge)
+        this.rewardsButtonText.assertValue(R.string.Manage)
+    }
+
+    @Test
+    fun testProjectViewModel_HideRewardsFragment() {
+        this.initializeViewModelWithProject(ProjectFactory.project())
         this.vm.inputs.hideRewardsFragmentClicked()
         this.showRewardsFragment.assertValue(false)
     }
 
     @Test
     fun testProjectViewModel_ShowRewardsFragment() {
-        setUpEnvironment(environment())
-        this.vm.inputs.nativeCheckoutBackProjectButtonClicked()
+        this.initializeViewModelWithProject(ProjectFactory.project())
+        this.vm.inputs.nativeProjectActionButtonClicked()
         this.showRewardsFragment.assertValue(true)
+        this.vm.inputs.nativeProjectActionButtonClicked()
+        this.showRewardsFragment.assertValues(true, true)
     }
 
     @Test
@@ -371,5 +393,96 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         this.vm.inputs.onGlobalLayout()
         this.setInitialRewardsContainerY.assertValueCount(1)
+    }
+
+    @Test
+    fun testProjectViewModel_ManagePledgeViewText_WithReward() {
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .id(4)
+                .build()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .rewardId(4)
+                .build()
+
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .rewards(listOf(reward))
+                .build()
+
+        this.initializeViewModelWithProject(project)
+        this.backingDetails.assertValues("$10 • Digital Bundle")
+    }
+
+    @Test
+    fun testProjectViewModel_ManagePledgeViewText_WithNoReward() {
+
+        val reward = RewardFactory.noReward()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(15.0)
+                .reward(reward)
+                .build()
+
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.initializeViewModelWithProject(project)
+        this.backingDetails.assertValues("$15 ")
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsNotVisible_NonBacked_Live_Project() {
+            this.initializeViewModelWithProject(ProjectFactory.project())
+            this.backingDetailsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsNotVisible_NonBacked_Ended_Project() {
+        this.initializeViewModelWithProject(ProjectFactory.successfulProject())
+        this.backingDetailsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsNotVisible_Backed_Ended_Project() {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(15.0)
+                .build()
+
+        val project = ProjectFactory.successfulProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+        this.initializeViewModelWithProject(project)
+        this.backingDetailsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsVisible_Backed_Live_Project() {
+        this.initializeViewModelWithProject(ProjectFactory.backedProject())
+        this.backingDetailsIsVisible.assertValue(true)
+    }
+
+    private fun initializeViewModelWithProject(project: Project) {
+        val currentUser = MockCurrentUser()
+        val rewardsEnabled: BooleanPreferenceType = MockBooleanPreference(true)
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .currentUser(currentUser)
+                .horizontalRewardsEnabled(rewardsEnabled)
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
     }
 }

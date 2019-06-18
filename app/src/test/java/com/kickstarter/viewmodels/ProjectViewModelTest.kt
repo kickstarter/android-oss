@@ -382,9 +382,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectViewModel_ShowRewardsFragment() {
         this.initializeViewModelWithProject(ProjectFactory.project())
-        this.vm.inputs.nativeCheckoutBackProjectButtonClicked()
+        this.vm.inputs.nativeProjectActionButtonClicked()
         this.showRewardsFragment.assertValue(true)
-        this.vm.inputs.nativeCheckoutManagePledgeButtonClicked()
+        this.vm.inputs.nativeProjectActionButtonClicked()
         this.showRewardsFragment.assertValues(true, true)
     }
 

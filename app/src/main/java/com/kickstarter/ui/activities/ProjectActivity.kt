@@ -181,7 +181,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
 
         native_project_action_button.setOnClickListener {
-            this.viewModel.inputs.nativeCheckoutBackProjectButtonClicked()
+            this.viewModel.inputs.nativeProjectActionButtonClicked()
         }
 
         manage_pledge_button.setOnClickListener {
@@ -392,6 +392,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     override fun back() {
         when {
             supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
+            native_project_action_button.visibility == View.GONE -> this.viewModel.inputs.hideRewardsFragmentClicked()
             else -> super.back()
         }
     }

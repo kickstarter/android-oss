@@ -44,11 +44,8 @@ interface ProjectViewModel {
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
 
-        /** Call when the native back project button is clicked.  */
-        fun nativeCheckoutBackProjectButtonClicked()
-
-        /** Call when the native manage pledge button is clicked  */
-        fun nativeCheckoutManagePledgeButtonClicked()
+        /** Call when the native_project_action_button is clicked.  */
+        fun nativeProjectActionButtonClicked()
 
         /** Call when the view has been laid out. */
         fun onGlobalLayout()
@@ -144,8 +141,7 @@ interface ProjectViewModel {
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
-        private val nativeCheckoutBackProjectButtonClicked = PublishSubject.create<Void>()
-        private val nativeCheckoutManagePledgeButtonClicked = PublishSubject.create<Void>()
+        private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
@@ -285,7 +281,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.setInitialRewardPosition)
 
-            Observable.merge(this.nativeCheckoutBackProjectButtonClicked, this.nativeCheckoutManagePledgeButtonClicked)
+            this.nativeProjectActionButtonClicked
                     .map { true }
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
@@ -401,12 +397,8 @@ interface ProjectViewModel {
             this.managePledgeButtonClicked.onNext(null)
         }
 
-        override fun nativeCheckoutBackProjectButtonClicked() {
-            this.nativeCheckoutBackProjectButtonClicked.onNext(null)
-        }
-
-        override fun nativeCheckoutManagePledgeButtonClicked() {
-            this.nativeCheckoutManagePledgeButtonClicked.onNext(null)
+        override fun nativeProjectActionButtonClicked() {
+            this.nativeProjectActionButtonClicked.onNext(null)
         }
 
         override fun onGlobalLayout() {

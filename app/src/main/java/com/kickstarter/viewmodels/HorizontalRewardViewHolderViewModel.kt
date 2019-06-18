@@ -164,7 +164,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .compose(ignoreValues())
 
             this.minimumAmount = this.projectAndReward
-                    .filter { pledgeCopyIsVisible(it.first, it.second) }
+                    .filter { rewardIsAvailable(it.first, it.second) }
                     .map { this.ksCurrency.format(it.second.minimum(), it.first) }
 
             this.conversionIsGone = this.projectAndReward
@@ -254,7 +254,7 @@ interface HorizontalRewardViewHolderViewModel {
 
         }
 
-        private fun pledgeCopyIsVisible(project: Project, reward: Reward): Boolean {
+        private fun rewardIsAvailable(project: Project, reward: Reward): Boolean {
             return project.isLive && !RewardUtils.isLimitReached(reward) &&  !RewardUtils.isExpired(reward)
         }
 

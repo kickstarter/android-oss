@@ -137,12 +137,12 @@ public final class ProjectUtils {
   public static @ColorRes int pledgeButtonColor(final @NonNull Project project) {
     if (project.isBacking() && project.isLive()) {
       //todo: manage my pledge will be blue
-      return R.color.button_pledge_primary;
+      return R.color.button_pledge_live;
     } else if (project.isBacking() && !project.isLive()) {
       //todo: view rewards will be black
       return R.color.button_pledge_ended;
     } else {
-      return R.color.button_pledge_primary;
+      return R.color.button_pledge_live;
     }
   }
 

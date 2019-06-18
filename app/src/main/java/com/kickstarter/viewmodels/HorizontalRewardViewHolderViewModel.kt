@@ -164,9 +164,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .compose(ignoreValues())
 
             this.minimumAmount = this.projectAndReward
-                    .filter { it.first.isLive }
-                    .filter { !RewardUtils.isLimitReached(it.second) }
-                    .filter { !RewardUtils.isExpired(it.second) }
+                    .filter { pledgeCopyIsVisible(it.first, it.second) }
                     .map { this.ksCurrency.format(it.second.minimum(), it.first) }
 
             this.conversionIsGone = this.projectAndReward
@@ -210,7 +208,7 @@ interface HorizontalRewardViewHolderViewModel {
             this.reward = reward
 
             this.endDateSectionIsGone = this.projectAndReward
-                    .map { expirationDateIsGone(it) }
+                    .map { expirationDateIsGone(it.first, it.second) }
                     .distinctUntilChanged()
 
             this.limitContainerIsGone = Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone)
@@ -235,10 +233,10 @@ interface HorizontalRewardViewHolderViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
         }
 
-        private fun expirationDateIsGone(it: Pair<Project, Reward>): Boolean {
+        private fun expirationDateIsGone(project: Project, reward: Reward): Boolean {
             return when {
-                !it.first.isLive -> true
-                RewardUtils.isTimeLimited(it.second) -> RewardUtils.isExpired(it.second)
+                !project.isLive -> true
+                RewardUtils.isTimeLimited(reward) -> RewardUtils.isExpired(reward)
                 else -> true
             }
         }
@@ -254,6 +252,10 @@ interface HorizontalRewardViewHolderViewModel {
                 !RewardUtils.isLimitReached(reward)
             }
 
+        }
+
+        private fun pledgeCopyIsVisible(project: Project, reward: Reward): Boolean {
+            return project.isLive && !RewardUtils.isLimitReached(reward) &&  !RewardUtils.isExpired(reward)
         }
 
         override fun projectAndReward(@NonNull project: Project, @NonNull reward: Reward) {

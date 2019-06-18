@@ -52,11 +52,10 @@
             android:textColor="@color/ksr_green_500"
             tools:text="About $15 USD" />
 
-          <!--todo: i don't think we need a content desc here but flagging -->
           <ImageView
             android:id="@+id/reward_check"
-            android:layout_width="@dimen/grid_4"
-            android:layout_height="@dimen/grid_4"
+            android:layout_width="@dimen/grid_5"
+            android:layout_height="@dimen/grid_5"
             android:layout_alignParentEnd="true"
             android:background="@drawable/circle_black_alpha"
             android:contentDescription="@null"

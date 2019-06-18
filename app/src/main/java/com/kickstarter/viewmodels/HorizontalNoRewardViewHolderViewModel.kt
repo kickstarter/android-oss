@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
@@ -25,6 +26,9 @@ interface HorizontalNoRewardViewHolderViewModel {
     }
 
     interface Outputs {
+        /** Emits the string resource ID of the pledge button.   */
+        fun buttonCTA(): Observable<Int>
+
         /** Emits a boolean determining if the pledge button should be shown. */
         fun buttonIsGone(): Observable<Boolean>
 
@@ -50,6 +54,7 @@ interface HorizontalNoRewardViewHolderViewModel {
         private val checkIsGone: Observable<Boolean>
         private val showPledgeFragment: Observable<Pair<Project, Reward>>
         private val startBackingActivity: Observable<Project>
+        private val buttonCTA: Observable<Int>
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -80,6 +85,15 @@ interface HorizontalNoRewardViewHolderViewModel {
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
+            this.buttonCTA = this.projectAndReward
+                    .map { !it.first.isLive && BackingUtils.isBacked(it.first, it.second) }
+                    .map {
+                        when {
+                            it -> R.string.View_your_pledge
+                            else -> R.string.Pledge_without_a_reward
+                        }
+                    }
+                    .distinctUntilChanged()
         }
 
         override fun projectAndReward(@NonNull project: Project, @NonNull reward: Reward) {
@@ -89,6 +103,9 @@ interface HorizontalNoRewardViewHolderViewModel {
         override fun rewardClicked() {
             return this.rewardClicked.onNext(null)
         }
+
+        @NonNull
+        override fun buttonCTA(): Observable<Int> = this.buttonCTA
 
         @NonNull
         override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
@@ -106,15 +123,11 @@ interface HorizontalNoRewardViewHolderViewModel {
         override fun startBackingActivity(): Observable<Project> = this.startBackingActivity
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
-            if (BackingUtils.isBacked(project, reward)) {
+            if (BackingUtils.isBacked(project, reward) || project.isLive) {
                 return true
             }
 
-            if (!project.isLive) {
-                return false
-            }
-
-            return !RewardUtils.isLimitReached(reward)
+            return false
         }
     }
 }

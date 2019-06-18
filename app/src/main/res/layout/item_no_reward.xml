@@ -26,11 +26,10 @@
         android:orientation="vertical"
         android:padding="@dimen/grid_3">
 
-        <!--todo: i don't think we need a content desc here but flagging-->
         <ImageView
           android:id="@+id/no_reward_check"
-          android:layout_width="@dimen/grid_4"
-          android:layout_height="@dimen/grid_4"
+          android:layout_width="@dimen/grid_5"
+          android:layout_height="@dimen/grid_5"
           android:background="@drawable/circle_black_alpha"
           android:contentDescription="@null"
           android:layout_gravity="end"

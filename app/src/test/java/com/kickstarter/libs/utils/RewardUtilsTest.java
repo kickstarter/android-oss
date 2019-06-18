@@ -279,10 +279,10 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testPledgeButtonColor() {
-    assertEquals(R.color.button_pledge_primary, RewardUtils.pledgeButtonColor(ProjectFactory.project(), RewardFactory.reward()));
+    assertEquals(R.color.button_pledge_live, RewardUtils.pledgeButtonColor(ProjectFactory.project(), RewardFactory.reward()));
     final Project backedProject = ProjectFactory.backedProject();
     final Reward backedReward = backedProject.backing().reward();
-    assertEquals(R.color.button_pledge_primary, RewardUtils.pledgeButtonColor(backedProject, backedReward));
+    assertEquals(R.color.button_pledge_live, RewardUtils.pledgeButtonColor(backedProject, backedReward));
     final Project backedSuccessfulProject = ProjectFactory.backedProject().toBuilder().state(Project.STATE_SUCCESSFUL).build();
     final Reward backedSuccessfulReward = backedSuccessfulProject.backing().reward();
     assertEquals(R.color.button_pledge_ended, RewardUtils.pledgeButtonColor(backedSuccessfulProject, backedSuccessfulReward));

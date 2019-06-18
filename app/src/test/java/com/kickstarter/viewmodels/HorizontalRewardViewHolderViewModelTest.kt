@@ -77,26 +77,70 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
 
+        //Live project, available reward, not backed
         this.vm.inputs.projectAndReward(project, reward)
         this.buttonIsGone.assertValue(false)
-        this.buttonTint.assertValue(R.color.button_pledge_primary)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.minimumAmount.assertValuesAndClear("$20")
+        this.limitReachedIsVisible.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
 
+        //Live project, unavailable reward, not backed
         this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
         this.buttonIsGone.assertValue(false)
-        this.buttonTint.assertValue(R.color.button_pledge_primary)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(1)
 
+        //Live project, unavailable reward, not backed
         this.vm.inputs.projectAndReward(project, RewardFactory.ended())
         this.buttonIsGone.assertValue(false)
-        this.buttonTint.assertValue(R.color.button_pledge_primary)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
 
-        val backedProject = ProjectFactory.backedProject()
-        this.vm.inputs.projectAndReward(backedProject, backedProject.backing()?.reward()?: RewardFactory.reward())
+        //Live project, available reward, not backed
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
         this.buttonIsGone.assertValues(false)
-        this.buttonTint.assertValue(R.color.button_pledge_primary)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.minimumAmount.assertValuesAndClear("$20")
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
 
-        this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), reward)
+        //Ended project, available reward, not backed
+        val successfulProject = ProjectFactory.successfulProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.inputs.projectAndReward(successfulProject, RewardFactory.reward())
         this.buttonIsGone.assertValues(false, true)
-        this.buttonTint.assertValues(R.color.button_pledge_primary, R.color.button_pledge_ended)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+
+        //Ended project, not pledged
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, RewardFactory.reward())
+        this.buttonIsGone.assertValues(false, true)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+
+        //Ended project, pledged reward
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()?: RewardFactory.reward())
+        this.buttonIsGone.assertValues(false, true, false)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertValueCount(1)
+        this.limitReachedIsVisible.assertValueCount(2)
     }
 
     @Test
@@ -360,49 +404,6 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), limitedExpiringReward)
         this.limitContainerIsGone.assertValues(true, false, true)
-    }
-
-    @Test
-    fun testButtonTextOutputs() {
-        setUpEnvironment(environment())
-        val project = ProjectFactory.project()
-        val reward = RewardFactory.reward()
-
-        this.vm.inputs.projectAndReward(project, reward)
-        this.minimumAmount.assertValuesAndClear("$20")
-        this.limitReachedIsVisible.assertNoValues()
-        this.viewYourPledgeIsVisible.assertNoValues()
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
-        this.minimumAmount.assertNoValues()
-        this.viewYourPledgeIsVisible.assertNoValues()
-        this.limitReachedIsVisible.assertValueCount(1)
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.ended())
-        this.minimumAmount.assertNoValues()
-        this.viewYourPledgeIsVisible.assertNoValues()
-        this.limitReachedIsVisible.assertValueCount(2)
-
-        val successfulProject = ProjectFactory.successfulProject()
-        this.vm.inputs.projectAndReward(successfulProject, reward)
-        this.minimumAmount.assertNoValues()
-        this.viewYourPledgeIsVisible.assertNoValues()
-        this.limitReachedIsVisible.assertValueCount(2)
-
-        val backedLiveProject = ProjectFactory.backedProject()
-        this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
-        this.minimumAmount.assertValuesAndClear("$20")
-        this.viewYourPledgeIsVisible.assertNoValues()
-        this.limitReachedIsVisible.assertValueCount(2)
-
-        val backedEndedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
-        this.vm.inputs.projectAndReward(backedEndedProject, backedEndedProject.backing()?.reward()?: RewardFactory.reward())
-        this.minimumAmount.assertNoValues()
-        this.limitReachedIsVisible.assertValueCount(2)
-        this.viewYourPledgeIsVisible.assertValueCount(1)
     }
 
     @Test

@@ -52,6 +52,11 @@ class HorizontalNoRewardViewHolder(val view: View, val delegate: Delegate?): KSV
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.no_reward_check, it) }
 
+        this.viewModel.outputs.buttonCTA()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.horizontal_no_reward_pledge_button.setText(it) }
+
         this.view.horizontal_no_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()
         }

@@ -332,7 +332,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a project.
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
-        this.rewardsButtonColor.assertValue(R.color.button_pledge_primary)
+        this.rewardsButtonColor.assertValue(R.color.button_pledge_live)
         this.rewardsButtonText.assertValue(R.string.Back_this_project)
     }
 

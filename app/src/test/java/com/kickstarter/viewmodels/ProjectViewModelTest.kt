@@ -12,7 +12,6 @@ import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import org.junit.Test
@@ -20,9 +19,9 @@ import rx.observers.TestSubscriber
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
+    private val backingDetails = TestSubscriber<String>()
+    private val backingDetailsIsVisible = TestSubscriber<Boolean>()
     private val heartDrawableId = TestSubscriber<Int>()
-    private val initialRewardsContainerViewId = TestSubscriber<Int>()
-    private val managePledgeViewText = TestSubscriber<String>()
     private val projectTest = TestSubscriber<Project>()
     private val rewardsButtonColor = TestSubscriber<Int>()
     private val rewardsButtonText = TestSubscriber<Int>()
@@ -43,16 +42,16 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
+        this.vm.outputs.backingDetails().subscribe(this.backingDetails)
+        this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.initialRewardsContainerViewId().subscribe(this.initialRewardsContainerViewId)
-        this.vm.outputs.managePledgeViewText().subscribe(this.managePledgeViewText)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
         this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
-        this.vm.outputs.showRewardsFragment().map { it.first }.subscribe(this.showRewardsFragment)
+        this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first.isStarred }.subscribe(this.savedTest)
@@ -358,6 +357,22 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testProjectViewModel_SetRewardButtonStringAndColor_Backed_Live_Project() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .isBacking(true)
+                .build()
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.rewardsButtonColor.assertValue(R.color.ksr_cobalt_500)
+        this.rewardsButtonText.assertValue(R.string.Manage)
+    }
+
+    @Test
     fun testProjectViewModel_HideRewardsFragment() {
         this.initializeViewModelWithProject(ProjectFactory.project())
         this.vm.inputs.hideRewardsFragmentClicked()
@@ -381,18 +396,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_InitialRewardsContainerViewId_ManagePledge() {
-        this.initializeViewModelWithProject(ProjectFactory.backedProject())
-        this.initialRewardsContainerViewId.assertValues(R.id.manage_pledge_container)
-    }
-
-    @Test
-    fun testProjectViewModel_InitialRewardsContainerViewId_NativeBackThisProjectButton() {
-        this.initializeViewModelWithProject(ProjectFactory.project())
-        this.initialRewardsContainerViewId.assertValues(R.id.native_back_this_project_button)
-    }
-
-    @Test
     fun testProjectViewModel_ManagePledgeViewText_WithReward() {
         val reward = RewardFactory.reward()
                 .toBuilder()
@@ -411,7 +414,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.initializeViewModelWithProject(project)
-        this.managePledgeViewText.assertValues("$10 • Digital Bundle")
+        this.backingDetails.assertValues("$10 • Digital Bundle")
     }
 
     @Test
@@ -431,7 +434,40 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.initializeViewModelWithProject(project)
-        this.managePledgeViewText.assertValues("$15")
+        this.backingDetails.assertValues("$15 ")
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsNotVisible_NonBacked_Live_Project() {
+            this.initializeViewModelWithProject(ProjectFactory.project())
+            this.backingDetailsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsNotVisible_NonBacked_Ended_Project() {
+        this.initializeViewModelWithProject(ProjectFactory.successfulProject())
+        this.backingDetailsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsNotVisible_Backed_Ended_Project() {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(15.0)
+                .build()
+
+        val project = ProjectFactory.successfulProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+        this.initializeViewModelWithProject(project)
+        this.backingDetailsIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testProjectViewModel_BackingDetailsIsVisible_Backed_Live_Project() {
+        this.initializeViewModelWithProject(ProjectFactory.backedProject())
+        this.backingDetailsIsVisible.assertValue(true)
     }
 
     private fun initializeViewModelWithProject(project: Project) {

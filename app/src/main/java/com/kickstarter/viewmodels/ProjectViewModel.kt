@@ -8,7 +8,6 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
@@ -68,14 +67,14 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
+        /** Emits a string with the backing details to be displayed on the manage pledge view */
+        fun backingDetails(): Observable<String>
+
+        /** Emits a boolean that determines if the backing details should be visible. */
+        fun backingDetailsIsVisible(): Observable<Boolean>
+
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
-
-        /** Emits the initial rewards container view (Pledge/View pledge or Manage pledge)*/
-        fun initialRewardsContainerViewId(): Observable<Int>
-
-        /** Emits the text to be presented on the manage pledge container description */
-        fun managePledgeViewText(): Observable<String>
 
         /** Emits a project,country, and the native checkout feature flag. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
@@ -94,7 +93,7 @@ interface ProjectViewModel {
         fun setInitialRewardsContainerY(): Observable<Void>
 
         /** Emits when rewards fragment should expand. */
-        fun showRewardsFragment(): Observable<Pair<Boolean, Int>>
+        fun showRewardsFragment(): Observable<Boolean>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -135,6 +134,7 @@ interface ProjectViewModel {
         private val currentUser: CurrentUserType = environment.currentUser()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentConfig: CurrentConfigType = environment.currentConfig()
+        private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
@@ -152,26 +152,26 @@ interface ProjectViewModel {
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
+        private val backingDetails = BehaviorSubject.create<String>()
+        private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val initialRewardsContainerViewId = BehaviorSubject.create<Int>()
-        private val managePledgeViewText = BehaviorSubject.create<String>()
         private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
-        private val showRewardsFragment = BehaviorSubject.create<Pair<Boolean, Int>>()
-        private val startLoginToutActivity = BehaviorSubject.create<Void>()
-        private val showShareSheet = BehaviorSubject.create<Project>()
-        private val showSavedPrompt = BehaviorSubject.create<Void>()
-        private val startCampaignWebViewActivity = BehaviorSubject.create<Project>()
-        private val startCheckoutActivity = BehaviorSubject.create<Project>()
-        private val startCommentsActivity = BehaviorSubject.create<Project>()
-        private val startCreatorBioWebViewActivity = BehaviorSubject.create<Project>()
-        private val startManagePledgeActivity = BehaviorSubject.create<Project>()
-        private val startProjectUpdatesActivity = BehaviorSubject.create<Project>()
-        private val startVideoActivity = BehaviorSubject.create<Project>()
-        private val startBackingActivity = BehaviorSubject.create<Pair<Project, User>>()
+        private val showRewardsFragment = BehaviorSubject.create<Boolean>()
+        private val startLoginToutActivity = PublishSubject.create<Void>()
+        private val showShareSheet = PublishSubject.create<Project>()
+        private val showSavedPrompt = PublishSubject.create<Void>()
+        private val startCampaignWebViewActivity = PublishSubject.create<Project>()
+        private val startCheckoutActivity = PublishSubject.create<Project>()
+        private val startCommentsActivity = PublishSubject.create<Project>()
+        private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
+        private val startManagePledgeActivity = PublishSubject.create<Project>()
+        private val startProjectUpdatesActivity = PublishSubject.create<Project>()
+        private val startVideoActivity = PublishSubject.create<Project>()
+        private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
 
         val inputs: ProjectViewModel.Inputs = this
         val outputs: ProjectViewModel.Outputs = this
@@ -238,10 +238,11 @@ interface ProjectViewModel {
 
             this.projectAndUserCountryAndIsFeatureEnabled
                     .filter { BooleanUtils.isTrue(it.second) }
-                    .map<Int> { getInitialRewardsContainerViewId(it.first.first) }
+                    .map<Project> { it.first.first }
+                    .map { it.isBacking && it.isLive }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.initialRewardsContainerViewId)
+                    .subscribe(this.backingDetailsIsVisible)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -286,23 +287,20 @@ interface ProjectViewModel {
 
             Observable.merge(this.nativeCheckoutBackProjectButtonClicked, this.nativeCheckoutManagePledgeButtonClicked)
                     .map { true }
-                    .compose<Pair<Boolean, Int>>(combineLatestPair(this.initialRewardsContainerViewId))
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
             this.hideRewardsFragment
                     .map { false }
-                    .compose<Pair<Boolean, Int>>(combineLatestPair(this.initialRewardsContainerViewId))
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
             this.projectAndUserCountryAndIsFeatureEnabled
                     .filter { BooleanUtils.isTrue(it.first.first.isBacking) && BooleanUtils.isTrue(it.second) }
-                    .map { setManagePledgeViewText(it.first.first) }
-                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { setBackingDetails(it.first.first) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.managePledgeViewText)
+                    .subscribe(this.backingDetails)
 
             this.showShareSheet
                     .compose(bindToLifecycle())
@@ -455,7 +453,7 @@ interface ProjectViewModel {
             this.shareButtonClicked.onNext(null)
         }
 
-        override fun showRewardsFragment(): Observable<Pair<Boolean, Int>> {
+        override fun showRewardsFragment(): Observable<Boolean> {
             return this.showRewardsFragment
         }
 
@@ -480,10 +478,10 @@ interface ProjectViewModel {
         override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
 
         @NonNull
-        override fun initialRewardsContainerViewId(): Observable<Int> = this.initialRewardsContainerViewId
+        override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
 
         @NonNull
-        override fun managePledgeViewText(): Observable<String> = this.managePledgeViewText
+        override fun backingDetails(): Observable<String> = this.backingDetails
 
         @NonNull
         override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
@@ -536,19 +534,11 @@ interface ProjectViewModel {
             }
         }
 
-        private fun getInitialRewardsContainerViewId(project: Project): Int? {
-            return if (!project.isBacking && project.isLive || project.isBacking && !project.isLive) {
-                R.id.native_back_this_project_button
-            } else if (project.isBacking && project.isLive) {
-                R.id.manage_pledge_container
-            } else {
-                return null
-            }
-        }
-
         private fun getRewardButtonText(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {
                 R.string.Back_this_project
+            } else if (project.isBacking && project.isLive) {
+                R.string.Manage
             } else if (project.isBacking && !project.isLive) {
                 R.string.View_your_pledge
             } else {
@@ -556,23 +546,26 @@ interface ProjectViewModel {
             }
         }
 
-        private fun setManagePledgeViewText(project: Project): String? {
+        private fun setBackingDetails(project: Project): String {
             val backing = project.backing()
-            backing?.let {
-                val backingAmount = (it.amount() - it.shippingAmount()).toInt()
-                val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
-                return if (ObjectUtils.isNotNull(reward)) {
-                    "${project.currencySymbol() + backingAmount} \u2022 ${reward?.title()}"
-                } else {
-                    "${project.currencySymbol() + backingAmount}"
+            when {
+                backing != null -> backing.let {
+                    val backingAmount = it.amount() - it.shippingAmount()
+                    val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
+                    val title = reward?.let { "• ${it.title()}" }?: ""
+                    val formattedAmount = this.ksCurrency.format(backingAmount, project)
+
+                    return "$formattedAmount $title"
                 }
+                else -> return ""
             }
-            return null
         }
 
         private fun getRewardButtonColor(project: Project): Int? {
             return if (!project.isBacking && project.isLive) {
                 R.color.primary
+            } else if (project.isBacking && project.isLive) {
+                R.color.ksr_cobalt_500
             } else if (project.isBacking && !project.isLive) {
                 R.color.black
             } else {

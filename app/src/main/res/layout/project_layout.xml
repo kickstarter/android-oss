@@ -100,21 +100,20 @@
     </LinearLayout>
 
     <LinearLayout
-      android:id="@+id/manage_pledge_container"
+      android:id="@+id/action_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:layout_marginTop="@dimen/grid_3"
-      android:orientation="horizontal"
-      android:visibility="gone"
-      tools:visibility="visible">
+      android:orientation="horizontal">
 
       <LinearLayout
+        android:id="@+id/backing_details"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView
@@ -135,28 +134,14 @@
       </LinearLayout>
 
       <com.google.android.material.button.MaterialButton
-        android:id="@+id/native_manage_pledge_button"
-        style="@style/ProjectActionButton"
-        android:layout_width="@dimen/grid_16"
-        android:layout_height="@dimen/grid_8"
-        android:layout_gravity="end"
-        android:backgroundTint="@color/blue_darken_10"
-        android:text="@string/Manage"
+        android:id="@+id/native_project_action_button"
+        style="@style/ExtendedFab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/project_back_button"
         android:textAllCaps="false"
-        app:cornerRadius="@dimen/grid_2" />
-
+        tools:visibility="visible"/>
     </LinearLayout>
-
-    <com.google.android.material.button.MaterialButton
-      android:id="@+id/native_back_this_project_button"
-      style="@style/ExtendedFab"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/activity_horizontal_margin"
-      android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:text="@string/project_back_button"
-      android:textAllCaps="false"
-      android:visibility="gone" />
 
   </androidx.cardview.widget.CardView>
 

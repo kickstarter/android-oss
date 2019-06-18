@@ -19,21 +19,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <FrameLayout
+    <include
       android:id="@+id/reward_to_copy"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
-
-      <include
-        android:id="@+id/reward_layout"
-        layout="@layout/item_reward"
-        android:visibility="invisible" />
-
-      <include
-        android:id="@+id/no_reward_layout"
-        layout="@layout/item_no_reward"
-        android:visibility="invisible" />
-    </FrameLayout>
+      layout="@layout/item_reward" />
 
     <!-- todo: what's the content description? -->
     <com.kickstarter.ui.views.BottomCropImageView

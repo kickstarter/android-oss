@@ -34,18 +34,18 @@
 
           <TextView
             android:id="@+id/horizontal_reward_minimum_text_view"
+            style="@style/Title2Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@id/reward_check"
             android:textColor="@color/ksr_green_500"
             android:textSize="@dimen/title_reward"
-            android:textStyle="bold"
             tools:text="$20" />
 
           <TextView
             android:id="@+id/horizontal_reward_usd_conversion_text_view"
-            style="@style/FootnotePrimary"
+            style="@style/FootnotePrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/horizontal_reward_minimum_text_view"
@@ -66,9 +66,13 @@
 
         <TextView
           android:id="@+id/horizontal_reward_title_text_view"
-          style="@style/RewardTitle"
+          style="@style/TextPrimary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_2"
-          tools:text="Beep" />
+          android:textSize="@dimen/title_reward"
+          android:textStyle="bold"
+          tools:text="Make a pledge without a reward" />
 
         <LinearLayout
           android:id="@+id/horizontal_rewards_item_section"
@@ -86,7 +90,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
-            android:overScrollMode="never" />
+            android:overScrollMode="never"
+            tools:itemCount="3"
+            tools:listitem="@layout/rewards_item_view" />
 
         </LinearLayout>
 
@@ -100,7 +106,8 @@
           style="@style/BodyPrimary"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_1" />
+          android:layout_marginTop="@dimen/grid_1"
+          tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
 
         <LinearLayout
           android:id="@+id/reward_limit_container"
@@ -116,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_1"
-            android:background="@drawable/text_view_light_green_background"
+            android:background="@drawable/rect_green_alpha_6"
             android:padding="@dimen/grid_1"
             android:textColor="@color/ksr_green_500"
             android:textStyle="bold"
@@ -126,7 +133,7 @@
             android:id="@+id/horizontal_reward_remaining_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/text_view_light_green_background"
+            android:background="@drawable/rect_green_alpha_6"
             android:padding="@dimen/grid_1"
             android:textColor="@color/ksr_green_500"
             android:textStyle="bold"

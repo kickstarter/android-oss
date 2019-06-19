@@ -130,6 +130,32 @@ public final class ProjectFactory {
       .build();
   }
 
+  public static @NonNull Project backedProjectWithNoReward() {
+    final Project project = project();
+
+    final Reward reward = RewardFactory.noReward();
+
+    final Backing backing = Backing.builder()
+      .amount(10.0f)
+      .backerId(IdFactory.id())
+      .id(IdFactory.id())
+      .sequence(1)
+      .reward(reward)
+      .rewardId(null)
+      .pledgedAt(DateTime.now())
+      .projectCountry(project.country())
+      .projectId(project.id())
+      .shippingAmount(0.0f)
+      .status(Backing.STATUS_PLEDGED)
+      .build();
+
+    return project
+      .toBuilder()
+      .backing(backing)
+      .isBacking(true)
+      .build();
+  }
+
   public static @NonNull Project halfWayProject() {
     return project()
       .toBuilder()

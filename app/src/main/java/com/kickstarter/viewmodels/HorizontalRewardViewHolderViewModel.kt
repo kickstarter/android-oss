@@ -178,9 +178,8 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { if (RewardUtils.isReward(it)) it.description() else null }
 
             this.descriptionIsGone = reward
-                    .filter { RewardUtils.isReward(it) }
-                    .map<String> { it.description() }
-                    .map { it.isEmpty() }
+                    .map { RewardUtils.isReward(it) && it.description().isNullOrEmpty() }
+                    .distinctUntilChanged()
 
             this.isClickable = this.projectAndReward
                     .map { isSelectable(it.first, it.second) }
@@ -229,8 +228,8 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { it.title() }
 
             this.titleIsGone = reward
-                    .filter { RewardUtils.isReward(it) }
-                    .map { it.title().isNullOrEmpty() }
+                    .map {  RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
+                    .distinctUntilChanged()
         }
 
         private fun expirationDateIsGone(project: Project, reward: Reward): Boolean {

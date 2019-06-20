@@ -55,7 +55,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.description()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_description_text_view.text = it }
+                .subscribe {
+                    this.view.horizontal_reward_description_text_view.text = it
+                            ?: this.context().getText(R.string.Pledge_any_amount_to_help_bring_this_project_to_life)
+                }
 
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
@@ -115,7 +118,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
         this.viewModel.outputs.title()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_title_text_view.text = it }
+                .subscribe {
+                    this.view.horizontal_reward_title_text_view.text = it
+                            ?: this.context().getString(R.string.Make_a_pledge_without_a_reward)
+                }
 
         this.viewModel.outputs.titleIsGone()
                 .compose(bindToLifecycle())

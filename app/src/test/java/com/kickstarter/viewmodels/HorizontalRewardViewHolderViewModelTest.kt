@@ -76,12 +76,21 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
+        val noReward = RewardFactory.noReward()
 
         //Live project, available reward, not backed
         this.vm.inputs.projectAndReward(project, reward)
         this.buttonIsGone.assertValue(false)
         this.buttonTint.assertValue(R.color.button_pledge_live)
         this.minimumAmount.assertValuesAndClear("$20")
+        this.limitReachedIsVisible.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+
+        //Live project, no reward, not backed
+        this.vm.inputs.projectAndReward(project, noReward)
+        this.buttonIsGone.assertValue(false)
+        this.buttonTint.assertValue(R.color.button_pledge_live)
+        this.minimumAmount.assertValuesAndClear("$1")
         this.limitReachedIsVisible.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
 
@@ -115,7 +124,7 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
-        this.vm.inputs.projectAndReward(successfulProject, RewardFactory.reward())
+        this.vm.inputs.projectAndReward(successfulProject, reward)
         this.buttonIsGone.assertValues(false, true)
         this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
@@ -127,7 +136,15 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
-        this.vm.inputs.projectAndReward(backedSuccessfulProject, RewardFactory.reward())
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, reward)
+        this.buttonIsGone.assertValues(false, true)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+
+        //Ended project, no reward, not pledged
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, noReward)
         this.buttonIsGone.assertValues(false, true)
         this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
@@ -135,11 +152,23 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.limitReachedIsVisible.assertValueCount(2)
 
         //Ended project, pledged reward
-        this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()?: RewardFactory.reward())
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()?: reward)
         this.buttonIsGone.assertValues(false, true, false)
         this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertValueCount(1)
+        this.limitReachedIsVisible.assertValueCount(2)
+
+        val backedNoRewardSuccessfulProject = ProjectFactory.backedProjectWithNoReward()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        //Ended project, no reward, pledged no reward
+        this.vm.inputs.projectAndReward(backedNoRewardSuccessfulProject, noReward)
+        this.buttonIsGone.assertValues(false, true, false)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertValueCount(2)
         this.limitReachedIsVisible.assertValueCount(2)
     }
 
@@ -156,6 +185,9 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.checkIsInvisible.assertValue(true)
 
         this.vm.inputs.projectAndReward(project, RewardFactory.ended())
+        this.checkIsInvisible.assertValue(true)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
         this.checkIsInvisible.assertValue(true)
 
         val successfulProject = ProjectFactory.successfulProject()
@@ -245,13 +277,24 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDescriptionTextViewText() {
+    fun testDescription() {
+        setUpEnvironment(environment())
+
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
         this.description.assertValue(reward.description())
+        this.descriptionIsGone.assertValue(false)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
+        this.description.assertValues(reward.description(), null)
+        this.descriptionIsGone.assertValue(false)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.noDescription())
+        this.description.assertValues(reward.description(), null, "")
+        this.descriptionIsGone.assertValues(false, true)
     }
 
     @Test
@@ -461,6 +504,16 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testReward() {
+        val project = ProjectFactory.project()
+        val reward = RewardFactory.reward()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, reward)
+        this.reward.assertValue(reward)
+    }
+
+    @Test
     fun testRewardItems() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
@@ -487,9 +540,13 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.inputs.projectAndReward(project, rewardWithNoTitle)
         this.titleIsGone.assertValues(true)
-        this.title.assertNoValues()
+        this.title.assertValuesAndClear(null)
 
         // Reward with title should be visible.
+        this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
+        this.titleIsGone.assertValues(true, false)
+        this.title.assertValuesAndClear(null)
+
         val title = "Digital bundle"
         val rewardWithTitle = RewardFactory.reward().toBuilder()
                 .title(title)
@@ -497,27 +554,5 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.projectAndReward(project, rewardWithTitle)
         this.titleIsGone.assertValues(true, false)
         this.title.assertValue(title)
-    }
-
-    @Test
-    fun testDescriptionIsGone() {
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment())
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
-        this.descriptionIsGone.assertValuesAndClear(false)
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.noDescription())
-        this.descriptionIsGone.assertValue(true)
-    }
-
-    @Test
-    fun testReward() {
-        val project = ProjectFactory.project()
-        val reward = RewardFactory.noDescription()
-        setUpEnvironment(environment())
-
-        this.vm.inputs.projectAndReward(project, reward)
-        this.reward.assertValue(reward)
     }
 }

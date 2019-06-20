@@ -11,6 +11,7 @@ import com.kickstarter.services.KSUri;
 import java.io.IOException;
 
 import androidx.annotation.NonNull;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -26,15 +27,17 @@ public final class WebRequestInterceptor implements Interceptor {
   private final @NonNull InternalToolsType internalTools;
   private final @NonNull Build build;
   private final @NonNull AndroidPayCapability androidPayCapability;
+  private final String clientId;
 
   public WebRequestInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String endpoint,
-    final InternalToolsType internalTools, final @NonNull Build build,
-    final @NonNull AndroidPayCapability androidPayCapability) {
+    final @NonNull InternalToolsType internalTools, final @NonNull Build build,
+    final @NonNull AndroidPayCapability androidPayCapability, final @NonNull String clientId) {
     this.currentUser = currentUser;
     this.endpoint = endpoint;
     this.internalTools = internalTools;
     this.build = build;
     this.androidPayCapability = androidPayCapability;
+    this.clientId = clientId;
   }
 
   @Override
@@ -47,7 +50,13 @@ public final class WebRequestInterceptor implements Interceptor {
       return initialRequest;
     }
 
+    final HttpUrl url = initialRequest.url()
+      .newBuilder()
+      .setQueryParameter("client_id", this.clientId)
+      .build();
+
     final Request.Builder requestBuilder = initialRequest.newBuilder()
+      .url(url)
       .header("User-Agent", userAgent(this.build));
 
     final String basicAuthorizationHeader = this.internalTools.basicAuthorizationHeader();

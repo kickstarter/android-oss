@@ -252,8 +252,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull CurrentUserType currentUser) {
-    return new GraphQLInterceptor(currentUser);
+  static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String clientId) {
+    return new GraphQLInterceptor(currentUser, clientId);
   }
 
   @Provides
@@ -315,8 +315,9 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull AndroidPayCapability androidPayCapability) {
-    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, androidPayCapability);
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build,
+    final @NonNull AndroidPayCapability androidPayCapability, final @NonNull String clientId) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, androidPayCapability, clientId);
   }
 
   @Provides

@@ -72,8 +72,15 @@ public final class KSCurrency {
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencyCode(currencyOptions.currencyCode())
       .currencySymbol(currencyOptions.currencySymbol())
-      .roundingMode(roundingMode)
+      .precision(getPrecision(roundingMode))
       .build();
+
+    if (roundingMode != RoundingMode.UNNECESSARY) {
+      numberOptions
+        .toBuilder()
+        .roundingMode(roundingMode)
+        .build();
+    }
 
     return StringUtils.trim(NumberUtils.format(currencyOptions.value(), numberOptions));
   }
@@ -161,6 +168,15 @@ public final class KSCurrency {
     } else {
       return (float) initialValue;
     }
+  }
+
+  /**
+   * Returns a precision based on the RoundingMode.
+   *
+   * @param roundingMode When this is UNNECESSARY, we return 2, otherwise we return 0.
+   */
+  private static int getPrecision(final @NonNull RoundingMode roundingMode) {
+    return roundingMode == RoundingMode.UNNECESSARY ? 2 : 0;
   }
 
   /**

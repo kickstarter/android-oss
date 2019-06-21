@@ -12,7 +12,9 @@ import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.mock.factories.BackingFactory;
 import com.kickstarter.mock.factories.LocationFactory;
+import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Location;
@@ -28,6 +30,7 @@ import org.junit.Test;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
@@ -86,17 +89,53 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testBackerNameTextViewText() {
-    final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    final User currentUser = UserFactory.user()
+      .toBuilder()
+      .name("Kawhi Leonard")
+      .build();
+    final Backing backing = BackingFactory.backing(currentUser);
+    setUpEnvironment(envWithBacking(backing)
+      .toBuilder()
+      .currentUser(new MockCurrentUser(currentUser))
+      .build());
 
-    this.backerNameTextViewText.assertValues(backing.backer().name());
+    //User viewing their own pledge
+    this.vm.intent(intentForBacking(backing, null));
+
+    this.backerNameTextViewText.assertValues("Kawhi Leonard");
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_PLEDGE_INFO);
+  }
+
+  @Test
+  public void testBackerNameTextViewText_creator() {
+    final User backer = UserFactory.user()
+      .toBuilder()
+      .name("Tim Duncan")
+      .build();
+    final User creator = UserFactory.creator()
+      .toBuilder()
+      .name("Kawhi Leonard")
+      .build();
+
+    final Backing backing = BackingFactory.backing(backer);
+
+    final Environment environment = envWithBacking(backing)
+      .toBuilder()
+      .currentUser(new MockCurrentUser(creator))
+      .build();
+    setUpEnvironment(environment);
+
+    //Creator viewing backer's pledge
+    this.vm.intent(intentForBacking(backing, backer));
+
+    this.backerNameTextViewText.assertValues("Tim Duncan");
     this.koalaTest.assertValues(KoalaEvent.VIEWED_PLEDGE_INFO);
   }
 
   @Test
   public void testBackerNumberTextViewText() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.backerNumberTextViewText.assertValues(NumberUtils.format(backing.sequence()));
   }
@@ -106,8 +145,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
     final Backing backing = BackingFactory.backing().toBuilder()
       .amount(50.0f)
       .build();
-
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.backingAmountAndDateTextViewText.assertValue(Pair.create("$50", DateTimeUtils.fullDate(backing.pledgedAt())));
   }
@@ -115,17 +153,31 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testBackingStatus() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.backingStatusTextViewText.assertValue(backing.status());
   }
 
   @Test
   public void testCreatorNameTextViewText() {
-    final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    final User creator = UserFactory.creator()
+      .toBuilder()
+      .name("Megan Rapinoe")
+      .build();
 
-    this.creatorNameTextViewText.assertValues(backing.project().creator().name());
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .creator(creator)
+      .build();
+
+    final Backing backing = BackingFactory.backing()
+      .toBuilder()
+      .project(project)
+      .build();
+
+    setUpEnvironmentAndIntent(backing);
+
+    this.creatorNameTextViewText.assertValues("Megan Rapinoe");
   }
 
   @Test
@@ -138,7 +190,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .reward(reward)
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.estimatedDeliverySectionIsGone.assertValues(true);
   }
@@ -153,7 +205,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .reward(reward)
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.estimatedDeliverySectionIsGone.assertValues(false);
   }
@@ -169,15 +221,14 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .reward(reward)
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.estimatedDeliverySectionTextViewText.assertValues(DateTimeUtils.estimatedDeliveryOn(testDateTime));
   }
 
   @Test
   public void testGoBackOnProjectClick() {
-    final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(BackingFactory.backing());
 
     this.goBack.assertNoValues();
 
@@ -191,7 +242,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testLoadBackerAvatar() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.loadBackerAvatar.assertValues(backing.backer().avatar().medium());
   }
@@ -199,7 +250,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testLoadProjectPhoto() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.loadProjectPhoto.assertValues(backing.project().photo().full());
   }
@@ -207,16 +258,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testMarkAsReceivedIsChecked_isFalse_whenBackingIsNotBackerCompleted() {
     final Backing initialBacking = BackingFactory.backing();
+
+    setUpEnvironmentAndIntent(initialBacking);
+
+    this.markAsReceivedIsChecked.assertValue(false);
+
     final Backing updatedBacking = initialBacking
       .toBuilder()
       .backerCompletedAt(DateTime.now())
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(initialBacking);
-
-    this.markAsReceivedIsChecked.assertValue(false);
-
-    setUpEnvironmentAndIntentWithBacking(updatedBacking);
+    setUpEnvironmentAndIntent(updatedBacking);
 
     this.vm.inputs.markAsReceivedSwitchChecked(true);
     this.markAsReceivedIsChecked.assertValues(false, true);
@@ -228,16 +280,17 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .backerCompletedAt(DateTime.now())
       .build();
+
+    setUpEnvironmentAndIntent(initialBacking);
+
+    this.markAsReceivedIsChecked.assertValues(true);
+
     final Backing updatedBacking = initialBacking
       .toBuilder()
       .backerCompletedAt(null)
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(initialBacking);
-
-    this.markAsReceivedIsChecked.assertValues(true);
-
-    setUpEnvironmentAndIntentWithBacking(updatedBacking);
+    setUpEnvironmentAndIntent(updatedBacking);
 
     this.vm.inputs.markAsReceivedSwitchChecked(true);
     this.markAsReceivedIsChecked.assertValues(true, false);
@@ -246,79 +299,65 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testProjectNameTextViewText() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.projectNameTextViewText.assertValues(backing.project().name());
   }
 
   @Test
-  public void testReceivedSectionIsGone_isTrue_whenBackingStatusCanceled() {
-    final Backing backing = BackingFactory.backing(Backing.STATUS_CANCELED);
-    setUpEnvironmentAndIntentWithBacking(backing);
+  public void testReceivedSectionIsGone() {
+    setUpEnvironmentAndIntent(BackingFactory.backing(Backing.STATUS_CANCELED));
 
-    this.receivedSectionIsGone.assertValue(true);
-  }
+    this.receivedSectionIsGone.assertValuesAndClear(true);
 
-  @Test
-  public void testReceivedSectionIsGone_isTrue_whenBackingStatusDropped() {
-    final Backing backing = BackingFactory.backing(Backing.STATUS_DROPPED);
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(BackingFactory.backing(Backing.STATUS_DROPPED));
 
-    this.receivedSectionIsGone.assertValue(true);
-  }
+    this.receivedSectionIsGone.assertValuesAndClear(true);
 
-  @Test
-  public void testReceivedSectionIsGone_isTrue_whenBackingStatusErrored() {
-    final Backing backing = BackingFactory.backing(Backing.STATUS_ERRORED);
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(BackingFactory.backing(Backing.STATUS_ERRORED));
 
-    this.receivedSectionIsGone.assertValue(true);
-  }
+    this.receivedSectionIsGone.assertValuesAndClear(true);
 
-  @Test
-  public void testReceivedSectionIsGone_isTrue_whenBackingStatusPledged() {
-    final Backing backing = BackingFactory.backing(Backing.STATUS_PLEDGED);
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(BackingFactory.backing(Backing.STATUS_PLEDGED));
 
-    this.receivedSectionIsGone.assertValue(true);
-  }
+    this.receivedSectionIsGone.assertValuesAndClear(true);
 
-  @Test
-  public void testReceivedSectionIsGone_isTrue_whenBackingStatusPreAuth() {
-    final Backing backing = BackingFactory.backing(Backing.STATUS_PREAUTH);
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(BackingFactory.backing(Backing.STATUS_PREAUTH));
 
-    this.receivedSectionIsGone.assertValue(true);
-  }
+    this.receivedSectionIsGone.assertValuesAndClear(true);
 
-  @Test
-  public void testReceivedSectionIsGone_isTrue_whenRewardIsNull() {
     final Backing backingWithNullReward = BackingFactory.backing(Backing.STATUS_COLLECTED)
       .toBuilder()
       .reward(null)
       .build();
-    setUpEnvironmentAndIntentWithBacking(backingWithNullReward);
 
-    this.receivedSectionIsGone.assertValue(true);
-  }
+    setUpEnvironmentAndIntent(backingWithNullReward);
 
-  @Test
-  public void testReceivedSectionIsGone_isTrue_whenRewardIsNoReward() {
+    this.receivedSectionIsGone.assertValuesAndClear(true);
+
     final Backing backingWithNoReward = BackingFactory.backing(Backing.STATUS_COLLECTED)
       .toBuilder()
       .reward(RewardFactory.noReward())
       .build();
-    setUpEnvironmentAndIntentWithBacking(backingWithNoReward);
+    setUpEnvironmentAndIntent(backingWithNoReward);
 
-    this.receivedSectionIsGone.assertValue(true);
+    this.receivedSectionIsGone.assertValuesAndClear(true);
+
+    final Backing collectedBacking = BackingFactory.backing(Backing.STATUS_COLLECTED);
+    setUpEnvironmentAndIntent(collectedBacking);
+
+    this.receivedSectionIsGone.assertValuesAndClear(false);
   }
 
   @Test
-  public void testReceivedSectionIsGone_isFalse_whenRewardIsReceivableAndBackingIsCollected() {
-    final Backing backing = BackingFactory.backing(Backing.STATUS_COLLECTED);
-    setUpEnvironmentAndIntentWithBacking(backing);
+  public void testReceivedSectionIsGone_creator() {
+    final Backing collectedBacking = BackingFactory.backing(Backing.STATUS_COLLECTED);
+    setUpEnvironment(envWithBacking(collectedBacking));
 
-    this.receivedSectionIsGone.assertValue(false);
+    //Creator viewing backer's pledge
+    this.vm.intent(intentForBacking(collectedBacking, UserFactory.user()));
+
+    this.receivedSectionIsGone.assertValue(true);
   }
 
   @Test
@@ -331,7 +370,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .reward(reward)
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.rewardMinimumAndDescriptionTextViewText.assertValue(Pair.create("$100", backing.reward().description()));
   }
@@ -346,7 +385,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .reward(reward)
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.rewardsItemList.assertValue(emptyList());
     this.rewardsItemsAreGone.assertValues(true);
@@ -359,7 +398,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .reward(reward)
       .build();
 
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.rewardsItemList.assertValue(reward.rewardsItems());
     this.rewardsItemsAreGone.assertValues(false);
@@ -368,7 +407,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testShipping_withoutShippingLocation() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.shippingLocationTextViewText.assertNoValues();
     this.shippingAmountTextViewText.assertNoValues();
@@ -385,7 +424,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .rewardId(reward.id())
       .shippingAmount(5.0f)
       .build();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.shippingLocationTextViewText.assertValues("Sydney, AU");
     this.shippingAmountTextViewText.assertValues("$5");
@@ -395,7 +434,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testStartMessagesActivity() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.vm.inputs.viewMessagesButtonClicked();
     this.startMessagesActivity.assertValue(Pair.create(backing.project(), backing));
@@ -436,13 +475,13 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testViewMessagesButtonIsVisible() {
     final Backing backing = BackingFactory.backing();
-    setUpEnvironmentAndIntentWithBacking(backing);
+    setUpEnvironmentAndIntent(backing);
 
     this.viewMessagesButtonIsGone.assertValues(false);
   }
 
   /**
-   * Returns an environment with a backing and the backing's current user.
+   * Returns an environment with a backing and logged in user.
    */
   private @NonNull Environment envWithBacking(final @NonNull Backing backing) {
     return environment().toBuilder()
@@ -455,17 +494,27 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
           }
         }
       )
-      .currentUser(new MockCurrentUser(backing.backer()))
+      .currentUser(new MockCurrentUser(UserFactory.user()))
       .build();
   }
 
-  private @NonNull Intent intentForBacking(final @NonNull Backing backing) {
-    return new Intent().putExtra(IntentKey.PROJECT, backing.project()).putExtra(IntentKey.BACKER, backing.backer());
+  /**
+   * Returns an intent with a backing. If the `user` is null, that means the current user is viewing their own backing.
+   */
+  private @NonNull Intent intentForBacking(final @NonNull Backing backing, final @Nullable User backer) {
+    final Intent intent = new Intent().putExtra(IntentKey.PROJECT, backing.project());
+    if (backer != null) {
+      intent.putExtra(IntentKey.BACKER, backer);
+    }
+    return intent;
   }
 
-  private void setUpEnvironmentAndIntentWithBacking(final @NonNull Backing backing) {
+  /**
+   * Helper method to set up environment and intent with a backing and logged in user.
+   */
+  private void setUpEnvironmentAndIntent(final @NonNull Backing backing) {
     setUpEnvironment(envWithBacking(backing));
 
-    this.vm.intent(intentForBacking(backing));
+    this.vm.intent(intentForBacking(backing, null));
   }
 }

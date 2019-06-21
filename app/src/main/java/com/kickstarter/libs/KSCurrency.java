@@ -73,14 +73,8 @@ public final class KSCurrency {
       .currencyCode(currencyOptions.currencyCode())
       .currencySymbol(currencyOptions.currencySymbol())
       .precision(getPrecision(roundingMode))
+      .roundingMode(roundingMode)
       .build();
-
-    if (roundingMode != RoundingMode.UNNECESSARY) {
-      numberOptions
-        .toBuilder()
-        .roundingMode(roundingMode)
-        .build();
-    }
 
     return StringUtils.trim(NumberUtils.format(currencyOptions.value(), numberOptions));
   }

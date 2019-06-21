@@ -396,7 +396,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_ManagePledgeViewText_WithReward() {
+    fun testProjectViewModel_ManagePledgeViewText_WithReward_AmountIsWholeNumber() {
         val reward = RewardFactory.reward()
                 .toBuilder()
                 .id(4)
@@ -404,6 +404,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val backing = BackingFactory.backing()
                 .toBuilder()
+                .amount(14.0)
                 .rewardId(4)
                 .build()
 
@@ -414,11 +415,34 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.initializeViewModelWithProject(project)
-        this.backingDetails.assertValues("$10 • Digital Bundle")
+        this.backingDetails.assertValues("$14 • Digital Bundle")
     }
 
     @Test
-    fun testProjectViewModel_ManagePledgeViewText_WithNoReward() {
+    fun testProjectViewModel_ManagePledgeViewText_WithReward_AmountWithDecimals() {
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .id(4)
+                .build()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(14.5)
+                .rewardId(4)
+                .build()
+
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .rewards(listOf(reward))
+                .build()
+
+        this.initializeViewModelWithProject(project)
+        this.backingDetails.assertValues("$14 • Digital Bundle")
+    }
+
+    @Test
+    fun testProjectViewModel_ManagePledgeViewText_WithNoReward_AmountIsWholeNumber() {
 
         val reward = RewardFactory.noReward()
 
@@ -435,6 +459,26 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.initializeViewModelWithProject(project)
         this.backingDetails.assertValues("$15 ")
+    }
+
+    @Test
+    fun testProjectViewModel_ManagePledgeViewText_WithNoReward_AmountWithDecimals() {
+
+        val reward = RewardFactory.noReward()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(13.5)
+                .reward(reward)
+                .build()
+
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.initializeViewModelWithProject(project)
+        this.backingDetails.assertValues("$13.50 ")
     }
 
     @Test

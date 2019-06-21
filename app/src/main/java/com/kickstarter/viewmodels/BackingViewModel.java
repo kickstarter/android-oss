@@ -1,8 +1,10 @@
 package com.kickstarter.viewmodels;
 
+import android.content.Intent;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.RefTag;
@@ -125,16 +127,19 @@ public interface BackingViewModel {
 
   final class ViewModel extends ActivityViewModel<BackingActivity> implements Inputs, Outputs {
     private final ApiClientType client;
+    private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
+      this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
 
-      final Observable<User> backerFromIntent = intent()
-        .map(i -> i.getParcelableExtra(IntentKey.BACKER))
+      final Observable<User> initialBacker = intent()
+        .compose(combineLatestPair(this.currentUser.loggedInUser()))
+        .map(this::backer)
         .ofType(User.class);
 
       final Observable<Project> project = intent()
@@ -145,7 +150,10 @@ public interface BackingViewModel {
         .map(i -> i.getBooleanExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, false))
         .ofType(Boolean.class);
 
-      final Observable<Backing> backing = Observable.combineLatest(project, backerFromIntent, Pair::create)
+      final Observable<Boolean> isCreator = intent()
+        .map(i -> i.hasExtra(IntentKey.BACKER));
+
+      final Observable<Backing> backing = Observable.combineLatest(project, initialBacker, Pair::create)
         .switchMap(pb -> this.client.fetchProjectBacking(pb.first, pb.second))
         .compose(neverError())
         .share();
@@ -314,9 +322,20 @@ public interface BackingViewModel {
       rewardIsReceivable
         .compose(combineLatestPair(backingIsCollected))
         .map(isReceivableAndCollected -> isReceivableAndCollected.first && isReceivableAndCollected.second)
+        .compose(combineLatestPair(isCreator))
+        .map(collectibleAndIsCreator -> collectibleAndIsCreator.first && !collectibleAndIsCreator.second)
         .map(BooleanUtils::negate)
         .compose(bindToLifecycle())
         .subscribe(this.receivedSectionIsGone);
+    }
+
+    private User backer(final @NonNull Pair<Intent, User> intentAndUser) {
+      final Intent intent = intentAndUser.first;
+      if (intent.hasExtra(IntentKey.BACKER)) {
+        return intent.getParcelableExtra(IntentKey.BACKER);
+      } else {
+        return intentAndUser.second;
+      }
     }
 
     private static @NonNull Pair<String, String> backingAmountAndDate(final @NonNull KSCurrency ksCurrency,
@@ -335,9 +354,9 @@ public interface BackingViewModel {
       return Pair.create(minimum, reward.description());
     }
 
+    private final PublishSubject<Boolean> markAsReceivedSwitchChecked = PublishSubject.create();
     private final PublishSubject<Void> projectClicked = PublishSubject.create();
     private final PublishSubject<Void> viewMessagesButtonClicked = PublishSubject.create();
-    private final PublishSubject<Boolean> markAsReceivedSwitchChecked = PublishSubject.create();
 
     private final BehaviorSubject<String> backerNameTextViewText = BehaviorSubject.create();
     private final BehaviorSubject<String> backerNumberTextViewText = BehaviorSubject.create();
@@ -365,14 +384,14 @@ public interface BackingViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void markAsReceivedSwitchChecked(final boolean checked) {
+      this.markAsReceivedSwitchChecked.onNext(checked);
+    }
     @Override public void projectClicked() {
       this.projectClicked.onNext(null);
     }
     @Override public void viewMessagesButtonClicked() {
       this.viewMessagesButtonClicked.onNext(null);
-    }
-    @Override public void markAsReceivedSwitchChecked(final boolean checked) {
-      this.markAsReceivedSwitchChecked.onNext(checked);
     }
 
     @Override public @NonNull Observable<String> backerNameTextViewText() {

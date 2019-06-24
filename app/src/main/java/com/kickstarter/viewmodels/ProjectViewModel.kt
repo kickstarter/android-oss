@@ -21,6 +21,7 @@ import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.math.RoundingMode
 import java.net.CookieManager
 
 interface ProjectViewModel {
@@ -544,10 +545,17 @@ interface ProjectViewModel {
             val backing = project.backing()
             when {
                 backing != null -> backing.let {
-                    val backingAmount = it.amount() - it.shippingAmount()
                     val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
                     val title = reward?.let { "• ${it.title()}" }?: ""
-                    val formattedAmount = this.ksCurrency.format(backingAmount, project)
+
+                    val backingAmount = reward?.let {
+                        when {
+                            RewardUtils.isReward(it) -> it.minimum()
+                            else -> backing.amount()
+                        }
+                    } ?: it.amount()
+
+                    val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
                     return "$formattedAmount $title"
                 }

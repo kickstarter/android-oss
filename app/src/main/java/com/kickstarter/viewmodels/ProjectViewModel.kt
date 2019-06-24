@@ -545,26 +545,22 @@ interface ProjectViewModel {
             val backing = project.backing()
             when {
                 backing != null -> backing.let {
-                    val backingAmount = it.amount() - it.shippingAmount()
                     val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
                     val title = reward?.let { "• ${it.title()}" }?: ""
 
-                    val roundingMode: RoundingMode = when {
-                        ObjectUtils.isNotNull(reward) -> RoundingMode.DOWN
-                        this.isWholeNumber(backingAmount) -> RoundingMode.DOWN
-                        else -> RoundingMode.UNNECESSARY
-                    }
+                    val backingAmount = reward?.let {
+                        when {
+                            RewardUtils.isReward(it) -> it.minimum()
+                            else -> backing.amount()
+                        }
+                    } ?: it.amount()
 
-                    val formattedAmount = this.ksCurrency.format(backingAmount, project, roundingMode)
+                    val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
                     return "$formattedAmount $title"
                 }
                 else -> return ""
             }
-        }
-
-        private fun isWholeNumber(value: Double): Boolean {
-            return value.toLong() == Math.round(value)
         }
 
         private fun saveProject(project: Project): Observable<Project> {

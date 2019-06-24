@@ -26,14 +26,15 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("CA$ 100", currency.format(100.9f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.9f, ProjectFactory.ukProject()));
 
-    assertEquals("$100", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£100", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("$101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UNNECESSARY));
-    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UNNECESSARY));
+    assertEquals("$100.10", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.10", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.10", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("$100.90", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("$100", currency.format(100f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100", currency.format(100f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100", currency.format(100f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
   }
 
   public void testFormatCurrency_withUserInCA() {
@@ -45,14 +46,15 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("CA$ 100", currency.format(100.1f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.1f, ProjectFactory.ukProject()));
 
-    assertEquals("US$ 100", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£100", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("US$ 101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UNNECESSARY));
-    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UNNECESSARY));
+    assertEquals("US$ 100.10", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.10", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.10", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("US$ 100.90", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("US$ 100", currency.format(100f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100", currency.format(100f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100", currency.format(100f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
   }
 
   public void testFormatCurrency_withUserInUK() {
@@ -64,14 +66,15 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("CA$ 100", currency.format(100.9f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.9f, ProjectFactory.ukProject()));
 
-    assertEquals("US$ 100", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£100", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("US$ 101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UNNECESSARY));
-    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UNNECESSARY));
+    assertEquals("US$ 100.10", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.10", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.10", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("US$ 100.90", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("US$ 100", currency.format(100f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100", currency.format(100f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100", currency.format(100f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
   }
 
   public void testFormatCurrency_withUserInUnlaunchedCountry() {
@@ -83,14 +86,15 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("CA$ 100", currency.format(100.9f, ProjectFactory.caProject()));
     assertEquals("£100", currency.format(100.9f, ProjectFactory.ukProject()));
 
-    assertEquals("US$ 100", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£100", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("US$ 101", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 101", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
-    assertEquals("£101", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
-    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.UNNECESSARY));
-    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.UNNECESSARY));
+    assertEquals("US$ 100.10", currency.format(100.1f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.10", currency.format(100.1f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.10", currency.format(100.1f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("US$ 100.90", currency.format(100.9f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100.90", currency.format(100.9f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100.90", currency.format(100.9f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
+    assertEquals("US$ 100", currency.format(100f, ProjectFactory.project(), RoundingMode.HALF_UP));
+    assertEquals("CA$ 100", currency.format(100f, ProjectFactory.caProject(), RoundingMode.HALF_UP));
+    assertEquals("£100", currency.format(100f, ProjectFactory.ukProject(), RoundingMode.HALF_UP));
   }
 
   public void testPreferUSD_withUserInUS() {

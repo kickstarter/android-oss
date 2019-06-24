@@ -415,7 +415,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.initializeViewModelWithProject(project)
-        this.backingDetails.assertValues("$14 • Digital Bundle")
+        this.backingDetails.assertValues("$20 • Digital Bundle")
     }
 
     @Test
@@ -438,7 +438,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.initializeViewModelWithProject(project)
-        this.backingDetails.assertValues("$14 • Digital Bundle")
+        this.backingDetails.assertValues("$20 • Digital Bundle")
     }
 
     @Test

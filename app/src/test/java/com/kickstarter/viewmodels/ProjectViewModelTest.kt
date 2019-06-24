@@ -396,7 +396,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_ManagePledgeViewText_WithReward_AmountIsWholeNumber() {
+    fun testProjectViewModel_ManagePledgeViewText_WithReward_ShowsMinimumAmount() {
         val reward = RewardFactory.reward()
                 .toBuilder()
                 .id(4)
@@ -404,30 +404,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .amount(14.0)
-                .rewardId(4)
-                .build()
-
-        val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .rewards(listOf(reward))
-                .build()
-
-        this.initializeViewModelWithProject(project)
-        this.backingDetails.assertValues("$20 • Digital Bundle")
-    }
-
-    @Test
-    fun testProjectViewModel_ManagePledgeViewText_WithReward_AmountWithDecimals() {
-        val reward = RewardFactory.reward()
-                .toBuilder()
-                .id(4)
-                .build()
-
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(14.5)
+                .amount(34.0)
                 .rewardId(4)
                 .build()
 

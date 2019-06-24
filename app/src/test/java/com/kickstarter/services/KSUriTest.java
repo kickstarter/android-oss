@@ -55,7 +55,7 @@ public final class KSUriTest extends KSRobolectricTestCase {
 
     assertTrue(KSUri.isWebViewUri(ksrUri, this.webEndpoint));
     assertFalse(KSUri.isWebViewUri(uri, this.webEndpoint));
-    assertFalse(KSUri.isWebViewUri(ksrGraphUri, this.webEndpoint));
+    assertTrue(KSUri.isWebViewUri(ksrGraphUri, this.webEndpoint));
     assertFalse(KSUri.isWebViewUri(graphUri, this.webEndpoint));
     assertFalse(KSUri.isWebViewUri(favIconUri, this.webEndpoint));
   }

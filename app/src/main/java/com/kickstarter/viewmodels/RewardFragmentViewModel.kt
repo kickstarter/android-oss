@@ -40,7 +40,7 @@ class RewardFragmentViewModel {
         private val projectInput = PublishSubject.create<Project>()
         private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
 
-        private val backedRewardPosition = BehaviorSubject.create<Int>()
+        private val backedRewardPosition = PublishSubject.create<Int>()
         private val project = BehaviorSubject.create<Project>()
         private val showPledgeFragment = PublishSubject.create<PledgeData>()
 
@@ -53,7 +53,7 @@ class RewardFragmentViewModel {
                     .subscribe(this.project)
 
             this.projectInput
-                    .filter { it.isBacking && !it.isLive }
+                    .filter { it.isBacking }
                     .map { indexOfBackedReward(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())

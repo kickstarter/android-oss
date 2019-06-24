@@ -36,6 +36,9 @@ interface HorizontalRewardViewHolderViewModel {
         /** Emits `true` if the backed check should be hidden, `false` otherwise.  */
         fun checkIsInvisible(): Observable<Boolean>
 
+        /** Emits the color resource ID to tint the check. */
+        fun checkTintColor(): Observable<Int>
+
         /** Emits `true` if the conversion should be hidden, `false` otherwise.  */
         fun conversionIsGone(): Observable<Boolean>
 
@@ -81,6 +84,9 @@ interface HorizontalRewardViewHolderViewModel {
         /** Emits `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardItemsAreGone(): Observable<Boolean>
 
+        /** Emits when the pledge button should display the manage pledge not backed copy. */
+        fun selectThisInsteadIsVisible(): Observable<Void>
+
         /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
         fun showPledgeFragment(): Observable<Pair<Project, Reward>>
 
@@ -106,6 +112,7 @@ interface HorizontalRewardViewHolderViewModel {
         private val buttonIsGone: Observable<Boolean>
         private val buttonTintColor: Observable<Int>
         private val checkIsInvisible: Observable<Boolean>
+        private val checkTintColor: Observable<Int>
         private val conversion: Observable<String>
         private val conversionIsGone: Observable<Boolean>
         private val description: Observable<String?>
@@ -121,6 +128,7 @@ interface HorizontalRewardViewHolderViewModel {
         private val reward: Observable<Reward>
         private val rewardItems: Observable<List<RewardsItem>>
         private val rewardItemsAreGone: Observable<Boolean>
+        private val selectThisInsteadIsVisible: Observable<Void>
         private val showPledgeFragment: Observable<Pair<Project, Reward>>
         private val startBackingActivity: Observable<Project>
         private val title: Observable<String?>
@@ -147,14 +155,21 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { RewardUtils.pledgeButtonColor(it.first, it.second) }
                     .distinctUntilChanged()
 
+            this.checkTintColor = this.buttonTintColor
+
             this.checkIsInvisible = this.projectAndReward
-                    .map { !it.first.isLive && BackingUtils.isBacked(it.first, it.second) }
+                    .map { BackingUtils.isBacked(it.first, it.second) }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
 
             this.viewYourPledgeIsVisible = this.projectAndReward
                     .filter { !it.first.isLive }
                     .filter { BackingUtils.isBacked(it.first, it.second) }
+                    .compose(ignoreValues())
+
+            this.selectThisInsteadIsVisible = this.projectAndReward
+                    .filter { it.first.isLive && it.first.isBacking }
+                    .filter { !BackingUtils.isBacked(it.first, it.second) }
                     .compose(ignoreValues())
 
             this.limitReachedIsVisible = this.projectAndReward
@@ -164,6 +179,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .compose(ignoreValues())
 
             this.minimumAmount = this.projectAndReward
+                    .filter { !BackingUtils.isBacked(it.first, it.second) }
                     .filter { rewardIsAvailable(it.first, it.second) }
                     .map { this.ksCurrency.format(it.second.minimum(), it.first) }
 
@@ -275,6 +291,9 @@ interface HorizontalRewardViewHolderViewModel {
         override fun checkIsInvisible(): Observable<Boolean> = this.checkIsInvisible
 
         @NonNull
+        override fun checkTintColor(): Observable<Int> = this.checkTintColor
+
+        @NonNull
         override fun conversionIsGone(): Observable<Boolean> = this.conversionIsGone
 
         @NonNull
@@ -318,6 +337,9 @@ interface HorizontalRewardViewHolderViewModel {
 
         @NonNull
         override fun rewardItemsAreGone(): Observable<Boolean> = this.rewardItemsAreGone
+
+        @NonNull
+        override fun selectThisInsteadIsVisible(): Observable<Void> = this.selectThisInsteadIsVisible
 
         @NonNull
         override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment

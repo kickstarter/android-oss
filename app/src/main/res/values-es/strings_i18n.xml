@@ -74,7 +74,7 @@ patrocinadores</string>
   <string name="Change_payment_method" formatted="false">Cambiar método de pago</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Vuelve más tarde para obtener una actualización sobre tu progreso de exportación.</string>
-  <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
+  <string name="Check_your_payment_details" formatted="false">Revisa tu información de pago</string>
   <string name="Chooses_location_for_shipping" formatted="false">Destino determinado: %{location}.</string>
   <string name="Close_live_stream" formatted="false">Cerrar Live Stream</string>
   <string name="Close_project" formatted="false">Cerrar proyecto</string>
@@ -280,7 +280,7 @@ patrocinadores</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="Message_user_name" formatted="false">Mensaje a %{user_name}…</string>
   <string name="Messages" formatted="false">Mensajes</string>
-  <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
+  <string name="More_than_number_of_items_items" formatted="false">Más de %{number_of_items} notificaciones</string>
   <string name="Name" formatted="false">Nombre</string>
   <string name="Never" formatted="false">Nunca</string>
   <string name="New_email" formatted="false">Nuevo correo electrónico</string>
@@ -459,7 +459,7 @@ patrocinadores</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Haz clic en el corazón en la página de cada proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Toca el icono de estrella de un proyecto para recibir una notificación 48 horas antes de que finalice.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Toca la estrella en cada página del proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.</string>
-  <string name="Tell_us_why_optional" formatted="false">Tell us why (optional)</string>
+  <string name="Tell_us_why_optional" formatted="false">Cuéntanos por qué (opcional)</string>
   <string name="Ten_is_just_the_beginning" formatted="false">Diez es sólo el comienzo.</string>
   <string name="Thank_you_exclamation" formatted="false">¡Gracias!</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Gracias por apoyar este proyecto.</string>
@@ -509,7 +509,7 @@ patrocinadores</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>
-  <string name="We_couldnt_process_your_pledge" formatted="false">We couldn\'t process your pledge.</string>
+  <string name="We_couldnt_process_your_pledge" formatted="false">No pudimos procesar tu contribución.</string>
   <string name="We_think_youll_like_these_too" formatted="false">We think you’ll like these, too</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Utilizamos tu actividad internamente para hacerte recomendaciones. Desactiva las recomendaciones si no quieres recibirlas.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">No pudimos enviar el correo electrónico a esta dirección. Asegúrate de que esté escrita correctamente.</string>
@@ -549,12 +549,12 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_shipping_location" formatted="false">Tu ubicación de envío</string>
   <string name="Youre_a_backer" formatted="false">¡Eres un patrocinador!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Estás a punto de crear una nueva cuenta de Kickstarter usando el correo electrónico associado a tu cuenta de Facebook. Por favor confírmalo antes de proceder.</string>
-  <string name="Youre_all_set" formatted="false">You’re all set</string>
+  <string name="Youre_all_set" formatted="false">Ya está todo listo</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Estás conectado a través de Facebook (%{email}). Crea una contraseña para esta cuenta para editar tus credenciales de Kickstarter.</string>
   <string name="Youre_offline" formatted="false">Estás desconectado. Cuando tu dispositivo se vuelva a conectar, ve a la aplicación para actualizarla.</string>
-  <string name="Youve_canceled_your_pledge" formatted="false">You\'ve canceled your pledge.</string>
+  <string name="Youve_canceled_your_pledge" formatted="false">Has cancelado tu contribución.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Hiciste una contribución a este proyecto. El plazo de financiamiento todavía no ha terminado.</string>
-  <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">You’ve successfully updated your pledge to %{amount} for %{project_name}. If the project reaches its funding goal, your card will be charged on %{project_deadline}. Check your email for details.</string>
+  <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">Has actualizado con éxito tu contribución a %{amount} para %{project_name}. Si el proyecto alcanza su meta de financiamiento, se efectuará un cargo en tu tarjeta el %{project_deadline}. Consulta tu correo electrónico para obtener más detalles.</string>
   <string name="Zip_postal_code" formatted="false">Código postal</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Actividad</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Abre actividades.</string>
@@ -1218,7 +1218,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="minutes_plural" formatted="false">minutos</string>
   <string name="minutes_two" formatted="false">minutos</string>
   <string name="minutes_zero" formatted="false">minutos</string>
-  <string name="number_of_items_items" formatted="false">%{number_of_items} items</string>
+  <string name="number_of_items_items" formatted="false">%{number_of_items} notificaciones</string>
   <string name="percentage_funded" formatted="false">%{percentage} financiado</string>
   <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> contribuidos el %{pledge_date}</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>

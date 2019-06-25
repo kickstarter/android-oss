@@ -25,7 +25,7 @@ public final class RewardUtils {
   public static final double MAX_REWARD_LIMIT = 2000000000;
 
   /**
-   * Returns the drawable resource ID of the rewards button based on project status.
+   * Returns the drawable resource ID of the check background based on project status.
    */
   public static @DrawableRes int checkBackgroundDrawable(final @NonNull Project project) {
     if (project.isLive()) {

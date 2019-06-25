@@ -33,7 +33,7 @@ interface HorizontalRewardViewHolderViewModel {
         /** Emits the color resource ID to tint the pledge button. */
         fun buttonTint(): Observable<Int>
 
-        /** Emits the color resource ID to tint the check's background. */
+        /** Emits the drawable resource ID to set as the check's background. */
         fun checkBackgroundDrawable(): Observable<Int>
 
         /** Emits `true` if the backed check should be hidden, `false` otherwise.  */

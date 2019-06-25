@@ -74,7 +74,7 @@ Unterstützer</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Der Fortschritt des Exports wird in Kürze verfügbar sein- schau später noch einmal vorbei.</string>
-  <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
+  <string name="Check_your_payment_details" formatted="false">Überprüfe die Daten deiner Zahlungsweise</string>
   <string name="Chooses_location_for_shipping" formatted="false">Legt %{location} als Versandort fest.</string>
   <string name="Close_live_stream" formatted="false">Live-Stream schließen</string>
   <string name="Close_project" formatted="false">Projekt schließen</string>
@@ -279,7 +279,7 @@ Unterstützer</string>
   <string name="Message_creator" formatted="false">Nachricht an Projektgründer senden</string>
   <string name="Message_user_name" formatted="false">Nachricht senden an %{user_name}…</string>
   <string name="Messages" formatted="false">Nachrichten</string>
-  <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
+  <string name="More_than_number_of_items_items" formatted="false">Mehr als %{number_of_items} Benachrichtigungen</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Niemals</string>
   <string name="New_email" formatted="false">Neue E-Mail</string>
@@ -508,7 +508,7 @@ Unterstützer</string>
   <string name="View_your_reward" formatted="false">Belohnung ansehen</string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
-  <string name="We_couldnt_process_your_pledge" formatted="false">We couldn\'t process your pledge.</string>
+  <string name="We_couldnt_process_your_pledge" formatted="false">Dein Finanzierungsbeitrag konnte nicht bearbeitet werden.</string>
   <string name="We_think_youll_like_these_too" formatted="false">We think you’ll like these, too</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle "Empfehlungen" einfach ab.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">Wir konnten keine E-Mails an diese Adresse senden. Bitte prüfe, ob sie richtig eingegeben wurde.</string>
@@ -1217,7 +1217,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="minutes_plural" formatted="false">Min</string>
   <string name="minutes_two" formatted="false">Min</string>
   <string name="minutes_zero" formatted="false">Min</string>
-  <string name="number_of_items_items" formatted="false">%{number_of_items} items</string>
+  <string name="number_of_items_items" formatted="false">%{number_of_items} Benachrichtigungen</string>
   <string name="percentage_funded" formatted="false">%{percentage} finanziert</string>
   <string name="pledge_amount_pledged_on_pledge_date" formatted="false">&lt;b>%{pledge_amount}&lt;/b> beigetragen am %{pledge_date}</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>

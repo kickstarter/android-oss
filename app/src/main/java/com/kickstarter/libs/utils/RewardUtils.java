@@ -14,6 +14,7 @@ import org.joda.time.Duration;
 import java.util.List;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
@@ -22,6 +23,17 @@ public final class RewardUtils {
   private RewardUtils() {}
 
   public static final double MAX_REWARD_LIMIT = 2000000000;
+
+  /**
+   * Returns the drawable resource ID of the rewards button based on project status.
+   */
+  public static @DrawableRes int checkBackgroundDrawable(final @NonNull Project project) {
+    if (project.isLive()) {
+      return R.drawable.circle_blue_alpha_6;
+    } else {
+      return R.drawable.circle_grey_300;
+    }
+  }
 
   /**
    * Returns `true` if the reward has backers, `false` otherwise.

@@ -153,10 +153,30 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setInvisible(this.view.reward_check, it) }
 
+        this.viewModel.outputs.checkTintColor()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_check.imageTintList = ContextCompat.getColorStateList(context(), it) }
+
+        this.viewModel.outputs.checkBackgroundDrawable()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_check.setBackgroundResource(it) }
+
         this.viewModel.outputs.viewYourPledgeIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.horizontal_reward_pledge_button.setText(R.string.View_your_pledge) }
+
+        this.viewModel.outputs.manageYourPledgeIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.horizontal_reward_pledge_button.setText(R.string.Manage_your_pledge) }
+
+        this.viewModel.outputs.selectThisInsteadIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.horizontal_reward_pledge_button.setText(R.string.Select_this_instead) }
 
         view.horizontal_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()

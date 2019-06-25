@@ -32,6 +32,7 @@
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Any payment methods you\'ve saved to Kickstarter are listed here (securely) for your convenience.</string>
   <string name="App_version" formatted="false">App version</string>
   <string name="Are_you_sure" formatted="false">Are you sure?</string>
+  <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">Are you sure you wish to cancel your %{amount} pledge to %{project_name}?</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
@@ -62,6 +63,7 @@ backers</string>
   <string name="By_pledging_you_agree" formatted="false">By pledging you agree to Kickstarter’s Terms of Use, Privacy Policy and Cookie Policy.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Cancel</string>
+  <string name="Cancel_pledge" formatted="false">Cancel pledge</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
   <string name="Card_ending_in_last_four" formatted="false">Card ending in %{last_four}</string>
   <string name="Card_number" formatted="false">Card number</string>
@@ -72,6 +74,7 @@ backers</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Check back later for an update on your export progress.</string>
+  <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
   <string name="Chooses_location_for_shipping" formatted="false">Chooses %{location} for shipping.</string>
   <string name="Close_live_stream" formatted="false">Close live stream</string>
   <string name="Close_project" formatted="false">Close project</string>
@@ -288,6 +291,7 @@ with friends.</string>
   <string name="Newsletters" formatted="false">Newsletters</string>
   <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
+  <string name="No_go_back" formatted="false">No, go back</string>
   <string name="No_longer_available" formatted="false">No longer available</string>
   <string name="No_messages" formatted="false">No messages</string>
   <string name="No_nevermind" formatted="false">No, nevermind</string>
@@ -419,13 +423,16 @@ daring ideas.</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
   <string name="Select" formatted="false">Select</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
+  <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
+  <string name="Selected" formatted="false">Selected</string>
   <string name="Send" formatted="false">Send</string>
   <string name="Send_verfication_email" formatted="false">Send verification email</string>
   <string name="Share" formatted="false">Share</string>
   <string name="Share_an_update_about_your_project" formatted="false">Share an update about your project…</string>
   <string name="Share_this_live_stream" formatted="false">Share this live stream.</string>
+  <string name="Share_this_project" formatted="false">Share this project</string>
   <string name="Share_this_project_on_Facebook" formatted="false">Share this project on Facebook.</string>
   <string name="Share_this_project_on_Twitter" formatted="false">Share this project on Twitter.</string>
   <string name="Share_update" formatted="false">Share update</string>
@@ -455,6 +462,7 @@ catch your eye?</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tap the star icon on a project to get notified 48 hours before it ends.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Tap the star on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
+  <string name="Tell_us_why_optional" formatted="false">Tell us why (optional)</string>
   <string name="Ten_is_just_the_beginning" formatted="false">Ten is just the beginning.</string>
   <string name="Thank_you_exclamation" formatted="false">Thank you!</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Thank you for supporting this project.</string>
@@ -504,11 +512,14 @@ catch your eye?</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="Watch_live" formatted="false">Watch live</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for “%{search_term}”.</string>
+  <string name="We_couldnt_process_your_pledge" formatted="false">We couldn\'t process your pledge.</string>
+  <string name="We_think_youll_like_these_too" formatted="false">We think you’ll like these, too</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">We use your activity internally to make recommendations for you. Turn recommendations off to opt out of this.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">We\'ve been unable to send email to this address. Please make sure it is typed correctly.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">We were unable to connect to the live stream chat.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">We were unable to load the shipping destinations.\n
 Please try again later.</string>
+  <string name="We_wont_share_this_with_the_creator" formatted="false">We won’t share this with the creator.</string>
   <string name="Websites" formatted="false">Websites</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Welcome to our library. Peruse the stacks with us.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">We\'ll ask you to sign back into the Kickstarter app once you\'ve changed your password.</string>
@@ -516,6 +527,7 @@ Please try again later.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
   <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
+  <string name="Yes_cancel_my_pledge" formatted="false">Yes, cancel my pledge</string>
   <string name="Yes_change_currency" formatted="false">Yes, Change currency</string>
   <string name="Yes_remove" formatted="false">Yes, remove</string>
   <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
@@ -540,9 +552,12 @@ Please try again later.</string>
   <string name="Your_shipping_location" formatted="false">Your shipping location</string>
   <string name="Youre_a_backer" formatted="false">You’re a backer!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">You\'re about to create a new Kickstarter account with the email address you use for Facebook. Please confirm that it’s correct before proceeding.</string>
+  <string name="Youre_all_set" formatted="false">You’re all set</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">You\'re connected via Facebook (%{email}). Create a password for this account to edit your Kickstarter credentials.</string>
   <string name="Youre_offline" formatted="false">You’re offline. Once your device reconnects, navigate around the app to refresh.</string>
+  <string name="Youve_canceled_your_pledge" formatted="false">You\'ve canceled your pledge.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">You’ve pledged to support this project and it’s currently still funding.</string>
+  <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">You’ve successfully updated your pledge to %{amount} for %{project_name}. If the project reaches its funding goal, your card will be charged on %{project_deadline}. Check your email for details.</string>
   <string name="Zip_postal_code" formatted="false">Zip/Postal code</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Activity</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Opens activity.</string>

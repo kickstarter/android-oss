@@ -19,6 +19,12 @@ import java.util.Date;
 public final class RewardUtilsTest extends KSRobolectricTestCase {
 
   @Test
+  public void testCheckBackgroundDrawable() {
+    assertEquals(R.drawable.circle_blue_alpha_6, RewardUtils.checkBackgroundDrawable(ProjectFactory.project()));
+    assertEquals(R.drawable.circle_grey_300, RewardUtils.checkBackgroundDrawable(ProjectFactory.successfulProject()));
+  }
+
+  @Test
   public void testDeadlineCountdownDetailWithDaysLeft() {
     final Context context = context();
     final KSString ksString = ksString();
@@ -282,7 +288,7 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
     assertEquals(R.color.button_pledge_live, RewardUtils.pledgeButtonColor(ProjectFactory.project(), RewardFactory.reward()));
     final Project backedProject = ProjectFactory.backedProject();
     final Reward backedReward = backedProject.backing().reward();
-    assertEquals(R.color.button_pledge_live, RewardUtils.pledgeButtonColor(backedProject, backedReward));
+    assertEquals(R.color.button_pledge_manage, RewardUtils.pledgeButtonColor(backedProject, backedReward));
     final Project backedSuccessfulProject = ProjectFactory.backedProject().toBuilder().state(Project.STATE_SUCCESSFUL).build();
     final Reward backedSuccessfulReward = backedSuccessfulProject.backing().reward();
     assertEquals(R.color.button_pledge_ended, RewardUtils.pledgeButtonColor(backedSuccessfulProject, backedSuccessfulReward));

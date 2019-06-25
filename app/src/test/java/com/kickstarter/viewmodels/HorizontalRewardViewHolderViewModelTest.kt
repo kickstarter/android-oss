@@ -22,7 +22,9 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: HorizontalRewardViewHolderViewModel.ViewModel
     private val buttonIsGone = TestSubscriber.create<Boolean>()
     private val buttonTint = TestSubscriber.create<Int>()
+    private val checkBackgroundDrawable = TestSubscriber.create<Int>()
     private val checkIsInvisible = TestSubscriber.create<Boolean>()
+    private val checkTintColor = TestSubscriber.create<Int>()
     private val conversion = TestSubscriber.create<String>()
     private val conversionIsGone = TestSubscriber.create<Boolean>()
     private val description = TestSubscriber<String>()
@@ -31,6 +33,7 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val isClickable = TestSubscriber<Boolean>()
     private val limitContainerIsGone = TestSubscriber<Boolean>()
     private val limitReachedIsVisible = TestSubscriber<Void>()
+    private val manageYourPledgeIsVisible = TestSubscriber<Void>()
     private val minimumAmount = TestSubscriber<String>()
     private val minimumAmountTitle = TestSubscriber<String>()
     private val remaining = TestSubscriber<String>()
@@ -38,6 +41,7 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val reward = TestSubscriber<Reward>()
     private val rewardItems = TestSubscriber<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
+    private val selectThisInsteadIsVisible = TestSubscriber<Void>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
     private val title = TestSubscriber<String>()
@@ -48,7 +52,9 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm = HorizontalRewardViewHolderViewModel.ViewModel(environment)
         this.vm.outputs.buttonIsGone().subscribe(this.buttonIsGone)
         this.vm.outputs.buttonTint().subscribe(this.buttonTint)
+        this.vm.outputs.checkBackgroundDrawable().subscribe(this.checkBackgroundDrawable)
         this.vm.outputs.checkIsInvisible().subscribe(this.checkIsInvisible)
+        this.vm.outputs.checkTintColor().subscribe(this.checkTintColor)
         this.vm.outputs.conversion().subscribe(this.conversion)
         this.vm.outputs.conversionIsGone().subscribe(this.conversionIsGone)
         this.vm.outputs.description().subscribe(this.description)
@@ -59,11 +65,13 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.remainingIsGone().subscribe(this.remainingIsGone)
         this.vm.outputs.limitContainerIsGone().subscribe(this.limitContainerIsGone)
         this.vm.outputs.limitReachedIsVisible().subscribe(this.limitReachedIsVisible)
+        this.vm.outputs.manageYourPledgeIsVisible().subscribe(this.manageYourPledgeIsVisible)
         this.vm.outputs.minimumAmount().map { it.toString() }.subscribe(this.minimumAmount)
         this.vm.outputs.minimumAmountTitle().map { it.toString() }.subscribe(this.minimumAmountTitle)
         this.vm.outputs.reward().subscribe(this.reward)
         this.vm.outputs.rewardItems().subscribe(this.rewardItems)
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
+        this.vm.outputs.selectThisInsteadIsVisible().subscribe(this.selectThisInsteadIsVisible)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.title().subscribe(this.title)
@@ -85,6 +93,8 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.minimumAmount.assertValuesAndClear("$20")
         this.limitReachedIsVisible.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
+        this.manageYourPledgeIsVisible.assertNoValues()
+        this.selectThisInsteadIsVisible.assertNoValues()
 
         //Live project, no reward, not backed
         this.vm.inputs.projectAndReward(project, noReward)
@@ -93,6 +103,8 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.minimumAmount.assertValuesAndClear("$1")
         this.limitReachedIsVisible.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
+        this.manageYourPledgeIsVisible.assertNoValues()
+        this.selectThisInsteadIsVisible.assertNoValues()
 
         //Live project, unavailable reward, not backed
         this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
@@ -101,6 +113,8 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
         this.limitReachedIsVisible.assertValueCount(1)
+        this.manageYourPledgeIsVisible.assertNoValues()
+        this.selectThisInsteadIsVisible.assertNoValues()
 
         //Live project, unavailable reward, not backed
         this.vm.inputs.projectAndReward(project, RewardFactory.ended())
@@ -109,15 +123,29 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
         this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertNoValues()
+        this.selectThisInsteadIsVisible.assertNoValues()
 
-        //Live project, available reward, not backed
+        //Live backed project, currently backed reward
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
         this.buttonIsGone.assertValues(false)
-        this.buttonTint.assertValue(R.color.button_pledge_live)
-        this.minimumAmount.assertValuesAndClear("$20")
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage)
+        this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
         this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertValueCount(1)
+        this.selectThisInsteadIsVisible.assertNoValues()
+
+        //Live backed project, not backed reward
+        this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.reward())
+        this.buttonIsGone.assertValues(false)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live)
+        this.minimumAmount.assertNoValues()
+        this.viewYourPledgeIsVisible.assertNoValues()
+        this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertValueCount(1)
+        this.selectThisInsteadIsVisible.assertValueCount(1)
 
         //Ended project, available reward, not backed
         val successfulProject = ProjectFactory.successfulProject()
@@ -126,10 +154,12 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.inputs.projectAndReward(successfulProject, reward)
         this.buttonIsGone.assertValues(false, true)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
         this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertValueCount(1)
+        this.selectThisInsteadIsVisible.assertValueCount(1)
 
         //Ended project, not pledged
         val backedSuccessfulProject = ProjectFactory.backedProject()
@@ -138,26 +168,32 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.inputs.projectAndReward(backedSuccessfulProject, reward)
         this.buttonIsGone.assertValues(false, true)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
         this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertValueCount(1)
+        this.selectThisInsteadIsVisible.assertValueCount(1)
 
         //Ended project, no reward, not pledged
         this.vm.inputs.projectAndReward(backedSuccessfulProject, noReward)
         this.buttonIsGone.assertValues(false, true)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertNoValues()
         this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertValueCount(1)
+        this.selectThisInsteadIsVisible.assertValueCount(1)
 
         //Ended project, pledged reward
         this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()?: reward)
         this.buttonIsGone.assertValues(false, true, false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertValueCount(1)
         this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertValueCount(1)
+        this.selectThisInsteadIsVisible.assertValueCount(1)
 
         val backedNoRewardSuccessfulProject = ProjectFactory.backedProjectWithNoReward()
                 .toBuilder()
@@ -166,44 +202,65 @@ class HorizontalRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         //Ended project, no reward, pledged no reward
         this.vm.inputs.projectAndReward(backedNoRewardSuccessfulProject, noReward)
         this.buttonIsGone.assertValues(false, true, false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_ended)
+        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
         this.minimumAmount.assertNoValues()
         this.viewYourPledgeIsVisible.assertValueCount(2)
         this.limitReachedIsVisible.assertValueCount(2)
+        this.manageYourPledgeIsVisible.assertValueCount(1)
+        this.selectThisInsteadIsVisible.assertValueCount(1)
     }
 
     @Test
-    fun testCheckIsInvisible() {
+    fun testCheckUIOutputs() {
         setUpEnvironment(environment())
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
 
         this.vm.inputs.projectAndReward(project, reward)
         this.checkIsInvisible.assertValue(true)
+        this.checkBackgroundDrawable.assertNoValues()
+        this.checkTintColor.assertNoValues()
 
         this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
         this.checkIsInvisible.assertValue(true)
+        this.checkBackgroundDrawable.assertNoValues()
+        this.checkTintColor.assertNoValues()
 
         this.vm.inputs.projectAndReward(project, RewardFactory.ended())
         this.checkIsInvisible.assertValue(true)
+        this.checkBackgroundDrawable.assertNoValues()
+        this.checkTintColor.assertNoValues()
 
         this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
         this.checkIsInvisible.assertValue(true)
-
-        val successfulProject = ProjectFactory.successfulProject()
-        this.vm.inputs.projectAndReward(successfulProject, reward)
-        this.checkIsInvisible.assertValue(true)
+        this.checkBackgroundDrawable.assertNoValues()
+        this.checkTintColor.assertNoValues()
 
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
-        this.checkIsInvisible.assertValue(true)
+        this.checkIsInvisible.assertValues(true, false)
+        this.checkBackgroundDrawable.assertValue(R.drawable.circle_blue_alpha_6)
+        this.checkTintColor.assertValues(R.color.button_pledge_manage)
+
+        this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.reward())
+        this.checkIsInvisible.assertValues(true, false, true)
+        this.checkBackgroundDrawable.assertValues(R.drawable.circle_blue_alpha_6)
+        this.checkTintColor.assertValues(R.color.button_pledge_manage)
+
+        val successfulProject = ProjectFactory.successfulProject()
+        this.vm.inputs.projectAndReward(successfulProject, reward)
+        this.checkIsInvisible.assertValues(true, false, true)
+        this.checkBackgroundDrawable.assertValues(R.drawable.circle_blue_alpha_6)
+        this.checkTintColor.assertValues(R.color.button_pledge_manage)
 
         val backedEndedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.inputs.projectAndReward(backedEndedProject, backedEndedProject.backing()?.reward()?: RewardFactory.reward())
-        this.checkIsInvisible.assertValues(true, false)
+        this.checkIsInvisible.assertValues(true, false, true, false)
+        this.checkBackgroundDrawable.assertValues(R.drawable.circle_blue_alpha_6, R.drawable.circle_grey_300)
+        this.checkTintColor.assertValues(R.color.button_pledge_manage, R.color.button_pledge_ended)
     }
 
     @Test

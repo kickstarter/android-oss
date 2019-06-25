@@ -32,6 +32,7 @@
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Kickstarter に保存されたお支払い方法は、こちらに (安全に) リストアップされます。</string>
   <string name="App_version" formatted="false">アプリ版</string>
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
+  <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">本当に%{project_name}への%{amount}のプレッジを取り消しますか？</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">このカードをお支払い方法から削除してもよろしいですか？</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
@@ -60,6 +61,7 @@
   <string name="By_pledging_you_agree" formatted="false">プレッジすることにより、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意したものとみなされます。</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">キャンセル</string>
+  <string name="Cancel_pledge" formatted="false">プレッジを取り消す</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
   <string name="Card_ending_in_last_four" formatted="false">下4桁が %{last_four} のカード</string>
   <string name="Card_number" formatted="false">カード番号</string>
@@ -70,6 +72,7 @@
   <string name="Change_payment_method" formatted="false">支払方法の変更</string>
   <string name="Chat" formatted="false">チャット</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">しばらくしてからエクスポートの進捗状況を確認してください。</string>
+  <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
   <string name="Chooses_location_for_shipping" formatted="false">配送先%{location} を選択</string>
   <string name="Close_live_stream" formatted="false">ライブ配信を閉じる</string>
   <string name="Close_project" formatted="false">プロジェクトを閉じる</string>
@@ -285,6 +288,7 @@
   <string name="Newsletters" formatted="false">ニュースレター</string>
   <string name="No_Results" formatted="false">該当結果なし</string>
   <string name="No_comments_yet" formatted="false">まだコメントはありません。</string>
+  <string name="No_go_back" formatted="false">いいえ、戻ります</string>
   <string name="No_longer_available" formatted="false">利用できなくなりました</string>
   <string name="No_messages" formatted="false">メッセージがありません。</string>
   <string name="No_nevermind" formatted="false">いいえ、削除しません</string>
@@ -415,13 +419,16 @@
   <string name="See_all_category_name_projects" formatted="false">%{category_name} プロジェクトをすべて見る</string>
   <string name="Select" formatted="false">選択</string>
   <string name="Select_another_project" formatted="false">他のプロジェクトを選ぶ</string>
+  <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
+  <string name="Selected" formatted="false">Selected</string>
   <string name="Send" formatted="false">送信</string>
   <string name="Send_verfication_email" formatted="false">認証メールを送信する</string>
   <string name="Share" formatted="false">シェア</string>
   <string name="Share_an_update_about_your_project" formatted="false">アップデートをシェアしよう</string>
   <string name="Share_this_live_stream" formatted="false">ライブ配信をシェアする</string>
+  <string name="Share_this_project" formatted="false">このプロジェクトをシェア</string>
   <string name="Share_this_project_on_Facebook" formatted="false">プロジェクトをフェースブックでシェアしましょう。</string>
   <string name="Share_this_project_on_Twitter" formatted="false">プロジェクトをツイッターでシェアしましょう。</string>
   <string name="Share_update" formatted="false">アップデートをシェアしましょう</string>
@@ -450,6 +457,7 @@
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">ハートのアイコンを押して保存しましょう。終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">星のマークを押すと、終了48時間前に通知が届きます。</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">プロジェクトにスターを押して保存しましょう。プロジェクト終了４８時間前にリマインドします。</string>
+  <string name="Tell_us_why_optional" formatted="false">Tell us why (optional)</string>
   <string name="Ten_is_just_the_beginning" formatted="false">「10年」とはいえ、まだ始まったばかり。</string>
   <string name="Thank_you_exclamation" formatted="false">ありがとうございます！</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">サポートいただきありがとうございます。</string>
@@ -499,11 +507,14 @@
   <string name="View_your_reward" formatted="false">リワードをみる</string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
+  <string name="We_couldnt_process_your_pledge" formatted="false">We couldn\'t process your pledge.</string>
+  <string name="We_think_youll_like_these_too" formatted="false">We think you’ll like these, too</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">このアドレスにメールを送信できませんでした。メールアドレスが正確に入力されていることをご確認ください。</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">ライブ配信への接続に失敗。</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">配送先の読込に失敗。\n
 再度お試しください。</string>
+  <string name="We_wont_share_this_with_the_creator" formatted="false">We won’t share this with the creator.</string>
   <string name="Websites" formatted="false">ウェブサイト</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">パスワードを変更したら、Kickstarter アプリにもう一度サインインし直すように促されます。</string>
@@ -511,6 +522,7 @@
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
   <string name="Write_a_bio" formatted="false">簡単な自己紹介を書いてください。ほんの１～２文で構いません。</string>
+  <string name="Yes_cancel_my_pledge" formatted="false">Yes, cancel my pledge</string>
   <string name="Yes_change_currency" formatted="false">はい、通貨を変更します</string>
   <string name="Yes_remove" formatted="false">はい、削除します</string>
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
@@ -535,9 +547,12 @@
   <string name="Your_shipping_location" formatted="false">配送地域</string>
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Facebookのメールアドレスで新しいアカウントを作成しようとしています。再度確認してください。</string>
+  <string name="Youre_all_set" formatted="false">You’re all set</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Facebook (%{email}) を通して接続されています。Kickstarter の認識情報を編集するには、このアカウント用にパスワードを作成してください。</string>
   <string name="Youre_offline" formatted="false">現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。</string>
+  <string name="Youve_canceled_your_pledge" formatted="false">You\'ve canceled your pledge.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
+  <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">You’ve successfully updated your pledge to %{amount} for %{project_name}. If the project reaches its funding goal, your card will be charged on %{project_deadline}. Check your email for details.</string>
   <string name="Zip_postal_code" formatted="false">郵便番号</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">アクティビティをみる</string>

@@ -33,6 +33,9 @@ interface HorizontalRewardViewHolderViewModel {
         /** Emits the color resource ID to tint the pledge button. */
         fun buttonTint(): Observable<Int>
 
+        /** Emits the color resource ID to tint the check's background. */
+        fun checkBackgroundDrawable(): Observable<Int>
+
         /** Emits `true` if the backed check should be hidden, `false` otherwise.  */
         fun checkIsInvisible(): Observable<Boolean>
 
@@ -62,6 +65,9 @@ interface HorizontalRewardViewHolderViewModel {
 
         /** Emits when the pledge button should display the reward unavailable copy. */
         fun limitReachedIsVisible(): Observable<Void>
+
+        /** Emits when the pledge button should display the manage your pledge copy. */
+        fun manageYourPledgeIsVisible(): Observable<Void>
 
         /** Emits the minimum pledge amount in the project's currency.  */
         fun minimumAmount(): Observable<String>
@@ -111,6 +117,7 @@ interface HorizontalRewardViewHolderViewModel {
 
         private val buttonIsGone: Observable<Boolean>
         private val buttonTintColor: Observable<Int>
+        private val checkBackgroundDrawable: Observable<Int>
         private val checkIsInvisible: Observable<Boolean>
         private val checkTintColor: Observable<Int>
         private val conversion: Observable<String>
@@ -121,6 +128,7 @@ interface HorizontalRewardViewHolderViewModel {
         private val isClickable: Observable<Boolean>
         private val limitContainerIsGone: Observable<Boolean>
         private val limitReachedIsVisible: Observable<Void>
+        private val manageYourPledgeIsVisible: Observable<Void>
         private val minimumAmount: Observable<String>
         private val minimumAmountTitle: Observable<SpannableString>
         private val remaining: Observable<String>
@@ -155,7 +163,15 @@ interface HorizontalRewardViewHolderViewModel {
                     .map { RewardUtils.pledgeButtonColor(it.first, it.second) }
                     .distinctUntilChanged()
 
-            this.checkTintColor = this.buttonTintColor
+            this.checkTintColor = this.projectAndReward
+                    .filter { BackingUtils.isBacked(it.first, it.second) }
+                    .map { RewardUtils.pledgeButtonColor(it.first, it.second) }
+                    .distinctUntilChanged()
+
+            this.checkBackgroundDrawable = this.projectAndReward
+                    .filter { BackingUtils.isBacked(it.first, it.second) }
+                    .map { RewardUtils.checkBackgroundDrawable(it.first) }
+                    .distinctUntilChanged()
 
             this.checkIsInvisible = this.projectAndReward
                     .map { BackingUtils.isBacked(it.first, it.second) }
@@ -164,6 +180,11 @@ interface HorizontalRewardViewHolderViewModel {
 
             this.viewYourPledgeIsVisible = this.projectAndReward
                     .filter { !it.first.isLive }
+                    .filter { BackingUtils.isBacked(it.first, it.second) }
+                    .compose(ignoreValues())
+
+            this.manageYourPledgeIsVisible = this.projectAndReward
+                    .filter { it.first.isLive && it.first.isBacking }
                     .filter { BackingUtils.isBacked(it.first, it.second) }
                     .compose(ignoreValues())
 
@@ -179,7 +200,7 @@ interface HorizontalRewardViewHolderViewModel {
                     .compose(ignoreValues())
 
             this.minimumAmount = this.projectAndReward
-                    .filter { !BackingUtils.isBacked(it.first, it.second) }
+                    .filter { !it.first.isBacking }
                     .filter { rewardIsAvailable(it.first, it.second) }
                     .map { this.ksCurrency.format(it.second.minimum(), it.first) }
 
@@ -288,6 +309,9 @@ interface HorizontalRewardViewHolderViewModel {
         override fun buttonTint(): Observable<Int> = this.buttonTintColor
 
         @NonNull
+        override fun checkBackgroundDrawable(): Observable<Int> = this.checkBackgroundDrawable
+
+        @NonNull
         override fun checkIsInvisible(): Observable<Boolean> = this.checkIsInvisible
 
         @NonNull
@@ -316,6 +340,9 @@ interface HorizontalRewardViewHolderViewModel {
 
         @NonNull
         override fun limitReachedIsVisible(): Observable<Void> = this.limitReachedIsVisible
+
+        @NonNull
+        override fun manageYourPledgeIsVisible(): Observable<Void> = this.manageYourPledgeIsVisible
 
         @NonNull
         override fun minimumAmount(): Observable<String> = this.minimumAmount

@@ -35,17 +35,20 @@ class RewardFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.inputs.project(project)
         this.backedRewardPosition.assertNoValues()
 
-        this.vm.inputs.project(ProjectFactory.backedProject())
-        this.backedRewardPosition.assertNoValues()
-
         val reward = RewardFactory.reward()
-        val backedSuccessfulProject = ProjectFactory.backedProject()
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(BackingFactory.backing()
                         .toBuilder()
                         .rewardId(reward.id())
                         .build())
                 .rewards(Arrays.asList(RewardFactory.noReward(), reward))
+                .build()
+        this.vm.inputs.project(backedProject)
+        this.backedRewardPosition.assertValue(1)
+
+        val backedSuccessfulProject = backedProject
+                .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.inputs.project(backedSuccessfulProject)

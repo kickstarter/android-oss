@@ -2,126 +2,135 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical">
 
   <ImageView
     android:id="@+id/project_photo"
-    android:scaleType="centerCrop"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/gray_gradient"
     android:adjustViewBounds="true"
+    android:background="@drawable/gray_gradient"
+    android:scaleType="centerCrop"
     tools:ignore="ContentDescription" />
 
   <View
-    android:background="@drawable/project_photo_gradient"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_57"
-    android:layout_alignParentBottom="true"/>
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/project_photo_gradient" />
 
   <View
     android:id="@+id/photo_gradient"
-    android:background="@drawable/project_photo_gradient"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_57"
-    android:layout_alignParentBottom="true" />
+    android:layout_alignParentBottom="true"
+    android:background="@drawable/project_photo_gradient" />
 
   <RelativeLayout
     android:id="@+id/land_overlay_text"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:ignore="InconsistentLayout">
 
-    <RelativeLayout
+    <LinearLayout
       android:id="@+id/name_creator_view"
-      android:layout_marginBottom="@dimen/grid_2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:gravity="center_vertical"
       tools:ignore="InconsistentLayout">
 
       <ImageButton
         android:id="@+id/play_button_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_4"
         android:background="@drawable/video_button_background"
         android:contentDescription="@string/accessibility_projects_buttons_play_video"
         android:focusable="true"
-        android:visibility="visible"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:src="@drawable/ic_play_icon" />
 
-      <RelativeLayout
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/play_button_overlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+      <TextView
+        android:id="@+id/project_name"
+        style="@style/Title2Medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:maxLines="2"
+        android:paddingBottom="@dimen/grid_1_half"
+        android:textColor="@color/white"
+        tools:ignore="InconsistentLayout"
+        tools:text="Secret Bunnies" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/creator_info"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/name_creator_view"
+      android:background="@drawable/click_indicator_light_masked"
+      android:focusable="true"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      android:paddingBottom="@dimen/grid_2"
+      android:paddingTop="@dimen/grid_3"
+      tools:ignore="InconsistentLayout">
+
+      <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/project_avatar_width"
+        android:layout_height="@dimen/project_avatar_height"
+        android:layout_marginEnd="@dimen/grid_3_half"
+        android:scaleType="centerCrop"
+        tools:background="@color/ksr_green_700"
+        tools:ignore="ContentDescription" />
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
 
         <TextView
-          android:id="@+id/project_name"
+          style="@style/FootnotePrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:maxLines="2"
-          style="@style/Title2Medium"
-          android:textColor="@color/white"
-          android:paddingBottom="@dimen/grid_1_half"
-          tools:ignore="InconsistentLayout"
-          tools:text="Secret Bunnies" />
+          android:text="@string/project_menu_created_by"
+          android:textColor="@color/white" />
 
-        <LinearLayout
-          android:id="@+id/creator_info"
-          android:layout_below="@id/project_name"
-          android:focusable="true"
-          android:orientation="horizontal"
-          android:background="@drawable/click_indicator_light_masked"
-          android:layout_width="match_parent"
+        <TextView
+          android:id="@+id/creator_name"
+          style="@style/SubheadlineMedium"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:gravity="center_vertical"
-          android:paddingBottom="@dimen/grid_1"
-          android:paddingTop="@dimen/grid_1"
-          tools:ignore="InconsistentLayout">
+          android:ellipsize="end"
+          android:maxLines="1"
+          android:textColor="@color/white"
+          tools:text="Creator Name" />
+      </LinearLayout>
 
-          <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="@dimen/project_avatar_width"
-            android:layout_height="@dimen/project_avatar_height"
-            android:scaleType="centerCrop"
-            android:layout_marginEnd="@dimen/grid_1"
-            tools:background="@color/ksr_green_700"
-            tools:ignore="ContentDescription" />
 
-          <TextView
-            android:id="@+id/creator_name"
-            android:maxLines="2"
-            android:ellipsize="marquee"
-            style="@style/Caption1Primary"
-            android:textColor="@color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Creator Name" />
-
-        </LinearLayout>
-      </RelativeLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
       android:id="@+id/blurb_category_location_view"
-      android:layout_below="@id/name_creator_view"
-      android:layout_marginTop="@dimen/grid_4"
-      android:orientation="vertical"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_below="@id/creator_info"
+      android:layout_marginTop="@dimen/grid_4"
+      android:orientation="vertical">
 
       <include
         layout="@layout/project_metadata_view"
-        android:layout_marginBottom="@dimen/grid_4"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/metadata_label_height" />
+        android:layout_height="@dimen/metadata_label_height"
+        android:layout_marginBottom="@dimen/grid_4" />
 
       <LinearLayout
         android:id="@+id/blurb_view"
@@ -132,31 +141,31 @@
         <TextView
           android:id="@+id/blurb"
           style="@style/CalloutPrimary"
-          android:textColor="@color/white"
-          android:focusable="true"
-          android:maxLines="3"
-          android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@drawable/click_indicator_light_masked"
+          android:focusable="true"
+          android:maxLines="3"
+          android:textColor="@color/white"
           tools:ignore="InconsistentLayout"
           tools:text="Description about this project." />
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:gravity="center_vertical"
-          android:layout_marginTop="@dimen/grid_3"
           android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_3"
+          android:gravity="center_vertical"
           android:orientation="horizontal">
 
           <TextView
             style="@style/BodyPrimaryMedium"
-            android:textColor="@color/white"
-            android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_1"
-            android:text="@string/Read_more_about_the_campaign" />
+            android:focusable="true"
+            android:text="@string/Read_more_about_the_campaign"
+            android:textColor="@color/white" />
 
           <ImageView
             android:layout_width="wrap_content"
@@ -171,48 +180,48 @@
       </LinearLayout>
 
       <LinearLayout
-        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_4"
         android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:orientation="horizontal">
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/category_icon"
-          android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
+          style="@style/BodyWhite"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/local_offer_icon"
-          style="@style/BodyWhite" />
+          android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
+          android:text="@string/local_offer_icon" />
 
         <TextView
           android:id="@+id/category"
+          style="@style/BodyWhite"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingStart="@dimen/grid_1"
           android:paddingEnd="@dimen/grid_5"
-          style="@style/BodyWhite"
+          android:paddingStart="@dimen/grid_1"
           tools:ignore="InconsistentLayout"
           tools:text="Category name" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/location_icon"
+          style="@style/BodyWhite"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/location_on_icon"
           android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
-          style="@style/BodyWhite" />
+          android:text="@string/location_on_icon" />
 
         <TextView
           android:id="@+id/location"
-          android:ellipsize="end"
+          style="@style/BodyWhite"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:ellipsize="end"
           android:maxLines="1"
           android:padding="@dimen/grid_1"
-          style="@style/BodyWhite"
-          tools:text="Location"
-          tools:ignore="InconsistentLayout" />
+          tools:ignore="InconsistentLayout"
+          tools:text="Location" />
 
       </LinearLayout>
 

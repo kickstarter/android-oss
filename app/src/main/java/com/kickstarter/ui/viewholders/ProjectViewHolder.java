@@ -178,10 +178,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.creatorNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(name ->
-        this.creatorNameTextView.setText(
-          Html.fromHtml(this.ksString.format(this.byCreatorString, "creator_name", TextUtils.htmlEncode(name))))
-      );
+      .subscribe(name -> this.creatorNameTextView.setText(name));
 
     this.viewModel.outputs.deadlineCountdownTextViewText()
       .compose(bindToLifecycle())

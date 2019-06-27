@@ -6,9 +6,10 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -76,18 +77,15 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /** Emits a project,country, and the native checkout feature flag. If the view model is created with a full project
-         * model, this observable will emit that project immediately, and then again when it has updated from the api.*/
-        fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>>
+        /** Emits a project and country when a new value is available. If the view model is created with a full project
+         * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
+        fun projectAndUserCountry(): Observable<Pair<Project, String>>
 
         /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
         fun rewardsButtonColor(): Observable<Int>
 
         /** Emits the proper string resource ID for the reward button. */
         fun rewardsButtonText(): Observable<Int>
-
-        /** Emits the back, manage, view pledge button, or null. */
-        fun setActionButtonId(): Observable<Int>
 
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
@@ -135,6 +133,7 @@ interface ProjectViewModel {
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentConfig: CurrentConfigType = environment.currentConfig()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val nativeCheckoutPreference: Boolean = environment.nativeCheckoutPreference().get()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
@@ -154,10 +153,9 @@ interface ProjectViewModel {
         private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val projectAndUserCountryAndIsFeatureEnabled = BehaviorSubject.create<Pair<Pair<Project, String>, Boolean>>()
+        private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
-        private val setActionButtonId = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
@@ -223,7 +221,6 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
-            val horizontalRewardsEnabled = Observable.just(environment.horizontalRewardsEnabled().get())
 
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
@@ -232,16 +229,7 @@ interface ProjectViewModel {
 
             currentProject
                     .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
-                    .compose<Pair<Pair<Project, String>, Boolean>>(combineLatestPair(horizontalRewardsEnabled))
-                    .subscribe(this.projectAndUserCountryAndIsFeatureEnabled)
-
-            this.projectAndUserCountryAndIsFeatureEnabled
-                    .filter { BooleanUtils.isTrue(it.second) }
-                    .map<Project> { it.first.first }
-                    .map { it.isBacking && it.isLive }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backingDetailsIsVisible)
+                    .subscribe(this.projectAndUserCountry)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -294,12 +282,35 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
-            this.projectAndUserCountryAndIsFeatureEnabled
-                    .filter { BooleanUtils.isTrue(it.first.first.isBacking) && BooleanUtils.isTrue(it.second) }
-                    .map { setBackingDetails(it.first.first) }
+            val nativeCheckoutProject = Observable.just(nativeCheckoutPreference)
+                    .filter { BooleanUtils.isTrue(it) }
+                    .compose<Pair<Boolean, Project>>(combineLatestPair(currentProject))
+                    .map<Project> { it.second }
+
+            nativeCheckoutProject
+                    .map { it.isBacking && it.isLive }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backingDetailsIsVisible)
+
+            nativeCheckoutProject
+                    .filter { BooleanUtils.isTrue(it.isBacking) }
+                    .map { setBackingDetails(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetails)
+
+            nativeCheckoutProject
+                    .map { ProjectUtils.rewardsButtonText(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe { this.rewardsButtonText.onNext(it) }
+
+            nativeCheckoutProject
+                    .map { ProjectUtils.pledgeButtonColor(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardsButtonColor)
 
             this.showShareSheet
                     .compose(bindToLifecycle())
@@ -343,25 +354,7 @@ interface ProjectViewModel {
             intent()
                     .filter { IntentMapper.appBannerIsSet(it) }
                     .compose(bindToLifecycle())
-                    .subscribe { _ -> this.koala.trackOpenedAppBanner() }
-
-            currentProject
-                    .map { getActionButtons(it) }
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.setActionButtonId.onNext(it) }
-
-            currentProject
-                    .map { getRewardButtonText(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe { this.rewardsButtonText.onNext(it) }
-
-            currentProject
-                    .map { ProjectUtils.pledgeButtonColor(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardsButtonColor)
+                    .subscribe { this.koala.trackOpenedAppBanner() }
 
         }
 
@@ -413,7 +406,11 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderBackProjectClicked(viewHolder: ProjectViewHolder) {
-            this.backProjectButtonClicked()
+            if (this.nativeCheckoutPreference) {
+                this.nativeProjectActionButtonClicked()
+            } else {
+                this.backProjectButtonClicked()
+            }
         }
 
         override fun projectViewHolderBlurbClicked(viewHolder: ProjectViewHolder) {
@@ -429,7 +426,11 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderManagePledgeClicked(viewHolder: ProjectViewHolder) {
-            this.managePledgeButtonClicked()
+            if (this.nativeCheckoutPreference) {
+                this.nativeProjectActionButtonClicked()
+            } else {
+                this.managePledgeButtonClicked()
+            }
         }
 
         override fun projectViewHolderVideoStarted(viewHolder: ProjectViewHolder) {
@@ -437,7 +438,15 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderViewPledgeClicked(viewHolder: ProjectViewHolder) {
-            this.viewPledgeButtonClicked()
+            if (this.nativeCheckoutPreference) {
+                this.nativeProjectActionButtonClicked()
+            } else {
+                this.viewPledgeButtonClicked()
+            }
+        }
+
+        override fun projectViewHolderViewRewardsClicked(viewHolder: ProjectViewHolder) {
+            this.nativeProjectActionButtonClicked()
         }
 
         override fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder) {
@@ -460,26 +469,23 @@ interface ProjectViewModel {
             this.viewPledgeButtonClicked.onNext(null)
         }
 
-        override fun heartDrawableId(): Observable<Int> {
-            return this.heartDrawableId
-        }
-
-        override fun projectAndUserCountryAndIsFeatureEnabled(): Observable<Pair<Pair<Project, String>, Boolean>> {
-            return this.projectAndUserCountryAndIsFeatureEnabled
-        }
-
-        override fun rewardsButtonColor(): Observable<Int> = this.rewardsButtonColor
-
-        override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
+        @NonNull
+        override fun backingDetails(): Observable<String> = this.backingDetails
 
         @NonNull
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
 
         @NonNull
-        override fun backingDetails(): Observable<String> = this.backingDetails
+        override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
         @NonNull
-        override fun setActionButtonId(): Observable<Int> = this.setActionButtonId
+        override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry
+
+        @NonNull
+        override fun rewardsButtonColor(): Observable<Int> = this.rewardsButtonColor
+
+        @NonNull
+        override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
 
         @NonNull
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
@@ -516,30 +522,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
-
-        private fun getActionButtons(project: Project): Int? {
-            return if (!project.isBacking && project.isLive) {
-                R.id.back_project_button
-            } else if (project.isBacking && project.isLive) {
-                R.id.manage_pledge_button
-            } else if (project.isBacking && !project.isLive) {
-                R.id.view_pledge_button
-            } else {
-                return null
-            }
-        }
-
-        private fun getRewardButtonText(project: Project): Int? {
-            return if (!project.isBacking && project.isLive) {
-                R.string.Back_this_project
-            } else if (project.isBacking && project.isLive) {
-                R.string.Manage
-            } else if (project.isBacking && !project.isLive) {
-                R.string.View_your_pledge
-            } else {
-                return null
-            }
-        }
 
         private fun setBackingDetails(project: Project): String {
             val backing = project.backing()

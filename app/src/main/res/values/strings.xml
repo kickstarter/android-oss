@@ -33,13 +33,13 @@
   <string name="Enter_Hivequeen_name">Enter Hivequeen name (e.g.: christopher)</string>
   <string name="Feature_flags">Feature Flags</string>
   <string name="Hivequeen">Hivequeen</string>
-  <string name="Horizontal_rewards">Horizontal Rewards</string>
   <string name="Instructions">Instructions</string>
   <string name="internal_tools_internal_tools">Internal tools</string>
   <string name="internal_tools_playground">Playground</string>
   <string name="internal_tools_push_notifications">Push notifications</string>
   <string name="Logged_Out">Logged Out</string>
   <string name="mailto">mailto:</string>
+  <string name="Native_Checkout">Native Checkout</string>
   <string name="Network">Network</string>
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>

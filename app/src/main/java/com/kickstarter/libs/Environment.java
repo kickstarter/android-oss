@@ -31,12 +31,12 @@ public abstract class Environment implements Parcelable {
   public abstract Gson gson();
   public abstract BooleanPreferenceType hasSeenAppRatingPreference();
   public abstract BooleanPreferenceType hasSeenGamesNewsletterPreference();
-  public abstract BooleanPreferenceType horizontalRewardsEnabled();
   public abstract InternalToolsType internalTools();
   public abstract Koala koala();
   public abstract KSCurrency ksCurrency();
   public abstract KSString ksString();
   public abstract Logout logout();
+  public abstract BooleanPreferenceType nativeCheckoutPreference();
   public abstract PlayServicesCapability playServicesCapability();
   public abstract Scheduler scheduler();
   public abstract SharedPreferences sharedPreferences();
@@ -58,12 +58,12 @@ public abstract class Environment implements Parcelable {
     public abstract Builder gson(Gson __);
     public abstract Builder hasSeenAppRatingPreference(BooleanPreferenceType __);
     public abstract Builder hasSeenGamesNewsletterPreference(BooleanPreferenceType __);
-    public abstract Builder horizontalRewardsEnabled(BooleanPreferenceType __);
     public abstract Builder internalTools(InternalToolsType __);
     public abstract Builder koala(Koala __);
     public abstract Builder ksCurrency(KSCurrency __);
     public abstract Builder ksString(KSString __);
     public abstract Builder logout(Logout __);
+    public abstract Builder nativeCheckoutPreference(BooleanPreferenceType __);
     public abstract Builder playServicesCapability(PlayServicesCapability __);
     public abstract Builder scheduler(Scheduler __);
     public abstract Builder sharedPreferences(SharedPreferences __);

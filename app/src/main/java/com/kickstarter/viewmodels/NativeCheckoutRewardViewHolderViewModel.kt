@@ -12,12 +12,12 @@ import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
-import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
+import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 
-interface HorizontalRewardViewHolderViewModel {
+interface NativeCheckoutRewardViewHolderViewModel {
     interface Inputs {
         /** Call with a reward and project when data is bound to the view.  */
         fun projectAndReward(project: Project, reward: Reward)
@@ -97,7 +97,7 @@ interface HorizontalRewardViewHolderViewModel {
         fun viewYourPledgeIsVisible(): Observable<Void>
     }
 
-    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<HorizontalRewardViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<NativeCheckoutRewardViewHolder>(environment), Inputs, Outputs {
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()

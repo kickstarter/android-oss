@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -79,7 +78,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
-  protected @Bind(R.id.landscape_project_action_buttons) @Nullable RelativeLayout projectActionButtons;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
@@ -90,6 +88,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.view_pledge_button) @Nullable Button viewPledgeButton;
+  protected @Bind(R.id.view_rewards_button) @Nullable Button viewRewardsButton;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
@@ -99,6 +98,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
+  protected @BindDimen(R.dimen.grid_8) int grid8Dimen;
 
   protected @BindDrawable(R.drawable.click_indicator_light_masked) Drawable clickIndicatorLightMaskedDrawable;
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
@@ -130,6 +130,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
     void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
     void projectViewHolderViewPledgeClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderViewRewardsClicked(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -201,11 +202,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setGoalTextView);
-
-    this.viewModel.outputs.shouldShowProjectActionButtons()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setProjectActionButtonsVisibility);
 
     this.viewModel.outputs.locationTextViewText()
       .compose(bindToLifecycle())
@@ -385,12 +381,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.goalTextView.setText(goalText);
   }
 
-  private void setProjectActionButtonsVisibility(final Boolean isHorizontalRewardsEnabled) {
-    if (ViewUtils.isLandscape(context()) && isHorizontalRewardsEnabled) {
-      ViewUtils.setGone(this.projectActionButtons, true);
-    }
-  }
-
   private void setProjectPhoto(final @NonNull Photo photo) {
     // Account for the grid2 start and end margins.
     final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context())) - this.grid2Dimen * 2;
@@ -503,6 +493,11 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderViewPledgeClicked(this);
   }
 
+  @Nullable @OnClick(R.id.view_rewards_button)
+  public void viewRewardseOnClick() {
+    this.delegate.projectViewHolderViewRewardsClicked(this);
+  }
+
   @OnClick(R.id.updates)
   public void updatesClick() {
     this.delegate.projectViewHolderUpdatesClicked(this);
@@ -513,7 +508,8 @@ public final class ProjectViewHolder extends KSViewHolder {
    */
   private void setLandscapeActionButton(final @NonNull Project project) {
     if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
-      ProjectUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
+      final Button viewRewards = environment().nativeCheckoutPreference().get() ? this.viewRewardsButton : null;
+      ProjectUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton, viewRewards);
     }
   }
 
@@ -524,7 +520,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     if (this.landOverlayTextViewGroup != null && this.nameCreatorViewGroup != null) {
       final int screenHeight = getScreenHeightDp(context());
       final float densityOffset = context().getResources().getDisplayMetrics().density;
-      final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - this.grid4Dimen;  // offset for toolbar
+      final float topMargin = ((screenHeight / 3f * 2) * densityOffset) - this.grid8Dimen;
       ViewUtils.setRelativeViewGroupMargins(this.landOverlayTextViewGroup, this.grid4Dimen, (int) topMargin, this.grid4Dimen, 0);
 
       if (!project.hasVideo()) {

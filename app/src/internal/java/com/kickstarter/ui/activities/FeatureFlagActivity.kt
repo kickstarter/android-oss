@@ -18,7 +18,7 @@ class FeatureFlagActivity : AppCompatActivity() {
         setContentView(R.layout.activity_feature_flag)
 
         (applicationContext as KSApplication).component().inject(this)
-        displayPreference(environment.horizontalRewardsEnabled(), horizontal_switch)
+        displayPreference(environment.nativeCheckoutPreference(), native_checkout_switch)
     }
 
     private fun displayPreference(booleanPreferenceType: BooleanPreferenceType, switchCompat: SwitchCompat) {

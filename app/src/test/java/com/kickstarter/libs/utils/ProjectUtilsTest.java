@@ -71,11 +71,23 @@ public final class ProjectUtilsTest extends KSRobolectricTestCase {
   public void testPledgeButtonColor() {
     assertEquals(R.color.button_pledge_live, ProjectUtils.pledgeButtonColor(ProjectFactory.project()));
     assertEquals(R.color.button_manage_pledge, ProjectUtils.pledgeButtonColor(ProjectFactory.backedProject()));
-    assertEquals(R.color.button_pledge_live, ProjectUtils.pledgeButtonColor(ProjectFactory.successfulProject()));
+    assertEquals(R.color.button_pledge_ended, ProjectUtils.pledgeButtonColor(ProjectFactory.successfulProject()));
     final Project backedSuccessfulProject = ProjectFactory.backedProject()
       .toBuilder()
       .state(Project.STATE_SUCCESSFUL)
       .build();
     assertEquals(R.color.button_pledge_ended, ProjectUtils.pledgeButtonColor(backedSuccessfulProject));
+  }
+
+  @Test
+  public void testRewardsButtonText() {
+    assertEquals(R.string.Back_this_project, ProjectUtils.rewardsButtonText(ProjectFactory.project()));
+    assertEquals(R.string.Manage, ProjectUtils.rewardsButtonText(ProjectFactory.backedProject()));
+    assertEquals(R.string.View_rewards, ProjectUtils.rewardsButtonText(ProjectFactory.successfulProject()));
+    final Project backedSuccessfulProject = ProjectFactory.backedProject()
+      .toBuilder()
+      .state(Project.STATE_SUCCESSFUL)
+      .build();
+    assertEquals(R.string.View_your_pledge, ProjectUtils.rewardsButtonText(backedSuccessfulProject));
   }
 }

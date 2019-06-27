@@ -500,7 +500,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val environment = environment().toBuilder()
                 .currentConfig(currentConfig)
                 .currentUser(currentUser)
-                .horizontalRewardsEnabled(rewardsEnabled)
+                .nativeCheckoutPreference(rewardsEnabled)
                 .build()
         setUpEnvironment(environment)
 

@@ -26,7 +26,6 @@ import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
@@ -50,9 +49,9 @@ import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
-import com.kickstarter.libs.qualifiers.HorizontalRewardsPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
+import com.kickstarter.libs.qualifiers.NativeCheckoutPreference;
 import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
@@ -117,7 +116,6 @@ public final class ApplicationModule {
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
-    final @NonNull @HorizontalRewardsPreference BooleanPreferenceType horizontalRewardsEnabled,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -126,6 +124,7 @@ public final class ApplicationModule {
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
     final @NonNull Logout logout,
+    final @NonNull @NativeCheckoutPreference BooleanPreferenceType nativeCheckoutPreference,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
@@ -146,12 +145,12 @@ public final class ApplicationModule {
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
-      .horizontalRewardsEnabled(horizontalRewardsEnabled)
       .internalTools(internalToolsType)
       .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
       .logout(logout)
+      .nativeCheckoutPreference(nativeCheckoutPreference)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
@@ -384,10 +383,10 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @HorizontalRewardsPreference
+  @NativeCheckoutPreference
   @NonNull
-  static BooleanPreferenceType provideHorizontalRewardsPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new BooleanPreference(sharedPreferences, FeatureKey.INTERNAL_HORIZONTAL_REWARDS);
+  static BooleanPreferenceType provideNativeCheckoutPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.NATIVE_CHECKOUT);
   }
 
   @Provides

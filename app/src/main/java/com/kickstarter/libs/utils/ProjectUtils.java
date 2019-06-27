@@ -11,6 +11,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
@@ -137,11 +138,22 @@ public final class ProjectUtils {
   public static @ColorRes int pledgeButtonColor(final @NonNull Project project) {
     if (project.isBacking() && project.isLive()) {
       return R.color.button_manage_pledge;
-    } else if (project.isBacking() && !project.isLive()) {
-      //todo: view rewards will be black
+    } else if (!project.isLive()) {
       return R.color.button_pledge_ended;
     } else {
       return R.color.button_pledge_live;
+    }
+  }
+
+  public static int rewardsButtonText(final @NotNull Project project) {
+    if (!project.isBacking() && project.isLive()) {
+      return R.string.Back_this_project;
+    } else if (project.isBacking() && project.isLive()) {
+      return R.string.Manage;
+    } else if (project.isBacking() && !project.isLive()) {
+      return R.string.View_your_pledge;
+    } else {
+      return R.string.View_rewards;
     }
   }
 
@@ -149,7 +161,7 @@ public final class ProjectUtils {
    * Set correct button view based on project and backing status.
    */
   public static void setActionButton(final @NonNull Project project, final @NonNull Button backProjectButton,
-    final @NonNull Button managePledgeButton, final @NonNull Button viewPledgeButton) {
+    final @NonNull Button managePledgeButton, final @NonNull Button viewPledgeButton, final @Nullable Button viewRewardsButton) {
     if (!project.isBacking() && project.isLive()) {
       backProjectButton.setVisibility(View.VISIBLE);
     } else {
@@ -166,6 +178,14 @@ public final class ProjectUtils {
       viewPledgeButton.setVisibility(View.VISIBLE);
     } else {
       viewPledgeButton.setVisibility(View.GONE);
+    }
+
+    if (viewRewardsButton != null) {
+      if (!project.isBacking() && !project.isLive()) {
+        viewRewardsButton.setVisibility(View.VISIBLE);
+      } else {
+        viewRewardsButton.setVisibility(View.GONE);
+      }
     }
   }
 

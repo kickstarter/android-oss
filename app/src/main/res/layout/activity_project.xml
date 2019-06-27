@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  android:id="@+id/root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/project_app_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <com.google.android.material.appbar.CollapsingToolbarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_scrollFlags="scroll|enterAlways">
+
+      <include
+        android:id="@+id/project_toolbar"
+        layout="@layout/project_toolbar" />
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/project_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingBottom="@dimen/reward_fragment_guideline_constraint_end"
+    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+    tools:listitem="@layout/project_main_layout" />
+
+  <androidx.cardview.widget.CardView
+    android:id="@+id/rewards_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="@dimen/grid_2"
+    tools:layout_marginTop="620dp">
+
+    <LinearLayout
+      android:id="@+id/pledge_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:alpha="0"
+      android:orientation="vertical">
+
+      <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/rewards_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+          android:id="@+id/rewards_toolbar"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/ksr_grey_400"
+          app:navigationIcon="@drawable/ic_down"
+          app:title="Back this project" />
+
+      </com.google.android.material.appbar.AppBarLayout>
+
+      <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+          android:id="@+id/fragment_rewards"
+          android:name="com.kickstarter.ui.fragments.RewardsFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          tools:layout="@layout/fragment_rewards" />
+
+      </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/action_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/activity_horizontal_margin"
+      android:layout_marginStart="@dimen/activity_horizontal_margin"
+      android:orientation="horizontal">
+
+      <LinearLayout
+        android:id="@+id/backing_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+          android:id="@+id/you_backer_text"
+          style="@style/SubheadlineMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:text="@string/Youre_a_backer" />
+
+        <TextView
+          android:id="@+id/reward_infos"
+          style="@style/Caption1Secondary"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:ellipsize="end"
+          android:lines="1"
+          tools:text="$20 . Funky Reward Title..." />
+      </LinearLayout>
+
+      <com.google.android.material.button.MaterialButton
+        android:id="@+id/project_action_button"
+        style="@style/ExtendedFab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/project_back_button"
+        android:textAllCaps="false"
+        tools:visibility="visible" />
+    </LinearLayout>
+
+  </androidx.cardview.widget.CardView>
+
+  <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/guideline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_end="@dimen/reward_fragment_guideline_constraint_end" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

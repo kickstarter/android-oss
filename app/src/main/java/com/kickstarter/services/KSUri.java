@@ -49,12 +49,8 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && UriUtilsKt.lastPathSegment(uri).equals("favicon.ico");
   }
 
-  public static boolean isKSGraphQLUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && UriUtilsKt.path(uri).equals("/graph");
-  }
-
   public static boolean isWebViewUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && !isKSGraphQLUri(uri, webEndpoint) && !isKSFavIcon(uri, webEndpoint);
+    return isKickstarterUri(uri, webEndpoint) && !isKSFavIcon(uri, webEndpoint);
   }
 
   public static boolean isNewGuestCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {

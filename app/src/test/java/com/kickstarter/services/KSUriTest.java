@@ -55,7 +55,7 @@ public final class KSUriTest extends KSRobolectricTestCase {
 
     assertTrue(KSUri.isWebViewUri(ksrUri, this.webEndpoint));
     assertFalse(KSUri.isWebViewUri(uri, this.webEndpoint));
-    assertFalse(KSUri.isWebViewUri(ksrGraphUri, this.webEndpoint));
+    assertTrue(KSUri.isWebViewUri(ksrGraphUri, this.webEndpoint));
     assertFalse(KSUri.isWebViewUri(graphUri, this.webEndpoint));
     assertFalse(KSUri.isWebViewUri(favIconUri, this.webEndpoint));
   }
@@ -67,15 +67,6 @@ public final class KSUriTest extends KSRobolectricTestCase {
 
     assertTrue(KSUri.isKSFavIcon(ksrUri, this.webEndpoint));
     assertFalse(KSUri.isKSFavIcon(uri, this.webEndpoint));
-  }
-
-  @Test
-  public void testKSUri_isKSGraphQLUri() {
-    final Uri ksrGraphUri = Uri.parse("https://www.ksr.com/graph");
-    final Uri graphUri = Uri.parse("https://www.hello-world.org/graph");
-
-    assertTrue(KSUri.isKSGraphQLUri(ksrGraphUri, this.webEndpoint));
-    assertFalse(KSUri.isKSGraphQLUri(graphUri, this.webEndpoint));
   }
 
   @Test

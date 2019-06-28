@@ -13,7 +13,6 @@ import org.joda.time.Duration;
 
 import java.util.List;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
@@ -28,6 +27,10 @@ public final class RewardUtils {
    */
   public static boolean hasBackers(final @NonNull Reward reward) {
     return IntegerUtils.isNonZero(reward.backersCount());
+  }
+
+  public static boolean isAvailable(final @NonNull Project project, final @NonNull Reward reward) {
+    return project.isLive() && !RewardUtils.isLimitReached(reward) && !RewardUtils.isExpired(reward);
   }
 
   /**
@@ -154,19 +157,5 @@ public final class RewardUtils {
       return (int) Math.floor(seconds / 60.0 / 60.0); // hours
     }
     return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
-  }
-
-  /**
-   * Returns the color resource ID of the rewards button based on project and if user has backed reward.
-   */
-  public static @ColorRes int pledgeButtonColor(final @NonNull Project project, final @NonNull Reward reward) {
-    if (BackingUtils.isBacked(project, reward) && project.isLive()) {
-      //todo: manage my pledge will be blue
-      return R.color.button_pledge_live;
-    } else if (!project.isLive()) {
-      return R.color.button_pledge_ended;
-    } else {
-      return R.color.button_pledge_live;
-    }
   }
 }

@@ -526,7 +526,7 @@ interface ProjectViewModel {
         private fun backingDetails(project: Project): String {
             project.backing()?.let { backing ->
                 val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
-                val title = reward?.let { " • ${it.title()}" } ?: ""
+                val title = reward?.let { "• ${it.title()}" } ?: ""
 
                 val backingAmount = reward?.let {
                     when {
@@ -537,7 +537,7 @@ interface ProjectViewModel {
 
                 val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
-                return "$formattedAmount $title"
+                return "$formattedAmount $title".trim()
             }
             return ""
         }

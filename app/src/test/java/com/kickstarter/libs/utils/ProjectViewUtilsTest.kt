@@ -12,7 +12,7 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
     fun testRewardsButtonColor() {
         assertEquals(R.color.button_pledge_live, ProjectViewUtils.rewardsButtonColor(ProjectFactory.project()))
         assertEquals(R.color.button_pledge_manage, ProjectViewUtils.rewardsButtonColor(ProjectFactory.backedProject()))
-        assertEquals(R.color.button_pledge_live, ProjectViewUtils.rewardsButtonColor(ProjectFactory.successfulProject()))
+        assertEquals(R.color.button_pledge_ended, ProjectViewUtils.rewardsButtonColor(ProjectFactory.successfulProject()))
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)

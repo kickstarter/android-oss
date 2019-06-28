@@ -294,8 +294,8 @@ interface ProjectViewModel {
                     .subscribe(this.backingDetailsIsVisible)
 
             nativeCheckoutProject
-                    .filter { BooleanUtils.isTrue(it.isBacking) }
-                    .map { setBackingDetails(it) }
+                    .filter { it.isBacking && it.isLive }
+                    .map { backingDetails(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetails)
@@ -523,26 +523,23 @@ interface ProjectViewModel {
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
-        private fun setBackingDetails(project: Project): String {
-            val backing = project.backing()
-            when {
-                backing != null -> backing.let {
-                    val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
-                    val title = reward?.let { "• ${it.title()}" }?: ""
+        private fun backingDetails(project: Project): String {
+            project.backing()?.let { backing ->
+                val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
+                val title = reward?.let { "• ${it.title()}" } ?: ""
 
-                    val backingAmount = reward?.let {
-                        when {
-                            RewardUtils.isReward(it) -> it.minimum()
-                            else -> backing.amount()
-                        }
-                    } ?: it.amount()
+                val backingAmount = reward?.let {
+                    when {
+                        RewardUtils.isReward(it) -> it.minimum()
+                        else -> backing.amount()
+                    }
+                } ?: backing.amount()
 
-                    val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
+                val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
-                    return "$formattedAmount $title"
-                }
-                else -> return ""
+                return "$formattedAmount $title".trim()
             }
+            return ""
         }
 
         private fun saveProject(project: Project): Observable<Project> {

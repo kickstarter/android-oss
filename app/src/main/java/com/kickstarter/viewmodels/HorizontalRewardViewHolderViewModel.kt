@@ -147,17 +147,17 @@ interface HorizontalRewardViewHolderViewModel {
                     .distinctUntilChanged()
 
             this.buttonTintColor = this.projectAndReward
-                    .map { RewardUtils.pledgeButtonColor(it.first, it.second) }
+                    .map { RewardViewUtils.pledgeButtonColor(it.first, it.second) }
                     .distinctUntilChanged()
 
             this.checkTintColor = this.projectAndReward
                     .filter { BackingUtils.isBacked(it.first, it.second) }
-                    .map { RewardUtils.pledgeButtonColor(it.first, it.second) }
+                    .map { RewardViewUtils.pledgeButtonColor(it.first, it.second) }
                     .distinctUntilChanged()
 
             this.checkBackgroundDrawable = this.projectAndReward
                     .filter { BackingUtils.isBacked(it.first, it.second) }
-                    .map { RewardUtils.checkBackgroundDrawable(it.first) }
+                    .map { RewardViewUtils.checkBackgroundDrawable(it.first) }
                     .distinctUntilChanged()
 
             this.checkIsInvisible = this.projectAndReward
@@ -170,7 +170,7 @@ interface HorizontalRewardViewHolderViewModel {
 
             this.alternatePledgeButtonText = this.projectAndReward
                     .filter { shouldShowAlternateText(it.first, it.second) }
-                    .map { RewardUtils.pledgeButtonAlternateText(it.first, it.second) }
+                    .map { RewardViewUtils.pledgeButtonAlternateText(it.first, it.second) }
                     .distinctUntilChanged()
 
             this.conversionIsGone = this.projectAndReward

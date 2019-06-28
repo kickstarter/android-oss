@@ -10,7 +10,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.RewardItemDecorator
-import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
@@ -34,7 +34,6 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     private var viewModel = HorizontalRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
-    private val noLongerAvailableString = context().getString(R.string.No_longer_available)
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
@@ -182,8 +181,8 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     }
 
     private fun formattedExpirationString(@NonNull reward: Reward): String {
-        val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
-        val value = RewardUtils.deadlineCountdownValue(reward)
+        val detail = RewardViewUtils.deadlineCountdownDetail(reward, context(), this.ksString)
+        val value = RewardViewUtils.deadlineCountdownValue(reward)
         return "$value $detail"
     }
 

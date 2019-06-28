@@ -20,7 +20,7 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -285,7 +285,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         val country = projectAndCountry.second
         this.adapter.takeProject(project, country, this.nativeCheckout)
         if (!this.nativeCheckout) {
-            ProjectUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button, null)
+            ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button, null)
         } else {
             setupRewardsFragment(project)
         }

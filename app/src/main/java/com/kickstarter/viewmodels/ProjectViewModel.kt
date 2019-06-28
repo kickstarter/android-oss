@@ -301,13 +301,13 @@ interface ProjectViewModel {
                     .subscribe(this.backingDetails)
 
             nativeCheckoutProject
-                    .map { ProjectUtils.rewardsButtonText(it) }
+                    .map { ProjectViewUtils.rewardsButtonText(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.rewardsButtonText.onNext(it) }
 
             nativeCheckoutProject
-                    .map { ProjectUtils.pledgeButtonColor(it) }
+                    .map { ProjectViewUtils.rewardsButtonColor(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsButtonColor)
@@ -355,24 +355,6 @@ interface ProjectViewModel {
                     .filter { IntentMapper.appBannerIsSet(it) }
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
-
-            currentProject
-                    .map { getActionButtons(it) }
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.setActionButtonId.onNext(it) }
-
-            currentProject
-                    .map { getRewardButtonText(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe { this.rewardsButtonText.onNext(it) }
-
-            currentProject
-                    .map { ProjectViewUtils.pledgeButtonColor(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardsButtonColor)
 
         }
 
@@ -544,7 +526,7 @@ interface ProjectViewModel {
         private fun backingDetails(project: Project): String {
             project.backing()?.let { backing ->
                 val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
-                val title = reward?.let { "• ${it.title()}" } ?: ""
+                val title = reward?.let { " • ${it.title()}" } ?: ""
 
                 val backingAmount = reward?.let {
                     when {
@@ -555,7 +537,7 @@ interface ProjectViewModel {
 
                 val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
-                return "$formattedAmount $title".trim()
+                return "$formattedAmount $title"
             }
             return ""
         }

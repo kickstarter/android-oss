@@ -12,14 +12,25 @@ object ProjectViewUtils {
      * Returns the color resource ID of the rewards button based on project and backing status.
      */
     @ColorRes
-    fun pledgeButtonColor(project: Project): Int {
+    fun rewardsButtonColor(project: Project): Int {
         return if (project.isBacking && project.isLive) {
             R.color.button_pledge_manage
-        } else if (project.isBacking && !project.isLive) {
-            //todo: view rewards will be black
+        } else if (!project.isLive) {
             R.color.button_pledge_ended
         } else {
             R.color.button_pledge_live
+        }
+    }
+
+    fun rewardsButtonText(project: Project): Int {
+        return if (!project.isBacking && project.isLive) {
+            R.string.Back_this_project
+        } else if (project.isBacking && project.isLive) {
+            R.string.Manage
+        } else if (project.isBacking && !project.isLive) {
+            R.string.View_your_pledge
+        } else {
+            R.string.View_rewards
         }
     }
 
@@ -28,7 +39,9 @@ object ProjectViewUtils {
      */
     @JvmStatic
     fun setActionButton(project: Project, backProjectButton: Button,
-                        managePledgeButton: Button, viewPledgeButton: Button) {
+                        managePledgeButton: Button, viewPledgeButton: Button,
+                        viewRewardsButton: Button?) {
+
         if (!project.isBacking && project.isLive) {
             backProjectButton.visibility = View.VISIBLE
         } else {
@@ -45,6 +58,14 @@ object ProjectViewUtils {
             viewPledgeButton.visibility = View.VISIBLE
         } else {
             viewPledgeButton.visibility = View.GONE
+        }
+
+        viewRewardsButton?.let {
+            if (!project.isBacking && !project.isLive) {
+                it.visibility = View.VISIBLE
+            } else {
+                it.visibility = View.GONE
+            }
         }
     }
 }

@@ -282,7 +282,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.rewardsButtonColor.assertValuesAndClear(R.color.button_manage_pledge)
+        this.rewardsButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
         this.rewardsButtonText.assertValuesAndClear(R.string.Manage)
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))

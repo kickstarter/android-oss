@@ -99,7 +99,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
-  protected @BindDimen(R.dimen.grid_8) int grid8Dimen;
+  protected @BindDimen(R.dimen.grid_10) int grid10Dimen;
 
   protected @BindDrawable(R.drawable.click_indicator_light_masked) Drawable clickIndicatorLightMaskedDrawable;
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
@@ -510,7 +510,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   private void setLandscapeActionButton(final @NonNull Project project) {
     if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
       final Button viewRewards = environment().nativeCheckoutPreference().get() ? this.viewRewardsButton : null;
-      ProjectUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton, viewRewards);
+      ProjectViewUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton, viewRewards);
     }
   }
 
@@ -521,7 +521,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     if (this.landOverlayTextViewGroup != null && this.nameCreatorViewGroup != null) {
       final int screenHeight = getScreenHeightDp(context());
       final float densityOffset = context().getResources().getDisplayMetrics().density;
-      final float topMargin = ((screenHeight / 3f * 2) * densityOffset) - this.grid8Dimen;
+      final float topMargin = ((screenHeight / 3f * 2) * densityOffset) - this.grid10Dimen;
       ViewUtils.setRelativeViewGroupMargins(this.landOverlayTextViewGroup, this.grid4Dimen, (int) topMargin, this.grid4Dimen, 0);
 
       if (!project.hasVideo()) {

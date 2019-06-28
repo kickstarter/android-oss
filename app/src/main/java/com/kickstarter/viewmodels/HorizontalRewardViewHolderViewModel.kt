@@ -26,7 +26,7 @@ interface HorizontalRewardViewHolderViewModel {
     }
 
     interface Outputs {
-        /**  */
+        /**  Emits the string resource ID to set the pledge button when not displaying the minimum. */
         fun alternatePledgeButtonText(): Observable<Int>
 
         /** Emits a boolean determining if the pledge button should be shown. */

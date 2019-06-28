@@ -15354,7 +15354,6 @@
     "ios_live_stream_chat": true,
     "ios_scroll_output_observe_for_ui": false,
     "ios_backer_dashboard": true,
-    "ios_notification_badge": false,
     "android_creator_view": false,
     "android_native_checkout": false
   },
@@ -15538,7 +15537,7 @@
   ],
   "ab_experiments": {
     "new_project_header": "experimental",
-    "featured_reward": "control",
+    "featured_reward": "pinned_image_text_border",
     "checkout_ksr_not_a_store_refresh_v2": "control"
   },
   "stripe": {

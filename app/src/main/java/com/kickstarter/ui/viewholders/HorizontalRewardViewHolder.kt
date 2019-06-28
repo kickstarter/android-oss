@@ -10,7 +10,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.RewardItemDecorator
-import com.kickstarter.libs.utils.RewardViewUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
 import com.kickstarter.libs.utils.ViewUtils
@@ -181,8 +181,8 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
     }
 
     private fun formattedExpirationString(@NonNull reward: Reward): String {
-        val detail = RewardViewUtils.deadlineCountdownDetail(reward, context(), this.ksString)
-        val value = RewardViewUtils.deadlineCountdownValue(reward)
+        val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
+        val value = RewardUtils.deadlineCountdownValue(reward)
         return "$value $detail"
     }
 

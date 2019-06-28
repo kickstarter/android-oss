@@ -3,7 +3,6 @@ package com.kickstarter.libs.utils;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.R;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Project;
@@ -65,17 +64,5 @@ public final class ProjectUtilsTest extends KSRobolectricTestCase {
   public void testPhotoHeightFromWidthRatio() {
     assertEquals(360, ProjectUtils.photoHeightFromWidthRatio(640));
     assertEquals(576, ProjectUtils.photoHeightFromWidthRatio(1024));
-  }
-
-  @Test
-  public void testPledgeButtonColor() {
-    assertEquals(R.color.button_pledge_live, ProjectUtils.pledgeButtonColor(ProjectFactory.project()));
-    assertEquals(R.color.button_pledge_manage, ProjectUtils.pledgeButtonColor(ProjectFactory.backedProject()));
-    assertEquals(R.color.button_pledge_live, ProjectUtils.pledgeButtonColor(ProjectFactory.successfulProject()));
-    final Project backedSuccessfulProject = ProjectFactory.backedProject()
-      .toBuilder()
-      .state(Project.STATE_SUCCESSFUL)
-      .build();
-    assertEquals(R.color.button_pledge_ended, ProjectUtils.pledgeButtonColor(backedSuccessfulProject));
   }
 }

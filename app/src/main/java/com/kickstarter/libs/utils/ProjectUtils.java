@@ -2,8 +2,6 @@ package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.util.Pair;
-import android.view.View;
-import android.widget.Button;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
@@ -17,7 +15,6 @@ import org.joda.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -129,44 +126,6 @@ public final class ProjectUtils {
    */
   public static int photoHeightFromWidthRatio(final int width) {
     return width * 9 / 16;
-  }
-
-  /**
-   * Returns the color resource ID of the rewards button based on project and backing status.
-   */
-  public static @ColorRes int pledgeButtonColor(final @NonNull Project project) {
-    if (project.isBacking() && project.isLive()) {
-      return R.color.button_pledge_manage;
-    } else if (project.isBacking() && !project.isLive()) {
-      //todo: view rewards will be black
-      return R.color.button_pledge_ended;
-    } else {
-      return R.color.button_pledge_live;
-    }
-  }
-
-  /**
-   * Set correct button view based on project and backing status.
-   */
-  public static void setActionButton(final @NonNull Project project, final @NonNull Button backProjectButton,
-    final @NonNull Button managePledgeButton, final @NonNull Button viewPledgeButton) {
-    if (!project.isBacking() && project.isLive()) {
-      backProjectButton.setVisibility(View.VISIBLE);
-    } else {
-      backProjectButton.setVisibility(View.GONE);
-    }
-
-    if (project.isBacking() && project.isLive()) {
-      managePledgeButton.setVisibility(View.VISIBLE);
-    } else {
-      managePledgeButton.setVisibility(View.GONE);
-    }
-
-    if (project.isBacking() && !project.isLive()) {
-      viewPledgeButton.setVisibility(View.VISIBLE);
-    } else {
-      viewPledgeButton.setVisibility(View.GONE);
-    }
   }
 
   /**

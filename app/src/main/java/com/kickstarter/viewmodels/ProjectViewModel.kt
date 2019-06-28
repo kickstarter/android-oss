@@ -6,8 +6,8 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.*
-import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -357,7 +357,7 @@ interface ProjectViewModel {
                     .subscribe { this.rewardsButtonText.onNext(it) }
 
             currentProject
-                    .map { ProjectUtils.pledgeButtonColor(it) }
+                    .map { ProjectViewUtils.pledgeButtonColor(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsButtonColor)

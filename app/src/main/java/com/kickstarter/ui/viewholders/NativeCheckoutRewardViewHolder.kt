@@ -34,7 +34,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     private var viewModel = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
-    private val noLongerAvailableString = context().getString(R.string.No_longer_available)
     private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
@@ -80,10 +79,10 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setRemainingRewardsTextView(it) }
 
-        this.viewModel.outputs.limitReachedIsVisible()
+        this.viewModel.outputs.alternatePledgeButtonText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_button.text = this.noLongerAvailableString }
+                .subscribe { this.view.horizontal_reward_pledge_button.setText(it) }
 
         this.viewModel.outputs.minimumAmount()
                 .compose(bindToLifecycle())
@@ -153,10 +152,15 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setInvisible(this.view.reward_check, it) }
 
-        this.viewModel.outputs.viewYourPledgeIsVisible()
+        this.viewModel.outputs.checkTintColor()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_button.setText(R.string.View_your_pledge) }
+                .subscribe { this.view.reward_check.imageTintList = ContextCompat.getColorStateList(context(), it) }
+
+        this.viewModel.outputs.checkBackgroundDrawable()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_check.setBackgroundResource(it) }
 
         view.reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()

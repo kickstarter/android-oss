@@ -7,7 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
@@ -355,6 +355,24 @@ interface ProjectViewModel {
                     .filter { IntentMapper.appBannerIsSet(it) }
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
+
+            currentProject
+                    .map { getActionButtons(it) }
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.setActionButtonId.onNext(it) }
+
+            currentProject
+                    .map { getRewardButtonText(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe { this.rewardsButtonText.onNext(it) }
+
+            currentProject
+                    .map { ProjectViewUtils.pledgeButtonColor(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardsButtonColor)
 
         }
 

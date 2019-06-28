@@ -2,8 +2,6 @@ package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.util.Pair;
-import android.view.View;
-import android.widget.Button;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
@@ -18,7 +16,6 @@ import org.joda.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 

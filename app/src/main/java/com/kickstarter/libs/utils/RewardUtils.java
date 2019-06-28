@@ -16,6 +16,7 @@ import java.util.List;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
@@ -40,6 +41,10 @@ public final class RewardUtils {
    */
   public static boolean hasBackers(final @NonNull Reward reward) {
     return IntegerUtils.isNonZero(reward.backersCount());
+  }
+
+  public static boolean isAvailable(final @NonNull Project project, final @NonNull Reward reward) {
+    return project.isLive() && !RewardUtils.isLimitReached(reward) && !RewardUtils.isExpired(reward);
   }
 
   /**
@@ -178,6 +183,23 @@ public final class RewardUtils {
       return R.color.button_pledge_ended;
     } else {
       return R.color.button_pledge_live;
+    }
+  }
+
+  /**
+   * Returns the string resource ID of the rewards button based on project and reward status.
+   */
+  public static @StringRes int pledgeButtonAlternateText(final @NonNull Project project, final @NonNull Reward reward) {
+    if (BackingUtils.isBacked(project, reward) && project.isLive()) {
+      return R.string.Manage_your_pledge;
+    } else if (BackingUtils.isBacked(project, reward) && !project.isLive()) {
+      return R.string.View_your_pledge;
+    } else if (isAvailable(project, reward) && project.isBacking()) {
+      return R.string.Select_this_instead;
+    } else if (!isAvailable(project, reward)) {
+      return R.string.No_longer_available;
+    } else {
+      throw new IllegalStateException();
     }
   }
 }

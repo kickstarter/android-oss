@@ -19,6 +19,16 @@ import java.util.Date;
 public final class RewardUtilsTest extends KSRobolectricTestCase {
 
   @Test
+  public void testIsAvailable() {
+    assertTrue(RewardUtils.isAvailable(ProjectFactory.project(), RewardFactory.reward()));
+    assertFalse(RewardUtils.isAvailable(ProjectFactory.project(), RewardFactory.ended()));
+    assertFalse(RewardUtils.isAvailable(ProjectFactory.project(), RewardFactory.limitReached()));
+    assertFalse(RewardUtils.isAvailable(ProjectFactory.successfulProject(), RewardFactory.reward()));
+    assertFalse(RewardUtils.isAvailable(ProjectFactory.successfulProject(), RewardFactory.ended()));
+    assertFalse(RewardUtils.isAvailable(ProjectFactory.successfulProject(), RewardFactory.limitReached()));
+  }
+
+  @Test
   public void testCheckBackgroundDrawable() {
     assertEquals(R.drawable.circle_blue_alpha_6, RewardUtils.checkBackgroundDrawable(ProjectFactory.project()));
     assertEquals(R.drawable.circle_grey_300, RewardUtils.checkBackgroundDrawable(ProjectFactory.successfulProject()));
@@ -293,6 +303,19 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
     final Reward backedSuccessfulReward = backedSuccessfulProject.backing().reward();
     assertEquals(R.color.button_pledge_ended, RewardUtils.pledgeButtonColor(backedSuccessfulProject, backedSuccessfulReward));
     assertEquals(R.color.button_pledge_ended, RewardUtils.pledgeButtonColor(ProjectFactory.successfulProject(), RewardFactory.reward()));
+  }
+
+  @Test
+  public void testPledgeButtonAlternateText() {
+    assertEquals(R.string.No_longer_available, RewardUtils.pledgeButtonAlternateText(ProjectFactory.project(), RewardFactory.ended()));
+    assertEquals(R.string.No_longer_available, RewardUtils.pledgeButtonAlternateText(ProjectFactory.project(), RewardFactory.limitReached()));
+    final Project backedProject = ProjectFactory.backedProject();
+    final Reward backedReward = backedProject.backing().reward();
+    assertEquals(R.string.Manage_your_pledge, RewardUtils.pledgeButtonAlternateText(backedProject, backedReward));
+    assertEquals(R.string.Select_this_instead, RewardUtils.pledgeButtonAlternateText(backedProject, RewardFactory.reward()));
+    final Project backedSuccessfulProject = ProjectFactory.backedProject().toBuilder().state(Project.STATE_SUCCESSFUL).build();
+    final Reward backedSuccessfulReward = backedSuccessfulProject.backing().reward();
+    assertEquals(R.string.View_your_pledge, RewardUtils.pledgeButtonAlternateText(backedSuccessfulProject, backedSuccessfulReward));
   }
 
   @Test

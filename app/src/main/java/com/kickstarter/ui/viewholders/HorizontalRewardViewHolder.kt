@@ -80,10 +80,10 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
                 .compose(observeForUI())
                 .subscribe { setRemainingRewardsTextView(it) }
 
-        this.viewModel.outputs.limitReachedIsVisible()
+        this.viewModel.outputs.alternatePledgeButtonText()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_pledge_button.text = this.noLongerAvailableString }
+                .subscribe { this.view.horizontal_reward_pledge_button.setText(it) }
 
         this.viewModel.outputs.minimumAmount()
                 .compose(bindToLifecycle())
@@ -162,21 +162,6 @@ class HorizontalRewardViewHolder(private val view: View, val delegate: Delegate?
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.reward_check.setBackgroundResource(it) }
-
-        this.viewModel.outputs.viewYourPledgeIsVisible()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_pledge_button.setText(R.string.View_your_pledge) }
-
-        this.viewModel.outputs.manageYourPledgeIsVisible()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_pledge_button.setText(R.string.Manage_your_pledge) }
-
-        this.viewModel.outputs.selectThisInsteadIsVisible()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.horizontal_reward_pledge_button.setText(R.string.Select_this_instead) }
 
         view.horizontal_reward_pledge_button.setOnClickListener {
             this.viewModel.inputs.rewardClicked()

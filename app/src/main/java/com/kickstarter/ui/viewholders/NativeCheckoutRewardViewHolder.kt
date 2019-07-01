@@ -59,10 +59,15 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                             ?: this.context().getText(R.string.Pledge_any_amount_to_help_bring_this_project_to_life)
                 }
 
-        this.viewModel.outputs.isClickable()
+        this.viewModel.outputs.descriptionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { configureRewardButton(it) }
+                .subscribe { ViewUtils.setGone(this.view.reward_description_container, it) }
+
+        this.viewModel.outputs.buttonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_pledge_button.isEnabled = it }
 
         this.viewModel.outputs.remainingIsGone()
                 .compose(bindToLifecycle())
@@ -114,13 +119,15 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(this.view.rewards_item_section))
 
-        this.viewModel.outputs.title()
+        this.viewModel.outputs.titleForNoReward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    this.view.reward_title_text_view.text = it
-                            ?: this.context().getString(R.string.Make_a_pledge_without_a_reward)
-                }
+                .subscribe { this.view.reward_title_text_view.setText(it) }
+
+        this.viewModel.outputs.titleForReward()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_title_text_view.text = it }
 
         this.viewModel.outputs.titleIsGone()
                 .compose(bindToLifecycle())
@@ -173,11 +180,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         val reward = requireNonNull(projectAndReward.second, Reward::class.java)
 
         this.viewModel.inputs.projectAndReward(project, reward)
-    }
-
-    private fun configureRewardButton(isRewardAvailable: Boolean) {
-        this.view.reward_pledge_button.isClickable = isRewardAvailable
-        this.view.reward_pledge_button.isEnabled = isRewardAvailable
     }
 
     private fun formattedExpirationString(@NonNull reward: Reward): String {

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
@@ -58,7 +59,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
-  protected @Bind(R.id.back_project_button) @Nullable Button backProjectButton;
+  protected @Bind(R.id.back_project_button) @Nullable MaterialButton backProjectButton;
   protected @Bind(R.id.blurb_view) ViewGroup blurbViewGroup;
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
@@ -73,7 +74,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.land_overlay_text) @Nullable ViewGroup landOverlayTextViewGroup;
   protected @Bind(R.id.location) TextView locationTextView;
-  protected @Bind(R.id.manage_pledge_button) @Nullable Button managePledgeButton;
+  protected @Bind(R.id.manage_pledge_button) @Nullable MaterialButton managePledgeButton;
   protected @Bind(R.id.name_creator_view) @Nullable ViewGroup nameCreatorViewGroup;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.project_photo) ImageView photoImageView;
@@ -88,8 +89,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
-  protected @Bind(R.id.view_pledge_button) @Nullable Button viewPledgeButton;
-  protected @Bind(R.id.view_rewards_button) @Nullable Button viewRewardsButton;
+  protected @Bind(R.id.view_pledge_button) @Nullable MaterialButton viewPledgeButton;
+  protected @Bind(R.id.view_rewards_button) @Nullable MaterialButton viewRewardsButton;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
@@ -495,7 +496,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   @Nullable @OnClick(R.id.view_rewards_button)
-  public void viewRewardseOnClick() {
+  public void viewRewardsOnClick() {
     this.delegate.projectViewHolderViewRewardsClicked(this);
   }
 
@@ -509,7 +510,16 @@ public final class ProjectViewHolder extends KSViewHolder {
    */
   private void setLandscapeActionButton(final @NonNull Project project) {
     if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
-      final Button viewRewards = environment().nativeCheckoutPreference().get() ? this.viewRewardsButton : null;
+      final Button viewRewards;
+      if (environment().nativeCheckoutPreference().get()) {
+        viewRewards = this.viewRewardsButton;
+        final int cornerRadius = context().getResources().getDimensionPixelSize(R.dimen.grid_2);
+        this.backProjectButton.setCornerRadius(cornerRadius);
+        this.managePledgeButton.setCornerRadius(cornerRadius);
+        this.viewPledgeButton.setCornerRadius(cornerRadius);
+      } else {
+        viewRewards = null;
+      }
       ProjectViewUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton, viewRewards);
     }
   }

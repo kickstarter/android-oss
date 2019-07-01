@@ -5,6 +5,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
+import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
@@ -133,7 +134,7 @@ interface ProjectViewModel {
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentConfig: CurrentConfigType = environment.currentConfig()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
-        private val nativeCheckoutPreference: Boolean = environment.nativeCheckoutPreference().get()
+        private val nativeCheckoutPreference: BooleanPreferenceType = environment.nativeCheckoutPreference()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
@@ -221,7 +222,6 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
-
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
                     .compose(ignoreValues())
@@ -282,7 +282,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
-            val nativeCheckoutProject = Observable.just(nativeCheckoutPreference)
+            val nativeCheckoutProject = Observable.just(this.nativeCheckoutPreference.get())
                     .filter { BooleanUtils.isTrue(it) }
                     .compose<Pair<Boolean, Project>>(combineLatestPair(currentProject))
                     .map<Project> { it.second }
@@ -406,7 +406,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderBackProjectClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference) {
+            if (this.nativeCheckoutPreference.get()) {
                 this.nativeProjectActionButtonClicked()
             } else {
                 this.backProjectButtonClicked()
@@ -426,7 +426,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderManagePledgeClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference) {
+            if (this.nativeCheckoutPreference.get()) {
                 this.nativeProjectActionButtonClicked()
             } else {
                 this.managePledgeButtonClicked()
@@ -438,7 +438,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderViewPledgeClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference) {
+            if (this.nativeCheckoutPreference.get()) {
                 this.nativeProjectActionButtonClicked()
             } else {
                 this.viewPledgeButtonClicked()

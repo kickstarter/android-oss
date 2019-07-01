@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
@@ -40,7 +41,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private lateinit var heartIcon: ImageButton
     private lateinit var projectRecyclerView: RecyclerView
     private lateinit var shareIcon: ImageButton
-    private var nativeCheckout: Boolean = false
 
     private val projectBackButtonString = R.string.project_back_button
     private val managePledgeString = R.string.project_checkout_manage_navbar_title
@@ -53,19 +53,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.nativeCheckout = environment().nativeCheckoutPreference().get()
         setContentView(when {
-            this.nativeCheckout -> R.layout.activity_project
+            environment().nativeCheckoutPreference().get() -> R.layout.activity_project
             else -> R.layout.project_layout
         })
         this.ksString = environment().ksString()
 
-        this.projectRecyclerView  = findViewById(R.id.project_recycler_view)
-        this.heartIcon  = findViewById(R.id.heart_icon)
-        this.shareIcon  = findViewById(R.id.share_icon)
+        this.projectRecyclerView = findViewById(R.id.project_recycler_view)
+        this.heartIcon = findViewById(R.id.heart_icon)
+        this.shareIcon = findViewById(R.id.share_icon)
 
         when {
-            this.nativeCheckout -> {
+            environment().nativeCheckoutPreference().get() -> {
                 val viewTreeObserver = rewards_container.viewTreeObserver
                 if (viewTreeObserver.isAlive) {
                     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -112,12 +111,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
+                .subscribe { this.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
         this.viewModel.outputs.backingDetailsIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { styleActionButton(it) }
+                .subscribe { styleProjectActionButton(it) }
 
         this.viewModel.outputs.projectAndUserCountry()
                 .compose(bindToLifecycle())
@@ -127,7 +126,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.backingDetails()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {reward_infos.text = it }
+                .subscribe { reward_infos.text = it }
 
         this.viewModel.outputs.rewardsButtonColor()
                 .compose(bindToLifecycle())
@@ -137,7 +136,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         this.viewModel.outputs.rewardsButtonText()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { rewardButtonString -> rewardButtonString?.let { project_action_button.text = getString(it) } }
+                .subscribe { project_action_button.setText(it) }
 
         this.viewModel.outputs.setInitialRewardsContainerY()
                 .compose(bindToLifecycle())
@@ -213,21 +212,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
     }
 
-    private fun styleActionButton(detailsAreVisible: Boolean) {
-        val buttonParams = project_action_button.layoutParams as LinearLayout.LayoutParams
-        when {
-            detailsAreVisible -> {
-                backing_details.visibility = View.VISIBLE
-                buttonParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-                project_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.grid_2)
-            }
-            else -> {
-                backing_details.visibility = View.GONE
-                buttonParams.width = LinearLayout.LayoutParams.MATCH_PARENT
-                project_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.fab_radius)
-            }
+    override fun back() {
+        if (environment().nativeCheckoutPreference().get()) {
+            handleNativeCheckoutBackPress()
+        } else {
+            super.back()
         }
-        project_action_button.layoutParams = buttonParams
+    }
+
+    override fun exitTransition(): Pair<Int, Int>? {
+        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onDestroy() {
@@ -236,7 +230,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun animateRewards(expand: Boolean) {
-
         val targetToShow = if (!expand) action_buttons else pledge_container
         val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
 
@@ -280,11 +273,23 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
     }
 
+    private fun handleNativeCheckoutBackPress() {
+        val rewardsSheetIsExpanded = pledge_container.alpha == 1f
+        when {
+            supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
+            rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsFragmentClicked()
+            else -> {
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                super.back()
+            }
+        }
+    }
+
     private fun renderProject(projectAndCountry: Pair<Project, String>) {
         val project = projectAndCountry.first
         val country = projectAndCountry.second
-        this.adapter.takeProject(project, country, this.nativeCheckout)
-        if (!this.nativeCheckout) {
+        this.adapter.takeProject(project, country, environment().nativeCheckoutPreference().get())
+        if (!environment().nativeCheckoutPreference().get()) {
             ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button, null)
         } else {
             setupRewardsFragment(project)
@@ -297,7 +302,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     }
 
     private fun setInitialRewardsContainerY() {
-        rewards_container.y = (rewards_container.height - rewardsSheetGuideline()).toFloat()
+        val guideline = rewardsSheetGuideline()
+        rewards_container.y = (rewards_container.height - guideline).toFloat()
+        this.projectRecyclerView.setPadding(0, 0, 0, guideline)
     }
 
     private fun setupRewardsFragment(project: Project) {
@@ -384,21 +391,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         startActivity(intent)
     }
 
-    override fun exitTransition(): Pair<Int, Int>? {
-        return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
-    }
-
-    override fun back() = if (this.nativeCheckout) {
-        val rewardsSheetIsExpanded = pledge_container.alpha == 1f
+    private fun styleProjectActionButton(detailsAreVisible: Boolean) {
+        val buttonParams = project_action_button.layoutParams as LinearLayout.LayoutParams
         when {
-            supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
-            rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsFragmentClicked()
+            detailsAreVisible -> {
+                backing_details.visibility = View.VISIBLE
+                buttonParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+                project_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.grid_2)
+            }
             else -> {
-                supportFragmentManager.popBackStack()
-                super.back()
+                backing_details.visibility = View.GONE
+                buttonParams.width = LinearLayout.LayoutParams.MATCH_PARENT
+                project_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.fab_radius)
             }
         }
-    } else {
-        super.back()
+        project_action_button.layoutParams = buttonParams
     }
 }

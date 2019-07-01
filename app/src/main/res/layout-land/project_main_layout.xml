@@ -81,33 +81,34 @@
         android:focusable="true"
         tools:ignore="InconsistentLayout">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
           android:id="@+id/back_project_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/project_back_button"
           tools:ignore="InconsistentLayout" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
           android:id="@+id/manage_pledge_button"
           style="@style/SecondaryButton"
           android:text="@string/project_manage_button"
           android:visibility="gone"
           tools:ignore="InconsistentLayout" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
           android:id="@+id/view_pledge_button"
           style="@style/SecondaryButton"
           android:text="@string/project_view_button"
           android:visibility="gone"
           tools:ignore="InconsistentLayout" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
           android:id="@+id/view_rewards_button"
           style="@style/Button"
           android:backgroundTint="@color/button_pledge_ended"
           android:text="@string/View_rewards"
           android:visibility="gone"
+          app:cornerRadius="@dimen/grid_2"
           tools:ignore="InconsistentLayout" />
 
       </RelativeLayout>

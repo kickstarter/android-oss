@@ -2,6 +2,7 @@
 <LinearLayout
   android:id="@+id/project_scroll_view"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -72,7 +73,7 @@
         layout="@layout/project_stats_view" />
 
       <RelativeLayout
-        android:id="@+id/landscape_project_action_buttons"
+        android:id="@+id/project_action_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -80,25 +81,34 @@
         android:focusable="true"
         tools:ignore="InconsistentLayout">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
           android:id="@+id/back_project_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/project_back_button"
           tools:ignore="InconsistentLayout" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
           android:id="@+id/manage_pledge_button"
           style="@style/SecondaryButton"
           android:text="@string/project_manage_button"
           android:visibility="gone"
           tools:ignore="InconsistentLayout" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
           android:id="@+id/view_pledge_button"
           style="@style/SecondaryButton"
           android:text="@string/project_view_button"
           android:visibility="gone"
+          tools:ignore="InconsistentLayout" />
+
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/view_rewards_button"
+          style="@style/Button"
+          android:backgroundTint="@color/button_pledge_ended"
+          android:text="@string/View_rewards"
+          android:visibility="gone"
+          app:cornerRadius="@dimen/grid_2"
           tools:ignore="InconsistentLayout" />
 
       </RelativeLayout>

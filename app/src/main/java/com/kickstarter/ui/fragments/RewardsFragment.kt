@@ -13,16 +13,16 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.ui.adapters.HorizontalRewardsAdapter
+import com.kickstarter.ui.adapters.NativeCheckoutRewardsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.RewardFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
 
 @RequiresFragmentViewModel(RewardFragmentViewModel.ViewModel::class)
-class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), HorizontalRewardsAdapter.Delegate {
+class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), NativeCheckoutRewardsAdapter.Delegate {
 
-    private var rewardsAdapter = HorizontalRewardsAdapter(this)
+    private var rewardsAdapter = NativeCheckoutRewardsAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)

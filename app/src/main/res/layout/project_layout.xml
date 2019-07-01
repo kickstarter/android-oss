@@ -15,7 +15,8 @@
     android:id="@+id/project_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@+id/project_action_buttons"
+    tools:listitem="@layout/project_main_layout"
+    android:layout_above="@id/project_action_buttons"
     android:layout_below="@id/project_toolbar"
     android:clipToPadding="false" />
 
@@ -24,8 +25,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:focusable="true"
-    tools:visibility="visible">
+    android:focusable="true">
 
     <Button
       android:id="@+id/back_project_button"
@@ -48,108 +48,5 @@
       android:visibility="gone"
       app:backgroundTint="@color/button_secondary" />
   </RelativeLayout>
-
-  <androidx.cardview.widget.CardView
-    android:id="@+id/rewards_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:visibility="invisible"
-    tools:visibility="visible"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="30dp"
-    app:cardElevation="@dimen/grid_2">
-
-    <LinearLayout
-      android:id="@+id/pledge_container"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:alpha="0"
-      tools:alpha="1"
-      android:orientation="vertical">
-
-      <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/rewards_appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-          android:id="@+id/rewards_toolbar"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:background="@color/ksr_grey_400"
-          app:navigationIcon="@drawable/ic_down"
-          app:title="Back this project" />
-
-      </com.google.android.material.appbar.AppBarLayout>
-
-      <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <fragment
-          android:id="@+id/fragment_rewards"
-          android:name="com.kickstarter.ui.fragments.RewardsFragment"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          tools:layout="@layout/fragment_rewards" />
-
-      </FrameLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:id="@+id/action_buttons"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/activity_horizontal_margin"
-      android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:orientation="horizontal">
-
-      <LinearLayout
-        android:id="@+id/backing_details"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        android:orientation="vertical">
-
-        <TextView
-          android:id="@+id/you_backer_text"
-          style="@style/SubheadlineMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:text="@string/Youre_a_backer" />
-
-        <TextView
-          android:id="@+id/reward_infos"
-          style="@style/Caption1Secondary"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:ellipsize="end"
-          android:lines="1"
-          tools:text="$20 . Funky Reward Title..." />
-      </LinearLayout>
-
-      <com.google.android.material.button.MaterialButton
-        android:id="@+id/native_project_action_button"
-        style="@style/ExtendedFab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/project_back_button"
-        android:textAllCaps="false"
-        tools:visibility="visible"/>
-    </LinearLayout>
-
-  </androidx.cardview.widget.CardView>
-
-  <androidx.constraintlayout.widget.Guideline
-    android:id="@+id/guideline"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    app:layout_constraintGuide_end="@dimen/reward_fragment_guideline_constraint_end" />
 
 </RelativeLayout>

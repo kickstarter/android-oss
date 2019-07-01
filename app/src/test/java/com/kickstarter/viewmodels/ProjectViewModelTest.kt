@@ -29,7 +29,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
-    private val setActionButtonId = TestSubscriber<Int>()
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
     private val showRewardsFragment = TestSubscriber<Boolean>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
@@ -45,16 +44,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.backingDetails().subscribe(this.backingDetails)
         this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first }.subscribe(this.projectTest)
+        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
-        this.vm.outputs.setActionButtonId().subscribe(this.setActionButtonId)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.projectAndUserCountryAndIsFeatureEnabled().map { pc -> pc.first.first.isStarred }.subscribe(this.savedTest)
+        this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
@@ -65,7 +63,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_EmitsProjectWithStandardSetUp() {
+    fun testEmitsProjectWithStandardSetUp() {
         val project = ProjectFactory.project()
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
@@ -78,7 +76,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_LoggedOutStarProjectFlow() {
+    fun testLoggedOutStarProjectFlow() {
         val currentUser = MockCurrentUser()
         val environment = environment().toBuilder()
                 .currentUser(currentUser)
@@ -120,7 +118,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_ShowShareSheet() {
+    fun testShowShareSheet() {
         val project = ProjectFactory.project()
         val user = UserFactory.user()
 
@@ -136,7 +134,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StarProjectThatIsAlmostCompleted() {
+    fun testStarProjectThatIsAlmostCompleted() {
         val project = ProjectFactory.almostCompletedProject()
 
         val currentUser = MockCurrentUser()
@@ -163,7 +161,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_SaveProjectThatIsSuccessful() {
+    fun testSaveProjectThatIsSuccessful() {
         val currentUser = MockCurrentUser()
         val environment = environment().toBuilder()
                 .currentUser(currentUser)
@@ -188,7 +186,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StartBackingActivity() {
+    fun testStartBackingActivity() {
         val project = ProjectFactory.project()
         val user = UserFactory.user()
 
@@ -200,7 +198,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StartCampaignWebViewActivity() {
+    fun testStartCampaignWebViewActivity() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -212,7 +210,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StartCreatorBioWebViewActivity() {
+    fun testStartCreatorBioWebViewActivity() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -224,7 +222,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StartCommentsActivity() {
+    fun testStartCommentsActivity() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -236,7 +234,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StartManagePledgeActivity() {
+    fun testStartManagePledgeActivity() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -249,7 +247,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StartProjectUpdatesActivity() {
+    fun testStartProjectUpdatesActivity() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -262,7 +260,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_StartVideoActivity() {
+    fun testStartVideoActivity() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -274,114 +272,46 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_SetActionButtonId_NonBacked_Live_Project() {
-        setUpEnvironment(environment())
+    fun testRewardsButtonUIOutputs() {
+        setUpEnvironment(environment().toBuilder().nativeCheckoutPreference(MockBooleanPreference(true)).build())
 
-        val project = ProjectFactory.project()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.rewardsButtonColor.assertValuesAndClear(R.color.button_pledge_live)
+        this.rewardsButtonText.assertValuesAndClear(R.string.Back_this_project)
 
-        this.setActionButtonId.assertValue(R.id.back_project_button)
-    }
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-    @Test
-    fun testProjectViewModel_SetActionButtonId_Backed_Live_Project() {
-        setUpEnvironment(environment())
+        this.rewardsButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
+        this.rewardsButtonText.assertValuesAndClear(R.string.Manage)
 
-        val project = ProjectFactory.backedProject()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
 
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.rewardsButtonColor.assertValue(R.color.button_pledge_ended)
+        this.rewardsButtonText.assertValuesAndClear(R.string.View_rewards)
 
-        this.setActionButtonId.assertValue(R.id.manage_pledge_button)
-    }
-
-    @Test
-    fun testProjectViewModel_SetActionButtonId_Backed_Ended_Project() {
-        setUpEnvironment(environment())
-
-        val project = ProjectFactory.successfulProject()
+        val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .isBacking(true)
+                .state(Project.STATE_SUCCESSFUL)
                 .build()
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.setActionButtonId.assertValue(R.id.view_pledge_button)
-    }
-
-    @Test
-    fun testProjectViewModel_SetActionButtonIdIsNull_NonBacked_Ended_Project() {
-        setUpEnvironment(environment())
-
-        val project = ProjectFactory.successfulProject()
-                .toBuilder()
-                .isBacking(false)
-                .build()
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.setActionButtonId.assertValue(null)
-    }
-
-    @Test
-    fun testProjectViewModel_SetRewardButtonStringAndColor_NonBacked_Live_Project() {
-        setUpEnvironment(environment())
-
-        val project = ProjectFactory.project()
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.rewardsButtonColor.assertValue(R.color.button_pledge_live)
-        this.rewardsButtonText.assertValue(R.string.Back_this_project)
-    }
-
-    @Test
-    fun testProjectViewModel_SetRewardButtonStringAndColor_Backed_Ended_Project() {
-        setUpEnvironment(environment())
-
-        val project = ProjectFactory.successfulProject()
-                .toBuilder()
-                .isBacking(true)
-                .build()
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
         this.rewardsButtonColor.assertValue(R.color.button_pledge_ended)
         this.rewardsButtonText.assertValue(R.string.View_your_pledge)
     }
 
     @Test
-    fun testProjectViewModel_SetRewardButtonStringAndColor_Backed_Live_Project() {
-        setUpEnvironment(environment())
-
-        val project = ProjectFactory.project()
-                .toBuilder()
-                .isBacking(true)
-                .build()
-
-        // Start the view model with a project.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
-
-        this.rewardsButtonColor.assertValue(R.color.button_pledge_manage)
-        this.rewardsButtonText.assertValue(R.string.Manage)
-    }
-
-    @Test
-    fun testProjectViewModel_HideRewardsFragment() {
-        this.initializeViewModelWithProject(ProjectFactory.project())
+    fun testHideRewardsFragment() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.vm.inputs.hideRewardsFragmentClicked()
         this.showRewardsFragment.assertValue(false)
     }
 
     @Test
-    fun testProjectViewModel_ShowRewardsFragment() {
-        this.initializeViewModelWithProject(ProjectFactory.project())
+    fun testShowRewardsFragment() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.vm.inputs.nativeProjectActionButtonClicked()
         this.showRewardsFragment.assertValue(true)
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -389,14 +319,31 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_SetInitialRewardsContainerY() {
+    fun testSetInitialRewardsContainerY() {
         setUpEnvironment(environment())
         this.vm.inputs.onGlobalLayout()
         this.setInitialRewardsContainerY.assertValueCount(1)
     }
 
     @Test
-    fun testProjectViewModel_ManagePledgeViewText_WithReward_ShowsMinimumAmount() {
+    fun testBackingDetailsOutputs() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        this.backingDetailsIsVisible.assertValue(false)
+        this.backingDetails.assertNoValues()
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+        this.backingDetailsIsVisible.assertValue(false)
+        this.backingDetails.assertNoValues()
+
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+        this.backingDetailsIsVisible.assertValuesAndClear(false)
+        this.backingDetails.assertNoValues()
+
         val reward = RewardFactory.reward()
                 .toBuilder()
                 .id(4)
@@ -408,102 +355,57 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .rewardId(4)
                 .build()
 
-        val project = ProjectFactory.backedProject()
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(backing)
                 .rewards(listOf(reward))
                 .build()
 
-        this.initializeViewModelWithProject(project)
-        this.backingDetails.assertValues("$20 • Digital Bundle")
-    }
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+        this.backingDetails.assertValuesAndClear("$20 • Digital Bundle")
+        this.backingDetailsIsVisible.assertValue(true)
 
-    @Test
-    fun testProjectViewModel_ManagePledgeViewText_WithNoReward_AmountIsWholeNumber() {
-
-        val reward = RewardFactory.noReward()
-
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(15.0)
-                .reward(reward)
-                .build()
-
-        val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        this.initializeViewModelWithProject(project)
-        this.backingDetails.assertValues("$15 ")
-    }
-
-    @Test
-    fun testProjectViewModel_ManagePledgeViewText_WithNoReward_AmountWithDecimals() {
-
-        val reward = RewardFactory.noReward()
-
-        val backing = BackingFactory.backing()
+        val noRewardBacking = BackingFactory.backing()
                 .toBuilder()
                 .amount(13.5)
-                .reward(reward)
+                .reward(RewardFactory.noReward())
                 .build()
 
-        val project = ProjectFactory.backedProject()
+        val backedProjectdNoReward = ProjectFactory.backedProject()
                 .toBuilder()
-                .backing(backing)
+                .backing(noRewardBacking)
                 .build()
 
-        this.initializeViewModelWithProject(project)
-        this.backingDetails.assertValues("$13.50 ")
-    }
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProjectdNoReward))
+        this.backingDetails.assertValuesAndClear("$13.50")
+        this.backingDetailsIsVisible.assertValue(true)
 
-    @Test
-    fun testProjectViewModel_BackingDetailsIsNotVisible_NonBacked_Live_Project() {
-            this.initializeViewModelWithProject(ProjectFactory.project())
-            this.backingDetailsIsVisible.assertValue(false)
-    }
-
-    @Test
-    fun testProjectViewModel_BackingDetailsIsNotVisible_NonBacked_Ended_Project() {
-        this.initializeViewModelWithProject(ProjectFactory.successfulProject())
-        this.backingDetailsIsVisible.assertValue(false)
-    }
-
-    @Test
-    fun testProjectViewModel_BackingDetailsIsNotVisible_Backed_Ended_Project() {
-        val backing = BackingFactory.backing()
+        val noRewardWholeBacking = BackingFactory.backing()
                 .toBuilder()
                 .amount(15.0)
+                .reward(RewardFactory.noReward())
                 .build()
 
-        val project = ProjectFactory.successfulProject()
+        val backedProjectNoRewardWhole = ProjectFactory.backedProject()
                 .toBuilder()
-                .backing(backing)
+                .backing(noRewardWholeBacking)
                 .build()
-        this.initializeViewModelWithProject(project)
-        this.backingDetailsIsVisible.assertValue(false)
-    }
 
-    @Test
-    fun testProjectViewModel_BackingDetailsIsVisible_Backed_Live_Project() {
-        this.initializeViewModelWithProject(ProjectFactory.backedProject())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProjectNoRewardWhole))
+        this.backingDetails.assertValue("$15")
         this.backingDetailsIsVisible.assertValue(true)
     }
 
-    private fun initializeViewModelWithProject(project: Project) {
+    private fun environmentWithNativeCheckoutEnabled() : Environment {
         val currentUser = MockCurrentUser()
         val rewardsEnabled: BooleanPreferenceType = MockBooleanPreference(true)
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
 
-        val environment = environment().toBuilder()
+        return environment().toBuilder()
                 .currentConfig(currentConfig)
                 .currentUser(currentUser)
-                .horizontalRewardsEnabled(rewardsEnabled)
+                .nativeCheckoutPreference(rewardsEnabled)
                 .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
     }
 }

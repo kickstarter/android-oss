@@ -36,10 +36,10 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:text="@string/Horizontal_rewards" />
+          android:text="@string/Native_Checkout" />
 
         <androidx.appcompat.widget.SwitchCompat
-          android:id="@+id/horizontal_switch"
+          android:id="@+id/native_checkout_switch"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 

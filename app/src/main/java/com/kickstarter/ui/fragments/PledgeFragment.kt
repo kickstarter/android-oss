@@ -38,7 +38,7 @@ import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
-import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
+import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
 
@@ -271,7 +271,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         reward_snapshot.pivotX = 0f
         reward_snapshot.pivotY = 0f
 
-        val rewardViewHolder = HorizontalRewardViewHolder(reward_to_copy, null)
+        val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_to_copy, null)
         rewardViewHolder.bindData(Pair(project, reward))
 
         reward_to_copy.post {

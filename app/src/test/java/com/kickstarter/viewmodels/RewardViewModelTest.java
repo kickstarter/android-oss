@@ -284,6 +284,20 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testGoToCheckoutWhenProjectIsLive() {
+    final Reward reward = RewardFactory.reward();
+    final Project liveProject = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.projectAndReward(liveProject, reward);
+    this.startCheckoutActivity.assertNoValues();
+
+    // When a reward from a live project is clicked, start checkout.
+    this.vm.inputs.rewardClicked();
+    this.startCheckoutActivity.assertValue(Pair.create(liveProject, reward));
+  }
+
+  @Test
   public void testGoToViewPledge() {
     final Project liveProject = ProjectFactory.backedProject();
     final Project successfulProject = ProjectFactory.backedProject().toBuilder()

@@ -9,14 +9,26 @@ import org.junit.Test
 class ProjectViewUtilsTest : KSRobolectricTestCase() {
 
     @Test
-    fun testPledgeButtonColor() {
-        assertEquals(R.color.button_pledge_live, ProjectViewUtils.pledgeButtonColor(ProjectFactory.project()))
-        assertEquals(R.color.button_pledge_manage, ProjectViewUtils.pledgeButtonColor(ProjectFactory.backedProject()))
-        assertEquals(R.color.button_pledge_live, ProjectViewUtils.pledgeButtonColor(ProjectFactory.successfulProject()))
+    fun testRewardsButtonColor() {
+        assertEquals(R.color.button_pledge_live, ProjectViewUtils.rewardsButtonColor(ProjectFactory.project()))
+        assertEquals(R.color.button_pledge_manage, ProjectViewUtils.rewardsButtonColor(ProjectFactory.backedProject()))
+        assertEquals(R.color.button_pledge_ended, ProjectViewUtils.rewardsButtonColor(ProjectFactory.successfulProject()))
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
-        assertEquals(R.color.button_pledge_ended, ProjectViewUtils.pledgeButtonColor(backedSuccessfulProject))
+        assertEquals(R.color.button_pledge_ended, ProjectViewUtils.rewardsButtonColor(backedSuccessfulProject))
+    }
+
+    @Test
+    fun testRewardsButtonText() {
+        assertEquals(R.string.Back_this_project, ProjectViewUtils.rewardsButtonText(ProjectFactory.project()))
+        assertEquals(R.string.Manage, ProjectViewUtils.rewardsButtonText(ProjectFactory.backedProject()))
+        assertEquals(R.string.View_rewards, ProjectViewUtils.rewardsButtonText(ProjectFactory.successfulProject()))
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        assertEquals(R.string.View_your_pledge, ProjectViewUtils.rewardsButtonText(backedSuccessfulProject))
     }
 }

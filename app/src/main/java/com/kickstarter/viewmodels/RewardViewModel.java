@@ -28,7 +28,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface RewardViewModel {
@@ -132,8 +131,6 @@ public interface RewardViewModel {
       final Observable<Boolean> isSelectable = this.projectAndReward
         .map(pr -> isSelectable(pr.first, pr.second));
 
-      final Observable<Boolean> horizontalRewardsEnabled = Observable.just(environment.horizontalRewardsEnabled().get());
-
       final Observable<Reward> reward = this.projectAndReward
         .map(pr -> pr.second);
 
@@ -175,9 +172,6 @@ public interface RewardViewModel {
       this.isClickable = isSelectable.distinctUntilChanged();
 
       this.startCheckoutActivity = this.projectAndReward
-        .compose(combineLatestPair(horizontalRewardsEnabled))
-        .filter(prAndHorizontalRewards -> !prAndHorizontalRewards.second)
-        .map(prAndHorizontalRewards -> prAndHorizontalRewards.first)
         .filter(pr -> isSelectable(pr.first, pr.second) && pr.first.isLive())
         .compose(takeWhen(this.rewardClicked));
 

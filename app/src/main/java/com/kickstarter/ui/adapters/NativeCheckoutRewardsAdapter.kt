@@ -5,13 +5,13 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.models.Project
 import com.kickstarter.ui.viewholders.EmptyViewHolder
-import com.kickstarter.ui.viewholders.HorizontalRewardViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import rx.Observable
 
-class HorizontalRewardsAdapter(private val delegate: Delegate) : KSAdapter() {
+class NativeCheckoutRewardsAdapter(private val delegate: Delegate) : KSAdapter() {
 
-    interface Delegate: HorizontalRewardViewHolder.Delegate
+    interface Delegate: NativeCheckoutRewardViewHolder.Delegate
 
     override fun layout(sectionRow: SectionRow): Int {
         return R.layout.item_reward
@@ -19,7 +19,7 @@ class HorizontalRewardsAdapter(private val delegate: Delegate) : KSAdapter() {
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.item_reward -> HorizontalRewardViewHolder(view, this.delegate)
+            R.layout.item_reward -> NativeCheckoutRewardViewHolder(view, this.delegate)
             else -> EmptyViewHolder(view)
         }
     }

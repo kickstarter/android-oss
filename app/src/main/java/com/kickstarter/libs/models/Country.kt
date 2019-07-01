@@ -12,7 +12,7 @@ enum class Country(val countryCode: String, val currencyCode: String, val curren
     ES("ES", "EUR", "€", 1, 8_500, false),
     FR("FR", "EUR", "€", 1, 8_500, false),
     GB("GB", "GBP", "£", 1, 8_000, false),
-    HK("HK", "HKD", "€", 10, 75_000, true),
+    HK("HK", "HKD", "$", 10, 75_000, true),
     IE("IE", "EUR", "€", 1, 8_500, false),
     IT("IT", "EUR", "€", 1, 8_500, false),
     JP("JP", "JPY", "¥", 100, 1_200_000, false),

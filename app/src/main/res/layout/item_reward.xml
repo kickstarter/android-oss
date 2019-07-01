@@ -96,18 +96,25 @@
 
         </LinearLayout>
 
-        <TextView
-          style="@style/RewardSectionTitle"
-          android:layout_marginTop="@dimen/grid_3"
-          android:text="@string/Description" />
-
-        <TextView
-          android:id="@+id/reward_description_text_view"
-          style="@style/BodyPrimary"
+        <LinearLayout
+          android:id="@+id/reward_description_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_1"
-          tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/RewardSectionTitle"
+            android:layout_marginTop="@dimen/grid_3"
+            android:text="@string/Description" />
+
+          <TextView
+            android:id="@+id/reward_description_text_view"
+            style="@style/BodyPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/grid_1"
+            tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+        </LinearLayout>
 
         <LinearLayout
           android:id="@+id/reward_limit_container"

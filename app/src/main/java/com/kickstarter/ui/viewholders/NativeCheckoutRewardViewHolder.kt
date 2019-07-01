@@ -64,7 +64,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.reward_description_container, it) }
 
-        this.viewModel.outputs.isClickable()
+        this.viewModel.outputs.buttonIsEnabled()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.reward_pledge_button.isEnabled = it }

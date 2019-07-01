@@ -30,6 +30,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
         /**  Emits the string resource ID to set the pledge button when not displaying the minimum. */
         fun alternatePledgeButtonText(): Observable<Int>
 
+        /** Emits `true` if pledge button can be clicked, `false` otherwise.  */
+        fun buttonIsEnabled(): Observable<Boolean>
+
         /** Emits a boolean determining if the pledge button should be shown. */
         fun buttonIsGone(): Observable<Boolean>
 
@@ -59,9 +62,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         /** Emits `true` if the reward end date should be hidden,`false` otherwise. */
         fun endDateSectionIsGone(): Observable<Boolean>
-
-        /** Emits `true` if reward can be clicked, `false` otherwise.  */
-        fun isClickable(): Observable<Boolean>
 
         /** Emits `true` if the limits container should be hidden, `false` otherwise. */
         fun limitContainerIsGone(): Observable<Boolean>
@@ -110,6 +110,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val rewardClicked = PublishSubject.create<Void>()
 
         private val alternatePledgeButtonText: Observable<Int>
+        private val buttonIsEnabled: Observable<Boolean>
         private val buttonIsGone: Observable<Boolean>
         private val buttonTintColor: Observable<Int>
         private val checkBackgroundDrawable: Observable<Int>
@@ -120,7 +121,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val description: Observable<String?>
         private val descriptionIsGone: Observable<Boolean>
         private val endDateSectionIsGone: Observable<Boolean>
-        private val isClickable: Observable<Boolean>
         private val limitContainerIsGone: Observable<Boolean>
         private val minimumAmount: Observable<String>
         private val minimumAmountTitle: Observable<SpannableString>
@@ -193,7 +193,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .map { if (RewardUtils.isReward(it.second)) it.second.description().isNullOrEmpty() else BackingUtils.isBacked(it.first, it.second) }
                     .distinctUntilChanged()
 
-            this.isClickable = this.projectAndReward
+            this.buttonIsEnabled = this.projectAndReward
                     .map { isSelectable(it.first, it.second) }
                     .distinctUntilChanged()
 
@@ -309,7 +309,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun description(): Observable<String?> = this.description
 
         @NonNull
-        override fun isClickable(): Observable<Boolean> = this.isClickable
+        override fun buttonIsEnabled(): Observable<Boolean> = this.buttonIsEnabled
 
         @NonNull
         override fun remaining(): Observable<String> = this.remaining

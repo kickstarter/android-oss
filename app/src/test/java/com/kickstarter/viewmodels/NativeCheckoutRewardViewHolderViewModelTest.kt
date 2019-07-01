@@ -22,6 +22,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: NativeCheckoutRewardViewHolderViewModel.ViewModel
     private val alternatePledgeButtonText = TestSubscriber.create<Int>()
+    private val buttonIsEnabled = TestSubscriber<Boolean>()
     private val buttonIsGone = TestSubscriber.create<Boolean>()
     private val buttonTint = TestSubscriber.create<Int>()
     private val checkBackgroundDrawable = TestSubscriber.create<Int>()
@@ -32,7 +33,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val description = TestSubscriber<String>()
     private val descriptionIsGone = TestSubscriber<Boolean>()
     private val endDateSectionIsGone = TestSubscriber<Boolean>()
-    private val isClickable = TestSubscriber<Boolean>()
     private val limitContainerIsGone = TestSubscriber<Boolean>()
     private val minimumAmount = TestSubscriber<String>()
     private val minimumAmountTitle = TestSubscriber<String>()
@@ -50,6 +50,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment)
         this.vm.outputs.alternatePledgeButtonText().subscribe(this.alternatePledgeButtonText)
+        this.vm.outputs.buttonIsEnabled().subscribe(this.buttonIsEnabled)
         this.vm.outputs.buttonIsGone().subscribe(this.buttonIsGone)
         this.vm.outputs.buttonTint().subscribe(this.buttonTint)
         this.vm.outputs.checkBackgroundDrawable().subscribe(this.checkBackgroundDrawable)
@@ -60,7 +61,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.description().subscribe(this.description)
         this.vm.outputs.descriptionIsGone().subscribe(this.descriptionIsGone)
         this.vm.outputs.endDateSectionIsGone().subscribe(this.endDateSectionIsGone)
-        this.vm.outputs.isClickable().subscribe(this.isClickable)
         this.vm.outputs.remaining().subscribe(this.remaining)
         this.vm.outputs.remainingIsGone().subscribe(this.remainingIsGone)
         this.vm.outputs.limitContainerIsGone().subscribe(this.limitContainerIsGone)
@@ -444,32 +444,32 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testIsClickable() {
+    fun testButtonIsEnabled() {
         setUpEnvironment(environment())
 
-        // A reward from a live project should be clickable.
+        // A reward from a live project should be enabled.
         this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward())
-        this.isClickable.assertValue(true)
+        this.buttonIsEnabled.assertValue(true)
 
-        // A reward from a successful project should not be clickable.
+        // A reward from a successful project should not be enabled.
         this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), RewardFactory.reward())
-        this.isClickable.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false)
         //
-        // A backed reward from a live project should be clickable.
+        // A backed reward from a live project should be enabled.
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()!!)
-        this.isClickable.assertValues(true, false, true)
+        this.buttonIsEnabled.assertValues(true, false, true)
 
-        // A backed reward from a finished project should be clickable (distinct until changed).
+        // A backed reward from a finished project should be enabled (distinct until changed).
         val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()!!)
-        this.isClickable.assertValues(true, false, true)
+        this.buttonIsEnabled.assertValues(true, false, true)
 
-        // A reward with its limit reached should not be clickable.
+        // A reward with its limit reached should not be enabled.
         this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.limitReached())
-        this.isClickable.assertValues(true, false, true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false)
     }
 
     @Test

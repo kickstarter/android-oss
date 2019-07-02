@@ -4,7 +4,12 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.URLSpan
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -24,11 +29,14 @@ import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.activities.ThanksActivity
@@ -210,6 +218,24 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { activity?.showSnackbar(pledge_root, R.string.general_error_something_wrong) }
 
+        this.viewModel.outputs.startChromeTab()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    activity?.let { activity ->
+                        ChromeTabsHelperActivity.openCustomTab(activity, UrlUtils.baseCustomTabsIntent(activity), Uri.parse(it), null)
+                    }
+                }
+
+        accountability.setOnClickListener {
+            this.viewModel.inputs.accountabilityClicked()
+        }
+
+        this.viewModel.outputs.baseUrlForTerms()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { setPledgeAgreementHtml(it) }
+
         shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
 
         continue_to_tout.setOnClickListener {
@@ -223,6 +249,43 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         increase_pledge.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
+    }
+
+    private fun setPledgeAgreementHtml(baseUrl: String) {
+        val termsOfUse = getString(R.string.login_tout_help_sheet_terms)
+        val cookiePolicy = getString(R.string.login_tout_help_sheet_cookie)
+        val privacyPolicy = getString(R.string.login_tout_help_sheet_privacy)
+
+        val termsOfUseUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.TERMS_OF_USE)
+        val cookiePolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.COOKIES)
+        val privacyPolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.PRIVACY)
+
+        //TODO: when proper string is added, remove this
+        var agreementWithUrls = getString(R.string.By_pledging_you_agree)
+
+        agreementWithUrls = agreementWithUrls
+                .replaceFirst(termsOfUse, UrlUtils.wrapInATag(termsOfUse, termsOfUseUrl))
+                .replaceFirst(cookiePolicy, UrlUtils.wrapInATag(cookiePolicy, cookiePolicyUrl))
+                .replaceFirst(privacyPolicy, UrlUtils.wrapInATag(privacyPolicy, privacyPolicyUrl))
+
+        val spannableBuilder = SpannableStringBuilder(ViewUtils.getHtmlString(agreementWithUrls))
+        // https://stackoverflow.com/a/19989677
+        val urlSpans = spannableBuilder.getSpans(0, agreementWithUrls.length, URLSpan::class.java)
+        for (urlSpan in urlSpans) {
+            val clickableSpan = object: ClickableSpan() {
+                override fun onClick(widget: View) {
+                    this@PledgeFragment.viewModel.inputs.termsClicked(urlSpan.url)
+                }
+            }
+            val spanStart = spannableBuilder.getSpanStart(urlSpan)
+            val spanEnd = spannableBuilder.getSpanEnd(urlSpan)
+            val spanFlags = spannableBuilder.getSpanFlags(urlSpan)
+            spannableBuilder.setSpan(clickableSpan, spanStart, spanEnd, spanFlags)
+            spannableBuilder.removeSpan(urlSpan)
+        }
+
+        pledge_agreement.text = spannableBuilder
+        pledge_agreement.movementMethod = LinkMovementMethod.getInstance()
     }
 
     override fun onDetach() {

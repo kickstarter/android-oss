@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
@@ -41,7 +40,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
         this.ksString = environment().ksString()
         login_toolbar.setTitle(getString(this.loginString))
-        forgot_your_password_text_view.text = Html.fromHtml(getString(this.forgotPasswordString))
+        forgot_your_password_text_view.text = ViewUtils.getHtmlString(getString(this.forgotPasswordString))
 
         email.onChange { this.viewModel.inputs.email(it) }
         password.onChange { this.viewModel.inputs.password(it) }
@@ -64,10 +63,10 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.prefillEmail()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe({
+                .subscribe {
                     email.setText(it)
                     email.setSelection(it.length)
-                })
+                }
 
         this.viewModel.outputs.showChangedPasswordSnackbar()
                 .compose(bindToLifecycle())

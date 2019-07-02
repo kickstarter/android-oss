@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.models.Country;
 import com.kickstarter.models.Project;
@@ -61,6 +63,14 @@ public final class ViewUtils {
 
   public static int getScreenWidthDp(final @NonNull Context context) {
     return context.getResources().getConfiguration().screenWidthDp;
+  }
+
+  public static Spanned getHtmlString(final @NonNull String htmlString) {
+    if (ApiCapabilities.needsLegacyHtml()) {
+      return Html.fromHtml(htmlString);
+    } else {
+      return Html.fromHtml(htmlString, Html.FROM_HTML_MODE_COMPACT);
+    }
   }
 
   /**

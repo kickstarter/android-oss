@@ -10,6 +10,7 @@
   android:clickable="true"
   android:fillViewport="true"
   android:focusable="true"
+  android:overScrollMode="never"
   android:scrollbars="none"
   android:visibility="invisible"
   tools:visibility="visible">
@@ -55,7 +56,6 @@
         android:src="@drawable/ic_expand"
         />
     </FrameLayout>
-
 
     <LinearLayout
       android:id="@+id/pledge_details"
@@ -299,11 +299,12 @@
           android:weightSum="1.1">
 
           <TextView
+            android:id="@+id/pledge_agreement"
             style="@style/FootnoteSecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/By_pledging_you_agree" />
+            tools:text="@string/By_pledging_you_agree" />
 
           <FrameLayout
             android:layout_width="wrap_content"

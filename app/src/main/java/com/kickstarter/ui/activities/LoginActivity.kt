@@ -40,7 +40,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
         this.ksString = environment().ksString()
         login_toolbar.setTitle(getString(this.loginString))
-        forgot_your_password_text_view.text = ViewUtils.getHtmlString(getString(this.forgotPasswordString))
+        forgot_your_password_text_view.text = ViewUtils.html(getString(this.forgotPasswordString))
 
         email.onChange { this.viewModel.inputs.email(it) }
         password.onChange { this.viewModel.inputs.password(it) }

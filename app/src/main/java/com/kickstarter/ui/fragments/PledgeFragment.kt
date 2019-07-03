@@ -462,7 +462,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             }
 
     private fun setClickableHtml(string: String, textView: TextView) {
-        val spannableBuilder = SpannableStringBuilder(ViewUtils.getHtmlString(string))
+        val spannableBuilder = SpannableStringBuilder(ViewUtils.html(string))
         // https://stackoverflow.com/a/19989677
         val urlSpans = spannableBuilder.getSpans(0, string.length, URLSpan::class.java)
         for (urlSpan in urlSpans) {

@@ -65,7 +65,12 @@ public final class ViewUtils {
     return context.getResources().getConfiguration().screenWidthDp;
   }
 
-  public static Spanned getHtmlString(final @NonNull String htmlString) {
+  /**
+   * Returns a Spanned representation of the passed in HTML string using the
+   * proper API method.
+   *
+   */
+  public static Spanned html(final @NonNull String htmlString) {
     if (ApiCapabilities.needsLegacyHtml()) {
       return Html.fromHtml(htmlString);
     } else {

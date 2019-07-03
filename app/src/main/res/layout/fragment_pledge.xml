@@ -96,23 +96,11 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
           android:id="@+id/accountability"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:orientation="vertical">
-
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" />
-
-          <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Learn_more_about_accountability"
-            android:textColor="@color/primary" />
-        </LinearLayout>
+          tools:text="@string/Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" />
 
       </LinearLayout>
 

@@ -23,8 +23,4 @@ object UrlUtils {
 
         return uriBuilder.build().toString()
     }
-
-    fun wrapInATag(label: String, url: String): String {
-        return "<a href=\"$url\">$label</a>"
-    }
 }

@@ -449,16 +449,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .webEndpoint("www.test.dev")
                 .build())
 
-        this.vm.inputs.accountabilityClicked()
+        this.vm.inputs.linkClicked("www.test.dev/trust")
         this.startChromeTab.assertValuesAndClear("www.test.dev/trust")
 
-        this.vm.inputs.termsClicked("www.test.dev/cookies")
+        this.vm.inputs.linkClicked("www.test.dev/cookies")
         this.startChromeTab.assertValuesAndClear("www.test.dev/cookies")
 
-        this.vm.inputs.termsClicked("www.test.dev/privacy")
+        this.vm.inputs.linkClicked("www.test.dev/privacy")
         this.startChromeTab.assertValuesAndClear("www.test.dev/privacy")
 
-        this.vm.inputs.termsClicked("www.test.dev/terms")
+        this.vm.inputs.linkClicked("www.test.dev/terms")
         this.startChromeTab.assertValuesAndClear("www.test.dev/terms")
     }
 

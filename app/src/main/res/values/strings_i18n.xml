@@ -60,7 +60,7 @@ backers</string>
   <string name="Biography" formatted="false">Biography</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
-  <string name="By_pledging_you_agree" formatted="false">By pledging you agree to Kickstarter’s Terms of Use, Privacy Policy and Cookie Policy.</string>
+  <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_pledge" formatted="false">Cancel pledge</string>
@@ -245,6 +245,7 @@ with friends.</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (if funded)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter is not a store.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.</string>
+  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Know when creators and backers message you by enabling notifications.</string>
   <string name="Learn_more_about_accountability" formatted="false">Learn more about accountability</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} left</string>

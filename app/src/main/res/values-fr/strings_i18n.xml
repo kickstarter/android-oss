@@ -60,7 +60,7 @@ contributeurs</string>
   <string name="Biography" formatted="false">Biographie</string>
   <string name="Bookmarks" formatted="false">Signets</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Réalisez vos projets créatifs.</string>
-  <string name="By_pledging_you_agree" formatted="false">En vous engageant, vous acceptez les Conditions d’utilisation, la Politique de confidentialité et la Politique en matière de cookies de Kickstarter.</string>
+  <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
   <string name="CVC" formatted="false">Cryptogramme</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_pledge" formatted="false">Annuler mon engagement</string>
@@ -244,6 +244,7 @@ contributeurs</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (si le projet est financé)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter n\'est pas un magasin.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter n\'est pas un magasin, mais un moyen de faire vivre des projets créatifs.</string>
+  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Activez vos notifications pour savoir quand un créateur ou un contributeur vous envoie un message.</string>
   <string name="Learn_more_about_accountability" formatted="false">En savoir plus sur la responsabilité</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} restantes</string>

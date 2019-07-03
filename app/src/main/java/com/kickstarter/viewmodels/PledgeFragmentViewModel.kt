@@ -24,9 +24,6 @@ import java.math.RoundingMode
 
 interface PledgeFragmentViewModel {
     interface Inputs {
-        /** Call when user clicks the accountability section. */
-        fun accountabilityClicked()
-
         /** Call when user deselects a card they want to pledge with. */
         fun closeCardButtonClicked(position: Int)
 
@@ -38,6 +35,9 @@ interface PledgeFragmentViewModel {
 
         /** Call when user clicks the increase pledge button. */
         fun increasePledgeButtonClicked()
+
+        /** Call when user clicks a url. */
+        fun linkClicked(url: String)
 
         /** Call when the new card button is clicked. */
         fun newCardButtonClicked()
@@ -53,9 +53,6 @@ interface PledgeFragmentViewModel {
 
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
-
-        /** Call when user clicks a url in the agreement text. */
-        fun termsClicked(url: String)
     }
 
     interface Outputs {
@@ -137,17 +134,16 @@ interface PledgeFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
-        private val accountabilityClicked = PublishSubject.create<Void>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
         private val decreasePledgeButtonClicked = PublishSubject.create<Void>()
         private val increasePledgeButtonClicked = PublishSubject.create<Void>()
+        private val linkClicked = PublishSubject.create<String>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
-        private val termsClicked = PublishSubject.create<String>()
 
         private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
@@ -417,14 +413,9 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
 
-            this.accountabilityClicked
-                    .map { UrlUtils.buildUrl(this.environment.webEndpoint(), "trust") }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startChromeTab)
-
             this.baseUrlForTerms.onNext(this.environment.webEndpoint())
 
-            this.termsClicked
+            this.linkClicked
                     .compose(bindToLifecycle())
                     .subscribe(this.startChromeTab)
         }
@@ -438,8 +429,6 @@ interface PledgeFragmentViewModel {
                     }
         }
 
-        override fun accountabilityClicked() = this.accountabilityClicked.onNext(null)
-
         override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
 
         override fun continueButtonClicked() = this.continueButtonClicked.onNext(null)
@@ -447,6 +436,8 @@ interface PledgeFragmentViewModel {
         override fun decreasePledgeButtonClicked() = this.decreasePledgeButtonClicked.onNext(null)
 
         override fun increasePledgeButtonClicked() = this.increasePledgeButtonClicked.onNext(null)
+
+        override fun linkClicked(url: String) = this.linkClicked.onNext(url)
 
         override fun newCardButtonClicked() = this.newCardButtonClicked.onNext(null)
 
@@ -457,8 +448,6 @@ interface PledgeFragmentViewModel {
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
         override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
-
-        override fun termsClicked(url: String) = this.termsClicked.onNext(url)
 
         @NonNull
         override fun additionalPledgeAmount(): Observable<String> = this.additionalPledgeAmount

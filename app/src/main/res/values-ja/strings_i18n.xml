@@ -58,7 +58,7 @@
   <string name="Biography" formatted="false">自己紹介</string>
   <string name="Bookmarks" formatted="false">ブックマーク</string>
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
-  <string name="By_pledging_you_agree" formatted="false">プレッジすることにより、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意したものとみなされます。</string>
+  <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_pledge" formatted="false">プレッジを取り消す</string>
@@ -242,6 +242,7 @@
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarterはオンラインストアではありません。</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。</string>
+  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
   <string name="Left_count_left_few" formatted="false">残り%{left_count}</string>

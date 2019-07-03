@@ -36,6 +36,9 @@ interface PledgeFragmentViewModel {
         /** Call when user clicks the increase pledge button. */
         fun increasePledgeButtonClicked()
 
+        /** Call when user clicks a url. */
+        fun linkClicked(url: String)
+
         /** Call when the new card button is clicked. */
         fun newCardButtonClicked()
 
@@ -62,6 +65,9 @@ interface PledgeFragmentViewModel {
         /** Emits when the reward card should be animated. */
         fun animateRewardCard(): Observable<PledgeData>
 
+        /** Emits the base URL to build terms URLs. */
+        fun baseUrlForTerms(): Observable<String>
+
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<List<StoredCard>>
 
@@ -74,7 +80,7 @@ interface PledgeFragmentViewModel {
         /** Returns `true` if the conversion should be hidden, `false` otherwise.  */
         fun conversionTextViewIsGone(): Observable<Boolean>
 
-        /**  Emits a boolean determining if the decrease pledge button should be enabled. */
+        /** Emits a boolean determining if the decrease pledge button should be enabled. */
         fun decreasePledgeButtonIsEnabled(): Observable<Boolean>
 
         /** Emits the estimated delivery date string of the reward. */
@@ -110,6 +116,9 @@ interface PledgeFragmentViewModel {
         /**  Emits when the pledge call was unsuccessful. */
         fun showPledgeError(): Observable<Void>
 
+        /** Emits when we should start a Chrome tab. */
+        fun startChromeTab(): Observable<String>
+
         /** Emits when we should start the [com.kickstarter.ui.activities.LoginToutActivity]. */
         fun startLoginToutActivity(): Observable<Void>
 
@@ -129,6 +138,7 @@ interface PledgeFragmentViewModel {
         private val continueButtonClicked = PublishSubject.create<Void>()
         private val decreasePledgeButtonClicked = PublishSubject.create<Void>()
         private val increasePledgeButtonClicked = PublishSubject.create<Void>()
+        private val linkClicked = PublishSubject.create<String>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<String>()
@@ -138,6 +148,7 @@ interface PledgeFragmentViewModel {
         private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
+        private val baseUrlForTerms = BehaviorSubject.create<String>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
         private val conversionText = BehaviorSubject.create<String>()
@@ -154,6 +165,7 @@ interface PledgeFragmentViewModel {
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = BehaviorSubject.create<Void>()
+        private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startNewCardActivity = PublishSubject.create<Void>()
         private val startThanksActivity = PublishSubject.create<Project>()
@@ -400,6 +412,12 @@ interface PledgeFragmentViewModel {
                     .compose<Project>(takeWhen(checkoutValues.filter { BooleanUtils.isTrue(it) }))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
+
+            this.baseUrlForTerms.onNext(this.environment.webEndpoint())
+
+            this.linkClicked
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startChromeTab)
         }
 
         private fun getDefaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
@@ -419,6 +437,8 @@ interface PledgeFragmentViewModel {
 
         override fun increasePledgeButtonClicked() = this.increasePledgeButtonClicked.onNext(null)
 
+        override fun linkClicked(url: String) = this.linkClicked.onNext(url)
+
         override fun newCardButtonClicked() = this.newCardButtonClicked.onNext(null)
 
         override fun onGlobalLayout() = this.onGlobalLayout.onNext(null)
@@ -429,11 +449,17 @@ interface PledgeFragmentViewModel {
 
         override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
 
+        @NonNull
         override fun additionalPledgeAmount(): Observable<String> = this.additionalPledgeAmount
 
+        @NonNull
         override fun additionalPledgeAmountIsGone(): Observable<Boolean> = this.additionalPledgeAmountIsGone
 
+        @NonNull
         override fun animateRewardCard(): Observable<PledgeData> = this.animateRewardCard
+
+        @NonNull
+        override fun baseUrlForTerms(): Observable<String> = this.baseUrlForTerms
 
         @NonNull
         override fun cards(): Observable<List<StoredCard>> = this.cards
@@ -482,6 +508,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun showPledgeError(): Observable<Void> = this.showPledgeError
+
+        @NonNull
+        override fun startChromeTab(): Observable<String> = this.startChromeTab
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity

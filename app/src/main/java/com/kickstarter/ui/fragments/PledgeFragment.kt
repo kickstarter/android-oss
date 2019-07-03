@@ -4,17 +4,26 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.URLSpan
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.showSnackbar
@@ -24,11 +33,14 @@ import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.activities.ThanksActivity
@@ -209,6 +221,20 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { activity?.showSnackbar(pledge_root, R.string.general_error_something_wrong) }
+
+        this.viewModel.outputs.startChromeTab()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    activity?.let { activity ->
+                        ChromeTabsHelperActivity.openCustomTab(activity, UrlUtils.baseCustomTabsIntent(activity), Uri.parse(it), null)
+                    }
+                }
+
+        this.viewModel.outputs.baseUrlForTerms()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { setHtmlStrings(it) }
 
         shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
 
@@ -435,6 +461,31 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 }
             }
 
+    private fun setClickableHtml(string: String, textView: TextView) {
+        val spannableBuilder = SpannableStringBuilder(ViewUtils.html(string))
+        // https://stackoverflow.com/a/19989677
+        val urlSpans = spannableBuilder.getSpans(0, string.length, URLSpan::class.java)
+        for (urlSpan in urlSpans) {
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    this@PledgeFragment.viewModel.inputs.linkClicked(urlSpan.url)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = ContextCompat.getColor(textView.context, R.color.accent)
+                }
+            }
+            val spanStart = spannableBuilder.getSpanStart(urlSpan)
+            val spanEnd = spannableBuilder.getSpanEnd(urlSpan)
+            val spanFlags = spannableBuilder.getSpanFlags(urlSpan)
+            spannableBuilder.setSpan(clickableSpan, spanStart, spanEnd, spanFlags)
+            spannableBuilder.removeSpan(urlSpan)
+        }
+
+        textView.text = spannableBuilder
+        textView.movementMethod = LinkMovementMethod.getInstance()
+    }
+
     private fun setConversionTextView(@NonNull amount: String) {
         val currencyConversionString = context?.getString(R.string.About_reward_amount)
         total_amount_conversion.text = (currencyConversionString?.let {
@@ -447,6 +498,28 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             marginStart = (miniRewardWidth + margin).toInt()
         }
         delivery.layoutParams = deliveryParams
+    }
+
+
+    private fun setHtmlStrings(baseUrl: String) {
+        val termsOfUseUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.TERMS_OF_USE)
+        val cookiePolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.COOKIES)
+        val privacyPolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.PRIVACY)
+
+        val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
+        val byPledgingYouAgree = getString(R.string.By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy)
+
+        val agreementWithUrls = ksString.format(byPledgingYouAgree, "terms_of_use_link", termsOfUseUrl,
+                "privacy_policy_link", privacyPolicyUrl, "cookie_policy_link", cookiePolicyUrl)
+
+        setClickableHtml(agreementWithUrls, pledge_agreement)
+
+        val trustUrl = UrlUtils.buildUrl(baseUrl, "trust")
+
+        val kickstarterIsNotAStore = getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability)
+        val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)
+
+        setClickableHtml(accountabilityWithUrls, accountability)
     }
 
     private fun setInitialViewStates(pledgeData: PledgeData) {

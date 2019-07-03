@@ -17,6 +17,7 @@ package com.kickstarter.models.chrome
 // https://github.com/GoogleChrome/custom-tabs-client
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 
@@ -37,14 +38,18 @@ class ChromeTabsHelperActivity {
                           fallback: CustomTabFallback?) {
             val packageName = ChromeTabsHelper.getPackageNameToUse(activity)
 
-            //If we cant find a package name, it means there's no browser that supports
-            //Chrome Custom Tabs installed. So, we fallback to the webview
-            val doesNotSupportCustomTabs = packageName == null
-            if (doesNotSupportCustomTabs) {
-                fallback?.openUri(activity, uri)
-            } else {
+            // If we can't find a package name, it means there's no browser that supports Chrome Custom Tabs installed.
+            if (packageName != null) {
                 customTabsIntent.intent.setPackage(packageName)
                 customTabsIntent.launchUrl(activity, uri)
+            } else {
+                if (fallback != null) {
+                    fallback.openUri(activity, uri)
+                } else {
+                    // With no fallback, default to opening in the browser.
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    activity.startActivity(intent)
+                }
             }
         }
     }

@@ -5,14 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.libs.utils.UrlUtils
+import com.kickstarter.libs.utils.UrlUtils.baseCustomTabsIntent
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.activities.HelpActivity.*
@@ -50,7 +50,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
 
         cookie_policy.setOnClickListener {
-            startChromeTab(buildHelpUrl(COOKIES), Intent(this, HelpActivity.CookiePolicy::class.java))
+            startChromeTab(buildWebEndpointUrl(COOKIES), Intent(this, HelpActivity.CookiePolicy::class.java))
         }
 
         help_center.setOnClickListener {
@@ -58,19 +58,16 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
 
         privacy_policy.setOnClickListener {
-            startChromeTab(buildHelpUrl(PRIVACY), Intent(this, HelpActivity.PRIVACY::class.java))
+            startChromeTab(buildWebEndpointUrl(PRIVACY), Intent(this, HelpActivity.Privacy::class.java))
         }
 
         terms_of_use.setOnClickListener {
-            startChromeTab(buildHelpUrl(TERMS_OF_USE), Intent(this, HelpActivity.Terms::class.java))
+            startChromeTab(buildWebEndpointUrl(TERMS_OF_USE), Intent(this, HelpActivity.Terms::class.java))
         }
     }
 
-    private fun buildHelpUrl(endpoint: String): String {
-        val webEndpointBuilder = Uri.parse(this.environment().webEndpoint()).buildUpon()
-        webEndpointBuilder.appendEncodedPath(endpoint)
-
-        return webEndpointBuilder.build().toString()
+    private fun buildWebEndpointUrl(path: String): String {
+        return UrlUtils.buildUrl(this.environment().webEndpoint(), path)
     }
 
     private fun composeContactEmail(user: User?) {
@@ -96,26 +93,15 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
 
     private fun startChromeTab(url: String, helpActivityIntent: Intent?) {
         val uri = Uri.parse(url)
-        val builder = CustomTabsIntent.Builder()
 
-        builder.setShowTitle(true)
-        builder.setToolbarColor(ContextCompat.getColor(this, R.color.primary))
-
-        val customTabsIntent = builder.build()
-
-        ChromeTabsHelperActivity.openCustomTab(this, customTabsIntent, uri, object :
-                ChromeTabsHelperActivity.CustomTabFallback {
-
-            override fun openUri(activity: Activity, uri: Uri) {
-                if (helpActivityIntent != null) {
+        val fallback = when {
+            helpActivityIntent != null -> object : ChromeTabsHelperActivity.CustomTabFallback {
+                override fun openUri(activity: Activity, uri: Uri) {
                     activity.startActivity(helpActivityIntent)
-                } else {
-                    // We're not handling users without browsers, We'll monitor on Fabric.
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                    activity.startActivity(intent)
                 }
             }
-        })
+            else -> null
+        }
+        ChromeTabsHelperActivity.openCustomTab(this, baseCustomTabsIntent(this), uri, fallback)
     }
-
 }

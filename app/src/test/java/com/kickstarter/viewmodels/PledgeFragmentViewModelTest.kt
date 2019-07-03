@@ -35,6 +35,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val additionalPledgeAmount = TestSubscriber<String>()
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val animateRewardCard = TestSubscriber<PledgeData>()
+    private val baseUrlForTerms = TestSubscriber<String>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
     private val conversionText = TestSubscriber<String>()
@@ -51,6 +52,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
+    private val startChromeTab = TestSubscriber<String>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startNewCardActivity = TestSubscriber<Void>()
     private val startThanksActivity = TestSubscriber<Project>()
@@ -63,6 +65,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)
         this.vm.outputs.additionalPledgeAmountIsGone().subscribe(this.additionalPledgeAmountIsGone)
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
+        this.vm.outputs.baseUrlForTerms().subscribe(this.baseUrlForTerms)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
         this.vm.outputs.conversionText().subscribe(this.conversionText)
@@ -79,6 +82,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
+        this.vm.outputs.startChromeTab().subscribe(this.startChromeTab)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
@@ -97,6 +101,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.onGlobalLayout()
         this.animateRewardCard.assertValueCount(1)
+    }
+
+    @Test
+    fun testBaseUrlForTerms() {
+        setUpEnvironment(environment().toBuilder()
+                .webEndpoint("www.test.dev")
+                .build())
+
+        this.baseUrlForTerms.assertValue("www.test.dev")
     }
 
     @Test
@@ -428,6 +441,25 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.totalAmount.assertValues("$50", "$60")
         this.selectedShippingRule.assertValues(defaultRule, selectedRule)
+    }
+
+    @Test
+    fun testStartChromeTab() {
+        setUpEnvironment(environment().toBuilder()
+                .webEndpoint("www.test.dev")
+                .build())
+
+        this.vm.inputs.linkClicked("www.test.dev/trust")
+        this.startChromeTab.assertValuesAndClear("www.test.dev/trust")
+
+        this.vm.inputs.linkClicked("www.test.dev/cookies")
+        this.startChromeTab.assertValuesAndClear("www.test.dev/cookies")
+
+        this.vm.inputs.linkClicked("www.test.dev/privacy")
+        this.startChromeTab.assertValuesAndClear("www.test.dev/privacy")
+
+        this.vm.inputs.linkClicked("www.test.dev/terms")
+        this.startChromeTab.assertValuesAndClear("www.test.dev/terms")
     }
 
     @Test

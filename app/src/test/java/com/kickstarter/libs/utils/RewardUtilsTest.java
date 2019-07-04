@@ -229,12 +229,6 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testIsMaxRewardAmount() {
-    assertTrue(RewardUtils.isMaxRewardAmount(RewardFactory.maxReward().minimum()));
-    assertFalse(RewardUtils.isMaxRewardAmount(RewardFactory.noReward().minimum()));
-  }
-
-  @Test
   public void testIsReward() {
     assertTrue(RewardUtils.isReward(RewardFactory.reward()));
     assertFalse(RewardUtils.isReward(RewardFactory.noReward()));

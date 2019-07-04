@@ -1,6 +1,6 @@
 package com.kickstarter.mock.factories;
 
-import com.kickstarter.libs.utils.RewardUtils;
+import com.kickstarter.libs.models.Country;
 import com.kickstarter.models.Reward;
 
 import org.joda.time.DateTime;
@@ -70,9 +70,9 @@ public final class RewardFactory {
       .build();
   }
 
-  public static @NonNull Reward maxReward() {
+  public static @NonNull Reward maxReward(final @NonNull Country country) {
     return reward().toBuilder()
-      .minimum(RewardUtils.MAX_REWARD_LIMIT)
+      .minimum(country.getMaxPledge())
       .backersCount(0)
       .build();
   }

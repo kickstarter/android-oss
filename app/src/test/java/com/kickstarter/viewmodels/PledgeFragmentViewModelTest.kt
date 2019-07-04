@@ -8,7 +8,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.models.Country
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
@@ -395,26 +395,55 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
+        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false, true, false)
+        this.increasePledgeButtonIsEnabled.assertValuesAndClear(true)
+        this.additionalPledgeAmountIsGone.assertValuesAndClear(true, false, true)
+        this.additionalPledgeAmount.assertValuesAndClear("$0", "$1", "$0")
+
+        setUpEnvironment(environment(), project = ProjectFactory.mxProject())
+
+        this.decreasePledgeButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
+        this.additionalPledgeAmountIsGone.assertValue(true)
+        this.additionalPledgeAmount.assertValue("MX$ 0")
+
+        this.vm.inputs.increasePledgeButtonClicked()
+
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10")
+
+        this.vm.inputs.decreasePledgeButtonClicked()
+
+        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false, true, false)
+        this.increasePledgeButtonIsEnabled.assertValuesAndClear(true)
+        this.additionalPledgeAmountIsGone.assertValuesAndClear(true, false, true)
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10", "MX$ 0")
     }
 
     @Test
     fun testPledgeStepping_maxReward() {
-        setUpEnvironment(environment(), RewardFactory.maxReward())
+        setUpEnvironment(environment(), RewardFactory.maxReward(Country.US))
+        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false)
+        this.increasePledgeButtonIsEnabled.assertValuesAndClear(false)
+        this.additionalPledgeAmountIsGone.assertValuesAndClear(true)
+        this.additionalPledgeAmount.assertValuesAndClear("$0")
 
+        setUpEnvironment(environment(), RewardFactory.maxReward(Country.MX), ProjectFactory.mxProject())
         this.decreasePledgeButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(false)
         this.additionalPledgeAmountIsGone.assertValue(true)
-        this.additionalPledgeAmount.assertValue("$0")
+        this.additionalPledgeAmount.assertValue("MX$ 0")
     }
 
     @Test
     fun testPledgeStepping_almostMaxReward() {
-        val oneLessThanMax = RewardUtils.MAX_REWARD_LIMIT - 1
-        setUpEnvironment(environment(), RewardFactory.reward().toBuilder().minimum(oneLessThanMax).build())
+        var almostMaxReward = RewardFactory.reward()
+                .toBuilder()
+                .minimum((Country.US.maxPledge - Country.US.minPledge).toDouble())
+                .build()
+        setUpEnvironment(environment(), almostMaxReward)
 
         this.decreasePledgeButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
@@ -423,10 +452,28 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.increasePledgeButtonClicked()
 
+        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false, true)
+        this.increasePledgeButtonIsEnabled.assertValuesAndClear(true, false)
+        this.additionalPledgeAmountIsGone.assertValuesAndClear(true, false)
+        this.additionalPledgeAmount.assertValuesAndClear("$0", "$1")
+
+        val almostMaxMXReward = RewardFactory.reward()
+                .toBuilder()
+                .minimum((Country.MX.maxPledge - Country.MX.minPledge).toDouble())
+                .build()
+        setUpEnvironment(environment(), almostMaxMXReward, ProjectFactory.mxProject())
+
+        this.decreasePledgeButtonIsEnabled.assertValue(false)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+        this.additionalPledgeAmountIsGone.assertValue(true)
+        this.additionalPledgeAmount.assertValue("MX$ 0")
+
+        this.vm.inputs.increasePledgeButtonClicked()
+
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValues(true, false)
         this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.additionalPledgeAmount.assertValues("$0", "$1")
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10")
     }
 
     @Test

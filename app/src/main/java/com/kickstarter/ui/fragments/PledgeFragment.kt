@@ -236,6 +236,26 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { setHtmlStrings(it) }
 
+        this.viewModel.outputs.cancelPledgeButtonIsGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setGone(cancel_pledge_button, it) }
+
+        this.viewModel.outputs.changePaymentMethodButtonIsGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setGone(change_payment_method_button, it) }
+
+        this.viewModel.outputs.updatePledgeButtonIsGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setGone(update_pledge_button, it) }
+
+        this.viewModel.outputs.totalContainerIsGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setGone(total, it) }
+
         shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
 
         continue_to_tout.setOnClickListener {

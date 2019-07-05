@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
@@ -245,13 +246,24 @@ interface PledgeFragmentViewModel {
             // Pledge stepper section
             val additionalPledgeAmount = BehaviorSubject.create<Double>(0.0)
 
+            val country = project
+                    .map { Country.findByCurrencyCode(it.currency()) }
+                    .filter { it != null }
+
+            val stepAmount = country
+                    .map { it?.minPledge?: 1 }
+
             this.increasePledgeButtonClicked
+                    .compose<Pair<Void,Int>>(combineLatestPair(stepAmount))
+                    .map { it.second }
                     .compose(bindToLifecycle())
-                    .subscribe { additionalPledgeAmount.onNext(additionalPledgeAmount.value + 1) }
+                    .subscribe { additionalPledgeAmount.onNext(additionalPledgeAmount.value + it) }
 
             this.decreasePledgeButtonClicked
+                    .compose<Pair<Void,Int>>(combineLatestPair(stepAmount))
+                    .map { it.second }
                     .compose(bindToLifecycle())
-                    .subscribe { additionalPledgeAmount.onNext(additionalPledgeAmount.value - 1) }
+                    .subscribe { additionalPledgeAmount.onNext(additionalPledgeAmount.value - it) }
 
             additionalPledgeAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -273,7 +285,8 @@ interface PledgeFragmentViewModel {
 
             Observable
                     .merge(rewardMinimum, rewardMinimum.compose<Pair<Double, Double>>(combineLatestPair(additionalPledgeAmount)).map { it.first + it.second })
-                    .map { RewardUtils.isMaxRewardAmount(it) }
+                    .compose<Pair<Double, Country?>>(combineLatestPair(country))
+                    .map { it.first >= it.second?.maxPledge?: 0}
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .subscribe(this.increasePledgeButtonIsEnabled)

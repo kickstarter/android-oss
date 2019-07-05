@@ -20,8 +20,6 @@ import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 public final class RewardUtils {
   private RewardUtils() {}
 
-  public static final double MAX_REWARD_LIMIT = 2000000000;
-
   /**
    * Returns `true` if the reward has backers, `false` otherwise.
    */
@@ -64,10 +62,6 @@ public final class RewardUtils {
     return reward.limit() != null
       && remaining != null
       && remaining <= 0;
-  }
-
-  public static boolean isMaxRewardAmount(final double amount) {
-    return amount >= MAX_REWARD_LIMIT;
   }
 
   /**

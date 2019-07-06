@@ -15,7 +15,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class Backing implements Parcelable {
+public abstract class Backing implements Parcelable, Relay {
   public abstract double amount();
   public abstract @Nullable User backer();
   public abstract @Nullable String backerNote();

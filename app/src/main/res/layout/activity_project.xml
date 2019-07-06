@@ -81,6 +81,31 @@
 
     </LinearLayout>
 
+    <FrameLayout
+      android:id="@+id/scrim"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/black_alpha_40"
+      android:clickable="true"
+      android:focusable="true"
+      android:visibility="gone">
+
+      <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="-12dp"
+        app:cardCornerRadius="@dimen/card_radius">
+
+        <FrameLayout
+          android:id="@+id/secondary_container"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_2" />
+      </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
     <LinearLayout
       android:id="@+id/action_buttons"
       android:layout_width="match_parent"

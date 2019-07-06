@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import CancelBackingMutation
 import CheckoutMutation
 import ClearUserUnseenActivityMutation
 import CreatePasswordMutation
@@ -28,6 +29,34 @@ import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+
+    override fun cancelBacking(backing: Backing, note: String): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+            service.mutate(CancelBackingMutation.builder()
+                    .backingId(encodeRelayId(backing))
+                    .note(note)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<CancelBackingMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<CancelBackingMutation.Data>) {
+                            ps.onNext(true)
+                            ps.onCompleted()
+//                            if (response.hasErrors()) {
+//                                ps.onError(java.lang.Exception(response.errors().first().message()))
+//                            }
+//                            val state = response.data()?.cancelBacking()?.backing()?.status()
+//                            val success = state == Backing.STATUS_CANCELED
+//                            ps.onNext(success)
+//                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
 
     override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
         return Observable.defer {

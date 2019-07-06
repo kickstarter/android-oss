@@ -31,6 +31,8 @@ interface ProjectViewModel {
         /** Call when the back project button is clicked.  */
         fun backProjectButtonClicked()
 
+        fun backStackCount(count: Int)
+
         /** Call when the blurb view is clicked.  */
         fun blurbTextViewClicked()
 
@@ -57,6 +59,9 @@ interface ProjectViewModel {
 
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
+
+        /**   */
+        fun refreshProject()
 
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
@@ -93,6 +98,9 @@ interface ProjectViewModel {
 
         /** Emits when rewards fragment should expand. */
         fun showRewardsFragment(): Observable<Boolean>
+
+        /**  */
+        fun scrimIsVisible(): Observable<Boolean>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -138,6 +146,7 @@ interface ProjectViewModel {
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
+        private val backStackCount = PublishSubject.create<Int>()
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
@@ -147,6 +156,7 @@ interface ProjectViewModel {
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
+        private val refreshProject = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
@@ -158,10 +168,11 @@ interface ProjectViewModel {
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
+        private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
-        private val startLoginToutActivity = PublishSubject.create<Void>()
         private val showShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
+        private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<Project>()
         private val startCheckoutActivity = PublishSubject.create<Project>()
         private val startCommentsActivity = PublishSubject.create<Project>()
@@ -204,6 +215,14 @@ interface ProjectViewModel {
                     .switchMap { this.toggleProjectSave(it) }
                     .share()
 
+            val refreshedProject = initialProject
+                    .compose(takeWhen<Project, Void>(this.refreshProject))
+                    .switchMap { project ->
+                        this.client.fetchProject(project)
+                                .compose(neverError())
+                    }
+                    .share()
+
             loggedOutUserOnHeartClick
                     .compose(ignoreValues())
                     .subscribe(this.startLoginToutActivity)
@@ -218,6 +237,7 @@ interface ProjectViewModel {
 
             val currentProject = Observable.merge(
                     initialProject,
+                    refreshedProject,
                     projectOnUserChangeSave,
                     savedProjectOnLoginSuccess
             )
@@ -282,10 +302,10 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
-            val nativeCheckoutProject = Observable.just(this.nativeCheckoutPreference.get())
-                    .filter { BooleanUtils.isTrue(it) }
-                    .compose<Pair<Boolean, Project>>(combineLatestPair(currentProject))
-                    .map<Project> { it.second }
+            val nativeCheckoutProject = currentProject
+                    .compose<Pair<Project, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
+                    .filter { BooleanUtils.isTrue(it.second) }
+                    .map<Project> { it.first }
 
             nativeCheckoutProject
                     .map { it.isBacking && it.isLive }
@@ -311,6 +331,11 @@ interface ProjectViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsButtonColor)
+
+            this.backStackCount
+                    .map { it > 1 }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.scrimIsVisible)
 
             this.showShareSheet
                     .compose(bindToLifecycle())
@@ -367,6 +392,10 @@ interface ProjectViewModel {
 
         override fun backProjectButtonClicked() {
             this.backProjectButtonClicked.onNext(null)
+        }
+
+        override fun backStackCount(count: Int) {
+            this.backStackCount.onNext(count)
         }
 
         override fun blurbTextViewClicked() {
@@ -453,6 +482,10 @@ interface ProjectViewModel {
             this.updatesTextViewClicked()
         }
 
+        override fun refreshProject() {
+            this.refreshProject.onNext(null)
+        }
+
         override fun shareButtonClicked() {
             this.shareButtonClicked.onNext(null)
         }
@@ -489,6 +522,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
+
+        @NonNull
+        override fun scrimIsVisible(): Observable<Boolean> = this.scrimIsVisible
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt

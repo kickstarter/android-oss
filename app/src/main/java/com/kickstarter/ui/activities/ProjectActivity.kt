@@ -6,16 +6,19 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
+import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
+import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -82,6 +85,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 rewards_toolbar.setNavigationOnClickListener {
                     hideKeyboard()
                     this.viewModel.inputs.hideRewardsFragmentClicked()
+                }
+
+                this.supportFragmentManager.addOnBackStackChangedListener {
+                    this.viewModel.inputs.backStackCount(this.supportFragmentManager.backStackEntryCount)
                 }
             }
             else -> {
@@ -203,6 +210,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
+        this.viewModel.outputs.scrimIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(scrim, !it) }
+
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -273,13 +285,17 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
     }
 
+    private fun clearBackStack() {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
     private fun handleNativeCheckoutBackPress() {
         val rewardsSheetIsExpanded = pledge_container.alpha == 1f
         when {
             supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
             rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsFragmentClicked()
             else -> {
-                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                clearBackStack()
                 super.back()
             }
         }
@@ -406,5 +422,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             }
         }
         project_action_button.layoutParams = buttonParams
+    }
+
+    fun showCancellationSuccess() {
+        clearBackStack()
+        this.viewModel.inputs.hideRewardsFragmentClicked()
+        this.viewModel.inputs.refreshProject()
+        snackbar(root, getString(R.string.Youve_canceled_your_pledge)).apply {
+            view.layoutParams = (view.layoutParams as CoordinatorLayout.LayoutParams)
+                    .apply {
+                        anchorId = R.id.rewards_container
+                        anchorGravity = Gravity.TOP
+                        gravity = Gravity.TOP
+                    }
+            show()
+        }
     }
 }

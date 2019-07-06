@@ -256,6 +256,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { ViewUtils.setGone(total, it) }
 
+        this.viewModel.outputs.showCancelPledge()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    fragmentManager?.beginTransaction()
+                            ?.add(R.id.secondary_container, CancelPledgeFragment.newInstance(it.first, it.second))
+                            ?.addToBackStack(CancelPledgeFragment::class.java.simpleName)
+                            ?.commit()
+                }
+
         shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
 
         continue_to_tout.setOnClickListener {
@@ -268,6 +278,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         increase_pledge.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
+        }
+
+        cancel_pledge_button.setOnClickListener {
+            this.viewModel.inputs.cancelPledgeButtonClicked()
         }
     }
 

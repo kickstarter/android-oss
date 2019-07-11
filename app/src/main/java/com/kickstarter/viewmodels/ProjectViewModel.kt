@@ -60,8 +60,8 @@ interface ProjectViewModel {
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
 
-        /**   */
-        fun refreshProject()
+        /** Call when the pledge has been successfully canceled.  */
+        fun pledgeSuccessfullyCancelled()
 
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
@@ -74,7 +74,7 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
-        /** Emits a string with the backing details to be displayed on the manage pledge view */
+        /** Emits a string with the backing details to be displayed in the manage pledge view. */
         fun backingDetails(): Observable<String>
 
         /** Emits a boolean that determines if the backing details should be visible. */
@@ -99,8 +99,11 @@ interface ProjectViewModel {
         /** Emits when rewards fragment should expand. */
         fun showRewardsFragment(): Observable<Boolean>
 
-        /**  */
+        /** Emits a boolean that determines if the scrim for secondary pledging actions should be visible. */
         fun scrimIsVisible(): Observable<Boolean>
+
+        /** Emits when the backing has successfully been canceled. */
+        fun showCancelPledgeSuccess(): Observable<Void>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -156,7 +159,7 @@ interface ProjectViewModel {
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
-        private val refreshProject = PublishSubject.create<Void>()
+        private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
@@ -169,6 +172,7 @@ interface ProjectViewModel {
         private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
+        private val showCancelPledgeSuccess = PublishSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val showShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
@@ -216,7 +220,7 @@ interface ProjectViewModel {
                     .share()
 
             val refreshedProject = initialProject
-                    .compose(takeWhen<Project, Void>(this.refreshProject))
+                    .compose(takeWhen<Project, Void>(this.pledgeSuccessfullyCancelled))
                     .switchMap { project ->
                         this.client.fetchProject(project)
                                 .compose(neverError())
@@ -297,7 +301,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
-            this.hideRewardsFragment
+            Observable.merge(this.hideRewardsFragment, this.pledgeSuccessfullyCancelled)
                     .map { false }
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
@@ -482,8 +486,8 @@ interface ProjectViewModel {
             this.updatesTextViewClicked()
         }
 
-        override fun refreshProject() {
-            this.refreshProject.onNext(null)
+        override fun pledgeSuccessfullyCancelled() {
+            this.pledgeSuccessfullyCancelled.onNext(null)
         }
 
         override fun shareButtonClicked() {
@@ -525,6 +529,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun scrimIsVisible(): Observable<Boolean> = this.scrimIsVisible
+
+        @NonNull
+        override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt

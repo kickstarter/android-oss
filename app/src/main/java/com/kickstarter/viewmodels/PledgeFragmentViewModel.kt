@@ -81,7 +81,7 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the change payment method pledge button should be hidden. */
         fun changePaymentMethodButtonIsGone(): Observable<Boolean>
 
-        /**  Emits a boolean determining if the continue button should be hidden. */
+        /** Emits a boolean determining if the continue button should be hidden. */
         fun continueButtonIsGone(): Observable<Boolean>
 
         /** Emits a string representing the total pledge amount in the user's preferred currency.  */
@@ -120,7 +120,7 @@ interface PledgeFragmentViewModel {
         /** Emits when the shipping rules section should be hidden. */
         fun shippingRulesSectionIsGone(): Observable<Boolean>
 
-        /**  */
+        /** Emits when we should start the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
         fun showCancelPledge(): Observable<Pair<Project, Backing>>
 
         /** Emits when the cards adapter should update the selected position. */
@@ -225,15 +225,10 @@ interface PledgeFragmentViewModel {
             val isBackedReward = projectAndReward
                     .map { BackingUtils.isBacked(it.first, it.second) }
 
-            val projectAndIsBacked = project
-                    .compose<Pair<Project, Boolean>>(combineLatestPair(isBackedReward))
-
-            val backing = projectAndIsBacked
-                    .filter { it.second }
-                    .map<Project> { it.first }
-                    .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.loggedInUser()))
-                    .switchMap<Backing> { pb -> this.apiClient.fetchProjectBacking(pb.first, pb.second) }
-                    .compose(neverError())
+            val backing = projectAndReward
+                    .filter { BackingUtils.isBacked(it.first, it.second) }
+                    .map { it.first.backing() }
+                    .ofType(Backing::class.java)
 
             // Mini reward card
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
@@ -423,8 +418,8 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.totalContainerIsGone)
 
             project
-                    .compose<Project>(takeWhen(this.cancelPledgeButtonClicked))
                     .compose<Pair<Project, Backing>>(combineLatestPair(backing))
+                    .compose<Pair<Project, Backing>>(takeWhen(this.cancelPledgeButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledge)
 
@@ -530,7 +525,7 @@ interface PledgeFragmentViewModel {
         }
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {
-            return Observable.just(shippingRules.firstOrNull { it.location().country() == backing.location()?.country() })
+            return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })
         }
 
         override fun cancelPledgeButtonClicked() = this.cancelPledgeButtonClicked.onNext(null)

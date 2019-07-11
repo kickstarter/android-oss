@@ -6,19 +6,17 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
-import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
-import com.kickstarter.extensions.snackbar
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -31,6 +29,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.activity_project.*
@@ -38,7 +37,7 @@ import kotlinx.android.synthetic.main.project_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
+class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
     private lateinit var heartIcon: ImageButton
@@ -215,6 +214,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(scrim, !it) }
 
+        this.viewModel.outputs.showCancelPledgeSuccess()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showCancelPledgeSuccess() }
+
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -230,6 +234,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         } else {
             super.back()
         }
+    }
+
+    override fun pledgeSuccessfullyCancelled() {
+        this.viewModel.inputs.pledgeSuccessfullyCancelled()
     }
 
     override fun exitTransition(): Pair<Int, Int>? {
@@ -328,6 +336,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         rewardsFragment?.takeProject(project)
     }
 
+    private fun showCancelPledgeSuccess() {
+        clearBackStack()
+        showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
+    }
+
     private fun startCampaignWebViewActivity(project: Project) {
         startWebViewActivity(getString(this.campaignString), project.descriptionUrl())
     }
@@ -422,20 +435,5 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
             }
         }
         project_action_button.layoutParams = buttonParams
-    }
-
-    fun showCancellationSuccess() {
-        clearBackStack()
-        this.viewModel.inputs.hideRewardsFragmentClicked()
-        this.viewModel.inputs.refreshProject()
-        snackbar(root, getString(R.string.Youve_canceled_your_pledge)).apply {
-            view.layoutParams = (view.layoutParams as CoordinatorLayout.LayoutParams)
-                    .apply {
-                        anchorId = R.id.rewards_container
-                        anchorGravity = Gravity.TOP
-                        gravity = Gravity.TOP
-                    }
-            show()
-        }
     }
 }

@@ -260,8 +260,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
                 .subscribe {
-                    fragmentManager?.beginTransaction()
-                            ?.add(R.id.secondary_container, CancelPledgeFragment.newInstance(it.first, it.second))
+                    fragmentManager
+                            ?.beginTransaction()
+                            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                            ?.add(R.id.secondary_container, CancelPledgeFragment.newInstance(it.first, it.second), CancelPledgeFragment::class.java.simpleName)
                             ?.addToBackStack(CancelPledgeFragment::class.java.simpleName)
                             ?.commit()
                 }

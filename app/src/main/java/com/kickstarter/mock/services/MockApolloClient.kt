@@ -18,7 +18,7 @@ import java.util.*
 
 open class MockApolloClient : ApolloClientType {
 
-    override fun cancelBacking(backing: Backing, note: String): Observable<Boolean> {
+    override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
         return Observable.just(true)
     }
 

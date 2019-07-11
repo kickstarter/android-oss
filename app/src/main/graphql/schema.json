@@ -1419,14 +1419,14 @@
             },
             {
               "name": "status",
-              "description": "The pledged status of a backing",
+              "description": "The status of a backing",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
+                  "kind": "ENUM",
+                  "name": "BackingState",
                   "ofType": null
                 }
               },
@@ -6551,7 +6551,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "ENUM",
-                  "name": "AdditionalOwnerVerificationStates",
+                  "name": "AsynchronousVerificationState",
                   "ofType": null
                 }
               },
@@ -6566,8 +6566,8 @@
         },
         {
           "kind": "ENUM",
-          "name": "AdditionalOwnerVerificationStates",
-          "description": "Additional Owner identity verification states.",
+          "name": "AsynchronousVerificationState",
+          "description": "Something that is expected to eventually become either 'verified' or\n'unverified', but may remain 'pending' for an indefinite amount of time",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
@@ -6651,7 +6651,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "CompanyVerification",
+                  "name": "AsynchronousVerification",
                   "ofType": null
                 }
               },
@@ -6749,12 +6749,12 @@
         },
         {
           "kind": "OBJECT",
-          "name": "CompanyVerification",
+          "name": "AsynchronousVerification",
           "description": "",
           "fields": [
             {
               "name": "fieldsNeeded",
-              "description": "If the company didn't pass verification, this array will contain the names of the fields that need attention",
+              "description": "If it didn't pass verification, this array will contain the names of the\nattributes that failed (e.g., for a Company: ['address.line1'])",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -6785,7 +6785,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "ENUM",
-                  "name": "CompanyVerificationStates",
+                  "name": "AsynchronousVerificationState",
                   "ofType": null
                 }
               },
@@ -6796,35 +6796,6 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "CompanyVerificationStates",
-          "description": "Company details are verified asynchronously, transitioning a Company into one of these states",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "pending",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "unverified",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "verified",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -6856,6 +6827,18 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "verification",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AsynchronousVerification",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -22195,13 +22178,13 @@
               "deprecationReason": null
             },
             {
-              "name": "claim_popover",
+              "name": "break_ksr_footer",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "creator_interviews",
+              "name": "claim_popover",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24446,6 +24429,53 @@
             }
           ],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "BackingState",
+          "description": "Various backing states.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "canceled",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "collected",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "dropped",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errored",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pledged",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "preauth",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -31879,7 +31909,7 @@
             },
             {
               "name": "id",
-              "description": "",
+              "description": "ID of the backing being canceled",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -31893,7 +31923,7 @@
             },
             {
               "name": "note",
-              "description": "",
+              "description": "Optional cancellation note",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",

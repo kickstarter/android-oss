@@ -96,7 +96,7 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Nativ
                     ?.add(R.id.fragment_container,
                             pledgeFragment,
                             PledgeFragment::class.java.simpleName)
-                    ?.addToBackStack(null)
+                    ?.addToBackStack(PledgeFragment::class.java.simpleName)
                     ?.commit()
         }
     }

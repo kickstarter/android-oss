@@ -14,7 +14,7 @@ import type.CurrencyCode
 import type.PaymentTypes
 
 interface ApolloClientType {
-    fun cancelBacking(backing: Backing, note: String): Observable<Boolean>
+    fun cancelBacking(backing: Backing, note: String): Observable<Any>
 
     fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean>
 

@@ -4,10 +4,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.rx.transformers.Transformers.ignoreValues
-import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
@@ -18,25 +15,44 @@ import rx.subjects.PublishSubject
 
 interface CancelPledgeFragmentViewModel {
     interface Inputs {
+        /** Call when user clicks the close button. */
+        fun closeButtonClicked()
+
         /** Call when user clicks the confirmation button. */
         fun confirmCancellationClicked(note: String)
+
+        /** Call when user clicks the go back button. */
+        fun goBackButtonClicked()
     }
 
     interface Outputs {
-        fun notifyProjectActivityOfSuccess(): Observable<Void>
+        /** Emits when the fragment should be dismissed. */
+        fun dismiss(): Observable<Void>
 
+        /** Emits when the backing has successfully been canceled. */
+        fun success(): Observable<Void>
+
+        /** Emits when the pledged amount and project name. */
         fun pledgeAmountAndProjectName(): Observable<Pair<String, String>>
 
-        fun showError(): Observable<Void>
+        /** Emits when the cancel call fails. */
+        fun showCancelError(): Observable<String>
+
+        /** Emits when the cancel call fails because of a generic server error. */
+        fun showServerError(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<CancelPledgeFragment>(environment), Inputs, Outputs {
 
+        private val closeButtonClicked = PublishSubject.create<Void>()
         private val confirmCancellationClicked = PublishSubject.create<String>()
+        private val goBackButtonClicked = PublishSubject.create<Void>()
 
-        private val notifyProjectActivityOfSuccess = BehaviorSubject.create<Void>()
-        private val pledgeAmountAndProjectName = BehaviorSubject.create<android.util.Pair<String, String>>()
-        private val showError = BehaviorSubject.create<Void>()
+        private val dismiss = BehaviorSubject.create<Void>()
+        private val success = BehaviorSubject.create<Void>()
+        private val pledgeAmountAndProjectName = BehaviorSubject.create<Pair<String, String>>()
+        private val showCancelError = BehaviorSubject.create<String>()
+        private val showServerError = BehaviorSubject.create<Void>()
 
         private val apolloClient = environment.apolloClient()
         private val ksCurrency = environment.ksCurrency()
@@ -53,40 +69,68 @@ interface CancelPledgeFragmentViewModel {
                     .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_BACKING) as Backing }
 
             project
-                    .compose<android.util.Pair<Project, Backing>>(combineLatestPair(backing))
+                    .compose<Pair<Project, Backing>>(combineLatestPair(backing))
                     .map { Pair(this.ksCurrency.format(it.second.amount(), it.first), it.first.name()) }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeAmountAndProjectName)
 
             val cancelBackingNotification = this.confirmCancellationClicked
-                    .compose<android.util.Pair<String, Backing>>(combineLatestPair(backing))
+                    .compose<Pair<String, Backing>>(combineLatestPair(backing))
                     .switchMap { this.apolloClient.cancelBacking(it.second, it.first).materialize() }
                     .share()
 
-            val checkoutValues = cancelBackingNotification
-                    .compose(Transformers.values())
+            val cancelBackingResponse = cancelBackingNotification
+                    .compose(values())
 
-            Observable.merge(cancelBackingNotification.compose(Transformers.errors()), checkoutValues.filter { BooleanUtils.isFalse(it) })
+            cancelBackingNotification
+                    .compose(errors())
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe(this.showError)
+                    .subscribe(this.showServerError)
 
-            project
-                    .compose<Project>(Transformers.takeWhen(checkoutValues.filter { BooleanUtils.isTrue(it) }))
+            cancelBackingResponse
+                    .filter { it is Boolean && it == false }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe(this.notifyProjectActivityOfSuccess)
+                    .subscribe(this.showServerError)
 
+            cancelBackingResponse
+                    .filter { it is Boolean && it == true }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.success)
+
+            cancelBackingResponse
+                    .filter { it is String }
+                    .ofType(String::class.java)
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showCancelError)
+
+            Observable.merge(this.closeButtonClicked, this.goBackButtonClicked)
+                    .compose(bindToLifecycle())
+                    .subscribe(this.dismiss)
+        }
+
+        override fun closeButtonClicked() {
+            this.closeButtonClicked.onNext(null)
         }
 
         override fun confirmCancellationClicked(note: String) {
             this.confirmCancellationClicked.onNext(note)
         }
 
-        override fun notifyProjectActivityOfSuccess(): Observable<Void> = this.notifyProjectActivityOfSuccess
+        override fun goBackButtonClicked() {
+            this.goBackButtonClicked.onNext(null)
+        }
 
-        override fun pledgeAmountAndProjectName(): Observable<android.util.Pair<String, String>> = this.pledgeAmountAndProjectName
+        override fun dismiss(): Observable<Void> = this.dismiss
 
-        override fun showError(): Observable<Void> = this.showError
+        override fun success(): Observable<Void> = this.success
+
+        override fun pledgeAmountAndProjectName(): Observable<Pair<String, String>> = this.pledgeAmountAndProjectName
+
+        override fun showCancelError(): Observable<String> = this.showCancelError
+
+        override fun showServerError(): Observable<Void> = this.showServerError
     }
 }

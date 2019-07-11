@@ -1,92 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/cancel_pledge_root"
+<androidx.cardview.widget.CardView android:id="@+id/cancel_pledge_root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_gravity="bottom"
+  android:layout_marginBottom="-30dp"
   android:clickable="true"
   android:focusable="true"
-  android:orientation="vertical">
+  app:cardCornerRadius="@dimen/card_container_radius">
 
-  <com.google.android.material.appbar.AppBarLayout
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.Toolbar
-      android:id="@+id/cancel_your_pledge_toolbar"
-      style="@style/Toolbar"
+    <com.google.android.material.appbar.AppBarLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:navigationIcon="@drawable/ic_close"
-      app:tint="@color/ksr_soft_black"
-      app:title="@string/Cancel_your_pledge" />
+      app:elevation="0dp">
 
-  </com.google.android.material.appbar.AppBarLayout>
-
-  <ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:overScrollMode="never">
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:clipChildren="false"
-      android:clipToPadding="false"
-      android:gravity="center_horizontal"
-      android:orientation="vertical"
-      android:paddingEnd="@dimen/grid_4"
-      android:paddingStart="@dimen/grid_4">
-
-      <TextView
-        android:id="@+id/cancel_prompt"
-        style="@style/CalloutPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_5"
-        android:layout_marginTop="@dimen/grid_14"
-        android:gravity="center"
-        tools:text="@string/Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" />
-
-      <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/cancel_pledge_toolbar"
+        style="@style/Toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/Tell_us_why_optional">
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_close"
+        app:tint="@color/ksr_soft_black"
+        app:title="@string/Cancel_your_pledge" />
 
-        <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/cancellation_note"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:overScrollMode="never"
+      android:scrollbars="none"
+      app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_15"
+        android:paddingEnd="@dimen/grid_4"
+        android:paddingStart="@dimen/grid_4">
+
+        <TextView
+          android:id="@+id/cancel_prompt"
+          style="@style/CalloutPrimary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_5"
+          android:layout_marginTop="@dimen/grid_14"
+          android:gravity="center"
+          tools:text="@string/Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" />
+
+        <com.google.android.material.textfield.TextInputLayout
+          style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+          android:hint="@string/Tell_us_why_optional">
 
-      </com.google.android.material.textfield.TextInputLayout>
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/cancellation_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="3" />
 
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_10"
-        android:layout_marginTop="@dimen/grid_1"
-        android:gravity="center"
-        android:text="@string/We_wont_share_this_with_the_creator" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-      <com.google.android.material.button.MaterialButton
-        android:id="@+id/confirm_cancel_pledge_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/Yes_cancel_my_pledge"
-        app:backgroundTint="@color/ksr_red_400" />
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_10"
+          android:layout_marginTop="@dimen/grid_1"
+          android:gravity="center"
+          android:text="@string/We_wont_share_this_with_the_creator" />
 
-      <com.google.android.material.button.MaterialButton
-        android:id="@+id/cancel_cancel_pledge_button"
-        style="@style/TertiaryButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_4"
-        android:text="@string/No_go_back" />
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/yes_cancel_pledge_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/Yes_cancel_my_pledge"
+          app:backgroundTint="@color/ksr_red_400" />
 
-    </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+          android:id="@+id/no_cancel_pledge_button"
+          style="@style/TertiaryButton"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_15"
+          android:text="@string/No_go_back" />
 
-  </ScrollView>
+      </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </ScrollView>
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/snackbar_anchor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/grid_5" />
+
+</androidx.cardview.widget.CardView>

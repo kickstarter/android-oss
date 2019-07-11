@@ -5,6 +5,7 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
 import com.kickstarter.KSApplication
 import com.kickstarter.R
@@ -15,12 +16,15 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.viewmodels.CancelPledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_cancel_pledge.*
 
 @RequiresFragmentViewModel(CancelPledgeFragmentViewModel.ViewModel::class)
 class CancelPledgeFragment : BaseFragment<CancelPledgeFragmentViewModel.ViewModel>() {
+
+    interface CancelPledgeDelegate {
+        fun pledgeSuccessfullyCancelled()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -35,19 +39,41 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeFragmentViewModel.ViewMode
                 .compose(Transformers.observeForUI())
                 .subscribe { setPromptText(it) }
 
-        this.viewModel.outputs.showError()
+        this.viewModel.outputs.showServerError()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { Snackbar.make(cancel_pledge_root, R.string.Something_went_wrong_please_try_again, Snackbar.LENGTH_SHORT).show() }
+                .subscribe { Snackbar.make(snackbar_anchor, R.string.Something_went_wrong_please_try_again, Snackbar.LENGTH_SHORT).show() }
 
-        this.viewModel.outputs.notifyProjectActivityOfSuccess()
+        this.viewModel.outputs.showCancelError()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { (activity as ProjectActivity?)?.showCancellationSuccess() }
+                .subscribe { Snackbar.make(snackbar_anchor, it, Snackbar.LENGTH_SHORT).show() }
 
-        confirm_cancel_pledge_button.setOnClickListener {
+        this.viewModel.outputs.dismiss()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { dismiss() }
+
+        this.viewModel.outputs.success()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { (context as CancelPledgeDelegate?)?.pledgeSuccessfullyCancelled() }
+
+        yes_cancel_pledge_button.setOnClickListener {
             this.viewModel.inputs.confirmCancellationClicked(cancellation_note.text())
         }
+
+        no_cancel_pledge_button.setOnClickListener {
+            this.viewModel.inputs.goBackButtonClicked()
+        }
+
+        cancel_pledge_toolbar.setNavigationOnClickListener {
+            this.viewModel.inputs.closeButtonClicked()
+        }
+    }
+
+    private fun dismiss() {
+        fragmentManager?.popBackStack(CancelPledgeFragment::class.java.simpleName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     private fun setPromptText(amountAndProjectName: Pair<String, String>) {

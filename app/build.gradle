@@ -196,16 +196,16 @@ final auto_parcel_version = "0.3.1"
 final butterknife_version = "7.0.1"
 final crashlytics_version = "2.9.6@aar"
 final dagger_version = "2.11"
-final exoplayer_version = "2.9.1"
+final exoplayer_version = "2.10.2"
 final firebase_version = "17.0.1"
 final firebase_job_dispatcher_version = "0.8.5"
 final firebase_messaging_version = "19.0.1"
 final joda_time_version = "2.7.2"
-final jsoup_version = "1.8.2"
+final jsoup_version = "1.12.1"
 final leak_canary_version = "1.6.3"
 final okhttp_version = "3.5.0"
 final picasso_version = "2.5.2"
-final phoenix_version = "1.0.2"
+final phoenix_version = "2.0.0"
 final play_services_version = "17.0.0"
 final retrofit_version = "2.3.0"
 final rx_binding_version = "0.4.0"
@@ -277,11 +277,11 @@ dependencies {
     testImplementation "org.robolectric:shadows-multidex:$robolectric_shadows_version"
     testImplementation "org.robolectric:shadows-play-services:$robolectric_shadows_version"
     testImplementation "org.robolectric:shadows-support-v4:$robolectric_shadows_support_version"
-    androidTestImplementation 'androidx.annotation:annotation:1.0.1'
-    androidTestImplementation "androidx.test.ext:junit:1.1.0"
-    androidTestImplementation 'androidx.test:rules:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
+    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+    androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
 }
 
 // SHA and timestamp caching courtesy of https://github.com/gdg-x/frisbee/blob/develop/app/build.gradle#L193-L218

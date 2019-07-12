@@ -81,14 +81,38 @@
           android:gravity="center"
           android:text="@string/We_wont_share_this_with_the_creator" />
 
-        <com.google.android.material.button.MaterialButton
-          android:id="@+id/yes_cancel_pledge_button"
+        <FrameLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/Yes_cancel_my_pledge"
-          app:backgroundTint="@color/ksr_red_400" />
+          android:layout_height="wrap_content">
 
-        <com.google.android.material.button.MaterialButton
+          <Button
+            android:id="@+id/yes_cancel_pledge_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Yes_cancel_my_pledge"
+            app:backgroundTint="@color/ksr_red_400" />
+
+          <FrameLayout
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:stateListAnimator="@null"
+              app:backgroundTint="@color/ksr_red_400" />
+
+            <ProgressBar
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:indeterminateTint="@color/white" />
+          </FrameLayout>
+
+        </FrameLayout>
+
+        <Button
           android:id="@+id/no_cancel_pledge_button"
           style="@style/TertiaryButton"
           android:layout_width="match_parent"

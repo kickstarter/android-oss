@@ -121,7 +121,7 @@ interface PledgeFragmentViewModel {
         fun shippingRulesSectionIsGone(): Observable<Boolean>
 
         /** Emits when we should start the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
-        fun showCancelPledge(): Observable<Pair<Project, Backing>>
+        fun showCancelPledge(): Observable<Project>
 
         /** Emits when the cards adapter should update the selected position. */
         fun showPledgeCard(): Observable<Pair<Int, CardState>>
@@ -185,7 +185,7 @@ interface PledgeFragmentViewModel {
         private val shippingAmount = BehaviorSubject.create<SpannableString>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val showCancelPledge = PublishSubject.create<Pair<Project, Backing>>()
+        private val showCancelPledge = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = BehaviorSubject.create<Void>()
         private val startChromeTab = PublishSubject.create<String>()
@@ -418,8 +418,7 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.totalContainerIsGone)
 
             project
-                    .compose<Pair<Project, Backing>>(combineLatestPair(backing))
-                    .compose<Pair<Project, Backing>>(takeWhen(this.cancelPledgeButtonClicked))
+                    .compose<Project>(takeWhen(this.cancelPledgeButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledge)
 
@@ -611,7 +610,7 @@ interface PledgeFragmentViewModel {
         override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone
 
         @NonNull
-        override fun showCancelPledge(): Observable<Pair<Project, Backing>> = this.showCancelPledge
+        override fun showCancelPledge(): Observable<Project> = this.showCancelPledge
 
         @NonNull
         override fun showPledgeCard(): Observable<Pair<Int, CardState>> = this.showPledgeCard

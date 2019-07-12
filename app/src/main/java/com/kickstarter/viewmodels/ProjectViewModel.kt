@@ -337,7 +337,11 @@ interface ProjectViewModel {
                     .subscribe(this.rewardsButtonColor)
 
             this.backStackCount
+                    .compose<Pair<Int, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
+                    .filter { it.second }
+                    .map { it.first }
                     .map { it > 1 }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.scrimIsVisible)
 

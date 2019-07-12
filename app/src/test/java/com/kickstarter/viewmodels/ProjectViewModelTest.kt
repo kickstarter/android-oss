@@ -29,7 +29,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
+    private val scrimIsVisible = TestSubscriber<Boolean>()
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
+    private val showCancelPledgeSuccess = TestSubscriber<Void>()
     private val showRewardsFragment = TestSubscriber<Boolean>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
@@ -47,10 +49,12 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
+        this.vm.outputs.scrimIsVisible().subscribe(this.scrimIsVisible)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
-        this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
+        this.vm.outputs.showCancelPledgeSuccess().subscribe(this.showCancelPledgeSuccess)
         this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
+        this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
@@ -394,6 +398,45 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProjectNoRewardWhole))
         this.backingDetails.assertValue("$15")
         this.backingDetailsIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun testScrimIsVisible() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.backStackCount(0)
+        this.scrimIsVisible.assertNoValues()
+
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        this.vm.inputs.backStackCount(0)
+        this.scrimIsVisible.assertValue(false)
+
+        this.vm.inputs.backStackCount(1)
+        this.scrimIsVisible.assertValue(false)
+
+        this.vm.inputs.backStackCount(2)
+        this.scrimIsVisible.assertValues(false, true)
+
+        this.vm.inputs.backStackCount(1)
+        this.scrimIsVisible.assertValues(false, true, false)
+    }
+
+    @Test
+    fun testCancelPledgeSuccess() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        this.vm.inputs.backStackCount(0)
+        this.scrimIsVisible.assertValue(false)
+
+        this.vm.inputs.backStackCount(1)
+        this.scrimIsVisible.assertValue(false)
+
+        this.vm.inputs.backStackCount(2)
+        this.scrimIsVisible.assertValues(false, true)
+
+        this.vm.inputs.backStackCount(1)
+        this.scrimIsVisible.assertValues(false, true, false)
     }
 
     private fun environmentWithNativeCheckoutEnabled() : Environment {

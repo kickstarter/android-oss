@@ -9,11 +9,13 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.CancelPledgeFragment
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.math.RoundingMode
 
-interface CancelPledgeFragmentViewModel {
+interface CancelPledgeViewModel {
     interface Inputs {
         /** Call when user clicks the close button. */
         fun closeButtonClicked()
@@ -35,6 +37,12 @@ interface CancelPledgeFragmentViewModel {
         /** Emits when the pledged amount and project name. */
         fun pledgeAmountAndProjectName(): Observable<Pair<String, String>>
 
+        /**  */
+        fun cancelButtonIsVisible(): Observable<Boolean>
+
+        /**  */
+        fun progressBarIsVisible(): Observable<Boolean>
+
         /** Emits when the cancel call fails. */
         fun showCancelError(): Observable<String>
 
@@ -48,11 +56,13 @@ interface CancelPledgeFragmentViewModel {
         private val confirmCancellationClicked = PublishSubject.create<String>()
         private val goBackButtonClicked = PublishSubject.create<Void>()
 
+        private val cancelButtonIsVisible = BehaviorSubject.create<Boolean>()
         private val dismiss = BehaviorSubject.create<Void>()
-        private val success = BehaviorSubject.create<Void>()
         private val pledgeAmountAndProjectName = BehaviorSubject.create<Pair<String, String>>()
+        private val progressBarIsVisible = PublishSubject.create<Boolean>()
         private val showCancelError = BehaviorSubject.create<String>()
         private val showServerError = BehaviorSubject.create<Void>()
+        private val success = BehaviorSubject.create<Void>()
 
         private val apolloClient = environment.apolloClient()
         private val ksCurrency = environment.ksCurrency()
@@ -65,18 +75,19 @@ interface CancelPledgeFragmentViewModel {
             val project = arguments()
                     .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT) as Project }
 
-            val backing = arguments()
-                    .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_BACKING) as Backing }
+            val backing = project
+                    .map { it.backing() }
+                    .ofType(Backing::class.java)
 
             project
                     .compose<Pair<Project, Backing>>(combineLatestPair(backing))
-                    .map { Pair(this.ksCurrency.format(it.second.amount(), it.first), it.first.name()) }
+                    .map { Pair(this.ksCurrency.format(it.second.amount(), it.first, RoundingMode.HALF_UP), it.first.name()) }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeAmountAndProjectName)
 
             val cancelBackingNotification = this.confirmCancellationClicked
                     .compose<Pair<String, Backing>>(combineLatestPair(backing))
-                    .switchMap { this.apolloClient.cancelBacking(it.second, it.first).materialize() }
+                    .switchMap { cancelBacking(it.first, it.second) }
                     .share()
 
             val cancelBackingResponse = cancelBackingNotification
@@ -111,6 +122,18 @@ interface CancelPledgeFragmentViewModel {
                     .subscribe(this.dismiss)
         }
 
+        private fun cancelBacking(note: String, backing: Backing): Observable<Notification<Any>> {
+            return this.apolloClient.cancelBacking(backing, note)
+                    .doOnSubscribe {
+                        this.progressBarIsVisible.onNext(true)
+                        this.cancelButtonIsVisible.onNext(false)
+                    }
+                    .doAfterTerminate {
+                        this.progressBarIsVisible.onNext(false)
+                        this.cancelButtonIsVisible.onNext(true)
+                    }.materialize()
+        }
+
         override fun closeButtonClicked() {
             this.closeButtonClicked.onNext(null)
         }
@@ -123,11 +146,15 @@ interface CancelPledgeFragmentViewModel {
             this.goBackButtonClicked.onNext(null)
         }
 
+        override fun cancelButtonIsVisible(): Observable<Boolean> = this.cancelButtonIsVisible
+
         override fun dismiss(): Observable<Void> = this.dismiss
 
         override fun success(): Observable<Void> = this.success
 
         override fun pledgeAmountAndProjectName(): Observable<Pair<String, String>> = this.pledgeAmountAndProjectName
+
+        override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
 
         override fun showCancelError(): Observable<String> = this.showCancelError
 

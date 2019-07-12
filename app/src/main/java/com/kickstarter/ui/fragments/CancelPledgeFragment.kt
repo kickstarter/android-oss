@@ -13,14 +13,14 @@ import com.kickstarter.extensions.text
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.models.Backing
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.viewmodels.CancelPledgeFragmentViewModel
+import com.kickstarter.viewmodels.CancelPledgeViewModel
 import kotlinx.android.synthetic.main.fragment_cancel_pledge.*
 
-@RequiresFragmentViewModel(CancelPledgeFragmentViewModel.ViewModel::class)
-class CancelPledgeFragment : BaseFragment<CancelPledgeFragmentViewModel.ViewModel>() {
+@RequiresFragmentViewModel(CancelPledgeViewModel.ViewModel::class)
+class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
 
     interface CancelPledgeDelegate {
         fun pledgeSuccessfullyCancelled()
@@ -59,6 +59,16 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeFragmentViewModel.ViewMode
                 .compose(Transformers.observeForUI())
                 .subscribe { (context as CancelPledgeDelegate?)?.pledgeSuccessfullyCancelled() }
 
+        this.viewModel.outputs.progressBarIsVisible()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(progress_bar, !it) }
+
+        this.viewModel.outputs.cancelButtonIsVisible()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(yes_cancel_pledge_button, !it) }
+
         yes_cancel_pledge_button.setOnClickListener {
             this.viewModel.inputs.confirmCancellationClicked(cancellation_note.text())
         }
@@ -86,11 +96,10 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeFragmentViewModel.ViewMode
 
     companion object {
 
-        fun newInstance(project: Project, backing: Backing): CancelPledgeFragment {
+        fun newInstance(project: Project): CancelPledgeFragment {
             val fragment = CancelPledgeFragment()
             val argument = Bundle()
             argument.putParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT, project)
-            argument.putParcelable(ArgumentsKey.CANCEL_PLEDGE_BACKING, backing)
             fragment.arguments = argument
             return fragment
         }

@@ -337,6 +337,10 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsButtonColor)
 
+            this.pledgeSuccessfullyCancelled
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showCancelPledgeSuccess)
+
             this.fragmentStackCount
                     .compose<Pair<Int, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
                     .filter { it.second }

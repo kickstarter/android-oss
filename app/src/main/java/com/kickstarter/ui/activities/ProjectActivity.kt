@@ -293,7 +293,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
-    private fun clearBackStack() {
+    private fun clearFragmentBackStack() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
@@ -303,7 +303,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
             supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
             rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsFragmentClicked()
             else -> {
-                clearBackStack()
+                clearFragmentBackStack()
                 super.back()
             }
         }
@@ -337,7 +337,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun showCancelPledgeSuccess() {
-        clearBackStack()
+        clearFragmentBackStack()
         showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
     }
 

@@ -424,15 +424,17 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCancelPledgeSuccess() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.pledgeSuccessfullyCancelled()
-        this.showCancelPledgeSuccess.assertNoValues()
-
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.projectTest.assertValueCount(2)
+
         this.vm.inputs.pledgeSuccessfullyCancelled()
+        this.showRewardsFragment.assertValue(false)
         this.showCancelPledgeSuccess.assertValueCount(1)
+        this.projectTest.assertValueCount(3)
     }
 
     private fun environmentWithNativeCheckoutEnabled() : Environment {

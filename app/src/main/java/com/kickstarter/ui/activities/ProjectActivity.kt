@@ -304,6 +304,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
         rewards_container.y = (rewards_container.height - guideline).toFloat()
+//        fragment_container.setPadding(0 , rewards_toolbar.height, 0, 0)
         this.projectRecyclerView.setPadding(0, 0, 0, guideline)
     }
 

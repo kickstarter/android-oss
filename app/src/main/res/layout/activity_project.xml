@@ -42,32 +42,19 @@
     app:cardElevation="@dimen/grid_2"
     tools:layout_marginTop="620dp">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
       android:id="@+id/pledge_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:alpha="0"
-      android:orientation="vertical">
-
-      <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/rewards_appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-          android:id="@+id/rewards_toolbar"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:background="@color/ksr_grey_400"
-          app:navigationIcon="@drawable/ic_down"
-          app:title="Back this project" />
-
-      </com.google.android.material.appbar.AppBarLayout>
+      android:orientation="vertical"
+      tools:alpha="0">
 
       <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         android:layout_height="match_parent">
 
         <fragment
@@ -79,7 +66,15 @@
 
       </FrameLayout>
 
-    </LinearLayout>
+      <androidx.appcompat.widget.Toolbar
+        android:id="@+id/rewards_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Toolbar"
+        android:background="@color/transparent"
+        app:navigationIcon="@drawable/ic_down" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <LinearLayout
       android:id="@+id/action_buttons"
@@ -87,6 +82,7 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
+      tools:visibility="gone"
       android:orientation="horizontal">
 
       <LinearLayout
@@ -126,12 +122,5 @@
     </LinearLayout>
 
   </androidx.cardview.widget.CardView>
-
-  <androidx.constraintlayout.widget.Guideline
-    android:id="@+id/guideline"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    app:layout_constraintGuide_end="@dimen/reward_fragment_guideline_constraint_end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

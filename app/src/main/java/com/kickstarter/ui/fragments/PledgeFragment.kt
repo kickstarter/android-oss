@@ -366,7 +366,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             initMarginX = location.x
             initMarginY = location.y
             finalMarginX = margin
-            finalMarginY = margin
+            finalMarginY = margin + pledge_details.paddingTop
             initWidth = location.width
             initHeight = location.height
             finalWidth = miniRewardWidth
@@ -376,7 +376,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             setDeliveryParams(miniRewardWidth, margin)
         } else {
             initMarginX = margin
-            initMarginY = margin
+            initMarginY = margin + pledge_details.paddingTop
             finalMarginX = location.x
             finalMarginY = location.y
             initWidth = miniRewardWidth

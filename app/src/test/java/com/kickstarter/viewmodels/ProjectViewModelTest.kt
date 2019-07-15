@@ -404,39 +404,35 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testScrimIsVisible() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.backStackCount(0)
+        this.vm.inputs.fragmentStackCount(0)
         this.scrimIsVisible.assertNoValues()
 
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
-        this.vm.inputs.backStackCount(0)
+        this.vm.inputs.fragmentStackCount(0)
         this.scrimIsVisible.assertValue(false)
 
-        this.vm.inputs.backStackCount(1)
+        this.vm.inputs.fragmentStackCount(1)
         this.scrimIsVisible.assertValue(false)
 
-        this.vm.inputs.backStackCount(2)
+        this.vm.inputs.fragmentStackCount(2)
         this.scrimIsVisible.assertValues(false, true)
 
-        this.vm.inputs.backStackCount(1)
+        this.vm.inputs.fragmentStackCount(1)
         this.scrimIsVisible.assertValues(false, true, false)
     }
 
     @Test
     fun testCancelPledgeSuccess() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.pledgeSuccessfullyCancelled()
+        this.showCancelPledgeSuccess.assertNoValues()
+
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
-        this.vm.inputs.backStackCount(0)
-        this.scrimIsVisible.assertValue(false)
-
-        this.vm.inputs.backStackCount(1)
-        this.scrimIsVisible.assertValue(false)
-
-        this.vm.inputs.backStackCount(2)
-        this.scrimIsVisible.assertValues(false, true)
-
-        this.vm.inputs.backStackCount(1)
-        this.scrimIsVisible.assertValues(false, true, false)
+        this.vm.inputs.pledgeSuccessfullyCancelled()
+        this.showCancelPledgeSuccess.assertValueCount(1)
     }
 
     private fun environmentWithNativeCheckoutEnabled() : Environment {

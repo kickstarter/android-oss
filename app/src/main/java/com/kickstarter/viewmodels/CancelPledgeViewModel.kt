@@ -37,10 +37,10 @@ interface CancelPledgeViewModel {
         /** Emits when the pledged amount and project name. */
         fun pledgeAmountAndProjectName(): Observable<Pair<String, String>>
 
-        /**  */
+        /**  Emits a boolean determining if the cancel button should be visible. */
         fun cancelButtonIsVisible(): Observable<Boolean>
 
-        /**  */
+        /**  Emits a boolean determining if the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
         /** Emits when the cancel call fails. */

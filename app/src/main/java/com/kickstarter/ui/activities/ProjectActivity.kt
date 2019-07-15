@@ -87,7 +87,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 }
 
                 this.supportFragmentManager.addOnBackStackChangedListener {
-                    this.viewModel.inputs.backStackCount(this.supportFragmentManager.backStackEntryCount)
+                    this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
                 }
             }
             else -> {

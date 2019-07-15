@@ -31,8 +31,6 @@ interface ProjectViewModel {
         /** Call when the back project button is clicked.  */
         fun backProjectButtonClicked()
 
-        fun backStackCount(count: Int)
-
         /** Call when the blurb view is clicked.  */
         fun blurbTextViewClicked()
 
@@ -41,6 +39,9 @@ interface ProjectViewModel {
 
         /** Call when the creator name is clicked.  */
         fun creatorNameTextViewClicked()
+
+        /** Call when the count of fragments on the back stack changes.  */
+        fun fragmentStackCount(count: Int)
 
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
@@ -149,10 +150,10 @@ interface ProjectViewModel {
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
-        private val backStackCount = PublishSubject.create<Int>()
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
+        private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val hideRewardsFragment = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
@@ -336,7 +337,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsButtonColor)
 
-            this.backStackCount
+            this.fragmentStackCount
                     .compose<Pair<Int, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
                     .filter { it.second }
                     .map { it.first }
@@ -402,10 +403,6 @@ interface ProjectViewModel {
             this.backProjectButtonClicked.onNext(null)
         }
 
-        override fun backStackCount(count: Int) {
-            this.backStackCount.onNext(count)
-        }
-
         override fun blurbTextViewClicked() {
             this.blurbTextViewClicked.onNext(null)
         }
@@ -416,6 +413,10 @@ interface ProjectViewModel {
 
         override fun creatorNameTextViewClicked() {
             this.creatorNameTextViewClicked.onNext(null)
+        }
+
+        override fun fragmentStackCount(count: Int) {
+            this.fragmentStackCount.onNext(count)
         }
 
         override fun heartButtonClicked() {

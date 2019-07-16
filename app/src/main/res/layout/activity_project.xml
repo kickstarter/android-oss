@@ -42,7 +42,7 @@
     app:cardElevation="@dimen/grid_2"
     tools:layout_marginTop="620dp">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
       android:id="@+id/pledge_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -53,8 +53,6 @@
       <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:clipToPadding="false"
-        android:clipChildren="false"
         android:layout_height="match_parent">
 
         <fragment
@@ -70,12 +68,10 @@
         android:id="@+id/rewards_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Toolbar"
-        android:elevation=".1dp"
         android:background="@color/transparent"
         app:navigationIcon="@drawable/ic_down" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </FrameLayout>
 
     <LinearLayout
       android:id="@+id/action_buttons"
@@ -83,7 +79,6 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
-      tools:visibility="gone"
       android:orientation="horizontal">
 
       <LinearLayout

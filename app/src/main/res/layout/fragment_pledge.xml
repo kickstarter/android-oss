@@ -11,6 +11,7 @@
   android:fillViewport="true"
   android:focusable="true"
   android:overScrollMode="never"
+  android:paddingTop="?android:attr/actionBarSize"
   android:scrollbars="none"
   android:visibility="invisible"
   tools:visibility="visible">
@@ -59,7 +60,6 @@
     </FrameLayout>
 
     <LinearLayout
-      android:paddingTop="?android:attr/actionBarSize"
       android:id="@+id/pledge_details"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

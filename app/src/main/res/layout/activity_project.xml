@@ -71,6 +71,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Toolbar"
+        android:elevation=".1dp"
         android:background="@color/transparent"
         app:navigationIcon="@drawable/ic_down" />
 

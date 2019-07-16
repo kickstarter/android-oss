@@ -138,6 +138,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { project_action_button.setText(it) }
 
+        this.viewModel.outputs.rewardsToolbarTitle()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { rewards_toolbar.title = getString(it) }
+
         this.viewModel.outputs.setInitialRewardsContainerY()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -304,7 +309,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
         rewards_container.y = (rewards_container.height - guideline).toFloat()
-//        fragment_container.setPadding(0 , rewards_toolbar.height, 0, 0)
         this.projectRecyclerView.setPadding(0, 0, 0, guideline)
     }
 

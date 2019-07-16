@@ -4,6 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:background="@color/white"
   android:orientation="vertical"
   tools:context=".ui.activities.LoginToutActivity">
@@ -30,7 +31,9 @@
         android:layout_marginBottom="@dimen/grid_6"
         android:layout_marginTop="@dimen/grid_6" />
 
-      <Button
+      <com.google.android.material.button.MaterialButton
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/grid_2"
         android:id="@+id/facebook_login_button"
         style="@style/FacebookButton"
         android:layout_width="match_parent"

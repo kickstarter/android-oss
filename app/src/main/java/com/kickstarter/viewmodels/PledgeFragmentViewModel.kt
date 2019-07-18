@@ -103,7 +103,10 @@ interface PledgeFragmentViewModel {
         fun paymentContainerIsGone(): Observable<Boolean>
 
         /** Emits the pledge amount string of the reward. */
-        fun pledgeAmount(): Observable<SpannableString>
+        fun pledgeAmount(): Observable<String>
+
+        /** Emits the pledge currency symbol string of the reward. */
+        fun pledgeCurrencySymbol(): Observable<String>
 
         /** Emits the currently selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
@@ -173,7 +176,8 @@ interface PledgeFragmentViewModel {
         private val estimatedDeliveryInfoIsGone = BehaviorSubject.create<Boolean>()
         private val increasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
-        private val pledgeAmount = BehaviorSubject.create<SpannableString>()
+        private val pledgeAmount = BehaviorSubject.create<String>()
+        private val pledgeCurrencySymbol = BehaviorSubject.create<String>()
         private val shippingAmount = BehaviorSubject.create<SpannableString>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
@@ -238,10 +242,12 @@ interface PledgeFragmentViewModel {
                     .map { it.minimum() }
 
             rewardMinimum
-                    .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<SpannableString> { ViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
+                    .map<String> { it.toString() }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeAmount)
+
+            project
+                    .map { Cu }
 
             // Pledge stepper section
             val additionalPledgeAmount = BehaviorSubject.create<Double>(0.0)
@@ -559,7 +565,10 @@ interface PledgeFragmentViewModel {
         override fun paymentContainerIsGone(): Observable<Boolean> = this.paymentContainerIsGone
 
         @NonNull
-        override fun pledgeAmount(): Observable<SpannableString> = this.pledgeAmount
+        override fun pledgeAmount(): Observable<String> = this.pledgeAmount
+
+        @NonNull
+        override fun pledgeCurrencySymbol(): Observable<String> = this.pledgeCurrencySymbol
 
         @NonNull
         override fun selectedShippingRule(): Observable<ShippingRule> = this.selectedShippingRule

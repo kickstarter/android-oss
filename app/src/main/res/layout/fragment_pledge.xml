@@ -108,9 +108,9 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:clipToPadding="false"
         android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
         android:paddingEnd="@dimen/activity_vertical_margin"
         android:paddingStart="@dimen/activity_vertical_margin">
 
@@ -184,13 +184,32 @@
               tools:text="$20" />
           </LinearLayout>
 
-          <TextView
-            android:id="@+id/pledge_amount"
-            style="@style/PledgeCurrencySecondary"
+          <LinearLayout
+            android:id="@+id/pledge_amount_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rect_white_rounded"
-            tools:text="$20" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+              android:id="@+id/pledge_currency"
+              style="@style/PledgeCurrencySecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="$" />
+
+            <EditText
+              android:id="@+id/pledge_amount"
+              style="@style/PledgeCurrencySecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@null"
+              android:importantForAutofill="no"
+              android:inputType="numberDecimal"
+              tools:ignore="LabelFor"
+              tools:targetApi="o"
+              tools:text="20" />
+          </LinearLayout>
 
         </LinearLayout>
 
@@ -298,8 +317,8 @@
           style="@style/TertiaryButton"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_2"
           android:layout_marginBottom="@dimen/grid_4"
+          android:layout_marginTop="@dimen/grid_2"
           android:text="@string/Cancel_pledge" />
 
         <LinearLayout

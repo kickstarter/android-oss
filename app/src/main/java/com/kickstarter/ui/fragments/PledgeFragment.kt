@@ -151,7 +151,17 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { pledge_amount.text = it }
+                .subscribe { pledge_amount.setText(it) }
+
+        this.viewModel.outputs.pledgeAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { pledge_amount.hint = it }
+
+        this.viewModel.outputs.pledgeCurrencySymbol()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { pledge_amount.hint = it }
 
         this.viewModel.outputs.cards()
                 .compose(bindToLifecycle())

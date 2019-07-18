@@ -83,7 +83,7 @@ public final class ViewUtils {
    * Special case: US people looking at US currency just get the currency symbol.
    *
    */
-  public static @NotNull SpannableString styleCurrency(final double value, final Project project, final @NonNull KSCurrency ksCurrency) {
+  public static @NotNull SpannableString styleCurrency(final double value, final @NonNull Project project, final @NonNull KSCurrency ksCurrency) {
     return styleCurrency(value, project, ksCurrency, true);
   }
 
@@ -92,7 +92,7 @@ public final class ViewUtils {
    * Special case: US people looking at US currency just get the currency symbol.
    *
    */
-  public static @NotNull SpannableString styleCurrency(final double value, final Project project, final @NonNull KSCurrency ksCurrency, final boolean centered) {
+  public static @NotNull SpannableString styleCurrency(final @Nullable Double value, final @NonNull Project project, final @NonNull KSCurrency ksCurrency, final boolean centered) {
     final String formattedCurrency = ksCurrency.format(value, project, RoundingMode.HALF_UP);
     final SpannableString spannableString = new SpannableString(formattedCurrency);
 

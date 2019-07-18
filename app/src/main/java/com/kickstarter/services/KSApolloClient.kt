@@ -1,5 +1,6 @@
 package com.kickstarter.services
 
+import CancelBackingMutation
 import CheckoutMutation
 import ClearUserUnseenActivityMutation
 import CreatePasswordMutation
@@ -21,6 +22,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
 import rx.Observable
 import rx.subjects.PublishSubject
+import type.BackingState
 import type.CheckoutState
 import type.CurrencyCode
 import type.PaymentTypes
@@ -28,6 +30,33 @@ import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
 class KSApolloClient(val service: ApolloClient) : ApolloClientType {
+
+    override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Any>()
+            service.mutate(CancelBackingMutation.builder()
+                    .backingId(encodeRelayId(backing))
+                    .note(note)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<CancelBackingMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<CancelBackingMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onNext(response.errors().first().message())
+                            } else {
+                                val state = response.data()?.cancelBacking()?.backing()?.status()
+                                val success = state == BackingState.CANCELED
+                                ps.onNext(success)
+                            }
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
 
     override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
         return Observable.defer {

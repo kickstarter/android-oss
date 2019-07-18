@@ -41,6 +41,7 @@
   <color name="black_alpha_10">#1a000000</color>
   <color name="black_alpha_17">#2B000000</color>
   <color name="black_alpha_30">#4D000000</color>
+  <color name="black_alpha_40">#66000000</color>
   <color name="black_alpha_50">#80000000</color>
   <color name="blue_alpha_6">#0f2b60ff</color>
   <color name="blue_darken_10">@color/ksr_cobalt_600</color>

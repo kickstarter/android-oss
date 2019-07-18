@@ -25,6 +25,9 @@ import java.math.RoundingMode
 
 interface PledgeFragmentViewModel {
     interface Inputs {
+        /** Call when user clicks the cancel pledge button. */
+        fun cancelPledgeButtonClicked()
+
         /** Call when user deselects a card they want to pledge with. */
         fun closeCardButtonClicked(position: Int)
 
@@ -78,7 +81,7 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the change payment method pledge button should be hidden. */
         fun changePaymentMethodButtonIsGone(): Observable<Boolean>
 
-        /**  Emits a boolean determining if the continue button should be hidden. */
+        /** Emits a boolean determining if the continue button should be hidden. */
         fun continueButtonIsGone(): Observable<Boolean>
 
         /** Emits a string representing the total pledge amount in the user's preferred currency.  */
@@ -117,6 +120,9 @@ interface PledgeFragmentViewModel {
         /** Emits when the shipping rules section should be hidden. */
         fun shippingRulesSectionIsGone(): Observable<Boolean>
 
+        /** Emits when we should start the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
+        fun showCancelPledge(): Observable<Project>
+
         /** Emits when the cards adapter should update the selected position. */
         fun showPledgeCard(): Observable<Pair<Int, CardState>>
 
@@ -147,6 +153,7 @@ interface PledgeFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
+        private val cancelPledgeButtonClicked = PublishSubject.create<Void>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
         private val decreasePledgeButtonClicked = PublishSubject.create<Void>()
@@ -174,10 +181,11 @@ interface PledgeFragmentViewModel {
         private val increasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<SpannableString>()
+        private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingAmount = BehaviorSubject.create<SpannableString>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
-        private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
+        private val showCancelPledge = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = BehaviorSubject.create<Void>()
         private val startChromeTab = PublishSubject.create<String>()
@@ -211,6 +219,17 @@ interface PledgeFragmentViewModel {
             val project = arguments()
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project }
 
+            val projectAndReward = project
+                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
+
+            val isBackedReward = projectAndReward
+                    .map { BackingUtils.isBacked(it.first, it.second) }
+
+            val backing = projectAndReward
+                    .filter { BackingUtils.isBacked(it.first, it.second) }
+                    .map { it.first.backing() }
+                    .ofType(Backing::class.java)
+
             // Mini reward card
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
                     .compose<PledgeData>(takeWhen(this.onGlobalLayout))
@@ -231,9 +250,6 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.estimatedDeliveryInfoIsGone)
 
             //Base pledge amount
-            val projectAndReward = project
-                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
-
             val rewardMinimum = reward
                     .map { it.minimum() }
 
@@ -313,10 +329,19 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.shippingRulesSectionIsGone)
 
             val defaultShippingRule = shippingRules
-                    .filter { it.isNotEmpty() }
-                    .switchMap { getDefaultShippingRule(it) }
+                    .compose<Pair<List<ShippingRule>, Boolean>>(combineLatestPair(isBackedReward))
+                    .filter { it.first.isNotEmpty() && !it.second }
+                    .switchMap { defaultShippingRule(it.first) }
 
-            val shippingRule = Observable.merge(this.shippingRule, defaultShippingRule)
+            val backingShippingRule = shippingRules
+                    .compose<Pair<List<ShippingRule>, Boolean>>(combineLatestPair(isBackedReward))
+                    .filter { it.first.isNotEmpty() && it.second }
+                    .map { it.first }
+                    .compose<Pair<List<ShippingRule>, Backing>>(combineLatestPair(backing))
+                    .switchMap { backingShippingRule(it.first, it.second) }
+                    .filter { it != null }
+
+            val shippingRule = Observable.merge(this.shippingRule, defaultShippingRule, backingShippingRule)
 
             shippingRule
                     .compose(bindToLifecycle())
@@ -391,6 +416,11 @@ interface PledgeFragmentViewModel {
                     .map { it.first.isLive && it.first.isBacking && BackingUtils.isBacked(it.first, it.second) }
                     .distinctUntilChanged()
                     .subscribe(this.totalContainerIsGone)
+
+            project
+                    .compose<Project>(takeWhen(this.cancelPledgeButtonClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showCancelPledge)
 
             // Payment section
             userIsLoggedIn
@@ -484,7 +514,7 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.startChromeTab)
         }
 
-        private fun getDefaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
+        private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
             return currentConfig.observable()
                     .map { it.countryCode() }
                     .map { countryCode ->
@@ -492,6 +522,12 @@ interface PledgeFragmentViewModel {
                                 ?: shippingRules.first()
                     }
         }
+
+        private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {
+            return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })
+        }
+
+        override fun cancelPledgeButtonClicked() = this.cancelPledgeButtonClicked.onNext(null)
 
         override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
 
@@ -572,6 +608,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone
+
+        @NonNull
+        override fun showCancelPledge(): Observable<Project> = this.showCancelPledge
 
         @NonNull
         override fun showPledgeCard(): Observable<Pair<Int, CardState>> = this.showPledgeCard

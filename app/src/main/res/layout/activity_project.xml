@@ -38,7 +38,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="30dp"
+    app:cardCornerRadius="@dimen/card_container_radius"
     app:cardElevation="@dimen/grid_2"
     tools:layout_marginTop="620dp">
 
@@ -72,6 +72,21 @@
         app:navigationIcon="@drawable/ic_down" />
 
     </FrameLayout>
+
+    <FrameLayout
+      android:id="@+id/scrim"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:alpha="0"
+      android:background="@color/black_alpha_40"
+      android:clickable="true"
+      android:focusable="true"
+      android:visibility="gone" />
+
+    <FrameLayout
+      android:id="@+id/secondary_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
 
     <LinearLayout
       android:id="@+id/action_buttons"
@@ -118,5 +133,11 @@
     </LinearLayout>
 
   </androidx.cardview.widget.CardView>
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end"
+    android:id="@+id/snackbar_anchor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

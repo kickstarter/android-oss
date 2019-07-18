@@ -52,6 +52,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingAmount = TestSubscriber<String>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
+    private val showCancelPledge = TestSubscriber<Project>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
     private val startChromeTab = TestSubscriber<String>()
@@ -86,6 +87,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
         this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
+        this.vm.outputs.showCancelPledge().subscribe(this.showCancelPledge)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.startChromeTab().subscribe(this.startChromeTab)
@@ -541,6 +543,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.totalAmount.assertValues("$50", "$60")
         this.selectedShippingRule.assertValues(defaultRule, selectedRule)
+    }
+
+    @Test
+    fun testShowCancelPledge() {
+        val backedProject = ProjectFactory.backedProject()
+        val backing = backedProject.backing()?: BackingFactory.backing()
+        val reward = backing.reward()?: RewardFactory.reward()
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.vm.inputs.cancelPledgeButtonClicked()
+        this.showCancelPledge.assertValue(backedProject)
     }
 
     @Test

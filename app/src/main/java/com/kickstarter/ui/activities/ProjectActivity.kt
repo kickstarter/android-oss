@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -28,6 +30,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.activity_project.*
@@ -35,7 +38,7 @@ import kotlinx.android.synthetic.main.project_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
+class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
     private lateinit var heartIcon: ImageButton
@@ -82,6 +85,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 rewards_toolbar.setNavigationOnClickListener {
                     hideKeyboard()
                     this.viewModel.inputs.hideRewardsFragmentClicked()
+                }
+
+                this.supportFragmentManager.addOnBackStackChangedListener {
+                    this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
                 }
             }
             else -> {
@@ -208,6 +215,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startLoginToutActivity() }
 
+        this.viewModel.outputs.scrimIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { animateScrimVisibility(it) }
+
+        this.viewModel.outputs.showCancelPledgeSuccess()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showCancelPledgeSuccess() }
+
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -217,12 +234,41 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
     }
 
+    private fun animateScrimVisibility(show: Boolean) {
+        val shouldAnimateIn = show && scrim.alpha == 0f
+        val shouldAnimateOut = !show && scrim.alpha == 1f
+        if (shouldAnimateIn || shouldAnimateOut) {
+            val finalAlpha = if (show) 1f else 0f
+            scrim.animate()
+                    .alpha(finalAlpha)
+                    .setDuration(200L)
+                    .setListener(object : AnimatorListenerAdapter() {
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            if (!show) {
+                                ViewUtils.setGone(scrim, true)
+                            }
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                            if (show) {
+                                ViewUtils.setGone(scrim, false)
+                            }
+                        }
+                    })
+        }
+    }
+
     override fun back() {
         if (environment().nativeCheckoutPreference().get()) {
             handleNativeCheckoutBackPress()
         } else {
             super.back()
         }
+    }
+
+    override fun pledgeSuccessfullyCancelled() {
+        this.viewModel.inputs.pledgeSuccessfullyCancelled()
     }
 
     override fun exitTransition(): Pair<Int, Int>? {
@@ -278,13 +324,17 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
         }
     }
 
+    private fun clearFragmentBackStack() {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
     private fun handleNativeCheckoutBackPress() {
         val rewardsSheetIsExpanded = pledge_container.alpha == 1f
         when {
             supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
             rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsFragmentClicked()
             else -> {
-                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                clearFragmentBackStack()
                 super.back()
             }
         }
@@ -315,6 +365,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
     private fun setupRewardsFragment(project: Project) {
         val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?
         rewardsFragment?.takeProject(project)
+    }
+
+    private fun showCancelPledgeSuccess() {
+        clearFragmentBackStack()
+        showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
     private fun startCampaignWebViewActivity(project: Project) {

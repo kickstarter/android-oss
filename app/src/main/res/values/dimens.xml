@@ -169,7 +169,7 @@
 
   <!-- Native Checkout -->
   <dimen name="fab_radius">@dimen/grid_5</dimen>
-  <dimen name="card_radius">@dimen/grid_2</dimen>
+  <dimen name="reward_card_radius">@dimen/grid_2</dimen>
   <dimen name="circle_width">4dp</dimen>
   <dimen name="circle_radius">4dp</dimen>
   <dimen name="indicator_radius">4dp</dimen>
@@ -187,5 +187,6 @@
   <dimen name="plus_sign_width">9dp</dimen>
   <dimen name="autocomplete_text_view_width">140dp</dimen>
   <dimen name="autocomplete_drop_down_width">265dp</dimen>
+  <dimen name="card_container_radius">@dimen/grid_5</dimen>
 
 </resources>

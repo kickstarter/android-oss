@@ -25,6 +25,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val projectTest = TestSubscriber<Project>()
     private val rewardsButtonColor = TestSubscriber<Int>()
     private val rewardsButtonText = TestSubscriber<Int>()
+    private val rewardsToolbarTitle = TestSubscriber<Int>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val startLoginToutActivity = TestSubscriber<Void>()
@@ -47,6 +48,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
+        this.vm.outputs.rewardsToolbarTitle().subscribe(this.rewardsToolbarTitle)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
@@ -298,6 +300,38 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.rewardsButtonColor.assertValue(R.color.button_pledge_ended)
         this.rewardsButtonText.assertValue(R.string.View_your_pledge)
+    }
+
+    @Test
+    fun testRewardsToolbarTitle() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.rewardsToolbarTitle.assertNoValues()
+
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.rewardsToolbarTitle.assertValuesAndClear(R.string.Back_this_project)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.rewardsToolbarTitle.assertValuesAndClear(R.string.Manage_your_pledge)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+
+        this.rewardsToolbarTitle.assertValuesAndClear(R.string.View_rewards)
+
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+
+        this.rewardsToolbarTitle.assertValue(R.string.View_your_pledge)
     }
 
     @Test

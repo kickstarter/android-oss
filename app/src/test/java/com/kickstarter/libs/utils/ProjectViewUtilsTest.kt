@@ -31,4 +31,16 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
                 .build()
         assertEquals(R.string.View_your_pledge, ProjectViewUtils.rewardsButtonText(backedSuccessfulProject))
     }
+
+    @Test
+    fun testRewardsToolbarTitle() {
+        assertEquals(R.string.Back_this_project, ProjectViewUtils.rewardsToolbarTitle(ProjectFactory.project()))
+        assertEquals(R.string.Manage_your_pledge, ProjectViewUtils.rewardsToolbarTitle(ProjectFactory.backedProject()))
+        assertEquals(R.string.View_rewards, ProjectViewUtils.rewardsToolbarTitle(ProjectFactory.successfulProject()))
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        assertEquals(R.string.View_your_pledge, ProjectViewUtils.rewardsToolbarTitle(backedSuccessfulProject))
+    }
 }

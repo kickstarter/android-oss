@@ -88,6 +88,9 @@ interface ProjectViewModel {
         /** Emits the proper string resource ID for the reward button. */
         fun rewardsButtonText(): Observable<Int>
 
+        /** Emits the proper string resource ID for the rewards toolbar. */
+        fun rewardsToolbarTitle(): Observable<Int>
+
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
 
@@ -157,6 +160,7 @@ interface ProjectViewModel {
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
+        private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
@@ -283,8 +287,8 @@ interface ProjectViewModel {
                     .subscribe(this.showRewardsFragment)
 
             val nativeCheckoutProject = Observable.just(this.nativeCheckoutPreference.get())
-                    .filter { BooleanUtils.isTrue(it) }
                     .compose<Pair<Boolean, Project>>(combineLatestPair(currentProject))
+                    .filter { BooleanUtils.isTrue(it.first) }
                     .map<Project> { it.second }
 
             nativeCheckoutProject
@@ -305,6 +309,12 @@ interface ProjectViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.rewardsButtonText.onNext(it) }
+
+            nativeCheckoutProject
+                    .map { ProjectViewUtils.rewardsToolbarTitle(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardsToolbarTitle)
 
             nativeCheckoutProject
                     .map { ProjectViewUtils.rewardsButtonColor(it) }
@@ -486,6 +496,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
+
+        @NonNull
+        override fun rewardsToolbarTitle(): Observable<Int> = this.rewardsToolbarTitle
 
         @NonNull
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition

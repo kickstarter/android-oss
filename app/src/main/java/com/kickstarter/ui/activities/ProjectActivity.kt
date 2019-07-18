@@ -138,6 +138,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { project_action_button.setText(it) }
 
+        this.viewModel.outputs.rewardsToolbarTitle()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { rewards_toolbar.title = getString(it) }
+
         this.viewModel.outputs.setInitialRewardsContainerY()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())

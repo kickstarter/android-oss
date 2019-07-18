@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils
 import android.view.View
 import android.widget.Button
 import androidx.annotation.ColorRes
+import androidx.annotation.StringRes
 import com.kickstarter.R
 import com.kickstarter.models.Project
 
@@ -27,6 +28,19 @@ object ProjectViewUtils {
             R.string.Back_this_project
         } else if (project.isBacking && project.isLive) {
             R.string.Manage
+        } else if (project.isBacking && !project.isLive) {
+            R.string.View_your_pledge
+        } else {
+            R.string.View_rewards
+        }
+    }
+
+    @StringRes
+    fun rewardsToolbarTitle(project: Project): Int {
+        return if (!project.isBacking && project.isLive) {
+            R.string.Back_this_project
+        } else if (project.isBacking && project.isLive) {
+            R.string.Manage_your_pledge
         } else if (project.isBacking && !project.isLive) {
             R.string.View_your_pledge
         } else {

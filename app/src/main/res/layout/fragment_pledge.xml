@@ -11,6 +11,7 @@
   android:fillViewport="true"
   android:focusable="true"
   android:overScrollMode="never"
+  android:paddingTop="?android:attr/actionBarSize"
   android:scrollbars="none"
   android:visibility="invisible"
   tools:visibility="visible">
@@ -108,9 +109,9 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:clipToPadding="false"
         android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
         android:paddingEnd="@dimen/activity_vertical_margin"
         android:paddingStart="@dimen/activity_vertical_margin">
 
@@ -298,8 +299,8 @@
           style="@style/TertiaryButton"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_2"
           android:layout_marginBottom="@dimen/grid_4"
+          android:layout_marginTop="@dimen/grid_2"
           android:text="@string/Cancel_pledge" />
 
         <LinearLayout

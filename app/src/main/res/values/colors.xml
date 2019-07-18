@@ -70,5 +70,5 @@
   <color name="discovery_drawer_header">@color/white</color>
 
   <!-- Third-party colors -->
-  <color name="facebook_blue">#3b5998</color>
+  <color name="facebook_blue">#1877F2</color>
 </resources>

@@ -159,6 +159,8 @@
   <style name="ShareButton" parent="SecondaryButton">
     <item name="android:ellipsize">none</item>
     <item name="android:layout_gravity">center</item>
+    <item name="iconGravity">textStart</item>
+    <item name="iconPadding">@dimen/grid_2</item>
   </style>
 
   <style name="TwitterButton" parent="ShareButton">

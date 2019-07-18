@@ -97,17 +97,17 @@ interface ProjectViewModel {
         /** Emits the proper string resource ID for the rewards toolbar. */
         fun rewardsToolbarTitle(): Observable<Int>
 
-        /** Emits when we should set the Y position of the rewards container. */
-        fun setInitialRewardsContainerY(): Observable<Void>
-
-        /** Emits when rewards fragment should expand. */
-        fun showRewardsFragment(): Observable<Boolean>
-
         /** Emits a boolean that determines if the scrim for secondary pledging actions should be visible. */
         fun scrimIsVisible(): Observable<Boolean>
 
+        /** Emits when we should set the Y position of the rewards container. */
+        fun setInitialRewardsContainerY(): Observable<Void>
+
         /** Emits when the backing has successfully been canceled. */
         fun showCancelPledgeSuccess(): Observable<Void>
+
+        /** Emits when rewards fragment should expand. */
+        fun showRewardsFragment(): Observable<Boolean>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -175,8 +175,8 @@ interface ProjectViewModel {
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
-        private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
+        private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Boolean>()
         private val showShareSheet = PublishSubject.create<Project>()
@@ -547,10 +547,10 @@ interface ProjectViewModel {
         override fun rewardsToolbarTitle(): Observable<Int> = this.rewardsToolbarTitle
 
         @NonNull
-        override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
+        override fun scrimIsVisible(): Observable<Boolean> = this.scrimIsVisible
 
         @NonNull
-        override fun scrimIsVisible(): Observable<Boolean> = this.scrimIsVisible
+        override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
         @NonNull
         override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess

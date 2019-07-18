@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
@@ -212,7 +213,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.outputs.scrimIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(scrim, !it) }
+                .subscribe { animateScrimVisibility(it) }
 
         this.viewModel.outputs.showCancelPledgeSuccess()
                 .compose(bindToLifecycle())
@@ -225,6 +226,31 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
         this.shareIcon.setOnClickListener {
             this.viewModel.inputs.shareButtonClicked()
+        }
+    }
+
+    private fun animateScrimVisibility(show: Boolean) {
+        val shouldAnimateIn = show && scrim.alpha == 0f
+        val shouldAnimateOut = !show && scrim.alpha == 1f
+        if (shouldAnimateIn || shouldAnimateOut) {
+            val finalAlpha = if (show) 1f else 0f
+            scrim.animate()
+                    .alpha(finalAlpha)
+                    .setDuration(200L)
+                    .setListener(object : AnimatorListenerAdapter() {
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            if (!show) {
+                                ViewUtils.setGone(scrim, true)
+                            }
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                            if (show) {
+                                ViewUtils.setGone(scrim, false)
+                            }
+                        }
+                    })
         }
     }
 

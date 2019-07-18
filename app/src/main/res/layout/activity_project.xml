@@ -83,13 +83,13 @@
 
     <FrameLayout
       android:id="@+id/scrim"
-      android:animateLayoutChanges="true"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:alpha="0"
       android:background="@color/black_alpha_40"
       android:clickable="true"
       android:focusable="true"
-      android:visibility="gone"/>
+      android:visibility="gone" />
 
     <FrameLayout
       android:id="@+id/secondary_container"

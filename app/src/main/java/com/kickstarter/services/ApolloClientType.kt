@@ -8,15 +8,14 @@ import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
+import com.kickstarter.models.*
 import rx.Observable
 import type.CurrencyCode
 import type.PaymentTypes
 
 interface ApolloClientType {
+    fun cancelBacking(backing: Backing, note: String): Observable<Any>
+
     fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean>
 
     fun clearUnseenActivity(): Observable<Long>

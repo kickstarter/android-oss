@@ -11,6 +11,7 @@
   android:fillViewport="true"
   android:focusable="true"
   android:overScrollMode="never"
+  android:paddingTop="?android:attr/actionBarSize"
   android:scrollbars="none"
   android:visibility="invisible"
   tools:visibility="visible">

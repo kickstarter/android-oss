@@ -5,3 +5,11 @@ mutation Checkout($projectId: ID!, $amount: String!,  $paymentSourceId: String!,
     }
   }
 }
+
+mutation CancelBacking($backingId: ID!, $note: String) {
+  cancelBacking(input: {id: $backingId, note: $note}) {
+    backing {
+      status
+    }
+  }
+}

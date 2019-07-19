@@ -18,7 +18,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
-      app:cardCornerRadius="@dimen/card_radius"
+      app:cardCornerRadius="@dimen/reward_card_radius"
       app:cardElevation="0dp">
 
       <LinearLayout

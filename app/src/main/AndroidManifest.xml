@@ -182,7 +182,7 @@
     <activity
       android:name=".ui.activities.ProjectActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:windowSoftInputMode="adjustPan"
+      android:windowSoftInputMode="adjustResize"
       android:theme="@style/ProjectActivity">
       <intent-filter>
         <action android:name="android.intent.action.VIEW" />

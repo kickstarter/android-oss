@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/pledge_container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_4"
+  android:gravity="center_vertical"
+  android:orientation="horizontal"
+  tools:showIn="@layout/fragment_pledge">
+
+  <!-- TODO: Needs final copy for content descriptions -->
+  <ImageButton
+    android:id="@+id/decrease_pledge"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_decrease"
+    android:backgroundTint="@color/white_enabled_gray_disabled"
+    android:contentDescription="@null"
+    android:src="@drawable/ic_remove"
+    android:tint="@color/green_enabled_dark_grey_disabled"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <ImageButton
+    android:id="@+id/increase_pledge"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_increase"
+    android:backgroundTint="@color/white_enabled_gray_disabled"
+    android:contentDescription="@null"
+    android:src="@drawable/ic_add"
+    android:tint="@color/green_enabled_dark_grey_disabled"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toEndOf="@id/decrease_pledge"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <LinearLayout
+    android:id="@+id/additional_pledge_amount_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/grid_2"
+    android:animateLayoutChanges="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/pledge_amount_container"
+    app:layout_constraintHorizontal_bias="1"
+    app:layout_constraintHorizontal_chainStyle="packed"
+    app:layout_constraintStart_toEndOf="@id/increase_pledge"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <!-- todo: needs some a11y plz-->
+    <ImageView
+      android:layout_width="@dimen/grid_3"
+      android:layout_height="@dimen/grid_3"
+      android:contentDescription="@null"
+      android:src="@drawable/ic_add"
+      android:tint="@color/ksr_dark_grey_400" />
+
+    <TextView
+      android:id="@+id/additional_pledge_amount"
+      style="@style/PledgeCurrency"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/headline"
+      tools:text="$20" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/pledge_amount_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rect_white_rounded"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    app:layout_constrainedWidth="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1"
+    app:layout_constraintStart_toEndOf="@id/additional_pledge_amount_container"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+      android:id="@+id/pledge_symbol_start"
+      style="@style/PledgeCurrencySecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      tools:text="$" />
+
+    <EditText
+      android:id="@+id/pledge_amount"
+      style="@style/PledgeCurrencySecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@null"
+      android:imeOptions="actionDone"
+      android:importantForAutofill="no"
+      android:inputType="numberDecimal"
+      android:maxLines="1"
+      tools:ignore="LabelFor"
+      tools:targetApi="o"
+      tools:text="20" />
+
+    <TextView
+      android:id="@+id/pledge_symbol_end"
+      style="@style/PledgeCurrencySecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="$" />
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

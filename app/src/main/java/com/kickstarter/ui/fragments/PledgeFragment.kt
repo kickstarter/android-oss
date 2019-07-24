@@ -4,8 +4,10 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
@@ -19,6 +21,7 @@ import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -26,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
+import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
@@ -53,6 +57,11 @@ import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_pledge.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_delivery.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
@@ -82,6 +91,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         setUpCardsAdapter()
         setUpShippingAdapter()
+
+        pledge_amount.onChange { this.viewModel.inputs.pledgeInput(it) }
 
         this.animDuration = when (savedInstanceState) {
             null -> this.defaultAnimationDuration
@@ -151,17 +162,30 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { pledge_amount.setText(it) }
+                .subscribe {
+                    pledge_amount.setText(it)
+                    pledge_amount.setSelection(it.length)
+                }
 
-        this.viewModel.outputs.pledgeAmount()
+        this.viewModel.outputs.pledgeHint()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { pledge_amount.hint = it }
 
-        this.viewModel.outputs.pledgeCurrencySymbol()
+        this.viewModel.outputs.projectCurrencySymbol()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { pledge_amount.hint = it }
+                .subscribe { setCurrencySymbols(it) }
+
+        this.viewModel.outputs.pledgeTextColor()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
+
+        this.viewModel.outputs.totalTextColor()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setTextColor(it, total_amount, total_symbol_start, total_symbol_end) }
 
         this.viewModel.outputs.cards()
                 .compose(bindToLifecycle())
@@ -190,9 +214,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    shipping_amount.text = it
-                    ViewUtils.setInvisible(shipping_amount_container, false)
                     ViewUtils.setGone(shipping_amount_loading_view, true)
+                    setVisibility(View.VISIBLE, shipping_symbol_start, shipping_symbol_end)
+                    shipping_amount.text = it
                 }
 
         this.viewModel.outputs.shippingRulesAndProject()
@@ -213,8 +237,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    total_amount.text = it
                     ViewUtils.setGone(total_amount_loading_view, true)
+                    setVisibility(View.VISIBLE, total_symbol_start, total_symbol_end)
+                    total_amount.text = it
                 }
 
         this.viewModel.outputs.startThanksActivity()
@@ -278,7 +303,27 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                             ?.commit()
                 }
 
-        shipping_rules.setOnClickListener { shipping_rules.showDropDown() }
+        this.viewModel.outputs.showMinimumWarning()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { showPledgeWarning(it) }
+
+        pledge_amount.setOnTouchListener { _, _ ->
+            pledge_amount.post {
+                pledge_root.smoothScrollTo(0, relativeTop(pledge_amount_label, pledge_root))
+                pledge_amount.requestFocus()
+            }
+            false
+        }
+
+        shipping_rules.setOnTouchListener { _, _ ->
+            shipping_rules_section_text_view.post {
+                pledge_root.smoothScrollTo(0, relativeTop(shipping_rules_section_text_view, pledge_root))
+                shipping_rules.requestFocus()
+                shipping_rules.showDropDown()
+            }
+            false
+        }
 
         continue_to_tout.setOnClickListener {
             this.viewModel.inputs.continueButtonClicked()
@@ -300,7 +345,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun onDetach() {
         super.onDetach()
         cards_recycler?.adapter = null
-        activity?.hideKeyboard()
     }
 
     override fun addNewCardButtonClicked() {
@@ -330,27 +374,40 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         adapter.populateShippingRules(shippingRules, project)
     }
 
-    private fun positionRewardSnapshot(pledgeData: PledgeData) {
-        val location = pledgeData.rewardScreenLocation
-        val reward = pledgeData.reward
-        val project = pledgeData.project
-        val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
-        rewardParams.leftMargin = location.x.toInt()
-        rewardParams.topMargin = location.y.toInt()
-        rewardParams.height = location.height.toInt()
-        rewardParams.width = location.width.toInt()
-        reward_snapshot.layoutParams = rewardParams
-        reward_snapshot.pivotX = 0f
-        reward_snapshot.pivotY = 0f
+    private fun relativeTop(view: View, parent: ViewGroup): Int {
+        val offsetViewBounds = Rect()
+        view.getDrawingRect(offsetViewBounds)
+        parent.offsetDescendantRectToMyCoords(view, offsetViewBounds)
 
-        val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_to_copy, null)
-        rewardViewHolder.bindData(Pair(project, reward))
+        return offsetViewBounds.top - parent.paddingTop
+    }
 
-        reward_to_copy.post {
-            pledge_root.visibility = View.VISIBLE
-            val bitmap = ViewUtils.getBitmap(reward_to_copy, location.width.toInt(), location.height.toInt())
-            reward_snapshot.setImageBitmap(bitmap)
-            reward_to_copy.visibility = View.GONE
+    private fun setCurrencySymbols(symbolAndStart: Pair<SpannableString, Boolean>) {
+        val symbol = symbolAndStart.first
+        val symbolAtStart = symbolAndStart.second
+        if (symbolAtStart) {
+            pledge_symbol_start.text = symbol
+            shipping_symbol_start.text = symbol
+            total_symbol_start.text = symbol
+            pledge_symbol_end.text = null
+            shipping_symbol_end.text = null
+            total_symbol_end.text = null
+        } else {
+            pledge_symbol_start.text = null
+            shipping_symbol_start.text = null
+            total_symbol_start.text = null
+            pledge_symbol_end.text = symbol
+            shipping_symbol_end.text = symbol
+            total_symbol_end.text = symbol
+        }
+    }
+
+    private fun setTextColor(colorResId: Int, vararg textViews: TextView) {
+        context?.let {
+            val color = ContextCompat.getColor(it, colorResId)
+            for (textView in textViews) {
+                textView.setTextColor(color)
+            }
         }
     }
 
@@ -367,6 +424,104 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
     }
 
+    private fun setVisibility(visibility: Int, vararg views: View) {
+        context?.let {
+            for (view in views) {
+                view.visibility = visibility
+            }
+        }
+    }
+
+    private fun setClickableHtml(string: String, textView: TextView) {
+        val spannableBuilder = SpannableStringBuilder(ViewUtils.html(string))
+        // https://stackoverflow.com/a/19989677
+        val urlSpans = spannableBuilder.getSpans(0, string.length, URLSpan::class.java)
+        for (urlSpan in urlSpans) {
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    this@PledgeFragment.viewModel.inputs.linkClicked(urlSpan.url)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = ContextCompat.getColor(textView.context, R.color.accent)
+                }
+            }
+            val spanStart = spannableBuilder.getSpanStart(urlSpan)
+            val spanEnd = spannableBuilder.getSpanEnd(urlSpan)
+            val spanFlags = spannableBuilder.getSpanFlags(urlSpan)
+            spannableBuilder.setSpan(clickableSpan, spanStart, spanEnd, spanFlags)
+            spannableBuilder.removeSpan(urlSpan)
+        }
+
+        textView.text = spannableBuilder
+        textView.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun setConversionTextView(@NonNull amount: String) {
+        val currencyConversionString = context?.getString(R.string.About_reward_amount)
+        total_amount_conversion.text = (currencyConversionString?.let {
+            this.viewModel.environment.ksString().format(it, "reward_amount", amount)
+        })
+    }
+
+    private fun setHtmlStrings(baseUrl: String) {
+        val termsOfUseUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.TERMS_OF_USE)
+        val cookiePolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.COOKIES)
+        val privacyPolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.PRIVACY)
+
+        val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
+        val byPledgingYouAgree = getString(R.string.By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy)
+
+        val agreementWithUrls = ksString.format(byPledgingYouAgree, "terms_of_use_link", termsOfUseUrl,
+                "privacy_policy_link", privacyPolicyUrl, "cookie_policy_link", cookiePolicyUrl)
+
+        setClickableHtml(agreementWithUrls, pledge_agreement)
+
+        val trustUrl = UrlUtils.buildUrl(baseUrl, "trust")
+
+        val kickstarterIsNotAStore = getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability)
+        val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)
+
+        setClickableHtml(accountabilityWithUrls, accountability)
+    }
+
+    private fun showPledgeWarning(rewardMinimum: String) {
+        context?.apply {
+            val ksString = (this.applicationContext as KSApplication).component().environment().ksString()
+            val message = ksString.format(getString(R.string.You_need_to_pledge_at_least_reward_minimum_for_this_reward),
+                    "reward_minimum", rewardMinimum)
+            //ViewUtils.showDialog(this, null, message)
+
+            val dialog = AlertDialog.Builder(this, R.style.Dialog)
+                    .setMessage(message)
+                    .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ ->  dialog.dismiss()}
+                    .create()
+
+            dialog.show()
+        }
+    }
+
+    private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {
+        val position = positionAndCardState.first
+        val cardState = positionAndCardState.second
+        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
+
+        val freezeLinearLayoutManager = cards_recycler.layoutManager as FreezeLinearLayoutManager
+        if (cardState == CardState.SELECT) {
+            rewardCardAdapter.resetPledgePosition(position)
+            freezeLinearLayoutManager.setFrozen(false)
+        } else {
+            if (cardState == CardState.PLEDGE) {
+                rewardCardAdapter.setPledgePosition(position)
+            } else {
+                rewardCardAdapter.setLoadingPosition(position)
+            }
+            cards_recycler.scrollToPosition(position)
+            freezeLinearLayoutManager.setFrozen(true)
+        }
+    }
+
+    //Reward card animation helper methods
     private fun showPledgeSection(pledgeData: PledgeData) {
         setInitialViewStates(pledgeData)
         startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
@@ -507,36 +662,28 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 }
             }
 
-    private fun setClickableHtml(string: String, textView: TextView) {
-        val spannableBuilder = SpannableStringBuilder(ViewUtils.html(string))
-        // https://stackoverflow.com/a/19989677
-        val urlSpans = spannableBuilder.getSpans(0, string.length, URLSpan::class.java)
-        for (urlSpan in urlSpans) {
-            val clickableSpan = object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    this@PledgeFragment.viewModel.inputs.linkClicked(urlSpan.url)
-                }
+    private fun positionRewardSnapshot(pledgeData: PledgeData) {
+        val location = pledgeData.rewardScreenLocation
+        val reward = pledgeData.reward
+        val project = pledgeData.project
+        val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
+        rewardParams.leftMargin = location.x.toInt()
+        rewardParams.topMargin = location.y.toInt()
+        rewardParams.height = location.height.toInt()
+        rewardParams.width = location.width.toInt()
+        reward_snapshot.layoutParams = rewardParams
+        reward_snapshot.pivotX = 0f
+        reward_snapshot.pivotY = 0f
 
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = ContextCompat.getColor(textView.context, R.color.accent)
-                }
-            }
-            val spanStart = spannableBuilder.getSpanStart(urlSpan)
-            val spanEnd = spannableBuilder.getSpanEnd(urlSpan)
-            val spanFlags = spannableBuilder.getSpanFlags(urlSpan)
-            spannableBuilder.setSpan(clickableSpan, spanStart, spanEnd, spanFlags)
-            spannableBuilder.removeSpan(urlSpan)
+        val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_to_copy, null)
+        rewardViewHolder.bindData(Pair(project, reward))
+
+        reward_to_copy.post {
+            pledge_root.visibility = View.VISIBLE
+            val bitmap = ViewUtils.getBitmap(reward_to_copy, location.width.toInt(), location.height.toInt())
+            reward_snapshot.setImageBitmap(bitmap)
+            reward_to_copy.visibility = View.GONE
         }
-
-        textView.text = spannableBuilder
-        textView.movementMethod = LinkMovementMethod.getInstance()
-    }
-
-    private fun setConversionTextView(@NonNull amount: String) {
-        val currencyConversionString = context?.getString(R.string.About_reward_amount)
-        total_amount_conversion.text = (currencyConversionString?.let {
-            this.viewModel.environment.ksString().format(it, "reward_amount", amount)
-        })
     }
 
     private fun setDeliveryParams(miniRewardWidth: Float, margin: Float) {
@@ -546,51 +693,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         delivery.layoutParams = deliveryParams
     }
 
-
-    private fun setHtmlStrings(baseUrl: String) {
-        val termsOfUseUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.TERMS_OF_USE)
-        val cookiePolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.COOKIES)
-        val privacyPolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.PRIVACY)
-
-        val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
-        val byPledgingYouAgree = getString(R.string.By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy)
-
-        val agreementWithUrls = ksString.format(byPledgingYouAgree, "terms_of_use_link", termsOfUseUrl,
-                "privacy_policy_link", privacyPolicyUrl, "cookie_policy_link", cookiePolicyUrl)
-
-        setClickableHtml(agreementWithUrls, pledge_agreement)
-
-        val trustUrl = UrlUtils.buildUrl(baseUrl, "trust")
-
-        val kickstarterIsNotAStore = getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability)
-        val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)
-
-        setClickableHtml(accountabilityWithUrls, accountability)
-    }
-
     private fun setInitialViewStates(pledgeData: PledgeData) {
         positionRewardSnapshot(pledgeData)
         pledge_details.y = pledge_root.height.toFloat()
-    }
-
-    private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {
-        val position = positionAndCardState.first
-        val cardState = positionAndCardState.second
-        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
-
-        val freezeLinearLayoutManager = cards_recycler.layoutManager as FreezeLinearLayoutManager
-        if (cardState == CardState.SELECT) {
-            rewardCardAdapter.resetPledgePosition(position)
-            freezeLinearLayoutManager.setFrozen(false)
-        } else {
-            if (cardState == CardState.PLEDGE) {
-                rewardCardAdapter.setPledgePosition(position)
-            } else {
-                rewardCardAdapter.setLoadingPosition(position)
-            }
-            cards_recycler.scrollToPosition(position)
-            freezeLinearLayoutManager.setFrozen(true)
-        }
     }
 
     companion object {

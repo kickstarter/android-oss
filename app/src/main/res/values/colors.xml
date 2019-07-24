@@ -18,6 +18,7 @@
   <color name="ksr_dark_grey_400">#9B9E9E</color>
   <color name="ksr_dark_grey_500">#656969</color>
   <color name="ksr_highlighter_green">#05F2BA</color>
+  <color name="ksr_green_200">#57BFA4</color>
   <color name="ksr_green_500">#009E74</color>
   <color name="ksr_green_700">#037362</color>
   <color name="ksr_green_800">#034752</color>
@@ -51,7 +52,6 @@
   <color name="green_alpha_10">#1A009E74</color>
   <color name="green_alpha_20">#33009E74</color>
   <color name="green_alpha_50">#80009E74</color>
-  <color name="green_alpha_66">#57bfa4</color>
   <color name="green_darken_10">@color/soft_black_alpha_17</color>
   <color name="soft_black_alpha_17">#2B282828</color>
   <color name="white_alpha_60">#99ffffff</color>

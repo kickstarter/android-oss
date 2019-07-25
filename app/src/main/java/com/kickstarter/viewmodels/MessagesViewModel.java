@@ -325,7 +325,7 @@ public interface MessagesViewModel {
         .subscribe(this.backingInfoViewIsGone::onNext);
 
       koalaContext
-        .map(c -> c.equals(KoalaContext.Message.BACKER_MODAL))
+        .map(c -> c.equals(KoalaContext.Message.BACKER_MODAL) || c.equals(KoalaContext.Message.CREATOR_BIO_MODAL))
         .compose(bindToLifecycle())
         .subscribe(this.viewPledgeButtonIsGone::onNext);
 

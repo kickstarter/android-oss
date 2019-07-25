@@ -137,8 +137,10 @@ public interface BackingViewModel {
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
 
+      final Observable<User> loggedInUser = this.currentUser.loggedInUser();
+
       final Observable<User> initialBacker = intent()
-        .compose(combineLatestPair(this.currentUser.loggedInUser()))
+        .compose(combineLatestPair(loggedInUser))
         .map(this::backer)
         .ofType(User.class);
 
@@ -150,8 +152,9 @@ public interface BackingViewModel {
         .map(i -> i.getBooleanExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, false))
         .ofType(Boolean.class);
 
-      final Observable<Boolean> isCreator = intent()
-        .map(i -> i.hasExtra(IntentKey.BACKER));
+      final Observable<Boolean> isCreator = initialBacker
+        .compose(combineLatestPair(loggedInUser))
+        .map(backerAndCurrentUser -> backerAndCurrentUser.first.id() != backerAndCurrentUser.second.id());
 
       final Observable<Backing> backing = Observable.combineLatest(project, initialBacker, Pair::create)
         .switchMap(pb -> this.client.fetchProjectBacking(pb.first, pb.second))

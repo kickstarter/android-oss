@@ -89,7 +89,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         super.onAttach(context)
         onCardSavedListener = context as? OnCardSavedListener
         if (onCardSavedListener == null) {
-            throw ClassCastException("$context must implement OnArticleSelectedListener")
+            throw ClassCastException("$context must implement OnCardSavedListener")
         }
     }
 
@@ -167,4 +167,11 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private val cardFocusChangeListener = View.OnFocusChangeListener { _, _ -> this@NewCardFragment.viewModel.inputs.cardFocus(false) }
+
+    companion object {
+
+        fun newInstance(): NewCardFragment {
+            return NewCardFragment()
+        }
+    }
 }

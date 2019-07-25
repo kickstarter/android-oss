@@ -735,4 +735,8 @@
     <item name="android:foreground">@drawable/click_indicator_light</item>
   </style>
 
+  <style name="CardViewFragment">
+    <item name="cardCornerRadius">@dimen/grid_5</item>
+  </style>
+
 </resources>

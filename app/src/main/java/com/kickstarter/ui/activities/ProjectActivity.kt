@@ -31,6 +31,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.fragments.CancelPledgeFragment
+import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.activity_project.*
@@ -38,7 +39,7 @@ import kotlinx.android.synthetic.main.project_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate {
+class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate, NewCardFragment.OnCardSavedListener {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
     private lateinit var heartIcon: ImageButton
@@ -269,6 +270,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun pledgeSuccessfullyCancelled() {
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
+    }
+
+    override fun cardSaved() {
+
     }
 
     override fun exitTransition(): Pair<Int, Int>? {

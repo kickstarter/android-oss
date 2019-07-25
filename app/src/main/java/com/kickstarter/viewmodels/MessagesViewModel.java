@@ -325,7 +325,7 @@ public interface MessagesViewModel {
         .subscribe(this.backingInfoViewIsGone::onNext);
 
       koalaContext
-        .map(c -> c.equals(KoalaContext.Message.BACKER_MODAL) || c.equals(KoalaContext.Message.CREATOR_BIO_MODAL))
+        .map(c -> c.equals(KoalaContext.Message.BACKER_MODAL))
         .compose(bindToLifecycle())
         .subscribe(this.viewPledgeButtonIsGone::onNext);
 
@@ -354,13 +354,10 @@ public interface MessagesViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectNameTextViewText::onNext);
 
-      Observable.combineLatest(messageThreadEnvelope, this.currentUser.observable(), Pair::create)
+      messageThreadEnvelope
+        .compose(combineLatestPair(messagesData))
         .compose(takeWhen(this.viewPledgeButtonClicked))
-        .map(eu ->
-          eu.first.messageThread().project().isBacking()
-            ? Pair.create(eu.first.messageThread().project(), eu.second)
-            : Pair.create(eu.first.messageThread().project(), eu.first.messageThread().participant())
-        )
+        .map(this::projectAndBacker)
         .compose(bindToLifecycle())
         .subscribe(this.startBackingActivity::onNext);
 
@@ -401,6 +398,12 @@ public interface MessagesViewModel {
             .take(1);
         }
       );
+    }
+
+    private Pair<Project, User> projectAndBacker(Pair<MessageThreadEnvelope, MessagesData> envelopeAndData) {
+      final Project project = envelopeAndData.second.getProject();
+      final User backer = project.isBacking() ? envelopeAndData.second.getCurrentUser() : envelopeAndData.first.messageThread().participant();
+      return Pair.create(project, backer);
     }
 
     private final PublishSubject<Integer> appBarOffset = PublishSubject.create();

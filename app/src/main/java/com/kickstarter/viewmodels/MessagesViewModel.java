@@ -400,7 +400,7 @@ public interface MessagesViewModel {
       );
     }
 
-    private Pair<Project, User> projectAndBacker(Pair<MessageThreadEnvelope, MessagesData> envelopeAndData) {
+    private Pair<Project, User> projectAndBacker(final @NonNull Pair<MessageThreadEnvelope, MessagesData> envelopeAndData) {
       final Project project = envelopeAndData.second.getProject();
       final User backer = project.isBacking() ? envelopeAndData.second.getCurrentUser() : envelopeAndData.first.messageThread().participant();
       return Pair.create(project, backer);

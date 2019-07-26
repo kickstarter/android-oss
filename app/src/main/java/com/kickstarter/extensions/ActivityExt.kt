@@ -18,6 +18,11 @@ fun Activity.startActivityWithSlideLeftTransition(intent: Intent) {
     this.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
 }
 
+fun Activity.showKeyboard() {
+    val inputManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY)
+}
+
 fun Activity.hideKeyboard() {
     val inputManager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (inputManager.isAcceptingText) {

@@ -8,6 +8,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.stripe.android.CardUtils
 import com.stripe.android.TokenCallback
@@ -56,7 +57,7 @@ interface NewCardFragmentViewModel {
         fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the card was saved successfully. */
-        fun success(): Observable<Void>
+        fun success(): Observable<StoredCard>
 
     }
 
@@ -74,7 +75,7 @@ interface NewCardFragmentViewModel {
         private val error = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
-        private val success = BehaviorSubject.create<Void>()
+        private val success = BehaviorSubject.create<StoredCard>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -120,7 +121,7 @@ interface NewCardFragmentViewModel {
             saveCardNotification
                     .compose(values())
                     .subscribe {
-                        this.success.onNext(null)
+                        this.success.onNext(it)
                         this.koala.trackSavedPaymentMethod()
                     }
 
@@ -185,7 +186,7 @@ interface NewCardFragmentViewModel {
             return this.saveButtonIsEnabled
         }
 
-        override fun success(): Observable<Void> {
+        override fun success(): Observable<StoredCard> {
             return this.success
         }
 
@@ -220,9 +221,9 @@ interface NewCardFragmentViewModel {
             }
         }
 
-        private fun createTokenAndSaveCard(card: Card): Observable<Void> {
+        private fun createTokenAndSaveCard(card: Card): Observable<StoredCard> {
             return Observable.defer {
-                val ps = PublishSubject.create<Void>()
+                val ps = PublishSubject.create<StoredCard>()
                 this.stripe.createToken(card, object : TokenCallback {
                     override fun onSuccess(token: Token) {
                         saveCard(token, ps)
@@ -238,10 +239,10 @@ interface NewCardFragmentViewModel {
                     .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
-        private fun saveCard(token: Token, ps: PublishSubject<Void>) {
+        private fun saveCard(token: Token, ps: PublishSubject<StoredCard>) {
             this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
                     .subscribe({
-                        ps.onNext(null)
+                        ps.onNext(it)
                         ps.onCompleted()
                     }, { ps.onError(it) })
         }

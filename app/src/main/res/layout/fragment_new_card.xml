@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout android:id="@+id/new_card_root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-
   android:background="@color/ksr_grey_100">
 
   <include layout="@layout/form_new_card" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

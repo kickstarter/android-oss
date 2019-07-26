@@ -36,6 +36,7 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
@@ -168,7 +169,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     fragmentManager
                             ?.beginTransaction()
                             ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(), NewCardFragment::class.java.simpleName)
+                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true), NewCardFragment::class.java.simpleName)
                             ?.addToBackStack(NewCardFragment::class.java.simpleName)
                             ?.commit()
                 }
@@ -297,6 +298,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun addNewCardButtonClicked() {
         this.viewModel.inputs.newCardButtonClicked()
+    }
+
+    fun cardAdded(storedCard: StoredCard) {
+        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
+        rewardCardAdapter.addCard(storedCard)
     }
 
     override fun closePledgeButtonClicked(position: Int) {

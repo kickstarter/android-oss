@@ -198,13 +198,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<StoredCard> {
         return Observable.defer {
-            val ps = PublishSubject.create<SavePaymentMethodMutation.Data>()
+            val ps = PublishSubject.create<StoredCard>()
             service.mutate(SavePaymentMethodMutation.builder()
                     .paymentType(paymentTypes)
                     .stripeToken(stripeToken)
                     .stripeCardId(cardId)
+                    .reusable(false)
                     .build())
                     .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
@@ -217,11 +218,20 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             }
                             //why wouldn't this just be an error?
                             val createPaymentSource = response.data()?.createPaymentSource()
-                            if (!createPaymentSource?.isSuccessful!!) {
-                                ps.onError(Exception(createPaymentSource.errorMessage()))
+                            if (createPaymentSource?.isSuccessful != true) {
+                                ps.onError(Exception(createPaymentSource?.errorMessage()))
                             } else {
-                                ps.onNext(response.data())
-                                ps.onCompleted()
+                                val paymentSource = createPaymentSource.paymentSource()
+                                paymentSource?.id()?.let {
+                                    val storedCard = StoredCard.builder()
+                                            .expiration(paymentSource.expirationDate())
+                                            .id(it)
+                                            .lastFourDigits(paymentSource.lastFour())
+                                            .type(paymentSource.type())
+                                            .build()
+                                    ps.onNext(storedCard)
+                                    ps.onCompleted()
+                                }
                             }
                         }
                     })

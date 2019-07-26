@@ -19,9 +19,17 @@ mutation DeletePaymentSource($paymentSourceId: String!)  {
   }
 }
 
-mutation SavePaymentMethod($paymentType: PaymentTypes!, $stripeToken: String!, $stripeCardId: String!) {
-  createPaymentSource(input: {paymentType: $paymentType, stripeToken: $stripeToken, stripeCardId: $stripeCardId}) {
-      errorMessage
-      isSuccessful
+mutation SavePaymentMethod($paymentType: PaymentTypes!, $stripeToken: String!, $stripeCardId: String!, $reusable: Boolean) {
+  createPaymentSource(input: {paymentType: $paymentType, stripeToken: $stripeToken, stripeCardId: $stripeCardId, reusable: $reusable}) {
+    errorMessage
+    isSuccessful
+    paymentSource {
+      id
+      expirationDate
+      lastFour
+      state
+      paymentType
+      type
+    }
   }
 }

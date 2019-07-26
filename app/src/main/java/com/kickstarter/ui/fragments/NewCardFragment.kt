@@ -12,15 +12,19 @@ import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.viewmodels.NewCardFragmentViewModel
 import com.stripe.android.view.CardInputListener
+import kotlinx.android.synthetic.main.form_new_card.*
 import kotlinx.android.synthetic.main.fragment_new_card.*
+import kotlinx.android.synthetic.main.modal_fragment_new_card.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(NewCardFragmentViewModel.ViewModel::class)
 class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     interface OnCardSavedListener {
-        fun cardSaved()
+        fun cardSaved(storedCard: StoredCard)
     }
 
     private var saveEnabled = false
@@ -28,7 +32,8 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_new_card, container, false)
+        val layout = if (modal()) R.layout.modal_fragment_new_card else R.layout.fragment_new_card
+        return inflater.inflate(layout, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -36,10 +41,14 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
         setHasOptionsMenu(true)
 
+        when {
+            modal() -> new_card_app_bar_layout.stateListAnimator = null
+        }
+
         this.viewModel.outputs.allowedCardWarningIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(allowed_card_warning, !it) }
+                .subscribe { ViewUtils.setInvisible(allowed_card_warning, !it) }
 
         this.viewModel.outputs.cardWidgetFocusDrawable()
                 .compose(bindToLifecycle())
@@ -49,7 +58,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter { this.activity != null }
+                .filter { this.activity != null && isVisible }
                 .subscribe {
                     ViewUtils.setGone(progress_bar, !it)
                     updateMenu(!it)
@@ -63,16 +72,20 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.onCardSavedListener?.cardSaved() }
+                .subscribe { this.onCardSavedListener?.cardSaved(it) }
 
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(new_card_toolbar, it) }
+                .subscribe {
+                    val snackbarAnchor = if (modal()) modal_new_card_snackbar_anchor else new_card_root
+                    showSnackbar(snackbarAnchor, it)
+                }
 
         cardholder_name.onChange { this.viewModel.inputs.name(it) }
         postal_code.onChange { this.viewModel.inputs.postalCode(it) }
         addListeners()
+        cardholder_name.requestFocus()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -137,6 +150,10 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.inputs.card(card_input_widget.card)
     }
 
+    private fun modal(): Boolean {
+        return arguments?.getBoolean(ArgumentsKey.NEW_CARD_MODAL) ?: false
+    }
+
     private fun updateMenu(saveEnabled: Boolean) {
         this.saveEnabled = saveEnabled
         activity?.invalidateOptionsMenu()
@@ -170,8 +187,12 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
     companion object {
 
-        fun newInstance(): NewCardFragment {
-            return NewCardFragment()
+        fun newInstance(modal: Boolean = false): NewCardFragment {
+            val fragment = NewCardFragment()
+            val argument = Bundle()
+            argument.putBoolean(ArgumentsKey.NEW_CARD_MODAL, modal)
+            fragment.arguments = argument
+            return fragment
         }
     }
 }

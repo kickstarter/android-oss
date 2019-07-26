@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/fragment_new_card">
 
   <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/new_card_app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -83,6 +84,7 @@
               android:layout_height="wrap_content"
               android:layout_marginEnd="@dimen/grid_3"
               android:layout_marginStart="@dimen/grid_3"
+              android:visibility="invisible"
               android:contentDescription="@null"
               android:src="@drawable/divider_dark_grey_500_horizontal" />
 
@@ -95,6 +97,7 @@
               android:id="@+id/postal_code"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:hint="@string/Zip_postal_code"
               android:inputType="textPostalAddress"
               android:maxLines="1" />
 
@@ -107,8 +110,9 @@
           style="@style/Warning"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_15"
           android:text="@string/Unsupported_card_type"
-          android:visibility="gone"
+          android:visibility="invisible"
           tools:visibility="visible" />
 
       </LinearLayout>

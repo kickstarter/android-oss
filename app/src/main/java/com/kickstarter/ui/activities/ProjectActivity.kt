@@ -5,10 +5,13 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Pair
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
@@ -26,14 +29,17 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.fragments.CancelPledgeFragment
 import com.kickstarter.ui.fragments.NewCardFragment
+import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
+import com.stripe.android.view.StripeEditText
 import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.project_layout.*
 import rx.android.schedulers.AndroidSchedulers
@@ -272,8 +278,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
     }
 
-    override fun cardSaved() {
-
+    override fun cardSaved(storedCard: StoredCard) {
+        val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
+        pledgeFragment?.cardAdded(storedCard)
+        supportFragmentManager.popBackStack()
     }
 
     override fun exitTransition(): Pair<Int, Int>? {
@@ -283,6 +291,23 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     override fun onDestroy() {
         super.onDestroy()
         this.projectRecyclerView.adapter = null
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            var view = currentFocus
+            if (view is EditText) {
+                val outRect = Rect()
+                if (view is StripeEditText) {
+                    view = view.parent as View
+                }
+                view.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    hideKeyboard()
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     private fun animateRewards(expand: Boolean) {

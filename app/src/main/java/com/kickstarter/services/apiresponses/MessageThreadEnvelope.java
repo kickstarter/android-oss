@@ -16,7 +16,7 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class MessageThreadEnvelope implements Parcelable {
   public abstract @Nullable List<Message> messages();
-  public abstract MessageThread messageThread();
+  public abstract @Nullable MessageThread messageThread();
   public abstract List<User> participants();
 
   @AutoParcel.Builder

@@ -196,7 +196,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void getTestEstimatedDeliverySectionIsGone_deliveryNotNull() {
+  public void testEstimatedDeliverySectionIsGone_deliveryNotNull() {
     final Reward reward = RewardFactory.reward().toBuilder()
       .estimatedDeliveryOn(DateTime.now())
       .build();
@@ -305,7 +305,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testReceivedSectionIsGone() {
+  public void testReceivedSectionIsGone_currentUser() {
     setUpEnvironmentAndIntent(BackingFactory.backing(Backing.STATUS_CANCELED));
 
     this.receivedSectionIsGone.assertValuesAndClear(true);

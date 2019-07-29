@@ -2,14 +2,11 @@ package com.kickstarter.ui.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
-import com.kickstarter.libs.utils.AnimationUtils;
-import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.HelpViewModel;
 
@@ -17,13 +14,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresActivityViewModel(HelpViewModel.class)
-public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebViewClient.Delegate {
+public class HelpActivity extends BaseActivity<HelpViewModel>{
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
@@ -40,7 +36,6 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   private @HelpType int helpType;
 
   protected @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
-  protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
 
   private @WebEndpoint String webEndpoint;
 
@@ -75,7 +70,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
 
     final String url = getUrlForHelpType(this.helpType);
     this.kickstarterWebView.loadUrl(url);
-    this.kickstarterWebView.client().setDelegate(this);
+    //this.kickstarterWebView.client().setDelegate(this);
   }
 
   protected String getUrlForHelpType(final @HelpType int helpType) {
@@ -96,20 +91,4 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     }
     return builder.toString();
   }
-
-  @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
-
-  @Override
-  public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
-  }
-
-  @Override
-  public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
-  }
-
-  @Override
-  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 }

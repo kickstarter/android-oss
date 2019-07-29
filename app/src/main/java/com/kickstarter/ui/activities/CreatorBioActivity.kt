@@ -9,24 +9,22 @@ import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.AnimationUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
-import com.kickstarter.services.KSWebViewClient
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.viewmodels.CreatorBioViewModel
 import kotlinx.android.synthetic.main.activity_creator_bio.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(CreatorBioViewModel.ViewModel::class)
-class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>(), KSWebViewClient.Delegate {
+class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>(){
 
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creator_bio)
 
-        web_view.client().setDelegate(this)
+//        web_view.client().setDelegate(this)
 
         this.viewModel.outputs.messageIconIsGone()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -53,18 +51,6 @@ class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>(), KSWebV
         }
     }
 
-    override fun webViewExternalLinkActivated(@NonNull webViewClient: KSWebViewClient, @NonNull url: String) {}
-
-    override fun webViewOnPageStarted(@NonNull webViewClient: KSWebViewClient, @Nullable url: String?) {
-        loading_indicator_view.startAnimation(AnimationUtils.appearAnimation())
-    }
-
-    override fun webViewOnPageFinished(@NonNull webViewClient: KSWebViewClient, @Nullable url: String?) {
-        loading_indicator_view.startAnimation(AnimationUtils.disappearAnimation())
-    }
-
-    override fun webViewPageIntercepted(@NonNull webViewClient: KSWebViewClient, @Nullable url: String) {}
-
     @NonNull
     override fun exitTransition(): Pair<Int, Int>? {
         return slideInFromLeft()
@@ -81,5 +67,4 @@ class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>(), KSWebV
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.BACKING, project.backing()))
     }
-
 }

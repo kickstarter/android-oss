@@ -34,12 +34,10 @@ import com.kickstarter.libs.models.AndroidPayAuthorizedPayload;
 import com.kickstarter.libs.models.AndroidPayPayload;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AndroidPayUtils;
-import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KSUri;
-import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.LoginReason;
@@ -66,12 +64,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(CheckoutViewModel.ViewModel.class)
-public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewModel> implements KSWebViewClient.Delegate {
+public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewModel> {
   private @Nullable Project project;
 
   protected @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   protected @Bind(R.id.web_view) KSWebView webView;
-  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.confirmation_group) View confirmationGroup;
   protected @Bind(R.id.pledge_disclaimer) TextView pledgeDisclaimerTextView;
   protected @Bind(R.id.terms_and_privacy) TextView termsAndPrivacyTextView;
@@ -120,7 +117,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
     this.ksString = environment().ksString();
     this.gson = environment().gson();
 
-    this.webView.client().setDelegate(this);
+    //this.webView.client().setDelegate(this);
 
     this.webView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
@@ -418,24 +415,6 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
     );
 
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
-
-  @Override
-  public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
-  }
-
-  @Override
-  public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
-  }
-
-  @Override
-  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
-    this.viewModel.inputs.pageIntercepted(url);
   }
 
   @Override

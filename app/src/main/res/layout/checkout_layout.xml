@@ -158,12 +158,4 @@
     android:visibility="gone"
     android:layout_width="0dp"
     android:layout_height="0dp" />
-
-  <include
-    android:id="@+id/checkout_loading_indicator"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/checkout_toolbar"
-    layout="@layout/loading_overlay" />
-
 </RelativeLayout>

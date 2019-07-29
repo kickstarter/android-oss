@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:animateLayoutChanges="true"
+  app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+  <WebView
+    android:id="@+id/internal_web_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <include
+    android:id="@+id/progress"
+    layout="@layout/loading_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <FrameLayout
+    android:id="@+id/error"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ksr_red_400"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <Button
+      android:id="@+id/retry"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:text="Retry" />
+  </FrameLayout>
+
+
+</FrameLayout>

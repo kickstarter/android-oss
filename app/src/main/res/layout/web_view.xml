@@ -4,8 +4,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
   android:animateLayoutChanges="true"
+  android:orientation="vertical"
   app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
   <WebView
@@ -14,26 +14,35 @@
     android:layout_height="match_parent" />
 
   <include
-    android:id="@+id/progress"
+    android:id="@+id/web_view_progress"
     layout="@layout/loading_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
-  <FrameLayout
-    android:id="@+id/error"
+  <LinearLayout
+    android:id="@+id/web_view_error"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ksr_red_400"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/activity_vertical_margin"
+    android:paddingStart="@dimen/activity_vertical_margin"
     android:visibility="gone"
     tools:visibility="visible">
 
-    <Button
-      android:id="@+id/retry"
+    <ImageView
+      android:background="@drawable/circle_black_alpha"
+      android:padding="@dimen/grid_3"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:text="Retry" />
-  </FrameLayout>
+      android:contentDescription="@null"
+      android:src="@drawable/ic_retry" />
 
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+  </LinearLayout>
 
 </FrameLayout>

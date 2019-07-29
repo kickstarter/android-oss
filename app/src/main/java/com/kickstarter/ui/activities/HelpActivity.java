@@ -19,7 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresActivityViewModel(HelpViewModel.class)
-public class HelpActivity extends BaseActivity<HelpViewModel>{
+public class HelpActivity extends BaseActivity<HelpViewModel> {
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
@@ -70,7 +70,6 @@ public class HelpActivity extends BaseActivity<HelpViewModel>{
 
     final String url = getUrlForHelpType(this.helpType);
     this.kickstarterWebView.loadUrl(url);
-    //this.kickstarterWebView.client().setDelegate(this);
   }
 
   protected String getUrlForHelpType(final @HelpType int helpType) {

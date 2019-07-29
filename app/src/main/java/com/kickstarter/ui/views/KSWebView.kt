@@ -1,7 +1,6 @@
 package com.kickstarter.ui.views
 
 import android.content.Context
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +12,7 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.WebViewJavascriptInterface
 import com.kickstarter.services.KSWebViewClient
+import com.kickstarter.services.RequestHandler
 import kotlinx.android.synthetic.main.web_view.view.*
 import javax.inject.Inject
 
@@ -21,6 +21,16 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     @Inject
     lateinit var client: KSWebViewClient
+
+    private var delegate: Delegate? = null
+
+    interface Delegate {
+        fun externalLinkActivated(url: String)
+        fun onPageStarted(url: String?)
+        fun onPageFinished(url: String?)
+        fun pageIntercepted(url: String)
+        fun onReceivedError(url: String)
+    }
 
     var url: String? = ""
 
@@ -40,7 +50,6 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
         LayoutInflater.from(context).inflate(R.layout.web_view, this, true)
 
         if (!isInEditMode) {
-
             (context.applicationContext as KSApplication).component().inject(this)
             internal_web_view.webViewClient = this.client
             internal_web_view.webChromeClient = WebChromeClient()
@@ -52,59 +61,61 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
             internal_web_view.addJavascriptInterface(WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface")
 
-            retry.setOnClickListener {
+            web_view_error.setOnClickListener {
                 internal_web_view.goBack()
-                error.visibility = View.GONE
+                web_view_error.visibility = View.GONE
             }
         }
 
-
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
-        return super.onSaveInstanceState()
+    override fun externalLinkActivated(url: String) {
+        this.delegate?.externalLinkActivated(url)
     }
 
-    override fun error(webViewClient: KSWebViewClient, url: String?) {
-        this.url = internal_web_view.url
-        progress.visibility = View.VISIBLE
-        error.visibility = View.VISIBLE
+    override fun onPageFinished(url: String?) {
+        this.delegate?.onPageFinished(url)
+        web_view_progress.visibility = View.GONE
+    }
+
+    override fun onPageStarted(url: String?) {
+        this.delegate?.onPageStarted(url)
+        web_view_progress.visibility = View.VISIBLE
+    }
+
+    override fun pageIntercepted(url: String) {
+        this.delegate?.pageIntercepted(url)
+    }
+
+    override fun onReceivedError(url: String) {
+        this.delegate?.onReceivedError(url)
+        web_view_progress.visibility = View.VISIBLE
+        web_view_error.visibility = View.VISIBLE
         internal_web_view.stopLoading()
         internal_web_view.loadUrl("about:blank")
-    }
-
-    override fun webViewOnPageStarted(webViewClient: KSWebViewClient, url: String?) {
-        progress.visibility = View.VISIBLE
-    }
-
-    override fun webViewOnPageFinished(webViewClient: KSWebViewClient, url: String?) {
-        progress.visibility = View.GONE
-    }
-
-    override fun webViewPageIntercepted(webViewClient: KSWebViewClient, url: String) {
-    }
-
-    override fun webViewExternalLinkActivated(webViewClient: KSWebViewClient, url: String) {
-    }
-
-
-    fun loadUrl(url:String) {
-        internal_web_view.loadUrl(url)
-    }
-
-    fun client(): KSWebViewClient {
-        return this.client
-    }
-
-    fun evaluateJavascript(javascript: String, resultCallback: ValueCallback<String>) {
-        internal_web_view.evaluateJavascript(javascript, resultCallback)
     }
 
     fun canGoBack(): Boolean {
         return internal_web_view.canGoBack()
     }
 
+    fun evaluateJavascript(javascript: String, resultCallback: ValueCallback<String>) {
+        internal_web_view.evaluateJavascript(javascript, resultCallback)
+    }
+
     fun goBack() {
         internal_web_view.goBack()
+    }
+
+    fun loadUrl(url:String) {
+        internal_web_view.loadUrl(url)
+    }
+
+    fun registerRequestHandlers(requestHandlers: List<RequestHandler>) {
+        this.client.registerRequestHandlers(requestHandlers)
+    }
+
+    fun setDelegate(delegate: Delegate?) {
+        this.delegate = delegate
     }
 }

@@ -38,8 +38,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
     setContentView(R.layout.survey_response_layout);
     ButterKnife.bind(this);
 
-    //this.ksWebView.client().setDelegate(this);
-    this.ksWebView.client().registerRequestHandlers(
+    this.ksWebView.registerRequestHandlers(
       Arrays.asList(
         new RequestHandler(KSUri::isProjectSurveyUri, this::handleProjectSurveyUriRequest),
         new RequestHandler(KSUri::isProjectUri, this::handleProjectUriRequest)

@@ -44,8 +44,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
 
     this.webViewToolbar.setTitle(this.updatesTitleString);
 
-    //this.ksWebView.client().setDelegate(this);
-    this.ksWebView.client().registerRequestHandlers(
+    this.ksWebView.registerRequestHandlers(
       Arrays.asList(
         new RequestHandler(KSUri::isProjectUpdatesUri, this::handleProjectUpdatesUriRequest),
         new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),

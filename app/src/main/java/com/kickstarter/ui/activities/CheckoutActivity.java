@@ -117,9 +117,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
     this.ksString = environment().ksString();
     this.gson = environment().gson();
 
-    //this.webView.client().setDelegate(this);
-
-    this.webView.client().registerRequestHandlers(Arrays.asList(
+    this.webView.registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
       new RequestHandler(KSUri::isNewGuestCheckoutUri, this::handleSignupUriRequest),
       new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)

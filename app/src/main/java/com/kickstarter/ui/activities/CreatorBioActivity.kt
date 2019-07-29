@@ -24,8 +24,6 @@ class CreatorBioActivity : BaseActivity<CreatorBioViewModel.ViewModel>(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creator_bio)
 
-//        web_view.client().setDelegate(this)
-
         this.viewModel.outputs.messageIconIsGone()
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())

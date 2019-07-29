@@ -51,8 +51,7 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> {
 
     this.ksString = environment().ksString();
 
-    //this.ksWebView.client().setDelegate(this);
-    this.ksWebView.client().registerRequestHandlers(
+    this.ksWebView.registerRequestHandlers(
       Arrays.asList(
         new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest),
         new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),

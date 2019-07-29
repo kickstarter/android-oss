@@ -342,7 +342,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testHideRewardsFragment() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        this.vm.inputs.hideRewardsFragmentClicked()
+        this.vm.inputs.hideRewardsSheetClicked()
         this.showRewardsFragment.assertValue(false)
     }
 

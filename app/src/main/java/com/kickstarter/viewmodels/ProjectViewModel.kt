@@ -46,8 +46,8 @@ interface ProjectViewModel {
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
 
-        /** Call when horizontal rewards fragment should hide. */
-        fun hideRewardsFragmentClicked()
+        /** Call when horizontal rewards sheet should hide. */
+        fun hideRewardsSheetClicked()
 
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
@@ -158,7 +158,7 @@ interface ProjectViewModel {
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
-        private val hideRewardsFragment = PublishSubject.create<Void>()
+        private val hideRewardsSheet = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
@@ -306,7 +306,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
-            Observable.merge(this.hideRewardsFragment, this.pledgeSuccessfullyCancelled)
+            Observable.merge(this.hideRewardsSheet, this.pledgeSuccessfullyCancelled)
                     .map { false }
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
@@ -437,8 +437,8 @@ interface ProjectViewModel {
             this.heartButtonClicked.onNext(null)
         }
 
-        override fun hideRewardsFragmentClicked() {
-            this.hideRewardsFragment.onNext(null)
+        override fun hideRewardsSheetClicked() {
+            this.hideRewardsSheet.onNext(null)
         }
 
         override fun managePledgeButtonClicked() {

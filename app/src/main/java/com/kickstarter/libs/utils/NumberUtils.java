@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -97,6 +98,41 @@ public final class NumberUtils {
     }
 
     return String.format("%s%s", numberFormat.format(bucketedValue), suffix).trim();
+  }
+
+  /**
+   * Returns a boolean that determines if a Double is a whole number.
+   *
+   * @param value a Double to be verified if it is a whole number.
+   */
+  private static Boolean isWholeNumber(final @NonNull Double value) {
+    return value == Math.round(value);
+  }
+
+  public static double parse(final @NonNull String input) {
+    return parse(input, Locale.getDefault());
+  }
+
+  public static double parse(final @NonNull String input, final @NonNull Locale locale) {
+    try {
+      return NumberFormat.getNumberInstance(locale).parse(input).doubleValue();
+    } catch (ParseException e) {
+      return 0.0;
+    }
+  }
+
+  /**
+   * Returns a precision based on the RoundingMode.
+   *
+   * @param amount When this is a whole number, we return 0, otherwise we return 2.
+   * @param roundingMode When this is not HALF_UP, we return 0, otherwise we return 2.
+   */
+  public static int precision(final @NonNull Double amount, final @NonNull RoundingMode roundingMode) {
+    if (roundingMode != RoundingMode.HALF_UP || isWholeNumber(amount)) {
+      return 0;
+    } else {
+      return 2;
+    }
   }
 
   /**

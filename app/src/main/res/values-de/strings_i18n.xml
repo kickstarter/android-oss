@@ -60,7 +60,7 @@ Unterstützer</string>
   <string name="Biography" formatted="false">Biografie</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Kreative Projekte werden Wirklichkeit!</string>
-  <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
+  <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Bei Leistung eines Finanzierungsbeitrags erkennst du Kickstarters &lt;a href="%{terms_of_use_link}">Nutzungsbedingungen&lt;/a>, &lt;a href="%{privacy_policy_link}">Datenschutzrichtlinien&lt;/a> und &lt;a href="%{cookie_policy_link}">Cookie-Richtlinien&lt;/a> an.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_pledge" formatted="false">Beitrag zurückziehen</string>
@@ -145,6 +145,7 @@ Unterstützer</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">E-Mail-Adresse muss gültig sein.</string>
   <string name="Email_notifications" formatted="false">Benachrichtigung per E-Mail</string>
   <string name="Email_unverified" formatted="false">Diese E-Mail-Adresse wurde noch nicht verifiziert.</string>
+  <string name="Ending_in_last_four" formatted="false">Endet auf %{last_four}</string>
   <string name="Ending_soon" formatted="false">Endet bald</string>
   <string name="Estimated_delivery" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Estimated_delivery_of" formatted="false">Voraussichtliches Lieferdatum</string>
@@ -244,7 +245,7 @@ Unterstützer</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (bei Finanzierung)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter ist kein Geschäft.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen.</string>
-  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
+  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen..&lt;/br>&lt;a href="%{trust_link}">HIer findest du mehr Info zur Rechenschaftspflicht&lt;/a></string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.</string>
   <string name="Learn_more_about_accountability" formatted="false">Weitere Informationen zur Rechenschaftspflicht</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} übrig</string>
@@ -346,6 +347,8 @@ Unterstützer</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Beitrag geleistet&lt;/b> am %{pledge_date}</string>
   <string name="Popular" formatted="false">Beliebt</string>
   <string name="Popular_Projects" formatted="false">Beliebte Projekte</string>
+  <string name="Postal_code" formatted="false">Postleitzahl</string>
+  <string name="Postcode" formatted="false">Postleitzahl</string>
   <string name="Preparing_your_personal_data" formatted="false">Persönlichen Daten werden vorbereitet ...</string>
   <string name="Privacy" formatted="false">Datenschutz</string>
   <string name="Private_profile" formatted="false">Privates Profil</string>
@@ -421,10 +424,10 @@ Unterstützer</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
   <string name="Select" formatted="false">Auswählen</string>
   <string name="Select_another_project" formatted="false">Wähle ein anderes Projekt aus</string>
-  <string name="Select_this_instead" formatted="false">Select this instead</string>
+  <string name="Select_this_instead" formatted="false">Stattdessen diese auswählen</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
-  <string name="Selected" formatted="false">Selected</string>
+  <string name="Selected" formatted="false">Ausgewählt</string>
   <string name="Send" formatted="false">Senden</string>
   <string name="Send_verfication_email" formatted="false">Verifizeirungs-E-Mail senden</string>
   <string name="Share" formatted="false">Teilen</string>
@@ -459,7 +462,7 @@ Unterstützer</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Klicke einfach auf das Herz auf der Projektseite, um dieses Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.</string>
   <string name="Tap_the_star_on_a_project_to_get_notified" formatted="false">Tippe auf den Stern neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Klicke einfach auf den Stern auf der Projektseite, um ein Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.</string>
-  <string name="Tell_us_why_optional" formatted="false">Tell us why (optional)</string>
+  <string name="Tell_us_why_optional" formatted="false">Möchtest du uns den Grund verraten? (Optional)</string>
   <string name="Ten_is_just_the_beginning" formatted="false">Zehn Jahre - das ist nur der Anfang.</string>
   <string name="Thank_you_exclamation" formatted="false">Vielen Dank!</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Vielen Dank für deine Unterstützung dieses Projekts.</string>
@@ -510,13 +513,13 @@ Unterstützer</string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">Dein Finanzierungsbeitrag konnte nicht bearbeitet werden.</string>
-  <string name="We_think_youll_like_these_too" formatted="false">We think you’ll like these, too</string>
+  <string name="We_think_youll_like_these_too" formatted="false">Wir denken, diese Projekte könnten dir auch gefallen</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle "Empfehlungen" einfach ab.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">Wir konnten keine E-Mails an diese Adresse senden. Bitte prüfe, ob sie richtig eingegeben wurde.</string>
   <string name="We_were_unable_to_connect_to_the_live_stream_chat" formatted="false">Es konnte leider keine Verbindung zum Chat des Live-Streams hergestellt werden.</string>
   <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Das Laden der Versandadressen war leider nicht möglich.\n
 Bitte versuche es später noch einmal.</string>
-  <string name="We_wont_share_this_with_the_creator" formatted="false">We won’t share this with the creator.</string>
+  <string name="We_wont_share_this_with_the_creator" formatted="false">Diese Information wird nicht mit dem Projektgründer geteilt.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Sobald du dein Passwort geändert hast, wirst du aufgefordert, dich erneut auf der Kickstarter App anzumelden.</string>
@@ -524,13 +527,14 @@ Bitte versuche es später noch einmal.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
   <string name="Write_a_bio" formatted="false">Schreibe eine kurze Biografie, ein oder zwei Sätze genügen.</string>
-  <string name="Yes_cancel_my_pledge" formatted="false">Yes, cancel my pledge</string>
+  <string name="Yes_cancel_my_pledge" formatted="false">Ja, ich möchte meinen Beitrag zurückziehen</string>
   <string name="Yes_change_currency" formatted="false">Ja, Währung ändern</string>
   <string name="Yes_remove" formatted="false">Ja, entfernen</string>
   <string name="Yes_turn_off" formatted="false">Ja, deaktivieren</string>
   <string name="You_Launched" formatted="false">Dein Projekt ist live!</string>
   <string name="You_backed_this_project" formatted="false">Du hast dieses Projekt unterstützt.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Dank deiner Unterstützung ist &lt;b>%{project_name}&lt;/b> seiner Verwirklichung einen Schritt näher. Sag es weiter!</string>
+  <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Du hast dieses Projekt gespeichert.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.</string>
@@ -549,13 +553,13 @@ Bitte versuche es später noch einmal.</string>
   <string name="Your_shipping_location" formatted="false">Dein Versand-Standort</string>
   <string name="Youre_a_backer" formatted="false">Du unterstützt das Projekt!</string>
   <string name="Youre_about_to_create_a_new_Kickstarter_account" formatted="false">Du wirst hiermit ein neues Kickstarter-Konto mit deiner Facebook-E-Mail-Adresse anlegen. Bitte bestätige diesen Vorgang.</string>
-  <string name="Youre_all_set" formatted="false">You’re all set</string>
+  <string name="Youre_all_set" formatted="false">Alles klar</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Du bist via Facebook (%{email}) verbunden. Erstelle ein Passwort für dieses Konto, um deine Anmeldedaten für Kickstarter zu ändern.</string>
   <string name="Youre_offline" formatted="false">Du bist Offline. Sobald du wieder Online bist, navigiere in der App, um sie zu aktualisieren.</string>
-  <string name="Youve_canceled_your_pledge" formatted="false">You\'ve canceled your pledge.</string>
+  <string name="Youve_canceled_your_pledge" formatted="false">Dein Finanzierungsbeitrag wurde abgebrochen.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Du hast einen Finazierungsbeitrag zu diesem Projekt geleistet. Die Frist für die Finanzierung ist noch nicht abgelaufen.</string>
-  <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">You’ve successfully updated your pledge to %{amount} for %{project_name}. If the project reaches its funding goal, your card will be charged on %{project_deadline}. Check your email for details.</string>
-  <string name="Zip_postal_code" formatted="false">Postleitzahl</string>
+  <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">Dein Finanzierungsbeitrag für or %{project_name} wurde erfolgreich auf %{amount} geändert. Wenn das Projekt sein Finanzierungsziel erreicht, wird deine Karte am %{project_deadline} belastet. Wir haben dir eine E-Mail mit genaueren Angaben gesendet.</string>
+  <string name="Zip_code" formatted="false">Postleitzahl</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Aktivität</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Öffnet Sparte Aktivität.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Nachrichten</string>

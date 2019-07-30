@@ -8,7 +8,7 @@
 
   <include layout="@layout/backing_toolbar" />
 
-  <ScrollView
+  <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -156,7 +156,9 @@
             <androidx.recyclerview.widget.RecyclerView
               android:id="@+id/backing_rewards_item_recycler_view"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content" />
+              android:layout_height="wrap_content"
+              android:nestedScrollingEnabled="false"
+              android:overScrollMode="never" />
 
           </LinearLayout>
 
@@ -255,6 +257,6 @@
 
     </LinearLayout>
 
-  </ScrollView>
+  </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

@@ -501,6 +501,26 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testStartBackingActivity_AsBacker_EmptyThread() {
+    final User user = UserFactory.user();
+    final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForBacking(final @NonNull Backing backing) {
+        return Observable.just(MessageThreadEnvelopeFactory.empty());
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(user)).build());
+
+    this.vm.intent(creatorBioModalContextIntent(BackingFactory.backing(), project));
+    this.vm.inputs.viewPledgeButtonClicked();
+
+    this.startBackingActivity.assertValues(Pair.create(project, user));
+  }
+
+  @Test
   public void testStartBackingActivity_AsCreator() {
     final User backer = UserFactory.user().toBuilder().name("Vanessa").build();
     final User creator = UserFactory.user().toBuilder().name("Jessica").build();
@@ -618,12 +638,21 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testViewPledgeButton_IsGone() {
+  public void testViewPledgeButton_IsGone_backerModal() {
     setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
     this.vm.intent(backerModalContextIntent(BackingFactory.backing(), ProjectFactory.project()));
 
     // View pledge button is hidden when context is from the backer modal.
     this.viewPledgeButtonIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testViewPledgeButton_IsVisible_creatorBioModal() {
+    setUpEnvironment(environment().toBuilder().currentUser(new MockCurrentUser(UserFactory.user())).build());
+    this.vm.intent(creatorBioModalContextIntent(BackingFactory.backing(), ProjectFactory.project()));
+
+    // View pledge button is shown when context is from the creator bio modal.
+    this.viewPledgeButtonIsGone.assertValues(false);
   }
 
   @Test
@@ -640,6 +669,13 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       .putExtra(IntentKey.BACKING, backing)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.BACKER_MODAL);
+  }
+
+  private static @NonNull Intent creatorBioModalContextIntent(final @NonNull Backing backing, final @NonNull Project project) {
+    return new Intent()
+      .putExtra(IntentKey.BACKING, backing)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.CREATOR_BIO_MODAL);
   }
 
   private static @NonNull Intent messagesContextIntent(final @NonNull MessageThread messageThread) {

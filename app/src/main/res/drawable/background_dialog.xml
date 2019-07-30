@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+  android:insetLeft="@dimen/grid_7"
+  android:insetTop="@dimen/grid_7"
+  android:insetRight="@dimen/grid_7"
+  android:insetBottom="@dimen/grid_7">
+
+  <shape android:shape="rectangle">
+    <corners android:radius="@dimen/grid_1" />
+    <solid android:color="?attr/colorSurface" />
+  </shape>
+
+</inset>

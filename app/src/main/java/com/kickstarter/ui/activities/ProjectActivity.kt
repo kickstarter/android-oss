@@ -90,7 +90,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 }
 
                 rewards_toolbar.setNavigationOnClickListener {
-                    hideKeyboard()
                     this.viewModel.inputs.hideRewardsFragmentClicked()
                 }
 
@@ -272,6 +271,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         } else {
             super.back()
         }
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            val view = currentFocus
+            if (view is EditText) {
+                val outRect = Rect()
+                view.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    hideKeyboard()
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     override fun pledgeSuccessfullyCancelled() {

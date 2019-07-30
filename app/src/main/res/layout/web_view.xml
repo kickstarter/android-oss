@@ -37,9 +37,12 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:contentDescription="@null"
+      android:layout_marginBottom="@dimen/grid_3"
       android:src="@drawable/ic_retry" />
 
     <TextView
+      android:text="@string/Content_isnt_loading_right_now_Please_tap_to_retry"
+      android:gravity="center"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 

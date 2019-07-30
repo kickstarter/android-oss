@@ -58,7 +58,7 @@
   <string name="Biography" formatted="false">自己紹介</string>
   <string name="Bookmarks" formatted="false">ブックマーク</string>
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
-  <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
+  <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">プレッジをすることにより、Kickstarter の &lt;a href="%{terms_of_use_link}">利用規約&lt;/a>、&lt;a href="%{privacy_policy_link}">プライバシーポリシー&lt;/a>、&lt;a href="%{cookie_policy_link}">Cookie ポリシー&lt;/a>に同意したとみなされます。</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_pledge" formatted="false">プレッジを取り消す</string>
@@ -86,6 +86,8 @@
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
+  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\n
+ Please tap to retry.</string>
   <string name="Continue" formatted="false">続行する</string>
   <string name="Continue_to_payment" formatted="false">支払いを続ける</string>
   <string name="Continue_to_update_pledge" formatted="false">プレッジをアップデート</string>
@@ -143,6 +145,7 @@
   <string name="Email_must_be_a_valid_email_address" formatted="false">有効なメールアドレスを入力してください。</string>
   <string name="Email_notifications" formatted="false">メール通知設定</string>
   <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
+  <string name="Ending_in_last_four" formatted="false">下の桁が%{last_four} の番号</string>
   <string name="Ending_soon" formatted="false">終了直前</string>
   <string name="Estimated_delivery" formatted="false">配達予定日：</string>
   <string name="Estimated_delivery_of" formatted="false">配送予定日</string>
@@ -179,6 +182,7 @@
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="First_created" formatted="false">1つめのプロジェクト</string>
   <string name="Fix" formatted="false">修正する</string>
+  <string name="Fix_your_payment_method" formatted="false">Fix your payment method</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} をフォロー</string>
   <string name="Follow_friends" formatted="false">友達をフォロー</string>
   <string name="Follow_more_friends" formatted="false">もっと友達をフォローする</string>
@@ -242,7 +246,7 @@
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (達成した時)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarterはオンラインストアではありません。</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。</string>
-  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter is not a store. It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
+  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter は普通のお店とは全く違います。クリエイティブなプロジェクトに生命を吹き込む場です。&lt;br/>&lt;a href="%{trust_link}">アカウンタビリティについて詳しくみる。&lt;/a></string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">クリエイターやバッカ―からメッセージが届いた場合にすぐ分かるように、通知機能を有効にしましょう。</string>
   <string name="Learn_more_about_accountability" formatted="false">報告義務に関してさらに詳しく</string>
   <string name="Left_count_left_few" formatted="false">残り%{left_count}</string>
@@ -344,6 +348,8 @@
   <string name="Pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="Popular" formatted="false">人気</string>
   <string name="Popular_Projects" formatted="false">人気のプロジェクト</string>
+  <string name="Postal_code" formatted="false">郵便番号</string>
+  <string name="Postcode" formatted="false">郵便番号</string>
   <string name="Preparing_your_personal_data" formatted="false">あなたの個人データを準備中…</string>
   <string name="Privacy" formatted="false">プライバシー</string>
   <string name="Private_profile" formatted="false">プライベート設定のプロフィール</string>
@@ -530,6 +536,7 @@
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
+  <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
@@ -554,7 +561,7 @@
   <string name="Youve_canceled_your_pledge" formatted="false">プレッジをキャンセルしました。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
   <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">%{project_name} へのプレッジを %{amount} に更新しました。プロジェクトがファンディングゴールに達成した場合には、%{project_deadline} 付けでご登録いただいたクレジットカードに請求されます。</string>
-  <string name="Zip_postal_code" formatted="false">郵便番号</string>
+  <string name="Zip_code" formatted="false">郵便番号</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">アクティビティ</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">アクティビティをみる</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">メッセージ</string>

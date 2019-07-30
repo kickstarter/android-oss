@@ -490,7 +490,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             val ksString = (this.applicationContext as KSApplication).component().environment().ksString()
             val message = ksString.format(getString(R.string.You_need_to_pledge_at_least_reward_minimum_for_this_reward),
                     "reward_minimum", rewardMinimum)
-            //ViewUtils.showDialog(this, null, message)
 
             val dialog = AlertDialog.Builder(this, R.style.Dialog)
                     .setMessage(message)

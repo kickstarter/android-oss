@@ -112,7 +112,7 @@ object ProjectViewUtils {
     }
 
     /**
-     * Returns a Pair of SpannableString ans a Boolean where the
+     * Returns a Pair of SpannableString and a Boolean where the
      * SpannableString represents a project's currency symbol that shrinks currency symbol if it's necessary and the
      * Boolean represents whether the symbol should be shown at the end or the start of the currency.
      * Special case: US people looking at US currency just get the currency symbol.

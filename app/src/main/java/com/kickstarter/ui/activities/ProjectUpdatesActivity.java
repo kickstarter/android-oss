@@ -17,6 +17,8 @@ import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
@@ -30,7 +32,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(ProjectUpdatesViewModel.ViewModel.class)
-public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel.ViewModel> {
+public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel.ViewModel> implements KSWebView.Delegate {
   protected @Bind(R.id.web_view) KSWebView ksWebView;
   protected @Bind(R.id.web_view_toolbar) KSToolbar webViewToolbar;
 
@@ -44,6 +46,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
 
     this.webViewToolbar.setTitle(this.updatesTitleString);
 
+    this.ksWebView.setDelegate(this);
     this.ksWebView.registerRequestHandlers(
       Arrays.asList(
         new RequestHandler(KSUri::isProjectUpdatesUri, this::handleProjectUpdatesUriRequest),
@@ -106,5 +109,16 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }
+
+  @Override
+  public void externalLinkActivated(final @NotNull String url) {
+    this.viewModel.inputs.externalLinkActivated();
+  }
+
+  @Override
+  public void pageIntercepted(final @NotNull String url) {}
+
+  @Override
+  public void onReceivedError(final @NotNull String url) {}
 
 }

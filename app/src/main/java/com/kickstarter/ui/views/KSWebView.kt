@@ -26,13 +26,9 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     interface Delegate {
         fun externalLinkActivated(url: String)
-        fun onPageStarted(url: String?)
-        fun onPageFinished(url: String?)
         fun pageIntercepted(url: String)
         fun onReceivedError(url: String)
     }
-
-    var url: String? = ""
 
     constructor(context: Context) : super(context) {
         init(context)
@@ -74,12 +70,10 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
     }
 
     override fun onPageFinished(url: String?) {
-        this.delegate?.onPageFinished(url)
         setVisibilityIfNecessary(web_view_progress, View.GONE)
     }
 
     override fun onPageStarted(url: String?) {
-        this.delegate?.onPageStarted(url)
         web_view_progress.visibility = View.VISIBLE
     }
 

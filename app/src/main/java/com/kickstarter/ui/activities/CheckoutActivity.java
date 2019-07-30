@@ -47,6 +47,8 @@ import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.RoundingMode;
 import java.util.Arrays;
 
@@ -64,7 +66,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(CheckoutViewModel.ViewModel.class)
-public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewModel> {
+public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewModel> implements KSWebView.Delegate {
   private @Nullable Project project;
 
   protected @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
@@ -117,6 +119,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
     this.ksString = environment().ksString();
     this.gson = environment().gson();
 
+    this.webView.setDelegate(this);
     this.webView.registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
       new RequestHandler(KSUri::isNewGuestCheckoutUri, this::handleSignupUriRequest),
@@ -416,7 +419,18 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
   }
 
   @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
+  public void externalLinkActivated(@NotNull String url) {}
+
+  @Override
+  public void pageIntercepted(@NotNull String url) {
+    this.viewModel.inputs.pageIntercepted(url);
+  }
+
+  @Override
+  public void onReceivedError(@NotNull String url) {}
+
+  @Override
+  protected Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }
 }

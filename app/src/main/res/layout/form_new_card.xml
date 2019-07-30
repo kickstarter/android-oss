@@ -84,9 +84,9 @@
               android:layout_height="wrap_content"
               android:layout_marginEnd="@dimen/grid_3"
               android:layout_marginStart="@dimen/grid_3"
-              android:visibility="invisible"
               android:contentDescription="@null"
-              android:src="@drawable/divider_dark_grey_500_horizontal" />
+              android:src="@drawable/divider_dark_grey_500_horizontal"
+              android:visibility="invisible" />
 
           </FrameLayout>
 
@@ -110,7 +110,6 @@
           style="@style/Warning"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_15"
           android:text="@string/Unsupported_card_type"
           android:visibility="invisible"
           tools:visibility="visible" />

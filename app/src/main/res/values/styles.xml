@@ -688,7 +688,7 @@
     <item name="cardTint">@color/ksr_dark_grey_500</item>
     <item name="cardTextErrorColor">@color/ksr_red_400</item>
   </style>
-  
+
   <!-- AutoComplete -->
   <style name="AutocompleteStyle" parent="Widget.AppCompat.Light.AutoCompleteTextView">
     <item name="android:colorControlActivated">@color/ksr_green_500</item>

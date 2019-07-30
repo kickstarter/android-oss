@@ -1,50 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-  style="@style/CardViewFragment"
+<androidx.cardview.widget.CardView style="@style/CardViewFragment"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   app:cardBackgroundColor="@color/ksr_grey_100">
 
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+  <include
+    layout="@layout/form_new_card"
     android:layout_marginBottom="@dimen/grid_5"
-    android:orientation="vertical">
-
-    <include
-      layout="@layout/form_new_card"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-
-    <LinearLayout
-      android:id="@+id/store_card_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/activity_horizontal_margin"
-      android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:gravity="center_vertical"
-      android:orientation="horizontal">
-
-      <TextView
-        style="@style/CalloutPrimary"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        tools:text="Remember this card" />
-
-      <Switch
-        android:id="@+id/remember_card_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/grid_8"
-        android:minWidth="@dimen/grid_8" />
-
-    </LinearLayout>
-  </LinearLayout>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/modal_new_card_snackbar_anchor"

@@ -1,14 +1,15 @@
 package com.kickstarter.viewmodels
 
+import android.os.Bundle
+import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.stripe.android.CardUtils
 import com.stripe.android.TokenCallback
@@ -33,6 +34,9 @@ interface NewCardFragmentViewModel {
         /** Call when the postal code field changes. */
         fun postalCode(postalCode: String)
 
+        /** Call when the reusable switch is toggled. */
+        fun reusable(reusable: Boolean)
+
         /** Call when the user clicks the save icon. */
         fun saveCardClicked()
 
@@ -47,11 +51,17 @@ interface NewCardFragmentViewModel {
         /** Emits when the drawable to be shown when the card widget has focus. */
         fun cardWidgetFocusDrawable(): Observable<Int>
 
-        /** Emits when the password update was unsuccessful. */
+        /** Emits when the password update was unsuccessful and the fragment is not modal. */
         fun error(): Observable<String>
+
+        /** Emits when the password update was unsuccessful and the fragment is modal. */
+        fun modalError(): Observable<String>
 
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
+
+        /** Emits when the reusable switch should be visible. */
+        fun reusableContainerIsVisible(): Observable<Boolean>
 
         /** Emits when the save button should be enabled. */
         fun saveButtonIsEnabled(): Observable<Boolean>
@@ -68,12 +78,15 @@ interface NewCardFragmentViewModel {
         private val cardNumber = PublishSubject.create<String>()
         private val name = PublishSubject.create<String>()
         private val postalCode = PublishSubject.create<String>()
+        private val reusable = PublishSubject.create<Boolean>()
         private val saveCardClicked = PublishSubject.create<Void>()
 
         private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
         private val error = BehaviorSubject.create<String>()
+        private val modalError = BehaviorSubject.create<String>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
+        private val reusableContainerIsVisible = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val success = BehaviorSubject.create<StoredCard>()
 
@@ -84,10 +97,21 @@ interface NewCardFragmentViewModel {
         private val stripe = this.environment.stripe()
 
         init {
+            val modal = arguments()
+                    .map { bundle : Bundle? -> bundle?.getBoolean(ArgumentsKey.NEW_CARD_MODAL)?: false }
+                    .distinctUntilChanged()
+
+            modal
+                    .compose(bindToLifecycle())
+                    .subscribe(this.reusableContainerIsVisible)
+
+            val initialReusable = this.reusable.startWith(modal.map { BooleanUtils.negate(it) })
+
             val cardForm = Observable.combineLatest(this.name,
                     this.card,
                     this.cardNumber,
-                    this.postalCode) { name, card, cardNumber, postalCode -> CardForm(name, card, cardNumber, postalCode) }
+                    this.postalCode,
+                    initialReusable) { name, card, cardNumber, postalCode, reusable -> CardForm(name, card, cardNumber, postalCode, reusable) }
 
             cardForm
                     .map { it.isValid() }
@@ -112,8 +136,8 @@ interface NewCardFragmentViewModel {
                     .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
 
             val saveCardNotification = cardForm
-                    .compose<CardForm>(takeWhen(this.saveCardClicked))
-                    .map { storeNameAndPostalCode(it) }
+                    .map { Pair(storeNameAndPostalCode(it), it.reusable) }
+                    .compose<Pair<Card, Boolean>>(takeWhen(this.saveCardClicked))
                     .switchMap { createTokenAndSaveCard(it).materialize() }
                     .compose(bindToLifecycle())
                     .share()
@@ -126,11 +150,22 @@ interface NewCardFragmentViewModel {
                     }
 
             saveCardNotification
-                    .compose(Transformers.errors())
-                    .subscribe {
-                        this.error.onNext(it.localizedMessage)
-                        this.koala.trackFailedPaymentMethodCreation()
-                    }
+                    .compose(errors())
+                    .subscribe { this.koala.trackFailedPaymentMethodCreation() }
+
+            saveCardNotification
+                    .compose(errors())
+                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(modal))
+                    .filter { !it.second }
+                    .map { it.first }
+                    .subscribe { this.error.onNext(it.localizedMessage) }
+
+            saveCardNotification
+                    .compose(errors())
+                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(modal))
+                    .filter { it.second }
+                    .map { it.first }
+                    .subscribe { this.modalError.onNext(it.localizedMessage) }
 
             this.koala.trackViewedAddNewCard()
         }
@@ -162,39 +197,35 @@ interface NewCardFragmentViewModel {
             this.postalCode.onNext(postalCode)
         }
 
+        override fun reusable(reusable: Boolean) {
+            this.reusable.onNext(reusable)
+        }
+
         override fun saveCardClicked() {
             this.saveCardClicked.onNext(null)
         }
 
-        override fun allowedCardWarningIsVisible(): Observable<Boolean> {
-            return this.allowedCardWarningIsVisible
-        }
+        override fun allowedCardWarningIsVisible(): Observable<Boolean> = this.allowedCardWarningIsVisible
 
-        override fun cardWidgetFocusDrawable(): Observable<Int> {
-            return this.cardWidgetFocusDrawable
-        }
+        override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
 
-        override fun error(): Observable<String> {
-            return this.error
-        }
+        override fun error(): Observable<String> = this.error
 
-        override fun progressBarIsVisible(): Observable<Boolean> {
-            return this.progressBarIsVisible
-        }
+        override fun modalError(): Observable<String> = this.modalError
 
-        override fun saveButtonIsEnabled(): Observable<Boolean> {
-            return this.saveButtonIsEnabled
-        }
+        override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
 
-        override fun success(): Observable<StoredCard> {
-            return this.success
-        }
+        override fun reusableContainerIsVisible(): Observable<Boolean> = this.reusableContainerIsVisible
 
-        data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String) {
+        override fun saveButtonIsEnabled(): Observable<Boolean> = this.saveButtonIsEnabled
+
+        override fun success(): Observable<StoredCard> = this.success
+
+        data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String, val reusable: Boolean) {
 
             fun isValid(): Boolean {
-                return isNotEmpty(this.name)
-                        && isNotEmpty(this.postalCode)
+                return this.name.isNotEmpty()
+                        && this.postalCode.isNotEmpty()
                         && isValidCard()
             }
 
@@ -202,13 +233,9 @@ interface NewCardFragmentViewModel {
                 return this.card != null && isAllowedCard(this.cardNumber) && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
             }
 
-            private fun isNotEmpty(s: String): Boolean {
-                return !s.isEmpty()
-            }
-
             companion object {
                 fun isAllowedCard(cardNumber: String): Boolean {
-                    return cardNumber.length < 3 || CardUtils.getPossibleCardType(cardNumber) in CardForm.allowedCardTypes
+                    return cardNumber.length < 3 || CardUtils.getPossibleCardType(cardNumber) in allowedCardTypes
                 }
 
                 private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
@@ -221,12 +248,12 @@ interface NewCardFragmentViewModel {
             }
         }
 
-        private fun createTokenAndSaveCard(card: Card): Observable<StoredCard> {
+        private fun createTokenAndSaveCard(cardAndReusable: Pair<Card, Boolean>): Observable<StoredCard> {
             return Observable.defer {
                 val ps = PublishSubject.create<StoredCard>()
-                this.stripe.createToken(card, object : TokenCallback {
+                this.stripe.createToken(cardAndReusable.first, object : TokenCallback {
                     override fun onSuccess(token: Token) {
-                        saveCard(token, ps)
+                        saveCard(token, cardAndReusable.second, ps)
                     }
 
                     override fun onError(error: Exception?) {
@@ -239,8 +266,8 @@ interface NewCardFragmentViewModel {
                     .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
-        private fun saveCard(token: Token, ps: PublishSubject<StoredCard>) {
-            this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
+        private fun saveCard(token: Token, reusable:Boolean, ps: PublishSubject<StoredCard>) {
+            this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id, reusable)
                     .subscribe({
                         ps.onNext(it)
                         ps.onCompleted()

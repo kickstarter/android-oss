@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showSnackbar
@@ -48,7 +49,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.allowedCardWarningIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setInvisible(allowed_card_warning, !it) }
+                .subscribe { ViewUtils.setGone(allowed_card_warning, !it) }
 
         this.viewModel.outputs.cardWidgetFocusDrawable()
                 .compose(bindToLifecycle())
@@ -77,10 +78,21 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    val snackbarAnchor = if (modal()) modal_new_card_snackbar_anchor else new_card_root
-                    showSnackbar(snackbarAnchor, it)
-                }
+                .subscribe { showSnackbar(new_card_root, it) }
+
+        this.viewModel.outputs.modalError()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showSnackbar(modal_new_card_snackbar_anchor, it) }
+
+        this.viewModel.outputs.reusableContainerIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(reusable_container, !it) }
+
+        RxView.clicks(reusable_switch)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.reusable(reusable_switch.isChecked) }
 
         cardholder_name.onChange { this.viewModel.inputs.name(it) }
         postal_code.onChange { this.viewModel.inputs.postalCode(it) }

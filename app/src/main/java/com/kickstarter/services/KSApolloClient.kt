@@ -198,14 +198,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<StoredCard> {
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
         return Observable.defer {
             val ps = PublishSubject.create<StoredCard>()
             service.mutate(SavePaymentMethodMutation.builder()
                     .paymentType(paymentTypes)
                     .stripeToken(stripeToken)
                     .stripeCardId(cardId)
-                    .reusable(false)
+                    .reusable(reusable)
                     .build())
                     .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {

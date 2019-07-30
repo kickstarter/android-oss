@@ -25,7 +25,7 @@ interface ApolloClientType {
 
     fun getStoredCards(): Observable<List<StoredCard>>
 
-    fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<StoredCard>
+    fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard>
 
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 

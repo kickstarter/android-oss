@@ -75,7 +75,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     override fun onPageFinished(url: String?) {
         this.delegate?.onPageFinished(url)
-        web_view_progress.visibility = View.GONE
+        setVisibilityIfNecessary(web_view_progress, View.GONE)
     }
 
     override fun onPageStarted(url: String?) {
@@ -89,7 +89,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     override fun onReceivedError(url: String) {
         this.delegate?.onReceivedError(url)
-        web_view_progress.visibility = View.VISIBLE
+        setVisibilityIfNecessary(web_view_progress, View.VISIBLE)
         web_view_error.visibility = View.VISIBLE
         internal_web_view.stopLoading()
         internal_web_view.loadUrl("about:blank")
@@ -117,5 +117,11 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     fun setDelegate(delegate: Delegate?) {
         this.delegate = delegate
+    }
+
+    private fun setVisibilityIfNecessary(view: View, visibility: Int) {
+        if (view.visibility != visibility) {
+            view.visibility = visibility
+        }
     }
 }

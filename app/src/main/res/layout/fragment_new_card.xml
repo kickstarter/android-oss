@@ -89,7 +89,7 @@
 
           <com.google.android.material.textfield.TextInputLayout
             style="@style/UnderlineTextInputLayout"
-            android:hint="@string/Zip_postal_code">
+            android:hint="@string/Postal_code">
 
             <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/postal_code"

@@ -419,15 +419,15 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
   }
 
   @Override
-  public void externalLinkActivated(@NotNull String url) {}
+  public void externalLinkActivated(final @NotNull String url) {}
 
   @Override
-  public void pageIntercepted(@NotNull String url) {
+  public void pageIntercepted(final @NotNull String url) {
     this.viewModel.inputs.pageIntercepted(url);
   }
 
   @Override
-  public void onReceivedError(@NotNull String url) {}
+  public void onReceivedError(final @NotNull String url) {}
 
   @Override
   protected Pair<Integer, Integer> exitTransition() {

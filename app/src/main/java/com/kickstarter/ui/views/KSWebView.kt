@@ -16,7 +16,6 @@ import com.kickstarter.services.RequestHandler
 import kotlinx.android.synthetic.main.web_view.view.*
 import javax.inject.Inject
 
-
 class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     @Inject

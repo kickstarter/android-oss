@@ -52,10 +52,10 @@ interface NewCardFragmentViewModel {
         fun cardWidgetFocusDrawable(): Observable<Int>
 
         /** Emits when the password update was unsuccessful and the fragment is not modal. */
-        fun error(): Observable<String>
+        fun error(): Observable<Void>
 
         /** Emits when the password update was unsuccessful and the fragment is modal. */
-        fun modalError(): Observable<String>
+        fun modalError(): Observable<Void>
 
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
@@ -83,8 +83,8 @@ interface NewCardFragmentViewModel {
 
         private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
-        private val error = BehaviorSubject.create<String>()
-        private val modalError = BehaviorSubject.create<String>()
+        private val error = BehaviorSubject.create<Void>()
+        private val modalError = BehaviorSubject.create<Void>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
         private val reusableContainerIsVisible = BehaviorSubject.create<Boolean>()
         private val saveButtonIsEnabled = BehaviorSubject.create<Boolean>()
@@ -153,19 +153,19 @@ interface NewCardFragmentViewModel {
                     .compose(errors())
                     .subscribe { this.koala.trackFailedPaymentMethodCreation() }
 
-            saveCardNotification
+            val error = saveCardNotification
                     .compose(errors())
-                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(modal))
+                    .compose(ignoreValues())
+                    .compose<Pair<Void, Boolean>>(combineLatestPair(modal))
+            error
                     .filter { !it.second }
                     .map { it.first }
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                    .subscribe(this.error)
 
-            saveCardNotification
-                    .compose(errors())
-                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(modal))
+            error
                     .filter { it.second }
                     .map { it.first }
-                    .subscribe { this.modalError.onNext(it.localizedMessage) }
+                    .subscribe(this.modalError)
 
             this.koala.trackViewedAddNewCard()
         }
@@ -209,9 +209,9 @@ interface NewCardFragmentViewModel {
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
 
-        override fun error(): Observable<String> = this.error
+        override fun error(): Observable<Void> = this.error
 
-        override fun modalError(): Observable<String> = this.modalError
+        override fun modalError(): Observable<Void> = this.modalError
 
         override fun progressBarIsVisible(): Observable<Boolean> = this.progressBarIsVisible
 

@@ -39,9 +39,9 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:fillViewport="true"
     android:overScrollMode="never"
     android:scrollbars="none"
-    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <FrameLayout
@@ -88,8 +88,7 @@
               android:layout_marginEnd="@dimen/grid_3"
               android:layout_marginStart="@dimen/grid_3"
               android:contentDescription="@null"
-              android:src="@drawable/divider_dark_grey_500_horizontal"
-              android:visibility="invisible" />
+              android:src="@drawable/divider_dark_grey_500_horizontal" />
 
           </FrameLayout>
 
@@ -100,7 +99,7 @@
               android:id="@+id/postal_code"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/Zip_postal_code"
+              android:hint="@string/Postal_code"
               android:inputType="textPostalAddress"
               android:maxLines="1" />
 
@@ -121,12 +120,12 @@
           android:id="@+id/reusable_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_15"
           android:layout_marginEnd="@dimen/activity_horizontal_margin"
           android:layout_marginStart="@dimen/activity_horizontal_margin"
-          android:layout_marginBottom="@dimen/grid_15"
+          android:orientation="horizontal"
           android:visibility="gone"
-          tools:visibility="visible"
-          android:orientation="horizontal">
+          tools:visibility="visible">
 
           <TextView
             style="@style/CalloutPrimary"
@@ -134,7 +133,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            tools:text="Remember this card" />
+            android:text="@string/Remember_this_card" />
 
           <Switch
             android:id="@+id/reusable_switch"

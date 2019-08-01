@@ -10,7 +10,7 @@ public final class UpdateFactory {
   public static Update update() {
     final User creator = UserFactory.creator().toBuilder().id(278438049).build();
     final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
-    final String updatesUrl = "https://www.kck.str/projects/" + project.creator().param() + "/" + project.param() + "/posts";
+    final String updatesUrl = "https://www.kck.str/projects/" + project.creator().getID() + "/" + project.param() + "/posts";
 
     final Update.Urls.Web web = Update.Urls.Web.builder()
       .update(updatesUrl + "id")

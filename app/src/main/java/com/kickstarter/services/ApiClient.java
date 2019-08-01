@@ -196,7 +196,7 @@ public final class ApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
     return this.service
-      .projectBacking(project.param(), user.param())
+      .projectBacking(project.param(), user.getID())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

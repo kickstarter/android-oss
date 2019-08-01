@@ -105,7 +105,7 @@ public abstract class User implements Parcelable, Relay {
     return new AutoParcel_User.Builder();
   }
 
-  public @NonNull String param() {
+  public @NonNull String getID() {
     return String.valueOf(this.id());
   }
 

@@ -116,6 +116,7 @@
   <style name="Dialog" parent="Theme.MaterialComponents.Light.Dialog.Alert">
     <item name="colorAccent">@color/text_secondary</item>
     <item name="colorPrimary">@color/accent</item>
+    <item name="android:windowBackground">@drawable/background_dialog</item>
   </style>
 
   <style name="AlertDialog" parent="Dialog">

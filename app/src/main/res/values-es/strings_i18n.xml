@@ -88,8 +88,7 @@ patrocinadores</string>
   <string name="Confirm_password" formatted="false">Confirmar nueva contraseña</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.</string>
   <string name="Contact_creator" formatted="false">Comunicarse con el creador</string>
-  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\n
- Please tap to retry.</string>
+  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\nPlease tap to retry.</string>
   <string name="Continue" formatted="false">Continuar</string>
   <string name="Continue_to_payment" formatted="false">Continuar a pago</string>
   <string name="Continue_to_update_pledge" formatted="false">Continuar a Actualizar contribución</string>

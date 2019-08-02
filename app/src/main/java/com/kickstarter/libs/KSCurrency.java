@@ -73,7 +73,7 @@ public final class KSCurrency {
       .currencyCode(currencyOptions.currencyCode())
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(roundingMode)
-      .precision(getPrecision(initialValue, roundingMode))
+      .precision(NumberUtils.precision(initialValue, roundingMode))
       .build();
 
     return StringUtils.trim(NumberUtils.format(currencyOptions.value(), numberOptions));
@@ -162,29 +162,6 @@ public final class KSCurrency {
     } else {
       return (float) initialValue;
     }
-  }
-
-  /**
-   * Returns a precision based on the RoundingMode.
-   *
-   * @param amount When this is a whole number, we return 0, otherwise we return 2.
-   * @param roundingMode When this is not HALF_UP, we return 0, otherwise we return 2.
-   */
-  private static int getPrecision(final @NonNull Double amount, final @NonNull RoundingMode roundingMode) {
-    if (roundingMode != RoundingMode.HALF_UP || isWholeNumber(amount)) {
-      return 0;
-    } else {
-      return 2;
-    }
-  }
-
-  /**
-   * Returns a boolean that determines if a Double is a whole number.
-   *
-   * @param value a Double to be verified if it is a whole number.
-   */
-  private static Boolean isWholeNumber(final @NonNull Double value) {
-    return value == Math.round(value);
   }
 
   /**

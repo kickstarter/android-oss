@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  android:id="@+id/shipping_rules_row"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_4"
+  android:gravity="center_vertical"
+  android:orientation="horizontal"
+  tools:showIn="@layout/fragment_pledge">
+
+  <AutoCompleteTextView
+    android:id="@+id/shipping_rules"
+    style="@style/AutocompleteStyle"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/grid_3"
+    android:ellipsize="end"
+    android:enabled="false"
+    android:hint="@string/Shipping"
+    android:imeOptions="actionDone"
+    android:inputType="text"
+    android:maxLines="1"
+    android:scrollHorizontally="true"
+    android:text="@string/Loading"
+    android:textColor="@color/ksr_green_500"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/shipping_add_symbol"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="United States" />
+
+  <ImageView
+    android:id="@+id/shipping_add_symbol"
+    android:layout_width="@dimen/grid_3"
+    android:layout_height="@dimen/grid_3"
+    android:layout_gravity="start|center_vertical"
+    android:contentDescription="@null"
+    android:src="@drawable/ic_add"
+    android:tint="@color/ksr_dark_grey_400"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/shipping_symbol_start"
+    app:layout_constraintStart_toEndOf="@id/shipping_rules"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/shipping_symbol_start"
+    style="@style/PledgeCurrency"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end"
+    android:visibility="invisible"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/shipping_amount"
+    app:layout_constraintStart_toEndOf="@id/shipping_add_symbol"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="$"
+    tools:visibility="visible" />
+
+  <TextView
+    android:id="@+id/shipping_amount"
+    style="@style/PledgeCurrency"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxLines="1"
+    app:layout_constrainedWidth="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/shipping_symbol_end"
+    app:layout_constraintStart_toEndOf="@id/shipping_symbol_start"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="20" />
+
+  <TextView
+    android:id="@+id/shipping_symbol_end"
+    style="@style/PledgeCurrency"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end"
+    android:visibility="invisible"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1"
+    app:layout_constraintStart_toEndOf="@id/shipping_amount"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="$"
+    tools:visibility="visible" />
+
+  <View
+    android:id="@+id/shipping_amount_loading_view"
+    android:layout_width="0dp"
+    android:layout_height="@dimen/grid_2"
+    android:layout_gravity="center|end"
+    android:background="@drawable/pledge_amounts_loading_states"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1"
+    app:layout_constraintStart_toEndOf="@id/shipping_add_symbol"
+    app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

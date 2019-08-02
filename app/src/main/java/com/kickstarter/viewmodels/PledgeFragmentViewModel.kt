@@ -534,8 +534,9 @@ interface PledgeFragmentViewModel {
 
             val selectedPosition = BehaviorSubject.create(RecyclerView.NO_POSITION)
 
-            this.addedCardPosition
-                    .compose<Int>(takeWhen(this.cardSaved.distinctUntilChanged()))
+            this.cardSaved
+                    .compose<Pair<StoredCard, Int>>(zipPair(this.addedCardPosition))
+                    .map { it.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.selectCardButtonClicked)
 

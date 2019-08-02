@@ -171,27 +171,25 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         override fun onResponse(response: Response<UserPaymentsQuery.Data>) {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
-                            }
-                            Observable.just(response.data())
-                                    .map { cards -> cards?.me()?.storedCards()?.nodes() }
-                                    .map { list ->
-                                        val storedCards = list?.asSequence()?.map {
-                                            val id = it.id()
-                                            when (id) {
-                                                null -> null
-                                                else -> StoredCard.builder()
+                            } else {
+                                Observable.just(response.data())
+                                        .map { cards -> cards?.me()?.storedCards()?.nodes() }
+                                        .map { list ->
+                                            val storedCards = list?.asSequence()?.map {
+                                                StoredCard.builder()
                                                         .expiration(it.expirationDate())
-                                                        .id(id)
+                                                        .id(it.id())
                                                         .lastFourDigits(it.lastFour())
                                                         .type(it.type())
                                                         .build()
                                             }
-                                        }?.toMutableList()
-                                        storedCards?.filterNotNull() ?: listOf()
-                                    }.subscribe{
-                                        ps.onNext(it)
-                                        ps.onCompleted()
-                                    }
+                                            storedCards?.toList() ?: listOf()
+                                        }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
                         }
                     })
             return@defer ps
@@ -216,22 +214,17 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
-                            //why wouldn't this just be an error?
-                            val createPaymentSource = response.data()?.createPaymentSource()
-                            if (createPaymentSource?.isSuccessful != true) {
-                                ps.onError(Exception(createPaymentSource?.errorMessage()))
-                            } else {
-                                val paymentSource = createPaymentSource.paymentSource()
-                                paymentSource?.id()?.let {
-                                    val storedCard = StoredCard.builder()
-                                            .expiration(paymentSource.expirationDate())
-                                            .id(it)
-                                            .lastFourDigits(paymentSource.lastFour())
-                                            .type(paymentSource.type())
-                                            .build()
-                                    ps.onNext(storedCard)
-                                    ps.onCompleted()
-                                }
+
+                            val paymentSource = response.data()?.createPaymentSource()?.paymentSource()
+                            paymentSource?.let {
+                                val storedCard = StoredCard.builder()
+                                        .expiration(it.expirationDate())
+                                        .id(it.id())
+                                        .lastFourDigits(it.lastFour())
+                                        .type(it.type())
+                                        .build()
+                                ps.onNext(storedCard)
+                                ps.onCompleted()
                             }
                         }
                     })

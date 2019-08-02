@@ -195,7 +195,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    val position = (cards_recycler.adapter as RewardCardAdapter).prependCard(it)
+                    val position = (cards_recycler.adapter as RewardCardAdapter).insertCard(it)
                     this.viewModel.inputs.addedCardPosition(position)
                 }
 

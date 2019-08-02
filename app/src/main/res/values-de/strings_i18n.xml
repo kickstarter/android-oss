@@ -88,6 +88,8 @@ Unterstützer</string>
   <string name="Confirm_password" formatted="false">Neues Passwort bestätigen</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.</string>
   <string name="Contact_creator" formatted="false">Projektgründer kontaktieren</string>
+  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Inhalt kann derzeit leider nicht geladen werden.\n
+Bitte antippen und erneut versuchen.</string>
   <string name="Continue" formatted="false">Weiter</string>
   <string name="Continue_to_payment" formatted="false">Weiter zur Zahlung</string>
   <string name="Continue_to_update_pledge" formatted="false">Weiter zu Beitrag aktualisieren</string>
@@ -182,6 +184,7 @@ Unterstützer</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Finde Projekte nach deinem Geschmack - in Kunst, Design, Film, Spiele, Musik und vielen anderen Kategorien. Wenn du ein Projekt unterstützt hast, wird deren Aktivität hier angezeigt.</string>
   <string name="First_created" formatted="false">Erstes Projekt</string>
   <string name="Fix" formatted="false">Korrigieren</string>
+  <string name="Fix_your_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} folgen.</string>
   <string name="Follow_friends" formatted="false">Freunden folgen</string>
   <string name="Follow_more_friends" formatted="false">Folge noch mehr Freunden</string>
@@ -381,6 +384,7 @@ Unterstützer</string>
   <string name="Recommended_For_You" formatted="false">Empfehlungen für dich</string>
   <string name="Recorded_Live" formatted="false">Live aufgenommen</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Live aufgenommen von &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Remember_this_card" formatted="false">Karte speichern</string>
   <string name="Remove_this_card" formatted="false">Karte entfernen</string>
   <string name="Replay" formatted="false">Wiedergabe</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Wiedergabe verfügbar für weitere %{time} %{units}</string>
@@ -533,8 +537,9 @@ Bitte versuche es später noch einmal.</string>
   <string name="Yes_turn_off" formatted="false">Ja, deaktivieren</string>
   <string name="You_Launched" formatted="false">Dein Projekt ist live!</string>
   <string name="You_backed_this_project" formatted="false">Du hast dieses Projekt unterstützt.</string>
+  <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">Diese Karte kann nicht verwendet werden, um ein Projekt aus dem folgenden Land zu unterstützen: %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Dank deiner Unterstützung ist &lt;b>%{project_name}&lt;/b> seiner Verwirklichung einen Schritt näher. Sag es weiter!</string>
-  <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
+  <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Diese Belohnung hat einen Mindestfinanzierungsbeitrag von %{reward_minimum}.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">Du hast dieses Projekt gespeichert.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.</string>

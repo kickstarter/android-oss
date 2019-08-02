@@ -86,8 +86,8 @@
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
-  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\n
- Please tap to retry.</string>
+  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">コンテンツが読み込めません。\n
+タップして再試行してください。</string>
   <string name="Continue" formatted="false">続行する</string>
   <string name="Continue_to_payment" formatted="false">支払いを続ける</string>
   <string name="Continue_to_update_pledge" formatted="false">プレッジをアップデート</string>
@@ -182,7 +182,7 @@
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="First_created" formatted="false">1つめのプロジェクト</string>
   <string name="Fix" formatted="false">修正する</string>
-  <string name="Fix_your_payment_method" formatted="false">Fix your payment method</string>
+  <string name="Fix_your_payment_method" formatted="false">お支払い方法を修正</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} をフォロー</string>
   <string name="Follow_friends" formatted="false">友達をフォロー</string>
   <string name="Follow_more_friends" formatted="false">もっと友達をフォローする</string>
@@ -383,6 +383,7 @@
   <string name="Recommended_For_You" formatted="false">あなたへのおすすめ</string>
   <string name="Recorded_Live" formatted="false">配信済ライブ</string>
   <string name="Recorded_live_with_creator_name" formatted="false">配信された&lt;b>%{creator_name}&lt;/b>のライブ</string>
+  <string name="Remember_this_card" formatted="false">このカードを保存する</string>
   <string name="Remove_this_card" formatted="false">このカードを削除</string>
   <string name="Replay" formatted="false">リプレイ</string>
   <string name="Replay_available_for_time_more_units" formatted="false">あと%{time}%{units} リプレイ可能</string>
@@ -535,8 +536,9 @@
   <string name="Yes_turn_off" formatted="false">はい、オフにします</string>
   <string name="You_Launched" formatted="false">発表されました！</string>
   <string name="You_backed_this_project" formatted="false">バック済</string>
+  <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">%{project_country} のプロジェクトをバックするのにこのクレジットカードを利用することはできません。</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
-  <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
+  <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">このリワードには、最低%{reward_minimum}のプレッジが必要です。</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>

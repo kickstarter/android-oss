@@ -88,8 +88,8 @@ contributeurs</string>
   <string name="Confirm_password" formatted="false">Confirmer le nouveau mot de passe</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>
   <string name="Contact_creator" formatted="false">Contacter le créateur</string>
-  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\n
- Please tap to retry.</string>
+  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Impossible de charger ce contenu.\n
+ Cliquez pour réessayer.</string>
   <string name="Continue" formatted="false">Continuer</string>
   <string name="Continue_to_payment" formatted="false">Continuer vers le paiement</string>
   <string name="Continue_to_update_pledge" formatted="false">Continuer la modification de mon engagement</string>
@@ -385,6 +385,7 @@ n\'ont rien soutenu.</string>
   <string name="Recommended_For_You" formatted="false">Rien que pour vous</string>
   <string name="Recorded_Live" formatted="false">Enregistré en direct</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Enregistré en direct avec &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Remember_this_card" formatted="false">Enregistrer cette carte</string>
   <string name="Remove_this_card" formatted="false">Supprimer cette carte</string>
   <string name="Replay" formatted="false">Rediffuser</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Rediffusion encore disponible pendant %{time} %{units}</string>
@@ -537,6 +538,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Yes_turn_off" formatted="false">Oui, désactiver</string>
   <string name="You_Launched" formatted="false">Projet lancé !</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>
+  <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">Impossible d\'accepter cette carte pour soutenir un projet depuis le pays suivant : %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Vous vous êtes engagé à soutenir le projet &lt;b>%{project_name}&lt;/b>. Ce projet se rapproche tout doucement de son objectif grâce à vous. Parlez-en à votre entourage !</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Vous devez vous engager à hauteur de %{reward_minimum} ou plus pour sélectionner cette récompense.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>

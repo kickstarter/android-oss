@@ -742,8 +742,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowCancelPledge() {
         val backedProject = ProjectFactory.backedProject()
-        val backing = backedProject.backing()?: BackingFactory.backing()
-        val reward = backing.reward()?: RewardFactory.reward()
+        val backing = backedProject.backing() ?: BackingFactory.backing()
+        val reward = backing.reward() ?: RewardFactory.reward()
         setUpEnvironment(environment(), reward, backedProject)
 
         this.vm.inputs.cancelPledgeButtonClicked()
@@ -1003,21 +1003,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         return environment().toBuilder()
                 .apiClient(apiClient)
                 .currentConfig(currentConfig)
-                .build()
-    }
-
-    private fun environmentWithStoredCards(storedCards: List<StoredCard>): Environment {
-        val apolloClient = object : MockApolloClient() {
-            override fun getStoredCards(): Observable<List<StoredCard>> {
-                return Observable.just(storedCards)
-            }
-        }
-
-        val mockCurrentUser = MockCurrentUser(UserFactory.user())
-
-        return environment().toBuilder()
-                .apolloClient(apolloClient)
-                .currentUser(mockCurrentUser)
                 .build()
     }
 }

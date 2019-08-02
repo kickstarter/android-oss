@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
@@ -12,6 +13,7 @@ import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
@@ -41,10 +43,6 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
         setHasOptionsMenu(true)
-
-        when {
-            modal() -> new_card_app_bar_layout.stateListAnimator = null
-        }
 
         this.viewModel.outputs.allowedCardWarningIsVisible()
                 .compose(bindToLifecycle())
@@ -90,8 +88,19 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(reusable_container, !it) }
 
+        this.viewModel.outputs.appBarLayoutHasElevation()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { if (!it) new_card_app_bar_layout.stateListAnimator = null }
+
+        this.viewModel.outputs.dividerIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { form_container.showDividers = if (it) LinearLayout.SHOW_DIVIDER_END else LinearLayout.SHOW_DIVIDER_NONE }
+
         RxView.clicks(reusable_switch)
                 .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.viewModel.inputs.reusable(reusable_switch.isChecked) }
 
         cardholder_name.onChange { this.viewModel.inputs.name(it) }
@@ -112,8 +121,8 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        onCardSavedListener = context as? OnCardSavedListener
-        if (onCardSavedListener == null) {
+        this.onCardSavedListener = context as? OnCardSavedListener
+        if (this.onCardSavedListener == null) {
             throw ClassCastException("$context must implement OnCardSavedListener")
         }
     }

@@ -55,6 +55,7 @@
         android:paddingTop="@dimen/grid_3">
 
         <LinearLayout
+          android:id="@+id/form_container"
           style="@style/SettingsLinearRow">
 
           <com.google.android.material.textfield.TextInputLayout
@@ -93,6 +94,7 @@
           </FrameLayout>
 
           <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginBottom="@dimen/grid_2"
             style="@style/UnderlineTextInputLayout">
 
             <com.google.android.material.textfield.TextInputEditText

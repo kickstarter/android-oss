@@ -1,12 +1,9 @@
 package com.kickstarter.viewmodels
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.Country
@@ -21,7 +18,6 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
@@ -39,6 +35,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val baseUrlForTerms = TestSubscriber<String>()
     private val cancelPledgeButtonIsGone = TestSubscriber<Boolean>()
+    private val card = TestSubscriber<StoredCard>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val changePaymentMethodButtonIsGone = TestSubscriber<Boolean>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
@@ -79,6 +76,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.baseUrlForTerms().subscribe(this.baseUrlForTerms)
         this.vm.outputs.cancelPledgeButtonIsGone().subscribe(this.cancelPledgeButtonIsGone)
+        this.vm.outputs.card().subscribe(this.card)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.changePaymentMethodButtonIsGone().subscribe(this.changePaymentMethodButtonIsGone)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
@@ -151,9 +149,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.cards.assertValue(Collections.singletonList(card))
 
-        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
 
-        this.cards.assertValueCount(2)
+        this.cards.assertValue(Collections.singletonList(card))
+        this.card.assertValue(visa)
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
     @Test
@@ -161,7 +163,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val card = StoredCardFactory.discoverCard()
         val mockCurrentUser = MockCurrentUser(UserFactory.user())
 
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environment()
                 .toBuilder()
                 .currentUser(mockCurrentUser)
                 .apolloClient(object : MockApolloClient() {
@@ -173,9 +175,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.cards.assertValue(Collections.singletonList(card))
 
-        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
 
-        this.cards.assertValueCount(2)
+        this.cards.assertValue(Collections.singletonList(card))
+        this.card.assertValue(visa)
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
     @Test
@@ -938,13 +944,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertValueCount(1)
     }
 
-    private fun assertInitialPledgeCurrencyStates_NoShipping_MXProject() {
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.additionalPledgeAmount.assertValue("MX$ 0")
-        this.conversionText.assertValue("$15.00")
-        this.conversionTextViewIsGone.assertValues(false)
-    }
-
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject() {
         this.projectCurrencySymbol.assertValue("$")
         this.additionalPledgeAmount.assertValue("$0")
@@ -1004,6 +1003,21 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         return environment().toBuilder()
                 .apiClient(apiClient)
                 .currentConfig(currentConfig)
+                .build()
+    }
+
+    private fun environmentWithStoredCards(storedCards: List<StoredCard>): Environment {
+        val apolloClient = object : MockApolloClient() {
+            override fun getStoredCards(): Observable<List<StoredCard>> {
+                return Observable.just(storedCards)
+            }
+        }
+
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+
+        return environment().toBuilder()
+                .apolloClient(apolloClient)
+                .currentUser(mockCurrentUser)
                 .build()
     }
 }

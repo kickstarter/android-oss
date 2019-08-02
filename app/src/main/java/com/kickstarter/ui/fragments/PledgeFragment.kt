@@ -191,6 +191,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it) }
 
+        this.viewModel.outputs.card()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    val position = (cards_recycler.adapter as RewardCardAdapter).prependCard(it)
+                    this.viewModel.inputs.addedCardPosition(position)
+                }
+
         this.viewModel.outputs.startLoginToutActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -355,8 +363,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     fun cardAdded(storedCard: StoredCard) {
-        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
-        rewardCardAdapter.addCard(storedCard)
+        this.viewModel.inputs.cardSaved(storedCard)
     }
 
     override fun closePledgeButtonClicked(position: Int) {

@@ -5,7 +5,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
@@ -15,7 +14,6 @@ import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
@@ -28,8 +26,14 @@ import kotlin.math.sign
 
 interface PledgeFragmentViewModel {
     interface Inputs {
+        /** Call when a card has been inserted into the stored cards list. */
+        fun addedCardPosition(position: Int)
+
         /** Call when user clicks the cancel pledge button. */
         fun cancelPledgeButtonClicked()
+
+        /** Call when a card has successfully saved. */
+        fun cardSaved(storedCard: StoredCard)
 
         /** Call when user deselects a card they want to pledge with. */
         fun closeCardButtonClicked(position: Int)
@@ -80,6 +84,9 @@ interface PledgeFragmentViewModel {
 
         /** Emits a boolean determining if the cancel pledge button should be hidden. */
         fun cancelPledgeButtonIsGone(): Observable<Boolean>
+
+        /** Emits a newly added stored card. */
+        fun card(): Observable<StoredCard>
 
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<List<StoredCard>>
@@ -174,6 +181,8 @@ interface PledgeFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
+        private val cardSaved = PublishSubject.create<StoredCard>()
+        private val addedCardPosition = PublishSubject.create<Int>()
         private val cancelPledgeButtonClicked = PublishSubject.create<Void>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
@@ -192,6 +201,7 @@ interface PledgeFragmentViewModel {
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
         private val cancelPledgeButtonIsGone = BehaviorSubject.create<Boolean>()
+        private val card = BehaviorSubject.create<StoredCard>()
         private val cards = BehaviorSubject.create<List<StoredCard>>()
         private val changePaymentMethodButtonIsGone = BehaviorSubject.create<Boolean>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -518,7 +528,16 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.cards)
 
+            this.cardSaved
+                    .compose(bindToLifecycle())
+                    .subscribe(this.card)
+
             val selectedPosition = BehaviorSubject.create(RecyclerView.NO_POSITION)
+
+            this.addedCardPosition
+                    .compose<Int>(takeWhen(this.cardSaved.distinctUntilChanged()))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.selectCardButtonClicked)
 
             this.showPledgeCard
                     .map { it.first }
@@ -554,13 +573,6 @@ interface PledgeFragmentViewModel {
                     .map { this.ksCurrency.format(it.second.minimum(), it.first, RoundingMode.HALF_UP) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showMinimumWarning)
-
-            activityResult()
-                    .filter { it.isRequestCode(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
-                    .filter(ActivityResult::isOk)
-                    .switchMap { storedCards() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cards)
 
             val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
 
@@ -626,7 +638,11 @@ interface PledgeFragmentViewModel {
 
         data class Checkout(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
 
+        override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
+
         override fun cancelPledgeButtonClicked() = this.cancelPledgeButtonClicked.onNext(null)
+
+        override fun cardSaved(storedCard: StoredCard) = this.cardSaved.onNext(storedCard)
 
         override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
 
@@ -664,6 +680,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun cancelPledgeButtonIsGone(): Observable<Boolean> = this.cancelPledgeButtonIsGone
+
+        @NonNull
+        override fun card(): Observable<StoredCard> = this.card
 
         @NonNull
         override fun cards(): Observable<List<StoredCard>> = this.cards

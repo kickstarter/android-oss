@@ -1,12 +1,15 @@
 package com.kickstarter.viewmodels
 
-import SavePaymentMethodMutation
+import android.os.Bundle
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.CardFactory
+import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockStripe
+import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.ArgumentsKey
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -16,20 +19,37 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: NewCardFragmentViewModel.ViewModel
     private val allowedCardWarningIsVisible = TestSubscriber<Boolean>()
+    private val appBarLayoutHasElevation = TestSubscriber<Boolean>()
     private val cardWidgetFocusDrawable = TestSubscriber<Int>()
-    private val error = TestSubscriber<String>()
+    private val dividerIsVisible = TestSubscriber<Boolean>()
+    private val error = TestSubscriber<Void>()
+    private val modalError = TestSubscriber<Void>()
     private val progressBarIsVisible = TestSubscriber<Boolean>()
+    private val reusableContainerIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
-    private val success = TestSubscriber<Void>()
+    private val success = TestSubscriber<StoredCard>()
 
-    private fun setUpEnvironment(environment: Environment) {
+    private fun setUpEnvironment(environment: Environment, modal : Boolean = false) {
         this.vm = NewCardFragmentViewModel.ViewModel(environment)
         this.vm.outputs.allowedCardWarningIsVisible().subscribe(this.allowedCardWarningIsVisible)
+        this.vm.outputs.appBarLayoutHasElevation().subscribe(this.appBarLayoutHasElevation)
         this.vm.outputs.cardWidgetFocusDrawable().subscribe(this.cardWidgetFocusDrawable)
+        this.vm.outputs.dividerIsVisible().subscribe(this.dividerIsVisible)
         this.vm.outputs.error().subscribe(this.error)
+        this.vm.outputs.modalError().subscribe(this.modalError)
         this.vm.outputs.progressBarIsVisible().subscribe(this.progressBarIsVisible)
+        this.vm.outputs.reusableContainerIsVisible().subscribe(this.reusableContainerIsVisible)
         this.vm.outputs.saveButtonIsEnabled().subscribe(this.saveButtonIsEnabled)
         this.vm.outputs.success().subscribe(this.success)
+
+        if (modal) {
+            val bundle = Bundle()
+            bundle.putBoolean(ArgumentsKey.NEW_CARD_MODAL, true)
+            this.vm.arguments(bundle)
+        } else {
+            // The OS returns null if arguments aren't explicitly set
+            this.vm.arguments(null)
+        }
     }
 
     @Test
@@ -50,6 +70,20 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testAppBarLayoutHasElevation() {
+        setUpEnvironment(environment())
+
+        this.appBarLayoutHasElevation.assertValue(true)
+    }
+
+    @Test
+    fun testAppBarLayoutHasElevation_whenModal() {
+        setUpEnvironment(environment(), true)
+
+        this.appBarLayoutHasElevation.assertValue(false)
+    }
+
+    @Test
     fun testCardWidgetFocusDrawable() {
         setUpEnvironment(environment())
 
@@ -61,34 +95,85 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testDividerIsVisible() {
+        setUpEnvironment(environment())
+
+        this.dividerIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun testDividerIsVisible_whenModal() {
+        setUpEnvironment(environment(), true)
+
+        this.dividerIsVisible.assertValue(false)
+    }
+
+    @Test
     fun testAPIError() {
         val apolloClient = object : MockApolloClient() {
-            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
+            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
                 return Observable.error(Exception("oops"))
             }
         }
-        setUpEnvironment(environment().toBuilder().apolloClient(apolloClient).build())
+        val environment = environment().toBuilder().apolloClient(apolloClient).build()
+        setUpEnvironment(environment)
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.cardNumber(CardFactory.card().number)
         this.vm.inputs.saveCardClicked()
-        this.error.assertValue("oops")
-        this.koalaTest.assertValues("Viewed Add New Card","Failed Payment Method Creation")
+        this.error.assertValueCount(1)
+        this.koalaTest.assertValues("Viewed Add New Card", "Failed Payment Method Creation")
+    }
+
+    @Test
+    fun testAPIError_whenModal() {
+        val apolloClient = object : MockApolloClient() {
+            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+                return Observable.error(Exception("oops"))
+            }
+        }
+        val environment = environment().toBuilder().apolloClient(apolloClient).build()
+        setUpEnvironment(environment, true)
+
+        this.vm.inputs.name("Nathan Squid")
+        this.vm.inputs.postalCode("11222")
+        this.vm.inputs.card(CardFactory.card())
+        this.vm.inputs.cardNumber(CardFactory.card().number)
+        this.vm.inputs.saveCardClicked()
+        this.modalError.assertValueCount(1)
+        this.koalaTest.assertValues("Viewed Add New Card", "Failed Payment Method Creation")
     }
 
     @Test
     fun testStripeError() {
         val mockStripe = MockStripe(context(), true)
-        setUpEnvironment(environment().toBuilder().stripe(mockStripe).build())
+        val environment = environment().toBuilder().stripe(mockStripe).build()
+        setUpEnvironment(environment)
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.cardNumber(CardFactory.card().number)
         this.vm.inputs.saveCardClicked()
-        this.error.assertValue("Stripe error")
+        this.error.assertValueCount(1)
+        this.modalError.assertNoValues()
+    }
+
+    @Test
+    fun testStripeError_whenModal() {
+        val mockStripe = MockStripe(context(), true)
+        val environment = environment().toBuilder().stripe(mockStripe).build()
+        setUpEnvironment(environment, true)
+
+        this.vm.inputs.name("Nathan Squid")
+        this.vm.inputs.postalCode("11222")
+        this.vm.inputs.card(CardFactory.card())
+        this.vm.inputs.cardNumber(CardFactory.card().number)
+        this.vm.inputs.saveCardClicked()
+        this.error.assertNoValues()
+        this.modalError.assertValueCount(1)
     }
 
     @Test
@@ -102,6 +187,20 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.cardNumber(card.number)
         this.vm.inputs.saveCardClicked()
         this.progressBarIsVisible.assertValues(true, false)
+    }
+
+    @Test
+    fun testReusableContainerIsVisible() {
+        setUpEnvironment(environment())
+
+        this.reusableContainerIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testReusableContainerIsVisible_whenModal() {
+        setUpEnvironment(environment(), true)
+
+        this.reusableContainerIsVisible.assertValue(true)
     }
 
     @Test
@@ -131,13 +230,23 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccess() {
-        setUpEnvironment(environment())
+        val visa = StoredCardFactory.visa()
+        val apolloClient = object : MockApolloClient() {
+            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+                return Observable.just(visa)
+            }
+        }
+
+        val environment = environment().toBuilder().apolloClient(apolloClient).build()
+        setUpEnvironment(environment)
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
-        this.vm.inputs.card(CardFactory.card())
+        val card = CardFactory.card()
+        this.vm.inputs.card(card)
+        this.vm.inputs.cardNumber(card.number)
         this.vm.inputs.saveCardClicked()
-        this.success.assertValues()
-        this.koalaTest.assertValues("Viewed Add New Card")
+        this.success.assertValue(visa)
+        this.koalaTest.assertValues("Viewed Add New Card", "Saved Payment Method")
     }
 }

@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.os.Bundle
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
@@ -45,11 +44,17 @@ interface NewCardFragmentViewModel {
     }
 
     interface Outputs {
-        /** Emits when the drawable to be shown when the card widget has focus. */
+        /** Emits a boolean determining if the allowed card warning should be visible. */
         fun allowedCardWarningIsVisible(): Observable<Boolean>
 
-        /** Emits when the drawable to be shown when the card widget has focus. */
+        /** Emits a boolean determining if the AppBarLayout should have elevation. */
+        fun appBarLayoutHasElevation(): Observable<Boolean>
+
+        /** Emits a drawable to be shown based on when the card widget has focus. */
         fun cardWidgetFocusDrawable(): Observable<Int>
+
+        /** Emits a boolean determining if the form divider should be visible. */
+        fun dividerIsVisible(): Observable<Boolean>
 
         /** Emits when the password update was unsuccessful and the fragment is not modal. */
         fun error(): Observable<Void>
@@ -60,10 +65,10 @@ interface NewCardFragmentViewModel {
         /** Emits when the progress bar should be visible. */
         fun progressBarIsVisible(): Observable<Boolean>
 
-        /** Emits when the reusable switch should be visible. */
+        /** Emits a boolean determining if the reusable switch should be visible. */
         fun reusableContainerIsVisible(): Observable<Boolean>
 
-        /** Emits when the save button should be enabled. */
+        /** Emits a boolean determining if the save button should be enabled. */
         fun saveButtonIsEnabled(): Observable<Boolean>
 
         /** Emits when the card was saved successfully. */
@@ -82,7 +87,9 @@ interface NewCardFragmentViewModel {
         private val saveCardClicked = PublishSubject.create<Void>()
 
         private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
+        private val appBarLayoutHasElevation = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
+        private val dividerIsVisible = BehaviorSubject.create<Boolean>()
         private val error = BehaviorSubject.create<Void>()
         private val modalError = BehaviorSubject.create<Void>()
         private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
@@ -98,20 +105,33 @@ interface NewCardFragmentViewModel {
 
         init {
             val modal = arguments()
-                    .map { bundle : Bundle? -> bundle?.getBoolean(ArgumentsKey.NEW_CARD_MODAL)?: false }
+                    .map { it?.getBoolean(ArgumentsKey.NEW_CARD_MODAL)?: false }
                     .distinctUntilChanged()
+
+            modal
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.appBarLayoutHasElevation)
+
+            modal
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.dividerIsVisible)
 
             modal
                     .compose(bindToLifecycle())
                     .subscribe(this.reusableContainerIsVisible)
 
-            val initialReusable = this.reusable.startWith(modal.map { BooleanUtils.negate(it) })
+            val initialReusable = modal
+                    .map { BooleanUtils.negate(it) }
 
+            val reusable = Observable.merge(initialReusable, this.reusable)
             val cardForm = Observable.combineLatest(this.name,
                     this.card,
                     this.cardNumber,
                     this.postalCode,
-                    initialReusable) { name, card, cardNumber, postalCode, reusable -> CardForm(name, card, cardNumber, postalCode, reusable) }
+                    reusable)
+            { name, card, cardNumber, postalCode, reusable -> CardForm(name, card, cardNumber, postalCode, reusable) }
 
             cardForm
                     .map { it.isValid() }
@@ -136,7 +156,14 @@ interface NewCardFragmentViewModel {
                     .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
 
             val saveCardNotification = cardForm
-                    .map { Pair(storeNameAndPostalCode(it), it.reusable) }
+                    .map {
+                        it.card?.let { card ->
+                            card.name = it.name
+                            card.addressZip = it.postalCode
+                            card
+                        }
+                    }
+                    .compose<Pair<Card, Boolean>>(combineLatestPair(reusable))
                     .compose<Pair<Card, Boolean>>(takeWhen(this.saveCardClicked))
                     .switchMap { createTokenAndSaveCard(it).materialize() }
                     .compose(bindToLifecycle())
@@ -144,10 +171,7 @@ interface NewCardFragmentViewModel {
 
             saveCardNotification
                     .compose(values())
-                    .subscribe {
-                        this.success.onNext(it)
-                        this.koala.trackSavedPaymentMethod()
-                    }
+                    .subscribe()
 
             saveCardNotification
                     .compose(errors())
@@ -157,6 +181,7 @@ interface NewCardFragmentViewModel {
                     .compose(errors())
                     .compose(ignoreValues())
                     .compose<Pair<Void, Boolean>>(combineLatestPair(modal))
+
             error
                     .filter { !it.second }
                     .map { it.first }
@@ -168,13 +193,6 @@ interface NewCardFragmentViewModel {
                     .subscribe(this.modalError)
 
             this.koala.trackViewedAddNewCard()
-        }
-
-        private fun storeNameAndPostalCode(cardForm: CardForm): Card {
-            val card = cardForm.card!!
-            card.name = cardForm.name
-            card.addressZip = cardForm.postalCode
-            return card
         }
 
         override fun card(card: Card?) {
@@ -205,9 +223,13 @@ interface NewCardFragmentViewModel {
             this.saveCardClicked.onNext(null)
         }
 
+        override fun appBarLayoutHasElevation(): Observable<Boolean> = this.appBarLayoutHasElevation
+
         override fun allowedCardWarningIsVisible(): Observable<Boolean> = this.allowedCardWarningIsVisible
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
+
+        override fun dividerIsVisible(): Observable<Boolean> = this.dividerIsVisible
 
         override fun error(): Observable<Void> = this.error
 
@@ -269,8 +291,9 @@ interface NewCardFragmentViewModel {
         private fun saveCard(token: Token, reusable:Boolean, ps: PublishSubject<StoredCard>) {
             this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id, reusable)
                     .subscribe({
-                        ps.onNext(it)
                         ps.onCompleted()
+                        this.success.onNext(it)
+                        this.koala.trackSavedPaymentMethod()
                     }, { ps.onError(it) })
         }
     }

@@ -345,6 +345,7 @@
       "No_Results": "No Results",
       "No_saved_projects": "No saved projects",
       "No_unread_messages": "No unread messages",
+      "Not_available": "Not available",
       "Not_followed": "Not followed",
       "Not_delivered": "Not delivered",
       "Not_now": "Not Now",
@@ -2545,6 +2546,7 @@
       "No_Results": "Keine Ergebnisse",
       "No_saved_projects": "Keine gespeicherten Projekte",
       "No_unread_messages": "Keine ungelesenen Nachrichten",
+      "Not_available": "Not available",
       "Not_followed": "Nicht abonniert",
       "Not_delivered": "Nicht verschickt",
       "Not_now": "Nicht jetzt",
@@ -4745,6 +4747,7 @@
       "No_Results": "Sin resultados",
       "No_saved_projects": "No hay proyectos guardados",
       "No_unread_messages": "No hay mensajes no leídos",
+      "Not_available": "Not available",
       "Not_followed": "No siguiendo",
       "Not_delivered": "No entregado",
       "Not_now": "Ahora no",
@@ -6945,6 +6948,7 @@
       "No_Results": "Pas de résultats",
       "No_saved_projects": "Pas de projets enregistrés",
       "No_unread_messages": "Pas de messages non lus",
+      "Not_available": "Not available",
       "Not_followed": "Non abonné",
       "Not_delivered": "Non distribué",
       "Not_now": "Pas maintenant",
@@ -9145,6 +9149,7 @@
       "No_Results": "No Results",
       "No_saved_projects": "No saved projects",
       "No_unread_messages": "No unread messages",
+      "Not_available": "Not available",
       "Not_followed": "Not followed",
       "Not_delivered": "Not delivered",
       "Not_now": "Not Now",
@@ -11345,6 +11350,7 @@
       "No_Results": "該当結果なし",
       "No_saved_projects": "保存済みのプロジェクトはありません",
       "No_unread_messages": "未読メッセージはありません",
+      "Not_available": "Not available",
       "Not_followed": "フォローしてない",
       "Not_delivered": "未配送",
       "Not_now": "後で",
@@ -13545,6 +13551,7 @@
       "No_Results": "No Results",
       "No_saved_projects": "No saved projects",
       "No_unread_messages": "No unread messages",
+      "Not_available": "Not available",
       "Not_followed": "Not followed",
       "Not_delivered": "Not delivered",
       "Not_now": "Not Now",
@@ -15601,7 +15608,7 @@
   ],
   "ab_experiments": {
     "new_project_header": "experimental",
-    "featured_reward": "control"
+    "featured_reward": "pinned_image_text_border"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

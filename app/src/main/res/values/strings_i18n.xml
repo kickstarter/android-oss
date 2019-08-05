@@ -306,6 +306,7 @@ from friends yet.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">No replay is available for this live stream.</string>
   <string name="No_saved_projects" formatted="false">No saved projects</string>
   <string name="No_unread_messages" formatted="false">No unread messages</string>
+  <string name="Not_available" formatted="false">Not available</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
   <string name="Not_now" formatted="false">Not Now</string>

@@ -304,6 +304,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Keine Wiedergabe verügbar für diesen Live-Stream.</string>
   <string name="No_saved_projects" formatted="false">Keine gespeicherten Projekte</string>
   <string name="No_unread_messages" formatted="false">Keine ungelesenen Nachrichten</string>
+  <string name="Not_available" formatted="false">Not available</string>
   <string name="Not_delivered" formatted="false">Nicht verschickt</string>
   <string name="Not_followed" formatted="false">Nicht abonniert</string>
   <string name="Not_now" formatted="false">Nicht jetzt</string>

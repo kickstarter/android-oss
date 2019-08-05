@@ -305,6 +305,7 @@ n\'ont rien soutenu.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Pas de rediffusion possible pour cette diffusion en direct.</string>
   <string name="No_saved_projects" formatted="false">Pas de projets enregistrés</string>
   <string name="No_unread_messages" formatted="false">Pas de messages non lus</string>
+  <string name="Not_available" formatted="false">Not available</string>
   <string name="Not_delivered" formatted="false">Non distribué</string>
   <string name="Not_followed" formatted="false">Non abonné</string>
   <string name="Not_now" formatted="false">Pas maintenant</string>

@@ -17,6 +17,16 @@ public final class LocationFactory {
       .build();
   }
 
+  public static @NonNull Location mexico() {
+    return Location.builder()
+      .id(638242)
+      .displayableName("Mexico City, Mexico")
+      .name("Mexico City")
+      .state("Mexico")
+      .country("MX")
+      .build();
+  }
+
   public static @NonNull Location sydney() {
     return Location.builder()
       .id(1105779)

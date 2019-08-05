@@ -5,7 +5,9 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.models.Country;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.StoredCard;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 
@@ -17,9 +19,18 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import type.CreditCardTypes;
 
 public final class ProjectUtils {
   private ProjectUtils() {}
+
+  public static boolean acceptedCardType(final @NonNull CreditCardTypes type, final @NonNull Project project) {
+    if (project.currency().equals(Country.US.getCurrencyCode())) {
+      return StoredCard.Companion.getUsdCardTypes().contains(type);
+    } else {
+      return StoredCard.Companion.getNonUsdCardTypes().contains(type);
+    }
+  }
 
   public static List<Pair<Project, DiscoveryParams>> combineProjectsAndParams(final @NonNull List<Project> projects, final @NonNull DiscoveryParams params) {
     final ArrayList<Pair<Project, DiscoveryParams>> projectAndParams = new ArrayList<>(projects.size());

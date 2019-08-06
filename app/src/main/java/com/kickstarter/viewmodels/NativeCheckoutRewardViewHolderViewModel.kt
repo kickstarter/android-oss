@@ -27,8 +27,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
     }
 
     interface Outputs {
-        /**  Emits the string resource ID to set the pledge button when not displaying the minimum. */
-        fun alternatePledgeButtonText(): Observable<Int>
+        /**  Emits the string resource ID to set on the pledge button. */
+        fun buttonCTA(): Observable<Int>
 
         /** Emits `true` if pledge button can be clicked, `false` otherwise.  */
         fun buttonIsEnabled(): Observable<Boolean>
@@ -65,9 +65,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         /** Emits `true` if the limits container should be hidden, `false` otherwise. */
         fun limitContainerIsGone(): Observable<Boolean>
-
-        /** Emits the minimum pledge amount in the project's currency.  */
-        fun minimumAmount(): Observable<String>
 
         /** Emits the minimum pledge amount in the project's currency.  */
         fun minimumAmountTitle(): Observable<SpannableString>
@@ -109,7 +106,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
 
-        private val alternatePledgeButtonText: Observable<Int>
+        private val buttonCTA: Observable<Int>
         private val buttonIsEnabled: Observable<Boolean>
         private val buttonIsGone: Observable<Boolean>
         private val buttonTintColor: Observable<Int>
@@ -122,7 +119,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val descriptionIsGone: Observable<Boolean>
         private val endDateSectionIsGone: Observable<Boolean>
         private val limitContainerIsGone: Observable<Boolean>
-        private val minimumAmount: Observable<String>
         private val minimumAmountTitle: Observable<SpannableString>
         private val remaining: Observable<String>
         private val remainingIsGone: Observable<Boolean>
@@ -169,13 +165,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .map { !BackingUtils.isBacked(it.first, it.second) }
                     .distinctUntilChanged()
 
-            this.minimumAmount = this.projectAndReward
-                    .filter { shouldShowMinimum(it) }
-                    .map { this.ksCurrency.format(it.second.minimum(), it.first) }
-
-            this.alternatePledgeButtonText = this.projectAndReward
-                    .filter { shouldShowAlternateText(it.first, it.second) }
-                    .map { RewardViewUtils.pledgeButtonAlternateText(it.first, it.second) }
+            this.buttonCTA = this.projectAndReward
+                    .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
                     .distinctUntilChanged()
 
             this.conversionIsGone = this.projectAndReward
@@ -265,14 +256,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
             return RewardUtils.isAvailable(project, reward)
         }
 
-        private fun shouldShowAlternateText(project: Project, reward: Reward): Boolean = when {
-            project.isLive -> project.isBacking || !RewardUtils.isAvailable(project, reward)
-            else -> BackingUtils.isBacked(project, reward)
-        }
-
-        private fun shouldShowMinimum(it: Pair<Project, Reward>) =
-                !it.first.isBacking && it.first.isLive && RewardUtils.isAvailable(it.first, it.second)
-
         override fun projectAndReward(@NonNull project: Project, @NonNull reward: Reward) {
             this.projectAndReward.onNext(Pair.create(project, reward))
         }
@@ -282,7 +265,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun alternatePledgeButtonText(): Observable<Int> = this.alternatePledgeButtonText
+        override fun buttonCTA(): Observable<Int> = this.buttonCTA
 
         @NonNull
         override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
@@ -319,9 +302,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         @NonNull
         override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone
-
-        @NonNull
-        override fun minimumAmount(): Observable<String> = this.minimumAmount
 
         @NonNull
         override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountTitle

@@ -84,15 +84,10 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setRemainingRewardsTextView(it) }
 
-        this.viewModel.outputs.alternatePledgeButtonText()
+        this.viewModel.outputs.buttonCTA()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.reward_pledge_button.setText(it) }
-
-        this.viewModel.outputs.minimumAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setMinimumButtonText(it) }
 
         this.viewModel.outputs.minimumAmountTitle()
                 .compose(bindToLifecycle())

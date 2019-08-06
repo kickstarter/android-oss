@@ -178,7 +178,7 @@
       style="@style/PledgeButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      tools:text="Pledge $10 or more" />
+      tools:text="Select" />
 
   </FrameLayout>
 

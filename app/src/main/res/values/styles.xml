@@ -583,6 +583,15 @@
     <item name="android:letterSpacing">.2</item>
   </style>
 
+  <style name="RewardPill" parent="FootnoteAccentMedium">
+    <item name="android:paddingTop">@dimen/grid_3_half</item>
+    <item name="android:paddingBottom">@dimen/grid_3_half</item>
+    <item name="android:paddingStart">@dimen/grid_2</item>
+    <item name="android:paddingEnd">@dimen/grid_2</item>
+    <item name="android:background">@drawable/rect_green_alpha_6</item>
+  </style>
+
+
   <!-- Creator Dashboard -->
   <style name="CreatorDashboardTableRowContainer">
     <item name="android:layout_width">match_parent</item>
@@ -748,14 +757,6 @@
     <item name="android:layout_marginEnd">@dimen/grid_1</item>
     <item name="android:layout_marginStart">@dimen/grid_1</item>
     <item name="android:foreground">@drawable/click_indicator_light</item>
-  </style>
-
-  <style name="RewardPill" parent="FootnoteAccentMedium">
-    <item name="android:paddingTop">@dimen/grid_3_half</item>
-    <item name="android:paddingBottom">@dimen/grid_3_half</item>
-    <item name="android:paddingStart">@dimen/grid_2</item>
-    <item name="android:paddingEnd">@dimen/grid_2</item>
-    <item name="android:background">@drawable/rect_green_alpha_6</item>
   </style>
 
 </resources>

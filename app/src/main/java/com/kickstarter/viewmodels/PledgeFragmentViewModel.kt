@@ -70,6 +70,9 @@ interface PledgeFragmentViewModel {
     }
 
     interface Outputs {
+        /** Emits a newly added stored card. */
+        fun addedCard(): Observable<StoredCard>
+
         /** Emits the additional pledge amount string. */
         fun additionalPledgeAmount(): Observable<String>
 
@@ -84,9 +87,6 @@ interface PledgeFragmentViewModel {
 
         /** Emits a boolean determining if the cancel pledge button should be hidden. */
         fun cancelPledgeButtonIsGone(): Observable<Boolean>
-
-        /** Emits a newly added stored card. */
-        fun addedCard(): Observable<StoredCard>
 
         /** Emits a list of stored cards for a user. */
         fun cards(): Observable<List<StoredCard>>
@@ -181,9 +181,9 @@ interface PledgeFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
-        private val cardSaved = PublishSubject.create<StoredCard>()
         private val addedCardPosition = PublishSubject.create<Int>()
         private val cancelPledgeButtonClicked = PublishSubject.create<Void>()
+        private val cardSaved = PublishSubject.create<StoredCard>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
         private val decreasePledgeButtonClicked = PublishSubject.create<Void>()

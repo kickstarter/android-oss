@@ -30,12 +30,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
+    private val addedCard = TestSubscriber<StoredCard>()
     private val additionalPledgeAmount = TestSubscriber<String>()
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val baseUrlForTerms = TestSubscriber<String>()
     private val cancelPledgeButtonIsGone = TestSubscriber<Boolean>()
-    private val card = TestSubscriber<StoredCard>()
     private val cards = TestSubscriber<List<StoredCard>>()
     private val changePaymentMethodButtonIsGone = TestSubscriber<Boolean>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
@@ -71,12 +71,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                                  project: Project? = ProjectFactory.project()) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
+        this.vm.outputs.addedCard().subscribe(this.addedCard)
         this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)
         this.vm.outputs.additionalPledgeAmountIsGone().subscribe(this.additionalPledgeAmountIsGone)
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.baseUrlForTerms().subscribe(this.baseUrlForTerms)
         this.vm.outputs.cancelPledgeButtonIsGone().subscribe(this.cancelPledgeButtonIsGone)
-        this.vm.outputs.card().subscribe(this.card)
         this.vm.outputs.cards().subscribe(this.cards)
         this.vm.outputs.changePaymentMethodButtonIsGone().subscribe(this.changePaymentMethodButtonIsGone)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
@@ -154,7 +154,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.addedCardPosition(0)
 
         this.cards.assertValue(Collections.singletonList(card))
-        this.card.assertValue(visa)
+        this.addedCard.assertValue(visa)
         this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
@@ -180,7 +180,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.addedCardPosition(0)
 
         this.cards.assertValue(Collections.singletonList(card))
-        this.card.assertValue(visa)
+        this.addedCard.assertValue(visa)
         this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 

@@ -87,11 +87,11 @@ interface NativeCheckoutRewardViewHolderViewModel {
         /** Emits `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardItemsAreGone(): Observable<Boolean>
 
-        /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
-        fun shippingSummaryIsGone(): Observable<Boolean>
-
         /** Set the shipping summary TextView's text.  */
         fun shippingSummary(): Observable<String>
+
+        /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
+        fun shippingSummaryIsGone(): Observable<Boolean>
 
         /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
         fun showPledgeFragment(): Observable<Pair<Project, Reward>>

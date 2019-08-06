@@ -191,7 +191,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it) }
 
-        this.viewModel.outputs.card()
+        this.viewModel.outputs.addedCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {

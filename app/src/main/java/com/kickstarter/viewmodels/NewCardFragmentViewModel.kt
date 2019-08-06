@@ -5,8 +5,11 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
@@ -44,6 +47,9 @@ interface NewCardFragmentViewModel {
     }
 
     interface Outputs {
+        /**  */
+        fun allowedCardWarning(): Observable<Pair<Int?, Project?>>
+
         /** Emits a boolean determining if the allowed card warning should be visible. */
         fun allowedCardWarningIsVisible(): Observable<Boolean>
 
@@ -86,6 +92,7 @@ interface NewCardFragmentViewModel {
         private val reusable = PublishSubject.create<Boolean>()
         private val saveCardClicked = PublishSubject.create<Void>()
 
+        private val allowedCardWarning = BehaviorSubject.create<Pair<Int?, Project?>>()
         private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val appBarLayoutHasElevation = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
@@ -106,6 +113,10 @@ interface NewCardFragmentViewModel {
         init {
             val modal = arguments()
                     .map { it?.getBoolean(ArgumentsKey.NEW_CARD_MODAL)?: false }
+                    .distinctUntilChanged()
+
+            val project = arguments()
+                    .map<Project?> { it?.getParcelable(ArgumentsKey.NEW_CARD_PROJECT)?: null }
                     .distinctUntilChanged()
 
             modal
@@ -134,25 +145,42 @@ interface NewCardFragmentViewModel {
             { name, card, cardNumber, postalCode, reusable -> CardForm(name, card, cardNumber, postalCode, reusable) }
 
             cardForm
-                    .map { it.isValid() }
+                    .compose<Pair<CardForm, Project?>>(combineLatestPair(project))
+                    .map { it.first.isValid(it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.saveButtonIsEnabled)
 
-            this.cardNumber
-                    .map { CardForm.isAllowedCard(it) }
-                    .map { BooleanUtils.negate(it) }
+            val warning = this.cardNumber
+                    .compose<Pair<String, Project?>>(combineLatestPair(project))
+                    .map<Pair<Int?, Project?>> { Pair(CardForm.warning(it.first, it.second), it.second) }
+                    .distinctUntilChanged()
+
+            warning
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.allowedCardWarning)
+
+            warning
+                    .map { ObjectUtils.isNotNull(it.first) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.allowedCardWarningIsVisible)
 
-            this.cardFocus
+            this.allowedCardWarningIsVisible
+                    .startWith(false)
+                    .distinctUntilChanged()
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.cardFocus.startWith(false).distinctUntilChanged()))
                     .map {
+                        val cardNotAllowed = it.first
+                        val hasFocus = it.second
                         when {
-                            it -> R.drawable.divider_green_horizontal
+                            cardNotAllowed -> R.drawable.divider_red_400_horizontal
+                            hasFocus -> R.drawable.divider_green_horizontal
                             else -> R.drawable.divider_dark_grey_500_horizontal
                         }
                     }
+                    .distinctUntilChanged()
                     .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
 
             val saveCardNotification = cardForm
@@ -225,6 +253,8 @@ interface NewCardFragmentViewModel {
 
         override fun appBarLayoutHasElevation(): Observable<Boolean> = this.appBarLayoutHasElevation
 
+        override fun allowedCardWarning(): Observable<Pair<Int?, Project?>> = this.allowedCardWarning
+
         override fun allowedCardWarningIsVisible(): Observable<Boolean> = this.allowedCardWarningIsVisible
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
@@ -245,19 +275,39 @@ interface NewCardFragmentViewModel {
 
         data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String, val reusable: Boolean) {
 
-            fun isValid(): Boolean {
+            fun isValid(project: Project?): Boolean {
                 return this.name.isNotEmpty()
                         && this.postalCode.isNotEmpty()
-                        && isValidCard()
+                        && isValidCard(project)
             }
 
-            private fun isValidCard(): Boolean {
-                return this.card != null && isAllowedCard(this.cardNumber) && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
+            private fun isValidCard(project: Project?): Boolean {
+                return this.card != null && warning(this.cardNumber, project) == null && this.card.validateNumber() && this.card.validateExpiryDate() && card.validateCVC()
             }
 
             companion object {
-                fun isAllowedCard(cardNumber: String): Boolean {
-                    return cardNumber.length < 3 || CardUtils.getPossibleCardType(cardNumber) in allowedCardTypes
+                fun warning(cardNumber: String, project: Project?): Int? {
+                    return if (cardNumber.length < 3)
+                        null
+                    else {
+                        when (project) {
+                            null -> when {
+                                CardUtils.getPossibleCardType(cardNumber) !in allowedCardTypes -> R.string.Unsupported_card_type
+                                else -> null
+                            }
+                            else -> when {
+                                CardUtils.getPossibleCardType(cardNumber) !in getAllowedTypes(project) -> R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
+                                else -> null
+                            }
+                        }
+                    }
+                }
+
+                private fun getAllowedTypes(project: Project): Array<String> {
+                    return when {
+                        project.currency() == Country.US.currencyCode -> usdCardTypes
+                        else -> nonUsdCardTypes
+                    }
                 }
 
                 private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
@@ -266,6 +316,11 @@ interface NewCardFragmentViewModel {
                         Card.JCB,
                         Card.MASTERCARD,
                         Card.UNIONPAY,
+                        Card.VISA)
+
+                private val usdCardTypes = allowedCardTypes
+                private val nonUsdCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
+                        Card.MASTERCARD,
                         Card.VISA)
             }
         }

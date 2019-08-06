@@ -161,7 +161,7 @@ interface PledgeFragmentViewModel {
         fun startLoginToutActivity(): Observable<Void>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.NewCardActivity]. */
-        fun startNewCardActivity(): Observable<Void>
+        fun startNewCardActivity(): Observable<Project>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Project>
@@ -226,7 +226,7 @@ interface PledgeFragmentViewModel {
         private val showPledgeError = BehaviorSubject.create<Void>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
-        private val startNewCardActivity = PublishSubject.create<Void>()
+        private val startNewCardActivity = PublishSubject.create<Project>()
         private val startThanksActivity = PublishSubject.create<Project>()
         private val totalAmount = BehaviorSubject.create<SpannableString>()
         private val totalContainerIsGone = BehaviorSubject.create<Boolean>()
@@ -553,7 +553,8 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.SELECT)) }
 
-            this.newCardButtonClicked
+            project
+                    .compose<Project>(takeWhen(this.newCardButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startNewCardActivity)
 
@@ -758,7 +759,7 @@ interface PledgeFragmentViewModel {
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
 
         @NonNull
-        override fun startNewCardActivity(): Observable<Void> = this.startNewCardActivity
+        override fun startNewCardActivity(): Observable<Project> = this.startNewCardActivity
 
         @NonNull
         override fun startThanksActivity(): Observable<Project> = this.startThanksActivity

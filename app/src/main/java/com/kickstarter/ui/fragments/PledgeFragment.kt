@@ -211,7 +211,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     fragmentManager
                             ?.beginTransaction()
                             ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true), NewCardFragment::class.java.simpleName)
+                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
                             ?.addToBackStack(NewCardFragment::class.java.simpleName)
                             ?.commit()
                 }

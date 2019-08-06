@@ -60,7 +60,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val showPledgeError = TestSubscriber<Void>()
     private val startChromeTab = TestSubscriber<String>()
     private val startLoginToutActivity = TestSubscriber<Void>()
-    private val startNewCardActivity = TestSubscriber<Void>()
+    private val startNewCardActivity = TestSubscriber<Project>()
     private val startThanksActivity = TestSubscriber<Project>()
     private val totalAmount = TestSubscriber<String>()
     private val totalContainerIsGone = TestSubscriber<Boolean>()
@@ -789,10 +789,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartNewCardActivity() {
-        setUpEnvironment(environment())
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), project = project)
 
         this.vm.inputs.newCardButtonClicked()
-        this.startNewCardActivity.assertValueCount(1)
+        this.startNewCardActivity.assertValue(project)
     }
 
     @Test

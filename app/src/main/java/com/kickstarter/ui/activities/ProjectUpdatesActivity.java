@@ -3,22 +3,21 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
-import android.view.View;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.KSUri;
-import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -33,9 +32,8 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(ProjectUpdatesViewModel.ViewModel.class)
-public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel.ViewModel> implements KSWebViewClient.Delegate {
+public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel.ViewModel> implements KSWebView.Delegate {
   protected @Bind(R.id.web_view) KSWebView ksWebView;
-  protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
   protected @Bind(R.id.web_view_toolbar) KSToolbar webViewToolbar;
 
   protected @BindString(R.string.project_subpages_menu_buttons_updates) String updatesTitleString;
@@ -48,8 +46,8 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
 
     this.webViewToolbar.setTitle(this.updatesTitleString);
 
-    this.ksWebView.client().setDelegate(this);
-    this.ksWebView.client().registerRequestHandlers(
+    this.ksWebView.setDelegate(this);
+    this.ksWebView.registerRequestHandlers(
       Arrays.asList(
         new RequestHandler(KSUri::isProjectUpdatesUri, this::handleProjectUpdatesUriRequest),
         new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
@@ -113,20 +111,14 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
+  public void externalLinkActivated(final @NotNull String url) {
     this.viewModel.inputs.externalLinkActivated();
   }
 
   @Override
-  public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
-  }
+  public void pageIntercepted(final @NotNull String url) {}
 
   @Override
-  public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
-  }
+  public void onReceivedError(final @NotNull String url) {}
 
-  @Override
-  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 }

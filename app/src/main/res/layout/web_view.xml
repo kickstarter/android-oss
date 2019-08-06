@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:animateLayoutChanges="true"
+  android:orientation="vertical"
+  app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+  <WebView
+    android:id="@+id/internal_web_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <include
+    android:id="@+id/web_view_progress"
+    layout="@layout/loading_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <LinearLayout
+    android:id="@+id/web_view_error"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/activity_vertical_margin"
+    android:paddingStart="@dimen/activity_vertical_margin"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <ImageView
+      android:background="@drawable/circle_black_alpha"
+      android:padding="@dimen/grid_3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@null"
+      android:layout_marginBottom="@dimen/grid_3"
+      android:src="@drawable/ic_retry" />
+
+    <TextView
+      android:text="@string/Content_isnt_loading_right_now_Please_tap_to_retry"
+      android:gravity="center"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+  </LinearLayout>
+
+</FrameLayout>

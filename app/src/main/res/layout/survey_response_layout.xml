@@ -14,10 +14,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 
-  <include
-    android:id="@+id/survey_response_loading_indicator_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    layout="@layout/loading_overlay" />
-
 </RelativeLayout>

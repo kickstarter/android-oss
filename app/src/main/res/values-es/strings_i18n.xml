@@ -88,8 +88,8 @@ patrocinadores</string>
   <string name="Confirm_password" formatted="false">Confirmar nueva contraseña</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.</string>
   <string name="Contact_creator" formatted="false">Comunicarse con el creador</string>
-  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\n
-Please tap to retry.</string>
+  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">El contenido no se está cargando en este momento.\n
+Haz clic para volver a intentarlo.</string>
   <string name="Continue" formatted="false">Continuar</string>
   <string name="Continue_to_payment" formatted="false">Continuar a pago</string>
   <string name="Continue_to_update_pledge" formatted="false">Continuar a Actualizar contribución</string>
@@ -305,6 +305,7 @@ Please tap to retry.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
   <string name="No_saved_projects" formatted="false">No hay proyectos guardados</string>
   <string name="No_unread_messages" formatted="false">No hay mensajes no leídos</string>
+  <string name="Not_available" formatted="false">Not available</string>
   <string name="Not_delivered" formatted="false">No entregado</string>
   <string name="Not_followed" formatted="false">No siguiendo</string>
   <string name="Not_now" formatted="false">Ahora no</string>
@@ -385,7 +386,7 @@ Please tap to retry.</string>
   <string name="Recommended_For_You" formatted="false">Recomendaciones para ti</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Grabado en vivo por &lt;b>%{creator_name}&lt;/b></string>
-  <string name="Remember_this_card" formatted="false">Remember this card</string>
+  <string name="Remember_this_card" formatted="false">Guarda esta tarjeta</string>
   <string name="Remove_this_card" formatted="false">Eliminar esta tarjeta</string>
   <string name="Replay" formatted="false">Repetición</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Repetición disponible por %{time} %{units} más</string>
@@ -538,7 +539,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Yes_turn_off" formatted="false">Sí, desactivar</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
-  <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">You can’t use this credit card to back a project from %{project_country}.</string>
+  <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">No puedes usar esta tarjeta de crédito para patrocinar un proyecto de %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Debes contribuir, al menos, %{reward_minimum} para obtener esta recompensa.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>

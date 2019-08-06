@@ -136,18 +136,18 @@
             tools:text="3 days left" />
 
           <TextView
-            android:id="@+id/reward_shipping_summary"
-            style="@style/RewardPill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Anywhere in the world" />
-
-          <TextView
             android:id="@+id/reward_remaining_text_view"
             style="@style/RewardPill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="30 left" />
+
+          <TextView
+            android:id="@+id/reward_shipping_summary"
+            style="@style/RewardPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Anywhere in the world" />
 
         </com.google.android.flexbox.FlexboxLayout>
 

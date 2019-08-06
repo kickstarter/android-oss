@@ -255,7 +255,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .filter { RewardUtils.isShippable(it) }
                     .map { it.shippingSummary() }
 
-            this.shippingSummaryIsGone = projectAndReward
+            this.shippingSummaryIsGone = this.projectAndReward
                     .map { it.first.isLive && RewardUtils.isShippable(it.second) }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()

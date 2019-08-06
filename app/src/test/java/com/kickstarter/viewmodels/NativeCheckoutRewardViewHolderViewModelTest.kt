@@ -477,40 +477,48 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testLimitContainerIsGone() {
+    fun testLimitContainerIsGone_noLimits() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, RewardFactory.reward())
         this.limitContainerIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testLimitContainerIsGone_whenLimited() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, RewardFactory.limited())
-        this.limitContainerIsGone.assertValues(true, false)
+        this.limitContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testLimitContainerIsGone_whenEndingSoon() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, RewardFactory.endingSoon())
-        this.limitContainerIsGone.assertValues(true, false)
+        this.limitContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testLimitContainerIsGone_withShipping() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, RewardFactory.rewardWithShipping())
-        this.limitContainerIsGone.assertValues(true, false)
+        this.limitContainerIsGone.assertValue(false)
+    }
 
-        val limitedExpiringReward = RewardFactory.endingSoon().toBuilder()
-                .limit(10)
-                .remaining(5)
-                .build()
-        this.vm.inputs.projectAndReward(project, limitedExpiringReward)
-        this.limitContainerIsGone.assertValues(true, false)
+    @Test
+    fun testLimitContainerIsGone_endedProject() {
+        val project = ProjectFactory.successfulProject()
+        setUpEnvironment(environment())
 
-        val limitedExpiringWithShippingReward = RewardFactory.rewardWithShipping().toBuilder()
-                .endsAt(DateTime.now().plusDays(2))
-                .limit(10)
-                .remaining(5)
-                .build()
-        this.vm.inputs.projectAndReward(project, limitedExpiringWithShippingReward)
-        this.limitContainerIsGone.assertValues(true, false)
-
-        //Ended project doesn't show limits
-        this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), limitedExpiringReward)
-        this.limitContainerIsGone.assertValues(true, false, true)
+        this.vm.inputs.projectAndReward(project, RewardFactory.rewardWithShipping())
+        this.limitContainerIsGone.assertValue(true)
     }
 
     @Test

@@ -87,7 +87,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 }
 
                 rewards_toolbar.setNavigationOnClickListener {
-                    this.viewModel.inputs.hideRewardsFragmentClicked()
+                    this.viewModel.inputs.hideRewardsSheetClicked()
                 }
 
                 this.supportFragmentManager.addOnBackStackChangedListener {

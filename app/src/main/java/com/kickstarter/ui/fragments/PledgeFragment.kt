@@ -204,7 +204,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
 
-        this.viewModel.outputs.startNewCardActivity()
+        this.viewModel.outputs.showNewCardFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {

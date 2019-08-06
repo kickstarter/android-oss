@@ -101,7 +101,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.startChromeTab().subscribe(this.startChromeTab)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
+        this.vm.outputs.showNewCardFragment().subscribe(this.startNewCardActivity)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
         this.vm.outputs.totalContainerIsGone().subscribe(this.totalContainerIsGone)

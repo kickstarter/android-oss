@@ -56,10 +56,10 @@ interface NewCardFragmentViewModel {
         /** Emits a boolean determining if the form divider should be visible. */
         fun dividerIsVisible(): Observable<Boolean>
 
-        /** Emits when the password update was unsuccessful and the fragment is not modal. */
+        /** Emits when saving the card was unsuccessful and the fragment is not modal. */
         fun error(): Observable<Void>
 
-        /** Emits when the password update was unsuccessful and the fragment is modal. */
+        /** Emits when saving the card was unsuccessful and the fragment is modal. */
         fun modalError(): Observable<Void>
 
         /** Emits when the progress bar should be visible. */
@@ -173,10 +173,6 @@ interface NewCardFragmentViewModel {
                     .compose(values())
                     .subscribe()
 
-            saveCardNotification
-                    .compose(errors())
-                    .subscribe { this.koala.trackFailedPaymentMethodCreation() }
-
             val error = saveCardNotification
                     .compose(errors())
                     .compose(ignoreValues())
@@ -191,6 +187,10 @@ interface NewCardFragmentViewModel {
                     .filter { it.second }
                     .map { it.first }
                     .subscribe(this.modalError)
+
+            saveCardNotification
+                    .compose(errors())
+                    .subscribe { this.koala.trackFailedPaymentMethodCreation() }
 
             this.koala.trackViewedAddNewCard()
         }
@@ -223,9 +223,9 @@ interface NewCardFragmentViewModel {
             this.saveCardClicked.onNext(null)
         }
 
-        override fun appBarLayoutHasElevation(): Observable<Boolean> = this.appBarLayoutHasElevation
-
         override fun allowedCardWarningIsVisible(): Observable<Boolean> = this.allowedCardWarningIsVisible
+
+        override fun appBarLayoutHasElevation(): Observable<Boolean> = this.appBarLayoutHasElevation
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
 

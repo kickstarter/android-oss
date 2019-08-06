@@ -34,12 +34,10 @@ import com.kickstarter.libs.models.AndroidPayAuthorizedPayload;
 import com.kickstarter.libs.models.AndroidPayPayload;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AndroidPayUtils;
-import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KSUri;
-import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.LoginReason;
@@ -48,6 +46,8 @@ import com.kickstarter.ui.views.ConfirmDialog;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.squareup.picasso.Picasso;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -66,12 +66,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(CheckoutViewModel.ViewModel.class)
-public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewModel> implements KSWebViewClient.Delegate {
+public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewModel> implements KSWebView.Delegate {
   private @Nullable Project project;
 
   protected @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   protected @Bind(R.id.web_view) KSWebView webView;
-  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.confirmation_group) View confirmationGroup;
   protected @Bind(R.id.pledge_disclaimer) TextView pledgeDisclaimerTextView;
   protected @Bind(R.id.terms_and_privacy) TextView termsAndPrivacyTextView;
@@ -120,9 +119,8 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
     this.ksString = environment().ksString();
     this.gson = environment().gson();
 
-    this.webView.client().setDelegate(this);
-
-    this.webView.client().registerRequestHandlers(Arrays.asList(
+    this.webView.setDelegate(this);
+    this.webView.registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
       new RequestHandler(KSUri::isNewGuestCheckoutUri, this::handleSignupUriRequest),
       new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
@@ -421,25 +419,18 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
   }
 
   @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
+  public void externalLinkActivated(final @NotNull String url) {}
 
   @Override
-  public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
-  }
-
-  @Override
-  public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
-  }
-
-  @Override
-  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
+  public void pageIntercepted(final @NotNull String url) {
     this.viewModel.inputs.pageIntercepted(url);
   }
 
   @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
+  public void onReceivedError(final @NotNull String url) {}
+
+  @Override
+  protected Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }
 }

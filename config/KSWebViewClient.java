@@ -16,10 +16,11 @@ import okhttp3.OkHttpClient;
 public final class KSWebViewClient extends WebViewClient {
 
   public interface Delegate {
-    void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
-    void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
-    void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url);
-    void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url);
+    void externalLinkActivated(final @NonNull String url);
+    void onPageFinished(final @Nullable String url);
+    void onPageStarted(final @Nullable String url);
+    void pageIntercepted(final @NonNull String url);
+    void onReceivedError(final @NonNull String url);
   }
 
   public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint) {

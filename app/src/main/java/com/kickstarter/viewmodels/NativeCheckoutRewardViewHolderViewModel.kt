@@ -141,7 +141,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         init {
 
             this.minimumAmountTitle = this.projectAndReward
-                    .map { ViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency, false) }
+                    .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
 
             val reward = this.projectAndReward
                     .map { it.second }

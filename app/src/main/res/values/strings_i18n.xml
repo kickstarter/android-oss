@@ -88,6 +88,8 @@ backers</string>
   <string name="Confirm_password" formatted="false">Confirm new password</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Connect with Facebook to follow friends and get notified when they back or launch projects.</string>
   <string name="Contact_creator" formatted="false">Contact creator</string>
+  <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\n
+Please tap to retry.</string>
   <string name="Continue" formatted="false">Continue</string>
   <string name="Continue_to_payment" formatted="false">Continue to payment</string>
   <string name="Continue_to_update_pledge" formatted="false">Continue to update pledge</string>
@@ -145,6 +147,7 @@ backers</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
   <string name="Email_notifications" formatted="false">Email notifications</string>
   <string name="Email_unverified" formatted="false">This email address is unverified.</string>
+  <string name="Ending_in_last_four" formatted="false">Ending in %{last_four}</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery:</string>
   <string name="Estimated_delivery_of" formatted="false">Estimated delivery of</string>
@@ -181,6 +184,7 @@ backers</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.</string>
   <string name="First_created" formatted="false">First created</string>
   <string name="Fix" formatted="false">Fix</string>
+  <string name="Fix_your_payment_method" formatted="false">Fix your payment method</string>
   <string name="Follow_friend_name" formatted="false">Follow %{friend_name}</string>
   <string name="Follow_friends" formatted="false">Follow friends</string>
   <string name="Follow_more_friends" formatted="false">Follow more friends</string>
@@ -302,6 +306,7 @@ from friends yet.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">No replay is available for this live stream.</string>
   <string name="No_saved_projects" formatted="false">No saved projects</string>
   <string name="No_unread_messages" formatted="false">No unread messages</string>
+  <string name="Not_available" formatted="false">Not available</string>
   <string name="Not_delivered" formatted="false">Not delivered</string>
   <string name="Not_followed" formatted="false">Not followed</string>
   <string name="Not_now" formatted="false">Not Now</string>
@@ -348,6 +353,8 @@ from friends yet.</string>
   <string name="Pledged_on_date" formatted="false">&lt;b>Pledged&lt;/b> on %{pledge_date}</string>
   <string name="Popular" formatted="false">Popular</string>
   <string name="Popular_Projects" formatted="false">Popular Projects</string>
+  <string name="Postal_code" formatted="false">Postal code</string>
+  <string name="Postcode" formatted="false">Postcode</string>
   <string name="Preparing_your_personal_data" formatted="false">Preparing your personal data...</string>
   <string name="Privacy" formatted="false">Privacy</string>
   <string name="Private_profile" formatted="false">Private profile</string>
@@ -381,6 +388,7 @@ daring ideas.</string>
   <string name="Recommended_For_You" formatted="false">Recommended For You</string>
   <string name="Recorded_Live" formatted="false">Recorded Live</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Recorded live with &lt;b>%{creator_name}&lt;/b></string>
+  <string name="Remember_this_card" formatted="false">Remember this card</string>
   <string name="Remove_this_card" formatted="false">Remove this card</string>
   <string name="Replay" formatted="false">Replay</string>
   <string name="Replay_available_for_time_more_units" formatted="false">Replay available for %{time} more %{units}</string>
@@ -534,7 +542,9 @@ Please try again later.</string>
   <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>
+  <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">You can’t use this credit card to back a project from %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
+  <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">You\'ll receive an email at %{email} when your download is ready.</string>
@@ -559,7 +569,7 @@ Please try again later.</string>
   <string name="Youve_canceled_your_pledge" formatted="false">You\'ve canceled your pledge.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">You’ve pledged to support this project and it’s currently still funding.</string>
   <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">You’ve successfully updated your pledge to %{amount} for %{project_name}. If the project reaches its funding goal, your card will be charged on %{project_deadline}. Check your email for details.</string>
-  <string name="Zip_postal_code" formatted="false">Zip/Postal code</string>
+  <string name="Zip_code" formatted="false">Zip code</string>
   <string name="accessibility_dashboard_buttons_activity" formatted="false">Activity</string>
   <string name="accessibility_dashboard_buttons_activity_hint" formatted="false">Opens activity.</string>
   <string name="accessibility_dashboard_buttons_messages" formatted="false">Messages</string>

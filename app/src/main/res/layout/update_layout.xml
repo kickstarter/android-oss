@@ -14,11 +14,4 @@
     android:layout_height="match_parent"
     android:layout_below="@id/update_toolbar"/>
 
-  <include
-    android:id="@+id/loading_indicator_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/update_toolbar"
-    layout="@layout/loading_overlay" />
-
 </RelativeLayout>

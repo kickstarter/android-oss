@@ -1,15 +1,12 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.services.KSUri;
-import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.SurveyResponseViewModel;
@@ -27,11 +24,10 @@ import okhttp3.Request;
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(SurveyResponseViewModel.ViewModel.class)
-public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel.ViewModel> implements KSWebViewClient.Delegate {
+public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel.ViewModel> {
   private AlertDialog confirmationDialog;
 
   protected @Bind(R.id.survey_response_web_view) KSWebView ksWebView;
-  protected @Bind(R.id.survey_response_loading_indicator_view) View loadingIndicatorView;
 
   protected @BindString(R.string.general_alert_buttons_ok) String okString;
   protected @BindString(R.string.Got_it_your_survey_response_has_been_submitted) String surveyResponseSubmittedString;
@@ -42,8 +38,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
     setContentView(R.layout.survey_response_layout);
     ButterKnife.bind(this);
 
-    this.ksWebView.client().setDelegate(this);
-    this.ksWebView.client().registerRequestHandlers(
+    this.ksWebView.registerRequestHandlers(
       Arrays.asList(
         new RequestHandler(KSUri::isProjectSurveyUri, this::handleProjectSurveyUriRequest),
         new RequestHandler(KSUri::isProjectUri, this::handleProjectUriRequest)
@@ -93,20 +88,4 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
       .compose(observeForUI())
       .subscribe(this.ksWebView::loadUrl);
   }
-
-  @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
-
-  @Override
-  public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
-  }
-
-  @Override
-  public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
-  }
-
-  @Override
-  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 }

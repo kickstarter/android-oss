@@ -100,5 +100,36 @@ public final class NumberUtilsTest extends TestCase {
     assertEquals("1.000", NumberUtils.format(1000.0f, NumberOptions.builder().build(), Locale.GERMANY));
     assertEquals("100,12", NumberUtils.format(100.12f, NumberOptions.builder().precision(2).build(), Locale.GERMANY));
   }
+
+  public void testParse() {
+    assertEquals(0.0, NumberUtils.parse(""));
+    assertEquals(1.0, NumberUtils.parse("1"));
+    assertEquals(1.5, NumberUtils.parse("1.5"));
+    assertEquals(100.0, NumberUtils.parse("100"));
+    assertEquals(100.5, NumberUtils.parse("100.50"));
+    assertEquals(1000.0, NumberUtils.parse("1,000"));
+    assertEquals(1000.5, NumberUtils.parse("1,000.50"));
+    assertEquals(10000.0, NumberUtils.parse("10,000"));
+    assertEquals(10000.5, NumberUtils.parse("10,000.50"));
+  }
+
+  public void testParse_withGermanLocale() {
+    assertEquals(0.0, NumberUtils.parse("", Locale.GERMAN));
+    assertEquals(1.0, NumberUtils.parse("1", Locale.GERMAN));
+    assertEquals(1.5, NumberUtils.parse("1,5", Locale.GERMAN));
+    assertEquals(100.0, NumberUtils.parse("100", Locale.GERMAN));
+    assertEquals(100.5, NumberUtils.parse("100,50", Locale.GERMAN));
+    assertEquals(1000.0, NumberUtils.parse("1.000", Locale.GERMAN));
+    assertEquals(1000.5, NumberUtils.parse("1.000,50", Locale.GERMAN));
+    assertEquals(10000.0, NumberUtils.parse("10.000", Locale.GERMAN));
+    assertEquals(10000.5, NumberUtils.parse("10.000,50", Locale.GERMAN));
+  }
+
+  public void testPrecision() {
+    assertEquals(0, NumberUtils.precision(1.0, RoundingMode.DOWN));
+    assertEquals(0, NumberUtils.precision(1.5, RoundingMode.DOWN));
+    assertEquals(0, NumberUtils.precision(1.0, RoundingMode.HALF_UP));
+    assertEquals(2, NumberUtils.precision(1.5, RoundingMode.HALF_UP));
+  }
 }
 

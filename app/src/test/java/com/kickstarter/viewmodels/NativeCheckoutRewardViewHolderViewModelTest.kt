@@ -41,6 +41,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val reward = TestSubscriber<Reward>()
     private val rewardItems = TestSubscriber<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
+    private val shippingSummary = TestSubscriber<String>()
+    private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
     private val titleForNoReward = TestSubscriber<Int>()
@@ -69,6 +71,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.reward().subscribe(this.reward)
         this.vm.outputs.rewardItems().subscribe(this.rewardItems)
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
+        this.vm.outputs.shippingSummary().subscribe(this.shippingSummary)
+        this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
@@ -486,6 +490,9 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.projectAndReward(project, RewardFactory.endingSoon())
         this.limitContainerIsGone.assertValues(true, false)
 
+        this.vm.inputs.projectAndReward(project, RewardFactory.rewardWithShipping())
+        this.limitContainerIsGone.assertValues(true, false)
+
         val limitedExpiringReward = RewardFactory.endingSoon().toBuilder()
                 .limit(10)
                 .remaining(5)
@@ -493,6 +500,15 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.projectAndReward(project, limitedExpiringReward)
         this.limitContainerIsGone.assertValues(true, false)
 
+        val limitedExpiringWithShippingReward = RewardFactory.rewardWithShipping().toBuilder()
+                .endsAt(DateTime.now().plusDays(2))
+                .limit(10)
+                .remaining(5)
+                .build()
+        this.vm.inputs.projectAndReward(project, limitedExpiringWithShippingReward)
+        this.limitContainerIsGone.assertValues(true, false)
+
+        //Ended project doesn't show limits
         this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), limitedExpiringReward)
         this.limitContainerIsGone.assertValues(true, false, true)
     }
@@ -575,6 +591,22 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.projectAndReward(project, itemizedReward)
         this.rewardItemsAreGone.assertValues(true, false)
         this.rewardItems.assertValues(itemizedReward.rewardsItems())
+    }
+
+    @Test
+    fun testShippingSummary() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        // Summary should be hidden when reward is not shippable.
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
+        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummary.assertNoValues()
+
+        val shippableReward = RewardFactory.rewardWithShipping()
+        this.vm.inputs.projectAndReward(project, shippableReward)
+        this.shippingSummaryIsGone.assertValues(true, false)
+        this.shippingSummary.assertValues(shippableReward.shippingSummary())
     }
 
     @Test

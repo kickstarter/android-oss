@@ -351,6 +351,12 @@
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
 
+  <style name="TextAccent">
+    <item name="android:textColor">@color/accent</item>
+    <item name="android:textStyle">normal</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
+  </style>
+
   <style name="TextWhite">
     <item name="android:textColor">@color/white</item>
     <item name="android:textStyle">normal</item>
@@ -403,6 +409,14 @@
 
   <style name="FootnoteSecondaryMedium" parent="FootnoteSecondary">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="FootnoteAccent" parent="TextAccent">
+    <item name="android:textSize">@dimen/footnote</item>
+  </style>
+
+  <style name="FootnoteAccentMedium" parent="FootnoteAccent">
+    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="ProjectCardFootnote" parent="FootnoteSecondaryMedium">
@@ -734,6 +748,14 @@
     <item name="android:layout_marginEnd">@dimen/grid_1</item>
     <item name="android:layout_marginStart">@dimen/grid_1</item>
     <item name="android:foreground">@drawable/click_indicator_light</item>
+  </style>
+
+  <style name="RewardPill" parent="FootnoteAccentMedium">
+    <item name="android:paddingTop">@dimen/grid_3_half</item>
+    <item name="android:paddingBottom">@dimen/grid_3_half</item>
+    <item name="android:paddingStart">@dimen/grid_2</item>
+    <item name="android:paddingEnd">@dimen/grid_2</item>
+    <item name="android:background">@drawable/rect_green_alpha_6</item>
   </style>
 
 </resources>

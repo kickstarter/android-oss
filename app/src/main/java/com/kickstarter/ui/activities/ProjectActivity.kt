@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
@@ -86,7 +87,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 }
 
                 rewards_toolbar.setNavigationOnClickListener {
-                    this.viewModel.inputs.hideRewardsFragmentClicked()
+                    this.viewModel.inputs.hideRewardsSheetClicked()
                 }
 
                 this.supportFragmentManager.addOnBackStackChangedListener {
@@ -236,31 +237,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
-    private fun animateScrimVisibility(show: Boolean) {
-        val shouldAnimateIn = show && scrim.alpha == 0f
-        val shouldAnimateOut = !show && scrim.alpha == 1f
-        if (shouldAnimateIn || shouldAnimateOut) {
-            val finalAlpha = if (show) 1f else 0f
-            scrim.animate()
-                    .alpha(finalAlpha)
-                    .setDuration(200L)
-                    .setListener(object : AnimatorListenerAdapter() {
-
-                        override fun onAnimationEnd(animation: Animator?) {
-                            if (!show) {
-                                ViewUtils.setGone(scrim, true)
-                            }
-                        }
-
-                        override fun onAnimationStart(animation: Animator?) {
-                            if (show) {
-                                ViewUtils.setGone(scrim, false)
-                            }
-                        }
-                    })
-        }
-    }
-
     override fun back() {
         if (environment().nativeCheckoutPreference().get()) {
             handleNativeCheckoutBackPress()
@@ -340,6 +316,31 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
+    private fun animateScrimVisibility(show: Boolean) {
+        val shouldAnimateIn = show && scrim.alpha <= 1f
+        val shouldAnimateOut = !show && scrim.alpha >= 0f
+        if (shouldAnimateIn || shouldAnimateOut) {
+            val finalAlpha = if (show) 1f else 0f
+            scrim.animate()
+                    .alpha(finalAlpha)
+                    .setDuration(200L)
+                    .setListener(object : AnimatorListenerAdapter() {
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            if (!show) {
+                                ViewUtils.setGone(scrim, true)
+                            }
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                            if (show) {
+                                ViewUtils.setGone(scrim, false)
+                            }
+                        }
+                    })
+        }
+    }
+
     private fun clearFragmentBackStack() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
@@ -348,7 +349,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val rewardsSheetIsExpanded = pledge_container.alpha == 1f
         when {
             supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
-            rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsFragmentClicked()
+            rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsSheetClicked()
             else -> {
                 clearFragmentBackStack()
                 super.back()
@@ -385,7 +386,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun showCancelPledgeSuccess() {
         clearFragmentBackStack()
-        showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
+        Handler().postDelayed({
+            showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
+        }, this.animDuration)
     }
 
     private fun startCampaignWebViewActivity(project: Project) {

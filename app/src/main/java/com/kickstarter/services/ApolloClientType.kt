@@ -18,7 +18,7 @@ interface ApolloClientType {
 
     fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean>
 
-    fun clearUnseenActivity(): Observable<Long>
+    fun clearUnseenActivity(): Observable<Int>
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 

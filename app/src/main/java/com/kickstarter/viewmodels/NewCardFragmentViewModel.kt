@@ -135,10 +135,12 @@ interface NewCardFragmentViewModel {
         }
 
         private fun storeNameAndPostalCode(cardForm: CardForm): Card {
+            //todo: fixed in other branch
             val card = cardForm.card!!
-            card.name = cardForm.name
-            card.addressZip = cardForm.postalCode
-            return card
+            return card.toBuilder()
+                    .name(cardForm.name)
+                    .addressZip(cardForm.postalCode)
+                    .build()
         }
 
         override fun card(card: Card?) {
@@ -210,13 +212,13 @@ interface NewCardFragmentViewModel {
                     return cardNumber.length < 3 || CardUtils.getPossibleCardType(cardNumber) in CardForm.allowedCardTypes
                 }
 
-                private val allowedCardTypes = arrayOf(Card.AMERICAN_EXPRESS,
-                        Card.DINERS_CLUB,
-                        Card.DISCOVER,
-                        Card.JCB,
-                        Card.MASTERCARD,
-                        Card.UNIONPAY,
-                        Card.VISA)
+                private val allowedCardTypes = arrayOf(Card.CardBrand.AMERICAN_EXPRESS,
+                        Card.CardBrand.DINERS_CLUB,
+                        Card.CardBrand.DISCOVER,
+                        Card.CardBrand.JCB,
+                        Card.CardBrand.MASTERCARD,
+                        Card.CardBrand.UNIONPAY,
+                        Card.CardBrand.VISA)
             }
         }
 
@@ -228,8 +230,8 @@ interface NewCardFragmentViewModel {
                         saveCard(token, ps)
                     }
 
-                    override fun onError(error: Exception?) {
-                        ps.onError(error)
+                    override fun onError(e: Exception) {
+                        ps.onError(e)
                     }
                 })
                 return@defer ps
@@ -239,11 +241,16 @@ interface NewCardFragmentViewModel {
         }
 
         private fun saveCard(token: Token, ps: PublishSubject<Void>) {
-            this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, token.card.id)
-                    .subscribe({
-                        ps.onNext(null)
-                        ps.onCompleted()
-                    }, { ps.onError(it) })
+            token.card?.id?.apply {
+                this@ViewModel.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, this)
+                        .subscribe({
+                            ps.onNext(null)
+                            ps.onCompleted()
+                        }, { ps.onError(it) })
+            }?: run {
+                ps.onError(IllegalStateException("Card has no id"))
+            }
+
         }
     }
 }

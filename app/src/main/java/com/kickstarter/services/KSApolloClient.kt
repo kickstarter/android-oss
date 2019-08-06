@@ -87,9 +87,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun clearUnseenActivity(): Observable<Long> {
+    override fun clearUnseenActivity(): Observable<Int> {
         return Observable.defer {
-            val ps = PublishSubject.create<Long>()
+            val ps = PublishSubject.create<Int>()
             service.mutate(ClearUserUnseenActivityMutation.builder()
                     .build())
                     .enqueue(object : ApolloCall.Callback<ClearUserUnseenActivityMutation.Data>() {
@@ -246,9 +246,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
-                            decodeRelayId(response.data()?.sendMessage()?.conversation()?.id()).let {
-                                handleResponse(it, ps)
-                            }
+                            handleResponse(decodeRelayId(response.data()?.sendMessage()?.conversation()?.id()), ps)
                         }
                     })
             return@defer ps

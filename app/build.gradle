@@ -151,17 +151,19 @@ android {
 
 buildscript {
     repositories {
+        google()
         jcenter()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
-        classpath 'com.apollographql.apollo:apollo-gradle-plugin:0.5.0'
+        classpath 'com.apollographql.apollo:apollo-gradle-plugin:1.0.2'
     }
 }
 
 apollo {
-    customTypeMapping['Email'] = "java.lang.String"
-    customTypeMapping['Date'] = "java.util.Date"
+    customTypeMapping = [
+            "Date" : "java.util.Date",
+            "Email": "java.lang.String"
+    ]
 }
 
 afterEvaluate {
@@ -191,7 +193,6 @@ repositories {
 }
 
 // library versions
-final apollo = "0.5.0"
 final auto_parcel_version = "0.3.1"
 final butterknife_version = "7.0.1"
 final crashlytics_version = "2.9.6@aar"
@@ -211,7 +212,6 @@ final retrofit_version = "2.3.0"
 final rx_binding_version = "0.4.0"
 final rx_java_version = "1.1.5"
 final rx_lifecycle_version = "0.3.0"
-final stripe_version = "8.3.0"
 final timber_version = "3.0.1"
 
 // Test support versions
@@ -245,7 +245,7 @@ dependencies {
     implementation "com.jakewharton:process-phoenix:$phoenix_version"
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "com.stripe:stripe-android:$stripe_version"
+    implementation "com.stripe:stripe-android:10.2.0"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
     debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leak_canary_version"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leak_canary_version"
@@ -267,8 +267,7 @@ dependencies {
     implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_version") {
         transitive = true
     }
-    implementation "com.apollographql.apollo:apollo-runtime:$apollo"
-    implementation "com.apollographql.apollo:apollo-android-support:$apollo"
+    implementation 'com.apollographql.apollo:apollo-runtime:1.0.2'
 
     // Testing
     testImplementation "junit:junit:$junit_version"

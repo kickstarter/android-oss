@@ -3,7 +3,6 @@ package com.kickstarter.models
 import android.os.Parcelable
 import auto.parcel.AutoParcel
 import com.kickstarter.R
-import com.kickstarter.libs.qualifiers.AutoGson
 import type.CreditCardTypes
 import java.util.*
 

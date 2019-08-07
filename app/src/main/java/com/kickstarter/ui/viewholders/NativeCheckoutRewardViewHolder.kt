@@ -169,9 +169,20 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.view.reward_check.setBackgroundResource(it) }
 
-        view.reward_pledge_button.setOnClickListener {
-            this.viewModel.inputs.rewardClicked()
+        this.delegate?.let {
+            this.view.reward_pledge_button.setOnClickListener {
+                this.viewModel.inputs.rewardClicked()
+            }
+
+            this.view.reward_card.setOnClickListener {
+                this.viewModel.inputs.rewardClicked()
+            }
+
+            this.view.reward_card.setOnClickListener {
+                this.viewModel.inputs.rewardClicked()
+            }
         }
+
     }
 
     override fun bindData(data: Any?) {

@@ -199,14 +199,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     this.viewModel.inputs.addedCardPosition(position)
                 }
 
-        this.viewModel.outputs.card()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    val position = (cards_recycler.adapter as RewardCardAdapter).insertCard(it)
-                    this.viewModel.inputs.addedCardPosition(position)
-                }
-
         this.viewModel.outputs.startLoginToutActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

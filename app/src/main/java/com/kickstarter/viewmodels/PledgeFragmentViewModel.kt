@@ -88,9 +88,6 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the cancel pledge button should be hidden. */
         fun cancelPledgeButtonIsGone(): Observable<Boolean>
 
-        /** Emits a newly added stored card. */
-        fun card(): Observable<StoredCard>
-
         /** Emits a list of stored cards for a user. */
         fun cardsAndProject(): Observable<Pair<List<StoredCard>, Project>>
 
@@ -537,10 +534,6 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.addedCard)
 
-            this.cardSaved
-                    .compose(bindToLifecycle())
-                    .subscribe(this.card)
-
             val selectedPosition = BehaviorSubject.create(RecyclerView.NO_POSITION)
 
             this.cardSaved
@@ -694,9 +687,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun cancelPledgeButtonIsGone(): Observable<Boolean> = this.cancelPledgeButtonIsGone
-
-        @NonNull
-        override fun card(): Observable<StoredCard> = this.card
 
         @NonNull
         override fun cardsAndProject(): Observable<Pair<List<StoredCard>, Project>> = this.cardsAndProject

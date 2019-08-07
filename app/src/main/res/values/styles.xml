@@ -694,7 +694,7 @@
     <item name="cardTint">@color/ksr_dark_grey_500</item>
     <item name="cardTextErrorColor">@color/ksr_red_400</item>
   </style>
-  
+
   <!-- AutoComplete -->
   <style name="AutocompleteStyle" parent="Widget.AppCompat.Light.AutoCompleteTextView">
     <item name="android:colorControlActivated">@color/ksr_green_500</item>
@@ -739,6 +739,14 @@
     <item name="android:layout_marginEnd">@dimen/grid_1</item>
     <item name="android:layout_marginStart">@dimen/grid_1</item>
     <item name="android:foreground">@drawable/click_indicator_light</item>
+  </style>
+
+  <style name="CardViewFragment">
+    <item name="cardCornerRadius">@dimen/grid_5</item>
+    <item name="android:focusable">true</item>
+    <item name="android:clickable">true</item>
+    <item name="android:layout_marginBottom">-30dp</item>
+    <item name="android:layout_gravity">bottom</item>
   </style>
 
 </resources>

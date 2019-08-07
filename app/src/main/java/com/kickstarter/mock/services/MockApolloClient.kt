@@ -2,7 +2,6 @@ package com.kickstarter.mock.services
 
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
-import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -43,8 +42,8 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
     }
 
-    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
-        return Observable.just(SavePaymentMethodMutation.Data(SavePaymentMethodMutation.CreatePaymentSource("", null, true)))
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+        return Observable.just(StoredCardFactory.discoverCard())
     }
 
     override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {

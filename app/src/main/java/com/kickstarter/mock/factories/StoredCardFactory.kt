@@ -14,5 +14,14 @@ class StoredCardFactory private constructor() {
                     .type(CreditCardTypes.DISCOVER)
                     .build()
         }
+
+        fun visa(): StoredCard {
+            return StoredCard.builder()
+                    .id(IdFactory.id().toString())
+                    .expiration(Date())
+                    .lastFourDigits("4321")
+                    .type(CreditCardTypes.VISA)
+                    .build()
+        }
     }
 }

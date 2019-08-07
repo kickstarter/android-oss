@@ -5,7 +5,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
@@ -15,7 +14,6 @@ import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
@@ -28,8 +26,14 @@ import kotlin.math.sign
 
 interface PledgeFragmentViewModel {
     interface Inputs {
+        /** Call when a card has been inserted into the stored cards list. */
+        fun addedCardPosition(position: Int)
+
         /** Call when user clicks the cancel pledge button. */
         fun cancelPledgeButtonClicked()
+
+        /** Call when a card has successfully saved. */
+        fun cardSaved(storedCard: StoredCard)
 
         /** Call when user deselects a card they want to pledge with. */
         fun closeCardButtonClicked(position: Int)
@@ -66,6 +70,9 @@ interface PledgeFragmentViewModel {
     }
 
     interface Outputs {
+        /** Emits a newly added stored card. */
+        fun addedCard(): Observable<StoredCard>
+
         /** Emits the additional pledge amount string. */
         fun additionalPledgeAmount(): Observable<String>
 
@@ -141,6 +148,9 @@ interface PledgeFragmentViewModel {
         /** Emits when we should the user a warning about not satisfying the reward's minimum. */
         fun showMinimumWarning(): Observable<String>
 
+        /** Emits when we should show the [com.kickstarter.ui.fragments.NewCardFragment]. */
+        fun showNewCardFragment(): Observable<Void>
+
         /** Emits when the cards adapter should update the selected position. */
         fun showPledgeCard(): Observable<Pair<Int, CardState>>
 
@@ -152,9 +162,6 @@ interface PledgeFragmentViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.LoginToutActivity]. */
         fun startLoginToutActivity(): Observable<Void>
-
-        /** Emits when we should start the [com.kickstarter.ui.activities.NewCardActivity]. */
-        fun startNewCardActivity(): Observable<Void>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Project>
@@ -174,7 +181,9 @@ interface PledgeFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
+        private val addedCardPosition = PublishSubject.create<Int>()
         private val cancelPledgeButtonClicked = PublishSubject.create<Void>()
+        private val cardSaved = PublishSubject.create<StoredCard>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
         private val decreasePledgeButtonClicked = PublishSubject.create<Void>()
@@ -187,9 +196,10 @@ interface PledgeFragmentViewModel {
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
 
-        private val animateRewardCard = BehaviorSubject.create<PledgeData>()
+        private val addedCard = BehaviorSubject.create<StoredCard>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
+        private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
         private val cancelPledgeButtonIsGone = BehaviorSubject.create<Boolean>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
@@ -212,11 +222,11 @@ interface PledgeFragmentViewModel {
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
         private val showCancelPledge = PublishSubject.create<Project>()
         private val showMinimumWarning = PublishSubject.create<String>()
+        private val showNewCardFragment = PublishSubject.create<Void>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = BehaviorSubject.create<Void>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
-        private val startNewCardActivity = PublishSubject.create<Void>()
         private val startThanksActivity = PublishSubject.create<Project>()
         private val totalAmount = BehaviorSubject.create<SpannableString>()
         private val totalContainerIsGone = BehaviorSubject.create<Boolean>()
@@ -519,7 +529,17 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.cardsAndProject)
 
+            this.cardSaved
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addedCard)
+
             val selectedPosition = BehaviorSubject.create(RecyclerView.NO_POSITION)
+
+            this.cardSaved
+                    .compose<Pair<StoredCard, Int>>(zipPair(this.addedCardPosition))
+                    .map { it.second }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.selectCardButtonClicked)
 
             this.showPledgeCard
                     .map { it.first }
@@ -536,7 +556,7 @@ interface PledgeFragmentViewModel {
 
             this.newCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe(this.startNewCardActivity)
+                    .subscribe(this.showNewCardFragment)
 
             pledgeLessThanMinimum
                     .compose<Boolean>(takeWhen(this.continueButtonClicked))
@@ -555,14 +575,6 @@ interface PledgeFragmentViewModel {
                     .map { this.ksCurrency.format(it.second.minimum(), it.first, RoundingMode.HALF_UP) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showMinimumWarning)
-
-            activityResult()
-                    .filter { it.isRequestCode(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
-                    .filter(ActivityResult::isOk)
-                    .switchMap { storedCards() }
-                    .compose<Pair<List<StoredCard>, Project>>(combineLatestPair(project))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cardsAndProject)
 
             val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
 
@@ -628,7 +640,11 @@ interface PledgeFragmentViewModel {
 
         data class Checkout(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
 
+        override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
+
         override fun cancelPledgeButtonClicked() = this.cancelPledgeButtonClicked.onNext(null)
+
+        override fun cardSaved(storedCard: StoredCard) = this.cardSaved.onNext(storedCard)
 
         override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
 
@@ -651,6 +667,9 @@ interface PledgeFragmentViewModel {
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
         override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
+
+        @NonNull
+        override fun addedCard(): Observable<StoredCard> = this.addedCard
 
         @NonNull
         override fun additionalPledgeAmount(): Observable<String> = this.additionalPledgeAmount
@@ -728,6 +747,9 @@ interface PledgeFragmentViewModel {
         override fun showMinimumWarning(): Observable<String> = this.showMinimumWarning
 
         @NonNull
+        override fun showNewCardFragment(): Observable<Void> = this.showNewCardFragment
+
+        @NonNull
         override fun showPledgeCard(): Observable<Pair<Int, CardState>> = this.showPledgeCard
 
         @NonNull
@@ -738,9 +760,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
-
-        @NonNull
-        override fun startNewCardActivity(): Observable<Void> = this.startNewCardActivity
 
         @NonNull
         override fun startThanksActivity(): Observable<Project> = this.startThanksActivity

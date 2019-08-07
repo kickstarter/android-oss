@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
@@ -29,19 +30,23 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.fragments.CancelPledgeFragment
+import com.kickstarter.ui.fragments.NewCardFragment
+import com.kickstarter.ui.fragments.PledgeFragment
 import com.kickstarter.ui.fragments.RewardsFragment
 import com.kickstarter.viewmodels.ProjectViewModel
+import com.stripe.android.view.StripeEditText
 import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.project_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate {
+class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate, NewCardFragment.OnCardSavedListener {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
     private lateinit var heartIcon: ImageButton
@@ -86,7 +91,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 }
 
                 rewards_toolbar.setNavigationOnClickListener {
-                    this.viewModel.inputs.hideRewardsFragmentClicked()
+                    this.viewModel.inputs.hideRewardsSheetClicked()
                 }
 
                 this.supportFragmentManager.addOnBackStackChangedListener {
@@ -236,31 +241,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
-    private fun animateScrimVisibility(show: Boolean) {
-        val shouldAnimateIn = show && scrim.alpha == 0f
-        val shouldAnimateOut = !show && scrim.alpha == 1f
-        if (shouldAnimateIn || shouldAnimateOut) {
-            val finalAlpha = if (show) 1f else 0f
-            scrim.animate()
-                    .alpha(finalAlpha)
-                    .setDuration(200L)
-                    .setListener(object : AnimatorListenerAdapter() {
-
-                        override fun onAnimationEnd(animation: Animator?) {
-                            if (!show) {
-                                ViewUtils.setGone(scrim, true)
-                            }
-                        }
-
-                        override fun onAnimationStart(animation: Animator?) {
-                            if (show) {
-                                ViewUtils.setGone(scrim, false)
-                            }
-                        }
-                    })
-        }
-    }
-
     override fun back() {
         if (environment().nativeCheckoutPreference().get()) {
             handleNativeCheckoutBackPress()
@@ -271,9 +251,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_DOWN) {
-            val view = currentFocus
+            var view = currentFocus
             if (view is EditText) {
                 val outRect = Rect()
+                if (view is StripeEditText) {
+                    view = view.parent as View
+                }
                 view.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     hideKeyboard()
@@ -285,6 +268,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun pledgeSuccessfullyCancelled() {
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
+    }
+
+    override fun cardSaved(storedCard: StoredCard) {
+        val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
+        pledgeFragment?.cardAdded(storedCard)
+        supportFragmentManager.popBackStack()
     }
 
     override fun exitTransition(): Pair<Int, Int>? {
@@ -340,6 +329,31 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
+    private fun animateScrimVisibility(show: Boolean) {
+        val shouldAnimateIn = show && scrim.alpha <= 1f
+        val shouldAnimateOut = !show && scrim.alpha >= 0f
+        if (shouldAnimateIn || shouldAnimateOut) {
+            val finalAlpha = if (show) 1f else 0f
+            scrim.animate()
+                    .alpha(finalAlpha)
+                    .setDuration(200L)
+                    .setListener(object : AnimatorListenerAdapter() {
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            if (!show) {
+                                ViewUtils.setGone(scrim, true)
+                            }
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                            if (show) {
+                                ViewUtils.setGone(scrim, false)
+                            }
+                        }
+                    })
+        }
+    }
+
     private fun clearFragmentBackStack() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
@@ -348,7 +362,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val rewardsSheetIsExpanded = pledge_container.alpha == 1f
         when {
             supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
-            rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsFragmentClicked()
+            rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsSheetClicked()
             else -> {
                 clearFragmentBackStack()
                 super.back()
@@ -385,7 +399,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun showCancelPledgeSuccess() {
         clearFragmentBackStack()
-        showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
+        Handler().postDelayed({
+            showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
+        }, this.animDuration)
     }
 
     private fun startCampaignWebViewActivity(project: Project) {

@@ -238,7 +238,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
             this.titleForNoReward = this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
-                    .map { if(BackingUtils.isBacked(it.first, it.second)) R.string.Thank_you_for_supporting_this_project else R.string.Make_a_pledge_without_a_reward }
+                    .map { if(BackingUtils.isBacked(it.first, it.second)) R.string.Thank_you_for_supporting_this_project else R.string.Pledge_without_a_reward }
 
             this.titleForReward = reward
                     .filter { RewardUtils.isReward(it) }

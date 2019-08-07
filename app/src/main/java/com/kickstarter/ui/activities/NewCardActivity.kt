@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.viewmodels.NewCardViewModel
 
@@ -16,7 +17,7 @@ class NewCardActivity  : BaseActivity<NewCardViewModel.ViewModel>(), NewCardFrag
         setContentView(R.layout.activity_new_card)
     }
 
-    override fun cardSaved() {
+    override fun cardSaved(storedCard: StoredCard) {
         setResult(Activity.RESULT_OK)
         finish()
     }

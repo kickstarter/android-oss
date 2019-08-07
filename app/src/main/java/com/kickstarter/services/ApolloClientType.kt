@@ -2,7 +2,6 @@ package com.kickstarter.services
 
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
-import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
@@ -26,7 +25,7 @@ interface ApolloClientType {
 
     fun getStoredCards(): Observable<List<StoredCard>>
 
-    fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data>
+    fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard>
 
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 

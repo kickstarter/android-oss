@@ -1,12 +1,9 @@
 package com.kickstarter.viewmodels
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.Country
@@ -21,7 +18,6 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.ActivityResult
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
@@ -34,6 +30,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
+    private val addedCard = TestSubscriber<StoredCard>()
     private val additionalPledgeAmount = TestSubscriber<String>()
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val animateRewardCard = TestSubscriber<PledgeData>()
@@ -74,6 +71,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                                  project: Project? = ProjectFactory.project()) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
+        this.vm.outputs.addedCard().subscribe(this.addedCard)
         this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)
         this.vm.outputs.additionalPledgeAmountIsGone().subscribe(this.additionalPledgeAmountIsGone)
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
@@ -103,7 +101,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.startChromeTab().subscribe(this.startChromeTab)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.startNewCardActivity().subscribe(this.startNewCardActivity)
+        this.vm.outputs.showNewCardFragment().subscribe(this.startNewCardActivity)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
         this.vm.outputs.totalContainerIsGone().subscribe(this.totalContainerIsGone)
@@ -151,9 +149,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.cards.assertValue(Collections.singletonList(card))
 
-        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
 
-        this.cards.assertValueCount(2)
+        this.cards.assertValue(Collections.singletonList(card))
+        this.addedCard.assertValue(visa)
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
     @Test
@@ -161,7 +163,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val card = StoredCardFactory.discoverCard()
         val mockCurrentUser = MockCurrentUser(UserFactory.user())
 
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environment()
                 .toBuilder()
                 .currentUser(mockCurrentUser)
                 .apolloClient(object : MockApolloClient() {
@@ -173,9 +175,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.cards.assertValue(Collections.singletonList(card))
 
-        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD, Activity.RESULT_OK, Intent()))
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
 
-        this.cards.assertValueCount(2)
+        this.cards.assertValue(Collections.singletonList(card))
+        this.addedCard.assertValue(visa)
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
     @Test
@@ -736,8 +742,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowCancelPledge() {
         val backedProject = ProjectFactory.backedProject()
-        val backing = backedProject.backing()?: BackingFactory.backing()
-        val reward = backing.reward()?: RewardFactory.reward()
+        val backing = backedProject.backing() ?: BackingFactory.backing()
+        val reward = backing.reward() ?: RewardFactory.reward()
         setUpEnvironment(environment(), reward, backedProject)
 
         this.vm.inputs.cancelPledgeButtonClicked()
@@ -936,13 +942,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
         this.startThanksActivity.assertNoValues()
         this.showPledgeError.assertValueCount(1)
-    }
-
-    private fun assertInitialPledgeCurrencyStates_NoShipping_MXProject() {
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.additionalPledgeAmount.assertValue("MX$ 0")
-        this.conversionText.assertValue("$15.00")
-        this.conversionTextViewIsGone.assertValues(false)
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject() {

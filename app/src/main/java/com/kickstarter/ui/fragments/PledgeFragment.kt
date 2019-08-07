@@ -31,7 +31,6 @@ import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.showSnackbar
-import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -41,12 +40,12 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
-import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.activities.ThanksActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
@@ -192,17 +191,29 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it) }
 
+        this.viewModel.outputs.addedCard()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    val position = (cards_recycler.adapter as RewardCardAdapter).insertCard(it)
+                    this.viewModel.inputs.addedCardPosition(position)
+                }
+
         this.viewModel.outputs.startLoginToutActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
 
-        this.viewModel.outputs.startNewCardActivity()
+        this.viewModel.outputs.showNewCardFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    startActivityForResult(Intent(this.context, NewCardActivity::class.java),
-                            ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
+                    fragmentManager
+                            ?.beginTransaction()
+                            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true), NewCardFragment::class.java.simpleName)
+                            ?.addToBackStack(NewCardFragment::class.java.simpleName)
+                            ?.commit()
                 }
 
         this.viewModel.outputs.selectedShippingRule()
@@ -349,6 +360,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun addNewCardButtonClicked() {
         this.viewModel.inputs.newCardButtonClicked()
+    }
+
+    fun cardAdded(storedCard: StoredCard) {
+        this.viewModel.inputs.cardSaved(storedCard)
     }
 
     override fun closePledgeButtonClicked(position: Int) {

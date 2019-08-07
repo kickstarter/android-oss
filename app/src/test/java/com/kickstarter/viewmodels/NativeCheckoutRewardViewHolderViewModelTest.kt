@@ -595,7 +595,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
         this.titleIsGone.assertValues(true, false)
         this.titleForReward.assertNoValues()
-        this.titleForNoReward.assertValuesAndClear(R.string.Make_a_pledge_without_a_reward)
+        this.titleForNoReward.assertValuesAndClear(R.string.Pledge_without_a_reward)
 
         val noRewardBacking = BackingFactory.backing()
                 .toBuilder()

@@ -220,6 +220,11 @@
     <item name="android:layout_marginStart">@dimen/grid_3</item>
   </style>
 
+  <style name="SelectButton">
+    <item name="android:textAllCaps">false</item>
+    <item name="backgroundTint">@color/button_select</item>
+  </style>
+
   <style name="KSSettingsMailIcon">
     <item name="android:src">@drawable/icon__mail</item>
     <item name="android:focusable">true</item>

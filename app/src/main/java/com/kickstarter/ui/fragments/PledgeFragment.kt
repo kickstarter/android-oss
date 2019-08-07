@@ -186,10 +186,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { setTextColor(it, total_amount, total_symbol_start, total_symbol_end) }
 
-        this.viewModel.outputs.cards()
+        this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it) }
+                .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it.first, it.second) }
 
         this.viewModel.outputs.addedCard()
                 .compose(bindToLifecycle())

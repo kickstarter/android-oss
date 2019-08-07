@@ -30,13 +30,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
-    private val addedCard = TestSubscriber<StoredCard>()
+    private val addedCard = TestSubscriber<Pair<StoredCard, Project>>()
     private val additionalPledgeAmount = TestSubscriber<String>()
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val baseUrlForTerms = TestSubscriber<String>()
     private val cancelPledgeButtonIsGone = TestSubscriber<Boolean>()
-    private val cards = TestSubscriber<List<StoredCard>>()
+    private val cardsAndProject = TestSubscriber<Pair<List<StoredCard>, Project>>()
     private val changePaymentMethodButtonIsGone = TestSubscriber<Boolean>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
     private val conversionText = TestSubscriber<String>()
@@ -77,7 +77,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.baseUrlForTerms().subscribe(this.baseUrlForTerms)
         this.vm.outputs.cancelPledgeButtonIsGone().subscribe(this.cancelPledgeButtonIsGone)
-        this.vm.outputs.cards().subscribe(this.cards)
+        this.vm.outputs.cardsAndProject().subscribe(this.cardsAndProject)
         this.vm.outputs.changePaymentMethodButtonIsGone().subscribe(this.changePaymentMethodButtonIsGone)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
         this.vm.outputs.conversionText().subscribe(this.conversionText)
@@ -145,16 +145,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                         return Observable.just(Collections.singletonList(card))
                     }
                 }).build()
-        setUpEnvironment(environment)
+        val project = ProjectFactory.project()
 
-        this.cards.assertValue(Collections.singletonList(card))
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
 
         val visa = StoredCardFactory.visa()
         this.vm.inputs.cardSaved(visa)
         this.vm.inputs.addedCardPosition(0)
 
-        this.cards.assertValue(Collections.singletonList(card))
-        this.addedCard.assertValue(visa)
+        this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
+        this.addedCard.assertValue(Pair(visa, project))
         this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
@@ -171,16 +173,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                         return Observable.just(Collections.singletonList(card))
                     }
                 }).build()
-        setUpEnvironment(environment, RewardFactory.reward())
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment, RewardFactory.reward(), project)
 
-        this.cards.assertValue(Collections.singletonList(card))
+        this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
 
         val visa = StoredCardFactory.visa()
         this.vm.inputs.cardSaved(visa)
         this.vm.inputs.addedCardPosition(0)
 
-        this.cards.assertValue(Collections.singletonList(card))
-        this.addedCard.assertValue(visa)
+        this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
+        this.addedCard.assertValue(Pair(visa, project))
         this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
@@ -192,7 +195,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        this.cards.assertValueCount(1)
+        this.cardsAndProject.assertValueCount(1)
         this.continueButtonIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
     }
@@ -205,7 +208,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.reward())
 
-        this.cards.assertValueCount(1)
+        this.cardsAndProject.assertValueCount(1)
         this.continueButtonIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
     }
@@ -214,7 +217,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPaymentForLoggedOutUser() {
         setUpEnvironment(environment())
 
-        this.cards.assertNoValues()
+        this.cardsAndProject.assertNoValues()
         this.continueButtonIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
     }
@@ -228,13 +231,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        this.cards.assertNoValues()
+        this.cardsAndProject.assertNoValues()
         this.continueButtonIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
 
         mockCurrentUser.refresh(UserFactory.user())
 
-        this.cards.assertValueCount(1)
+        this.cardsAndProject.assertValueCount(1)
         this.continueButtonIsGone.assertValues(false, true)
         this.paymentContainerIsGone.assertValues(true, false)
     }
@@ -244,13 +247,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val mockCurrentUser = MockCurrentUser()
         setUpEnvironment(environment().toBuilder().currentUser(mockCurrentUser).build(), RewardFactory.reward())
 
-        this.cards.assertNoValues()
+        this.cardsAndProject.assertNoValues()
         this.continueButtonIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
 
         mockCurrentUser.refresh(UserFactory.user())
 
-        this.cards.assertValueCount(1)
+        this.cardsAndProject.assertValueCount(1)
         this.continueButtonIsGone.assertValues(false, true)
         this.paymentContainerIsGone.assertValues(true, false)
     }

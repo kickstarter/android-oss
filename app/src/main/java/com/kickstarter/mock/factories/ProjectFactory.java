@@ -226,6 +226,7 @@ public final class ProjectFactory {
       .currentCurrency("MXN")
       .currencySymbol("$")
       .currency("MXN")
+      .location(LocationFactory.mexico())
       .staticUsdRate(0.75f)
       .fxRate(0.75f)
       .build();

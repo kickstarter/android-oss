@@ -3,7 +3,6 @@ package com.kickstarter.models
 import android.os.Parcelable
 import auto.parcel.AutoParcel
 import com.kickstarter.R
-import com.kickstarter.libs.qualifiers.AutoGson
 import type.CreditCardTypes
 import java.util.*
 
@@ -34,6 +33,7 @@ abstract class StoredCard : Parcelable {
         internal fun getCardTypeDrawable(cardType: CreditCardTypes): Int {
             return when (cardType) {
                 CreditCardTypes.AMEX -> R.drawable.amex_md
+                CreditCardTypes.DINERS -> R.drawable.diners_md
                 CreditCardTypes.DISCOVER -> R.drawable.discover_md
                 CreditCardTypes.JCB -> R.drawable.jcb_md
                 CreditCardTypes.MASTERCARD -> R.drawable.mastercard_md

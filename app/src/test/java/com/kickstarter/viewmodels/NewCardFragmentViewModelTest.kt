@@ -277,20 +277,6 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDividerIsVisible() {
-        setUpEnvironment(environment())
-
-        this.dividerIsVisible.assertValue(true)
-    }
-
-    @Test
-    fun testDividerIsVisible_whenModal() {
-        setUpEnvironment(environment(), true)
-
-        this.dividerIsVisible.assertValue(false)
-    }
-
-    @Test
     fun testAPIError() {
         val apolloClient = object : MockApolloClient() {
             override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {

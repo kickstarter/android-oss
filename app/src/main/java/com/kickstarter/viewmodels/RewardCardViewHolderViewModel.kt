@@ -39,7 +39,6 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
             val project = this.cardAndProject
                     .map { it.second }
 
-
             val allowedCard = this.cardAndProject
                     .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
 

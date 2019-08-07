@@ -1,12 +1,14 @@
 package com.kickstarter.ui.adapters
 
+import android.util.Pair
 import android.view.View
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
+import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.viewholders.*
+import rx.Observable
 
 class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     interface Delegate : RewardCardViewHolder.Delegate, RewardPledgeCardViewHolder.Delegate, RewardAddCardViewHolder.Delegate
@@ -47,9 +49,12 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         }
     }
 
-    fun takeCards(@NonNull cards: List<StoredCard>) {
+    fun takeCards(cards: List<StoredCard>, project: Project) {
         sections().clear()
-        addSection(cards)
+        addSection(Observable.from(cards)
+                .map { Pair(it, project) }
+                .toList().toBlocking().single()
+        )
         addSection(listOf(null))
         notifyDataSetChanged()
     }
@@ -69,10 +74,10 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyItemChanged(position)
     }
 
-    fun insertCard(storedCard: StoredCard) : Int {
+    fun insertCard(storedCardAndProject: Pair<StoredCard, Project>) : Int {
         val storedCards = sections()[0]
         val position = 0
-        storedCards.add(position, storedCard)
+        storedCards.add(position, storedCardAndProject)
         notifyItemInserted(position)
 
         return position

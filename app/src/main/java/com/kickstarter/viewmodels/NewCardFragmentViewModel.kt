@@ -5,7 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -47,7 +46,7 @@ interface NewCardFragmentViewModel {
     }
 
     interface Outputs {
-        /**  */
+        /** Emits a string resource and project to display warning. */
         fun allowedCardWarning(): Observable<Pair<Int?, Project?>>
 
         /** Emits a boolean determining if the allowed card warning should be visible. */
@@ -62,10 +61,10 @@ interface NewCardFragmentViewModel {
         /** Emits a boolean determining if the form divider should be visible. */
         fun dividerIsVisible(): Observable<Boolean>
 
-        /** Emits when the password update was unsuccessful and the fragment is not modal. */
+        /** Emits when saving the card was unsuccessful and the fragment is not modal. */
         fun error(): Observable<Void>
 
-        /** Emits when the password update was unsuccessful and the fragment is modal. */
+        /** Emits when saving the card was unsuccessful and the fragment is modal. */
         fun modalError(): Observable<Void>
 
         /** Emits when the progress bar should be visible. */
@@ -137,6 +136,7 @@ interface NewCardFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
 
             val reusable = Observable.merge(initialReusable, this.reusable)
+
             val cardForm = Observable.combineLatest(this.name,
                     this.card,
                     this.cardNumber,
@@ -199,11 +199,10 @@ interface NewCardFragmentViewModel {
 
             saveCardNotification
                     .compose(values())
-                    .subscribe()
-
-            saveCardNotification
-                    .compose(errors())
-                    .subscribe { this.koala.trackFailedPaymentMethodCreation() }
+                    .subscribe {
+                        this.success.onNext(null)
+                        this.koala.trackSavedPaymentMethod()
+                    }
 
             val error = saveCardNotification
                     .compose(errors())
@@ -219,6 +218,10 @@ interface NewCardFragmentViewModel {
                     .filter { it.second }
                     .map { it.first }
                     .subscribe(this.modalError)
+
+            saveCardNotification
+                    .compose(errors())
+                    .subscribe { this.koala.trackFailedPaymentMethodCreation() }
 
             this.koala.trackViewedAddNewCard()
         }
@@ -251,11 +254,11 @@ interface NewCardFragmentViewModel {
             this.saveCardClicked.onNext(null)
         }
 
-        override fun appBarLayoutHasElevation(): Observable<Boolean> = this.appBarLayoutHasElevation
-
         override fun allowedCardWarning(): Observable<Pair<Int?, Project?>> = this.allowedCardWarning
 
         override fun allowedCardWarningIsVisible(): Observable<Boolean> = this.allowedCardWarningIsVisible
+
+        override fun appBarLayoutHasElevation(): Observable<Boolean> = this.appBarLayoutHasElevation
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
 

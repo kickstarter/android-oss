@@ -37,7 +37,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testButtonCTA() {
+    fun testButtonCTA_whenCardIsAccepted() {
         setUpEnvironment(environment())
         val creditCard = StoredCardFactory.discoverCard()
 
@@ -58,7 +58,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testButtonEnabled() {
+    fun testButtonEnabled_whenCardIsAccepted() {
         setUpEnvironment(environment())
         val creditCard = StoredCardFactory.discoverCard()
 
@@ -125,7 +125,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testNotAvailableCopyIsVisible() {
+    fun testNotAvailableCopyIsVisible_whenCardIsAccepted() {
         setUpEnvironment(environment())
 
         val creditCard = StoredCardFactory.discoverCard()
@@ -147,7 +147,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectCountry() {
+    fun testProjectCountry_whenCardIsAccepted() {
         setUpEnvironment(environment())
 
         val creditCard = StoredCardFactory.discoverCard()

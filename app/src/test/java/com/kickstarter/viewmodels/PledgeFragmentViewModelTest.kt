@@ -30,7 +30,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PledgeFragmentViewModel.ViewModel
 
-    private val addedCard = TestSubscriber<StoredCard>()
+    private val addedCard = TestSubscriber<Pair<StoredCard, Project>>()
     private val additionalPledgeAmount = TestSubscriber<String>()
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val animateRewardCard = TestSubscriber<PledgeData>()
@@ -156,7 +156,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.addedCardPosition(0)
 
         this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
-        this.addedCard.assertValue(visa)
+        this.addedCard.assertValue(Pair(visa, project))
         this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 
@@ -183,7 +183,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.addedCardPosition(0)
 
         this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
-        this.addedCard.assertValue(visa)
+        this.addedCard.assertValue(Pair(visa, project))
         this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
     }
 

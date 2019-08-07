@@ -70,8 +70,8 @@ interface PledgeFragmentViewModel {
     }
 
     interface Outputs {
-        /** Emits a newly added stored card. */
-        fun addedCard(): Observable<StoredCard>
+        /** Emits a newly added stored card and the project. */
+        fun addedCard(): Observable<Pair<StoredCard, Project>>
 
         /** Emits the additional pledge amount string. */
         fun additionalPledgeAmount(): Observable<String>
@@ -196,7 +196,7 @@ interface PledgeFragmentViewModel {
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
 
-        private val addedCard = BehaviorSubject.create<StoredCard>()
+        private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val animateRewardCard = BehaviorSubject.create<PledgeData>()
@@ -530,6 +530,7 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.cardsAndProject)
 
             this.cardSaved
+                    .compose<Pair<StoredCard, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
                     .subscribe(this.addedCard)
 
@@ -669,7 +670,7 @@ interface PledgeFragmentViewModel {
         override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
 
         @NonNull
-        override fun addedCard(): Observable<StoredCard> = this.addedCard
+        override fun addedCard(): Observable<Pair<StoredCard, Project>> = this.addedCard
 
         @NonNull
         override fun additionalPledgeAmount(): Observable<String> = this.additionalPledgeAmount

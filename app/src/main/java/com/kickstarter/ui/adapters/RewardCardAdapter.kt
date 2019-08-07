@@ -74,10 +74,10 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyItemChanged(position)
     }
 
-    fun insertCard(storedCard: StoredCard) : Int {
+    fun insertCard(storedCardAndProject: Pair<StoredCard, Project>) : Int {
         val storedCards = sections()[0]
         val position = 0
-        storedCards.add(position, storedCard)
+        storedCards.add(position, storedCardAndProject)
         notifyItemInserted(position)
 
         return position

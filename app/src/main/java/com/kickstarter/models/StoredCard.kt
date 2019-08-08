@@ -30,6 +30,19 @@ abstract class StoredCard : Parcelable {
             return AutoParcel_StoredCard.Builder()
         }
 
+        private val allowedCardTypes = listOf(CreditCardTypes.AMEX,
+                CreditCardTypes.DINERS,
+                CreditCardTypes.DISCOVER,
+                CreditCardTypes.JCB,
+                CreditCardTypes.MASTERCARD,
+                CreditCardTypes.UNION_PAY,
+                CreditCardTypes.VISA)
+
+        val usdCardTypes = allowedCardTypes;
+        val nonUsdCardTypes = listOf(CreditCardTypes.AMEX,
+                CreditCardTypes.MASTERCARD,
+                CreditCardTypes.VISA)
+
         internal fun getCardTypeDrawable(cardType: CreditCardTypes): Int {
             return when (cardType) {
                 CreditCardTypes.AMEX -> R.drawable.amex_md

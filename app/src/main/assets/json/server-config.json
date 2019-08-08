@@ -15608,7 +15608,7 @@
   ],
   "ab_experiments": {
     "new_project_header": "experimental",
-    "featured_reward": "pinned_image_text_border"
+    "featured_reward": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

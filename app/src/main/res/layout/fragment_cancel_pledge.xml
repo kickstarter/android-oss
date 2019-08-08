@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView android:id="@+id/cancel_pledge_root"
+  style="@style/CardViewFragment"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:layout_gravity="bottom"
-  android:layout_marginBottom="-30dp"
-  android:clickable="true"
-  android:focusable="true"
-  app:cardCornerRadius="@dimen/card_container_radius">
+  android:layout_height="wrap_content">
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"

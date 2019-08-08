@@ -169,23 +169,14 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.view.reward_check.setBackgroundResource(it) }
 
-        this.delegate?.let {
-            this.view.reward_pledge_button.setOnClickListener {
-                this.viewModel.inputs.rewardClicked()
-            }
-
-            this.view.reward_card.setOnClickListener {
-                this.viewModel.inputs.rewardClicked()
-            }
-
-            this.view.reward_card.setOnClickListener {
-                this.viewModel.inputs.rewardClicked()
-            }
+        this.view.reward_pledge_button.setOnClickListener {
+            this.viewModel.inputs.rewardClicked()
         }
 
     }
 
     override fun bindData(data: Any?) {
+        @Suppress("UNCHECKED_CAST")
         val projectAndReward = requireNonNull(data as Pair<Project, Reward>)
         val project = requireNonNull(projectAndReward.first, Project::class.java)
         val reward = requireNonNull(projectAndReward.second, Reward::class.java)

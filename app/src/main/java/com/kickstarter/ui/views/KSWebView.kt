@@ -92,7 +92,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
         return internal_web_view.canGoBack()
     }
 
-    fun evaluateJavascript(javascript: String, resultCallback: ValueCallback<String>?) {
+    fun evaluateJavascript(javascript: String?, resultCallback: ValueCallback<String>?) {
         internal_web_view.evaluateJavascript(javascript, resultCallback)
     }
 

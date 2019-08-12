@@ -233,7 +233,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCancelPledgeSuccess() }
 
-        this.viewModel.outputs.openProjectExternally()
+        this.viewModel.outputs.prelaunchUrl()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { openProjectAndFinish(it) }

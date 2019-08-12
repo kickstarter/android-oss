@@ -51,7 +51,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.backingDetails().subscribe(this.backingDetails)
         this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.openProjectExternally().subscribe(this.openProjectExternally)
+        this.vm.outputs.prelaunchUrl().subscribe(this.openProjectExternally)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)

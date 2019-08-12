@@ -7,7 +7,10 @@ import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
+import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -81,8 +84,8 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /**  */
-        fun openProjectExternally(): Observable<String>
+        /** Emits the url of a prelaunch activated project to open in the browser. */
+        fun prelaunchUrl(): Observable<String>
 
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
@@ -171,7 +174,7 @@ interface ProjectViewModel {
         private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val openProjectExternally = PublishSubject.create<String>()
+        private val prelaunchUrl = PublishSubject.create<String>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
@@ -202,13 +205,13 @@ interface ProjectViewModel {
                     .share()
 
             mappedProject
-                    .filter { ObjectUtils.coalesce(it.prelaunchActivated(), false) }
+                    .filter { BooleanUtils.isTrue(it.prelaunchActivated()) }
                     .map { it.webProjectUrl() }
                     .compose(bindToLifecycle())
-                    .subscribe(this.openProjectExternally)
+                    .subscribe(this.prelaunchUrl)
 
             val initialProject = mappedProject
-                    .filter { !ObjectUtils.coalesce(it.prelaunchActivated(), false) }
+                    .filter { BooleanUtils.isFalse(it.prelaunchActivated()) }
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = initialProject
@@ -545,7 +548,7 @@ interface ProjectViewModel {
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
         @NonNull
-        override fun openProjectExternally(): Observable<String> = this.openProjectExternally
+        override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry

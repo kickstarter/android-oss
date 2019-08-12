@@ -377,7 +377,28 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun openProjectAndFinish(url: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        val uri = Uri.parse(url)
+
+        val fakeUri = Uri.parse("http://www.kickstarter.com")
+        val browserIntent = Intent(Intent.ACTION_VIEW, fakeUri)
+        val queryIntentActivities = packageManager.queryIntentActivities(browserIntent, 0)
+        val targetIntents = queryIntentActivities
+                .filter { !it.activityInfo.packageName.contains("com.kickstarter") }
+                .map { resolveInfo ->
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    intent.setPackage(resolveInfo.activityInfo.packageName)
+                    intent
+                }
+                .toMutableList()
+
+        if (targetIntents.isNotEmpty()) {
+            /* We need to remove the first intent so it's not duplicated
+            when we add the EXTRA_INITIAL_INTENTS intents. */
+            val chooserIntent = Intent.createChooser(targetIntents.removeAt(0), "")
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetIntents.toTypedArray())
+            startActivity(chooserIntent)
+        }
+
         finish()
     }
 

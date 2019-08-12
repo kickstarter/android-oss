@@ -286,7 +286,7 @@ public final class ProjectFactory {
       .build();
   }
 
-  public static Project prelaunchProject(String projectUrl) {
+  public static Project prelaunchProject(final String projectUrl) {
 
     final Project.Urls.Web web = Project.Urls.Web.builder()
       .project(projectUrl)

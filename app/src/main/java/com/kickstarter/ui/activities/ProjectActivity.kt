@@ -6,6 +6,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Pair
@@ -232,6 +233,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCancelPledgeSuccess() }
 
+        this.viewModel.outputs.openProjectExternally()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { openProjectAndFinish(it) }
+
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -368,6 +374,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 super.back()
             }
         }
+    }
+
+    private fun openProjectAndFinish(url: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        finish()
     }
 
     private fun renderProject(projectAndCountry: Pair<Project, String>) {

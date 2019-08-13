@@ -116,37 +116,40 @@
             tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
         </LinearLayout>
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
           android:id="@+id/reward_limit_container"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"
           android:orientation="horizontal"
           android:visibility="gone"
+          app:showDivider="middle"
+          app:dividerDrawable="@drawable/divider_grid_1"
+          app:flexWrap="wrap"
           tools:visibility="visible">
 
-          <TextView
+        <TextView
             android:id="@+id/reward_ending_text_view"
+            style="@style/RewardPill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/grid_1"
-            android:background="@drawable/rect_green_alpha_6"
-            android:padding="@dimen/grid_1"
-            android:textColor="@color/ksr_green_500"
-            android:textStyle="bold"
             tools:text="3 days left" />
 
           <TextView
             android:id="@+id/reward_remaining_text_view"
+            style="@style/RewardPill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rect_green_alpha_6"
-            android:padding="@dimen/grid_1"
-            android:textColor="@color/ksr_green_500"
-            android:textStyle="bold"
             tools:text="30 left" />
 
-        </LinearLayout>
+          <TextView
+            android:id="@+id/reward_shipping_summary"
+            style="@style/RewardPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Anywhere in the world" />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         <com.google.android.material.button.MaterialButton
           android:id="@+id/reward_button_placeholder"

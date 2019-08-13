@@ -161,6 +161,7 @@
     </activity>
     <activity
       android:name=".ui.activities.NewCardActivity"
+      android:windowSoftInputMode="adjustResize|stateVisible"
       android:theme="@style/SettingsActivity"/>
     <activity
       android:name=".ui.activities.NewsletterActivity"

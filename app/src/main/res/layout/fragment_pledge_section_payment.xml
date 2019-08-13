@@ -39,6 +39,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
+    android:overScrollMode="never"
     android:paddingBottom="@dimen/grid_3"
     tools:listitem="@layout/item_reward_credit_card" />
 </LinearLayout>

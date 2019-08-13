@@ -84,6 +84,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
         /** Emits `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardItemsAreGone(): Observable<Boolean>
 
+        /** Set the shipping summary TextView's text.  */
+        fun shippingSummary(): Observable<String>
+
+        /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
+        fun shippingSummaryIsGone(): Observable<Boolean>
+
         /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
         fun showPledgeFragment(): Observable<Pair<Project, Reward>>
 
@@ -125,6 +131,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val reward: Observable<Reward>
         private val rewardItems: Observable<List<RewardsItem>>
         private val rewardItemsAreGone: Observable<Boolean>
+        private val shippingSummary: Observable<String>
+        private val shippingSummaryIsGone: Observable<Boolean>
         private val showPledgeFragment: Observable<Pair<Project, Reward>>
         private val startBackingActivity: Observable<Project>
         private val titleForNoReward: Observable<Int>
@@ -218,18 +226,13 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .map { expirationDateIsGone(it.first, it.second) }
                     .distinctUntilChanged()
 
-            this.limitContainerIsGone = Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone)
-            { endDateGone, remainingGone  -> Pair(endDateGone, remainingGone)}
-                    .map { it.first && it.second }
-                    .distinctUntilChanged()
-
             this.showPledgeFragment = this.projectAndReward
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
 
             this.titleForNoReward = this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
-                    .map { if(BackingUtils.isBacked(it.first, it.second)) R.string.Thank_you_for_supporting_this_project else R.string.Make_a_pledge_without_a_reward }
+                    .map { if(BackingUtils.isBacked(it.first, it.second)) R.string.Thank_you_for_supporting_this_project else R.string.Pledge_without_a_reward }
 
             this.titleForReward = reward
                     .filter { RewardUtils.isReward(it) }
@@ -238,6 +241,20 @@ interface NativeCheckoutRewardViewHolderViewModel {
             this.titleIsGone = reward
                     .map {  RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
                     .distinctUntilChanged()
+
+            this.shippingSummary = reward
+                    .filter { RewardUtils.isShippable(it) }
+                    .map { it.shippingSummary() }
+
+            this.shippingSummaryIsGone = this.projectAndReward
+                    .map { it.first.isLive && RewardUtils.isShippable(it.second) }
+                    .map { BooleanUtils.negate(it) }
+                    .distinctUntilChanged()
+
+            this.limitContainerIsGone = Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone)
+            { endDateGone, remainingGone, shippingGone  -> endDateGone && remainingGone && shippingGone }
+                    .distinctUntilChanged()
+
         }
 
         private fun expirationDateIsGone(project: Project, reward: Reward): Boolean {
@@ -320,6 +337,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         @NonNull
         override fun rewardItemsAreGone(): Observable<Boolean> = this.rewardItemsAreGone
+
+        @NonNull
+        override fun shippingSummary(): Observable<String> = this.shippingSummary
+
+        @NonNull
+        override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
         @NonNull
         override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Pair
 import android.view.*
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.viewmodels.NewCardFragmentViewModel
@@ -43,6 +45,11 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         super.onActivityCreated(savedInstanceState)
         (activity as AppCompatActivity).setSupportActionBar(new_card_toolbar)
         setHasOptionsMenu(true)
+
+        this.viewModel.outputs.allowedCardWarning()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setAllowedCardWarning(it) }
 
         this.viewModel.outputs.allowedCardWarningIsVisible()
                 .compose(bindToLifecycle())
@@ -175,6 +182,21 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         return arguments?.getBoolean(ArgumentsKey.NEW_CARD_MODAL) ?: false
     }
 
+    private fun setAllowedCardWarning(warningAndProject: Pair<Int?, Project?>) {
+        val warning = warningAndProject.first
+        val project = warningAndProject.second
+
+        warning?.let {
+            if (project == null) {
+                allowed_card_warning.setText(it)
+            } else {
+                val ksString = this.viewModel.environment.ksString()
+                val projectLocation = project.location()?.displayableName()
+                allowed_card_warning.text = ksString.format(getString(it), "project_country", projectLocation)
+            }
+        }
+    }
+
     private fun updateMenu(saveEnabled: Boolean) {
         this.saveEnabled = saveEnabled
         activity?.invalidateOptionsMenu()
@@ -201,6 +223,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             this@NewCardFragment.viewModel.inputs.cardNumber(s?.toString() ?: "")
+            cardChanged()
         }
     }
 
@@ -208,10 +231,11 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
     companion object {
 
-        fun newInstance(modal: Boolean = false): NewCardFragment {
+        fun newInstance(modal: Boolean = false, project: Project): NewCardFragment {
             val fragment = NewCardFragment()
             val argument = Bundle()
             argument.putBoolean(ArgumentsKey.NEW_CARD_MODAL, modal)
+            argument.putParcelable(ArgumentsKey.NEW_CARD_PROJECT, project)
             fragment.arguments = argument
             return fragment
         }

@@ -162,7 +162,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setInitialRewardsContainerY() }
 
-        this.viewModel.outputs.showRewardsFragment()
+        this.viewModel.outputs.expandPledgeSheet()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { animateRewards(it) }
@@ -376,8 +376,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.adapter.takeProject(project, country, environment().nativeCheckoutPreference().get())
         if (!environment().nativeCheckoutPreference().get()) {
             ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button, null)
-        } else {
-            setupRewardsFragment(project)
         }
     }
 
@@ -393,8 +391,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun setupRewardsFragment(project: Project) {
-        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?
-        rewardsFragment?.takeProject(project)
+        val rewardsFragment = supportFragmentManager.findFragmentByTag(RewardsFragment.) as RewardsFragment?: RewardsFragment()
+        rewardsFragment.takeProject(project)
     }
 
     private fun showCancelPledgeSuccess() {

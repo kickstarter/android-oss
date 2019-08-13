@@ -84,6 +84,9 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
+        /** . */
+        fun managePledgeMenuIsVisible(): Observable<Boolean>
+
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
         fun projectAndUserCountry(): Observable<Pair<Project, String>>
@@ -106,8 +109,14 @@ interface ProjectViewModel {
         /** Emits when the backing has successfully been canceled. */
         fun showCancelPledgeSuccess(): Observable<Void>
 
-        /** Emits when rewards fragment should expand. */
-        fun showRewardsFragment(): Observable<Boolean>
+        /** Emits when rewards sheet should expand. */
+        fun expandPledgeSheet(): Observable<Boolean>
+
+        /**  */
+        fun showBackingFragment(): Observable<Project>
+
+        /**  */
+        fun showRewardsFragment(): Observable<Project>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -158,7 +167,7 @@ interface ProjectViewModel {
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
-        private val hideRewardsSheet = PublishSubject.create<Void>()
+        private val collapsePledgeSheet = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
@@ -171,6 +180,7 @@ interface ProjectViewModel {
         private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
+        private val managePledgeMenuIsVisible = BehaviorSubject.create<Boolean>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
@@ -178,7 +188,9 @@ interface ProjectViewModel {
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
-        private val showRewardsFragment = BehaviorSubject.create<Boolean>()
+        private val expandPledgeSheet = BehaviorSubject.create<Boolean>()
+        private val showBackingFragment = PublishSubject.create<Project>()
+        private val showRewardsFragment = PublishSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<Project>()
@@ -304,17 +316,29 @@ interface ProjectViewModel {
             this.nativeProjectActionButtonClicked
                     .map { true }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showRewardsFragment)
+                    .subscribe(this.expandPledgeSheet)
 
-            Observable.merge(this.hideRewardsSheet, this.pledgeSuccessfullyCancelled)
+            Observable.merge(this.collapsePledgeSheet, this.pledgeSuccessfullyCancelled)
                     .map { false }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showRewardsFragment)
+                    .subscribe(this.expandPledgeSheet)
 
             val nativeCheckoutProject = currentProject
                     .compose<Pair<Project, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map<Project> { it.first }
+
+            nativeCheckoutProject
+                    .filter { it.isBacking }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showBackingFragment)
+
+            nativeCheckoutProject
+                    .filter { !it.isBacking }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
 
             nativeCheckoutProject
                     .map { it.isBacking && it.isLive }
@@ -438,7 +462,7 @@ interface ProjectViewModel {
         }
 
         override fun hideRewardsSheetClicked() {
-            this.hideRewardsSheet.onNext(null)
+            this.collapsePledgeSheet.onNext(null)
         }
 
         override fun managePledgeButtonClicked() {
@@ -513,9 +537,6 @@ interface ProjectViewModel {
             this.shareButtonClicked.onNext(null)
         }
 
-        override fun showRewardsFragment(): Observable<Boolean> {
-            return this.showRewardsFragment
-        }
 
         override fun updatesTextViewClicked() {
             this.updatesTextViewClicked.onNext(null)
@@ -532,7 +553,13 @@ interface ProjectViewModel {
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
 
         @NonNull
+        override fun expandPledgeSheet(): Observable<Boolean> = this.expandPledgeSheet
+
+        @NonNull
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
+
+        @NonNull
+        override fun managePledgeMenuIsVisible(): Observable<Boolean> = this.managePledgeMenuIsVisible
 
         @NonNull
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry
@@ -554,6 +581,12 @@ interface ProjectViewModel {
 
         @NonNull
         override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
+
+        @NonNull
+        override fun showBackingFragment(): Observable<Project> = this.showBackingFragment
+
+        @NonNull
+        override fun showRewardsFragment(): Observable<Project> = this.showRewardsFragment
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt

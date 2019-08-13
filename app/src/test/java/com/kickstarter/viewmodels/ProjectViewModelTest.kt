@@ -54,7 +54,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.scrimIsVisible().subscribe(this.scrimIsVisible)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showCancelPledgeSuccess().subscribe(this.showCancelPledgeSuccess)
-        this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
+        this.vm.outputs.expandPledgeSheet().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)

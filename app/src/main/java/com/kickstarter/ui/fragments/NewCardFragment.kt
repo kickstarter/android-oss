@@ -223,6 +223,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             this@NewCardFragment.viewModel.inputs.cardNumber(s?.toString() ?: "")
+            cardChanged()
         }
     }
 

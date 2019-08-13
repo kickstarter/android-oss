@@ -189,8 +189,8 @@ interface ProjectViewModel {
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
         private val expandPledgeSheet = BehaviorSubject.create<Boolean>()
-        private val showBackingFragment = PublishSubject.create<Project>()
-        private val showRewardsFragment = PublishSubject.create<Project>()
+        private val showBackingFragment = BehaviorSubject.create<Project>()
+        private val showRewardsFragment = BehaviorSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<Project>()
@@ -329,13 +329,13 @@ interface ProjectViewModel {
                     .map<Project> { it.first }
 
             nativeCheckoutProject
-                    .filter { it.isBacking }
+                    .filter { it.isBacking && it.hasRewards() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.showBackingFragment)
 
             nativeCheckoutProject
-                    .filter { !it.isBacking }
+                    .filter { !it.isBacking && it.hasRewards() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)

@@ -55,12 +55,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--        <fragment-->
-<!--          android:id="@+id/fragment_rewards"-->
-<!--          android:name="com.kickstarter.ui.fragments.RewardsFragment"-->
-<!--          android:layout_width="match_parent"-->
-<!--          android:layout_height="match_parent"-->
-<!--          tools:layout="@layout/fragment_rewards" />-->
+        <fragment
+          android:id="@+id/fragment_backing"
+          android:name="com.kickstarter.ui.fragments.BackingFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          tools:layout="@layout/fragment_backing" />
+
+        <fragment
+          android:id="@+id/fragment_rewards"
+          android:name="com.kickstarter.ui.fragments.RewardsFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          tools:layout="@layout/fragment_rewards" />
 
       </FrameLayout>
 

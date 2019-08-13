@@ -35,10 +35,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.fragments.CancelPledgeFragment
-import com.kickstarter.ui.fragments.NewCardFragment
-import com.kickstarter.ui.fragments.PledgeFragment
-import com.kickstarter.ui.fragments.RewardsFragment
+import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.StripeEditText
 import kotlinx.android.synthetic.main.activity_project.*
@@ -97,6 +94,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 this.supportFragmentManager.addOnBackStackChangedListener {
                     this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
                 }
+
             }
             else -> {
                 project_action_buttons.visibility = when {
@@ -231,6 +229,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCancelPledgeSuccess() }
+
+        this.viewModel.outputs.showRewardsFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showRewardsFragment(it) }
+
+        this.viewModel.outputs.showBackingFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showBackingFragment(it) }
 
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
@@ -390,9 +398,30 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.projectRecyclerView.setPadding(0, 0, 0, guideline)
     }
 
-    private fun setupRewardsFragment(project: Project) {
-        val rewardsFragment = supportFragmentManager.findFragmentByTag(RewardsFragment.) as RewardsFragment?: RewardsFragment()
+    private fun showRewardsFragment(project: Project) {
+        val tag = RewardsFragment::class.java.simpleName
+        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
+        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        if(!backingFragment.isHidden) {
+            supportFragmentManager.beginTransaction()
+                    .show(rewardsFragment)
+                    .hide(backingFragment)
+                    .commit()
+        }
         rewardsFragment.takeProject(project)
+    }
+
+    private fun showBackingFragment(project: Project) {
+        val tag = RewardsFragment::class.java.simpleName
+        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
+        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        if(!rewardsFragment.isHidden) {
+            supportFragmentManager.beginTransaction()
+                    .show(backingFragment)
+                    .hide(rewardsFragment)
+                    .commit()
+        }
+        backingFragment.takeProject(project)
     }
 
     private fun showCancelPledgeSuccess() {

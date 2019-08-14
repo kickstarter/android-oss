@@ -25,6 +25,7 @@ import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
+import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ProjectViewUtils
@@ -35,6 +36,8 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.StripeEditText
@@ -89,6 +92,32 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
                 rewards_toolbar.setNavigationOnClickListener {
                     this.viewModel.inputs.hideRewardsSheetClicked()
+                }
+
+                rewards_toolbar.setOnMenuItemClickListener {
+                    when {
+                        it.itemId == R.id.update_pledge -> {
+                            this.viewModel.inputs.updatePledgeClicked()
+                            true
+                        }
+                        it.itemId == R.id.rewards -> {
+                            this.viewModel.inputs.viewRewardsClicked()
+                            true
+                        }
+                        it.itemId == R.id.update_payment -> {
+                            this.viewModel.inputs.updatePaymentClicked()
+                            true
+                        }
+                        it.itemId == R.id.cancel_pledge -> {
+                            this.viewModel.inputs.cancelPledgeClicked()
+                            true
+                        }
+                        it.itemId == R.id.contact_creator -> {
+                            this.viewModel.inputs.contactCreatorClicked()
+                            true
+                        }
+                        else -> false
+                    }
                 }
 
                 this.supportFragmentManager.addOnBackStackChangedListener {
@@ -240,6 +269,31 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showBackingFragment(it) }
 
+        this.viewModel.outputs.managePledgeMenuIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { toggleManagePledgeVisibility(it) }
+
+        this.viewModel.outputs.showCancelPledgeFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showCancelPledgeFragment(it) }
+
+        this.viewModel.outputs.revealRewardsFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { revealRewardsFragment() }
+
+        this.viewModel.outputs.showUpdatePledge()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showPledgeFragment(it) }
+
+        this.viewModel.outputs.startMessagesActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { startMessagesActivity(it) }
+
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -387,6 +441,21 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
+    private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, project: Project) {
+        rewardsFragment.takeProject(project)
+        backingFragment.takeProject(project)
+    }
+
+    private fun revealRewardsFragment() {
+        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
+        supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .show(rewardsFragment)
+                .addToBackStack(RewardsFragment::class.java.simpleName)
+                .commit()
+    }
+
     private fun rewardsSheetGuideline(): Int = when {
         ViewUtils.isLandscape(this) -> 0
         else -> resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
@@ -399,29 +468,46 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun showRewardsFragment(project: Project) {
-        val tag = RewardsFragment::class.java.simpleName
-        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
-        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!backingFragment.isHidden) {
+        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
+        supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0) {
             supportFragmentManager.beginTransaction()
                     .show(rewardsFragment)
                     .hide(backingFragment)
                     .commit()
         }
-        rewardsFragment.takeProject(project)
+        renderProject(backingFragment, rewardsFragment,project)
+    }
+
+    private fun showCancelPledgeFragment(project: Project) {
+        supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .add(R.id.fragment_container, CancelPledgeFragment.newInstance(project), CancelPledgeFragment::class.java.simpleName)
+                .addToBackStack(CancelPledgeFragment::class.java.simpleName)
+                .commit()
+    }
+
+    private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
+        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first)
+        supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .add(R.id.fragment_container, pledgeFragment, PledgeFragment::class.java.simpleName)
+                .addToBackStack(PledgeFragment::class.java.simpleName)
+                .commit()
     }
 
     private fun showBackingFragment(project: Project) {
-        val tag = RewardsFragment::class.java.simpleName
-        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
-        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!rewardsFragment.isHidden) {
+        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
+        supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        if(!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0) {
             supportFragmentManager.beginTransaction()
                     .show(backingFragment)
                     .hide(rewardsFragment)
                     .commit()
         }
-        backingFragment.takeProject(project)
+        renderProject(backingFragment, rewardsFragment, project)
     }
 
     private fun showCancelPledgeSuccess() {
@@ -504,6 +590,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
+    private fun startMessagesActivity(project: Project) {
+        startActivity(Intent(this, MessagesActivity::class.java)
+                .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PROJECT_PAGE)
+                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.BACKING, project.backing()))
+    }
+
     private fun startVideoActivity(project: Project) {
         val intent = Intent(this, VideoActivity::class.java)
                 .putExtra(IntentKey.PROJECT, project)
@@ -525,5 +618,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
             }
         }
         project_action_button.layoutParams = buttonParams
+    }
+
+    private fun toggleManagePledgeVisibility(visible: Boolean) {
+        if (visible) rewards_toolbar.inflateMenu(R.menu.manage_pledge) else rewards_toolbar.menu.clear()
     }
 }

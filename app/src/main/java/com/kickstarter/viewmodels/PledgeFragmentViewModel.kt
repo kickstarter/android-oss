@@ -251,7 +251,7 @@ interface PledgeFragmentViewModel {
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward }
 
             val screenLocation = arguments()
-                    .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation }
+                    .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation? }
 
             val project = arguments()
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project }
@@ -271,7 +271,7 @@ interface PledgeFragmentViewModel {
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
                     .compose<PledgeData>(takeWhen(this.onGlobalLayout))
                     .compose(bindToLifecycle())
-                    .subscribe { this.animateRewardCard.onNext(it) }
+                    .subscribe(this.animateRewardCard)
 
             // Estimated delivery section
             reward

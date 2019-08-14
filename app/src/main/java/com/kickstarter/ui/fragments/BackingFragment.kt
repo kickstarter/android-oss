@@ -18,7 +18,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
     }
 
     fun takeProject(project: Project) {
-//        this.viewModel.inputs.project(project)
+        this.viewModel.inputs.project(project)
     }
 
 }

@@ -1,77 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/rewards_recycler"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_300"
   android:overScrollMode="never"
-  android:paddingTop="?android:attr/actionBarSize">
-
-  <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/activity_horizontal_margin">
-
-    <!-- todo: what's the content description? -->
-    <com.kickstarter.ui.views.BottomCropImageView
-      android:id="@+id/reward_snapshot"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:contentDescription="@null"
-      android:elevation="@dimen/mini_reward_elevation"
-      app:layout_constraintEnd_toStartOf="@id/delivery"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:background="@color/white"
-      tools:layout_height="@dimen/mini_reward_height"
-      tools:layout_width="@dimen/mini_reward_width" />
-
-    <include
-      layout="@layout/fragment_pledge_section_delivery"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@id/reward_snapshot" />
-
-    <include
-      android:id="@+id/divider_delivery"
-      layout="@layout/horizontal_line_1dp_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_4"
-      app:layout_constraintBottom_toTopOf="@id/backing_date"
-      app:layout_constraintTop_toBottomOf="@id/reward_snapshot" />
-
-    <TextView
-      android:layout_marginTop="@dimen/grid_4"
-      android:id="@+id/backing_date"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/divider_delivery"
-      tools:text="You pledged on 28 January 2018." />
-
-    <Button
-      android:id="@+id/contact_creator"
-      android:layout_marginTop="@dimen/grid_2"
-      style="@style/AlternatePrimaryButton"
-      android:text="@string/Contact_creator"
-      app:layout_constraintTop_toBottomOf="@id/backing_date"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
-
-    <TextView
-      app:layout_constraintTop_toBottomOf="@id/contact_creator"
-      android:text="@string/Pledge"
-      android:layout_width="wrap_content"
-      app:layout_constraintStart_toStartOf="parent"
-      android:layout_height="wrap_content"/>
-
-
-  </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+  android:paddingTop="?android:attr/actionBarSize"/>

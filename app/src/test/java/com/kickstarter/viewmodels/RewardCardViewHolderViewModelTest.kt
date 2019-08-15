@@ -165,7 +165,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
 
-        this.projectCountry.assertValue("Mexico City, Mexico")
+        this.projectCountry.assertValue("Mexico")
     }
 
 }

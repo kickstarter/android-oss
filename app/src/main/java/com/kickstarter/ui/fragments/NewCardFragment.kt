@@ -191,8 +191,8 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
                 allowed_card_warning.setText(it)
             } else {
                 val ksString = this.viewModel.environment.ksString()
-                val projectLocation = project.location()?.displayableName()
-                allowed_card_warning.text = ksString.format(getString(it), "project_country", projectLocation)
+                val country = project.location()?.expandedCountry()
+                allowed_card_warning.text = ksString.format(getString(it), "project_country", country)
             }
         }
     }

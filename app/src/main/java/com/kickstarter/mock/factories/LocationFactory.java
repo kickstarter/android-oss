@@ -14,6 +14,7 @@ public final class LocationFactory {
       .name("Berlin")
       .state("Berlin")
       .country("DE")
+      .expandedCountry("Germany")
       .build();
   }
 
@@ -24,6 +25,7 @@ public final class LocationFactory {
       .name("Mexico City")
       .state("Mexico")
       .country("MX")
+      .expandedCountry("Mexico")
       .build();
   }
 
@@ -35,6 +37,7 @@ public final class LocationFactory {
       .country("AU")
       .state("NSW")
       .projectsCount(33)
+      .expandedCountry("Australia")
       .build();
   }
 
@@ -45,6 +48,7 @@ public final class LocationFactory {
       .name("Brooklyn")
       .state("NY")
       .country("US")
+      .expandedCountry("United States")
       .build();
   }
 }

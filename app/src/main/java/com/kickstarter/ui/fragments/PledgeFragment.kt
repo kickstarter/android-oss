@@ -282,37 +282,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { setHtmlStrings(it) }
 
-        this.viewModel.outputs.cancelPledgeButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(cancel_pledge_button, it) }
-
-        this.viewModel.outputs.changePaymentMethodButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(change_payment_method_button, it) }
-
         this.viewModel.outputs.updatePledgeButtonIsGone()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
                 .subscribe { ViewUtils.setGone(update_pledge_button, it) }
-
-        this.viewModel.outputs.totalContainerIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(total, it) }
-
-        this.viewModel.outputs.showCancelPledge()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    fragmentManager
-                            ?.beginTransaction()
-                            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                            ?.add(R.id.secondary_container, CancelPledgeFragment.newInstance(it), CancelPledgeFragment::class.java.simpleName)
-                            ?.addToBackStack(CancelPledgeFragment::class.java.simpleName)
-                            ?.commit()
-                }
 
         this.viewModel.outputs.showMinimumWarning()
                 .compose(observeForUI())
@@ -346,10 +319,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         increase_pledge.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
-        }
-
-        cancel_pledge_button.setOnClickListener {
-            this.viewModel.inputs.cancelPledgeButtonClicked()
         }
     }
 

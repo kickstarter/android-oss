@@ -29,9 +29,6 @@ interface PledgeFragmentViewModel {
         /** Call when a card has been inserted into the stored cards list. */
         fun addedCardPosition(position: Int)
 
-        /** Call when user clicks the cancel pledge button. */
-        fun cancelPledgeButtonClicked()
-
         /** Call when a card has successfully saved. */
         fun cardSaved(storedCard: StoredCard)
 
@@ -85,14 +82,8 @@ interface PledgeFragmentViewModel {
         /** Emits the base URL to build terms URLs. */
         fun baseUrlForTerms(): Observable<String>
 
-        /** Emits a boolean determining if the cancel pledge button should be hidden. */
-        fun cancelPledgeButtonIsGone(): Observable<Boolean>
-
         /** Emits a list of stored cards for a user. */
         fun cardsAndProject(): Observable<Pair<List<StoredCard>, Project>>
-
-        /** Emits a boolean determining if the change payment method pledge button should be hidden. */
-        fun changePaymentMethodButtonIsGone(): Observable<Boolean>
 
         /** Emits a boolean determining if the continue button should be hidden. */
         fun continueButtonIsGone(): Observable<Boolean>
@@ -142,9 +133,6 @@ interface PledgeFragmentViewModel {
         /** Emits when the shipping rules section should be hidden. */
         fun shippingRulesSectionIsGone(): Observable<Boolean>
 
-        /** Emits when we should start the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
-        fun showCancelPledge(): Observable<Project>
-
         /** Emits when we should the user a warning about not satisfying the reward's minimum. */
         fun showMinimumWarning(): Observable<String>
 
@@ -169,9 +157,6 @@ interface PledgeFragmentViewModel {
         /** Emits the total amount string of the pledge. */
         fun totalAmount(): Observable<SpannableString>
 
-        /** Emits a boolean determining if the total container should be hidden. */
-        fun totalContainerIsGone(): Observable<Boolean>
-
         /** Emits the color resource ID of the total amount. */
         fun totalTextColor(): Observable<Int>
 
@@ -182,7 +167,6 @@ interface PledgeFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
         private val addedCardPosition = PublishSubject.create<Int>()
-        private val cancelPledgeButtonClicked = PublishSubject.create<Void>()
         private val cardSaved = PublishSubject.create<StoredCard>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
@@ -201,9 +185,7 @@ interface PledgeFragmentViewModel {
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
         private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
-        private val cancelPledgeButtonIsGone = BehaviorSubject.create<Boolean>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
-        private val changePaymentMethodButtonIsGone = BehaviorSubject.create<Boolean>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
         private val conversionText = BehaviorSubject.create<String>()
         private val conversionTextViewIsGone = BehaviorSubject.create<Boolean>()
@@ -220,7 +202,6 @@ interface PledgeFragmentViewModel {
         private val shippingAmount = BehaviorSubject.create<String>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val showCancelPledge = PublishSubject.create<Project>()
         private val showMinimumWarning = PublishSubject.create<String>()
         private val showNewCardFragment = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
@@ -229,7 +210,6 @@ interface PledgeFragmentViewModel {
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startThanksActivity = PublishSubject.create<Project>()
         private val totalAmount = BehaviorSubject.create<SpannableString>()
-        private val totalContainerIsGone = BehaviorSubject.create<Boolean>()
         private val totalTextColor = BehaviorSubject.create<Int>()
         private val updatePledgeButtonIsGone = BehaviorSubject.create<Boolean>()
 
@@ -482,28 +462,6 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
                     .subscribe(this.updatePledgeButtonIsGone)
 
-            projectAndReward
-                    .map { it.first.isLive && BackingUtils.isBacked(it.first, it.second) }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-                    .subscribe(this.changePaymentMethodButtonIsGone)
-
-            projectAndReward
-                    .map { it.first.isLive && BackingUtils.isBacked(it.first, it.second) }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-                    .subscribe(this.cancelPledgeButtonIsGone)
-
-            projectAndReward
-                    .map { it.first.isLive && it.first.isBacking && BackingUtils.isBacked(it.first, it.second) }
-                    .distinctUntilChanged()
-                    .subscribe(this.totalContainerIsGone)
-
-            project
-                    .compose<Project>(takeWhen(this.cancelPledgeButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showCancelPledge)
-
             // Payment section
             userIsLoggedIn
                     .compose<Pair<Boolean, Pair<Project, Reward>>>(combineLatestPair(projectAndReward))
@@ -644,8 +602,6 @@ interface PledgeFragmentViewModel {
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 
-        override fun cancelPledgeButtonClicked() = this.cancelPledgeButtonClicked.onNext(null)
-
         override fun cardSaved(storedCard: StoredCard) = this.cardSaved.onNext(storedCard)
 
         override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
@@ -686,13 +642,7 @@ interface PledgeFragmentViewModel {
         override fun baseUrlForTerms(): Observable<String> = this.baseUrlForTerms
 
         @NonNull
-        override fun cancelPledgeButtonIsGone(): Observable<Boolean> = this.cancelPledgeButtonIsGone
-
-        @NonNull
         override fun cardsAndProject(): Observable<Pair<List<StoredCard>, Project>> = this.cardsAndProject
-
-        @NonNull
-        override fun changePaymentMethodButtonIsGone(): Observable<Boolean> = this.changePaymentMethodButtonIsGone
 
         @NonNull
         override fun continueButtonIsGone(): Observable<Boolean> = this.continueButtonIsGone
@@ -743,9 +693,6 @@ interface PledgeFragmentViewModel {
         override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone
 
         @NonNull
-        override fun showCancelPledge(): Observable<Project> = this.showCancelPledge
-
-        @NonNull
         override fun showMinimumWarning(): Observable<String> = this.showMinimumWarning
 
         @NonNull
@@ -768,9 +715,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun totalAmount(): Observable<SpannableString> = this.totalAmount
-
-        @NonNull
-        override fun totalContainerIsGone(): Observable<Boolean> = this.totalContainerIsGone
 
         @NonNull
         override fun totalTextColor(): Observable<Int> = this.totalTextColor

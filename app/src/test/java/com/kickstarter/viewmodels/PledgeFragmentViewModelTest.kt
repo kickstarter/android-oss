@@ -35,9 +35,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val animateRewardCard = TestSubscriber<PledgeData>()
     private val baseUrlForTerms = TestSubscriber<String>()
-    private val cancelPledgeButtonIsGone = TestSubscriber<Boolean>()
     private val cardsAndProject = TestSubscriber<Pair<List<StoredCard>, Project>>()
-    private val changePaymentMethodButtonIsGone = TestSubscriber<Boolean>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
     private val conversionText = TestSubscriber<String>()
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
@@ -54,7 +52,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingAmount = TestSubscriber<String>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
-    private val showCancelPledge = TestSubscriber<Project>()
     private val showMinimumWarning = TestSubscriber<String>()
     private val showNewCardFragment = TestSubscriber<Project>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
@@ -63,7 +60,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startThanksActivity = TestSubscriber<Project>()
     private val totalAmount = TestSubscriber<String>()
-    private val totalContainerIsGone = TestSubscriber<Boolean>()
     private val totalTextColor = TestSubscriber<Int>()
     private val updatePledgeButtonIsGone = TestSubscriber<Boolean>()
 
@@ -76,9 +72,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.additionalPledgeAmountIsGone().subscribe(this.additionalPledgeAmountIsGone)
         this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.baseUrlForTerms().subscribe(this.baseUrlForTerms)
-        this.vm.outputs.cancelPledgeButtonIsGone().subscribe(this.cancelPledgeButtonIsGone)
         this.vm.outputs.cardsAndProject().subscribe(this.cardsAndProject)
-        this.vm.outputs.changePaymentMethodButtonIsGone().subscribe(this.changePaymentMethodButtonIsGone)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
         this.vm.outputs.conversionText().subscribe(this.conversionText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
@@ -95,7 +89,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingAmount().subscribe(this.shippingAmount)
         this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
-        this.vm.outputs.showCancelPledge().subscribe(this.showCancelPledge)
         this.vm.outputs.showMinimumWarning().subscribe(this.showMinimumWarning)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
@@ -104,7 +97,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
-        this.vm.outputs.totalContainerIsGone().subscribe(this.totalContainerIsGone)
         this.vm.outputs.totalTextColor().subscribe(this.totalTextColor)
         this.vm.outputs.updatePledgeButtonIsGone().subscribe(this.updatePledgeButtonIsGone)
 
@@ -279,51 +271,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.estimatedDelivery.assertNoValues()
         this.estimatedDeliveryInfoIsGone.assertValue(true)
-    }
-
-    @Test
-    fun testManageYourPledgeUIOutputs() {
-        setUpEnvironment(environment())
-        this.cancelPledgeButtonIsGone.assertValuesAndClear(true)
-        this.continueButtonIsGone.assertValuesAndClear(false)
-        this.changePaymentMethodButtonIsGone.assertValuesAndClear(true)
-        this.paymentContainerIsGone.assertValuesAndClear(true)
-        this.totalContainerIsGone.assertValuesAndClear(false)
-        this.updatePledgeButtonIsGone.assertValuesAndClear(true)
-
-        val environmentWithLoggedInUser = environment().toBuilder()
-                .currentUser(MockCurrentUser(UserFactory.user()))
-                .build()
-
-        setUpEnvironment(environmentWithLoggedInUser)
-        this.cancelPledgeButtonIsGone.assertValuesAndClear(true)
-        this.continueButtonIsGone.assertValuesAndClear(true)
-        this.changePaymentMethodButtonIsGone.assertValuesAndClear(true)
-        this.paymentContainerIsGone.assertValuesAndClear(false)
-        this.totalContainerIsGone.assertValuesAndClear(false)
-        this.updatePledgeButtonIsGone.assertValuesAndClear(true)
-
-        val backing = BackingFactory.backing()
-        val backedReward = backing.reward()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-        setUpEnvironment(environmentWithLoggedInUser, RewardFactory.reward(), backedProject)
-        this.cancelPledgeButtonIsGone.assertValuesAndClear(true)
-        this.continueButtonIsGone.assertValuesAndClear(true)
-        this.changePaymentMethodButtonIsGone.assertValuesAndClear(true)
-        this.paymentContainerIsGone.assertValuesAndClear(false)
-        this.totalContainerIsGone.assertValuesAndClear(false)
-        this.updatePledgeButtonIsGone.assertValuesAndClear(true)
-
-        setUpEnvironment(environmentWithLoggedInUser, backedReward, backedProject)
-        this.cancelPledgeButtonIsGone.assertValuesAndClear(false)
-        this.continueButtonIsGone.assertValuesAndClear(true)
-        this.changePaymentMethodButtonIsGone.assertValuesAndClear(false)
-        this.paymentContainerIsGone.assertValuesAndClear(true)
-        this.totalContainerIsGone.assertValuesAndClear(true)
-        this.updatePledgeButtonIsGone.assertValuesAndClear(false)
     }
 
     @Test
@@ -740,17 +687,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValues(false)
         this.shippingRuleAndProject.assertNoValues()
         this.totalAmount.assertNoValues()
-    }
-
-    @Test
-    fun testShowCancelPledge() {
-        val backedProject = ProjectFactory.backedProject()
-        val backing = backedProject.backing() ?: BackingFactory.backing()
-        val reward = backing.reward() ?: RewardFactory.reward()
-        setUpEnvironment(environment(), reward, backedProject)
-
-        this.vm.inputs.cancelPledgeButtonClicked()
-        this.showCancelPledge.assertValue(backedProject)
     }
 
     @Test

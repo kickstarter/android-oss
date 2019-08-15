@@ -819,6 +819,24 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "recommendationsSource",
+                  "description": "The source for recommendations.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "RecommendationsSource",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "recommended",
                   "description": "Get projects recommended for the current user.",
                   "type": {
@@ -1304,6 +1322,18 @@
             {
               "name": "clientSecret",
               "description": "If `requires_action` is true, `client_secret` should be used to initiate additional client-side authentication steps",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errorReason",
+              "description": "The reason for an errored backing",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -2015,6 +2045,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "status",
+                  "description": "Filter backings to only those with this status",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "BackingState",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -3690,6 +3730,30 @@
                   "kind": "OBJECT",
                   "name": "ProjectActions",
                   "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "availableCardTypes",
+              "description": "Available card types.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "CreditCardTypes",
+                      "ofType": null
+                    }
+                  }
                 }
               },
               "isDeprecated": false,
@@ -8036,6 +8100,26 @@
             {
               "name": "regions",
               "description": "Regions part of this country",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "Region",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stripeAccountSupportedRegions",
+              "description": "Regions that Stripe supports for Stripe Accounts",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -12497,6 +12581,18 @@
               "deprecationReason": null
             },
             {
+              "name": "pinnedAt",
+              "description": "The date the project update was pinned.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "previousPost",
               "description": "The previous post.",
               "args": [],
@@ -12628,6 +12724,22 @@
             },
             {
               "name": "edit",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pin",
               "description": "",
               "args": [],
               "type": {
@@ -15036,6 +15148,18 @@
               "deprecationReason": null
             },
             {
+              "name": "pinnedAt",
+              "description": "The date the project update was pinned.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "previousPost",
               "description": "The previous post.",
               "args": [],
@@ -16200,6 +16324,18 @@
               "deprecationReason": null
             },
             {
+              "name": "pinnedAt",
+              "description": "The date the project update was pinned.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "previousPost",
               "description": "The previous post.",
               "args": [],
@@ -16436,6 +16572,53 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "BackingState",
+          "description": "Various backing states.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "canceled",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "collected",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "dropped",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errored",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pledged",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "preauth",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -24371,6 +24554,12 @@
               "deprecationReason": null
             },
             {
+              "name": "default_to_campaign_on_mobile",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "device_components",
               "description": "",
               "isDeprecated": false,
@@ -24402,6 +24591,12 @@
             },
             {
               "name": "drip_manage_push_notifications",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "drip_sunset_pledging",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24551,12 +24746,6 @@
               "deprecationReason": null
             },
             {
-              "name": "merge_backer_report_rewards",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "message_archiving",
               "description": "",
               "isDeprecated": false,
@@ -24623,6 +24812,12 @@
               "deprecationReason": null
             },
             {
+              "name": "pinned_posts",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "posts_feed",
               "description": "",
               "isDeprecated": false,
@@ -24641,19 +24836,7 @@
               "deprecationReason": null
             },
             {
-              "name": "promotion_page",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "refresh",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "rich_interview_answers",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24678,6 +24861,12 @@
             },
             {
               "name": "vanity_profile_url",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "view_more_project_collections",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -26622,53 +26811,6 @@
             }
           ],
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "BackingState",
-          "description": "Various backing states.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "canceled",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "collected",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "dropped",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "errored",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pledged",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "preauth",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
@@ -29070,6 +29212,35 @@
         },
         {
           "kind": "ENUM",
+          "name": "RecommendationsSource",
+          "description": "What source to use for project recommendations",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "BACKINGS",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TASTE_PROFILE_LIKES",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WATCHES",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "ProjectSort",
           "description": "What order to sort projects in",
           "fields": null,
@@ -30100,8 +30271,8 @@
               "deprecationReason": null
             },
             {
-              "name": "createCheckout",
-              "description": "Create a checkout.",
+              "name": "createBacking",
+              "description": "Create a backing and checkout and process payment.",
               "args": [
                 {
                   "name": "input",
@@ -30111,7 +30282,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "CreateCheckoutInput",
+                      "name": "CreateBackingInput",
                       "ofType": null
                     }
                   },
@@ -30120,7 +30291,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "CreateCheckoutPayload",
+                "name": "CreateBackingPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -30418,6 +30589,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CreateFreeformPostPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createGooglePayCheckout",
+              "description": "Create a checkout with Google Pay.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "CreateGooglePayCheckoutInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CreateGooglePayCheckoutPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -31477,33 +31675,6 @@
               "deprecationReason": null
             },
             {
-              "name": "nativeCheckout",
-              "description": "Create a checkout and process the payment.",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "NativeCheckoutInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "NativeCheckoutPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "paymentSourceDelete",
               "description": "Delete a user's payment source",
               "args": [
@@ -31579,6 +31750,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "PinDropRewardPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pinPost",
+              "description": "Pin a project update",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "PinPostInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "PinPostPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -32449,6 +32647,33 @@
               "deprecationReason": null
             },
             {
+              "name": "unpinPost",
+              "description": "Unpin a project update",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UnpinPostInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UnpinPostPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "unreactToDripPost",
               "description": "Undo a reaction to a Drip Post",
               "args": [
@@ -32578,6 +32803,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UpdateBackingPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updateBackingPaymentSource",
+              "description": "Update a backing's payment source",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UpdateBackingPaymentSourceInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpdateBackingPaymentSourcePayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -34278,13 +34530,9 @@
               "name": "amount",
               "description": "",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -34355,7 +34603,7 @@
               "description": "",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null
@@ -34584,21 +34832,17 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "CreateCheckoutInput",
-          "description": "Autogenerated input type of CreateCheckout",
+          "name": "CreateBackingInput",
+          "description": "Autogenerated input type of CreateBacking",
           "fields": null,
           "inputFields": [
             {
               "name": "amount",
               "description": "",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -34623,6 +34867,34 @@
               "defaultValue": null
             },
             {
+              "name": "paymentSourceId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "paymentType",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "projectId",
               "description": "",
               "type": {
@@ -34633,6 +34905,16 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "refParam",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -34653,8 +34935,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "CreateCheckoutPayload",
-          "description": "Autogenerated return type of CreateCheckout",
+          "name": "CreateBackingPayload",
+          "description": "Autogenerated return type of CreateBacking",
           "fields": [
             {
               "name": "checkout",
@@ -36029,6 +36311,162 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "FreeformPost",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "CreateGooglePayCheckoutInput",
+          "description": "Autogenerated input type of CreateGooglePayCheckout",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "amount",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "googleTransactionId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "instrumentDetails",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "instrumentType",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "locationId",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "projectId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "rewardId",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "token",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CreateGooglePayCheckoutPayload",
+          "description": "Autogenerated return type of CreateGooglePayCheckout",
+          "fields": [
+            {
+              "name": "checkout",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Checkout",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -39624,124 +40062,6 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "NativeCheckoutInput",
-          "description": "Autogenerated input type of NativeCheckout",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "amount",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "locationId",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "paymentSourceId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "projectId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "rewardId",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "NativeCheckoutPayload",
-          "description": "Autogenerated return type of NativeCheckout",
-          "fields": [
-            {
-              "name": "checkout",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Checkout",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
           "name": "PaymentSourceDeleteInput",
           "description": "Autogenerated input type of PaymentSourceDelete",
           "fields": null,
@@ -39939,6 +40259,76 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "DropReward",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "PinPostInput",
+          "description": "Autogenerated input type of PinPost",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "PinPostPayload",
+          "description": "Autogenerated return type of PinPost",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "post",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Postable",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -43413,6 +43803,76 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "UnpinPostInput",
+          "description": "Autogenerated input type of UnpinPost",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UnpinPostPayload",
+          "description": "Autogenerated return type of UnpinPost",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "post",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "INTERFACE",
+                "name": "Postable",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "UnreactToDripPostInput",
           "description": "Autogenerated input type of UnreactToDripPost",
           "fields": null,
@@ -43870,16 +44330,6 @@
               "defaultValue": null
             },
             {
-              "name": "paymentType",
-              "description": "",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
               "name": "rewardId",
               "description": "",
               "type": {
@@ -43911,6 +44361,102 @@
                   "name": "Backing",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "checkout",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Checkout",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateBackingPaymentSourceInput",
+          "description": "Autogenerated input type of UpdateBackingPaymentSource",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the backing being updated",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "paymentSourceId",
+              "description": "new payment source id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UpdateBackingPaymentSourcePayload",
+          "description": "Autogenerated return type of UpdateBackingPaymentSource",
+          "fields": [
+            {
+              "name": "backing",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Backing",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

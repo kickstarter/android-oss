@@ -21,7 +21,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(true)
     }
 
-    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
         return Observable.just(true)
     }
 

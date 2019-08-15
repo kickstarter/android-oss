@@ -907,7 +907,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
                         return Observable.error(Throwable("error"))
                     }
                 })
@@ -930,7 +930,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })

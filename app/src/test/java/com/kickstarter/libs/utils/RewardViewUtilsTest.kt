@@ -28,16 +28,17 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeButtonAlternateText() {
-        assertEquals(R.string.No_longer_available, RewardViewUtils.pledgeButtonAlternateText(ProjectFactory.project(), RewardFactory.ended()))
-        assertEquals(R.string.No_longer_available, RewardViewUtils.pledgeButtonAlternateText(ProjectFactory.project(), RewardFactory.limitReached()))
+    fun testPledgeButtonText() {
+        assertEquals(R.string.Select, RewardViewUtils.pledgeButtonText(ProjectFactory.project(), RewardFactory.reward()))
+        assertEquals(R.string.No_longer_available, RewardViewUtils.pledgeButtonText(ProjectFactory.project(), RewardFactory.ended()))
+        assertEquals(R.string.No_longer_available, RewardViewUtils.pledgeButtonText(ProjectFactory.project(), RewardFactory.limitReached()))
         val backedProject = ProjectFactory.backedProject()
         val backedReward = backedProject.backing()?.reward()?: RewardFactory.reward()
-        assertEquals(R.string.Manage_your_pledge, RewardViewUtils.pledgeButtonAlternateText(backedProject, backedReward))
-        assertEquals(R.string.Select_this_instead, RewardViewUtils.pledgeButtonAlternateText(backedProject, RewardFactory.reward()))
+        assertEquals(R.string.Manage_your_pledge, RewardViewUtils.pledgeButtonText(backedProject, backedReward))
+        assertEquals(R.string.Select_this_instead, RewardViewUtils.pledgeButtonText(backedProject, RewardFactory.reward()))
         val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder().state(Project.STATE_SUCCESSFUL).build()
         val backedSuccessfulReward = backedSuccessfulProject.backing()?.reward()?: RewardFactory.reward()
-        assertEquals(R.string.View_your_pledge, RewardViewUtils.pledgeButtonAlternateText(backedSuccessfulProject, backedSuccessfulReward))
+        assertEquals(R.string.View_your_pledge, RewardViewUtils.pledgeButtonText(backedSuccessfulProject, backedSuccessfulReward))
     }
 
 }

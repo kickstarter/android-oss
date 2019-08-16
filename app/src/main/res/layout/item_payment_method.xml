@@ -17,7 +17,7 @@
     android:layout_height="@dimen/credit_card_logo_height"
     android:layout_gravity="center_vertical"
     android:contentDescription="@null"
-    android:scaleType="fitXY"
+    android:scaleType="centerCrop"
     tools:src="@drawable/amex_md" />
 
   <LinearLayout

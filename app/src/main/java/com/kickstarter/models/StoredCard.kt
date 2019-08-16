@@ -46,6 +46,7 @@ abstract class StoredCard : Parcelable {
         internal fun getCardTypeDrawable(cardType: CreditCardTypes): Int {
             return when (cardType) {
                 CreditCardTypes.AMEX -> R.drawable.amex_md
+                CreditCardTypes.DINERS -> R.drawable.diners_md
                 CreditCardTypes.DISCOVER -> R.drawable.discover_md
                 CreditCardTypes.JCB -> R.drawable.jcb_md
                 CreditCardTypes.MASTERCARD -> R.drawable.mastercard_md

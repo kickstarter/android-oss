@@ -27,8 +27,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
     }
 
     interface Outputs {
-        /**  Emits the string resource ID to set the pledge button when not displaying the minimum. */
-        fun alternatePledgeButtonText(): Observable<Int>
+        /**  Emits the string resource ID to set on the pledge button. */
+        fun buttonCTA(): Observable<Int>
 
         /** Emits `true` if pledge button can be clicked, `false` otherwise.  */
         fun buttonIsEnabled(): Observable<Boolean>
@@ -67,9 +67,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
         fun limitContainerIsGone(): Observable<Boolean>
 
         /** Emits the minimum pledge amount in the project's currency.  */
-        fun minimumAmount(): Observable<String>
-
-        /** Emits the minimum pledge amount in the project's currency.  */
         fun minimumAmountTitle(): Observable<SpannableString>
 
         /** Emits the remaining count of the reward.  */
@@ -86,6 +83,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         /** Emits `true` if the items section should be hidden, `false` otherwise.  */
         fun rewardItemsAreGone(): Observable<Boolean>
+
+        /** Set the shipping summary TextView's text.  */
+        fun shippingSummary(): Observable<String>
+
+        /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
+        fun shippingSummaryIsGone(): Observable<Boolean>
 
         /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
         fun showPledgeFragment(): Observable<Pair<Project, Reward>>
@@ -109,7 +112,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
 
-        private val alternatePledgeButtonText: Observable<Int>
+        private val buttonCTA: Observable<Int>
         private val buttonIsEnabled: Observable<Boolean>
         private val buttonIsGone: Observable<Boolean>
         private val buttonTintColor: Observable<Int>
@@ -122,13 +125,14 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val descriptionIsGone: Observable<Boolean>
         private val endDateSectionIsGone: Observable<Boolean>
         private val limitContainerIsGone: Observable<Boolean>
-        private val minimumAmount: Observable<String>
         private val minimumAmountTitle: Observable<SpannableString>
         private val remaining: Observable<String>
         private val remainingIsGone: Observable<Boolean>
         private val reward: Observable<Reward>
         private val rewardItems: Observable<List<RewardsItem>>
         private val rewardItemsAreGone: Observable<Boolean>
+        private val shippingSummary: Observable<String>
+        private val shippingSummaryIsGone: Observable<Boolean>
         private val showPledgeFragment: Observable<Pair<Project, Reward>>
         private val startBackingActivity: Observable<Project>
         private val titleForNoReward: Observable<Int>
@@ -169,13 +173,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .map { !BackingUtils.isBacked(it.first, it.second) }
                     .distinctUntilChanged()
 
-            this.minimumAmount = this.projectAndReward
-                    .filter { shouldShowMinimum(it) }
-                    .map { this.ksCurrency.format(it.second.minimum(), it.first) }
-
-            this.alternatePledgeButtonText = this.projectAndReward
-                    .filter { shouldShowAlternateText(it.first, it.second) }
-                    .map { RewardViewUtils.pledgeButtonAlternateText(it.first, it.second) }
+            this.buttonCTA = this.projectAndReward
+                    .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
                     .distinctUntilChanged()
 
             this.conversionIsGone = this.projectAndReward
@@ -227,11 +226,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .map { expirationDateIsGone(it.first, it.second) }
                     .distinctUntilChanged()
 
-            this.limitContainerIsGone = Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone)
-            { endDateGone, remainingGone  -> Pair(endDateGone, remainingGone)}
-                    .map { it.first && it.second }
-                    .distinctUntilChanged()
-
             this.showPledgeFragment = this.projectAndReward
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
@@ -247,6 +241,20 @@ interface NativeCheckoutRewardViewHolderViewModel {
             this.titleIsGone = reward
                     .map {  RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
                     .distinctUntilChanged()
+
+            this.shippingSummary = reward
+                    .filter { RewardUtils.isShippable(it) }
+                    .map { it.shippingSummary() }
+
+            this.shippingSummaryIsGone = this.projectAndReward
+                    .map { it.first.isLive && RewardUtils.isShippable(it.second) }
+                    .map { BooleanUtils.negate(it) }
+                    .distinctUntilChanged()
+
+            this.limitContainerIsGone = Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone)
+            { endDateGone, remainingGone, shippingGone  -> endDateGone && remainingGone && shippingGone }
+                    .distinctUntilChanged()
+
         }
 
         private fun expirationDateIsGone(project: Project, reward: Reward): Boolean {
@@ -265,14 +273,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
             return RewardUtils.isAvailable(project, reward)
         }
 
-        private fun shouldShowAlternateText(project: Project, reward: Reward): Boolean = when {
-            project.isLive -> project.isBacking || !RewardUtils.isAvailable(project, reward)
-            else -> BackingUtils.isBacked(project, reward)
-        }
-
-        private fun shouldShowMinimum(it: Pair<Project, Reward>) =
-                !it.first.isBacking && it.first.isLive && RewardUtils.isAvailable(it.first, it.second)
-
         override fun projectAndReward(@NonNull project: Project, @NonNull reward: Reward) {
             this.projectAndReward.onNext(Pair.create(project, reward))
         }
@@ -282,7 +282,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         }
 
         @NonNull
-        override fun alternatePledgeButtonText(): Observable<Int> = this.alternatePledgeButtonText
+        override fun buttonCTA(): Observable<Int> = this.buttonCTA
 
         @NonNull
         override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
@@ -321,9 +321,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone
 
         @NonNull
-        override fun minimumAmount(): Observable<String> = this.minimumAmount
-
-        @NonNull
         override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountTitle
 
         @NonNull
@@ -340,6 +337,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         @NonNull
         override fun rewardItemsAreGone(): Observable<Boolean> = this.rewardItemsAreGone
+
+        @NonNull
+        override fun shippingSummary(): Observable<String> = this.shippingSummary
+
+        @NonNull
+        override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
         @NonNull
         override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment

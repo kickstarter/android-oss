@@ -149,7 +149,7 @@ interface PledgeFragmentViewModel {
         fun showMinimumWarning(): Observable<String>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.NewCardFragment]. */
-        fun showNewCardFragment(): Observable<Void>
+        fun showNewCardFragment(): Observable<Project>
 
         /** Emits when the cards adapter should update the selected position. */
         fun showPledgeCard(): Observable<Pair<Int, CardState>>
@@ -222,7 +222,7 @@ interface PledgeFragmentViewModel {
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
         private val showCancelPledge = PublishSubject.create<Project>()
         private val showMinimumWarning = PublishSubject.create<String>()
-        private val showNewCardFragment = PublishSubject.create<Void>()
+        private val showNewCardFragment = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = BehaviorSubject.create<Void>()
         private val startChromeTab = PublishSubject.create<String>()
@@ -555,7 +555,8 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.SELECT)) }
 
-            this.newCardButtonClicked
+            project
+                    .compose<Project>(takeWhen(this.newCardButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.showNewCardFragment)
 
@@ -748,7 +749,7 @@ interface PledgeFragmentViewModel {
         override fun showMinimumWarning(): Observable<String> = this.showMinimumWarning
 
         @NonNull
-        override fun showNewCardFragment(): Observable<Void> = this.showNewCardFragment
+        override fun showNewCardFragment(): Observable<Project> = this.showNewCardFragment
 
         @NonNull
         override fun showPledgeCard(): Observable<Pair<Int, CardState>> = this.showPledgeCard

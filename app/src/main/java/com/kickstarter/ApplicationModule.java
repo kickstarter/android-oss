@@ -251,8 +251,9 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull CurrentUserType currentUser) {
-    return new GraphQLInterceptor(currentUser);
+  static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
+    final @NonNull CurrentUserType currentUser) {
+    return new GraphQLInterceptor(clientId, currentUser);
   }
 
   @Provides

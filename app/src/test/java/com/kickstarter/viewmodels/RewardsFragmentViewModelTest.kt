@@ -13,15 +13,15 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.*
 
-class RewardFragmentViewModelTest: KSRobolectricTestCase() {
+class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
-    private lateinit var vm: RewardFragmentViewModel.ViewModel
+    private lateinit var vm: RewardsFragmentViewModel.ViewModel
     private val backedRewardPosition = TestSubscriber.create<Int>()
     private val project = TestSubscriber.create<Project>()
     private val showPledgeFragment = TestSubscriber<PledgeData>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = RewardFragmentViewModel.ViewModel(environment)
+        this.vm = RewardsFragmentViewModel.ViewModel(environment)
         this.vm.outputs.backedRewardPosition().subscribe(this.backedRewardPosition)
         this.vm.outputs.project().subscribe(this.project)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)

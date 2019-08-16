@@ -37,6 +37,9 @@ interface ProjectViewModel {
         /** Call when the cancel pledge option is clicked.  */
         fun cancelPledgeClicked()
 
+        /** Call when horizontal rewards sheet should collapse. */
+        fun collapsePledgeSheet()
+
         /** Call when the comments text view is clicked.  */
         fun commentsTextViewClicked()
 
@@ -51,9 +54,6 @@ interface ProjectViewModel {
 
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
-
-        /** Call when horizontal rewards sheet should hide. */
-        fun collapsePledgeSheet()
 
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()

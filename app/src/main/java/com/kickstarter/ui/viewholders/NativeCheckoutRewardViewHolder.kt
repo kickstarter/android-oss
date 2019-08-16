@@ -6,6 +6,7 @@ import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
@@ -174,10 +175,9 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.view.reward_check.setBackgroundResource(it) }
 
-        this.view.reward_pledge_button.setOnClickListener {
-            this.viewModel.inputs.rewardClicked()
-        }
-
+        RxView.clicks(this.view.reward_pledge_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.rewardClicked() }
     }
 
     override fun bindData(data: Any?) {
@@ -198,11 +198,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     private fun setConversionTextView(@NonNull amount: String) {
         this.view.reward_conversion_text_view.text = this.ksString.format(this.currencyConversionString,
                 "reward_amount", amount)
-    }
-
-    private fun setMinimumButtonText(@NonNull minimum: String) {
-        this.view.reward_pledge_button.text = this.ksString.format(this.pledgeRewardCurrencyOrMoreString,
-                "reward_currency", minimum)
     }
 
     private fun setPledgeButtonVisibility(gone: Boolean) {

@@ -23,8 +23,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
     private val backingDetails = TestSubscriber<String>()
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
-    private val heartDrawableId = TestSubscriber<Int>()
     private val expandPledgeSheet = TestSubscriber<Boolean>()
+    private val heartDrawableId = TestSubscriber<Int>()
     private val managePledgeMenuIsVisible = TestSubscriber<Boolean>()
     private val projectTest = TestSubscriber<Project>()
     private val revealRewardsFragment = TestSubscriber<Void>()
@@ -36,8 +36,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
     private val showCancelPledgeFragment = TestSubscriber<Project>()
     private val showCancelPledgeSuccess = TestSubscriber<Void>()
-    private val showShareSheet = TestSubscriber<Project>()
     private val showSavedPromptTest = TestSubscriber<Void>()
+    private val showShareSheet = TestSubscriber<Project>()
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
@@ -65,7 +65,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showCancelPledgeFragment().subscribe(this.showCancelPledgeFragment)
         this.vm.outputs.showCancelPledgeSuccess().subscribe(this.showCancelPledgeSuccess)
-        this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showUpdatePledge().subscribe(this.showUpdatePledge)
@@ -76,6 +75,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
         this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
+        this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
     }
@@ -351,15 +351,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testExpandPledgeSheet_whenHiding() {
+    fun testExpandPledgeSheet_whenCollapsingSheet() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        this.vm.inputs.hideRewardsSheetClicked()
+        this.vm.inputs.collapsePledgeSheet()
         this.expandPledgeSheet.assertValue(false)
     }
 
     @Test
-    fun testExpandPledgeSheet_whenShowing() {
+    fun testExpandPledgeSheet_whenExpandingSheet() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.vm.inputs.nativeProjectActionButtonClicked()

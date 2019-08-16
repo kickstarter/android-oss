@@ -91,7 +91,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 }
 
                 rewards_toolbar.setNavigationOnClickListener {
-                    this.viewModel.inputs.hideRewardsSheetClicked()
+                    this.viewModel.inputs.collapsePledgeSheet()
                 }
 
                 rewards_toolbar.setOnMenuItemClickListener {
@@ -424,7 +424,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val rewardsSheetIsExpanded = pledge_container.alpha == 1f
         when {
             supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
-            rewardsSheetIsExpanded -> this.viewModel.inputs.hideRewardsSheetClicked()
+            rewardsSheetIsExpanded -> this.viewModel.inputs.collapsePledgeSheet()
             else -> {
                 clearFragmentBackStack()
                 super.back()
@@ -467,40 +467,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.projectRecyclerView.setPadding(0, 0, 0, guideline)
     }
 
-    private fun showRewardsFragment(project: Project) {
-        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
-        supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0) {
-            supportFragmentManager.beginTransaction()
-                    .show(rewardsFragment)
-                    .hide(backingFragment)
-                    .commit()
-        }
-        renderProject(backingFragment, rewardsFragment,project)
-    }
-
-    private fun showCancelPledgeFragment(project: Project) {
-        supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                .add(R.id.fragment_container, CancelPledgeFragment.newInstance(project), CancelPledgeFragment::class.java.simpleName)
-                .addToBackStack(CancelPledgeFragment::class.java.simpleName)
-                .commit()
-    }
-
-    private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
-        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first)
-        supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                .add(R.id.fragment_container, pledgeFragment, PledgeFragment::class.java.simpleName)
-                .addToBackStack(PledgeFragment::class.java.simpleName)
-                .commit()
-    }
-
     private fun showBackingFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
-        supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
         if(!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0) {
             supportFragmentManager.beginTransaction()
                     .show(backingFragment)
@@ -510,11 +479,49 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         renderProject(backingFragment, rewardsFragment, project)
     }
 
+    private fun showCancelPledgeFragment(project: Project) {
+        val cancelPledgeFragment = CancelPledgeFragment.newInstance(project)
+        val tag = CancelPledgeFragment::class.java.simpleName
+        supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .add(R.id.fragment_container, cancelPledgeFragment, tag)
+                .addToBackStack(tag)
+                .commit()
+    }
+
     private fun showCancelPledgeSuccess() {
         clearFragmentBackStack()
         Handler().postDelayed({
             showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
         }, this.animDuration)
+    }
+
+    private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
+        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first)
+        val tag = PledgeFragment::class.java.simpleName
+        supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .add(R.id.fragment_container, pledgeFragment, tag)
+                .addToBackStack(tag)
+                .commit()
+    }
+
+    private fun showRewardsFragment(project: Project) {
+        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
+        supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0) {
+            supportFragmentManager.beginTransaction()
+                    .show(rewardsFragment)
+                    .hide(backingFragment)
+                    .commit()
+        }
+        renderProject(backingFragment, rewardsFragment, project)
+    }
+
+    private fun showStarToast() {
+        ViewUtils.showToastFromTop(this, getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(R.dimen.grid_8))
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
@@ -532,10 +539,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val intent = Intent(this, ProjectUpdatesActivity::class.java)
                 .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun showStarToast() {
-        ViewUtils.showToastFromTop(this, getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(R.dimen.grid_8))
     }
 
     private fun startCheckoutActivity(project: Project) {

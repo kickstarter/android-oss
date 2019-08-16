@@ -53,7 +53,7 @@ interface ProjectViewModel {
         fun heartButtonClicked()
 
         /** Call when horizontal rewards sheet should hide. */
-        fun hideRewardsSheetClicked()
+        fun collapsePledgeSheet()
 
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
@@ -73,14 +73,14 @@ interface ProjectViewModel {
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
 
-        /** Call when the updates button is clicked.  */
-        fun updatesTextViewClicked()
-
         /** Call when the update payment option is clicked.  */
         fun updatePaymentClicked()
 
         /** Call when the update pledge option is clicked.  */
         fun updatePledgeClicked()
+
+        /** Call when the updates button is clicked.  */
+        fun updatesTextViewClicked()
 
         /** Call when the view pledge button is clicked.  */
         fun viewPledgeButtonClicked()
@@ -191,22 +191,22 @@ interface ProjectViewModel {
         private val backProjectButtonClicked = PublishSubject.create<Void>()
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val cancelPledgeClicked = PublishSubject.create<Void>()
+        private val collapsePledgeSheet = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
-        private val collapsePledgeSheet = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
-        private val showRewardsClicked = PublishSubject.create<Void>()
         private val updatePaymentClicked = PublishSubject.create<Void>()
         private val updatePledgeClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
+        private val viewRewardsClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
         private val backingDetails = BehaviorSubject.create<String>()
@@ -221,9 +221,9 @@ interface ProjectViewModel {
         private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
+        private val showBackingFragment = BehaviorSubject.create<Project>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
-        private val showBackingFragment = BehaviorSubject.create<Project>()
         private val showRewardsFragment = BehaviorSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
@@ -409,7 +409,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 
-            this.showRewardsClicked
+            this.viewRewardsClicked
                     .compose(bindToLifecycle())
                     .subscribe(this.revealRewardsFragment)
 
@@ -520,6 +520,10 @@ interface ProjectViewModel {
             this.cancelPledgeClicked.onNext(null)
         }
 
+        override fun collapsePledgeSheet() {
+            this.collapsePledgeSheet.onNext(null)
+        }
+
         override fun commentsTextViewClicked() {
             this.commentsTextViewClicked.onNext(null)
         }
@@ -538,10 +542,6 @@ interface ProjectViewModel {
 
         override fun heartButtonClicked() {
             this.heartButtonClicked.onNext(null)
-        }
-
-        override fun hideRewardsSheetClicked() {
-            this.collapsePledgeSheet.onNext(null)
         }
 
         override fun managePledgeButtonClicked() {
@@ -633,7 +633,7 @@ interface ProjectViewModel {
         }
 
         override fun viewRewardsClicked() {
-            this.showRewardsClicked.onNext(null)
+            this.viewRewardsClicked.onNext(null)
         }
 
         @NonNull

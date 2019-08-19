@@ -30,7 +30,7 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showSnackbar
+import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -268,7 +268,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { activity?.showSnackbar(pledge_root, R.string.general_error_something_wrong) }
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
 
         this.viewModel.outputs.startChromeTab()
                 .compose(bindToLifecycle())

@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -48,6 +48,11 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
                 .compose(observeForUI())
                 .subscribe { showPledgeFragment(it) }
 
+        this.viewModel.outputs.rewardsCount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setRewardsCount(it) }
+
     }
 
     private fun scrollToReward(position: Int) {
@@ -59,6 +64,12 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
             val center = (recyclerWidth - rewardWidth - rewardMargin) / 2
             linearLayoutManager.scrollToPositionWithOffset(position, center)
         }
+    }
+
+    private fun setRewardsCount(count: Int) {
+        val rewardsCountString = this.viewModel.environment.ksString().format("Rewards_count_rewards", count,
+                "rewards_count", NumberUtils.format(count))
+        rewards_count.text = rewardsCountString
     }
 
     override fun onDetach() {
@@ -75,12 +86,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
     }
 
     private fun addItemDecorator() {
-        val radius = resources.getDimensionPixelSize(R.dimen.circle_radius).toFloat()
-        val inactiveColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_dark_grey_400)
-        val activeColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_soft_black)
         val margin = resources.getDimension(R.dimen.reward_margin).toInt()
-        val padding = radius * 2
-        rewards_recycler.addItemDecoration(RewardDecoration(margin, activeColor, inactiveColor, radius, padding))
+        rewards_recycler.addItemDecoration(RewardDecoration(margin))
     }
 
     private fun setupRecyclerView() {

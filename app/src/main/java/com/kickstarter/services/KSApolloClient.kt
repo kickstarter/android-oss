@@ -1,8 +1,8 @@
 package com.kickstarter.services
 
 import CancelBackingMutation
-import CheckoutMutation
 import ClearUserUnseenActivityMutation
+import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
@@ -58,26 +58,27 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
         return Observable.defer {
             val ps = PublishSubject.create<Boolean>()
-            service.mutate(CheckoutMutation.builder()
+            service.mutate(CreateBackingMutation.builder()
                     .projectId(encodeRelayId(project))
                     .amount(amount)
+                    .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
                     .paymentSourceId(paymentSourceId)
                     .locationId(locationId?.let { it })
                     .rewardId(reward?.let { encodeRelayId(it) })
                     .build())
-                    .enqueue(object : ApolloCall.Callback<CheckoutMutation.Data>() {
+                    .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)
                         }
 
-                        override fun onResponse(response: Response<CheckoutMutation.Data>) {
+                        override fun onResponse(response: Response<CreateBackingMutation.Data>) {
                             if (response.hasErrors()) {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
-                            val state = response.data()?.nativeCheckout()?.checkout()?.state()
+                            val state = response.data()?.createBacking()?.checkout()?.state()
                             val success = state == CheckoutState.VERIFYING
                             ps.onNext(success)
                             ps.onCompleted()

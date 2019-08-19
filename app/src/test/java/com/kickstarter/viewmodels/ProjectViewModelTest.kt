@@ -29,7 +29,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val expandPledgeSheet = TestSubscriber<Boolean>()
     private val heartDrawableId = TestSubscriber<Int>()
     private val managePledgeMenuIsVisible = TestSubscriber<Boolean>()
-    private val openProjectExternally = TestSubscriber<String>()
+    private val prelaunchUrl = TestSubscriber<String>()
     private val projectTest = TestSubscriber<Project>()
     private val revealRewardsFragment = TestSubscriber<Void>()
     private val rewardsButtonColor = TestSubscriber<Int>()
@@ -60,7 +60,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.managePledgeMenuIsVisible().subscribe(this.managePledgeMenuIsVisible)
-        this.vm.outputs.prelaunchUrl().subscribe(this.openProjectExternally)
+        this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
@@ -118,7 +118,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
 
         this.projectTest.assertValues(project)
-        this.openProjectExternally.assertNoValues()
+        this.prelaunchUrl.assertNoValues()
         this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE)
     }
 
@@ -143,7 +143,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
 
         this.projectTest.assertNoValues()
-        this.openProjectExternally.assertValue(url)
+        this.prelaunchUrl.assertValue(url)
         this.koalaTest.assertNoValues()
     }
 

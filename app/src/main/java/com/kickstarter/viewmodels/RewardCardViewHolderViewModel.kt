@@ -60,7 +60,7 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .filter { !it }
                     .compose<Pair<Boolean, Project>>(combineLatestPair(project))
                     .map { it.second }
-                    .map { it.location()?.displayableName() }
+                    .map { it.location()?.expandedCountry()?: "" }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectCountry)
 

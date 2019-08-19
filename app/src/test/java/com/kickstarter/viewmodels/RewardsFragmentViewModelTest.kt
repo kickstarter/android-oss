@@ -11,19 +11,20 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.observers.TestSubscriber
-import java.util.*
 
-class RewardFragmentViewModelTest: KSRobolectricTestCase() {
+class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
-    private lateinit var vm: RewardFragmentViewModel.ViewModel
+    private lateinit var vm: RewardsFragmentViewModel.ViewModel
     private val backedRewardPosition = TestSubscriber.create<Int>()
     private val project = TestSubscriber.create<Project>()
+    private val rewardsCount = TestSubscriber.create<Int>()
     private val showPledgeFragment = TestSubscriber<PledgeData>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = RewardFragmentViewModel.ViewModel(environment)
+        this.vm = RewardsFragmentViewModel.ViewModel(environment)
         this.vm.outputs.backedRewardPosition().subscribe(this.backedRewardPosition)
         this.vm.outputs.project().subscribe(this.project)
+        this.vm.outputs.rewardsCount().subscribe(this.rewardsCount)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
     }
 
@@ -42,7 +43,7 @@ class RewardFragmentViewModelTest: KSRobolectricTestCase() {
                         .toBuilder()
                         .rewardId(reward.id())
                         .build())
-                .rewards(Arrays.asList(RewardFactory.noReward(), reward))
+                .rewards(listOf(RewardFactory.noReward(), reward))
                 .build()
         this.vm.inputs.project(backedProject)
         this.backedRewardPosition.assertValue(1)
@@ -65,7 +66,7 @@ class RewardFragmentViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectViewModel_ShowPledgeFragment() {
+    fun testShowPledgeFragment() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -75,5 +76,18 @@ class RewardFragmentViewModelTest: KSRobolectricTestCase() {
         val reward = RewardFactory.reward()
         this.vm.inputs.rewardClicked(screenLocation, reward)
         this.showPledgeFragment.assertValue(PledgeData(screenLocation, reward, project))
+    }
+
+    @Test
+    fun testRewardsCount() {
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(RewardFactory.noReward(), RewardFactory.reward()))
+                .build()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(project)
+
+        this.rewardsCount.assertValue(2)
     }
 }

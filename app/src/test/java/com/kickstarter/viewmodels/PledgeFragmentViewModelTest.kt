@@ -56,11 +56,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
     private val showCancelPledge = TestSubscriber<Project>()
     private val showMinimumWarning = TestSubscriber<String>()
+    private val showNewCardFragment = TestSubscriber<Project>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
     private val startChromeTab = TestSubscriber<String>()
     private val startLoginToutActivity = TestSubscriber<Void>()
-    private val startNewCardActivity = TestSubscriber<Void>()
     private val startThanksActivity = TestSubscriber<Project>()
     private val totalAmount = TestSubscriber<String>()
     private val totalContainerIsGone = TestSubscriber<Boolean>()
@@ -101,7 +101,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.startChromeTab().subscribe(this.startChromeTab)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.showNewCardFragment().subscribe(this.startNewCardActivity)
+        this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
         this.vm.outputs.totalContainerIsGone().subscribe(this.totalContainerIsGone)
@@ -754,6 +754,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShowNewCardFragment() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment(), project = project)
+
+        this.vm.inputs.newCardButtonClicked()
+        this.showNewCardFragment.assertValue(project)
+    }
+
+    @Test
     fun testStartChromeTab() {
         setUpEnvironment(environment().toBuilder()
                 .webEndpoint("www.test.dev")
@@ -788,14 +797,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         //Login tout should not start with a invalid pledge amount, warning should show
         this.startLoginToutActivity.assertValueCount(1)
         this.showMinimumWarning.assertValueCount(1)
-    }
-
-    @Test
-    fun testStartNewCardActivity() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.newCardButtonClicked()
-        this.startNewCardActivity.assertValueCount(1)
     }
 
     @Test
@@ -906,7 +907,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
                         return Observable.error(Throwable("error"))
                     }
                 })
@@ -929,7 +930,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })

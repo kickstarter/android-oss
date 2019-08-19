@@ -28,57 +28,66 @@
         android:orientation="vertical"
         android:padding="@dimen/grid_3">
 
-        <RelativeLayout
+        <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-
-          <TextView
-            android:id="@+id/reward_minimum_text_view"
-            style="@style/Title2Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/reward_check"
-            android:textColor="@color/ksr_green_500"
-            android:textSize="@dimen/title_reward"
-            tools:text="$20" />
-
-          <TextView
-            android:id="@+id/reward_conversion_text_view"
-            style="@style/FootnotePrimaryMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/reward_minimum_text_view"
-            android:textColor="@color/ksr_green_500"
-            tools:text="About $15 USD" />
-
-          <ImageView
-            android:id="@+id/reward_check"
-            android:layout_width="@dimen/grid_5"
-            android:layout_height="@dimen/grid_5"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/circle_black_alpha"
-            android:contentDescription="@null"
-            android:src="@drawable/icon__check_reward"
-            android:visibility="invisible"
-            tools:visibility="visible" />
-        </RelativeLayout>
-
-        <TextView
-          android:id="@+id/reward_title_text_view"
-          style="@style/TextPrimary"
-          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_2"
-          android:textSize="@dimen/title_reward"
-          android:textStyle="bold"
-          tools:text="Make a pledge without a reward" />
+          android:focusable="true"
+          android:orientation="vertical">
+
+          <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:id="@+id/reward_minimum_text_view"
+              style="@style/Title2Medium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentStart="true"
+              android:layout_toStartOf="@id/reward_check"
+              android:textColor="@color/ksr_green_500"
+              android:textSize="@dimen/title_reward"
+              tools:text="$20" />
+
+            <TextView
+              android:id="@+id/reward_conversion_text_view"
+              style="@style/FootnotePrimaryMedium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/reward_minimum_text_view"
+              android:textColor="@color/ksr_green_500"
+              tools:text="About $15 USD" />
+
+            <ImageView
+              android:id="@+id/reward_check"
+              android:layout_width="@dimen/grid_5"
+              android:layout_height="@dimen/grid_5"
+              android:layout_alignParentEnd="true"
+              android:background="@drawable/circle_black_alpha"
+              android:contentDescription="@null"
+              android:src="@drawable/icon__check_reward"
+              android:visibility="invisible"
+              tools:visibility="visible" />
+          </RelativeLayout>
+
+          <TextView
+            android:id="@+id/reward_title_text_view"
+            style="@style/TextPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/grid_2"
+            android:textSize="@dimen/title_reward"
+            android:textStyle="bold"
+            tools:text="Make a pledge without a reward" />
+
+        </LinearLayout>
 
         <LinearLayout
           android:id="@+id/rewards_item_section"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"
+          android:focusable="true"
           android:orientation="vertical">
 
           <TextView
@@ -97,54 +106,65 @@
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/reward_description_container"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:focusable="true"
           android:orientation="vertical">
 
-          <TextView
-            style="@style/RewardSectionTitle"
-            android:layout_marginTop="@dimen/grid_3"
-            android:text="@string/Description" />
-
-          <TextView
-            android:id="@+id/reward_description_text_view"
-            style="@style/BodyPrimary"
+          <LinearLayout
+            android:id="@+id/reward_description_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_1"
-            tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
-        </LinearLayout>
+            android:orientation="vertical">
 
-        <LinearLayout
+            <TextView
+              style="@style/RewardSectionTitle"
+              android:layout_marginTop="@dimen/grid_3"
+              android:text="@string/Description" />
+
+            <TextView
+              android:id="@+id/reward_description_text_view"
+              style="@style/BodyPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/grid_1"
+              tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+          </LinearLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
           android:id="@+id/reward_limit_container"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"
           android:orientation="horizontal"
           android:visibility="gone"
+          app:showDivider="middle"
+          app:dividerDrawable="@drawable/divider_grid_1"
+          app:flexWrap="wrap"
           tools:visibility="visible">
 
-          <TextView
+        <TextView
             android:id="@+id/reward_ending_text_view"
+            style="@style/RewardPill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/grid_1"
-            android:background="@drawable/rect_green_alpha_6"
-            android:padding="@dimen/grid_1"
-            android:textColor="@color/ksr_green_500"
-            android:textStyle="bold"
             tools:text="3 days left" />
 
           <TextView
             android:id="@+id/reward_remaining_text_view"
+            style="@style/RewardPill"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rect_green_alpha_6"
-            android:padding="@dimen/grid_1"
-            android:textColor="@color/ksr_green_500"
-            android:textStyle="bold"
             tools:text="30 left" />
+
+          <TextView
+            android:id="@+id/reward_shipping_summary"
+            style="@style/RewardPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Anywhere in the world" />
+
+        </com.google.android.flexbox.FlexboxLayout>
 
         </LinearLayout>
 
@@ -153,6 +173,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"
+          android:focusable="false"
           android:visibility="invisible"
           tools:text="Pledge $10 or more" />
 
@@ -178,7 +199,7 @@
       style="@style/PledgeButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      tools:text="Pledge $10 or more" />
+      tools:text="Select" />
 
   </FrameLayout>
 

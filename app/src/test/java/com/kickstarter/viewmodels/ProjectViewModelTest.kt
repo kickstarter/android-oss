@@ -16,6 +16,8 @@ import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -24,25 +26,30 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
     private val backingDetails = TestSubscriber<String>()
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
+    private val expandPledgeSheet = TestSubscriber<Boolean>()
     private val heartDrawableId = TestSubscriber<Int>()
+    private val managePledgeMenuIsVisible = TestSubscriber<Boolean>()
     private val openProjectExternally = TestSubscriber<String>()
     private val projectTest = TestSubscriber<Project>()
+    private val revealRewardsFragment = TestSubscriber<Void>()
     private val rewardsButtonColor = TestSubscriber<Int>()
     private val rewardsButtonText = TestSubscriber<Int>()
     private val rewardsToolbarTitle = TestSubscriber<Int>()
-    private val showShareSheet = TestSubscriber<Project>()
-    private val showSavedPromptTest = TestSubscriber<Void>()
-    private val startLoginToutActivity = TestSubscriber<Void>()
     private val savedTest = TestSubscriber<Boolean>()
     private val scrimIsVisible = TestSubscriber<Boolean>()
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
+    private val showCancelPledgeFragment = TestSubscriber<Project>()
     private val showCancelPledgeSuccess = TestSubscriber<Void>()
-    private val showRewardsFragment = TestSubscriber<Boolean>()
+    private val showSavedPromptTest = TestSubscriber<Void>()
+    private val showShareSheet = TestSubscriber<Project>()
+    private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
     private val startCommentsActivity = TestSubscriber<Project>()
     private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
+    private val startLoginToutActivity = TestSubscriber<Void>()
     private val startManagePledgeActivity = TestSubscriber<Project>()
+    private val startMessagesActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
     private val startVideoActivity = TestSubscriber<Project>()
 
@@ -50,18 +57,22 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm = ProjectViewModel.ViewModel(environment)
         this.vm.outputs.backingDetails().subscribe(this.backingDetails)
         this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
+        this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
+        this.vm.outputs.managePledgeMenuIsVisible().subscribe(this.managePledgeMenuIsVisible)
         this.vm.outputs.prelaunchUrl().subscribe(this.openProjectExternally)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
+        this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
         this.vm.outputs.rewardsToolbarTitle().subscribe(this.rewardsToolbarTitle)
         this.vm.outputs.scrimIsVisible().subscribe(this.scrimIsVisible)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
+        this.vm.outputs.showCancelPledgeFragment().subscribe(this.showCancelPledgeFragment)
         this.vm.outputs.showCancelPledgeSuccess().subscribe(this.showCancelPledgeSuccess)
-        this.vm.outputs.showRewardsFragment().subscribe(this.showRewardsFragment)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
+        this.vm.outputs.showUpdatePledge().subscribe(this.showUpdatePledge)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
@@ -69,6 +80,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
         this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
+        this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
     }
@@ -393,21 +405,21 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testHideRewardsFragment() {
+    fun testExpandPledgeSheet_whenCollapsingSheet() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        this.vm.inputs.hideRewardsSheetClicked()
-        this.showRewardsFragment.assertValue(false)
+        this.vm.inputs.collapsePledgeSheet()
+        this.expandPledgeSheet.assertValue(false)
     }
 
     @Test
-    fun testShowRewardsFragment() {
+    fun testExpandPledgeSheet_whenExpandingSheet() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.vm.inputs.nativeProjectActionButtonClicked()
-        this.showRewardsFragment.assertValue(true)
+        this.expandPledgeSheet.assertValue(true)
         this.vm.inputs.nativeProjectActionButtonClicked()
-        this.showRewardsFragment.assertValues(true, true)
+        this.expandPledgeSheet.assertValues(true, true)
     }
 
     @Test
@@ -489,13 +501,18 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testScrimIsVisible() {
+    fun testScrimIsVisible_whenNativeCheckoutDisabled() {
         setUpEnvironment(environment())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
         this.vm.inputs.fragmentStackCount(0)
         this.scrimIsVisible.assertNoValues()
+    }
 
+    @Test
+    fun testScrimIsVisible_whenNotBackedProject() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
         this.vm.inputs.fragmentStackCount(0)
         this.scrimIsVisible.assertValue(false)
@@ -511,6 +528,27 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testScrimIsVisible_whenBackedProject() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.vm.inputs.fragmentStackCount(0)
+        this.scrimIsVisible.assertValue(false)
+
+        this.vm.inputs.fragmentStackCount(1)
+        this.scrimIsVisible.assertValue(false)
+
+        this.vm.inputs.fragmentStackCount(2)
+        this.scrimIsVisible.assertValues(false)
+
+        this.vm.inputs.fragmentStackCount(3)
+        this.scrimIsVisible.assertValues(false, true)
+
+        this.vm.inputs.fragmentStackCount(2)
+        this.scrimIsVisible.assertValues(false, true, false)
+    }
+
+    @Test
     fun testCancelPledgeSuccess() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
@@ -520,9 +558,107 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectTest.assertValueCount(2)
 
         this.vm.inputs.pledgeSuccessfullyCancelled()
-        this.showRewardsFragment.assertValue(false)
+        this.expandPledgeSheet.assertValue(false)
         this.showCancelPledgeSuccess.assertValueCount(1)
         this.projectTest.assertValueCount(3)
+    }
+
+    @Test
+    fun testManagePledgeMenuIsVisible_whenProjectBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.managePledgeMenuIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun testManagePledgeMenuIsVisible_whenProjectNotBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.managePledgeMenuIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testManagePledgeMenuIsVisible_whenManaging() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.managePledgeMenuIsVisible.assertValue(true)
+
+        this.vm.inputs.cancelPledgeClicked()
+        this.vm.inputs.fragmentStackCount(1)
+        this.managePledgeMenuIsVisible.assertValues(true, false)
+
+        this.vm.inputs.fragmentStackCount(0)
+        this.managePledgeMenuIsVisible.assertValues(true, false, true)
+    }
+
+    @Test
+    fun testShowCancelPledgeFragment() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.cancelPledgeClicked()
+        this.showCancelPledgeFragment.assertValue(backedProject)
+    }
+
+    @Test
+    fun testShowConversation() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.contactCreatorClicked()
+        this.startMessagesActivity.assertValue(backedProject)
+    }
+
+    @Test
+    fun testRevealRewardsFragment() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.vm.inputs.viewRewardsClicked()
+        this.revealRewardsFragment.assertValueCount(1)
+    }
+
+    @Test
+    fun testShowUpdatePledge() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        val reward = RewardFactory.reward()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .rewardId(reward.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.showUpdatePledge.assertNoValues()
+
+        this.vm.inputs.updatePledgeClicked()
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PLEDGE))
+
+        this.vm.inputs.updatePaymentClicked()
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PAYMENT))
     }
 
     private fun environmentWithNativeCheckoutEnabled() : Environment {

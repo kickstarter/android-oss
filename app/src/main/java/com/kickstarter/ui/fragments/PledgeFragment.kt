@@ -30,7 +30,7 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showSnackbar
+import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -39,6 +39,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
@@ -61,6 +62,7 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
+import kotlin.math.min
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
@@ -211,7 +213,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     fragmentManager
                             ?.beginTransaction()
                             ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true), NewCardFragment::class.java.simpleName)
+                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
                             ?.addToBackStack(NewCardFragment::class.java.simpleName)
                             ?.commit()
                 }
@@ -266,7 +268,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { activity?.showSnackbar(pledge_root, R.string.general_error_something_wrong) }
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
 
         this.viewModel.outputs.startChromeTab()
                 .compose(bindToLifecycle())
@@ -537,8 +539,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     //Reward card animation helper methods
     private fun showPledgeSection(pledgeData: PledgeData) {
-        setInitialViewStates(pledgeData)
-        startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
+        pledgeData.rewardScreenLocation?.let {
+            setInitialViewStates(pledgeData)
+            startPledgeAnimatorSet(true, it)
+        }?: run {
+            reward_to_copy.visibility = View.GONE
+            reward_snapshot.visibility = View.GONE
+            expand_icon_container.visibility = View.GONE
+            pledge_root.visibility = View.VISIBLE
+        }
     }
 
     private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
@@ -654,7 +663,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getMiniRewardHeight(miniRewardWidth: Float, location: ScreenLocation): Float {
         val scale = miniRewardWidth / location.width
         val scaledHeight = (location.height * scale).toInt()
-        return Math.min(resources.getDimensionPixelSize(R.dimen.mini_reward_height), scaledHeight).toFloat()
+        return min(resources.getDimensionPixelSize(R.dimen.mini_reward_height), scaledHeight).toFloat()
     }
 
     private fun getWidthAnimator(initialValue: Float, finalValue: Float) =
@@ -676,10 +685,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 }
             }
 
-    private fun positionRewardSnapshot(pledgeData: PledgeData) {
-        val location = pledgeData.rewardScreenLocation
-        val reward = pledgeData.reward
-        val project = pledgeData.project
+    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward, project: Project) {
         val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
         rewardParams.leftMargin = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
@@ -708,7 +714,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setInitialViewStates(pledgeData: PledgeData) {
-        positionRewardSnapshot(pledgeData)
+        pledgeData.rewardScreenLocation?.let { positionRewardSnapshot(it, pledgeData.reward, pledgeData.project) }
         pledge_details.y = pledge_root.height.toFloat()
     }
 

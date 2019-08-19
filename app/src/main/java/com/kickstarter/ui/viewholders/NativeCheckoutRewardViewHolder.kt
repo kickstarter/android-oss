@@ -6,6 +6,7 @@ import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
@@ -84,15 +85,20 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setRemainingRewardsTextView(it) }
 
-        this.viewModel.outputs.alternatePledgeButtonText()
+        this.viewModel.outputs.buttonCTA()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.reward_pledge_button.setText(it) }
 
-        this.viewModel.outputs.minimumAmount()
+        this.viewModel.outputs.shippingSummary()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setMinimumButtonText(it) }
+                .subscribe { this.view.reward_shipping_summary.text = it }
+
+        this.viewModel.outputs.shippingSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.reward_shipping_summary, it)}
 
         this.viewModel.outputs.minimumAmountTitle()
                 .compose(bindToLifecycle())
@@ -169,12 +175,13 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.view.reward_check.setBackgroundResource(it) }
 
-        view.reward_pledge_button.setOnClickListener {
-            this.viewModel.inputs.rewardClicked()
-        }
+        RxView.clicks(this.view.reward_pledge_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.rewardClicked() }
     }
 
     override fun bindData(data: Any?) {
+        @Suppress("UNCHECKED_CAST")
         val projectAndReward = requireNonNull(data as Pair<Project, Reward>)
         val project = requireNonNull(projectAndReward.first, Project::class.java)
         val reward = requireNonNull(projectAndReward.second, Reward::class.java)
@@ -191,11 +198,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     private fun setConversionTextView(@NonNull amount: String) {
         this.view.reward_conversion_text_view.text = this.ksString.format(this.currencyConversionString,
                 "reward_amount", amount)
-    }
-
-    private fun setMinimumButtonText(@NonNull minimum: String) {
-        this.view.reward_pledge_button.text = this.ksString.format(this.pledgeRewardCurrencyOrMoreString,
-                "reward_currency", minimum)
     }
 
     private fun setPledgeButtonVisibility(gone: Boolean) {

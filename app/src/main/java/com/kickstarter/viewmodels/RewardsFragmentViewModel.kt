@@ -15,7 +15,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-class RewardFragmentViewModel {
+class RewardsFragmentViewModel {
     interface Inputs {
         /** Configure with current project.  */
         fun project(project: Project)
@@ -31,17 +31,21 @@ class RewardFragmentViewModel {
         /** Emits the current project. */
         fun project(): Observable<Project>
 
+        /** Emits the count of the current project's rewards. */
+        fun rewardsCount(): Observable<Int>
+
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment].  */
         fun showPledgeFragment(): Observable<PledgeData>
     }
 
-    class ViewModel(@NonNull environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
 
         private val projectInput = PublishSubject.create<Project>()
         private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
         private val project = BehaviorSubject.create<Project>()
+        private val rewardsCount = BehaviorSubject.create<Int>()
         private val showPledgeFragment = PublishSubject.create<PledgeData>()
 
         val inputs: Inputs = this
@@ -61,9 +65,14 @@ class RewardFragmentViewModel {
 
             this.projectInput
                     .compose<Pair<Project, Pair<ScreenLocation, Reward>>>(Transformers.takePairWhen(this.rewardClicked))
-                    .map<PledgeData> { PledgeData(it.second.first, it.second.second, it.first) }
+                    .map { PledgeData(it.second.first, it.second.second, it.first) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
+
+            this.projectInput
+                    .map { it.rewards()?.size?: 0 }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardsCount)
         }
 
         private fun indexOfBackedReward(project: Project): Int {
@@ -91,6 +100,9 @@ class RewardFragmentViewModel {
 
         @NonNull
         override fun project(): Observable<Project> = this.project
+
+        @NonNull
+        override fun rewardsCount(): Observable<Int> = this.rewardsCount
 
         @NonNull
         override fun showPledgeFragment(): Observable<PledgeData> = this.showPledgeFragment

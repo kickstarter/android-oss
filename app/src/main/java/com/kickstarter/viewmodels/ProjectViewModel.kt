@@ -7,16 +7,16 @@ import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.ProjectViewUtils
-import com.kickstarter.libs.utils.RefTagUtils
-import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
@@ -34,8 +34,17 @@ interface ProjectViewModel {
         /** Call when the blurb view is clicked.  */
         fun blurbTextViewClicked()
 
+        /** Call when the cancel pledge option is clicked.  */
+        fun cancelPledgeClicked()
+
+        /** Call when horizontal rewards sheet should collapse. */
+        fun collapsePledgeSheet()
+
         /** Call when the comments text view is clicked.  */
         fun commentsTextViewClicked()
+
+        /** Call when the contact creator option is clicked.  */
+        fun contactCreatorClicked()
 
         /** Call when the creator name is clicked.  */
         fun creatorNameTextViewClicked()
@@ -45,9 +54,6 @@ interface ProjectViewModel {
 
         /** Call when the heart button is clicked.  */
         fun heartButtonClicked()
-
-        /** Call when horizontal rewards sheet should hide. */
-        fun hideRewardsSheetClicked()
 
         /** Call when the manage pledge button is clicked.  */
         fun managePledgeButtonClicked()
@@ -67,11 +73,20 @@ interface ProjectViewModel {
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
 
+        /** Call when the update payment option is clicked.  */
+        fun updatePaymentClicked()
+
+        /** Call when the update pledge option is clicked.  */
+        fun updatePledgeClicked()
+
         /** Call when the updates button is clicked.  */
         fun updatesTextViewClicked()
 
         /** Call when the view pledge button is clicked.  */
         fun viewPledgeButtonClicked()
+
+        /** Call when the view rewards option is clicked.  */
+        fun viewRewardsClicked()
     }
 
     interface Outputs {
@@ -81,8 +96,14 @@ interface ProjectViewModel {
         /** Emits a boolean that determines if the backing details should be visible. */
         fun backingDetailsIsVisible(): Observable<Boolean>
 
+        /** Emits when rewards sheet should expand. */
+        fun expandPledgeSheet(): Observable<Boolean>
+
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
+
+        /** Emits a boolean that determines if the manage pledge menu should be visible. */
+        fun managePledgeMenuIsVisible(): Observable<Boolean>
 
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
@@ -90,6 +111,9 @@ interface ProjectViewModel {
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
         fun projectAndUserCountry(): Observable<Pair<Project, String>>
+
+        /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment] with an animation. */
+        fun revealRewardsFragment(): Observable<Void>
 
         /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
         fun rewardsButtonColor(): Observable<Int>
@@ -106,17 +130,26 @@ interface ProjectViewModel {
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
 
+        /** Emits when we should show the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
+        fun showCancelPledgeFragment(): Observable<Project>
+
         /** Emits when the backing has successfully been canceled. */
         fun showCancelPledgeSuccess(): Observable<Void>
 
-        /** Emits when rewards fragment should expand. */
-        fun showRewardsFragment(): Observable<Boolean>
+        /** Emits when we should reveal the [com.kickstarter.ui.fragments.BackingFragment]. */
+        fun showBackingFragment(): Observable<Project>
+
+        /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment]. */
+        fun showRewardsFragment(): Observable<Project>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
 
         /** Emits when we should show the share sheet.  */
         fun showShareSheet(): Observable<Project>
+
+        /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment]. */
+        fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>>
 
         /** Emits when we should start the [BackingActivity].  */
         fun startBackingActivity(): Observable<Pair<Project, User>>
@@ -139,6 +172,9 @@ interface ProjectViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.CheckoutActivity] to manage the pledge.  */
         fun startManagePledgeActivity(): Observable<Project>
 
+        /** Emits when we should show the [com.kickstarter.ui.activities.MessagesActivity]. */
+        fun startMessagesActivity(): Observable<Project>
+
         /** Emits when we should start [com.kickstarter.ui.activities.ProjectUpdatesActivity].  */
         fun startProjectUpdatesActivity(): Observable<Project>
 
@@ -157,40 +193,52 @@ interface ProjectViewModel {
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
         private val blurbTextViewClicked = PublishSubject.create<Void>()
+        private val cancelPledgeClicked = PublishSubject.create<Void>()
+        private val collapsePledgeSheet = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
+        private val contactCreatorClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
-        private val hideRewardsSheet = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
+        private val updatePaymentClicked = PublishSubject.create<Void>()
+        private val updatePledgeClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
+        private val viewRewardsClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
         private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
+        private val expandPledgeSheet = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
+        private val managePledgeMenuIsVisible = BehaviorSubject.create<Boolean>()
         private val prelaunchUrl = PublishSubject.create<String>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val revealRewardsFragment = PublishSubject.create<Void>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
+        private val showBackingFragment = BehaviorSubject.create<Project>()
+        private val showCancelPledgeFragment = PublishSubject.create<Project>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
-        private val showRewardsFragment = BehaviorSubject.create<Boolean>()
+        private val showRewardsFragment = BehaviorSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
+        private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val startCampaignWebViewActivity = PublishSubject.create<Project>()
         private val startCheckoutActivity = PublishSubject.create<Project>()
         private val startCommentsActivity = PublishSubject.create<Project>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startManagePledgeActivity = PublishSubject.create<Project>()
+        private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Project>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
@@ -317,17 +365,66 @@ interface ProjectViewModel {
             this.nativeProjectActionButtonClicked
                     .map { true }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showRewardsFragment)
+                    .subscribe(this.expandPledgeSheet)
 
-            Observable.merge(this.hideRewardsSheet, this.pledgeSuccessfullyCancelled)
+            Observable.merge(this.collapsePledgeSheet, this.pledgeSuccessfullyCancelled)
                     .map { false }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showRewardsFragment)
+                    .subscribe(this.expandPledgeSheet)
 
             val nativeCheckoutProject = currentProject
                     .compose<Pair<Project, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map<Project> { it.first }
+
+            nativeCheckoutProject
+                    .filter { it.isBacking && it.hasRewards() }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showBackingFragment)
+
+            nativeCheckoutProject
+                    .filter { !it.isBacking && it.hasRewards() }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showRewardsFragment)
+
+            nativeCheckoutProject
+                    .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
+                    .map { it.first.isBacking && IntegerUtils.isZero(it.second) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.managePledgeMenuIsVisible)
+
+            nativeCheckoutProject
+                    .compose<Project>(takeWhen(this.cancelPledgeClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showCancelPledgeFragment)
+
+            nativeCheckoutProject
+                    .compose<Project>(takeWhen(this.contactCreatorClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startMessagesActivity)
+
+            val projectAndBackedReward = nativeCheckoutProject
+                    .map { project -> Pair(project, project.rewards()?.firstOrNull { BackingUtils.isBacked(project, it) }) }
+                    .map { projectAndReward -> projectAndReward.second?.let { Pair(projectAndReward.first, it) } }
+
+            projectAndBackedReward
+                    .compose(takeWhen<Pair<Project, Reward>, Void>(this.updatePaymentClicked))
+                    .map { Pair(PledgeData(reward = it.second, project = it.first), PledgeReason.UPDATE_PAYMENT) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePledge)
+
+            projectAndBackedReward
+                    .compose(takeWhen<Pair<Project, Reward>, Void>(this.updatePledgeClicked))
+                    .map { Pair(PledgeData(reward = it.second, project = it.first), PledgeReason.UPDATE_PLEDGE) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePledge)
+
+            this.viewRewardsClicked
+                    .compose(bindToLifecycle())
+                    .subscribe(this.revealRewardsFragment)
 
             nativeCheckoutProject
                     .map { it.isBacking && it.isLive }
@@ -365,10 +462,8 @@ interface ProjectViewModel {
                     .subscribe(this.showCancelPledgeSuccess)
 
             this.fragmentStackCount
-                    .compose<Pair<Int, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
-                    .filter { it.second }
-                    .map { it.first }
-                    .map { it > 1 }
+                    .compose<Pair<Int, Project>>(combineLatestPair(nativeCheckoutProject))
+                    .map { if (it.second.isBacking) it.first > 2 else it.first > 1}
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.scrimIsVisible)
@@ -434,8 +529,20 @@ interface ProjectViewModel {
             this.blurbTextViewClicked.onNext(null)
         }
 
+        override fun cancelPledgeClicked() {
+            this.cancelPledgeClicked.onNext(null)
+        }
+
+        override fun collapsePledgeSheet() {
+            this.collapsePledgeSheet.onNext(null)
+        }
+
         override fun commentsTextViewClicked() {
             this.commentsTextViewClicked.onNext(null)
+        }
+
+        override fun contactCreatorClicked() {
+            this.contactCreatorClicked.onNext(null)
         }
 
         override fun creatorNameTextViewClicked() {
@@ -448,10 +555,6 @@ interface ProjectViewModel {
 
         override fun heartButtonClicked() {
             this.heartButtonClicked.onNext(null)
-        }
-
-        override fun hideRewardsSheetClicked() {
-            this.hideRewardsSheet.onNext(null)
         }
 
         override fun managePledgeButtonClicked() {
@@ -526,8 +629,12 @@ interface ProjectViewModel {
             this.shareButtonClicked.onNext(null)
         }
 
-        override fun showRewardsFragment(): Observable<Boolean> {
-            return this.showRewardsFragment
+        override fun updatePaymentClicked() {
+            this.updatePaymentClicked.onNext(null)
+        }
+
+        override fun updatePledgeClicked() {
+            this.updatePledgeClicked.onNext(null)
         }
 
         override fun updatesTextViewClicked() {
@@ -538,6 +645,10 @@ interface ProjectViewModel {
             this.viewPledgeButtonClicked.onNext(null)
         }
 
+        override fun viewRewardsClicked() {
+            this.viewRewardsClicked.onNext(null)
+        }
+
         @NonNull
         override fun backingDetails(): Observable<String> = this.backingDetails
 
@@ -545,13 +656,22 @@ interface ProjectViewModel {
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
 
         @NonNull
+        override fun expandPledgeSheet(): Observable<Boolean> = this.expandPledgeSheet
+
+        @NonNull
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
+
+        @NonNull
+        override fun managePledgeMenuIsVisible(): Observable<Boolean> = this.managePledgeMenuIsVisible
 
         @NonNull
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry
+
+        @NonNull
+        override fun revealRewardsFragment(): Observable<Void> = this.revealRewardsFragment
 
         @NonNull
         override fun rewardsButtonColor(): Observable<Int> = this.rewardsButtonColor
@@ -569,13 +689,25 @@ interface ProjectViewModel {
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
         @NonNull
+        override fun showBackingFragment(): Observable<Project> = this.showBackingFragment
+
+        @NonNull
+        override fun showCancelPledgeFragment(): Observable<Project> = this.showCancelPledgeFragment
+
+        @NonNull
         override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
+
+        @NonNull
+        override fun showRewardsFragment(): Observable<Project> = this.showRewardsFragment
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
         @NonNull
         override fun showShareSheet(): Observable<Project> = this.showShareSheet
+
+        @NonNull
+        override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> = this.showUpdatePledge
 
         @NonNull
         override fun startBackingActivity(): Observable<Pair<Project, User>> = this.startBackingActivity
@@ -597,6 +729,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startManagePledgeActivity(): Observable<Project> = this.startManagePledgeActivity
+
+        @NonNull
+        override fun startMessagesActivity(): Observable<Project> = this.startMessagesActivity
 
         @NonNull
         override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity

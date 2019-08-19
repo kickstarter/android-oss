@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <item android:id="@+id/update_pledge"
+    android:title="@string/Update_pledge"
+    app:showAsAction="never"/>
+  <item android:id="@+id/update_payment"
+    android:title="@string/Change_payment_method"
+    app:showAsAction="never"/>
+  <item android:id="@+id/rewards"
+    android:title="@string/View_rewards"
+    app:showAsAction="never"/>
+  <item android:id="@+id/cancel_pledge"
+    android:title="@string/Cancel_pledge"
+    app:showAsAction="never"/>
+  <item android:id="@+id/contact_creator"
+    android:title="@string/Contact_creator"
+    app:showAsAction="never"/>
+</menu>

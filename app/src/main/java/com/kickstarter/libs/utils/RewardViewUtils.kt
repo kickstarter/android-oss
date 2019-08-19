@@ -45,7 +45,7 @@ object RewardViewUtils {
      * Returns the string resource ID of the rewards button based on project and reward status.
      */
     @StringRes
-    fun pledgeButtonAlternateText(project: Project, reward: Reward): Int {
+    fun pledgeButtonText(project: Project, reward: Reward): Int {
         return if (BackingUtils.isBacked(project, reward) && project.isLive) {
             R.string.Manage_your_pledge
         } else if (BackingUtils.isBacked(project, reward) && !project.isLive) {
@@ -55,7 +55,7 @@ object RewardViewUtils {
         } else if (!RewardUtils.isAvailable(project, reward)) {
             R.string.No_longer_available
         } else {
-            throw IllegalStateException()
+            R.string.Select
         }
     }
 

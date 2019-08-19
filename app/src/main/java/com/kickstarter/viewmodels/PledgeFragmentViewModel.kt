@@ -224,7 +224,7 @@ interface PledgeFragmentViewModel {
         private val showMinimumWarning = PublishSubject.create<String>()
         private val showNewCardFragment = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
-        private val showPledgeError = BehaviorSubject.create<Void>()
+        private val showPledgeError = PublishSubject.create<Void>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startThanksActivity = PublishSubject.create<Project>()
@@ -585,23 +585,23 @@ interface PledgeFragmentViewModel {
                     .filter { BooleanUtils.isFalse(it.first) }
                     .map { it.second }
 
-            val checkoutNotification = Observable.combineLatest(project,
+            val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },
                     validPledgeClick,
                     location.map { it?.id()?.toString() },
                     reward)
-            { p, a, id, l, r -> Checkout(p, a, id, l, r) }
+            { p, a, id, l, r -> CreateBacking(p, a, id, l, r) }
                     .switchMap {
-                        this.apolloClient.checkout(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward)
+                        this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
                             .materialize()
                     }
                     .share()
 
-            val checkoutValues = checkoutNotification
+            val createBackingValues = createBackingNotification
                     .compose(values())
 
-            Observable.merge(checkoutNotification.compose(errors()), checkoutValues.filter { BooleanUtils.isFalse(it) })
+            Observable.merge(createBackingNotification.compose(errors()), createBackingValues.filter { BooleanUtils.isFalse(it) })
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe{
@@ -610,7 +610,7 @@ interface PledgeFragmentViewModel {
                     }
 
             project
-                    .compose<Project>(takeWhen(checkoutValues.filter { BooleanUtils.isTrue(it) }))
+                    .compose<Project>(takeWhen(createBackingValues.filter { BooleanUtils.isTrue(it) }))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
 
@@ -640,7 +640,7 @@ interface PledgeFragmentViewModel {
                     .compose(neverError())
         }
 
-        data class Checkout(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
+        data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 

@@ -18,6 +18,7 @@
   tools:visibility="visible">
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/pledge_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">

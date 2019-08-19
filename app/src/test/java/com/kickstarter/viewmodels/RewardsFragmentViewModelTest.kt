@@ -12,16 +12,16 @@ import com.kickstarter.ui.data.ScreenLocation
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-class RewardFragmentViewModelTest: KSRobolectricTestCase() {
+class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
-    private lateinit var vm: RewardFragmentViewModel.ViewModel
+    private lateinit var vm: RewardsFragmentViewModel.ViewModel
     private val backedRewardPosition = TestSubscriber.create<Int>()
     private val project = TestSubscriber.create<Project>()
     private val rewardsCount = TestSubscriber.create<Int>()
     private val showPledgeFragment = TestSubscriber<PledgeData>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = RewardFragmentViewModel.ViewModel(environment)
+        this.vm = RewardsFragmentViewModel.ViewModel(environment)
         this.vm.outputs.backedRewardPosition().subscribe(this.backedRewardPosition)
         this.vm.outputs.project().subscribe(this.project)
         this.vm.outputs.rewardsCount().subscribe(this.rewardsCount)

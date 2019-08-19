@@ -15,7 +15,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-class RewardFragmentViewModel {
+class RewardsFragmentViewModel {
     interface Inputs {
         /** Configure with current project.  */
         fun project(project: Project)

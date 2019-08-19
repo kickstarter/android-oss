@@ -78,7 +78,9 @@
         android:paddingEnd="@dimen/activity_vertical_margin"
         android:paddingStart="@dimen/activity_vertical_margin">
 
-        <include layout="@layout/horizontal_line_1dp_view" />
+        <include
+          android:id="@+id/divider_delivery"
+          layout="@layout/horizontal_line_1dp_view" />
 
         <TextView
           android:id="@+id/pledge_amount_label"

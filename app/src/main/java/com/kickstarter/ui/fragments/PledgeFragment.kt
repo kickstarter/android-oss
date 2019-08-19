@@ -52,6 +52,7 @@ import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
@@ -516,6 +517,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             reward_snapshot.visibility = View.GONE
             expand_icon_container.visibility = View.GONE
             pledge_root.visibility = View.VISIBLE
+            delivery.visibility = View.GONE
+            divider_delivery.visibility = View.GONE
         }
     }
 
@@ -689,12 +692,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     companion object {
 
-        fun newInstance(pledgeData: PledgeData): PledgeFragment {
+        fun newInstance(pledgeData: PledgeData, pledgeReason: PledgeReason): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
             argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward)
             argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT, pledgeData.project)
             argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.rewardScreenLocation)
+            argument.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
             fragment.arguments = argument
             return fragment
         }

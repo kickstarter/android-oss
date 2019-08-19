@@ -498,7 +498,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
-        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first)
+        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
         val tag = PledgeFragment::class.java.simpleName
         supportFragmentManager
                 .beginTransaction()

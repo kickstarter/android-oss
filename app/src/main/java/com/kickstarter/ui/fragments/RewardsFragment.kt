@@ -15,6 +15,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.NativeCheckoutRewardsAdapter
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.RewardsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
@@ -46,7 +47,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showPledgeFragment(it) }
+                .subscribe { showPledgeFragment(it.first, it.second) }
 
         this.viewModel.outputs.rewardsCount()
                 .compose(bindToLifecycle())
@@ -96,9 +97,9 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         addItemDecorator()
     }
 
-    private fun showPledgeFragment(pledgeData: PledgeData) {
+    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
         if (this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
-            val pledgeFragment = PledgeFragment.newInstance(pledgeData)
+            val pledgeFragment = PledgeFragment.newInstance(pledgeData, pledgeReason)
             this.fragmentManager?.beginTransaction()
                     ?.add(R.id.fragment_container,
                             pledgeFragment,

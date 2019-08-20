@@ -15,13 +15,13 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/shipping_add_symbol"
+    app:layout_constraintEnd_toStartOf="@id/shipping_summary_add_symbol"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     tools:text="Shipping: United States" />
 
   <ImageView
-    android:id="@+id/shipping_add_symbol"
+    android:id="@+id/shipping_summary_add_symbol"
     android:layout_width="@dimen/grid_3"
     android:layout_height="@dimen/grid_3"
     android:layout_gravity="start|center_vertical"
@@ -42,7 +42,7 @@
     android:visibility="invisible"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@id/shipping_summary_amount"
-    app:layout_constraintStart_toEndOf="@id/shipping_add_symbol"
+    app:layout_constraintStart_toEndOf="@id/shipping_summary_add_symbol"
     app:layout_constraintTop_toTopOf="parent"
     tools:text="$"
     tools:visibility="visible" />

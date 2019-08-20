@@ -376,7 +376,12 @@ interface PledgeFragmentViewModel {
                     .map { it.maxPledge }
                     .compose<Pair<Int, Double>>(combineLatestPair(rewardMinimum))
 
-            val pledgeInput = Observable.merge(rewardMinimum, this.pledgeInput.map { NumberUtils.parse(it) })
+            val initialAmount = rewardMinimum
+                    .compose<Pair<Double, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
+                    .map { it.first }
+
+            val pledgeInput = Observable.merge(initialAmount, this.pledgeInput.map { NumberUtils.parse(it) })
                     .distinctUntilChanged()
                     .compose<Pair<Double, Country>>(combineLatestPair(country.distinctUntilChanged()))
                     .map { min(it.first, it.second.maxPledge.toDouble()) }
@@ -423,12 +428,7 @@ interface PledgeFragmentViewModel {
             backingAmount
                     .compose<Pair<Double, PledgeReason>>(combineLatestPair(pledgeReason))
 
-            val initialAmount = rewardMinimum
-                    .compose<Pair<Double, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
-                    .map { it.first }
-
-            val pledgeAmount = Observable.merge(initialAmount, backingAmount, pledgeInput)
+            val pledgeAmount = Observable.merge(backingAmount, pledgeInput)
                     .distinctUntilChanged()
 
             pledgeAmount

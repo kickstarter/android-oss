@@ -57,8 +57,7 @@
         android:layout_marginStart="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_2"
         android:contentDescription="@null"
-        android:src="@drawable/ic_expand"
-        />
+        android:src="@drawable/ic_expand" />
     </FrameLayout>
 
     <LinearLayout
@@ -82,28 +81,17 @@
           android:id="@+id/divider_delivery"
           layout="@layout/horizontal_line_1dp_view" />
 
-        <TextView
-          android:id="@+id/pledge_amount_label"
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_4"
-          android:text="@string/Your_pledge_amount" />
-
         <include layout="@layout/fragment_pledge_section_pledge_amount" />
-
-        <TextView
-          android:id="@+id/shipping_rules_section_text_view"
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:text="@string/Your_shipping_location" />
 
         <include layout="@layout/fragment_pledge_section_shipping" />
 
-        <include layout="@layout/horizontal_line_1dp_view" />
+        <include layout="@layout/fragment_pledge_section_summary_pledge" />
+
+        <include layout="@layout/fragment_pledge_section_summary_shipping" />
+
+        <include
+          android:id="@+id/divider_total"
+          layout="@layout/horizontal_line_1dp_view" />
 
         <include layout="@layout/fragment_pledge_section_total" />
 
@@ -115,7 +103,7 @@
           android:layout_marginBottom="@dimen/grid_3"
           android:text="@string/Continue"
           android:visibility="gone"
-          tools:visibility="visible" />
+          tools:visibility="gone" />
 
         <com.google.android.material.button.MaterialButton
           android:id="@+id/update_pledge_button"
@@ -125,7 +113,9 @@
           android:enabled="false"
           android:text="@string/Update_pledge"
           android:textColor="@color/white"
-          app:backgroundTint="@color/button_pledge_live" />
+          android:visibility="gone"
+          app:backgroundTint="@color/button_pledge_live"
+          tools:visibility="gone" />
 
       </LinearLayout>
 

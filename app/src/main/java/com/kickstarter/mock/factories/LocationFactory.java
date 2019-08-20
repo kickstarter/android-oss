@@ -29,6 +29,17 @@ public final class LocationFactory {
       .build();
   }
 
+  public static @NonNull Location nigeria() {
+    return Location.builder()
+      .id(638242)
+      .displayableName("Nigeria")
+      .name("Nigeria")
+      .state("Imo State")
+      .country("NG")
+      .expandedCountry("Nigeria")
+      .build();
+  }
+
   public static @NonNull Location sydney() {
     return Location.builder()
       .id(1105779)

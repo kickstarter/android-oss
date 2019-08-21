@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import android.content.Intent
+import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
@@ -11,12 +12,14 @@ import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
@@ -26,6 +29,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val expandPledgeSheet = TestSubscriber<Boolean>()
     private val heartDrawableId = TestSubscriber<Int>()
     private val managePledgeMenuIsVisible = TestSubscriber<Boolean>()
+    private val prelaunchUrl = TestSubscriber<String>()
     private val projectTest = TestSubscriber<Project>()
     private val revealRewardsFragment = TestSubscriber<Void>()
     private val rewardsButtonColor = TestSubscriber<Int>()
@@ -56,6 +60,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.managePledgeMenuIsVisible().subscribe(this.managePledgeMenuIsVisible)
+        this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
@@ -91,6 +96,55 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.projectTest.assertValues(project, project)
         this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE)
+    }
+
+    @Test
+    fun testEmitsProjectWithDeepLink() {
+        val project = ProjectFactory.project()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .apiClient(object : MockApiClient(){
+                    override fun fetchProject(param: String): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
+                .build()
+
+        setUpEnvironment(environment)
+        val uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
+        this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
+
+        this.projectTest.assertValues(project)
+        this.prelaunchUrl.assertNoValues()
+        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE)
+    }
+
+    @Test
+    fun testEmitsProjectWithDeepLink_preLaunchActivated() {
+        val url = "https://www.kickstarter.com/projects/1186238668/skull-graphic-tee"
+        val project = ProjectFactory.prelaunchProject(url)
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(currentConfig)
+                .apiClient(object : MockApiClient(){
+                    override fun fetchProject(param: String): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
+                .build()
+
+        setUpEnvironment(environment)
+        val uri = Uri.parse(url)
+        this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
+
+        this.projectTest.assertNoValues()
+        this.prelaunchUrl.assertValue(url)
+        this.koalaTest.assertNoValues()
     }
 
     @Test

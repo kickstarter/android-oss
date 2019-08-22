@@ -1,8 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/rewards_recycler"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_300"
   android:overScrollMode="never"
-  android:paddingTop="?android:attr/actionBarSize"/>
+  android:scrollbars="none"
+  android:paddingTop="?android:attr/actionBarSize">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_4"
+      android:layout_marginEnd="@dimen/grid_3"
+      android:orientation="vertical">
+
+      <TextView
+        style="@style/CalloutPrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:id="@+id/backer_number"
+        tools:text="@string/backer_modal_backer_number" />
+
+      <include layout="@layout/horizontal_line_1dp_view" />
+
+      <TextView
+        style="@style/CalloutPrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:text="@string/Payment_methods" />
+
+      <include layout="@layout/horizontal_line_1dp_view" />
+
+      <TextView
+        style="@style/CalloutPrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:text="@string/Reward_selected" />
+
+    </LinearLayout>
+
+    <include
+      layout="@layout/item_reward"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </LinearLayout>
+</ScrollView>

@@ -121,12 +121,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.snapshotIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(reward_to_copy, it)
-                    ViewUtils.setGone(reward_snapshot, it)
-                    ViewUtils.setGone(expand_icon_container, it)
-                    ViewUtils.setInvisible(pledge_root, !it)
-                }
+                .subscribe { configureUIBySnapshotVisibility(it) }
 
         this.viewModel.outputs.pledgeSectionIsGone()
                 .compose(bindToLifecycle())
@@ -156,10 +151,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.deliverySectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(delivery, it)
-                    ViewUtils.setGone(divider_delivery, it)
-                }
+                .subscribe { ViewUtils.setGone(delivery, it) }
+
+        this.viewModel.outputs.deliveryDividerIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(divider_delivery, it) }
 
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
@@ -298,10 +295,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeSummaryIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(pledge_summary, it)
-                    ViewUtils.setGone(divider_total, !it)
-                }
+                .subscribe { ViewUtils.setGone(pledge_summary, it) }
+
+        this.viewModel.outputs.totalDividerIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(divider_total, it) }
 
         this.viewModel.outputs.totalAmount()
                 .compose(bindToLifecycle())
@@ -410,6 +409,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun selectCardButtonClicked(position: Int) {
         this.viewModel.inputs.selectCardButtonClicked(position)
+    }
+
+    private fun configureUIBySnapshotVisibility(gone: Boolean) {
+        val visibility = if (gone) View.GONE else View.VISIBLE
+        setVisibility(visibility, reward_snapshot, reward_to_copy, expand_icon_container)
+        ViewUtils.setInvisible(pledge_root, !gone)
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {

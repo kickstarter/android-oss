@@ -68,7 +68,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowPledgeFragment_whenLiveProject() {
+    fun testShowPledgeFragment_whenBackingProject() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -81,7 +81,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowPledgeFragment_whenBackedProject() {
+    fun testShowPledgeFragment_whenManagingPledge() {
         val project = ProjectFactory.backedProject()
         setUpEnvironment(environment())
 

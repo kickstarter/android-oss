@@ -36,7 +36,7 @@
 
   <TextView
     android:id="@+id/shipping_summary_symbol_start"
-    style="@style/PledgeCurrencySecondary"
+    style="@style/PledgeCurrency"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:visibility="invisible"
@@ -49,7 +49,7 @@
 
   <TextView
     android:id="@+id/shipping_summary_amount"
-    style="@style/PledgeCurrencySecondary"
+    style="@style/PledgeCurrency"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:maxLines="1"
@@ -63,7 +63,7 @@
 
   <TextView
     android:id="@+id/shipping_summary_symbol_end"
-    style="@style/PledgeCurrencySecondary"
+    style="@style/PledgeCurrency"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:visibility="invisible"

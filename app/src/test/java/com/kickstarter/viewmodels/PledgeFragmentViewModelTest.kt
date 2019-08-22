@@ -38,6 +38,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val conversionText = TestSubscriber<String>()
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
     private val decreasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
+    private val deliveryDividerIsGone = TestSubscriber<Boolean>()
     private val deliverySectionIsGone = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()
     private val estimatedDeliveryInfoIsGone = TestSubscriber<Boolean>()
@@ -66,6 +67,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startThanksActivity = TestSubscriber<Project>()
     private val totalAmount = TestSubscriber<String>()
+    private val totalDividerIsGone = TestSubscriber<Boolean>()
     private val totalTextColor = TestSubscriber<Int>()
     private val updatePledgeButtonIsGone = TestSubscriber<Boolean>()
 
@@ -85,6 +87,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.conversionText().subscribe(this.conversionText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         this.vm.outputs.decreasePledgeButtonIsEnabled().subscribe(this.decreasePledgeButtonIsEnabled)
+        this.vm.outputs.deliveryDividerIsGone().subscribe(this.deliveryDividerIsGone)
         this.vm.outputs.deliverySectionIsGone().subscribe(this.deliverySectionIsGone)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
         this.vm.outputs.estimatedDeliveryInfoIsGone().subscribe(this.estimatedDeliveryInfoIsGone)
@@ -113,6 +116,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
+        this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
         this.vm.outputs.totalTextColor().subscribe(this.totalTextColor)
         this.vm.outputs.updatePledgeButtonIsGone().subscribe(this.updatePledgeButtonIsGone)
 
@@ -143,7 +147,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCards_whenPhysicalReward() {
+    fun testCards_whenLoggedIn() {
         val card = StoredCardFactory.discoverCard()
         val mockCurrentUser = MockCurrentUser(UserFactory.user())
 
@@ -171,62 +175,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCards_digitalReward() {
-        val card = StoredCardFactory.discoverCard()
-        val mockCurrentUser = MockCurrentUser(UserFactory.user())
-
-        val environment = environment()
-                .toBuilder()
-                .currentUser(mockCurrentUser)
-                .apolloClient(object : MockApolloClient() {
-                    override fun getStoredCards(): Observable<List<StoredCard>> {
-                        return Observable.just(Collections.singletonList(card))
-                    }
-                }).build()
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment, RewardFactory.reward(), project)
-
-        this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
-
-        val visa = StoredCardFactory.visa()
-        this.vm.inputs.cardSaved(visa)
-        this.vm.inputs.addedCardPosition(0)
-
-        this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
-        this.addedCard.assertValue(Pair(visa, project))
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
-    }
-
-    @Test
-    fun testPaymentForLoggedInUser_whenPhysicalReward() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-                .toBuilder()
-                .currentUser(MockCurrentUser(UserFactory.user()))
-                .build()
-        setUpEnvironment(environment)
-
-        this.cardsAndProject.assertValueCount(1)
-        this.continueButtonIsGone.assertValue(true)
-        this.paymentContainerIsGone.assertValue(false)
-    }
-
-    @Test
-    fun testPaymentForLoggedInUser_whenDigitalReward() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
-        setUpEnvironment(environment, RewardFactory.reward())
-
-        this.cardsAndProject.assertValueCount(1)
-        this.continueButtonIsGone.assertValue(true)
-        this.paymentContainerIsGone.assertValue(false)
-    }
-
-    @Test
-    fun testPaymentForLoggedOutUser() {
+    fun testCards_whenLoggedOut() {
         setUpEnvironment(environment())
 
         this.cardsAndProject.assertNoValues()
-        this.continueButtonIsGone.assertValue(false)
-        this.paymentContainerIsGone.assertValue(true)
     }
 
     @Test
@@ -294,26 +246,70 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeScreenConfiguration_whenPledgingAndNotLoggedIn() {
+    fun testPledgeScreenConfiguration_whenPledgingShippableRewardAndNotLoggedIn() {
         setUpEnvironment(environment())
 
+        this.continueButtonIsGone.assertValue(false)
+        this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(false)
+        this.totalDividerIsGone.assertValue(false)
         this.updatePledgeButtonIsGone.assertValue(true)
     }
 
     @Test
-    fun testPledgeScreenConfiguration_whenPledgingAndLoggedIn() {
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()))
+    fun testPledgeScreenConfiguration_whenPledgingDigitalRewardAndNotLoggedIn() {
+        setUpEnvironment(environment(), reward = RewardFactory.noReward())
 
+        this.continueButtonIsGone.assertValue(false)
+        this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(false)
+        this.totalDividerIsGone.assertValue(false)
+        this.updatePledgeButtonIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testPledgeScreenConfiguration_whenPledgingShippableRewardAndLoggedIn() {
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()))
+
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(false)
+        this.deliverySectionIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(false)
+        this.pledgeSectionIsGone.assertValue(false)
+        this.pledgeSummaryIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValue(false)
+        this.shippingSummaryIsGone.assertValue(true)
+        this.snapshotIsGone.assertValue(false)
+        this.totalDividerIsGone.assertValue(false)
+        this.updatePledgeButtonIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testPledgeScreenConfiguration_whenPledgingDigitalRewardAndLoggedIn() {
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward())
+
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(false)
+        this.deliverySectionIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(false)
+        this.pledgeSectionIsGone.assertValue(false)
+        this.pledgeSummaryIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertValue(true)
+        this.snapshotIsGone.assertValue(false)
+        this.totalDividerIsGone.assertValue(false)
         this.updatePledgeButtonIsGone.assertValue(true)
     }
 
@@ -331,12 +327,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), shippableReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
+        this.paymentContainerIsGone.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(true)
+        this.totalDividerIsGone.assertValue(false)
         this.updatePledgeButtonIsGone.assertValue(false)
     }
 
@@ -354,12 +354,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
+        this.paymentContainerIsGone.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(true)
+        this.totalDividerIsGone.assertValue(false)
         this.updatePledgeButtonIsGone.assertValue(false)
     }
 
@@ -377,12 +381,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
+        this.paymentContainerIsGone.assertValue(false)
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(false)
         this.snapshotIsGone.assertValue(true)
+        this.totalDividerIsGone.assertValue(true)
         this.updatePledgeButtonIsGone.assertValue(true)
     }
 
@@ -400,12 +408,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
+        this.paymentContainerIsGone.assertValue(false)
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(true)
+        this.totalDividerIsGone.assertValue(true)
         this.updatePledgeButtonIsGone.assertValue(true)
     }
 
@@ -413,14 +425,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPledgeScreenConfiguration_whenUpdatingRewardToShippableReward() {
         val shippableReward = RewardFactory.rewardWithShipping()
 
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), shippableReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_PLEDGE)
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), shippableReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
-        this.deliverySectionIsGone.assertValue(true)
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(false)
+        this.deliverySectionIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
-        this.snapshotIsGone.assertValue(true)
+        this.snapshotIsGone.assertValue(false)
+        this.totalDividerIsGone.assertValue(false)
         this.updatePledgeButtonIsGone.assertValue(false)
     }
 
@@ -428,14 +444,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPledgeScreenConfiguration_whenUpdatingRewardToDigitalReward() {
         val noReward = RewardFactory.noReward()
 
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_PLEDGE)
+        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
-        this.deliverySectionIsGone.assertValue(true)
+        this.continueButtonIsGone.assertValue(true)
+        this.deliveryDividerIsGone.assertValue(false)
+        this.deliverySectionIsGone.assertValue(false)
+        this.paymentContainerIsGone.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
-        this.snapshotIsGone.assertValue(true)
+        this.snapshotIsGone.assertValue(false)
+        this.totalDividerIsGone.assertValue(false)
         this.updatePledgeButtonIsGone.assertValue(false)
     }
 
@@ -988,22 +1008,43 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShippingSummaryLocation() {
         val reward = RewardFactory.rewardWithShipping()
+        val nigeria = LocationFactory.nigeria()
+        val nigeriaShippingRule = ShippingRuleFactory.usShippingRule()
+                .toBuilder()
+                .location(nigeria)
+                .build()
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .location(LocationFactory.nigeria())
+                .amount(40.0)
+                .location(nigeria)
+                .locationId(nigeria.id())
                 .reward(reward)
                 .rewardId(reward.id())
+                .shippingAmount(nigeriaShippingRule.cost().toFloat())
                 .build()
         val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(backing)
                 .build()
 
-        val environment = environmentForLoggedInUser(UserFactory.user())
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
                 .toBuilder()
+                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), nigeriaShippingRule))
+                .build()
+
+        val environment = environmentForShippingRules(shippingRulesEnvelope)
+                .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apiClient(object : MockApiClient() {
                     override fun fetchProjectBacking(project: Project, user: User): Observable<Backing> {
                         return Observable.just(backing)
+                    }
+                    override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                        return Observable.just(shippingRulesEnvelope)
                     }
                 })
                 .build()
@@ -1026,7 +1067,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShippingRulesAndProject_whenNoReward() {
         setUpEnvironment(environment(), RewardFactory.noReward())
 
-        this.shippingRulesSectionIsGone.assertValues(true)
         this.shippingRuleAndProject.assertNoValues()
     }
 
@@ -1034,7 +1074,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShippingRulesAndProject_whenDigitalReward() {
         setUpEnvironment(environment(), RewardFactory.reward())
 
-        this.shippingRulesSectionIsGone.assertValues(true)
         this.shippingRuleAndProject.assertNoValues()
     }
 
@@ -1050,7 +1089,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment, project = project)
 
-        this.shippingRulesSectionIsGone.assertValues(false)
         this.shippingRuleAndProject.assertNoValues()
         this.totalAmount.assertNoValues()
     }

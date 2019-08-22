@@ -510,7 +510,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testManagePledgeMenuIsVisible_whenProjectBackedAndLive() {
+    fun testManagePledgeMenu_whenProjectBackedAndLive() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
@@ -520,7 +520,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testManagePledgeMenuIsVisible_whenProjectBackedAndNotLive() {
+    fun testManagePledgeMenu_whenProjectBackedAndNotLive() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
@@ -534,7 +534,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testManagePledgeMenuIsVisible_whenProjectNotBacked() {
+    fun testManagePledgeMenu_whenProjectNotBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
@@ -544,7 +544,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testManagePledgeMenuIsVisible_whenManaging() {
+    fun testManagePledgeMenu_whenManaging() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project

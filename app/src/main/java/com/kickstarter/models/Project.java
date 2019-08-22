@@ -50,6 +50,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @Nullable List<Permission> permissions();
   public abstract double pledged();
   public abstract @Nullable Photo photo();
+  public abstract @Nullable Boolean prelaunchActivated();
   public abstract @Nullable List<Reward> rewards();
   public abstract @Nullable String slug();
   public abstract @Nullable Boolean staffPick();
@@ -92,6 +93,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder permissions(List<Permission> __);
     public abstract Builder pledged(double __);
     public abstract Builder photo(Photo __);
+    public abstract Builder prelaunchActivated(Boolean __);
     public abstract Builder rewards(List<Reward> __);
     public abstract Builder slug(String __);
     public abstract Builder staffPick(Boolean __);

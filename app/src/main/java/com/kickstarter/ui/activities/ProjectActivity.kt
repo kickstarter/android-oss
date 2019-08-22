@@ -6,6 +6,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Pair
@@ -294,6 +295,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { startMessagesActivity(it) }
 
+        this.viewModel.outputs.prelaunchUrl()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { openProjectAndFinish(it) }
+
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -432,6 +438,32 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
+    private fun openProjectAndFinish(url: String) {
+        val uri = Uri.parse(url)
+
+        val fakeUri = Uri.parse("http://www.kickstarter.com")
+        val browserIntent = Intent(Intent.ACTION_VIEW, fakeUri)
+        val queryIntentActivities = packageManager.queryIntentActivities(browserIntent, 0)
+        val targetIntents = queryIntentActivities
+                .filter { !it.activityInfo.packageName.contains("com.kickstarter") }
+                .map { resolveInfo ->
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    intent.setPackage(resolveInfo.activityInfo.packageName)
+                    intent
+                }
+                .toMutableList()
+
+        if (targetIntents.isNotEmpty()) {
+            /* We need to remove the first intent so it's not duplicated
+            when we add the EXTRA_INITIAL_INTENTS intents. */
+            val chooserIntent = Intent.createChooser(targetIntents.removeAt(0), "")
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetIntents.toTypedArray())
+            startActivity(chooserIntent)
+        }
+
+        finish()
+    }
+
     private fun renderProject(projectAndCountry: Pair<Project, String>) {
         val project = projectAndCountry.first
         val country = projectAndCountry.second
@@ -498,7 +530,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
-        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first)
+        val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
         val tag = PledgeFragment::class.java.simpleName
         supportFragmentManager
                 .beginTransaction()

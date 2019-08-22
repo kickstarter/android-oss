@@ -1,6 +1,5 @@
 package com.kickstarter.mock.factories
 
-import com.kickstarter.models.ShippingRule
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 
 class ShippingRulesEnvelopeFactory private constructor() {

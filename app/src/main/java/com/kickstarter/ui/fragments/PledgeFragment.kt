@@ -52,6 +52,7 @@ import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
@@ -61,6 +62,8 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_delivery.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
 import kotlin.math.min
 
@@ -115,6 +118,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { showPledgeSection(it) }
 
+        this.viewModel.outputs.snapshotIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { configureUIBySnapshotVisibility(it) }
+
+        this.viewModel.outputs.pledgeSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(pledge_container, it) }
+
         this.viewModel.outputs.decreasePledgeButtonIsEnabled()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -134,6 +147,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(pledge_estimated_delivery_container, it) }
+
+        this.viewModel.outputs.deliverySectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(delivery, it) }
+
+        this.viewModel.outputs.deliveryDividerIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(divider_delivery, it) }
 
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
@@ -232,6 +255,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     shipping_amount.text = it
                 }
 
+        this.viewModel.outputs.shippingSummaryAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    shipping_summary_amount.text = it
+                    setVisibility(View.VISIBLE, shipping_summary_symbol_start, shipping_summary_symbol_end)
+                }
+
+        this.viewModel.outputs.shippingSummaryLocation()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+
         this.viewModel.outputs.shippingRulesAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -241,10 +277,30 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.shippingRulesSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(shipping_rules_row, it) }
+
+        this.viewModel.outputs.shippingSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(shipping_summary, it) }
+
+        this.viewModel.outputs.pledgeSummaryAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
                 .subscribe {
-                    ViewUtils.setGone(shipping_rules_section_text_view, it)
-                    ViewUtils.setGone(shipping_rules_row, it)
+                    pledge_summary_amount.text = it
+                    setVisibility(View.VISIBLE, pledge_summary_symbol_start, pledge_summary_symbol_end)
                 }
+
+        this.viewModel.outputs.pledgeSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(pledge_summary, it) }
+
+        this.viewModel.outputs.totalDividerIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(divider_total, it) }
 
         this.viewModel.outputs.totalAmount()
                 .compose(bindToLifecycle())
@@ -284,37 +340,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { setHtmlStrings(it) }
 
-        this.viewModel.outputs.cancelPledgeButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(cancel_pledge_button, it) }
-
-        this.viewModel.outputs.changePaymentMethodButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(change_payment_method_button, it) }
-
         this.viewModel.outputs.updatePledgeButtonIsGone()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
                 .subscribe { ViewUtils.setGone(update_pledge_button, it) }
-
-        this.viewModel.outputs.totalContainerIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(total, it) }
-
-        this.viewModel.outputs.showCancelPledge()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    fragmentManager
-                            ?.beginTransaction()
-                            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                            ?.add(R.id.secondary_container, CancelPledgeFragment.newInstance(it), CancelPledgeFragment::class.java.simpleName)
-                            ?.addToBackStack(CancelPledgeFragment::class.java.simpleName)
-                            ?.commit()
-                }
 
         this.viewModel.outputs.showMinimumWarning()
                 .compose(observeForUI())
@@ -330,8 +359,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
 
         shipping_rules.setOnTouchListener { _, _ ->
-            shipping_rules_section_text_view.post {
-                pledge_root.smoothScrollTo(0, relativeTop(shipping_rules_section_text_view, pledge_root))
+            shipping_rules_label.post {
+                pledge_root.smoothScrollTo(0, relativeTop(shipping_rules_label, pledge_root))
                 shipping_rules.requestFocus()
                 shipping_rules.showDropDown()
             }
@@ -348,10 +377,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         increase_pledge.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
-        }
-
-        cancel_pledge_button.setOnClickListener {
-            this.viewModel.inputs.cancelPledgeButtonClicked()
         }
     }
 
@@ -386,6 +411,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.selectCardButtonClicked(position)
     }
 
+    private fun configureUIBySnapshotVisibility(gone: Boolean) {
+        val visibility = if (gone) View.GONE else View.VISIBLE
+        setVisibility(visibility, reward_snapshot, reward_to_copy, expand_icon_container)
+        ViewUtils.setInvisible(pledge_root, !gone)
+    }
+
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
         shipping_rules.isEnabled = true
         adapter.populateShippingRules(shippingRules, project)
@@ -403,17 +434,25 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val symbol = symbolAndStart.first
         val symbolAtStart = symbolAndStart.second
         if (symbolAtStart) {
+            pledge_summary_symbol_start.text = symbol
             pledge_symbol_start.text = symbol
+            shipping_summary_symbol_start.text = symbol
             shipping_symbol_start.text = symbol
             total_symbol_start.text = symbol
+            pledge_summary_symbol_end.text = null
             pledge_symbol_end.text = null
+            shipping_summary_symbol_end.text = null
             shipping_symbol_end.text = null
             total_symbol_end.text = null
         } else {
+            pledge_summary_symbol_start.text = null
             pledge_symbol_start.text = null
+            shipping_summary_symbol_start.text = null
             shipping_symbol_start.text = null
             total_symbol_start.text = null
+            pledge_summary_symbol_end.text = null
             pledge_symbol_end.text = symbol
+            shipping_summary_symbol_end.text = null
             shipping_symbol_end.text = symbol
             total_symbol_end.text = symbol
         }
@@ -542,11 +581,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         pledgeData.rewardScreenLocation?.let {
             setInitialViewStates(pledgeData)
             startPledgeAnimatorSet(true, it)
-        }?: run {
-            reward_to_copy.visibility = View.GONE
-            reward_snapshot.visibility = View.GONE
-            expand_icon_container.visibility = View.GONE
-            pledge_root.visibility = View.VISIBLE
         }
     }
 
@@ -720,12 +754,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     companion object {
 
-        fun newInstance(pledgeData: PledgeData): PledgeFragment {
+        fun newInstance(pledgeData: PledgeData, pledgeReason: PledgeReason): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
             argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward)
             argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT, pledgeData.project)
             argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.rewardScreenLocation)
+            argument.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
             fragment.arguments = argument
             return fragment
         }

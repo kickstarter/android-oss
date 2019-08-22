@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/pledge_container"
   android:layout_width="match_parent"
@@ -11,11 +10,23 @@
   android:orientation="horizontal"
   tools:showIn="@layout/fragment_pledge">
 
+  <TextView
+    android:id="@+id/pledge_amount_label"
+    style="@style/CalloutPrimaryMedium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_4"
+    android:text="@string/Your_pledge_amount"
+    app:layout_constraintBottom_toTopOf="@id/decrease_pledge"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
   <!-- TODO: Needs final copy for content descriptions -->
   <ImageButton
     android:id="@+id/decrease_pledge"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_1"
     android:background="@drawable/bg_decrease"
     android:backgroundTint="@color/white_enabled_gray_disabled"
     android:contentDescription="@null"
@@ -23,12 +34,13 @@
     android:tint="@color/green_enabled_dark_grey_disabled"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label" />
 
   <ImageButton
     android:id="@+id/increase_pledge"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_1"
     android:background="@drawable/bg_increase"
     android:backgroundTint="@color/white_enabled_gray_disabled"
     android:contentDescription="@null"
@@ -36,12 +48,13 @@
     android:tint="@color/green_enabled_dark_grey_disabled"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toEndOf="@id/decrease_pledge"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label" />
 
   <LinearLayout
     android:id="@+id/additional_pledge_amount_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_1"
     android:layout_marginEnd="@dimen/grid_2"
     android:animateLayoutChanges="true"
     android:focusable="true"
@@ -52,7 +65,7 @@
     app:layout_constraintHorizontal_bias="1"
     app:layout_constraintHorizontal_chainStyle="packed"
     app:layout_constraintStart_toEndOf="@id/increase_pledge"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label">
 
     <!-- todo: needs some a11y plz-->
     <ImageView
@@ -75,6 +88,7 @@
     android:id="@+id/pledge_amount_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_1"
     android:background="@drawable/rect_white_rounded"
     android:gravity="center_vertical"
     android:orientation="horizontal"
@@ -83,7 +97,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="1"
     app:layout_constraintStart_toEndOf="@id/additional_pledge_amount_container"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label">
 
     <TextView
       android:id="@+id/pledge_symbol_start"

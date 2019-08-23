@@ -550,7 +550,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val tag = PledgeFragment::class.java.simpleName
         supportFragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(R.id.fragment_container, pledgeFragment, tag)
                 .addToBackStack(tag)
                 .commit()

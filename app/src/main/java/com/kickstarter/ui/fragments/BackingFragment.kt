@@ -11,7 +11,6 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.Project
 import com.kickstarter.viewmodels.BackingFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_backing.*
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
 class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
@@ -26,7 +25,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
         this.viewModel.outputs.showUpdatePledgeSuccess()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { showSnackbar(backing_root, getString(R.string.Got_it_your_changes_have_been_saved)) }
+                .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
     }
 
     fun takeProject(project: Project) {

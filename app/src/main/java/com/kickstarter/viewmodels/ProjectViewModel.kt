@@ -293,8 +293,10 @@ interface ProjectViewModel {
                     .switchMap { this.toggleProjectSave(it) }
                     .share()
 
+            val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyUpdated )
+
             val refreshedProject = initialProject
-                    .compose(takeWhen<Project, Void>(this.pledgeSuccessfullyCancelled))
+                    .compose(takeWhen<Project, Void>(refreshProjectEvent))
                     .switchMap { project ->
                         this.client.fetchProject(project)
                                 .compose(neverError())

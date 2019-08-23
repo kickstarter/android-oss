@@ -27,8 +27,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_4"
-        android:layout_marginBottom="@dimen/grid_2"
         android:id="@+id/backer_number"
+        tools:text="@string/backer_modal_backer_number" />
+
+      <TextView
+        style="@style/Caption1Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:id="@+id/backing_date"
         tools:text="@string/backer_modal_backer_number" />
 
       <include

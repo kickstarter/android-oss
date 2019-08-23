@@ -8,6 +8,7 @@ import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
+import UpdateBackingMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -274,6 +275,34 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
                             ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+            service.mutate(UpdateBackingMutation.builder()
+                    .backingId(encodeRelayId(backing))
+                    .amount(amount)
+                    .locationId(locationId?.let { it })
+                    .rewardId(reward?.let { encodeRelayId(it) })
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<UpdateBackingMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<UpdateBackingMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            val state = response.data()?.updateBacking()?.checkout()?.state()
+                            val success = state == CheckoutState.VERIFYING
+                            ps.onNext(success)
                             ps.onCompleted()
                         }
                     })

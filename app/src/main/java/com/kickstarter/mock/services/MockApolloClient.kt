@@ -55,6 +55,10 @@ open class MockApolloClient : ApolloClientType {
                 "12345")))
     }
 
+    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+        return Observable.just(true)
+    }
+
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
         return Observable.just(UpdateUserCurrencyMutation.Data(UpdateUserCurrencyMutation.UpdateUserProfile("",
                 UpdateUserCurrencyMutation.User("", "USD"))))

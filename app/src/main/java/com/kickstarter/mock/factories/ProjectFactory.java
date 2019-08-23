@@ -285,4 +285,19 @@ public final class ProjectFactory {
       .staffPick(true)
       .build();
   }
+
+  public static Project prelaunchProject(final String projectUrl) {
+
+    final Project.Urls.Web web = Project.Urls.Web.builder()
+      .project(projectUrl)
+      .rewards(projectUrl + "/rewards")
+      .updates(projectUrl + "/posts")
+      .build();
+
+    return project()
+      .toBuilder()
+      .prelaunchActivated(true)
+      .urls(Project.Urls.builder().web(web).build())
+      .build();
+  }
 }

@@ -105,6 +105,9 @@ interface ProjectViewModel {
         /** Emits a menu for managing your pledge or null if there's no menu. */
         fun managePledgeMenu(): Observable<Int?>
 
+        /** Emits the url of a prelaunch activated project to open in the browser. */
+        fun prelaunchUrl(): Observable<String>
+
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
         fun projectAndUserCountry(): Observable<Pair<Project, String>>
@@ -214,6 +217,7 @@ interface ProjectViewModel {
         private val expandPledgeSheet = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
+        private val prelaunchUrl = PublishSubject.create<String>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
@@ -244,9 +248,18 @@ interface ProjectViewModel {
 
         init {
 
-            val initialProject = intent()
+            val mappedProject = intent()
                     .flatMap { i -> ProjectIntentMapper.project(i, this.client) }
                     .share()
+
+            mappedProject
+                    .filter { BooleanUtils.isTrue(it.prelaunchActivated()) }
+                    .map { it.webProjectUrl() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.prelaunchUrl)
+
+            val initialProject = mappedProject
+                    .filter { BooleanUtils.isFalse(it.prelaunchActivated()) }
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = initialProject
@@ -660,6 +673,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
+
+        @NonNull
+        override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry

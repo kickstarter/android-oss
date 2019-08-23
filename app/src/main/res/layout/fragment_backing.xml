@@ -31,7 +31,26 @@
         android:id="@+id/backer_number"
         tools:text="@string/backer_modal_backer_number" />
 
+      <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/fragment_pledge_section_summary_pledge"
+        android:layout_marginBottom="@dimen/grid_4"/>
+
+      <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/fragment_pledge_section_summary_shipping"
+        android:layout_marginBottom="@dimen/grid_4"/>
+
+      <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/fragment_pledge_section_summary_total"
+        android:layout_marginBottom="@dimen/grid_4"/>
+
       <include layout="@layout/horizontal_line_1dp_view" />
+
 
       <TextView
         style="@style/CalloutPrimaryMedium"
@@ -55,8 +74,50 @@
 
     <include
       layout="@layout/item_reward"
+      tools:visibility="gone"
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
+
+    <LinearLayout
+      android:id="@+id/backing_received_section"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_gravity="center_vertical"
+      android:layout_marginStart="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_4"
+      android:layout_marginEnd="@dimen/grid_3"
+      android:paddingBottom="@dimen/grid_2"
+      android:paddingTop="@dimen/grid_4">
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_1"
+          android:text="@string/Reward_delivered" />
+
+        <TextView
+          style="@style/TextPrimary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_1"
+          android:text="@string/Use_this_to_keep_track_of_which_rewards_youve_received" />
+
+      </LinearLayout>
+
+      <CheckBox
+        android:id="@+id/backing_mark_as_received_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
 
   </LinearLayout>
 </ScrollView>

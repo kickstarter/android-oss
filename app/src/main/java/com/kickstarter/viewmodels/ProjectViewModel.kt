@@ -102,8 +102,8 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /** Emits a boolean that determines if the manage pledge menu should be visible. */
-        fun managePledgeMenuIsVisible(): Observable<Boolean>
+        /** Emits a menu for managing your pledge or null if there's no menu. */
+        fun managePledgeMenu(): Observable<Int?>
 
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
@@ -216,7 +216,7 @@ interface ProjectViewModel {
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val expandPledgeSheet = BehaviorSubject.create<Boolean>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
-        private val managePledgeMenuIsVisible = BehaviorSubject.create<Boolean>()
+        private val managePledgeMenu = BehaviorSubject.create<Int?>()
         private val prelaunchUrl = PublishSubject.create<String>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
@@ -391,10 +391,10 @@ interface ProjectViewModel {
 
             nativeCheckoutProject
                     .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
-                    .map { it.first.isBacking && IntegerUtils.isZero(it.second) }
+                    .map { managePledgeMenu(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.managePledgeMenuIsVisible)
+                    .subscribe(this.managePledgeMenu)
 
             nativeCheckoutProject
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
@@ -512,6 +512,16 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
 
+        }
+
+        private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int? {
+            val project = projectAndFragmentStackCount.first
+            val count = projectAndFragmentStackCount.second
+            return when {
+                !project.isBacking || IntegerUtils.isNonZero(count) -> null
+                project.isLive -> R.menu.manage_pledge_live
+                else -> R.menu.manage_pledge_ended
+            }
         }
 
         /**
@@ -662,7 +672,7 @@ interface ProjectViewModel {
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
         @NonNull
-        override fun managePledgeMenuIsVisible(): Observable<Boolean> = this.managePledgeMenuIsVisible
+        override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
 
         @NonNull
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl

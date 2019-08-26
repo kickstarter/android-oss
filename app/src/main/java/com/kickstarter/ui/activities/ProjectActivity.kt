@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import androidx.annotation.MenuRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -270,10 +271,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showBackingFragment(it) }
 
-        this.viewModel.outputs.managePledgeMenuIsVisible()
+        this.viewModel.outputs.managePledgeMenu()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { toggleManagePledgeVisibility(it) }
+                .subscribe { updateManagePledgeMenu(it) }
 
         this.viewModel.outputs.showCancelPledgeFragment()
                 .compose(bindToLifecycle())
@@ -516,7 +517,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val tag = CancelPledgeFragment::class.java.simpleName
         supportFragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(R.id.fragment_container, cancelPledgeFragment, tag)
                 .addToBackStack(tag)
                 .commit()
@@ -655,7 +656,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         project_action_button.layoutParams = buttonParams
     }
 
-    private fun toggleManagePledgeVisibility(visible: Boolean) {
-        if (visible) rewards_toolbar.inflateMenu(R.menu.manage_pledge) else rewards_toolbar.menu.clear()
+    private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
+        menu?.let {
+            rewards_toolbar.inflateMenu(it)
+        }?: run {
+            rewards_toolbar.menu.clear()
+        }
     }
 }

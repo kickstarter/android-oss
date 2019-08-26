@@ -28,7 +28,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
     private val expandPledgeSheet = TestSubscriber<Boolean>()
     private val heartDrawableId = TestSubscriber<Int>()
-    private val managePledgeMenuIsVisible = TestSubscriber<Boolean>()
+    private val managePledgeMenu = TestSubscriber<Int?>()
     private val prelaunchUrl = TestSubscriber<String>()
     private val projectTest = TestSubscriber<Project>()
     private val revealRewardsFragment = TestSubscriber<Void>()
@@ -59,7 +59,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
         this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
-        this.vm.outputs.managePledgeMenuIsVisible().subscribe(this.managePledgeMenuIsVisible)
+        this.vm.outputs.managePledgeMenu().subscribe(this.managePledgeMenu)
         this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
@@ -564,40 +564,54 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testManagePledgeMenuIsVisible_whenProjectBacked() {
+    fun testManagePledgeMenu_whenProjectBackedAndLive() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.managePledgeMenuIsVisible.assertValue(true)
+        this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
     }
 
     @Test
-    fun testManagePledgeMenuIsVisible_whenProjectNotBacked() {
+    fun testManagePledgeMenu_whenProjectBackedAndNotLive() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        val successfulBackedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, successfulBackedProject))
+
+        this.managePledgeMenu.assertValue(R.menu.manage_pledge_ended)
+    }
+
+    @Test
+    fun testManagePledgeMenu_whenProjectNotBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        this.managePledgeMenuIsVisible.assertValue(false)
+        this.managePledgeMenu.assertValue(null)
     }
 
     @Test
-    fun testManagePledgeMenuIsVisible_whenManaging() {
+    fun testManagePledgeMenu_whenManaging() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.managePledgeMenuIsVisible.assertValue(true)
+        this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
 
         this.vm.inputs.cancelPledgeClicked()
         this.vm.inputs.fragmentStackCount(1)
-        this.managePledgeMenuIsVisible.assertValues(true, false)
+        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, null)
 
         this.vm.inputs.fragmentStackCount(0)
-        this.managePledgeMenuIsVisible.assertValues(true, false, true)
+        this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, null, R.menu.manage_pledge_live)
     }
 
     @Test

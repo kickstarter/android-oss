@@ -17,9 +17,6 @@ import java.math.RoundingMode
 
 interface CancelPledgeViewModel {
     interface Inputs {
-        /** Call when user clicks the close button. */
-        fun closeButtonClicked()
-
         /** Call when user clicks the confirmation button. */
         fun confirmCancellationClicked(note: String)
 
@@ -52,16 +49,15 @@ interface CancelPledgeViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<CancelPledgeFragment>(environment), Inputs, Outputs {
 
-        private val closeButtonClicked = PublishSubject.create<Void>()
         private val confirmCancellationClicked = PublishSubject.create<String>()
         private val goBackButtonClicked = PublishSubject.create<Void>()
 
         private val cancelButtonIsVisible = BehaviorSubject.create<Boolean>()
         private val dismiss = BehaviorSubject.create<Void>()
         private val pledgeAmountAndProjectName = BehaviorSubject.create<Pair<String, String>>()
-        private val progressBarIsVisible = PublishSubject.create<Boolean>()
-        private val showCancelError = BehaviorSubject.create<String>()
-        private val showServerError = BehaviorSubject.create<Void>()
+        private val progressBarIsVisible = BehaviorSubject.create<Boolean>()
+        private val showCancelError = PublishSubject.create<String>()
+        private val showServerError = PublishSubject.create<Void>()
         private val success = BehaviorSubject.create<Void>()
 
         private val apolloClient = environment.apolloClient()
@@ -117,7 +113,7 @@ interface CancelPledgeViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelError)
 
-            Observable.merge(this.closeButtonClicked, this.goBackButtonClicked)
+             this.goBackButtonClicked
                     .compose(bindToLifecycle())
                     .subscribe(this.dismiss)
         }
@@ -132,10 +128,6 @@ interface CancelPledgeViewModel {
                         this.progressBarIsVisible.onNext(false)
                         this.cancelButtonIsVisible.onNext(true)
                     }.materialize()
-        }
-
-        override fun closeButtonClicked() {
-            this.closeButtonClicked.onNext(null)
         }
 
         override fun confirmCancellationClicked(note: String) {

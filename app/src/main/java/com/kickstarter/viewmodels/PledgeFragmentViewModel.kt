@@ -172,6 +172,12 @@ interface PledgeFragmentViewModel {
         /**  Emits when the pledge call was unsuccessful. */
         fun showPledgeError(): Observable<Void>
 
+        /**  Emits when the update payment source mutation was unsuccessful. */
+        fun showUpdatePaymentError(): Observable<Void>
+
+        /**  Emits when the update payment source mutation was successful. */
+        fun showUpdatePaymentSuccess(): Observable<Void>
+
         /** Emits a boolean determining if the reward snapshot should be hidden. */
         fun snapshotIsGone(): Observable<Boolean>
 
@@ -247,6 +253,8 @@ interface PledgeFragmentViewModel {
         private val showNewCardFragment = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = PublishSubject.create<Void>()
+        private val showUpdatePaymentError = PublishSubject.create<Void>()
+        private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
         private val snapshotIsGone = BehaviorSubject.create<Boolean>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
@@ -646,6 +654,9 @@ interface PledgeFragmentViewModel {
             val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
 
             val validPledgeClick = pledgeLessThanMinimum
+                    .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE }
+                    .map { it.first }
                     .compose<Pair<Boolean, String>>(takePairWhen(this.pledgeButtonClicked))
                     .filter { BooleanUtils.isFalse(it.first) }
                     .map { it.second }
@@ -679,6 +690,43 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
 
+            val updatePaymentClick = pledgeReason
+                    .compose<Pair<PledgeReason, String>>(takePairWhen(this.pledgeButtonClicked))
+                    .filter { it.first == PledgeReason.UPDATE_PAYMENT }
+                    .map { it.second }
+
+            val backingForMutation = project
+                    .filter { it.isBacking }
+                    .map { it.backing() }
+                    .ofType(Backing::class.java)
+
+            val updatePaymentNotification = Observable.combineLatest(backingForMutation,
+                    updatePaymentClick)
+            { b, id -> UpdateBackingPayment(b, id) }
+                    .switchMap {
+                        this.apolloClient.updateBackingPayment(it.backing, it.paymentSourceId)
+                                .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
+                                .materialize()
+                    }
+                    .share()
+
+            val updatePaymentNotificationValues = updatePaymentNotification
+                    .compose(values())
+
+            Observable.merge(updatePaymentNotification.compose(errors()), updatePaymentNotificationValues.filter { BooleanUtils.isFalse(it) })
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe{
+                        this.showPledgeError.onNext(null)
+                        this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
+                    }
+
+            updatePaymentNotificationValues
+                    .filter { BooleanUtils.isTrue(it) }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePaymentSuccess)
+
             this.baseUrlForTerms.onNext(this.environment.webEndpoint())
 
             this.linkClicked
@@ -706,6 +754,7 @@ interface PledgeFragmentViewModel {
         }
 
         data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
+        data class UpdateBackingPayment(val backing: Backing, val paymentSourceId: String)
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 
@@ -834,6 +883,12 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun showPledgeError(): Observable<Void> = this.showPledgeError
+
+        @NonNull
+        override fun showUpdatePaymentError(): Observable<Void> = this.showUpdatePaymentError
+
+        @NonNull
+        override fun showUpdatePaymentSuccess(): Observable<Void> = this.showUpdatePaymentSuccess
 
         @NonNull
         override fun snapshotIsGone(): Observable<Boolean> = this.snapshotIsGone

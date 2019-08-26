@@ -15,7 +15,6 @@
     android:padding="@dimen/grid_3">
 
     <LinearLayout
-      android:id="@+id/card_details"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/grid_8"
@@ -23,7 +22,6 @@
 
       <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
       <ImageView
-        android:id="@+id/reward_card_logo"
         android:layout_width="@dimen/credit_card_logo_width"
         android:layout_height="@dimen/credit_card_logo_height"
         android:background="@color/ksr_grey_400"
@@ -37,7 +35,6 @@
         android:orientation="vertical">
 
           <TextView
-            android:id="@+id/reward_card_last_four"
             style="@style/CreditCardLastFour"
             android:foreground="@color/ksr_grey_400"
             android:layout_width="wrap_content"
@@ -45,7 +42,6 @@
             android:text="@string/Card_ending_in_last_four" />
 
           <TextView
-            android:id="@+id/reward_card_expiration_date"
             android:foreground="@color/ksr_grey_400"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

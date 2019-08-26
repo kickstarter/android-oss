@@ -8,6 +8,7 @@ import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
+import UpdateBackingPaymentMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -274,6 +275,32 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
                             ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Boolean>()
+            service.mutate(UpdateBackingPaymentMutation.builder()
+                    .backingId(encodeRelayId(backing))
+                    .paymentSourceId(paymentSourceId)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<UpdateBackingPaymentMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<UpdateBackingPaymentMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            val state = response.data()?.updateBackingPaymentSource()?.checkout()?.state()
+                            val success = state == CheckoutState.VERIFYING
+                            ps.onNext(success)
                             ps.onCompleted()
                         }
                     })

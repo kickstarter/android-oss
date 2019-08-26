@@ -70,6 +70,10 @@ import kotlin.math.min
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
 
+    interface PledgeDelegate {
+        fun paymentMethodSuccessfullyUpdated()
+    }
+
     private val defaultAnimationDuration = 200L
     private var animDuration = defaultAnimationDuration
 
@@ -344,6 +348,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
                 .subscribe { ViewUtils.setGone(update_pledge_button, it) }
+
+        this.viewModel.outputs.showUpdatePaymentError()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+
+        this.viewModel.outputs.showUpdatePaymentSuccess()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { (activity as PledgeDelegate?)?.paymentMethodSuccessfullyUpdated() }
 
         this.viewModel.outputs.showMinimumWarning()
                 .compose(observeForUI())

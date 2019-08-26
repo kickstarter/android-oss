@@ -6,7 +6,9 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
+import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.BehaviorSubject
 
@@ -36,20 +38,27 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
         private val projectCountry = BehaviorSubject.create<String>()
 
         init {
+            val card = this.cardAndProject
+                    .map { it.first }
+
             val project = this.cardAndProject
                     .map { it.second }
+
+            val backing = project
+                    .map { it.backing() }
+
+            val isBackingPaymentSource = backing
+                    .compose<Pair<Backing?, StoredCard>>(combineLatestPair(card))
+                    .map { backingAndCard -> backingAndCard.first?.let { b -> b.paymentSource()?.let { it.id() == backingAndCard.second.id() } }?: false }
 
             val allowedCard = this.cardAndProject
                     .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
 
             allowedCard
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(isBackingPaymentSource))
+                    .map { it.first && !it.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonEnabled)
-
-            allowedCard
-                    .map { BooleanUtils.negate(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.notAvailableCopyIsVisible)
 
             allowedCard
                     .map { if (it) R.string.Select else R.string.Not_available }
@@ -63,6 +72,11 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .map { it.location()?.expandedCountry()?: "" }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectCountry)
+
+            allowedCard
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.notAvailableCopyIsVisible)
 
         }
 

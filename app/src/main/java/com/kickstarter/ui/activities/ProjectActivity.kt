@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,7 +48,8 @@ import kotlinx.android.synthetic.main.project_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate, NewCardFragment.OnCardSavedListener {
+class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate,
+        NewCardFragment.OnCardSavedListener, PledgeFragment.PledgeDelegate {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
     private lateinit var heartIcon: ImageButton
@@ -342,6 +344,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
         pledgeFragment?.cardAdded(storedCard)
         supportFragmentManager.popBackStack()
+    }
+
+    override fun paymentMethodSuccessfullyUpdated() {
+        supportFragmentManager.popBackStack()
+        Toast.makeText(this, R.string.Got_it_your_changes_have_been_saved, Toast.LENGTH_LONG).show()
     }
 
     override fun exitTransition(): Pair<Int, Int>? {

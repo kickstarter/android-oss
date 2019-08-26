@@ -6,8 +6,8 @@
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_300"
   android:overScrollMode="never"
-  android:scrollbars="none"
-  android:paddingTop="?android:attr/actionBarSize">
+  android:paddingTop="?android:attr/actionBarSize"
+  android:scrollbars="none">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -23,38 +23,40 @@
       android:orientation="vertical">
 
       <TextView
+        android:id="@+id/backer_number"
         style="@style/CalloutPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_4"
-        android:id="@+id/backer_number"
         tools:text="@string/backer_modal_backer_number" />
 
       <TextView
+        android:id="@+id/backing_date"
         style="@style/Caption1Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_3"
-        android:id="@+id/backing_date"
-        tools:text="@string/backer_modal_backer_number" />
+        tools:text="As of January 1, 2019" />
 
       <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         layout="@layout/fragment_pledge_section_summary_pledge"
-        android:layout_marginBottom="@dimen/grid_4"/>
-
-      <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginBottom="@dimen/grid_4" />
+
+      <include
         layout="@layout/fragment_pledge_section_summary_shipping"
-        android:layout_marginBottom="@dimen/grid_4"/>
-
-      <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginBottom="@dimen/grid_4" />
+
+      <include
         layout="@layout/fragment_pledge_section_summary_total"
-        android:layout_marginBottom="@dimen/grid_4"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_4" />
 
       <include layout="@layout/horizontal_line_1dp_view" />
 
@@ -81,21 +83,21 @@
 
     <include
       layout="@layout/item_reward"
-      tools:visibility="gone"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      tools:visibility="gone" />
 
     <LinearLayout
       android:id="@+id/backing_received_section"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
       android:layout_gravity="center_vertical"
       android:layout_marginStart="@dimen/grid_3"
       android:layout_marginTop="@dimen/grid_4"
       android:layout_marginEnd="@dimen/grid_3"
-      android:paddingBottom="@dimen/grid_2"
-      android:paddingTop="@dimen/grid_4">
+      android:orientation="horizontal"
+      android:paddingTop="@dimen/grid_4"
+      android:paddingBottom="@dimen/grid_2">
 
       <LinearLayout
         android:layout_width="0dp"

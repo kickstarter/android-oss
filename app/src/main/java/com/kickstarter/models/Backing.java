@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Date;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
@@ -85,7 +86,7 @@ public abstract class Backing implements Parcelable, Relay {
     public abstract String state();
     public abstract @Nullable String type();
     public abstract @Nullable String lastFour();
-    public abstract @Nullable DateTime expirationDate();
+    public abstract @Nullable Date expirationDate();
 
     @AutoParcel.Builder
     public abstract static class Builder {
@@ -94,7 +95,7 @@ public abstract class Backing implements Parcelable, Relay {
       public abstract Builder state(String __);
       public abstract Builder type(String __);
       public abstract Builder lastFour(String __);
-      public abstract Builder expirationDate(DateTime __);
+      public abstract Builder expirationDate(Date __);
       public abstract PaymentSource build();
     }
   }

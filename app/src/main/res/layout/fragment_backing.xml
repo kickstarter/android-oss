@@ -27,7 +27,6 @@
         style="@style/CalloutPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_4"
         tools:text="@string/backer_modal_backer_number" />
 
       <TextView

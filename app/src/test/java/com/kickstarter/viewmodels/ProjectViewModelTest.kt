@@ -43,6 +43,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
+    private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
     private val startCommentsActivity = TestSubscriber<Project>()
@@ -73,6 +74,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showUpdatePledge().subscribe(this.showUpdatePledge)
+        this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first.isStarred }.subscribe(this.savedTest)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
@@ -673,6 +675,20 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.updatePaymentClicked()
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PAYMENT))
+    }
+
+    @Test
+    fun testShowUpdatePledgeSuccess() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.projectTest.assertValueCount(2)
+
+        this.vm.inputs.pledgeSuccessfullyUpdated()
+        this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.projectTest.assertValueCount(3)
     }
 
     private fun environmentWithNativeCheckoutEnabled() : Environment {

@@ -127,7 +127,9 @@ public final class KSCurrency {
    */
   public boolean currencyNeedsCode(final @NonNull Country country, final boolean excludeCurrencyCode) {
     final boolean countryIsUS = country == Country.US;
-    final Config config = this.currentConfig.getConfig();
+    final Config config = this.currentConfig.observable()
+      .toBlocking()
+      .first();
     final boolean currencyNeedsCode = config.currencyNeedsCode(country.getCurrencySymbol());
     final boolean userInUS = config.countryCode().equals(Country.US.getCountryCode());
 

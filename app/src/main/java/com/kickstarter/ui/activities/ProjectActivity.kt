@@ -48,7 +48,8 @@ import kotlinx.android.synthetic.main.project_layout.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate, NewCardFragment.OnCardSavedListener {
+class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate,
+        NewCardFragment.OnCardSavedListener, PledgeFragment.PledgeDelegate {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
     private lateinit var heartIcon: ImageButton
@@ -261,6 +262,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCancelPledgeSuccess() }
 
+        this.viewModel.outputs.showUpdatePledgeSuccess()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showUpdatePledgeSuccess() }
+
         this.viewModel.outputs.showRewardsFragment()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -337,6 +343,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun pledgeSuccessfullyCancelled() {
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
+    }
+
+    override fun pledgeSuccessfullyUpdated() {
+        this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 
     override fun cardSaved(storedCard: StoredCard) {
@@ -530,12 +540,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }, this.animDuration)
     }
 
+    private fun showUpdatePledgeSuccess() {
+        clearFragmentBackStack()
+        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        backingFragment.pledgeSuccessfullyCancelled()
+    }
+
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
         val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
         val tag = PledgeFragment::class.java.simpleName
         supportFragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(R.id.fragment_container, pledgeFragment, tag)
                 .addToBackStack(tag)
                 .commit()

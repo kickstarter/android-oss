@@ -626,7 +626,6 @@ interface PledgeFragmentViewModel {
             val validUpdatePledgeClick = pledgeLessThanMinimum
                     .compose<Pair<Boolean, Void>>(takePairWhen(this.updatePledgeButtonClicked))
                     .filter { BooleanUtils.isFalse(it.first) }
-                    .map { it.second }
 
             val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
 
@@ -638,10 +637,10 @@ interface PledgeFragmentViewModel {
 
             val updateBackingNotification = Observable.combineLatest(backingForMutation,
                     total.map { it.toString() },
-                    validUpdatePledgeClick,
                     location.map { it?.id()?.toString() },
                     reward)
-            { b, a, _, l, r -> UpdateBacking(b, a, l, r) }
+            { b, a, l, r -> UpdateBacking(b, a, l, r) }
+                    .compose<UpdateBacking>(takeWhen(validUpdatePledgeClick))
                     .switchMap {
                         this.apolloClient.updateBacking(it.backing, it.amount, it.locationId, it.reward)
                                 .doOnSubscribe { this.updatePledgeProgressIsGone.onNext(false) }
@@ -660,8 +659,8 @@ interface PledgeFragmentViewModel {
                         this.updatePledgeProgressIsGone.onNext(true)
                     }
 
-            project
-                    .compose<Project>(takeWhen(updateBackingNotificationValues.filter { BooleanUtils.isTrue(it) }))
+            updateBackingNotificationValues
+                    .filter { BooleanUtils.isTrue(it) }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledgeSuccess)
@@ -739,14 +738,14 @@ interface PledgeFragmentViewModel {
             val validPledgeClick = pledgeLessThanMinimum
                     .compose<Pair<Boolean, String>>(takePairWhen(this.pledgeButtonClicked))
                     .filter { BooleanUtils.isFalse(it.first) }
-                    .map { it.second }
 
             val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },
-                    validPledgeClick,
+                    this.pledgeButtonClicked,
                     location.map { it?.id()?.toString() },
                     reward)
             { p, a, id, l, r -> CreateBacking(p, a, id, l, r) }
+                    .compose<CreateBacking>(takeWhen(validPledgeClick))
                     .switchMap {
                         this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }

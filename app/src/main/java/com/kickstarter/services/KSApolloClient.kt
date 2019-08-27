@@ -284,13 +284,15 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
     override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
         return Observable.defer {
-            val ps = PublishSubject.create<Boolean>()
-            service.mutate(UpdateBackingMutation.builder()
+            val updateBackingMutation = UpdateBackingMutation.builder()
                     .backingId(encodeRelayId(backing))
                     .amount(amount)
                     .locationId(locationId?.let { it })
                     .rewardId(reward?.let { encodeRelayId(it) })
-                    .build())
+                    .build()
+
+            val ps = PublishSubject.create<Boolean>()
+            service.mutate(updateBackingMutation)
                     .enqueue(object : ApolloCall.Callback<UpdateBackingMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)
@@ -300,8 +302,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
-                            val state = response.data()?.updateBacking()?.checkout()?.state()
-                            val success = state == CheckoutState.VERIFYING
+                            val processing = response.data()?.updateBacking()?.backing()?.processing()
+                            val success = processing == true
                             ps.onNext(success)
                             ps.onCompleted()
                         }

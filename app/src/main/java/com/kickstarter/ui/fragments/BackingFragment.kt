@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kickstarter.R
+import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -61,8 +62,21 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .subscribe { total_summary_amount.text = it }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        this.viewModel.outputs.showUpdatePledgeSuccess()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+    }
+
     fun takeProject(project: Project) {
         this.viewModel.inputs.project(project)
+    }
+
+    fun pledgeSuccessfullyCancelled() {
+        this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 
 }

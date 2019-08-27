@@ -10,12 +10,6 @@ public interface CurrentConfigType {
   Observable<Config> observable();
 
   /**
-   * @deprecated Use {@link #observable()} instead.
-   */
-  @Deprecated
-  Config getConfig();
-
-  /**
    * Set a new config.
    */
   void config(Config config);

@@ -12,10 +12,12 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private lateinit var vm: BackingFragmentViewModel.ViewModel
 
     private val project = TestSubscriber.create<Project>()
+    private val showUpdatePledgeSuccess = TestSubscriber.create<Void>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingFragmentViewModel.ViewModel(environment)
         this.vm.outputs.project().subscribe(this.project)
+        this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
     }
 
     @Test
@@ -25,6 +27,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.project(project)
         this.project.assertValue(project)
+    }
+
+    @Test
+    fun testShowUpdatePledgeSuccess() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.pledgeSuccessfullyUpdated()
+        this.showUpdatePledgeSuccess.assertValueCount(1)
     }
 
 }

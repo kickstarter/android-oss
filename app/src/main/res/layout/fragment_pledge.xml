@@ -93,7 +93,8 @@
           android:id="@+id/divider_total"
           layout="@layout/horizontal_line_1dp_view" />
 
-        <include layout="@layout/fragment_pledge_section_total" />
+        <include tools:visibility="gone"
+          layout="@layout/fragment_pledge_section_total" />
 
         <Button
           android:id="@+id/continue_to_tout"
@@ -105,17 +106,44 @@
           android:visibility="gone"
           tools:visibility="gone" />
 
-        <com.google.android.material.button.MaterialButton
-          android:id="@+id/update_pledge_button"
+        <FrameLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_4"
-          android:enabled="false"
-          android:text="@string/Update_pledge"
-          android:textColor="@color/white"
-          android:visibility="gone"
-          app:backgroundTint="@color/button_pledge_live"
-          tools:visibility="gone" />
+          android:layout_height="wrap_content">
+
+          <com.google.android.material.button.MaterialButton
+            android:id="@+id/update_pledge_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_4"
+            android:enabled="false"
+            android:text="@string/Update_pledge"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:backgroundTint="@color/button_pledge_live"
+            tools:visibility="visible" />
+
+          <FrameLayout
+            android:id="@+id/update_pledge_button_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_4"
+            android:visibility="gone">
+
+            <Button
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:stateListAnimator="@null" />
+
+            <ProgressBar
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:indeterminate="true"
+              android:indeterminateTint="@color/white"
+              android:indeterminateTintMode="src_in" />
+
+          </FrameLayout>
+        </FrameLayout>
 
       </LinearLayout>
 

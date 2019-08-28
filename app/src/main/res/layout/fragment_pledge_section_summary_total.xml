@@ -9,10 +9,10 @@
 
   <TextView
     android:id="@+id/total_label"
-    style="@style/CalloutSecondaryMedium"
+    style="@style/CalloutPrimaryMedium"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/Total"
+    android:text="@string/Total_amount"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@id/total_summary_amount_container"
     app:layout_constraintStart_toStartOf="parent"

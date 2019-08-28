@@ -9,6 +9,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardPledgeCardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward_pledge_card.view.*
+import kotlinx.android.synthetic.main.reward_card_details.view.*
 
 class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
 
@@ -33,7 +34,7 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
         this.viewModel.outputs.issuerImage()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_card_logo.setImageResource(it) }
+                .subscribe { this.view.reward_card_logo.setImageResource(it) }
 
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
@@ -61,12 +62,12 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
     }
 
     private fun setExpirationDateTextView(date: String) {
-        this.view.reward_pledge_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
+        this.view.reward_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
                 "expiration_date", date)
     }
 
     private fun setLastFourTextView(lastFour: String) {
-        this.view.reward_pledge_card_last_four.text = this.ksString.format(this.endingInString, "last_four", lastFour)
+        this.view.reward_card_last_four.text = this.ksString.format(this.endingInString, "last_four", lastFour)
     }
 
 }

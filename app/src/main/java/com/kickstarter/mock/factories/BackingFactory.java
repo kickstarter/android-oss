@@ -30,6 +30,7 @@ public final class BackingFactory {
       .backer(backer)
       .backerId(backer.id())
       .id(IdFactory.id())
+      .paymentSource(PaymentSourceFactory.Companion.visa())
       .pledgedAt(DateTime.now())
       .project(project)
       .projectCountry(project.country())

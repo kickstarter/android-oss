@@ -14,6 +14,7 @@
     style="@style/CalloutSecondaryMedium"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:text="@string/Shipping"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@id/shipping_summary_add_symbol"
     app:layout_constraintStart_toStartOf="parent"

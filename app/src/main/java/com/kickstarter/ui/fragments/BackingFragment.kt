@@ -13,12 +13,13 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing.*
+import kotlinx.android.synthetic.main.fragment_backing_section_summary_total.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_summary_total.*
 import kotlinx.android.synthetic.main.item_reward.*
 import kotlinx.android.synthetic.main.reward_card_details.*
 
@@ -46,17 +47,12 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
         this.viewModel.outputs.cardExpiration()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe {
-                    reward_card_expiration_date.text = this.viewModel.ksString.format(getString(R.string.Credit_card_expiration),
-                            "expiration_date", it)
-                }
+                .subscribe { setCardExpirationText(it) }
 
         this.viewModel.outputs.cardLastFour()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe {
-                    reward_card_last_four.text = this.viewModel.ksString.format(getString(R.string.Ending_in_last_four), "last_four", it)
-                }
+                .subscribe { setCardLastFourText(it) }
 
         this.viewModel.outputs.cardIsGone()
                 .compose(bindToLifecycle())
@@ -66,20 +62,17 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
         this.viewModel.outputs.projectAndReward()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe {
-                    val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_container, delegate = null, inset = true)
-                    rewardViewHolder.bindData(Pair(it.first, it.second))
-                }
+                .subscribe { bindDataToRewardViewHolder(it) }
 
         this.viewModel.outputs.backerNumber()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { backer_number.text = this.viewModel.ksString.format(getString(R.string.backer_modal_backer_number), "backer_number", it) }
+                .subscribe { setBackerNumberText(it) }
 
         this.viewModel.outputs.pledgeDate()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { backing_date.text = this.viewModel.ksString.format(getString(R.string.As_of_pledge_date), "pledge_date", it) }
+                .subscribe { setPledgeDateText(it) }
 
         this.viewModel.outputs.pledgeAmount()
                 .compose(bindToLifecycle())
@@ -122,6 +115,30 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
 
     fun pledgeSuccessfullyCancelled() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
+    }
+
+    private fun bindDataToRewardViewHolder(projectAndReward: Pair<Project, Reward>) {
+        val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_container, delegate = null, inset = true)
+        val project = projectAndReward.first
+        val reward = projectAndReward.second
+        rewardViewHolder.bindData(Pair(project, reward))
+    }
+
+    private fun setBackerNumberText(it: String?) {
+        backer_number.text = this.viewModel.ksString.format(getString(R.string.backer_modal_backer_number), "backer_number", it)
+    }
+
+    private fun setCardExpirationText(expiration: String) {
+        reward_card_expiration_date.text = this.viewModel.ksString.format(getString(R.string.Credit_card_expiration),
+                "expiration_date", expiration)
+    }
+
+    private fun setCardLastFourText(lastFour: String) {
+        reward_card_last_four.text = this.viewModel.ksString.format(getString(R.string.Ending_in_last_four), "last_four", lastFour)
+    }
+
+    private fun setPledgeDateText(pledgeDate: String) {
+        backing_date.text = this.viewModel.ksString.format(getString(R.string.As_of_pledge_date), "pledge_date", pledgeDate)
     }
 
 }

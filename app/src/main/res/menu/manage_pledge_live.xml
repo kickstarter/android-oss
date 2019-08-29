@@ -8,7 +8,7 @@
     android:title="@string/Change_payment_method"
     app:showAsAction="never"/>
   <item android:id="@+id/rewards"
-    android:title="@string/View_rewards"
+    android:title="@string/Choose_another_reward"
     app:showAsAction="never"/>
   <item android:id="@+id/cancel_pledge"
     android:title="@string/Cancel_pledge"

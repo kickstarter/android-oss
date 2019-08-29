@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/total_summary"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    android:id="@+id/total_label"
+    style="@style/CalloutPrimaryMedium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/Total_amount"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/total_summary_amount"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/total_summary_amount"
+    style="@style/PledgeCurrencySecondary"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|end"
+    android:maxLines="1"
+    android:scrollHorizontally="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="1"
+    app:layout_constraintStart_toEndOf="@id/total_label"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0"
+    tools:text="$40" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

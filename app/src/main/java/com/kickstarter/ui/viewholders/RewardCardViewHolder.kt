@@ -10,6 +10,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardCardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward_credit_card.view.*
+import kotlinx.android.synthetic.main.reward_card_details.view.*
 
 class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
 

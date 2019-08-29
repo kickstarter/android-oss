@@ -98,5 +98,11 @@ public abstract class Backing implements Parcelable, Relay {
       public abstract Builder expirationDate(Date __);
       public abstract PaymentSource build();
     }
+
+    public static PaymentSource.Builder builder() {
+      return new AutoParcel_Backing_PaymentSource.Builder();
+    }
+
+    public abstract Builder toBuilder();
   }
 }

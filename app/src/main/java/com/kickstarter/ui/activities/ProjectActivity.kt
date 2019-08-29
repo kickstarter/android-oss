@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.MenuRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -262,6 +263,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCancelPledgeSuccess() }
 
+        this.viewModel.outputs.showUpdatePledgeSuccess()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showUpdatePledgeSuccess() }
+
         this.viewModel.outputs.showRewardsFragment()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -272,10 +278,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showBackingFragment(it) }
 
-        this.viewModel.outputs.managePledgeMenuIsVisible()
+        this.viewModel.outputs.managePledgeMenu()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { toggleManagePledgeVisibility(it) }
+                .subscribe { updateManagePledgeMenu(it) }
 
         this.viewModel.outputs.showCancelPledgeFragment()
                 .compose(bindToLifecycle())
@@ -338,6 +344,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun pledgeSuccessfullyCancelled() {
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
+    }
+
+    override fun pledgeSuccessfullyUpdated() {
+        this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 
     override fun cardSaved(storedCard: StoredCard) {
@@ -523,7 +533,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val tag = CancelPledgeFragment::class.java.simpleName
         supportFragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(R.id.fragment_container, cancelPledgeFragment, tag)
                 .addToBackStack(tag)
                 .commit()
@@ -536,12 +546,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }, this.animDuration)
     }
 
+    private fun showUpdatePledgeSuccess() {
+        clearFragmentBackStack()
+        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        backingFragment.pledgeSuccessfullyCancelled()
+    }
+
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
         val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
         val tag = PledgeFragment::class.java.simpleName
         supportFragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                 .add(R.id.fragment_container, pledgeFragment, tag)
                 .addToBackStack(tag)
                 .commit()
@@ -662,7 +678,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         project_action_button.layoutParams = buttonParams
     }
 
-    private fun toggleManagePledgeVisibility(visible: Boolean) {
-        if (visible) rewards_toolbar.inflateMenu(R.menu.manage_pledge) else rewards_toolbar.menu.clear()
+    private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
+        menu?.let {
+            rewards_toolbar.inflateMenu(it)
+        }?: run {
+            rewards_toolbar.menu.clear()
+        }
     }
 }

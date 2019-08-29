@@ -31,6 +31,8 @@ interface ApolloClientType {
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 
+    fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean>
+
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
 
     fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean>

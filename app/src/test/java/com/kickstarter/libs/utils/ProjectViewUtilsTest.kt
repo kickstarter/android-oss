@@ -2,6 +2,9 @@ package com.kickstarter.libs.utils
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.KSCurrency
+import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
 import org.junit.Test
@@ -42,5 +45,32 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         assertEquals(R.string.View_your_pledge, ProjectViewUtils.rewardsToolbarTitle(backedSuccessfulProject))
+    }
+
+    @Test
+    fun testStyleCurrency_US() {
+        val currency = createKSCurrency("US")
+
+        assertEquals("$30", ProjectViewUtils.styleCurrency(30.0, ProjectFactory.project(), currency).toString())
+        assertEquals("$30.50", ProjectViewUtils.styleCurrency(30.5, ProjectFactory.project(), currency).toString())
+    }
+
+    @Test
+    fun testStyleCurrency_nonUS() {
+        val currency = createKSCurrency("DE")
+
+        assertEquals(" US$ 30", ProjectViewUtils.styleCurrency(30.0, ProjectFactory.project(), currency).toString())
+        assertEquals(" US$ 30.50", ProjectViewUtils.styleCurrency(30.5, ProjectFactory.project(), currency).toString())
+    }
+
+    private fun createKSCurrency(countryCode: String): KSCurrency {
+        val config = ConfigFactory.config().toBuilder()
+                .countryCode(countryCode)
+                .build()
+
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        return KSCurrency(currentConfig)
     }
 }

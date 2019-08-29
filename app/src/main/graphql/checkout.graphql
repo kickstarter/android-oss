@@ -14,6 +14,14 @@ mutation CancelBacking($backingId: ID!, $note: String) {
   }
 }
 
+mutation UpdateBacking($backingId: ID!, $amount: String!, $locationId: ID, $rewardId: ID)  {
+  updateBacking(input: { id: $backingId, amount: $amount, locationId: $locationId, rewardId: $rewardId}) {
+    backing {
+      processing
+    }
+  }
+}
+
 mutation UpdateBackingPayment($backingId: ID!, $paymentSourceId: String!) {
   updateBackingPaymentSource(input: {id: $backingId, paymentSourceId: $paymentSourceId}) {
     checkout {

@@ -47,11 +47,8 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
     fun testDismiss() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.closeButtonClicked()
-        this.dismiss.assertValueCount(1)
-
         this.vm.inputs.goBackButtonClicked()
-        this.dismiss.assertValueCount(2)
+        this.dismiss.assertValueCount(1)
     }
 
     @Test

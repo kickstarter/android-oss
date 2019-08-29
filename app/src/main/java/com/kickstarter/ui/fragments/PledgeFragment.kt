@@ -26,6 +26,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
@@ -72,6 +73,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     interface PledgeDelegate {
         fun paymentMethodSuccessfullyUpdated()
+        fun pledgeSuccessfullyUpdated()
     }
 
     private val defaultAnimationDuration = 200L
@@ -349,6 +351,26 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { ViewUtils.setGone(update_pledge_button, it) }
 
+        this.viewModel.outputs.updatePledgeButtonIsEnabled()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { update_pledge_button.isEnabled = it }
+
+        this.viewModel.outputs.updatePledgeProgressIsGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setGone(update_pledge_button_progress, it) }
+
+        this.viewModel.outputs.showUpdatePledgeError()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+
+        this.viewModel.outputs.showUpdatePledgeSuccess()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated() }
+
         this.viewModel.outputs.showUpdatePaymentError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -392,6 +414,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         increase_pledge.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
+
+        RxView.clicks(update_pledge_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.updatePledgeButtonClicked() }
     }
 
     override fun onDetach() {

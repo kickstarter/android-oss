@@ -34,6 +34,7 @@
   <string name="Are_you_sure" formatted="false">Êtes-vous certain ?</string>
   <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">Étes-vous certain de vouloir annuler votre engagement de %{amount} pour le projet %{project_name} ?</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Êtes-vous certain de vouloir supprimer cette carte de vos moyens de paiement ?</string>
+  <string name="As_of_pledge_date" formatted="false">As of %{pledge_date}</string>
   <string name="Ask_me_anything" formatted="false">Posez-moi une question !</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Plus que %{time}%{units} pour regarder cette diffusion</string>
   <string name="Back" formatted="false">Retour</string>
@@ -75,6 +76,7 @@ contributeurs</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Repassez plus tard pour suivre la préparation de votre exportation.</string>
   <string name="Check_your_payment_details" formatted="false">Vérifiez vos coordonnées bancaires</string>
+  <string name="Choose_another_reward" formatted="false">Choose another reward</string>
   <string name="Chooses_location_for_shipping" formatted="false">Sélectionne %{location} pour la livraison.</string>
   <string name="Close_live_stream" formatted="false">Fermer la diffusion en direct</string>
   <string name="Close_project" formatted="false">Fermer le projet</string>
@@ -85,9 +87,11 @@ contributeurs</string>
   <string name="Collections" formatted="false">Collections</string>
   <string name="Comment_reply_digest" formatted="false">Résumé des réponses aux commentaires</string>
   <string name="Complete_payment" formatted="false">Payer</string>
+  <string name="Confirm" formatted="false">Confirmer</string>
   <string name="Confirm_password" formatted="false">Confirmer le nouveau mot de passe</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>
   <string name="Contact_creator" formatted="false">Contacter le créateur</string>
+  <string name="Content_isnt_loading_right_now" formatted="false">Échec de chargement du contenu.</string>
   <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Impossible de charger ce contenu.\n
  Cliquez pour réessayer.</string>
   <string name="Continue" formatted="false">Continuer</string>
@@ -150,6 +154,7 @@ contributeurs</string>
   <string name="Ending_in_last_four" formatted="false">Finissant par %{last_four}</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
+  <string name="Estimated_delivery_colon" formatted="false">Livraison prévue :</string>
   <string name="Estimated_delivery_of" formatted="false">Livraison prévue le</string>
   <string name="Expands_subcategories" formatted="false">Développe les sous-catégories.</string>
   <string name="Expiration" formatted="false">Expiration</string>
@@ -158,6 +163,7 @@ contributeurs</string>
   <string name="Explore" formatted="false">Explorer</string>
   <string name="Explore_creative_projects" formatted="false">Découvrez des projets créatifs</string>
   <string name="Explore_projects" formatted="false">Découvrir des projets</string>
+  <string name="Explore_projects_we_love" formatted="false">Explore projects we love</string>
   <string name="Facebook_login_disclaimer" formatted="false">Si vous vous connectez avec Facebook, nous importerons votre nom et votre photo de profil. Nous accéderons aussi à votre liste d\'amis pour vous permettre de suivre vos connaissances sur Kickstarter. Nous ne publierons jamais sur Facebook sans votre autorisation.</string>
   <string name="Facebook_login_disclaimer_update" formatted="false">Lorsque vous vous connectez avec Facebook, votre nom, votre photo de profil et votre liste d\'amis seront importés.</string>
   <string name="Facebook_reconnect" formatted="false">Veuillez vous reconnecter.</string>
@@ -227,6 +233,7 @@ contributeurs</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on &lt;b>%{project_deadline}&lt;/b>.</string>
   <string name="If_you_turn_following_off" formatted="false">Si vous désactivez les fonctionnalités de suivi, vous ne pourrez pas vous abonner aux activités des autres et plus personne ne pourra suivre les vôtres. Votre profil sera déconnecté de tous vos abonnés. Cette action ne pourra pas être annulée.</string>
   <string name="If_your_profile_is_private" formatted="false">Si votre profil est privé, seuls votre nom et votre photo seront visibles.</string>
   <string name="If_your_profile_is_public" formatted="false">Si votre profil n\'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.</string>
@@ -305,7 +312,7 @@ n\'ont rien soutenu.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Pas de rediffusion possible pour cette diffusion en direct.</string>
   <string name="No_saved_projects" formatted="false">Pas de projets enregistrés</string>
   <string name="No_unread_messages" formatted="false">Pas de messages non lus</string>
-  <string name="Not_available" formatted="false">Not available</string>
+  <string name="Not_available" formatted="false">Indisponible</string>
   <string name="Not_delivered" formatted="false">Non distribué</string>
   <string name="Not_followed" formatted="false">Non abonné</string>
   <string name="Not_now" formatted="false">Pas maintenant</string>
@@ -334,6 +341,7 @@ n\'ont rien soutenu.</string>
   <string name="Password_visibility" formatted="false">Visibilité du mot de passe</string>
   <string name="Passwords_matching_message" formatted="false">Le nouveau mot de passe doit être identique.</string>
   <string name="Past_live_stream" formatted="false">Diffusion en direct passée</string>
+  <string name="Payment_method" formatted="false">Moyen de paiement </string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Le moyen de paiement a bien été débité.</string>
   <string name="Payment_methods" formatted="false">Moyens de paiement </string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Veuillez saisir un montant de %{amount} ou moins.</string>
@@ -344,6 +352,7 @@ n\'ont rien soutenu.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Veuillez vous connecter ou vous inscrire pour vous abonner à cette diffusion en direct.</string>
   <string name="Pledge" formatted="false">Engagement :</string>
   <string name="Pledge_activity" formatted="false">Mes engagements</string>
+  <string name="Pledge_amount" formatted="false">Montant engagé</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
   <string name="Pledge_to_projects_and_view_all_your_saved_and_backed_projects_in_one_place" formatted="false">Soutenez des projets et consultez la liste de vos projets enregistrés et soutenus.</string>
   <string name="Pledge_to_your_favorites_then_view_all_the_projects" formatted="false">Engagez-vous à soutenir vos préférés, puis redécouvrez-les tous ici.</string>
@@ -434,6 +443,7 @@ n\'ont rien soutenu.</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
   <string name="Select_this_reward_instead" formatted="false">Choisir cette récompense</string>
   <string name="Selected" formatted="false">Sélectionné</string>
+  <string name="Selected_reward" formatted="false">Récompense sélectionnée</string>
   <string name="Send" formatted="false">Envoyer</string>
   <string name="Send_verfication_email" formatted="false">Envoyer un e-mail de vérification</string>
   <string name="Share" formatted="false">Partager</string>
@@ -445,7 +455,9 @@ n\'ont rien soutenu.</string>
   <string name="Share_update" formatted="false">Partager</string>
   <string name="Shipping" formatted="false">Expédition</string>
   <string name="Shipping_addresses" formatted="false">Adresses de livraison</string>
+  <string name="Shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Ships_to" formatted="false">Livraison :</string>
+  <string name="Ships_to_shipping_summary" formatted="false">Pays de livraison : %{shipping_summary}</string>
   <string name="Show_me_projects" formatted="false">Montrez-moi des projets</string>
   <string name="Show_password" formatted="false">Afficher le mot de passe</string>
   <string name="Shows_list_of_subcategories" formatted="false">Affiche la liste des sous-catégories.</string>
@@ -493,6 +505,7 @@ n\'ont rien soutenu.</string>
   <string name="Top_ten_pledge_sources" formatted="false">Vos 10 principales sources de contributions</string>
   <string name="Top_ten_rewards" formatted="false">Les 10 récompenses qui ont le plus de succès</string>
   <string name="Total" formatted="false">Total</string>
+  <string name="Total_amount" formatted="false">Montant total</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
   <string name="Twice_a_day_summary" formatted="false">Deux fois par jour</string>
   <string name="Unable_to_request" formatted="false">Demande de données impossible.</string>
@@ -519,6 +532,7 @@ n\'ont rien soutenu.</string>
   <string name="Watch_live" formatted="false">Regarder en direct</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Pas de résultats pour « %{search_term} ».</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">Impossible de traiter votre engagement.</string>
+  <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">We don’t allow cancelations that will cause a project to fall short of its goal within the last 24 hours.</string>
   <string name="We_think_youll_like_these_too" formatted="false">D\'autres projets qui pourraient vous plaire</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">À l\'interne, nous nous servons de vos activités pour vous faire des recommandations. Si vous ne souhaitez pas participer, nous vous invitons à désactiver vos recommandations.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">Échec de l\'envoi. Veuillez vérifier l\'orthographe de votre adresse e-mail.</string>
@@ -533,6 +547,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Lorsque les fonctionnalités de suivi sont activées, vous pouvez vous abonner aux activités des autres, qui pourront à leur tour s\'abonner aux vôtres. Pour supprimer définitivement ces données, il vous suffit de désactiver les fonctionnalités de suivi.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.</string>
   <string name="Write_a_bio" formatted="false">Une petite biographie d\'une phrase ou deux.</string>
+  <string name="Yes_cancel_it" formatted="false">Yes, cancel it</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Oui, annuler mon engagement</string>
   <string name="Yes_change_currency" formatted="false">Oui, changer de devise</string>
   <string name="Yes_remove" formatted="false">Oui, supprimer</string>
@@ -564,6 +579,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Vous êtes connecté par Facebook (%{email}). Si vous souhaitez modifier vos identifiants Kickstarter, veuillez définir le mot de passe de ce compte.</string>
   <string name="Youre_offline" formatted="false">Vous êtes hors ligne. Dès que votre appareil se sera reconnecté, naviguez dans l\'application pour la rafraîchir.</string>
   <string name="Youve_canceled_your_pledge" formatted="false">Vous avez annulé votre engagement.</string>
+  <string name="Youve_canceled_your_pledge_of_pledge_amount_for_project_name" formatted="false">You’ve canceled your pledge of &lt;b>%{pledge_amount}&lt;/b> for &lt;b>%{project_name}&lt;/b>.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Vous vous êtes engagé à soutenir ce projet et sa campagne de financement n\'est pas terminée.</string>
   <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">Votre engagement de %{amount} en soutien du projet %{project_name} a bien été mis à jour. Si le créateur atteint son objectif de financement, votre carte sera débitée le %{project_deadline}. Veuillez consulter votre messagerie pour plus d\'informations.</string>
   <string name="Zip_code" formatted="false">Code postal</string>
@@ -1464,6 +1480,7 @@ projets enregistrés</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\nprojets enregistrés</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Fermer</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">Afficher</string>
+  <string name="remaining_count_left_of_limit_count" formatted="false">%{remaining_count} sur %{limit_count}</string>
   <string name="rewards_info_all_gone" formatted="false">Épuisé</string>
   <string name="rewards_info_backer_count_backers_few" formatted="false">%{backer_count} contributeurs</string>
   <string name="rewards_info_backer_count_backers_many" formatted="false">%{backer_count} contributeurs</string>

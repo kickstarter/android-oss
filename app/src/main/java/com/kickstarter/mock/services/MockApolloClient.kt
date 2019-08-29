@@ -55,6 +55,10 @@ open class MockApolloClient : ApolloClientType {
                 "12345")))
     }
 
+    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+        return Observable.just(true)
+    }
+
     override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
         return Observable.just(true)
     }

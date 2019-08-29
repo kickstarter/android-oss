@@ -67,6 +67,9 @@ interface PledgeFragmentViewModel {
 
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
+
+        /** Call when user clicks the update pledge button. */
+        fun updatePledgeButtonClicked()
     }
 
     interface Outputs {
@@ -178,6 +181,12 @@ interface PledgeFragmentViewModel {
         /**  Emits when the update payment source mutation was successful. */
         fun showUpdatePaymentSuccess(): Observable<Void>
 
+        /** Emits when the update pledge call was unsuccessful. */
+        fun showUpdatePledgeError(): Observable<Void>
+
+        /** Emits when the update pledge call was successful. */
+        fun showUpdatePledgeSuccess(): Observable<Void>
+
         /** Emits a boolean determining if the reward snapshot should be hidden. */
         fun snapshotIsGone(): Observable<Boolean>
 
@@ -199,8 +208,14 @@ interface PledgeFragmentViewModel {
         /** Emits the color resource ID of the total amount. */
         fun totalTextColor(): Observable<Int>
 
+        /** Emits a boolean determining if the update pledge button should be enabled. */
+        fun updatePledgeButtonIsEnabled(): Observable<Boolean>
+
         /** Emits a boolean determining if the update pledge button should be hidden. */
         fun updatePledgeButtonIsGone(): Observable<Boolean>
+
+        /** Emits a boolean determining if the update pledge progress bar should be hidden. */
+        fun updatePledgeProgressIsGone(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -218,6 +233,7 @@ interface PledgeFragmentViewModel {
         private val pledgeInput = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
+        private val updatePledgeButtonClicked = PublishSubject.create<Void>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
@@ -255,6 +271,8 @@ interface PledgeFragmentViewModel {
         private val showPledgeError = PublishSubject.create<Void>()
         private val showUpdatePaymentError = PublishSubject.create<Void>()
         private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
+        private val showUpdatePledgeError = PublishSubject.create<Void>()
+        private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val snapshotIsGone = BehaviorSubject.create<Boolean>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
@@ -262,7 +280,9 @@ interface PledgeFragmentViewModel {
         private val totalAmount = BehaviorSubject.create<SpannableString>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
         private val totalTextColor = BehaviorSubject.create<Int>()
+        private val updatePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val updatePledgeButtonIsGone = BehaviorSubject.create<Boolean>()
+        private val updatePledgeProgressIsGone = BehaviorSubject.create<Boolean>()
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
@@ -305,7 +325,6 @@ interface PledgeFragmentViewModel {
                     .filter { BackingUtils.isBacked(it.first, it.second) }
                     .map { it.first.backing() }
                     .ofType(Backing::class.java)
-                    .distinctUntilChanged()
 
             // Mini reward card
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
@@ -581,6 +600,79 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummaryLocation)
 
+            val updatingPledge = pledgeReason
+                    .map { it == PledgeReason.UPDATE_PLEDGE }
+
+            val updatingReward = pledgeReason
+                    .map { it == PledgeReason.UPDATE_REWARD }
+
+            val shippingRuleUpdated = this.selectedShippingRule
+                    .compose<Pair<ShippingRule, Boolean>>(combineLatestPair(updatingPledge))
+                    .filter { it.second }
+                    .map { it.first }
+                    .compose<Pair<ShippingRule, ShippingRule>>(combineLatestPair(backingShippingRule))
+                    .map { it.first != it.second }
+                    .startWith(false)
+
+            val amountUpdated = pledgeInput
+                    .compose<Pair<Double, Boolean>>(combineLatestPair(updatingPledge))
+                    .filter { it.second }
+                    .map { it.first }
+                    .compose<Pair<Double, Double>>(combineLatestPair(backingAmount))
+                    .map { it.first != it.second }
+                    .startWith(false)
+
+            val shippingOrAmountChanged = shippingRuleUpdated
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(amountUpdated))
+                    .map { it.first || it.second }
+
+            Observable.merge(updatingReward, shippingOrAmountChanged.skip(1))
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.updatePledgeButtonIsEnabled)
+
+            val validUpdatePledgeClick = pledgeLessThanMinimum
+                    .compose<Pair<Boolean, Void>>(takePairWhen(this.updatePledgeButtonClicked))
+                    .filter { BooleanUtils.isFalse(it.first) }
+
+            val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
+
+            val backingForMutation = project
+                    .filter { it.isBacking }
+                    .map { it.backing() }
+                    .ofType(Backing::class.java)
+                    .distinctUntilChanged()
+
+            val updateBackingNotification = Observable.combineLatest(backingForMutation,
+                    total.map { it.toString() },
+                    location.map { it?.id()?.toString() },
+                    reward)
+            { b, a, l, r -> UpdateBacking(b, a, l, r) }
+                    .compose<UpdateBacking>(takeWhen(validUpdatePledgeClick))
+                    .switchMap {
+                        this.apolloClient.updateBacking(it.backing, it.amount, it.locationId, it.reward)
+                                .doOnSubscribe { this.updatePledgeProgressIsGone.onNext(false) }
+                                .materialize()
+                    }
+                    .share()
+
+            val updateBackingNotificationValues = updateBackingNotification
+                    .compose(values())
+
+            Observable.merge(updateBackingNotification.compose(errors()), updateBackingNotificationValues.filter { BooleanUtils.isFalse(it) })
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.showUpdatePledgeError.onNext(null)
+                        this.updatePledgeProgressIsGone.onNext(true)
+                    }
+
+            updateBackingNotificationValues
+                    .filter { BooleanUtils.isTrue(it) }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePledgeSuccess)
+
             // Payment section
             pledgeReason
                     .map { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
@@ -640,7 +732,7 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startLoginToutActivity)
 
-            val pledgeAttempt = Observable.merge(this.continueButtonClicked, this.pledgeButtonClicked)
+            val pledgeAttempt = Observable.merge(this.continueButtonClicked, this.pledgeButtonClicked, this.updatePledgeButtonClicked)
 
             pledgeLessThanMinimum
                     .compose<Boolean>(takeWhen(pledgeAttempt))
@@ -651,22 +743,20 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showMinimumWarning)
 
-            val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
-
             val validPledgeClick = pledgeLessThanMinimum
                     .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
                     .filter { it.second == PledgeReason.PLEDGE }
                     .map { it.first }
                     .compose<Pair<Boolean, String>>(takePairWhen(this.pledgeButtonClicked))
                     .filter { BooleanUtils.isFalse(it.first) }
-                    .map { it.second }
 
             val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },
-                    validPledgeClick,
+                    this.pledgeButtonClicked,
                     location.map { it?.id()?.toString() },
                     reward)
             { p, a, id, l, r -> CreateBacking(p, a, id, l, r) }
+                    .compose<CreateBacking>(takeWhen(validPledgeClick))
                     .switchMap {
                         this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
@@ -754,6 +844,7 @@ interface PledgeFragmentViewModel {
         }
 
         data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
+        data class UpdateBacking(val backing: Backing, val amount: String, val locationId: String?, val reward: Reward?)
         data class UpdateBackingPayment(val backing: Backing, val paymentSourceId: String)
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
@@ -781,6 +872,8 @@ interface PledgeFragmentViewModel {
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
         override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
+
+        override fun updatePledgeButtonClicked() = this.updatePledgeButtonClicked.onNext(null)
 
         @NonNull
         override fun addedCard(): Observable<Pair<StoredCard, Project>> = this.addedCard
@@ -891,6 +984,12 @@ interface PledgeFragmentViewModel {
         override fun showUpdatePaymentSuccess(): Observable<Void> = this.showUpdatePaymentSuccess
 
         @NonNull
+        override fun showUpdatePledgeError(): Observable<Void> = this.showUpdatePledgeError
+
+        @NonNull
+        override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess
+
+        @NonNull
         override fun snapshotIsGone(): Observable<Boolean> = this.snapshotIsGone
 
         @NonNull
@@ -912,7 +1011,13 @@ interface PledgeFragmentViewModel {
         override fun totalTextColor(): Observable<Int> = this.totalTextColor
 
         @NonNull
+        override fun updatePledgeButtonIsEnabled(): Observable<Boolean> = this.updatePledgeButtonIsEnabled
+
+        @NonNull
         override fun updatePledgeButtonIsGone(): Observable<Boolean> = this.updatePledgeButtonIsGone
+
+        @NonNull
+        override fun updatePledgeProgressIsGone(): Observable<Boolean> = this.updatePledgeProgressIsGone
 
     }
 }

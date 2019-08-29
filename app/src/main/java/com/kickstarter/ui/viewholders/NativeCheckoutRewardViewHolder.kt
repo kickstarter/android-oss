@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.RewardItemDecorator
 import com.kickstarter.libs.utils.RewardUtils
@@ -25,7 +26,7 @@ import com.kickstarter.viewmodels.NativeCheckoutRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
 
-class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?) : KSViewHolder(view) {
+class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean?= false) : KSViewHolder(view) {
 
     interface Delegate {
         fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
@@ -35,7 +36,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     private var viewModel = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
-    private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
     init {
@@ -163,7 +163,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.checkIsInvisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setInvisible(this.view.reward_check, it) }
+                .subscribe { ViewUtils.setInvisible(this.view.reward_check, if (BooleanUtils.isTrue(this.inset)) true else it) }
 
         this.viewModel.outputs.checkTintColor()
                 .compose(bindToLifecycle())
@@ -178,6 +178,10 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.rewardClicked() }
+
+        when {
+            BooleanUtils.isTrue(this.inset) -> this.view.reward_card.setCardBackgroundColor(ContextCompat.getColor(context(), R.color.transparent))
+        }
     }
 
     override fun bindData(data: Any?) {
@@ -201,10 +205,15 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     }
 
     private fun setPledgeButtonVisibility(gone: Boolean) {
-        ViewUtils.setGone(this.view.reward_button_container, gone)
-        when {
-            gone -> ViewUtils.setGone(this.view.reward_button_placeholder, true)
-            else -> ViewUtils.setInvisible(this.view.reward_button_placeholder, true)
+        if (BooleanUtils.isTrue(this.inset)) {
+            ViewUtils.setGone(this.view.reward_button_container, true)
+            ViewUtils.setGone(this.view.reward_button_placeholder, true)
+        } else {
+            ViewUtils.setGone(this.view.reward_button_container, gone)
+            when {
+                gone -> ViewUtils.setGone(this.view.reward_button_placeholder, true)
+                else -> ViewUtils.setInvisible(this.view.reward_button_placeholder, true)
+            }
         }
     }
 

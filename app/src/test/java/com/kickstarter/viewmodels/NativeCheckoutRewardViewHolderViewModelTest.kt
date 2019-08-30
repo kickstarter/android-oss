@@ -276,7 +276,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversionTextRoundsUp_ITUser_prefersUSD() {
+    fun testConversion() {
         // Set user's country to IT.
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.configForITUser())

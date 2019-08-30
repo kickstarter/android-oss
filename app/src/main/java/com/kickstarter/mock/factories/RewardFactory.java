@@ -16,6 +16,7 @@ public final class RewardFactory {
     final String description = "A digital download of the album and documentary.";
     return Reward.builder()
       .backersCount(123)
+      .convertedMinimum(15.0)
       .id(IdFactory.id())
       .description(description)
       .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))

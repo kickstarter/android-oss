@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.content.SharedPreferences
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
@@ -8,6 +9,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
@@ -23,6 +25,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
+import java.net.CookieManager
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
@@ -278,9 +281,11 @@ interface PledgeFragmentViewModel {
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
+        private val cookieManager: CookieManager = environment.cookieManager()
         private val currentConfig = environment.currentConfig()
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
+        private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -739,15 +744,21 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Boolean, String>>(takePairWhen(this.pledgeButtonClicked))
                     .filter { BooleanUtils.isFalse(it.first) }
 
+            // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+            val cookieRefTag = project
+                    .take(1)
+                    .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
+
             val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },
                     this.pledgeButtonClicked,
                     location.map { it?.id()?.toString() },
-                    reward)
-            { p, a, id, l, r -> CreateBacking(p, a, id, l, r) }
+                    reward,
+                    cookieRefTag)
+            { p, a, id, l, r, c -> CreateBacking(p, a, id, l, r, c) }
                     .compose<CreateBacking>(takeWhen(validPledgeClick))
                     .switchMap {
-                        this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward)
+                        this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
                             .materialize()
                     }
@@ -795,7 +806,7 @@ interface PledgeFragmentViewModel {
                     .compose(neverError())
         }
 
-        data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?)
+        data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?, val refTag: RefTag?)
         data class UpdateBacking(val backing: Backing, val amount: String, val locationId: String?, val reward: Reward?)
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)

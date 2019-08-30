@@ -19,6 +19,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
 import rx.Observable
@@ -59,17 +60,21 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?, refTag: RefTag?): Observable<Boolean> {
         return Observable.defer {
-            val ps = PublishSubject.create<Boolean>()
-            service.mutate(CreateBackingMutation.builder()
+            val createBackingMutation = CreateBackingMutation.builder()
                     .projectId(encodeRelayId(project))
                     .amount(amount)
                     .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
                     .paymentSourceId(paymentSourceId)
                     .locationId(locationId?.let { it })
                     .rewardId(reward?.let { encodeRelayId(it) })
-                    .build())
+                    .refParam(refTag?.tag())
+                    .build()
+
+            val ps = PublishSubject.create<Boolean>()
+
+            this.service.mutate(createBackingMutation)
                     .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)

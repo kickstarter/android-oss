@@ -73,6 +73,9 @@ interface ProjectViewModel {
         /** Call when the pledge has been successfully updated. */
         fun pledgeSuccessfullyUpdated()
 
+        /** Call when the reload container is clicked.  */
+        fun reloadProjectContainerClicked()
+
         /** Call when the share button is clicked.  */
         fun shareButtonClicked()
 
@@ -111,9 +114,18 @@ interface ProjectViewModel {
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
 
+        /** Emits a boolean that determines if the project action button container should be visible. */
+        fun projectActionButtonContainerIsGone(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the project action progress bar should be visible. */
+        fun projectActionProgressBarIsGone(): Observable<Boolean>
+
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
         fun projectAndUserCountry(): Observable<Pair<Project, String>>
+
+        /** Emits a boolean that determines if the reload project container should be visible. */
+        fun reloadProjectContainerIsGone(): Observable<Boolean>
 
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment] with an animation. */
         fun revealRewardsFragment(): Observable<Void>
@@ -212,6 +224,7 @@ interface ProjectViewModel {
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
+        private val reloadProjectContainerClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatePaymentClicked = PublishSubject.create<Void>()
         private val updatePledgeClicked = PublishSubject.create<Void>()
@@ -225,7 +238,10 @@ interface ProjectViewModel {
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
         private val prelaunchUrl = PublishSubject.create<String>()
+        private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
+        private val projectActionProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
@@ -293,7 +309,7 @@ interface ProjectViewModel {
                     .switchMap { this.toggleProjectSave(it) }
                     .share()
 
-            val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyUpdated )
+            val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyUpdated)
 
             val refreshedProject = initialProject
                     .compose(takeWhen<Project, Void>(refreshProjectEvent))
@@ -315,11 +331,30 @@ interface ProjectViewModel {
                     .switchMap { this.saveProject(it) }
                     .share()
 
+            val projectNotification = initialProject
+                    .compose(takeWhen<Project, Void>(this.reloadProjectContainerClicked))
+                    .switchMap { project ->
+                        this.client.fetchProject(project)
+                                .doOnSubscribe {
+                                    this.projectActionProgressBarIsGone.onNext(false)
+                                    this.reloadProjectContainerIsGone.onNext(true)
+                                }
+                                .materialize()
+                    }
+                    .share()
+
+            val projectValues = projectNotification
+                    .compose(values())
+
+            val projectErrors = projectNotification
+                    .compose(errors())
+
             val currentProject = Observable.merge(
                     initialProject,
                     refreshedProject,
                     projectOnUserChangeSave,
-                    savedProjectOnLoginSuccess
+                    savedProjectOnLoginSuccess,
+                    projectValues
             )
 
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
@@ -386,6 +421,26 @@ interface ProjectViewModel {
                     .compose<Pair<Project, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map<Project> { it.first }
+
+            val rewardsArePresent = nativeCheckoutProject
+                    .map { it.hasRewards() }
+                    .takeUntil(this.expandPledgeSheet)
+
+            val hideReloadContainer = Observable.merge(projectErrors.map { false }, rewardsArePresent)
+
+            hideReloadContainer
+                    .compose(bindToLifecycle())
+                    .subscribe(this.reloadProjectContainerIsGone)
+
+            nativeCheckoutProject
+                    .map { true }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.projectActionProgressBarIsGone)
+
+            rewardsArePresent
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.projectActionButtonContainerIsGone)
 
             nativeCheckoutProject
                     .filter { it.isBacking && it.hasRewards() }
@@ -653,6 +708,10 @@ interface ProjectViewModel {
             this.updatesTextViewClicked()
         }
 
+        override fun reloadProjectContainerClicked() {
+            this.reloadProjectContainerClicked.onNext(null)
+        }
+
         override fun shareButtonClicked() {
             this.shareButtonClicked.onNext(null)
         }
@@ -696,7 +755,16 @@ interface ProjectViewModel {
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
+        override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
+
+        @NonNull
+        override fun projectActionProgressBarIsGone(): Observable<Boolean> = this.projectActionProgressBarIsGone
+
+        @NonNull
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry
+
+        @NonNull
+        override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone
 
         @NonNull
         override fun revealRewardsFragment(): Observable<Void> = this.revealRewardsFragment

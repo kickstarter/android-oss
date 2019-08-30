@@ -127,6 +127,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                     this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
                 }
 
+                findViewById<View>(R.id.pledge_sheet_retry_container).setOnClickListener {
+                    this.viewModel.inputs.reloadProjectContainerClicked()
+                }
+
             }
             else -> {
                 project_action_buttons.visibility = when {
@@ -307,6 +311,21 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { openProjectAndFinish(it) }
 
+        this.viewModel.outputs.projectActionButtonContainerIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(action_buttons, it) }
+
+        this.viewModel.outputs.projectActionProgressBarIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(findViewById(R.id.pledge_sheet_progress_bar), it) }
+
+        this.viewModel.outputs.reloadProjectContainerIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(findViewById(R.id.pledge_sheet_retry_container), it) }
+
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -354,6 +373,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         pledgeFragment?.cardAdded(storedCard)
         supportFragmentManager.popBackStack()
     }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {}
 
     override fun exitTransition(): Pair<Int, Int>? {
         return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right)

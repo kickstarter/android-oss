@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    android:id="@+id/pledge_sheet_retry_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/click_indicator_light"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="@dimen/grid_4"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:background="@drawable/circle_black_alpha"
+      android:contentDescription="@null"
+      android:padding="@dimen/grid_3_half"
+      android:src="@drawable/ic_retry" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:text="@string/Content_isnt_loading_right_now" />
+
+  </LinearLayout>
+
+  <ProgressBar
+    android:id="@+id/pledge_sheet_progress_bar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="@dimen/grid_4" />
+</FrameLayout>

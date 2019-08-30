@@ -54,14 +54,22 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
             val allowedCard = this.cardAndProject
                     .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
 
-            allowedCard
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(isBackingPaymentSource))
-                    .map { it.first && !it.second }
+            val isBackingPaymentAndAllowed = isBackingPaymentSource
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(allowedCard))
+
+            isBackingPaymentAndAllowed
+                    .map { !it.first && it.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonEnabled)
 
-            allowedCard
-                    .map { if (it) R.string.Select else R.string.Not_available }
+            isBackingPaymentAndAllowed
+                    .map {
+                        when {
+                            it.first -> R.string.Selected
+                            it.second -> R.string.Select
+                            else -> R.string.Not_available
+                        }
+                    }
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonCTA)
 

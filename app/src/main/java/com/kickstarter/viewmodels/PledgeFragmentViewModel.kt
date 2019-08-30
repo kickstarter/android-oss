@@ -785,11 +785,6 @@ interface PledgeFragmentViewModel {
                     .filter { it.first == PledgeReason.UPDATE_PAYMENT }
                     .map { it.second }
 
-            val backingForMutation = project
-                    .filter { it.isBacking }
-                    .map { it.backing() }
-                    .ofType(Backing::class.java)
-
             val updatePaymentNotification = Observable.combineLatest(backingForMutation,
                     updatePaymentClick)
             { b, id -> UpdateBackingPayment(b, id) }
@@ -807,7 +802,7 @@ interface PledgeFragmentViewModel {
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe{
-                        this.showPledgeError.onNext(null)
+                        this.showUpdatePaymentError.onNext(null)
                         this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
                     }
 

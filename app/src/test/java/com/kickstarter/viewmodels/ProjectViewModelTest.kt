@@ -678,7 +678,21 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowUpdatePledgeSuccess() {
+    fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.projectTest.assertValueCount(2)
+
+        this.vm.inputs.pledgePaymentSuccessfullyUpdated()
+        this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.projectTest.assertValueCount(3)
+    }
+
+    @Test
+    fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project

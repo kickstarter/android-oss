@@ -4,6 +4,8 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.PaymentSourceFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import org.junit.Test
@@ -57,6 +59,49 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.buttonCTA.assertValue(R.string.Not_available)
     }
 
+
+    @Test
+    fun testButtonCTA_whenCardIsBackingPaymentSource() {
+        setUpEnvironment(environment())
+        val visa = StoredCardFactory.visa()
+
+        val paymentSource = PaymentSourceFactory.visa()
+                .toBuilder()
+                .id(visa.id())
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(visa, project))
+
+        this.buttonCTA.assertValue(R.string.Selected)
+    }
+
+    @Test
+    fun testButtonCTA_whenCardIsNotBackingPaymentSource() {
+        setUpEnvironment(environment())
+        val discover = StoredCardFactory.discoverCard()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(PaymentSourceFactory.visa())
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(discover, project))
+
+        this.buttonCTA.assertValue(R.string.Select)
+    }
+
     @Test
     fun testButtonEnabled_whenCardIsAccepted() {
         setUpEnvironment(environment())
@@ -76,6 +121,48 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
 
         this.buttonEnabled.assertValue(false)
+    }
+
+    @Test
+    fun testButtonEnabled_whenCardIsBackingPaymentSource() {
+        setUpEnvironment(environment())
+        val visa = StoredCardFactory.visa()
+
+        val paymentSource = PaymentSourceFactory.visa()
+                .toBuilder()
+                .id(visa.id())
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(visa, project))
+
+        this.buttonEnabled.assertValue(false)
+    }
+
+    @Test
+    fun testButtonEnabled_whenCardNotBackingPaymentSource() {
+        setUpEnvironment(environment())
+        val discover = StoredCardFactory.discoverCard()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(PaymentSourceFactory.visa())
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(discover, project))
+
+        this.buttonEnabled.assertValue(true)
     }
 
     @Test

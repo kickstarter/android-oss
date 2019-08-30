@@ -72,7 +72,7 @@ import kotlin.math.min
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
 
     interface PledgeDelegate {
-        fun paymentMethodSuccessfullyUpdated()
+        fun pledgePaymentSuccessfullyUpdated()
         fun pledgeSuccessfullyUpdated()
     }
 
@@ -379,7 +379,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showUpdatePaymentSuccess()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { (activity as PledgeDelegate?)?.paymentMethodSuccessfullyUpdated() }
+                .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
 
         this.viewModel.outputs.showMinimumWarning()
                 .compose(observeForUI())
@@ -510,7 +510,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun setUpCardsAdapter() {
         cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_3_half)))
     }
 
     private fun setUpShippingAdapter() {

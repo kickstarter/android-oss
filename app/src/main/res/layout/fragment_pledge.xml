@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.core.widget.NestedScrollView
   android:id="@+id/pledge_root"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -152,4 +152,4 @@
     </LinearLayout>
 
   </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

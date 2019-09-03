@@ -432,24 +432,16 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testBackingDetailsOutputs() {
+    fun testBackingDetails_whenProjectNotBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.backingDetailsIsVisible.assertValue(false)
         this.backingDetails.assertNoValues()
+    }
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
-        this.backingDetailsIsVisible.assertValue(false)
-        this.backingDetails.assertNoValues()
-
-        val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
-        this.backingDetailsIsVisible.assertValuesAndClear(false)
-        this.backingDetails.assertNoValues()
-
+    @Test
+    fun testBackingDetails_whenShippableRewardBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
         val reward = RewardFactory.reward()
                 .toBuilder()
                 .id(4)
@@ -458,6 +450,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .amount(34.0)
+                .shippingAmount(4f)
                 .rewardId(4)
                 .build()
 
@@ -468,37 +461,26 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
-        this.backingDetails.assertValuesAndClear("$20 • Digital Bundle")
+        this.backingDetails.assertValuesAndClear("$34 • Digital Bundle")
         this.backingDetailsIsVisible.assertValue(true)
+    }
 
+    @Test
+    fun testBackingDetails_whenDigitalReward() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
         val noRewardBacking = BackingFactory.backing()
                 .toBuilder()
                 .amount(13.5)
                 .reward(RewardFactory.noReward())
                 .build()
 
-        val backedProjectdNoReward = ProjectFactory.backedProject()
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(noRewardBacking)
                 .build()
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProjectdNoReward))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
         this.backingDetails.assertValuesAndClear("$13.50")
-        this.backingDetailsIsVisible.assertValue(true)
-
-        val noRewardWholeBacking = BackingFactory.backing()
-                .toBuilder()
-                .amount(15.0)
-                .reward(RewardFactory.noReward())
-                .build()
-
-        val backedProjectNoRewardWhole = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(noRewardWholeBacking)
-                .build()
-
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProjectNoRewardWhole))
-        this.backingDetails.assertValue("$15")
         this.backingDetailsIsVisible.assertValue(true)
     }
 

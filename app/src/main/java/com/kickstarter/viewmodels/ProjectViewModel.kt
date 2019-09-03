@@ -795,22 +795,16 @@ interface ProjectViewModel {
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
         private fun backingDetails(project: Project): String {
-            project.backing()?.let { backing ->
+            return project.backing()?.let { backing ->
                 val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
                 val title = reward?.let { "• ${it.title()}" } ?: ""
 
-                val backingAmount = reward?.let {
-                    when {
-                        RewardUtils.isReward(it) -> it.minimum()
-                        else -> backing.amount()
-                    }
-                } ?: backing.amount()
+                val backingAmount = backing.amount()
 
                 val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
                 return "$formattedAmount $title".trim()
-            }
-            return ""
+            } ?: ""
         }
 
         private fun saveProject(project: Project): Observable<Project> {

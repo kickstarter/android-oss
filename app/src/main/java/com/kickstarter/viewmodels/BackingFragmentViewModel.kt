@@ -181,7 +181,7 @@ interface BackingFragmentViewModel {
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
             paymentSource
-                    .map { source -> source.expirationDate()?.let { simpleDateFormat.format(it) } }
+                    .map { source -> source.expirationDate()?.let { simpleDateFormat.format(it) }?: "" }
                     .compose(bindToLifecycle())
                     .subscribe(this.cardExpiration)
 

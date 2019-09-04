@@ -113,7 +113,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
         this.viewModel.inputs.project(project)
     }
 
-    fun pledgeSuccessfullyCancelled() {
+    fun pledgeSuccessfullyUpdated() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 

@@ -7,7 +7,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Backing
-import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -73,10 +72,7 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonCTA)
 
-            allowedCard
-                    .filter { !it }
-                    .compose<Pair<Boolean, Project>>(combineLatestPair(project))
-                    .map { it.second }
+            project
                     .map { it.location()?.expandedCountry()?: "" }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectCountry)

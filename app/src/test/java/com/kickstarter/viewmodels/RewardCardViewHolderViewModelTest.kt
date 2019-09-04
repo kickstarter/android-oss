@@ -234,25 +234,14 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectCountry_whenCardIsAccepted() {
+    fun testProjectCountry() {
         setUpEnvironment(environment())
 
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
-        this.projectCountry.assertNoValues()
-    }
-
-    @Test
-    fun testProjectCountry_whenCardIsNotAccepted() {
-        setUpEnvironment(environment())
-
-        val creditCard = StoredCardFactory.discoverCard()
-
-        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
-
-        this.projectCountry.assertValue("Mexico")
+        this.projectCountry.assertValue("United States")
     }
 
 }

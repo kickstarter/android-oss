@@ -37,6 +37,7 @@ public final class ProjectFactory {
       .fxRate(1.0f)
       .goal(100.0f)
       .id(IdFactory.id())
+      .location(LocationFactory.unitedStates())
       .name("Some Name")
       .pledged(50.0f)
       .photo(PhotoFactory.photo())

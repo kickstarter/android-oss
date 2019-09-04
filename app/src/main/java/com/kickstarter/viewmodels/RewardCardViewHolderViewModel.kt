@@ -50,18 +50,18 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .compose<Pair<Backing?, StoredCard>>(combineLatestPair(card))
                     .map { backingAndCard -> backingAndCard.first?.let { b -> b.paymentSource()?.let { it.id() == backingAndCard.second.id() } }?: false }
 
-            val allowedCard = this.cardAndProject
+            val allowedCardType = this.cardAndProject
                     .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
 
-            val isBackingPaymentAndAllowed = isBackingPaymentSource
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(allowedCard))
+            val isBackingPaymentAndAllowedType = isBackingPaymentSource
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(allowedCardType))
 
-            isBackingPaymentAndAllowed
+            isBackingPaymentAndAllowedType
                     .map { !it.first && it.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonEnabled)
 
-            isBackingPaymentAndAllowed
+            isBackingPaymentAndAllowedType
                     .map {
                         when {
                             it.first -> R.string.Selected
@@ -77,7 +77,7 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.projectCountry)
 
-            allowedCard
+            allowedCardType
                     .map { BooleanUtils.negate(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.notAvailableCopyIsVisible)

@@ -67,6 +67,9 @@ interface ProjectViewModel {
         /** Call when the play video button is clicked.  */
         fun playVideoButtonClicked()
 
+        /** Call when the pledge's payment method has been successfully updated. */
+        fun pledgePaymentSuccessfullyUpdated()
+
         /** Call when the pledge has been successfully canceled.  */
         fun pledgeSuccessfullyCancelled()
 
@@ -222,6 +225,7 @@ interface ProjectViewModel {
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val playVideoButtonClicked = PublishSubject.create<Void>()
+        private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
         private val reloadProjectContainerClicked = PublishSubject.create<Void>()
@@ -309,15 +313,16 @@ interface ProjectViewModel {
                     .switchMap { this.toggleProjectSave(it) }
                     .share()
 
-            val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyUpdated)
+            val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled,
+                    this.pledgeSuccessfullyUpdated,
+                    this.pledgePaymentSuccessfullyUpdated)
 
             val refreshedProject = initialProject
                     .compose(takeWhen<Project, Void>(refreshProjectEvent))
-                    .switchMap { project ->
-                        this.client.fetchProject(project)
+                    .switchMap {
+                        this.client.fetchProject(it)
                                 .compose(neverError())
                     }
-                    .share()
 
             loggedOutUserOnHeartClick
                     .compose(ignoreValues())
@@ -360,47 +365,58 @@ interface ProjectViewModel {
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
                     .compose(ignoreValues())
+                    .compose(bindToLifecycle())
                     .subscribe(this.showSavedPrompt)
 
             currentProject
                     .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
+                    .compose(bindToLifecycle())
                     .subscribe(this.projectAndUserCountry)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.showShareSheet)
 
             currentProject
                     .compose<Project>(takeWhen(this.blurbTextViewClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startCampaignWebViewActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.backProjectButtonClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startCheckoutActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.creatorNameTextViewClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startCreatorBioWebViewActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.commentsTextViewClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startCommentsActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.managePledgeButtonClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startManagePledgeActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.updatesTextViewClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startProjectUpdatesActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.playVideoButtonClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startVideoActivity)
 
             Observable.combineLatest<Project, User, Pair<Project, User>>(currentProject, this.currentUser.observable())
             { project, user -> Pair.create(project, user) }
                     .compose<Pair<Project, User>>(takeWhen(this.viewPledgeButtonClicked))
+                    .compose(bindToLifecycle())
                     .subscribe(this.startBackingActivity)
 
             this.onGlobalLayout
@@ -444,13 +460,13 @@ interface ProjectViewModel {
 
             nativeCheckoutProject
                     .filter { it.isBacking && it.hasRewards() }
-                    .distinctUntilChanged()
+                    .distinctUntilChanged { old, new -> old.backing() == new.backing() }
                     .compose(bindToLifecycle())
                     .subscribe(this.showBackingFragment)
 
             nativeCheckoutProject
                     .filter { !it.isBacking && it.hasRewards() }
-                    .distinctUntilChanged()
+                    .distinctUntilChanged { old, new -> old.backing() == new.backing() }
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
@@ -521,6 +537,10 @@ interface ProjectViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsButtonColor)
+
+            this.pledgePaymentSuccessfullyUpdated
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePledgeSuccess)
 
             this.pledgeSuccessfullyCancelled
                     .compose(bindToLifecycle())
@@ -650,6 +670,10 @@ interface ProjectViewModel {
 
         override fun playVideoButtonClicked() {
             this.playVideoButtonClicked.onNext(null)
+        }
+
+        override fun pledgePaymentSuccessfullyUpdated() {
+            this.pledgePaymentSuccessfullyUpdated.onNext(null)
         }
 
         override fun pledgeSuccessfullyCancelled() {

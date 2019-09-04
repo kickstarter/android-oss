@@ -62,6 +62,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val showNewCardFragment = TestSubscriber<Project>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
+    private val showUpdatePaymentError = TestSubscriber<Void>()
+    private val showUpdatePaymentSuccess = TestSubscriber<Void>()
     private val showUpdatePledgeError = TestSubscriber<Void>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val snapshotIsGone = TestSubscriber<Boolean>()
@@ -115,6 +117,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
+        this.vm.outputs.showUpdatePaymentError().subscribe(this.showUpdatePaymentError)
+        this.vm.outputs.showUpdatePaymentSuccess().subscribe(this.showUpdatePaymentSuccess)
         this.vm.outputs.showUpdatePledgeError().subscribe(this.showUpdatePledgeError)
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.snapshotIsGone().subscribe(this.snapshotIsGone)
@@ -1095,6 +1099,40 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.showNewCardFragment.assertValue(project)
+    }
+
+    @Test
+    fun testShowUpdatePaymentError() {
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
+                        return Observable.just(false)
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+
+        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showUpdatePaymentError.assertValueCount(1)
+    }
+
+    @Test
+    fun testShowUpdatePaymentSuccess() {
+        setUpEnvironment(environment(), RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+
+        this.showUpdatePaymentSuccess.assertValueCount(1)
     }
 
     @Test

@@ -360,6 +360,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         return super.dispatchTouchEvent(event)
     }
 
+    override fun pledgePaymentSuccessfullyUpdated() {
+        this.viewModel.inputs.pledgePaymentSuccessfullyUpdated()
+    }
+
     override fun pledgeSuccessfullyCancelled() {
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
     }
@@ -564,7 +568,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun showUpdatePledgeSuccess() {
         clearFragmentBackStack()
         val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        backingFragment.pledgeSuccessfullyCancelled()
+        backingFragment.pledgeSuccessfullyUpdated()
     }
 
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {

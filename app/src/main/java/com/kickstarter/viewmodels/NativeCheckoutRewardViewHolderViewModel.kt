@@ -267,7 +267,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
             if (BackingUtils.isBacked(project, reward)) {
-                return true
+                return false
             }
 
             return RewardUtils.isAvailable(project, reward)

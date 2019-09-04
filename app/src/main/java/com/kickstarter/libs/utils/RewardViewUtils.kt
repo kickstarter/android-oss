@@ -33,7 +33,7 @@ object RewardViewUtils {
     @ColorRes
     fun pledgeButtonColor(project: Project, reward: Reward): Int {
         return if (BackingUtils.isBacked(project, reward) && project.isLive) {
-            R.color.button_pledge_manage
+            R.color.button_pledge_ended
         } else if (!project.isLive) {
             R.color.button_pledge_ended
         } else {
@@ -46,16 +46,10 @@ object RewardViewUtils {
      */
     @StringRes
     fun pledgeButtonText(project: Project, reward: Reward): Int {
-        return if (BackingUtils.isBacked(project, reward) && project.isLive) {
-            R.string.Manage_your_pledge
-        } else if (BackingUtils.isBacked(project, reward) && !project.isLive) {
-            R.string.View_your_pledge
-        } else if (RewardUtils.isAvailable(project, reward) && project.isBacking) {
-            R.string.Select_this_instead
-        } else if (!RewardUtils.isAvailable(project, reward)) {
-            R.string.No_longer_available
-        } else {
-            R.string.Select
+        return when {
+            BackingUtils.isBacked(project, reward) -> R.string.Selected
+            RewardUtils.isAvailable(project, reward) -> R.string.Select
+            else -> R.string.No_longer_available
         }
     }
 

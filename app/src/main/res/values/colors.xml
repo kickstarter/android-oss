@@ -13,6 +13,7 @@
   <color name="black">@android:color/black</color>
   <color name="ksr_apricot_500">#FFCBA9</color>
   <color name="ksr_apricot_600">#F0AE81</color>
+  <color name="ksr_cobalt_200">#96a8fb</color>
   <color name="ksr_cobalt_500">#4C6CF8</color>
   <color name="ksr_cobalt_600">#395AEB</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>

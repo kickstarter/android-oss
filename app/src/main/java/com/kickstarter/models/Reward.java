@@ -34,7 +34,7 @@ public abstract class Reward implements Parcelable, Relay {
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder backersCount(Integer __);
-    public abstract Builder convertedMinimum(Double __);
+    public abstract Builder convertedMinimum(double __);
     public abstract Builder description(String __);
     public abstract Builder endsAt(DateTime __);
     public abstract Builder id(long __);

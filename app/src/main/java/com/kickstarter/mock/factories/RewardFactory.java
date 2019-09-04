@@ -16,7 +16,7 @@ public final class RewardFactory {
     final String description = "A digital download of the album and documentary.";
     return Reward.builder()
       .backersCount(123)
-      .convertedMinimum(15.0)
+      .convertedMinimum(20.0)
       .id(IdFactory.id())
       .description(description)
       .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
@@ -81,6 +81,7 @@ public final class RewardFactory {
   public static @NonNull Reward limitReached() {
     return Reward.builder()
       .backersCount(123)
+      .convertedMinimum(20.0)
       .id(IdFactory.id())
       .description("A digital download of the album and documentary.")
       .limit(50)
@@ -101,6 +102,7 @@ public final class RewardFactory {
 
   public static @NonNull Reward noReward() {
     return Reward.builder()
+      .convertedMinimum(1.0)
       .id(0)
       .estimatedDeliveryOn(null)
       .description("No reward")

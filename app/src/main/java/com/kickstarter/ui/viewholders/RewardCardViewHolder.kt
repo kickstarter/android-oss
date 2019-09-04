@@ -55,7 +55,7 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
         this.viewModel.outputs.notAvailableCopyIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.card_not_allowed_warning, !it) }
+                .subscribe { ViewUtils.setInvisible(this.view.card_not_allowed_warning, !it) }
 
         this.viewModel.outputs.projectCountry()
                 .compose(bindToLifecycle())

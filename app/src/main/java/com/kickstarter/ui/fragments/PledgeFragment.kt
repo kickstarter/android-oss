@@ -72,6 +72,7 @@ import kotlin.math.min
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
 
     interface PledgeDelegate {
+        fun pledgePaymentSuccessfullyUpdated()
         fun pledgeSuccessfullyUpdated()
     }
 
@@ -370,6 +371,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated() }
 
+        this.viewModel.outputs.showUpdatePaymentError()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+
+        this.viewModel.outputs.showUpdatePaymentSuccess()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
+
         this.viewModel.outputs.showMinimumWarning()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
@@ -499,7 +510,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun setUpCardsAdapter() {
         cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_3_half)))
     }
 
     private fun setUpShippingAdapter() {

@@ -128,11 +128,13 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { NumberUtils.format(it.sequence().toFloat()) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backerNumber)
 
             backing
                     .map { DateTimeUtils.longDate(it.pledgedAt()) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeDate)
 
@@ -140,11 +142,13 @@ interface BackingFragmentViewModel {
                     .map { it.amount() - it.shippingAmount() }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeAmount)
 
             backing
                     .map { ObjectUtils.isNull(it.locationId()) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummaryIsGone)
 
@@ -152,12 +156,14 @@ interface BackingFragmentViewModel {
                     .map { it.shippingAmount() }
                     .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
             backing
                     .map { it.location() }
                     .map { it?.displayableName() }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingLocation)
 
@@ -165,6 +171,7 @@ interface BackingFragmentViewModel {
                     .map { it.amount() }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
 
@@ -175,6 +182,7 @@ interface BackingFragmentViewModel {
 
             paymentSource
                     .map { PaymentTypes.safeValueOf(it.paymentType()) != PaymentTypes.CREDIT_CARD }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardIsGone)
 
@@ -182,23 +190,27 @@ interface BackingFragmentViewModel {
 
             paymentSource
                     .map { source -> source.expirationDate()?.let { simpleDateFormat.format(it) }?: "" }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardExpiration)
 
             paymentSource
                     .map { it.lastFour()?: "" }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardLastFour)
 
             paymentSource
                     .map { it.type() }
                     .map {  StoredCard.getCardTypeDrawable(CreditCardTypes.safeValueOf(it)) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardLogo)
 
             backing
                     .map { it.backerCompletedAt() }
                     .map { ObjectUtils.isNotNull(it) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle<Boolean>())
                     .subscribe(this.receivedCheckboxChecked)
 
@@ -222,6 +234,7 @@ interface BackingFragmentViewModel {
                     .compose(combineLatestPair<Boolean, Boolean>(backingIsCollected))
                     .map { it.first && it.second }
                     .map { BooleanUtils.negate(it) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.receivedSectionIsGone)
         }

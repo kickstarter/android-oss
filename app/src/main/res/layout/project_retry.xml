@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:animateLayoutChanges="true">
 
   <LinearLayout
     android:id="@+id/pledge_sheet_retry_container"
@@ -10,6 +11,7 @@
     android:layout_height="wrap_content"
     android:foreground="@drawable/click_indicator_light"
     android:gravity="center"
+    android:minHeight="@dimen/reward_fragment_guideline_constraint_end"
     android:orientation="horizontal"
     android:padding="@dimen/grid_4"
     android:visibility="gone"
@@ -34,7 +36,7 @@
   </LinearLayout>
 
   <ProgressBar
-    android:id="@+id/pledge_sheet_progress_bar"
+    android:id="@+id/project_progress_bar"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"

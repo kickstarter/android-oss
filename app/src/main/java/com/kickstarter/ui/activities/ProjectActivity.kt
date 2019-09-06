@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.annotation.MenuRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -53,6 +54,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
     private lateinit var heartIcon: ImageButton
+    private lateinit var progressBar: ProgressBar
     private lateinit var projectRecyclerView: RecyclerView
     private lateinit var shareIcon: ImageButton
 
@@ -74,6 +76,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.ksString = environment().ksString()
 
         this.projectRecyclerView = findViewById(R.id.project_recycler_view)
+        this.progressBar = findViewById(R.id.project_progress_bar)
         this.heartIcon = findViewById(R.id.heart_icon)
         this.shareIcon = findViewById(R.id.share_icon)
 
@@ -316,10 +319,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(action_buttons, it) }
 
-        this.viewModel.outputs.projectActionProgressBarIsGone()
+        this.viewModel.outputs.progressBarIsGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(findViewById(R.id.pledge_sheet_progress_bar), it) }
+                .subscribe { ViewUtils.setGone(findViewById(R.id.project_progress_bar), it) }
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
                 .compose(bindToLifecycle())
@@ -503,9 +506,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun renderProject(projectAndCountry: Pair<Project, String>) {
         val project = projectAndCountry.first
         val country = projectAndCountry.second
-        this.adapter.takeProject(project, country, environment().nativeCheckoutPreference().get())
-        if (!environment().nativeCheckoutPreference().get()) {
-            ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button, null)
+        val nativeCheckoutEnabled = environment().nativeCheckoutPreference().get()
+        this.adapter.takeProject(project, country, nativeCheckoutEnabled)
+        if (!nativeCheckoutEnabled) {
+            ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
         }
     }
 
@@ -524,10 +528,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .commit()
     }
 
-    private fun rewardsSheetGuideline(): Int = when {
-        ViewUtils.isLandscape(this) -> 0
-        else -> resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
-    }
+    private fun rewardsSheetGuideline(): Int = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
 
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()

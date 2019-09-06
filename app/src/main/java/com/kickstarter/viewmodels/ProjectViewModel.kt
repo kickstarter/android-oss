@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Pair
 import androidx.annotation.NonNull
@@ -117,11 +118,11 @@ interface ProjectViewModel {
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
 
+        /** Emits a boolean that determines if the progress bar should be visible. */
+        fun progressBarIsGone(): Observable<Boolean>
+
         /** Emits a boolean that determines if the project action button container should be visible. */
         fun projectActionButtonContainerIsGone(): Observable<Boolean>
-
-        /** Emits a boolean that determines if the project action progress bar should be visible. */
-        fun projectActionProgressBarIsGone(): Observable<Boolean>
 
         /** Emits a project and country when a new value is available. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
@@ -243,7 +244,7 @@ interface ProjectViewModel {
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
         private val prelaunchUrl = PublishSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
-        private val projectActionProgressBarIsGone = BehaviorSubject.create<Boolean>()
+        private val progressBarIsGone = BehaviorSubject.create<Boolean>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
@@ -276,17 +277,35 @@ interface ProjectViewModel {
 
         init {
 
-            val mappedProject = intent()
-                    .flatMap { i -> ProjectIntentMapper.project(i, this.client) }
+            val mappedProjectNotification = Observable.merge(intent(), intent()
+                    .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked)))
+                    .flatMap {
+                        ProjectIntentMapper.project(it, this.client)
+                                .doOnSubscribe {
+                                    this.progressBarIsGone.onNext(false)
+                                }
+                                .doAfterTerminate {
+                                    this.progressBarIsGone.onNext(true)
+                                }
+                                .materialize()
+                    }
                     .share()
 
-            mappedProject
+            val mappedProjectValues = mappedProjectNotification
+                    .compose(values())
+
+            val mappedProjectErrors = mappedProjectNotification
+                    .compose(errors())
+                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
+                    .filter { BooleanUtils.isTrue(it.second) }
+
+            mappedProjectValues
                     .filter { BooleanUtils.isTrue(it.prelaunchActivated()) }
                     .map { it.webProjectUrl() }
                     .compose(bindToLifecycle())
                     .subscribe(this.prelaunchUrl)
 
-            val initialProject = mappedProject
+            val initialProject = mappedProjectValues
                     .filter { BooleanUtils.isFalse(it.prelaunchActivated()) }
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
@@ -336,30 +355,11 @@ interface ProjectViewModel {
                     .switchMap { this.saveProject(it) }
                     .share()
 
-            val projectNotification = initialProject
-                    .compose(takeWhen<Project, Void>(this.reloadProjectContainerClicked))
-                    .switchMap { project ->
-                        this.client.fetchProject(project)
-                                .doOnSubscribe {
-                                    this.projectActionProgressBarIsGone.onNext(false)
-                                    this.reloadProjectContainerIsGone.onNext(true)
-                                }
-                                .materialize()
-                    }
-                    .share()
-
-            val projectValues = projectNotification
-                    .compose(values())
-
-            val projectErrors = projectNotification
-                    .compose(errors())
-
             val currentProject = Observable.merge(
                     initialProject,
                     refreshedProject,
                     projectOnUserChangeSave,
-                    savedProjectOnLoginSuccess,
-                    projectValues
+                    savedProjectOnLoginSuccess
             )
 
             projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
@@ -438,22 +438,25 @@ interface ProjectViewModel {
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map<Project> { it.first }
 
-            val rewardsArePresent = nativeCheckoutProject
+            val projectHasRewards = nativeCheckoutProject
                     .map { it.hasRewards() }
+                    .distinctUntilChanged()
                     .takeUntil(this.expandPledgeSheet)
 
-            val hideReloadContainer = Observable.merge(projectErrors.map { false }, rewardsArePresent)
+            val rewardsLoaded = projectHasRewards
+                    .filter { BooleanUtils.isTrue(it) }
+                    .map { true }
 
-            hideReloadContainer
+            Observable.merge(rewardsLoaded, this.reloadProjectContainerClicked.map { true })
                     .compose(bindToLifecycle())
                     .subscribe(this.reloadProjectContainerIsGone)
 
-            nativeCheckoutProject
-                    .map { true }
+            mappedProjectErrors
+                    .map { false }
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectActionProgressBarIsGone)
+                    .subscribe(this.reloadProjectContainerIsGone)
 
-            rewardsArePresent
+            projectHasRewards
                     .map { BooleanUtils.negate(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectActionButtonContainerIsGone)
@@ -724,10 +727,6 @@ interface ProjectViewModel {
             }
         }
 
-        override fun projectViewHolderViewRewardsClicked(viewHolder: ProjectViewHolder) {
-            this.nativeProjectActionButtonClicked()
-        }
-
         override fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder) {
             this.updatesTextViewClicked()
         }
@@ -779,10 +778,10 @@ interface ProjectViewModel {
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
-        override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
+        override fun progressBarIsGone(): Observable<Boolean> = this.progressBarIsGone
 
         @NonNull
-        override fun projectActionProgressBarIsGone(): Observable<Boolean> = this.projectActionProgressBarIsGone
+        override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
 
         @NonNull
         override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry

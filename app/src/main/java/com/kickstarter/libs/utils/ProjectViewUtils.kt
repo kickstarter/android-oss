@@ -64,32 +64,25 @@ object ProjectViewUtils {
      */
     @JvmStatic
     fun setActionButton(project: Project, backProjectButton: Button,
-                        managePledgeButton: Button, viewPledgeButton: Button,
-                        viewRewardsButton: Button?) {
+                        managePledgeButton: Button, viewPledgeButton: Button) {
 
-        if (!project.isBacking && project.isLive) {
-            backProjectButton.visibility = View.VISIBLE
-        } else {
-            backProjectButton.visibility = View.GONE
-        }
-
-        if (project.isBacking && project.isLive) {
-            managePledgeButton.visibility = View.VISIBLE
-        } else {
-            managePledgeButton.visibility = View.GONE
-        }
-
-        if (project.isBacking && !project.isLive) {
-            viewPledgeButton.visibility = View.VISIBLE
-        } else {
-            viewPledgeButton.visibility = View.GONE
-        }
-
-        viewRewardsButton?.let {
-            if (!project.isBacking && !project.isLive) {
-                it.visibility = View.VISIBLE
+        if (project.hasRewards()) {
+            if (!project.isBacking && project.isLive) {
+                backProjectButton.visibility = View.VISIBLE
             } else {
-                it.visibility = View.GONE
+                backProjectButton.visibility = View.GONE
+            }
+
+            if (project.isBacking && project.isLive) {
+                managePledgeButton.visibility = View.VISIBLE
+            } else {
+                managePledgeButton.visibility = View.GONE
+            }
+
+            if (project.isBacking && !project.isLive) {
+                viewPledgeButton.visibility = View.VISIBLE
+            } else {
+                viewPledgeButton.visibility = View.GONE
             }
         }
     }

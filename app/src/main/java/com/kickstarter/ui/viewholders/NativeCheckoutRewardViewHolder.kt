@@ -52,13 +52,15 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setConversionTextView(it) }
 
-        this.viewModel.outputs.description()
+        this.viewModel.outputs.descriptionForNoReward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    this.view.reward_description_text_view.text = it
-                            ?: this.context().getText(R.string.Pledge_any_amount_to_help_bring_this_project_to_life)
-                }
+                .subscribe { this.view.reward_description_text_view.setText(it) }
+
+        this.viewModel.outputs.descriptionForReward()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_description_text_view.text = it }
 
         this.viewModel.outputs.descriptionIsGone()
                 .compose(bindToLifecycle())

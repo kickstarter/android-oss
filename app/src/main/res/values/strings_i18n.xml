@@ -38,6 +38,7 @@
   <string name="Ask_me_anything" formatted="false">Ask me anything</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Available to watch for %{time} more %{units}</string>
   <string name="Back" formatted="false">Back</string>
+  <string name="Back_it_because_you_believe_in_it" formatted="false">Back it because you believe in it.</string>
   <string name="Back_this_project" formatted="false">Back this project</string>
   <string name="Back_this_project_below" formatted="false">Back this project below</string>
   <string name="Backed_by_Friends" formatted="false">Backed by Friends</string>
@@ -306,7 +307,7 @@ with friends.</string>
   <string name="No_go_back" formatted="false">No, go back</string>
   <string name="No_longer_available" formatted="false">No longer available</string>
   <string name="No_messages" formatted="false">No messages</string>
-  <string name="No_nevermind" formatted="false">No, nevermind</string>
+  <string name="No_nevermind" formatted="false">No, never mind</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">No one has posted an update yet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">No pledges\n
 from friends yet.</string>
@@ -488,6 +489,7 @@ catch your eye?</string>
   <string name="Thank_you_exclamation" formatted="false">Thank you!</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Thank you for supporting this project.</string>
   <string name="Thanks_for_being_part_of_all_the_joy" formatted="false">Thanks for being part of all the joy, hard work, and hope that’s gone into it—and cheers to what’s ahead.</string>
+  <string name="Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality" formatted="false">Thanks for bringing this project one step closer to becoming a reality.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">The email associated with this Facebook account is already registered to another Kickstarter user.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">The live stream failed to connect</string>
   <string name="The_live_stream_was_interrupted" formatted="false">The live stream was interrupted</string>
@@ -561,6 +563,7 @@ Please try again later.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
+  <string name="You_pledged_without_a_reward" formatted="false">You pledged without a reward</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">You\'ll receive an email at %{email} when your download is ready.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Your chat message wasn\'t sent successfully.</string>

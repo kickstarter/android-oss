@@ -48,14 +48,17 @@ interface NativeCheckoutRewardViewHolderViewModel {
         /** Emits the color resource ID to tint the check. */
         fun checkTintColor(): Observable<Int>
 
-        /** Emits `true` if the conversion should be hidden, `false` otherwise.  */
-        fun conversionIsGone(): Observable<Boolean>
-
         /** Emits the reward's minimum converted to the user's preference  */
         fun conversion(): Observable<String>
 
+        /** Emits `true` if the conversion should be hidden, `false` otherwise.  */
+        fun conversionIsGone(): Observable<Boolean>
+
+        /** Emits the reward's description when `isNoReward` is true. */
+        fun descriptionForNoReward(): Observable<Int>
+
         /** Emits the reward's description.  */
-        fun description(): Observable<String?>
+        fun descriptionForReward(): Observable<String?>
 
         /** Emits `true` if the reward description is empty and should be hidden in the UI.  */
         fun descriptionIsGone(): Observable<Boolean>
@@ -121,7 +124,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val checkTintColor: Observable<Int>
         private val conversion: Observable<String>
         private val conversionIsGone: Observable<Boolean>
-        private val description: Observable<String?>
+        private val descriptionForNoReward: Observable<Int>
+        private val descriptionForReward: Observable<String?>
         private val descriptionIsGone: Observable<Boolean>
         private val endDateSectionIsGone: Observable<Boolean>
         private val limitContainerIsGone: Observable<Boolean>
@@ -184,12 +188,22 @@ interface NativeCheckoutRewardViewHolderViewModel {
             this.conversion = this.projectAndReward
                     .map { this.ksCurrency.formatWithUserPreference(it.second.minimum(), it.first, RoundingMode.HALF_UP, 0) }
 
-            this.description = reward
-                    .map { if (RewardUtils.isReward(it)) it.description() else null }
-                    .distinctUntilChanged()
+            this.descriptionForNoReward = this.projectAndReward
+                    .filter { RewardUtils.isNoReward(it.second) }
+                    .map {
+                        val backed = BackingUtils.isBacked(it.first, it.second)
+                        when {
+                            backed -> R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality
+                            else -> R.string.Back_it_because_you_believe_in_it
+                        }
+                    }
+
+            this.descriptionForReward = reward
+                    .filter { RewardUtils.isReward(it) }
+                    .map { it.description() }
 
             this.descriptionIsGone = this.projectAndReward
-                    .map { if (RewardUtils.isReward(it.second)) it.second.description().isNullOrEmpty() else BackingUtils.isBacked(it.first, it.second) }
+                    .map { RewardUtils.isReward(it.second) && it.second.description().isNullOrEmpty() }
                     .distinctUntilChanged()
 
             this.buttonIsEnabled = this.projectAndReward
@@ -232,14 +246,20 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
             this.titleForNoReward = this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
-                    .map { if(BackingUtils.isBacked(it.first, it.second)) R.string.Thank_you_for_supporting_this_project else R.string.Pledge_without_a_reward }
+                    .map {
+                        val backed = BackingUtils.isBacked(it.first, it.second)
+                        when {
+                            backed -> R.string.You_pledged_without_a_reward
+                            else -> R.string.Pledge_without_a_reward
+                        }
+                    }
 
             this.titleForReward = reward
                     .filter { RewardUtils.isReward(it) }
                     .map { it.title() }
 
             this.titleIsGone = reward
-                    .map {  RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
+                    .map { RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
                     .distinctUntilChanged()
 
             this.shippingSummary = reward
@@ -285,6 +305,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun buttonCTA(): Observable<Int> = this.buttonCTA
 
         @NonNull
+        override fun buttonIsEnabled(): Observable<Boolean> = this.buttonIsEnabled
+
+        @NonNull
         override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
 
         @NonNull
@@ -306,10 +329,19 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun conversion(): Observable<String> = this.conversion
 
         @NonNull
-        override fun description(): Observable<String?> = this.description
+        override fun descriptionForNoReward(): Observable<Int> = this.descriptionForNoReward
 
         @NonNull
-        override fun buttonIsEnabled(): Observable<Boolean> = this.buttonIsEnabled
+        override fun descriptionForReward(): Observable<String?> = this.descriptionForReward
+
+        @NonNull
+        override fun descriptionIsGone(): Observable<Boolean> = this.descriptionIsGone
+
+        @NonNull
+        override fun endDateSectionIsGone(): Observable<Boolean> = this.endDateSectionIsGone
+
+        @NonNull
+        override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone
 
         @NonNull
         override fun remaining(): Observable<String> = this.remaining
@@ -318,19 +350,10 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun remainingIsGone(): Observable<Boolean> = this.remainingIsGone
 
         @NonNull
-        override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone
-
-        @NonNull
         override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountTitle
 
         @NonNull
-        override fun descriptionIsGone(): Observable<Boolean> = this.descriptionIsGone
-
-        @NonNull
         override fun reward(): Observable<Reward> = this.reward
-
-        @NonNull
-        override fun endDateSectionIsGone(): Observable<Boolean> = this.endDateSectionIsGone
 
         @NonNull
         override fun rewardItems(): Observable<List<RewardsItem>> = this.rewardItems

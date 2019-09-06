@@ -18,10 +18,10 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
-        maven { url 'https://dl.bintray.com/google/exoplayer' }
+//        maven {
+//            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+//        }
+//        maven { url 'https://dl.bintray.com/google/exoplayer' }
     }
 }
 

@@ -3,8 +3,6 @@ package com.kickstarter.libs.utils
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.RelativeSizeSpan
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
@@ -14,33 +12,6 @@ import com.kickstarter.models.Reward
 import java.math.RoundingMode
 
 object RewardViewUtils {
-
-    /**
-     * Returns the drawable resource ID of the check background based on project status.
-     */
-    @DrawableRes
-    fun checkBackgroundDrawable(project: Project): Int {
-        return if (project.isLive) {
-            R.drawable.circle_blue_alpha_6
-        } else {
-            R.drawable.circle_grey_300
-        }
-    }
-
-    /**
-     * Returns the color resource ID of the rewards button based on project and if user has backed reward.
-     */
-    @ColorRes
-    fun pledgeButtonColor(project: Project, reward: Reward): Int {
-        return if (BackingUtils.isBacked(project, reward) && project.isLive) {
-            R.color.button_pledge_ended
-        } else if (!project.isLive) {
-            R.color.button_pledge_ended
-        } else {
-            R.color.button_pledge_live
-        }
-    }
-
     /**
      * Returns the string resource ID of the rewards button based on project and reward status.
      */

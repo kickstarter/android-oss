@@ -1,35 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-  android:id="@+id/card_container"
-  style="@style/PledgeStoredCard"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/card_container"
   android:layout_width="@dimen/stored_card_width"
-  android:layout_height="wrap_content">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
-  <LinearLayout
+  <androidx.cardview.widget.CardView
+    style="@style/PledgeStoredCard"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/grid_3">
+    android:layout_height="wrap_content">
 
-    <include layout="@layout/reward_card_details" />
-
-    <Button
-      android:id="@+id/select_button"
-      style="@style/SelectButton"
+    <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      android:text="@string/Select" />
+      android:animateLayoutChanges="true"
+      android:orientation="vertical"
+      android:padding="@dimen/grid_3">
 
-    <TextView
-      android:id="@+id/card_not_allowed_warning"
-      style="@style/Caption1SecondaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      tools:text="@string/You_cant_use_this_credit_card_to_back_a_project_from_project_country" />
-  </LinearLayout>
+      <include layout="@layout/reward_card_details" />
 
-</androidx.cardview.widget.CardView>
+      <Button
+        android:id="@+id/select_button"
+        style="@style/SelectButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_details"
+        android:layout_marginTop="@dimen/grid_2"
+        android:text="@string/Select" />
+
+    </RelativeLayout>
+  </androidx.cardview.widget.CardView>
+
+  <TextView
+    android:id="@+id/card_not_allowed_warning"
+    style="@style/Caption1SecondaryMedium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:gravity="center"
+    android:textColor="@color/ksr_dark_grey_400"
+    android:visibility="invisible"
+    tools:text="@string/You_cant_use_this_credit_card_to_back_a_project_from_project_country"
+    tools:visibility="visible" />
+
+</LinearLayout>

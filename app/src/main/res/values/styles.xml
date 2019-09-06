@@ -577,6 +577,7 @@
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
   <style name="PledgeStoredCard">
+    <item name="cardUseCompatPadding">true</item>
     <item name="cardCornerRadius">@dimen/stored_card_radius</item>
     <item name="cardBackgroundColor">@color/white</item>
   </style>

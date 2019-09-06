@@ -36,6 +36,8 @@ interface ApolloClientType {
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
 
+    fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean>
+
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
 
     fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data>

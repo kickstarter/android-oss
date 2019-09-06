@@ -11,6 +11,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.NativeCheckoutRewardsAdapter
@@ -54,6 +55,9 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
                 .compose(observeForUI())
                 .subscribe { setRewardsCount(it) }
 
+        context?.apply {
+            ViewUtils.setGone(rewards_count, ViewUtils.isLandscape(this))
+        }
     }
 
     private fun scrollToReward(position: Int) {

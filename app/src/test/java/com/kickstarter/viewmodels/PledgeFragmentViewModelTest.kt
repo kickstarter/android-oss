@@ -6,6 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.mock.MockCurrentConfig
@@ -1491,7 +1492,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun createBacking(project: Project, amount: String,
+                                               paymentSourceId: String, locationId: String?,
+                                               reward: Reward?, refTag: RefTag?): Observable<Boolean> {
                         return Observable.error(Throwable("error"))
                     }
                 })
@@ -1514,7 +1517,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun createBacking(project: Project, amount: String,
+                                               paymentSourceId: String, locationId: String?,
+                                               reward: Reward?, refTag: RefTag?): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })

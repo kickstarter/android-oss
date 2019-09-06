@@ -66,6 +66,7 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
+import kotlin.math.max
 import kotlin.math.min
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
@@ -429,6 +430,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.newCardButtonClicked()
     }
 
+    fun backPressed() {
+        shrinkRewardCard()
+    }
+
     fun cardAdded(storedCard: StoredCard) {
         this.viewModel.inputs.cardSaved(storedCard)
     }
@@ -581,6 +586,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         setClickableHtml(accountabilityWithUrls, accountability)
     }
 
+    private fun shrinkRewardCard() {
+        this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
+        startPledgeAnimatorSet(false)
+    }
+
     private fun showPledgeWarning(rewardMinimum: String) {
         context?.apply {
             val ksString = (this.applicationContext as KSApplication).component().environment().ksString()
@@ -620,11 +630,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun showPledgeSection(pledgeData: PledgeData) {
         pledgeData.rewardScreenLocation?.let {
             setInitialViewStates(pledgeData)
-            startPledgeAnimatorSet(true, it)
+            startPledgeAnimatorSet(true)
         }
     }
 
-    private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
+    private fun startPledgeAnimatorSet(reveal: Boolean) {
         val initMarginX: Float
         val initMarginY: Float
         val finalMarginX: Float
@@ -636,8 +646,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val initY: Float
         val finalY: Float
 
+        val location = arguments?.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation
         val margin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin).toFloat()
-        val miniRewardWidth = Math.max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
+        val miniRewardWidth = max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
         val miniRewardHeight = getMiniRewardHeight(miniRewardWidth, location)
 
         if (reveal) {
@@ -681,8 +692,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             val shrinkClickListener = View.OnClickListener { v ->
                 if (!width.isRunning) {
                     v?.setOnClickListener(null)
-                    this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
-                    startPledgeAnimatorSet(false, location)
+                    shrinkRewardCard()
                 }
             }
             reward_snapshot.setOnClickListener(shrinkClickListener)
@@ -756,6 +766,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 addUpdateListener {
                     val animatedFraction = it.animatedFraction
                     pledge_details?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
+                    pledge_background?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
                 }
             }
 

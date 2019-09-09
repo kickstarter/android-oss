@@ -129,9 +129,7 @@
               android:layout_marginBottom="@dimen/grid_4"
               android:enabled="false"
               android:text="@string/Update_pledge"
-              android:textColor="@color/white"
               android:visibility="gone"
-              app:backgroundTint="@color/button_pledge_live"
               tools:visibility="visible" />
 
             <FrameLayout

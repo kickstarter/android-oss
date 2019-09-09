@@ -150,30 +150,10 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.startBackingActivity(it) }
 
-        this.viewModel.outputs.buttonTint()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_button.backgroundTintList = ContextCompat.getColorStateList(context(), it) }
-
         this.viewModel.outputs.buttonIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setPledgeButtonVisibility(it) }
-
-        this.viewModel.outputs.checkIsInvisible()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setInvisible(this.view.reward_check, if (BooleanUtils.isTrue(this.inset)) true else it) }
-
-        this.viewModel.outputs.checkTintColor()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_check.imageTintList = ContextCompat.getColorStateList(context(), it) }
-
-        this.viewModel.outputs.checkBackgroundDrawable()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_check.setBackgroundResource(it) }
 
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())

@@ -34,41 +34,22 @@
           android:focusable="true"
           android:orientation="vertical">
 
-          <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+          <TextView
+            android:id="@+id/reward_minimum_text_view"
+            style="@style/Title2Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ksr_green_500"
+            android:textSize="@dimen/title_reward"
+            tools:text="$20" />
 
-            <TextView
-              android:id="@+id/reward_minimum_text_view"
-              style="@style/Title2Medium"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignParentStart="true"
-              android:layout_toStartOf="@id/reward_check"
-              android:textColor="@color/ksr_green_500"
-              android:textSize="@dimen/title_reward"
-              tools:text="$20" />
-
-            <TextView
-              android:id="@+id/reward_conversion_text_view"
-              style="@style/FootnotePrimaryMedium"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@id/reward_minimum_text_view"
-              android:textColor="@color/ksr_green_500"
-              tools:text="About $15 USD" />
-
-            <ImageView
-              android:id="@+id/reward_check"
-              android:layout_width="@dimen/grid_5"
-              android:layout_height="@dimen/grid_5"
-              android:layout_alignParentEnd="true"
-              android:background="@drawable/circle_black_alpha"
-              android:contentDescription="@null"
-              android:src="@drawable/icon__check_reward"
-              android:visibility="invisible"
-              tools:visibility="visible" />
-          </RelativeLayout>
+          <TextView
+            android:id="@+id/reward_conversion_text_view"
+            style="@style/FootnotePrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ksr_green_500"
+            tools:text="About $15 USD" />
 
           <TextView
             android:id="@+id/reward_title_text_view"

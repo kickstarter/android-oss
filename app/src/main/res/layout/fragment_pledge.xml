@@ -1,155 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-  android:id="@+id/pledge_root"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_300"
   android:clickable="true"
   android:fillViewport="true"
   android:focusable="true"
-  android:focusableInTouchMode="true"
-  android:overScrollMode="never"
-  android:paddingTop="?android:attr/actionBarSize"
-  android:scrollbars="none"
-  android:visibility="invisible"
-  tools:visibility="visible">
+  android:focusableInTouchMode="true">
 
-  <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/pledge_content"
+  <FrameLayout
+    android:id="@+id/pledge_background"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:alpha="0"
+    android:background="@color/ksr_grey_300"
+    tools:alpha="1" />
 
-    <include
-      android:id="@+id/reward_to_copy"
-      layout="@layout/item_reward"
-      tools:visibility="gone" />
+  <androidx.core.widget.NestedScrollView
+    android:id="@+id/pledge_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:paddingTop="?android:attr/actionBarSize"
+    android:scrollbars="none"
+    android:visibility="invisible"
+    tools:visibility="visible">
 
-    <!-- todo: what's the content description? -->
-    <com.kickstarter.ui.views.BottomCropImageView
-      android:id="@+id/reward_snapshot"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/activity_horizontal_margin"
-      android:contentDescription="@null"
-      android:elevation="@dimen/mini_reward_elevation"
-      tools:background="@color/white"
-      tools:layout_height="@dimen/mini_reward_height"
-      tools:layout_width="@dimen/mini_reward_width" />
-
-    <!-- todo: what's the content description? -->
-    <FrameLayout
-      android:id="@+id/expand_icon_container"
-      android:layout_width="@dimen/grid_8"
-      android:layout_height="@dimen/grid_8"
-      android:alpha="0"
-      android:elevation="@dimen/mini_reward_elevation"
-      app:layout_anchor="@id/reward_snapshot"
-      app:layout_anchorGravity="end"
-      tools:alpha="1">
-
-      <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_1"
-        android:layout_marginTop="@dimen/grid_2"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_expand" />
-    </FrameLayout>
-
-    <LinearLayout
-      android:id="@+id/pledge_details"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:id="@+id/pledge_content"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-      <include layout="@layout/fragment_pledge_section_delivery" />
+      <include
+        android:id="@+id/reward_to_copy"
+        layout="@layout/item_reward"
+        tools:visibility="gone" />
+
+      <!-- todo: what's the content description? -->
+      <com.kickstarter.ui.views.BottomCropImageView
+        android:id="@+id/reward_snapshot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:contentDescription="@null"
+        android:elevation="@dimen/mini_reward_elevation"
+        tools:background="@color/white"
+        tools:layout_height="@dimen/mini_reward_height"
+        tools:layout_width="@dimen/mini_reward_width" />
+
+      <!-- todo: what's the content description? -->
+      <FrameLayout
+        android:id="@+id/expand_icon_container"
+        android:layout_width="@dimen/grid_8"
+        android:layout_height="@dimen/grid_8"
+        android:alpha="0"
+        android:elevation="@dimen/mini_reward_elevation"
+        app:layout_anchor="@id/reward_snapshot"
+        app:layout_anchorGravity="end"
+        tools:alpha="1">
+
+        <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/grid_1"
+          android:layout_marginTop="@dimen/grid_2"
+          android:contentDescription="@null"
+          android:src="@drawable/ic_expand" />
+      </FrameLayout>
 
       <LinearLayout
+        android:id="@+id/pledge_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/activity_vertical_margin"
-        android:paddingStart="@dimen/activity_vertical_margin">
+        android:orientation="vertical">
 
-        <include
-          android:id="@+id/divider_delivery"
-          layout="@layout/horizontal_line_1dp_view" />
+        <include layout="@layout/fragment_pledge_section_delivery" />
 
-        <include layout="@layout/fragment_pledge_section_pledge_amount" />
-
-        <include layout="@layout/fragment_pledge_section_shipping" />
-
-        <include layout="@layout/fragment_pledge_section_summary_pledge" />
-
-        <include layout="@layout/fragment_pledge_section_summary_shipping" />
-
-        <include
-          android:id="@+id/divider_total"
-          layout="@layout/horizontal_line_1dp_view" />
-
-        <include tools:visibility="gone"
-          layout="@layout/fragment_pledge_section_total" />
-
-        <Button
-          android:id="@+id/continue_to_tout"
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:text="@string/Continue"
-          android:visibility="gone"
-          tools:visibility="gone" />
+          android:clipChildren="false"
+          android:clipToPadding="false"
+          android:orientation="vertical"
+          android:paddingStart="@dimen/activity_vertical_margin"
+          android:paddingEnd="@dimen/activity_vertical_margin">
 
-        <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          <include
+            android:id="@+id/divider_delivery"
+            layout="@layout/horizontal_line_1dp_view" />
 
-          <com.google.android.material.button.MaterialButton
-            android:id="@+id/update_pledge_button"
+          <include layout="@layout/fragment_pledge_section_pledge_amount" />
+
+          <include layout="@layout/fragment_pledge_section_shipping" />
+
+          <include layout="@layout/fragment_pledge_section_summary_pledge" />
+
+          <include layout="@layout/fragment_pledge_section_summary_shipping" />
+
+          <include
+            android:id="@+id/divider_total"
+            layout="@layout/horizontal_line_1dp_view" />
+
+          <include
+            layout="@layout/fragment_pledge_section_total"
+            tools:visibility="gone" />
+
+          <Button
+            android:id="@+id/continue_to_tout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_4"
-            android:enabled="false"
-            android:text="@string/Update_pledge"
-            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/grid_3"
+            android:text="@string/Continue"
             android:visibility="gone"
-            app:backgroundTint="@color/button_pledge_live"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
           <FrameLayout
-            android:id="@+id/update_pledge_button_progress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_4"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+              android:id="@+id/update_pledge_button"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:stateListAnimator="@null" />
+              android:layout_marginBottom="@dimen/grid_4"
+              android:enabled="false"
+              android:text="@string/Update_pledge"
+              android:textColor="@color/white"
+              android:visibility="gone"
+              app:backgroundTint="@color/button_pledge_live"
+              tools:visibility="visible" />
 
-            <ProgressBar
-              android:layout_width="wrap_content"
+            <FrameLayout
+              android:id="@+id/update_pledge_button_progress"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:indeterminate="true"
-              android:indeterminateTint="@color/white"
-              android:indeterminateTintMode="src_in" />
+              android:layout_marginBottom="@dimen/grid_4"
+              android:visibility="gone">
 
+              <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stateListAnimator="@null" />
+
+              <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/white"
+                android:indeterminateTintMode="src_in" />
+
+            </FrameLayout>
           </FrameLayout>
-        </FrameLayout>
+
+        </LinearLayout>
+
+        <include layout="@layout/fragment_pledge_section_payment" />
 
       </LinearLayout>
 
-      <include layout="@layout/fragment_pledge_section_payment" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    </LinearLayout>
 
-  </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</androidx.core.widget.NestedScrollView>
+  </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

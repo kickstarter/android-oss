@@ -212,7 +212,6 @@
   <style name="PledgeButton">
     <item name="android:layout_gravity">bottom</item>
     <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/white</item>
     <item name="backgroundTint">@color/button_pledge_live</item>
     <item name="cornerRadius">@dimen/grid_2</item>
     <item name="rippleColor">@null</item>

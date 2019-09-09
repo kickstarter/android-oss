@@ -120,10 +120,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
 
-        this.viewModel.outputs.animateRewardCard()
+        this.viewModel.outputs.startRewardShrinkAnimation()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showPledgeSection(it) }
+                .subscribe { revealPledgeSection(it) }
+
+        this.viewModel.outputs.startRewardExpandAnimation()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { hidePledgeSection() }
 
         this.viewModel.outputs.snapshotIsGone()
                 .compose(bindToLifecycle())
@@ -431,7 +436,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     fun backPressed() {
-        shrinkRewardCard()
+        this.viewModel.inputs.backPressed()
     }
 
     fun cardAdded(storedCard: StoredCard) {
@@ -587,11 +592,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         setClickableHtml(accountabilityWithUrls, accountability)
     }
 
-    private fun shrinkRewardCard() {
-        this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
-        startPledgeAnimatorSet(false)
-    }
-
     private fun showPledgeWarning(rewardMinimum: String) {
         context?.apply {
             val ksString = (this.applicationContext as KSApplication).component().environment().ksString()
@@ -628,11 +628,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     //Reward card animation helper methods
-    private fun showPledgeSection(pledgeData: PledgeData) {
+    private fun revealPledgeSection(pledgeData: PledgeData) {
         pledgeData.rewardScreenLocation?.let {
             setInitialViewStates(pledgeData)
             startPledgeAnimatorSet(true)
         }
+    }
+
+    private fun hidePledgeSection() {
+        this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
+        startPledgeAnimatorSet(false)
     }
 
     private fun startPledgeAnimatorSet(reveal: Boolean) {
@@ -690,14 +695,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val detailsY = getYAnimator(initY, finalY)
 
         if (reveal) {
-            val shrinkClickListener = View.OnClickListener { v ->
+            val expandRewardClickListener = View.OnClickListener { v ->
                 if (!width.isRunning) {
                     v?.setOnClickListener(null)
-                    shrinkRewardCard()
+                    this.viewModel.inputs.miniRewardClicked()
                 }
             }
-            reward_snapshot.setOnClickListener(shrinkClickListener)
-            expand_icon_container.setOnClickListener(shrinkClickListener)
+            reward_snapshot.setOnClickListener(expandRewardClickListener)
+            expand_icon_container.setOnClickListener(expandRewardClickListener)
         } else {
             width.addUpdateListener {
                 if (it.animatedFraction == 1f) {

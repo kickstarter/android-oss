@@ -31,7 +31,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val addedCard = TestSubscriber<Pair<StoredCard, Project>>()
     private val additionalPledgeAmount = TestSubscriber<String>()
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
-    private val animateRewardCard = TestSubscriber<PledgeData>()
     private val baseUrlForTerms = TestSubscriber<String>()
     private val cardsAndProject = TestSubscriber<Pair<List<StoredCard>, Project>>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
@@ -69,6 +68,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val snapshotIsGone = TestSubscriber<Boolean>()
     private val startChromeTab = TestSubscriber<String>()
     private val startLoginToutActivity = TestSubscriber<Void>()
+    private val startRewardExpandAnimation = TestSubscriber<Void>()
+    private val startRewardShrinkAnimation = TestSubscriber<PledgeData>()
     private val startThanksActivity = TestSubscriber<Project>()
     private val totalAmount = TestSubscriber<String>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
@@ -86,7 +87,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.addedCard().subscribe(this.addedCard)
         this.vm.outputs.additionalPledgeAmount().subscribe(this.additionalPledgeAmount)
         this.vm.outputs.additionalPledgeAmountIsGone().subscribe(this.additionalPledgeAmountIsGone)
-        this.vm.outputs.animateRewardCard().subscribe(this.animateRewardCard)
         this.vm.outputs.baseUrlForTerms().subscribe(this.baseUrlForTerms)
         this.vm.outputs.cardsAndProject().subscribe(this.cardsAndProject)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
@@ -124,6 +124,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.snapshotIsGone().subscribe(this.snapshotIsGone)
         this.vm.outputs.startChromeTab().subscribe(this.startChromeTab)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
+        this.vm.outputs.startRewardExpandAnimation().subscribe(this.startRewardExpandAnimation)
+        this.vm.outputs.startRewardShrinkAnimation().subscribe(this.startRewardShrinkAnimation)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
         this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
@@ -141,7 +143,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.vm.inputs.onGlobalLayout()
-        this.animateRewardCard.assertValueCount(1)
+        this.startRewardShrinkAnimation.assertValueCount(1)
     }
 
     @Test
@@ -1382,6 +1384,24 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         //Login tout should not start with a invalid pledge amount, warning should show
         this.startLoginToutActivity.assertValueCount(1)
         this.showMinimumWarning.assertValueCount(1)
+    }
+
+    @Test
+    fun testStartRewardExpandAnimation_whenBackPressed() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.backPressed()
+
+        this.startRewardExpandAnimation.assertValueCount(1)
+    }
+
+    @Test
+    fun testStartRewardExpandAnimation_whenMiniRewardClicked() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.miniRewardClicked()
+
+        this.startRewardExpandAnimation.assertValueCount(1)
     }
 
     @Test

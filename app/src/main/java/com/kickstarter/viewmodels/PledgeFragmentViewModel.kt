@@ -33,6 +33,9 @@ interface PledgeFragmentViewModel {
         /** Call when a card has been inserted into the stored cards list. */
         fun addedCardPosition(position: Int)
 
+        /** Call when user clicks the back button. */
+        fun backPressed()
+
         /** Call when a card has successfully saved. */
         fun cardSaved(storedCard: StoredCard)
 
@@ -50,6 +53,9 @@ interface PledgeFragmentViewModel {
 
         /** Call when user clicks a url. */
         fun linkClicked(url: String)
+
+        /** Call when user clicks the mini reward. */
+        fun miniRewardClicked()
 
         /** Call when the new card button is clicked. */
         fun newCardButtonClicked()
@@ -82,9 +88,6 @@ interface PledgeFragmentViewModel {
 
         /** Emits when the additional pledge amount should be hidden. */
         fun additionalPledgeAmountIsGone(): Observable<Boolean>
-
-        /** Emits when the reward card should be animated. */
-        fun animateRewardCard(): Observable<PledgeData>
 
         /** Emits the base URL to build terms URLs. */
         fun baseUrlForTerms(): Observable<String>
@@ -142,6 +145,12 @@ interface PledgeFragmentViewModel {
 
         /** Emits the currency symbol string of the project. */
         fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>>
+
+        /** Emits when we should reverse the reward card animation. */
+        fun startRewardExpandAnimation(): Observable<Void>
+
+        /** Emits when the reward card shrink animation should start. */
+        fun startRewardShrinkAnimation(): Observable<PledgeData>
 
         /** Emits the currently selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
@@ -222,12 +231,14 @@ interface PledgeFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
         private val addedCardPosition = PublishSubject.create<Int>()
+        private val backPressed = PublishSubject.create<Void>()
         private val cardSaved = PublishSubject.create<StoredCard>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
         private val decreasePledgeButtonClicked = PublishSubject.create<Void>()
         private val increasePledgeButtonClicked = PublishSubject.create<Void>()
         private val linkClicked = PublishSubject.create<String>()
+        private val miniRewardClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<String>()
@@ -239,7 +250,6 @@ interface PledgeFragmentViewModel {
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
         private val additionalPledgeAmountIsGone = BehaviorSubject.create<Boolean>()
-        private val animateRewardCard = BehaviorSubject.create<PledgeData>()
         private val baseUrlForTerms = BehaviorSubject.create<String>()
         private val cardsAndProject = BehaviorSubject.create<Pair<List<StoredCard>, Project>>()
         private val continueButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -277,6 +287,8 @@ interface PledgeFragmentViewModel {
         private val snapshotIsGone = BehaviorSubject.create<Boolean>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
+        private val startRewardExpandAnimation = BehaviorSubject.create<Void>()
+        private val startRewardShrinkAnimation = BehaviorSubject.create<PledgeData>()
         private val startThanksActivity = PublishSubject.create<Project>()
         private val totalAmount = BehaviorSubject.create<SpannableString>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
@@ -332,9 +344,12 @@ interface PledgeFragmentViewModel {
 
             // Mini reward card
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
-                    .compose<PledgeData>(takeWhen(this.onGlobalLayout))
                     .compose(bindToLifecycle())
-                    .subscribe(this.animateRewardCard)
+                    .subscribe(this.startRewardShrinkAnimation)
+
+            Observable.merge(this.backPressed, this.miniRewardClicked)
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startRewardExpandAnimation)
 
             updatingPaymentOrUpdatingPledge
                     .compose(bindToLifecycle())
@@ -848,6 +863,8 @@ interface PledgeFragmentViewModel {
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 
+        override fun backPressed() = this.backPressed.onNext(null)
+
         override fun cardSaved(storedCard: StoredCard) = this.cardSaved.onNext(storedCard)
 
         override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
@@ -859,6 +876,8 @@ interface PledgeFragmentViewModel {
         override fun increasePledgeButtonClicked() = this.increasePledgeButtonClicked.onNext(null)
 
         override fun linkClicked(url: String) = this.linkClicked.onNext(url)
+
+        override fun miniRewardClicked() = this.miniRewardClicked.onNext(null)
 
         override fun newCardButtonClicked() = this.newCardButtonClicked.onNext(null)
 
@@ -882,9 +901,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun additionalPledgeAmountIsGone(): Observable<Boolean> = this.additionalPledgeAmountIsGone
-
-        @NonNull
-        override fun animateRewardCard(): Observable<PledgeData> = this.animateRewardCard
 
         @NonNull
         override fun baseUrlForTerms(): Observable<String> = this.baseUrlForTerms
@@ -993,6 +1009,12 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun startChromeTab(): Observable<String> = this.startChromeTab
+
+        @NonNull
+        override fun startRewardExpandAnimation(): Observable<Void> = this.startRewardExpandAnimation
+
+        @NonNull
+        override fun startRewardShrinkAnimation(): Observable<PledgeData> = this.startRewardShrinkAnimation
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity

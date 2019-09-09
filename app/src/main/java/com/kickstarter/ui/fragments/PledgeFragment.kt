@@ -66,6 +66,7 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
+import kotlin.math.max
 import kotlin.math.min
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
@@ -119,10 +120,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
 
-        this.viewModel.outputs.animateRewardCard()
+        this.viewModel.outputs.startRewardShrinkAnimation()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showPledgeSection(it) }
+                .subscribe { revealPledgeSection(it) }
+
+        this.viewModel.outputs.startRewardExpandAnimation()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { hidePledgeSection() }
 
         this.viewModel.outputs.snapshotIsGone()
                 .compose(bindToLifecycle())
@@ -429,6 +435,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.newCardButtonClicked()
     }
 
+    fun backPressed() {
+        this.viewModel.inputs.backPressed()
+    }
+
     fun cardAdded(storedCard: StoredCard) {
         this.viewModel.inputs.cardSaved(storedCard)
     }
@@ -455,6 +465,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val visibility = if (gone) View.GONE else View.VISIBLE
         setVisibility(visibility, reward_snapshot, reward_to_copy, expand_icon_container)
         ViewUtils.setInvisible(pledge_root, !gone)
+        pledge_background.alpha = if (gone) 1f else 0f
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
@@ -617,14 +628,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     //Reward card animation helper methods
-    private fun showPledgeSection(pledgeData: PledgeData) {
+    private fun revealPledgeSection(pledgeData: PledgeData) {
         pledgeData.rewardScreenLocation?.let {
             setInitialViewStates(pledgeData)
-            startPledgeAnimatorSet(true, it)
+            startPledgeAnimatorSet(true)
         }
     }
 
-    private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
+    private fun hidePledgeSection() {
+        this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
+        startPledgeAnimatorSet(false)
+    }
+
+    private fun startPledgeAnimatorSet(reveal: Boolean) {
         val initMarginX: Float
         val initMarginY: Float
         val finalMarginX: Float
@@ -636,8 +652,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val initY: Float
         val finalY: Float
 
+        val location = arguments?.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation
         val margin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin).toFloat()
-        val miniRewardWidth = Math.max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
+        val miniRewardWidth = max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
         val miniRewardHeight = getMiniRewardHeight(miniRewardWidth, location)
 
         if (reveal) {
@@ -678,15 +695,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val detailsY = getYAnimator(initY, finalY)
 
         if (reveal) {
-            val shrinkClickListener = View.OnClickListener { v ->
+            val expandRewardClickListener = View.OnClickListener { v ->
                 if (!width.isRunning) {
                     v?.setOnClickListener(null)
-                    this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
-                    startPledgeAnimatorSet(false, location)
+                    this.viewModel.inputs.miniRewardClicked()
                 }
             }
-            reward_snapshot.setOnClickListener(shrinkClickListener)
-            expand_icon_container.setOnClickListener(shrinkClickListener)
+            reward_snapshot.setOnClickListener(expandRewardClickListener)
+            expand_icon_container.setOnClickListener(expandRewardClickListener)
         } else {
             width.addUpdateListener {
                 if (it.animatedFraction == 1f) {
@@ -756,6 +772,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 addUpdateListener {
                     val animatedFraction = it.animatedFraction
                     pledge_details?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
+                    pledge_background?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
                 }
             }
 

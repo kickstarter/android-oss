@@ -35,6 +35,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
+import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
@@ -442,10 +443,24 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun handleNativeCheckoutBackPress() {
-        val rewardsSheetIsExpanded = pledge_container.alpha == 1f
+        val pledgeSheetIsExpanded = pledge_container.alpha == 1f
+
+        val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
+        val backStackEntryCount = supportFragmentManager.backStackEntryCount
+        val backStackIsNotEmpty = backStackEntryCount > 0
+        val topOfStackIndex = backStackEntryCount.minus(1)
+
+        val pledgeReason = when {
+            backStackIsNotEmpty && supportFragmentManager.getBackStackEntryAt(topOfStackIndex).name == PledgeFragment::class.java.simpleName -> {
+                pledgeFragment?.arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON)
+            }
+            else -> null
+        }
+
         when {
-            supportFragmentManager.backStackEntryCount > 0 && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
-            rewardsSheetIsExpanded -> this.viewModel.inputs.collapsePledgeSheet()
+            pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD -> pledgeFragment?.backPressed()
+            backStackIsNotEmpty && pledgeSheetIsExpanded -> supportFragmentManager.popBackStack()
+            pledgeSheetIsExpanded -> this.viewModel.inputs.collapsePledgeSheet()
             else -> {
                 clearFragmentBackStack()
                 super.back()

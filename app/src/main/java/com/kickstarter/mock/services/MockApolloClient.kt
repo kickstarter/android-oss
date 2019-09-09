@@ -7,6 +7,7 @@ import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
+import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
@@ -21,7 +22,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(true)
     }
 
-    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?, refTag: RefTag?): Observable<Boolean> {
         return Observable.just(true)
     }
 

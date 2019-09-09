@@ -36,18 +36,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
         /** Emits a boolean determining if the pledge button should be shown. */
         fun buttonIsGone(): Observable<Boolean>
 
-        /** Emits the color resource ID to tint the pledge button. */
-        fun buttonTint(): Observable<Int>
-
-        /** Emits the drawable resource ID to set as the check's background. */
-        fun checkBackgroundDrawable(): Observable<Int>
-
-        /** Emits `true` if the backed check should be hidden, `false` otherwise.  */
-        fun checkIsInvisible(): Observable<Boolean>
-
-        /** Emits the color resource ID to tint the check. */
-        fun checkTintColor(): Observable<Int>
-
         /** Emits the reward's minimum converted to the user's preference  */
         fun conversion(): Observable<String>
 
@@ -118,10 +106,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val buttonCTA: Observable<Int>
         private val buttonIsEnabled: Observable<Boolean>
         private val buttonIsGone: Observable<Boolean>
-        private val buttonTintColor: Observable<Int>
-        private val checkBackgroundDrawable: Observable<Int>
-        private val checkIsInvisible: Observable<Boolean>
-        private val checkTintColor: Observable<Int>
         private val conversion: Observable<String>
         private val conversionIsGone: Observable<Boolean>
         private val descriptionForNoReward: Observable<Int>
@@ -157,24 +141,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
             this.buttonIsGone = this.projectAndReward
                     .map { BackingUtils.isBacked(it.first, it.second) || it.first.isLive }
                     .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-
-            this.buttonTintColor = this.projectAndReward
-                    .map { RewardViewUtils.pledgeButtonColor(it.first, it.second) }
-                    .distinctUntilChanged()
-
-            this.checkTintColor = this.projectAndReward
-                    .filter { BackingUtils.isBacked(it.first, it.second) }
-                    .map { RewardViewUtils.pledgeButtonColor(it.first, it.second) }
-                    .distinctUntilChanged()
-
-            this.checkBackgroundDrawable = this.projectAndReward
-                    .filter { BackingUtils.isBacked(it.first, it.second) }
-                    .map { RewardViewUtils.checkBackgroundDrawable(it.first) }
-                    .distinctUntilChanged()
-
-            this.checkIsInvisible = this.projectAndReward
-                    .map { !BackingUtils.isBacked(it.first, it.second) }
                     .distinctUntilChanged()
 
             this.buttonCTA = this.projectAndReward
@@ -287,7 +253,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
             if (BackingUtils.isBacked(project, reward)) {
-                return true
+                return false
             }
 
             return RewardUtils.isAvailable(project, reward)
@@ -309,18 +275,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         @NonNull
         override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
-
-        @NonNull
-        override fun buttonTint(): Observable<Int> = this.buttonTintColor
-
-        @NonNull
-        override fun checkBackgroundDrawable(): Observable<Int> = this.checkBackgroundDrawable
-
-        @NonNull
-        override fun checkIsInvisible(): Observable<Boolean> = this.checkIsInvisible
-
-        @NonNull
-        override fun checkTintColor(): Observable<Int> = this.checkTintColor
 
         @NonNull
         override fun conversionIsGone(): Observable<Boolean> = this.conversionIsGone

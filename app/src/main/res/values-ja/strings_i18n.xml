@@ -34,10 +34,11 @@
   <string name="Are_you_sure" formatted="false">オフにしてもよろしいですか？</string>
   <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">本当に%{project_name}への%{amount}のプレッジを取り消しますか？</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">このカードをお支払い方法から削除してもよろしいですか？</string>
-  <string name="As_of_pledge_date" formatted="false">As of %{pledge_date}</string>
+  <string name="As_of_pledge_date" formatted="false">%{pledge_date} 日現在</string>
   <string name="Ask_me_anything" formatted="false">お問い合わせ</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">さらに%{time} の%{units} を見ることができます</string>
   <string name="Back" formatted="false">バック</string>
+  <string name="Back_it_because_you_believe_in_it" formatted="false">このプロジェクトの可能性を信じてバックしよう。</string>
   <string name="Back_this_project" formatted="false">このプロジェクトをバックする</string>
   <string name="Back_this_project_below" formatted="false">このプロジェクトをバックする</string>
   <string name="Backed_by_Friends" formatted="false">友達がバックしたプロジェクト</string>
@@ -74,7 +75,7 @@
   <string name="Chat" formatted="false">チャット</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">しばらくしてからエクスポートの進捗状況を確認してください。</string>
   <string name="Check_your_payment_details" formatted="false">お支払い情報をご確認ください</string>
-  <string name="Choose_another_reward" formatted="false">Choose another reward</string>
+  <string name="Choose_another_reward" formatted="false">他のリワードを選択</string>
   <string name="Chooses_location_for_shipping" formatted="false">配送先%{location} を選択</string>
   <string name="Close_live_stream" formatted="false">ライブ配信を閉じる</string>
   <string name="Close_project" formatted="false">プロジェクトを閉じる</string>
@@ -161,7 +162,7 @@
   <string name="Explore" formatted="false">さがす</string>
   <string name="Explore_creative_projects" formatted="false">クリエイティブなプロジェクトをさがす</string>
   <string name="Explore_projects" formatted="false">プロジェクトをさがす</string>
-  <string name="Explore_projects_we_love" formatted="false">Explore projects we love</string>
+  <string name="Explore_projects_we_love" formatted="false">Projects We Love を見る</string>
   <string name="Facebook_login_disclaimer" formatted="false">Facebook でログインすると、あなたの氏名とプロフィール写真がインポートされます。また、あなたが Kickstarter 上で Facebook 友達をフォローすることができるように、友達リストも Kickstarter によってアクセスされます。あなたの許可なしに Kickstarter が Facebook 上に投稿を行うことは決してありません。  </string>
   <string name="Facebook_login_disclaimer_update" formatted="false">Facebook を使ってログインすると、お名前とプロフィール写真、友達リストがインポートされます。</string>
   <string name="Facebook_reconnect" formatted="false">もう一度接続してください</string>
@@ -231,7 +232,7 @@
   <string name="Home" formatted="false">ホーム</string>
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">プロジェクトをサポートしたい</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on &lt;b>%{project_deadline}&lt;/b>.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">プロジェクトがファンディングゴールに到達すると、&lt;b>%{project_deadline}&lt;/b> に請求されます。</string>
   <string name="If_you_turn_following_off" formatted="false">フォローをオフにすると、あなたは誰もフォローすることができなくなり、また他の人があなたをフォローすることもできなくなります。また、既存のフォロワーとのつながりも絶たれます。この操作は後から元に戻すことはできませんのでご注意ください。</string>
   <string name="If_your_profile_is_private" formatted="false">プロフィールがプライベート (非公開) 設定の場合、あなたの名前と写真が表示されます。</string>
   <string name="If_your_profile_is_public" formatted="false">プロフィールがプライベート (非公開) 設定でない場合は、過去にあなたがバックしたプロジェクトや、あなたの地域情報、あなたの自己紹介欄とウェブサイトも表示されます。</string>
@@ -483,6 +484,7 @@
   <string name="Thank_you_exclamation" formatted="false">ありがとうございます！</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">サポートいただきありがとうございます。</string>
   <string name="Thanks_for_being_part_of_all_the_joy" formatted="false">これらプロジェクトに注がれた努力、希望、喜びにご貢献いただきありがとうございます。ぜひ今後もさらなるプロジェクトを共に成功へと導きましょう。</string>
+  <string name="Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality" formatted="false">ありがとうございます！プロジェクトの実現に一歩近づきました。</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">このFacebookのメールアドレスは他のKickstarterユーザーが使用中</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">ライブ配信に接続できませんでした</string>
   <string name="The_live_stream_was_interrupted" formatted="false">ライブ配信が中断されました</string>
@@ -530,7 +532,7 @@
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">プレッジを処理できませんでした。</string>
-  <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">We don’t allow cancelations that will cause a project to fall short of its goal within the last 24 hours.</string>
+  <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">キャンペーンの最後の24時間において、プレッジを取り消すことよってプロジェクトがファンディングゴールに到達できなくなる場合においては、そのようなプレッジの取り消しは許可されません。</string>
   <string name="We_think_youll_like_these_too" formatted="false">その他おすすめプロジェクト</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">このアドレスにメールを送信できませんでした。メールアドレスが正確に入力されていることをご確認ください。</string>
@@ -545,7 +547,7 @@
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>
   <string name="Write_a_bio" formatted="false">簡単な自己紹介を書いてください。ほんの１～２文で構いません。</string>
-  <string name="Yes_cancel_it" formatted="false">Yes, cancel it</string>
+  <string name="Yes_cancel_it" formatted="false">はい、取り消します</string>
   <string name="Yes_cancel_my_pledge" formatted="false">はい、プレッジをキャンセルします</string>
   <string name="Yes_change_currency" formatted="false">はい、通貨を変更します</string>
   <string name="Yes_remove" formatted="false">はい、削除します</string>
@@ -556,6 +558,7 @@
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">このリワードには、最低%{reward_minimum}のプレッジが必要です。</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
+  <string name="You_pledged_without_a_reward" formatted="false">リワードなしでプレッジしました</string>
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
@@ -577,7 +580,7 @@
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Facebook (%{email}) を通して接続されています。Kickstarter の認識情報を編集するには、このアカウント用にパスワードを作成してください。</string>
   <string name="Youre_offline" formatted="false">現在オフライン中です。デバイスが再接続し次第、アプリをリフレッシュしてください。</string>
   <string name="Youve_canceled_your_pledge" formatted="false">プレッジをキャンセルしました。</string>
-  <string name="Youve_canceled_your_pledge_of_pledge_amount_for_project_name" formatted="false">You’ve canceled your pledge of &lt;b>%{pledge_amount}&lt;/b> for &lt;b>%{project_name}&lt;/b>.</string>
+  <string name="Youve_canceled_your_pledge_of_pledge_amount_for_project_name" formatted="false">&lt;b>%{project_name}&lt;/b> への &lt;b>%{pledge_amount}&lt;/b> のプレッジを取り消しました。</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">このプレッジ済のプロジェクトは、現在もファンド中</string>
   <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">%{project_name} へのプレッジを %{amount} に更新しました。プロジェクトがファンディングゴールに達成した場合には、%{project_deadline} 付けでご登録いただいたクレジットカードに請求されます。</string>
   <string name="Zip_code" formatted="false">郵便番号</string>

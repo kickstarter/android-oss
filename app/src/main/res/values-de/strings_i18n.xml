@@ -34,10 +34,11 @@
   <string name="Are_you_sure" formatted="false">Bist du sicher?</string>
   <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">Bist du sicher, dass du deinen Beitrag von %{amount} für %{project_name} zurückziehen möchtest?</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Bist du sicher, dass du diese Karte aus deinen Zahlungsmethoden entfernen möchtest?</string>
-  <string name="As_of_pledge_date" formatted="false">As of %{pledge_date}</string>
+  <string name="As_of_pledge_date" formatted="false">Stand: %{pledge_date}</string>
   <string name="Ask_me_anything" formatted="false">Frage stellen</string>
   <string name="Available_to_watch_for_time_more_units" formatted="false">Kann noch %{time} %{units} angesehen werden</string>
   <string name="Back" formatted="false">Zurück</string>
+  <string name="Back_it_because_you_believe_in_it" formatted="false">Du glaubst an dieses Projekt. Unterstütze es.</string>
   <string name="Back_this_project" formatted="false">Projekt unterstützen</string>
   <string name="Back_this_project_below" formatted="false">Folgendes Projekt unterstützen</string>
   <string name="Backed_by_Friends" formatted="false">Von Freunden unterstützt</string>
@@ -76,7 +77,7 @@ Unterstützer</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Der Fortschritt des Exports wird in Kürze verfügbar sein- schau später noch einmal vorbei.</string>
   <string name="Check_your_payment_details" formatted="false">Überprüfe die Daten deiner Zahlungsweise</string>
-  <string name="Choose_another_reward" formatted="false">Choose another reward</string>
+  <string name="Choose_another_reward" formatted="false">Andere Belohnung auswählen</string>
   <string name="Chooses_location_for_shipping" formatted="false">Legt %{location} als Versandort fest.</string>
   <string name="Close_live_stream" formatted="false">Live-Stream schließen</string>
   <string name="Close_project" formatted="false">Projekt schließen</string>
@@ -163,7 +164,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Explore" formatted="false">Erkunden</string>
   <string name="Explore_creative_projects" formatted="false">Erkunde kreative Projekte</string>
   <string name="Explore_projects" formatted="false">Projekte erkunden</string>
-  <string name="Explore_projects_we_love" formatted="false">Explore projects we love</string>
+  <string name="Explore_projects_we_love" formatted="false">Team-Favoriten erkunden</string>
   <string name="Facebook_login_disclaimer" formatted="false">Wenn du dich über Facebook anmeldest, importieren wir deinen Namen und dein Profilfoto. Außerdem wird deine Freundesliste importiert, damit du deinen Freunden auf Kickstarter folgen kannst. Wir werden niemals etwas ohne deine Erlaubnis auf Facebook posten.</string>
   <string name="Facebook_login_disclaimer_update" formatted="false">Bei einer Anmeldung über Facebook werden dein Name, Profilbild und Freundesliste importiert.</string>
   <string name="Facebook_reconnect" formatted="false">Bitte erneut verbinden</string>
@@ -233,7 +234,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">Wie Unterstützer dein Projekt gefunden haben</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on &lt;b>%{project_deadline}&lt;/b>.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am &lt;b>%{project_deadline}&lt;/b> belastet.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
   <string name="If_your_profile_is_private" formatted="false">Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.</string>
   <string name="If_your_profile_is_public" formatted="false">Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.</string>
@@ -484,6 +485,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Thank_you_exclamation" formatted="false">Vielen Dank!</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Vielen Dank für deine Unterstützung dieses Projekts.</string>
   <string name="Thanks_for_being_part_of_all_the_joy" formatted="false">Vielen Dank, dass du die Freuden, harte Arbeit und Hoffnungen mit uns geteilt hast - wir freuen uns schon darauf, was wir in Zukunft erreichen können.</string>
+  <string name="Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality" formatted="false">Dank deiner Unterstützung ist dieses Projekt seiner Verwirklichung einen Schritt näher.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">Diese E-Mail-Adresse ist bereits einem anderen Kickstarter-Nutzer zugeordnet.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Keine Verbindungn zu Live-Stream</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Live-Stream wurde unterbrochen</string>
@@ -531,7 +533,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">Dein Finanzierungsbeitrag konnte nicht bearbeitet werden.</string>
-  <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">We don’t allow cancelations that will cause a project to fall short of its goal within the last 24 hours.</string>
+  <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">Es ist nicht gestattet, innerhalb der letzten 24 Stunden vor Beendigung eines Projekts einen Finanzierungsbeitrag zurückzuziehen, wenn dadurch das Finanzierungsziel nicht mehr erreicht werden würde.</string>
   <string name="We_think_youll_like_these_too" formatted="false">Wir denken, diese Projekte könnten dir auch gefallen</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle "Empfehlungen" einfach ab.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">Wir konnten keine E-Mails an diese Adresse senden. Bitte prüfe, ob sie richtig eingegeben wurde.</string>
@@ -546,7 +548,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
   <string name="Write_a_bio" formatted="false">Schreibe eine kurze Biografie, ein oder zwei Sätze genügen.</string>
-  <string name="Yes_cancel_it" formatted="false">Yes, cancel it</string>
+  <string name="Yes_cancel_it" formatted="false">Ja, abbrechen</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Ja, ich möchte meinen Beitrag zurückziehen</string>
   <string name="Yes_change_currency" formatted="false">Ja, Währung ändern</string>
   <string name="Yes_remove" formatted="false">Ja, entfernen</string>
@@ -557,6 +559,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Dank deiner Unterstützung ist &lt;b>%{project_name}&lt;/b> seiner Verwirklichung einen Schritt näher. Sag es weiter!</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Diese Belohnung hat einen Mindestfinanzierungsbeitrag von %{reward_minimum}.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
+  <string name="You_pledged_without_a_reward" formatted="false">Unterstützt ohne Belohnung</string>
   <string name="You_saved_this_project" formatted="false">Du hast dieses Projekt gespeichert.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Du wirst per E-Mail unter %{email} benachrichtigt, sobald dein Download bereit ist.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Deine Chat-Nachricht konnte leider nicht gesendet werden.</string>
@@ -578,7 +581,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Youre_connected_via_Facebook_email_Create_a_password_for_this_account" formatted="false">Du bist via Facebook (%{email}) verbunden. Erstelle ein Passwort für dieses Konto, um deine Anmeldedaten für Kickstarter zu ändern.</string>
   <string name="Youre_offline" formatted="false">Du bist Offline. Sobald du wieder Online bist, navigiere in der App, um sie zu aktualisieren.</string>
   <string name="Youve_canceled_your_pledge" formatted="false">Dein Finanzierungsbeitrag wurde abgebrochen.</string>
-  <string name="Youve_canceled_your_pledge_of_pledge_amount_for_project_name" formatted="false">You’ve canceled your pledge of &lt;b>%{pledge_amount}&lt;/b> for &lt;b>%{project_name}&lt;/b>.</string>
+  <string name="Youve_canceled_your_pledge_of_pledge_amount_for_project_name" formatted="false">Du hast den Finanzierungsbeitrag in Höhe von &lt;b>%{pledge_amount}&lt;/b> für das Projekt &lt;b>%{project_name}&lt;/b> zurückgezogen.</string>
   <string name="Youve_pledged_to_support_this_project" formatted="false">Du hast einen Finazierungsbeitrag zu diesem Projekt geleistet. Die Frist für die Finanzierung ist noch nicht abgelaufen.</string>
   <string name="Youve_successfully_updated_your_pledge_to_amount_for_project_name" formatted="false">Dein Finanzierungsbeitrag für or %{project_name} wurde erfolgreich auf %{amount} geändert. Wenn das Projekt sein Finanzierungsziel erreicht, wird deine Karte am %{project_deadline} belastet. Wir haben dir eine E-Mail mit genaueren Angaben gesendet.</string>
   <string name="Zip_code" formatted="false">Postleitzahl</string>

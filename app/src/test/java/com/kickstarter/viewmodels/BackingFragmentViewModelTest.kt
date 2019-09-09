@@ -307,7 +307,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     fun testShippingLocation() {
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .location(LocationFactory.nigeria())
+                .locationName(LocationFactory.nigeria().displayableName())
                 .build()
         val backedProject = ProjectFactory.backedProject()
                 .toBuilder()

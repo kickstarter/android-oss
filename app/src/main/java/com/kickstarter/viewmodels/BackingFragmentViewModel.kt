@@ -161,8 +161,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.shippingAmount)
 
             backing
-                    .map { it.location() }
-                    .map { it?.displayableName() }
+                    .map { it.locationName()?.let { name -> name } }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingLocation)

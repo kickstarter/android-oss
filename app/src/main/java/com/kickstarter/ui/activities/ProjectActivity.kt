@@ -449,10 +449,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val backStackEntryCount = supportFragmentManager.backStackEntryCount
         val backStackIsNotEmpty = backStackEntryCount > 0
         val topOfStackIndex = backStackEntryCount.minus(1)
-        val pledgeFragmentOnTopOfBackStack = supportFragmentManager.getBackStackEntryAt(topOfStackIndex).name == PledgeFragment::class.java.simpleName
 
         val pledgeReason = when {
-            backStackIsNotEmpty && pledgeFragmentOnTopOfBackStack -> {
+            backStackIsNotEmpty && supportFragmentManager.getBackStackEntryAt(topOfStackIndex).name == PledgeFragment::class.java.simpleName -> {
                 pledgeFragment?.arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON)
             }
             else -> null

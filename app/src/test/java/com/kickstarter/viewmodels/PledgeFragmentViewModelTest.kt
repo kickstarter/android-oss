@@ -1,13 +1,16 @@
 package com.kickstarter.viewmodels
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
@@ -20,9 +23,11 @@ import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
+import junit.framework.TestCase
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import java.net.CookieManager
 import java.util.*
 
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
@@ -986,6 +991,36 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.increasePledgeButtonIsEnabled.assertValues(true, false)
         this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10")
+    }
+
+    @Test
+    fun testRefTagIsSent() {
+        val project = ProjectFactory.project()
+        val sharedPreferences: SharedPreferences = MockSharedPreferences()
+        val cookieManager = CookieManager()
+
+        val environment = environment()
+                .toBuilder()
+                .cookieManager(cookieManager)
+                .sharedPreferences(sharedPreferences)
+                .apolloClient(object : MockApolloClient() {
+                    override fun createBacking(project: Project, amount: String,
+                                               paymentSourceId: String, locationId: String?,
+                                               reward: Reward?, refTag: RefTag?): Observable<Boolean> {
+                        //Assert that stored cookie is passed in
+                        TestCase.assertEquals(refTag, RefTag.discovery())
+                        return super.createBacking(project, amount, paymentSourceId, locationId, reward, refTag)
+                    }
+                })
+                .build()
+
+        //Store discovery ref tag for project
+        RefTagUtils.storeCookie(RefTag.discovery(), project, cookieManager, sharedPreferences)
+
+        setUpEnvironment(environment, RewardFactory.noReward(), project)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+        this.vm.inputs.pledgeButtonClicked("t3st")
     }
 
     @Test

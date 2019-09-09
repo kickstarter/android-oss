@@ -59,7 +59,7 @@ public class MockSharedPreferences implements SharedPreferences {
 
   @Override
   public Editor edit() {
-    return editor;
+    return this.editor;
   }
 
   @Override
@@ -72,54 +72,53 @@ public class MockSharedPreferences implements SharedPreferences {
 
   final class MapEditor implements Editor {
 
-    final HashMap<String, Object> map = new HashMap<>();
-
+    final Map<String, Object> map = new HashMap<>();
 
     @Override
-    public Editor putString(String key, @Nullable String value) {
-      map.put(key, value);
+    public Editor putString(final String key, final @Nullable String value) {
+      this.map.put(key, value);
       return this;
     }
 
     @Override
-    public Editor putStringSet(String key, @Nullable Set<String> values) {
-      map.put(key, values);
+    public Editor putStringSet(final String key, final @Nullable Set<String> values) {
+      this.map.put(key, values);
       return this;
     }
 
     @Override
-    public Editor putInt(String key, int value) {
-      map.put(key, value);
+    public Editor putInt(final String key, final int value) {
+      this.map.put(key, value);
       return this;
     }
 
     @Override
-    public Editor putLong(String key, long value) {
-      map.put(key, value);
+    public Editor putLong(final String key, final long value) {
+      this.map.put(key, value);
       return this;
     }
 
     @Override
-    public Editor putFloat(String key, float value) {
-      map.put(key, value);
+    public Editor putFloat(final String key, final float value) {
+      this.map.put(key, value);
       return this;
     }
 
     @Override
-    public Editor putBoolean(String key, boolean value) {
-      map.put(key, value);
+    public Editor putBoolean(final String key, final boolean value) {
+      this.map.put(key, value);
       return this;
     }
 
     @Override
-    public Editor remove(String key) {
-      map.remove(key);
+    public Editor remove(final String key) {
+      this.map.remove(key);
       return this;
     }
 
     @Override
     public Editor clear() {
-      map.clear();
+      this.map.clear();
       return this;
     }
 

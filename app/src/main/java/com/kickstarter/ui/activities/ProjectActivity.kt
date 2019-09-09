@@ -443,9 +443,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun handleNativeCheckoutBackPress() {
-        val rewardsSheetIsExpanded = pledge_container.alpha == 1f
-        val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
+        val pledgeSheetIsExpanded = pledge_container.alpha == 1f
 
+        val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
         val backStackEntryCount = supportFragmentManager.backStackEntryCount
         val backStackIsNotEmpty = backStackEntryCount > 0
         val topOfStackIndex = backStackEntryCount.minus(1)
@@ -459,8 +459,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
         when {
             pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD -> pledgeFragment?.backPressed()
-            backStackIsNotEmpty && rewardsSheetIsExpanded -> supportFragmentManager.popBackStack()
-            rewardsSheetIsExpanded -> this.viewModel.inputs.collapsePledgeSheet()
+            backStackIsNotEmpty && pledgeSheetIsExpanded -> supportFragmentManager.popBackStack()
+            pledgeSheetIsExpanded -> this.viewModel.inputs.collapsePledgeSheet()
             else -> {
                 clearFragmentBackStack()
                 super.back()

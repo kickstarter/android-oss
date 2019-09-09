@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.os.Bundle
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
@@ -298,16 +299,19 @@ interface PledgeFragmentViewModel {
             val userIsLoggedIn = this.currentUser.isLoggedIn
                     .distinctUntilChanged()
 
-            val reward = arguments()
+            val arguments = arguments()
+                    .compose<Bundle>(takeWhen(this.onGlobalLayout))
+
+            val reward = arguments
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward }
 
-            val screenLocation = arguments()
+            val screenLocation = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation? }
 
-            val project = arguments()
+            val project = arguments
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project }
 
-            val pledgeReason = arguments()
+            val pledgeReason = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
 
             val updatingPayment = pledgeReason
@@ -676,7 +680,7 @@ interface PledgeFragmentViewModel {
             // Payment section
             pledgeReason
                     .map { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(userIsLoggedIn.distinctUntilChanged()))
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(userIsLoggedIn))
                     .map { it.first || !it.second }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -688,8 +692,8 @@ interface PledgeFragmentViewModel {
 
             userIsLoggedIn
                     .filter { BooleanUtils.isTrue(it) }
+                    .compose<Boolean>(waitUntil(total))
                     .switchMap { storedCards() }
-                    .delaySubscription(total)
                     .compose<Pair<List<StoredCard>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
                     .subscribe(this.cardsAndProject)

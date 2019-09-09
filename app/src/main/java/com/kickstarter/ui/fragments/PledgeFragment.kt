@@ -460,6 +460,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val visibility = if (gone) View.GONE else View.VISIBLE
         setVisibility(visibility, reward_snapshot, reward_to_copy, expand_icon_container)
         ViewUtils.setInvisible(pledge_root, !gone)
+        pledge_background.alpha = if (gone) 1f else 0f
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {

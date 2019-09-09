@@ -139,11 +139,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
         this.vm.arguments(bundle)
-    }
-
-    @Test
-    fun testAnimateRewardCard() {
-        setUpEnvironment(environment())
 
         this.vm.inputs.onGlobalLayout()
         this.animateRewardCard.assertValueCount(1)
@@ -934,13 +929,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeStepping_maxReward() {
+    fun testPledgeStepping_maxReward_USProject() {
         setUpEnvironment(environment(), RewardFactory.maxReward(Country.US))
         this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false)
         this.increasePledgeButtonIsEnabled.assertValuesAndClear(false)
         this.additionalPledgeAmountIsGone.assertValuesAndClear(true)
         this.additionalPledgeAmount.assertValuesAndClear("$0")
+    }
 
+    @Test
+    fun testPledgeStepping_maxReward_MXProject() {
         setUpEnvironment(environment(), RewardFactory.maxReward(Country.MX), ProjectFactory.mxProject())
         this.decreasePledgeButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(false)
@@ -949,7 +947,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeStepping_almostMaxReward() {
+    fun testPledgeStepping_almostMaxReward_USProject() {
         val almostMaxReward = RewardFactory.reward()
                 .toBuilder()
                 .minimum((Country.US.maxPledge - Country.US.minPledge).toDouble())
@@ -967,7 +965,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.increasePledgeButtonIsEnabled.assertValuesAndClear(true, false)
         this.additionalPledgeAmountIsGone.assertValuesAndClear(true, false)
         this.additionalPledgeAmount.assertValuesAndClear("$0", "$1")
+    }
 
+    @Test
+    fun testPledgeStepping_almostMaxReward_MXProject() {
         val almostMaxMXReward = RewardFactory.reward()
                 .toBuilder()
                 .minimum((Country.MX.maxPledge - Country.MX.minPledge).toDouble())

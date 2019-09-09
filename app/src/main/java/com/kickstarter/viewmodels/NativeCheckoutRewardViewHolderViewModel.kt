@@ -344,13 +344,13 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone
 
         @NonNull
+        override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountTitle
+
+        @NonNull
         override fun remaining(): Observable<String> = this.remaining
 
         @NonNull
         override fun remainingIsGone(): Observable<Boolean> = this.remainingIsGone
-
-        @NonNull
-        override fun minimumAmountTitle(): Observable<SpannableString> = this.minimumAmountTitle
 
         @NonNull
         override fun reward(): Observable<Reward> = this.reward

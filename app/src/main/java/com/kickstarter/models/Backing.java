@@ -26,6 +26,7 @@ public abstract class Backing implements Parcelable, Relay {
   public abstract long id();
   public abstract @Nullable Location location();
   public abstract @Nullable Long locationId();
+  public abstract @Nullable String locationName();
   public abstract @Nullable PaymentSource paymentSource();
   public abstract DateTime pledgedAt();
   public abstract @Nullable Project project();
@@ -48,6 +49,7 @@ public abstract class Backing implements Parcelable, Relay {
     public abstract Builder id(long __);
     public abstract Builder location(Location __);
     public abstract Builder locationId(Long __);
+    public abstract Builder locationName(String __);
     public abstract Builder paymentSource(PaymentSource __);
     public abstract Builder pledgedAt(DateTime __);
     public abstract Builder project(Project __);

@@ -84,6 +84,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { shipping_summary_amount.text = it }
 
+        this.viewModel.outputs.shippingLocation()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it)  }
+
         this.viewModel.outputs.shippingSummaryIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())

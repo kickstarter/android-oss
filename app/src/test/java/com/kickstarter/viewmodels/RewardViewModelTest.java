@@ -3,11 +3,7 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.mock.MockCurrentConfig;
-import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.models.Project;
@@ -135,79 +131,42 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testConversionHiddenForProject() {
-    // Set the project currency and the user's chosen currency to the same value
+  public void testConversion_USDProject_currentCurrencyUSD() {
     setUpEnvironment(environment());
-    final Project project = ProjectFactory.project().toBuilder().currency("USD").currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward();
 
-    // the conversion should be hidden.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.conversionTextViewText.assertValueCount(1);
+    final Project usProject = ProjectFactory.project()
+      .toBuilder()
+      .currentCurrency("USD")
+      .build();
+    final Reward reward = RewardFactory.reward()
+      .toBuilder()
+      .minimum(50.0)
+      .convertedMinimum(50.0)
+      .build();
+
+    this.vm.inputs.projectAndReward(usProject, reward);
+    this.conversionTextViewText.assertValue("$50");
     this.conversionSectionIsGone.assertValue(true);
   }
 
   @Test
-  public void testConversionShownForProject() {
-    // Set the project currency and the user's chosen currency to different values
+  public void testConversion_CADProject_currentCurrencyUSD() {
+    final Project caProject = ProjectFactory.caProject()
+      .toBuilder()
+      .currentCurrency("USD")
+      .build();
+
+    final Reward reward = RewardFactory.reward()
+      .toBuilder()
+      .minimum(50.0)
+      .convertedMinimum(40.0)
+      .build();
+
     setUpEnvironment(environment());
-    final Project project = ProjectFactory.project().toBuilder().currency("CAD").currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward();
 
-    // USD conversion should shown.
-    this.vm.inputs.projectAndReward(project, reward);
-    this.conversionTextViewText.assertValueCount(1);
+    this.vm.inputs.projectAndReward(caProject, reward);
+    this.conversionTextViewText.assertValue("$40");
     this.conversionSectionIsGone.assertValue(false);
-  }
-
-  @Test
-  public void testConversionTextRoundsUp_USUser_prefersUSD() {
-    // Set user's country to US.
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.configForUSUser());
-    final Environment environment = environment().toBuilder()
-      .currentConfig(currentConfig)
-      .ksCurrency(new KSCurrency(currentConfig))
-      .build();
-    setUpEnvironment(environment);
-
-    // Set project's country to CA with USD preference and reward minimum to $1.30.
-    final Project project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward().toBuilder().minimum(1.3f).build();
-
-    // USD conversion should be rounded normally.
-    this.vm.inputs.projectAndReward(project, reward);
-    // converts to $0.98
-    this.conversionTextViewText.assertValuesAndClear("$1");
-
-    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2f).build());
-    // converts to $1.50
-    this.conversionTextViewText.assertValue("$2");
-  }
-
-  @Test
-  public void testConversionTextRoundsUp_ITUser_prefersUSD() {
-    // Set user's country to IT.
-    final CurrentConfigType currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.configForITUser());
-    final Environment environment = environment().toBuilder()
-      .currentConfig(currentConfig)
-      .ksCurrency(new KSCurrency(currentConfig))
-      .build();
-    setUpEnvironment(environment);
-
-    // Set project's country to CA with USD preference and reward minimum to $1.30.
-    final Project project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build();
-    final Reward reward = RewardFactory.reward().toBuilder().minimum(1.3f).build();
-
-    // USD conversion should be rounded normally.
-    this.vm.inputs.projectAndReward(project, reward);
-    // converts to $0.98
-    this.conversionTextViewText.assertValuesAndClear("US$ 1");
-
-    this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2f).build());
-    // converts to $1.50
-    this.conversionTextViewText.assertValue("US$ 2");
   }
 
   @Test

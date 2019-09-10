@@ -40,6 +40,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
     private val showCancelPledgeFragment = TestSubscriber<Project>()
     private val showCancelPledgeSuccess = TestSubscriber<Void>()
+    private val showPledgeNotCancelableDialog = TestSubscriber<Void>()
     private val showSavedPromptTest = TestSubscriber<Void>()
     private val showShareSheet = TestSubscriber<Project>()
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
@@ -71,6 +72,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showCancelPledgeFragment().subscribe(this.showCancelPledgeFragment)
         this.vm.outputs.showCancelPledgeSuccess().subscribe(this.showCancelPledgeSuccess)
+        this.vm.outputs.showPledgeNotCancelableDialog().subscribe(this.showPledgeNotCancelableDialog)
         this.vm.outputs.showSavedPrompt().subscribe(this.showSavedPromptTest)
         this.vm.outputs.showShareSheet().subscribe(this.showShareSheet)
         this.vm.outputs.showUpdatePledge().subscribe(this.showUpdatePledge)
@@ -599,15 +601,41 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowCancelPledgeFragment() {
+    fun testShowCancelPledgeFragment_whenBackingIsCancelable() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .cancelable(true)
+                .build()
 
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.cancelPledgeClicked()
         this.showCancelPledgeFragment.assertValue(backedProject)
+    }
+
+    @Test
+    fun testShowCancelPledgeFragment_whenBackingIsNotCancelable() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .cancelable(false)
+                .build()
+
+        // Start the view model with a backed project
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.cancelPledgeClicked()
+        this.showCancelPledgeFragment.assertNoValues()
     }
 
     @Test
@@ -620,6 +648,44 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.contactCreatorClicked()
         this.startMessagesActivity.assertValue(backedProject)
+    }
+
+    @Test
+    fun testShowPledgeNotCancelableDialog_whenBackingIsCancelable() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .cancelable(true)
+                .build()
+
+        // Start the view model with a backed project
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.cancelPledgeClicked()
+        this.showPledgeNotCancelableDialog.assertNoValues()
+    }
+
+    @Test
+    fun testShowPledgeNotCancelableDialog_whenBackingIsNotCancelable() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .cancelable(false)
+                .build()
+
+        // Start the view model with a backed project
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.cancelPledgeClicked()
+        this.showPledgeNotCancelableDialog.assertValueCount(1)
     }
 
     @Test

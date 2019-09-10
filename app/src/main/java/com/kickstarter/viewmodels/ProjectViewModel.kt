@@ -145,6 +145,9 @@ interface ProjectViewModel {
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.BackingFragment]. */
         fun showBackingFragment(): Observable<Project>
 
+        /** Emits when we should show the not cancelable dialog. */
+        fun showPledgeNotCancelableDialog(): Observable<Void>
+
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment]. */
         fun showRewardsFragment(): Observable<Project>
 
@@ -239,6 +242,7 @@ interface ProjectViewModel {
         private val showBackingFragment = BehaviorSubject.create<Project>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
+        private val showPledgeNotCancelableDialog = PublishSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Project>()
         private val showSavedPrompt = PublishSubject.create<Void>()
@@ -422,10 +426,21 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.managePledgeMenu)
 
-            nativeCheckoutProject
+            val backedProject = nativeCheckoutProject
+                    .filter { it.isBacking }
+
+            backedProject
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
+                    .filter { BooleanUtils.isTrue(it.backing()?.cancelable()?: false) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeFragment)
+
+            backedProject
+                    .compose<Project>(takeWhen(this.cancelPledgeClicked))
+                    .filter { BooleanUtils.isFalse(it.backing()?.cancelable()?: true) }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showPledgeNotCancelableDialog)
 
             nativeCheckoutProject
                     .compose<Project>(takeWhen(this.contactCreatorClicked))
@@ -748,6 +763,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
+
+        @NonNull
+        override fun showPledgeNotCancelableDialog(): Observable<Void> = this.showPledgeNotCancelableDialog
 
         @NonNull
         override fun showRewardsFragment(): Observable<Project> = this.showRewardsFragment

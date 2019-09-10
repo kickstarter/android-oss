@@ -5,10 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
@@ -159,73 +156,42 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversion() {
+    fun testConversion_USDProject_currentCurrencyUSD() {
         setUpEnvironment(environment())
-        // Set the project currency and the user's chosen currency to the same value
+
         val usProject = ProjectFactory.project()
+                .toBuilder()
+                .currentCurrency("USD")
+                .build()
         val reward = RewardFactory.reward()
+                .toBuilder()
+                .minimum(50.0)
+                .convertedMinimum(50.0)
+                .build()
 
-        // the conversion should be hidden.
         this.vm.inputs.projectAndReward(usProject, reward)
-        this.conversion.assertValueCount(1)
-        this.conversionIsGone.assertValuesAndClear(true)
+        this.conversion.assertValue("$50")
+        this.conversionIsGone.assertValue(true)
+    }
 
-        val caProject = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
+    @Test
+    fun testConversion_CADProject_currentCurrencyUSD() {
+        setUpEnvironment(environment())
 
-        // USD conversion should shown.
+        val caProject = ProjectFactory.caProject()
+                .toBuilder()
+                .currentCurrency("USD")
+                .build()
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .minimum(50.0)
+                .convertedMinimum(40.0)
+                .build()
+
         this.vm.inputs.projectAndReward(caProject, reward)
-        this.conversion.assertValueCount(2)
-        this.conversionIsGone.assertValues(false)
-    }
-
-    @Test
-    fun testConversionTextRoundsUp_USUser_prefersUSD() {
-        // Set user's country to US.
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(ConfigFactory.configForUSUser())
-        val environment = environment().toBuilder()
-                .currentConfig(currentConfig)
-                .ksCurrency(KSCurrency(currentConfig))
-                .build()
-        setUpEnvironment(environment)
-
-        // Set project's country to CA with USD preference and reward minimum to $1.30.
-        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
-
-        // USD conversion should be rounded normally.
-        this.vm.inputs.projectAndReward(project, reward)
-        // converts to $0.98
-        this.conversion.assertValuesAndClear("$1")
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
-        // converts to $1.50
-        this.conversion.assertValue("$2")
-    }
-
-    @Test
-    fun testConversionTextRoundsUp_ITUser_prefersUSD() {
-        // Set user's country to IT.
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(ConfigFactory.configForITUser())
-        val environment = environment().toBuilder()
-                .currentConfig(currentConfig)
-                .ksCurrency(KSCurrency(currentConfig))
-                .build()
-        setUpEnvironment(environment)
-
-        // Set project's country to CA with USD preference and reward minimum to $1.30.
-        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
-
-        // USD conversion should be rounded normally.
-        this.vm.inputs.projectAndReward(project, reward)
-        // converts to $0.98
-        this.conversion.assertValuesAndClear("US$ 1")
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
-        // converts to $1.50
-        this.conversion.assertValue("US$ 2")
+        this.conversion.assertValue("$40")
+        this.conversionIsGone.assertValue(false)
     }
 
     @Test

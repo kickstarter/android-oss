@@ -152,7 +152,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .map { BooleanUtils.negate(it) }
 
             this.conversion = this.projectAndReward
-                    .map { this.ksCurrency.formatWithUserPreference(it.second.minimum(), it.first, RoundingMode.HALF_UP, 0) }
+                    .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true) }
 
             this.descriptionForNoReward = this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }

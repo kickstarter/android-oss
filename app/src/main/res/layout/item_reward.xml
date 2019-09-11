@@ -61,6 +61,33 @@
             android:textStyle="bold"
             tools:text="Make a pledge without a reward" />
 
+          <TextView
+            style="@style/RewardPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/grid_3"
+            tools:text="327 backers" />
+
+          <LinearLayout
+            android:id="@+id/reward_description_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+              style="@style/RewardSectionTitle"
+              android:layout_marginTop="@dimen/grid_3"
+              android:text="@string/Description" />
+
+            <TextView
+              android:id="@+id/reward_description_text_view"
+              style="@style/BodyPrimary"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/grid_1"
+              tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+          </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -93,7 +120,7 @@
           android:orientation="vertical">
 
           <LinearLayout
-            android:id="@+id/reward_description_container"
+            android:id="@+id/reward_estimated_delivery_date_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -101,15 +128,15 @@
             <TextView
               style="@style/RewardSectionTitle"
               android:layout_marginTop="@dimen/grid_3"
-              android:text="@string/Description" />
+              android:text="@string/Estimated_delivery" />
 
             <TextView
-              android:id="@+id/reward_description_text_view"
+              android:id="@+id/reward_estimated_delivery"
               style="@style/BodyPrimary"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginTop="@dimen/grid_1"
-              tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+              tools:text="December 2019" />
           </LinearLayout>
 
         <com.google.android.flexbox.FlexboxLayout

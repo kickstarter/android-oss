@@ -150,8 +150,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         init {
 
-             this.projectAndReward
+            this.projectAndReward
                     .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
+                    .compose(bindToLifecycle())
                     .subscribe(this.minimumAmountTitle)
 
             val reward = this.projectAndReward
@@ -208,6 +209,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
             this.projectAndReward
                     .map { isSelectable(it.first, it.second) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
                     .subscribe(this.buttonIsEnabled)
 
             this.projectAndReward

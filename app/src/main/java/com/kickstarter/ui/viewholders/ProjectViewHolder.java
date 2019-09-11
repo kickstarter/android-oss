@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -90,7 +89,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.view_pledge_button) @Nullable MaterialButton viewPledgeButton;
-  protected @Bind(R.id.view_rewards_button) @Nullable MaterialButton viewRewardsButton;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
@@ -132,7 +130,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
     void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
     void projectViewHolderViewPledgeClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderViewRewardsClicked(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -495,11 +492,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderViewPledgeClicked(this);
   }
 
-  @Nullable @OnClick(R.id.view_rewards_button)
-  public void viewRewardsOnClick() {
-    this.delegate.projectViewHolderViewRewardsClicked(this);
-  }
-
   @OnClick(R.id.updates)
   public void updatesClick() {
     this.delegate.projectViewHolderUpdatesClicked(this);
@@ -510,17 +502,10 @@ public final class ProjectViewHolder extends KSViewHolder {
    */
   private void setLandscapeActionButton(final @NonNull Project project) {
     if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
-      final Button viewRewards;
-      if (environment().nativeCheckoutPreference().get()) {
-        viewRewards = this.viewRewardsButton;
-        final int cornerRadius = context().getResources().getDimensionPixelSize(R.dimen.grid_2);
-        this.backProjectButton.setCornerRadius(cornerRadius);
-        this.managePledgeButton.setCornerRadius(cornerRadius);
-        this.viewPledgeButton.setCornerRadius(cornerRadius);
-      } else {
-        viewRewards = null;
+      final boolean nativeCheckoutEnabled = environment().nativeCheckoutPreference().get();
+      if (!nativeCheckoutEnabled) {
+        ProjectViewUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
       }
-      ProjectViewUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton, viewRewards);
     }
   }
 

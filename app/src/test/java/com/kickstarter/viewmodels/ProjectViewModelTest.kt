@@ -30,7 +30,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val heartDrawableId = TestSubscriber<Int>()
     private val managePledgeMenu = TestSubscriber<Int?>()
     private val prelaunchUrl = TestSubscriber<String>()
+    private val progressBarIsGone = TestSubscriber<Boolean>()
+    private val projectActionButtonContainerIsGone = TestSubscriber<Boolean>()
     private val projectTest = TestSubscriber<Project>()
+    private val reloadProjectContainerIsGone = TestSubscriber<Boolean>()
     private val revealRewardsFragment = TestSubscriber<Void>()
     private val rewardsButtonColor = TestSubscriber<Int>()
     private val rewardsButtonText = TestSubscriber<Int>()
@@ -62,7 +65,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.managePledgeMenu().subscribe(this.managePledgeMenu)
         this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
+        this.vm.outputs.progressBarIsGone().subscribe(this.progressBarIsGone)
+        this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone)
         this.vm.outputs.projectAndUserCountry().map { pc -> pc.first }.subscribe(this.projectTest)
+        this.vm.outputs.reloadProjectContainerIsGone().subscribe(this.reloadProjectContainerIsGone)
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
@@ -116,8 +122,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         setUpEnvironment(environment)
-        val uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
-        this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
+        val intent = deepLinkIntent()
+        this.vm.intent(intent)
 
         this.projectTest.assertValues(project)
         this.prelaunchUrl.assertNoValues()
@@ -599,6 +605,254 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testProjectActionButtonContainerIsGone_whenProjectFromIntentSuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject())
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNoRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
+
+        this.projectActionButtonContainerIsGone.assertValues(true, false)
+    }
+
+    @Test
+    fun testProjectActionButtonContainerIsGone_whenProjectFromIntentUnsuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProject())
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNoRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
+
+        this.projectActionButtonContainerIsGone.assertValues(true)
+    }
+
+    @Test
+    fun testProjectActionButtonContainerIsGone_whenProjectFromDeepLinkSuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProjectFromParam())
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.projectActionButtonContainerIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testProjectActionButtonContainerIsGone_whenProjectFromDeepLinkUnsuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProjectFromParam())
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.projectActionButtonContainerIsGone.assertNoValues()
+    }
+
+    @Test
+    fun testProgressBarIsGone_whenProjectFromIntentSuccessfullyLoads() {
+        val environment = environment()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject())
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNoRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
+
+        this.progressBarIsGone.assertValues(false, true)
+    }
+
+    @Test
+    fun testProgressBarIsGone_whenProjectFromIntentUnsuccessfullyLoads() {
+        val environment = environment()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProject())
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNoRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
+
+        this.progressBarIsGone.assertValues(false, true)
+    }
+
+    @Test
+    fun testProgressBarIsGone_whenProjectFromDeepLinkSuccessfullyLoads() {
+        val environment = environment()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProjectFromParam())
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.progressBarIsGone.assertValues(false, true)
+    }
+
+    @Test
+    fun testProgressBarIsGone_whenProjectFromDeepLinkUnsuccessfullyLoads() {
+        val environment = environment()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProjectFromParam())
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.progressBarIsGone.assertValues(false, true)
+    }
+
+    @Test
+    fun testReloadProjectContainerIsGone_whenProjectFromIntentSuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject())
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNoRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
+
+        this.reloadProjectContainerIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testReloadProjectContainerIsGone_whenProjectFromIntentUnsuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProject())
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNoRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
+
+        this.reloadProjectContainerIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testReloadProjectContainerIsGone_whenProjectFromDeepLinkSuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProjectFromParam())
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.reloadProjectContainerIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testReloadProjectContainerIsGone_whenProjectFromDeepLinkUnsuccessfullyLoads() {
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProjectFromParam())
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.reloadProjectContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testReloadingProject_fromIntent() {
+        var error = true
+
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(object : MockApiClient() {
+                    override fun fetchProject(project: Project): Observable<Project> {
+                        val observable = when {
+                            error -> Observable.error(Throwable("boop"))
+                            else -> Observable.just(ProjectFactory.project())
+                        }
+                        return observable
+                    }
+                })
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNoRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
+
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.progressBarIsGone.assertValues(false, true)
+        this.reloadProjectContainerIsGone.assertValue(false)
+
+        error = false
+        this.vm.inputs.reloadProjectContainerClicked()
+
+        this.projectActionButtonContainerIsGone.assertValues(true, false)
+        this.progressBarIsGone.assertValues(false, true, false, true)
+        this.reloadProjectContainerIsGone.assertValues(false, true, true)
+    }
+
+    @Test
+    fun testReloadingProject_fromDeepLink() {
+        var error = true
+
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(object : MockApiClient() {
+                    override fun fetchProject(param: String): Observable<Project> {
+                        val observable = when {
+                            error -> Observable.error(Throwable("boop"))
+                            else -> Observable.just(ProjectFactory.project())
+                        }
+                        return observable
+                    }
+                })
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.projectActionButtonContainerIsGone.assertNoValues()
+        this.progressBarIsGone.assertValues(false, true)
+        this.reloadProjectContainerIsGone.assertValues(false)
+
+        error = false
+        this.vm.inputs.reloadProjectContainerClicked()
+
+        this.projectActionButtonContainerIsGone.assertValue(false)
+        this.progressBarIsGone.assertValues(false, true, false, true)
+        this.reloadProjectContainerIsGone.assertValues(false, true, true)
+    }
+
+    @Test
     fun testShowCancelPledgeFragment() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
@@ -685,6 +939,43 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeSuccessfullyUpdated()
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.projectTest.assertValueCount(3)
+    }
+
+    private fun apiClientWithErrorFetchingProject(): MockApiClient {
+        return object : MockApiClient() {
+            override fun fetchProject(project: Project): Observable<Project> {
+                return Observable.error(Throwable("boop"))
+            }
+        }
+    }
+
+    private fun apiClientWithSuccessFetchingProject(): MockApiClient {
+        return object : MockApiClient() {
+            override fun fetchProject(project: Project): Observable<Project> {
+                return Observable.just(ProjectFactory.project())
+            }
+        }
+    }
+
+    private fun apiClientWithErrorFetchingProjectFromParam(): MockApiClient {
+        return object : MockApiClient() {
+            override fun fetchProject(param: String): Observable<Project> {
+                return Observable.error(Throwable("boop"))
+            }
+        }
+    }
+
+    private fun apiClientWithSuccessFetchingProjectFromParam(): MockApiClient {
+        return object : MockApiClient() {
+            override fun fetchProject(param: String): Observable<Project> {
+                return Observable.just(ProjectFactory.project())
+            }
+        }
+    }
+
+    private fun deepLinkIntent(): Intent {
+        val uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
+        return Intent(Intent.ACTION_VIEW, uri)
     }
 
     private fun environmentWithNativeCheckoutEnabled() : Environment {

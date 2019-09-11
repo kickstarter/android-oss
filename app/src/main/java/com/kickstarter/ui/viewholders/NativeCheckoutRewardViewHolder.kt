@@ -9,13 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.*
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
-import com.kickstarter.libs.utils.RewardItemDecorator
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
@@ -25,8 +22,7 @@ import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.NativeCheckoutRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
-
-class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean?= false) : KSViewHolder(view) {
+class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(view) {
 
     interface Delegate {
         fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
@@ -157,6 +153,26 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setPledgeButtonVisibility(it) }
 
+        this.viewModel.outputs.backersCount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setBackersCount(it) }
+
+        this.viewModel.outputs.backersCountIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.reward_backers_count, this.inset || it) }
+
+        this.viewModel.outputs.estimatedDelivery()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_estimated_delivery.text = it }
+
+        this.viewModel.outputs.estimatedDeliveryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.reward_estimated_delivery_section, this.inset || it) }
+
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.rewardClicked() }
@@ -179,6 +195,12 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
         val value = RewardUtils.deadlineCountdownValue(reward)
         return "$value $detail"
+    }
+
+    private fun setBackersCount(count: Int) {
+        val backersCountText = this.ksString.format("rewards_info_backer_count_backers", count,
+                "backer_count", NumberUtils.format(count))
+        this.view.reward_backers_count.text = backersCountText
     }
 
     private fun setConversionTextView(@NonNull amount: String) {

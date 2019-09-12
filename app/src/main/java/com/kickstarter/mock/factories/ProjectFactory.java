@@ -7,6 +7,8 @@ import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
 
+import java.util.Arrays;
+
 import androidx.annotation.NonNull;
 
 public final class ProjectFactory {
@@ -41,6 +43,7 @@ public final class ProjectFactory {
       .name("Some Name")
       .pledged(50.0f)
       .photo(PhotoFactory.photo())
+      .rewards(Arrays.asList(RewardFactory.noReward(), RewardFactory.reward()))
       .staffPick(false)
       .state(Project.STATE_LIVE)
       .staticUsdRate(1.0f)

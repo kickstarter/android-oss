@@ -5,10 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
@@ -21,6 +18,8 @@ import rx.observers.TestSubscriber
 class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: NativeCheckoutRewardViewHolderViewModel.ViewModel
+    private val backersCount = TestSubscriber.create<Int>()
+    private val backersCountIsGone = TestSubscriber.create<Boolean>()
     private val buttonCTA = TestSubscriber.create<Int>()
     private val buttonIsEnabled = TestSubscriber<Boolean>()
     private val buttonIsGone = TestSubscriber.create<Boolean>()
@@ -30,6 +29,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val descriptionForReward = TestSubscriber<String?>()
     private val descriptionIsGone = TestSubscriber<Boolean>()
     private val endDateSectionIsGone = TestSubscriber<Boolean>()
+    private val estimatedDelivery = TestSubscriber<String>()
+    private val estimatedDeliveryIsGone = TestSubscriber<Boolean>()
     private val limitContainerIsGone = TestSubscriber<Boolean>()
     private val minimumAmountTitle = TestSubscriber<String>()
     private val remaining = TestSubscriber<String>()
@@ -47,6 +48,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment)
+        this.vm.outputs.backersCount().subscribe(this.backersCount)
+        this.vm.outputs.backersCountIsGone().subscribe(this.backersCountIsGone)
         this.vm.outputs.buttonCTA().subscribe(this.buttonCTA)
         this.vm.outputs.buttonIsEnabled().subscribe(this.buttonIsEnabled)
         this.vm.outputs.buttonIsGone().subscribe(this.buttonIsGone)
@@ -56,6 +59,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.descriptionForReward().subscribe(this.descriptionForReward)
         this.vm.outputs.descriptionIsGone().subscribe(this.descriptionIsGone)
         this.vm.outputs.endDateSectionIsGone().subscribe(this.endDateSectionIsGone)
+        this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
+        this.vm.outputs.estimatedDeliveryIsGone().subscribe(this.estimatedDeliveryIsGone)
         this.vm.outputs.remaining().subscribe(this.remaining)
         this.vm.outputs.remainingIsGone().subscribe(this.remainingIsGone)
         this.vm.outputs.limitContainerIsGone().subscribe(this.limitContainerIsGone)
@@ -70,6 +75,44 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
+    }
+
+    @Test
+    fun testBackersCount_whenReward_withBackers() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .backersCount(30)
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.backersCount.assertValue(30)
+        this.backersCountIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testBackersCount_whenReward_withNoBackers() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .backersCount(0)
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.backersCount.assertNoValues()
+        this.backersCountIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testBackersCount_whenNoReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.noReward())
+
+        this.backersCount.assertNoValues()
+        this.backersCountIsGone.assertValue(true)
     }
 
     @Test
@@ -159,79 +202,46 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testConversion() {
+    fun testConversion_USDProject_currentCurrencyUSD() {
         setUpEnvironment(environment())
-        // Set the project currency and the user's chosen currency to the same value
+
         val usProject = ProjectFactory.project()
+                .toBuilder()
+                .currentCurrency("USD")
+                .build()
         val reward = RewardFactory.reward()
+                .toBuilder()
+                .minimum(50.0)
+                .convertedMinimum(50.0)
+                .build()
 
-        // the conversion should be hidden.
         this.vm.inputs.projectAndReward(usProject, reward)
-        this.conversion.assertValueCount(1)
-        this.conversionIsGone.assertValuesAndClear(true)
+        this.conversion.assertValue("$50")
+        this.conversionIsGone.assertValue(true)
+    }
 
-        val caProject = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
+    @Test
+    fun testConversion_CADProject_currentCurrencyUSD() {
+        setUpEnvironment(environment())
 
-        // USD conversion should shown.
+        val caProject = ProjectFactory.caProject()
+                .toBuilder()
+                .currentCurrency("USD")
+                .build()
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .minimum(50.0)
+                .convertedMinimum(40.0)
+                .build()
+
         this.vm.inputs.projectAndReward(caProject, reward)
-        this.conversion.assertValueCount(2)
-        this.conversionIsGone.assertValues(false)
-    }
-
-    @Test
-    fun testConversionTextRoundsUp_USUser_prefersUSD() {
-        // Set user's country to US.
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(ConfigFactory.configForUSUser())
-        val environment = environment().toBuilder()
-                .currentConfig(currentConfig)
-                .ksCurrency(KSCurrency(currentConfig))
-                .build()
-        setUpEnvironment(environment)
-
-        // Set project's country to CA with USD preference and reward minimum to $1.30.
-        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
-
-        // USD conversion should be rounded normally.
-        this.vm.inputs.projectAndReward(project, reward)
-        // converts to $0.98
-        this.conversion.assertValuesAndClear("$1")
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
-        // converts to $1.50
-        this.conversion.assertValue("$2")
-    }
-
-    @Test
-    fun testConversionTextRoundsUp_ITUser_prefersUSD() {
-        // Set user's country to IT.
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(ConfigFactory.configForITUser())
-        val environment = environment().toBuilder()
-                .currentConfig(currentConfig)
-                .ksCurrency(KSCurrency(currentConfig))
-                .build()
-        setUpEnvironment(environment)
-
-        // Set project's country to CA with USD preference and reward minimum to $1.30.
-        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
-
-        // USD conversion should be rounded normally.
-        this.vm.inputs.projectAndReward(project, reward)
-        // converts to $0.98
-        this.conversion.assertValuesAndClear("US$ 1")
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
-        // converts to $1.50
-        this.conversion.assertValue("US$ 2")
+        this.conversion.assertValue("$40")
+        this.conversionIsGone.assertValue(false)
     }
 
     @Test
     fun testDescriptionOutputs() {
-        setUpEnvironment(environment())
-
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
         setUpEnvironment(environment())
@@ -306,6 +316,44 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), expiringReward)
         this.endDateSectionIsGone.assertValues(true, false, true)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenRewardHasEstimatedDelivery() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .estimatedDeliveryOn(DateTime.parse("2019-09-11T20:12:47+00:00"))
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.estimatedDelivery.assertValue("September 2019")
+        this.estimatedDeliveryIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenRewardHasNoEstimatedDelivery() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .estimatedDeliveryOn(null)
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenNoReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.noReward())
+
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryIsGone.assertValue(true)
     }
 
     @Test

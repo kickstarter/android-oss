@@ -26,7 +26,7 @@ public final class KSCurrency {
    * @param project      The project to use to look up currency information.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project, final @NonNull RoundingMode roundingMode) {
-    return format(initialValue, project, true, roundingMode);
+    return format(initialValue, project, true, roundingMode, false);
   }
 
   /**
@@ -38,7 +38,7 @@ public final class KSCurrency {
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
-    return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN);
+    return format(initialValue, project, excludeCurrencyCode, RoundingMode.DOWN, false);
   }
 
   /**
@@ -48,7 +48,7 @@ public final class KSCurrency {
    * @param project             The project to use to look up currency information.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project) {
-    return format(initialValue, project, true, RoundingMode.DOWN);
+    return format(initialValue, project, true, RoundingMode.DOWN, false);
   }
 
   /**
@@ -59,9 +59,9 @@ public final class KSCurrency {
    * @param excludeCurrencyCode If true, hide the US currency code for US users only.
    */
   public @NonNull String format(final double initialValue, final @NonNull Project project,
-    final boolean excludeCurrencyCode, final @NonNull RoundingMode roundingMode) {
+    final boolean excludeCurrencyCode, final @NonNull RoundingMode roundingMode, final boolean currentCurrency) {
 
-    final Country country = Country.findByCurrencyCode(project.currency());
+    final Country country = Country.findByCurrencyCode(currentCurrency ? project.currentCurrency() : project.currency());
     if (country == null) {
       return "";
     }

@@ -156,7 +156,7 @@ public interface RewardViewModel {
         .map(BooleanUtils::negate);
 
       this.conversionTextViewText = this.projectAndReward
-        .map(pr -> this.ksCurrency.formatWithUserPreference(pr.second.minimum(), pr.first, RoundingMode.HALF_UP, 0));
+        .map(pr -> this.ksCurrency.format(pr.second.convertedMinimum(), pr.first, true, RoundingMode.HALF_UP, true));
 
       this.descriptionTextViewText = reward.map(Reward::description);
 

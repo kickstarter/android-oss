@@ -13,7 +13,9 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
+import org.joda.time.DateTime
 import rx.Observable
+import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 
@@ -27,6 +29,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
     }
 
     interface Outputs {
+        /**  Emits the count of backers who have pledged this reward. */
+        fun backersCount(): Observable<Int>
+
+        /** Emits a boolean determining if the backers count should be shown. */
+        fun backersCountIsGone(): Observable<Boolean>
+
         /**  Emits the string resource ID to set on the pledge button. */
         fun buttonCTA(): Observable<Int>
 
@@ -53,6 +61,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         /** Emits `true` if the reward end date should be hidden,`false` otherwise. */
         fun endDateSectionIsGone(): Observable<Boolean>
+
+        /**  Emits the reward's localized estimated delivery date. */
+        fun estimatedDelivery(): Observable<String>
+
+        /** Emits a boolean determining if the estimated delivery should be shown. */
+        fun estimatedDeliveryIsGone(): Observable<Boolean>
 
         /** Emits `true` if the limits container should be hidden, `false` otherwise. */
         fun limitContainerIsGone(): Observable<Boolean>
@@ -103,58 +117,72 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Void>()
 
-        private val buttonCTA: Observable<Int>
-        private val buttonIsEnabled: Observable<Boolean>
-        private val buttonIsGone: Observable<Boolean>
-        private val conversion: Observable<String>
-        private val conversionIsGone: Observable<Boolean>
-        private val descriptionForNoReward: Observable<Int>
-        private val descriptionForReward: Observable<String?>
-        private val descriptionIsGone: Observable<Boolean>
-        private val endDateSectionIsGone: Observable<Boolean>
-        private val limitContainerIsGone: Observable<Boolean>
-        private val minimumAmountTitle: Observable<SpannableString>
-        private val remaining: Observable<String>
-        private val remainingIsGone: Observable<Boolean>
-        private val reward: Observable<Reward>
-        private val rewardItems: Observable<List<RewardsItem>>
-        private val rewardItemsAreGone: Observable<Boolean>
-        private val shippingSummary: Observable<String>
-        private val shippingSummaryIsGone: Observable<Boolean>
-        private val showPledgeFragment: Observable<Pair<Project, Reward>>
-        private val startBackingActivity: Observable<Project>
-        private val titleForNoReward: Observable<Int>
-        private val titleForReward: Observable<String?>
-        private val titleIsGone: Observable<Boolean>
+        private val backersCount = BehaviorSubject.create<Int>()
+        private val backersCountIsGone = BehaviorSubject.create<Boolean>()
+        private val buttonCTA = BehaviorSubject.create<Int>()
+        private val buttonIsEnabled = BehaviorSubject.create<Boolean>()
+        private val buttonIsGone = BehaviorSubject.create<Boolean>()
+        private val conversion = BehaviorSubject.create<String>()
+        private val conversionIsGone = BehaviorSubject.create<Boolean>()
+        private val descriptionForNoReward = BehaviorSubject.create<Int>()
+        private val descriptionForReward = BehaviorSubject.create<String?>()
+        private val descriptionIsGone = BehaviorSubject.create<Boolean>()
+        private val endDateSectionIsGone = BehaviorSubject.create<Boolean>()
+        private val estimatedDelivery = BehaviorSubject.create<String>()
+        private val estimatedDeliveryIsGone = BehaviorSubject.create<Boolean>()
+        private val limitContainerIsGone = BehaviorSubject.create<Boolean>()
+        private val minimumAmountTitle = PublishSubject.create<SpannableString>()
+        private val remaining = BehaviorSubject.create<String>()
+        private val remainingIsGone = BehaviorSubject.create<Boolean>()
+        private val reward = BehaviorSubject.create<Reward>()
+        private val rewardItems = BehaviorSubject.create<List<RewardsItem>>()
+        private val rewardItemsAreGone = BehaviorSubject.create<Boolean>()
+        private val shippingSummary = BehaviorSubject.create<String>()
+        private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
+        private val showPledgeFragment = PublishSubject.create<Pair<Project, Reward>>()
+        private val startBackingActivity = PublishSubject.create<Project>()
+        private val titleForNoReward = BehaviorSubject.create<Int>()
+        private val titleForReward = BehaviorSubject.create<String?>()
+        private val titleIsGone = BehaviorSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
 
-            this.minimumAmountTitle = this.projectAndReward
+            this.projectAndReward
                     .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.minimumAmountTitle)
 
             val reward = this.projectAndReward
                     .map { it.second }
 
-            this.buttonIsGone = this.projectAndReward
+            this.projectAndReward
                     .map { BackingUtils.isBacked(it.first, it.second) || it.first.isLive }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.buttonIsGone)
 
-            this.buttonCTA = this.projectAndReward
+            this.projectAndReward
                     .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.buttonCTA)
 
-            this.conversionIsGone = this.projectAndReward
-                    .map { it.first.currency() != it.first.currentCurrency() }
-                    .map { BooleanUtils.negate(it) }
+            this.projectAndReward
+                    .map { it.first }
+                    .map { it.currency() == it.currentCurrency() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.conversionIsGone)
 
-            this.conversion = this.projectAndReward
+            this.projectAndReward
                     .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.conversion)
 
-            this.descriptionForNoReward = this.projectAndReward
+            this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
                     .map {
                         val backed = BackingUtils.isBacked(it.first, it.second)
@@ -163,54 +191,78 @@ interface NativeCheckoutRewardViewHolderViewModel {
                             else -> R.string.Back_it_because_you_believe_in_it
                         }
                     }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.descriptionForNoReward)
 
-            this.descriptionForReward = reward
+            reward
                     .filter { RewardUtils.isReward(it) }
                     .map { it.description() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.descriptionForReward)
 
-            this.descriptionIsGone = this.projectAndReward
+            this.projectAndReward
                     .map { RewardUtils.isReward(it.second) && it.second.description().isNullOrEmpty() }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.descriptionIsGone)
 
-            this.buttonIsEnabled = this.projectAndReward
+            this.projectAndReward
                     .map { isSelectable(it.first, it.second) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.buttonIsEnabled)
 
-            this.startBackingActivity = this.projectAndReward
+            this.projectAndReward
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
                     .filter { ProjectUtils.isCompleted(it.first) && BackingUtils.isBacked(it.first, it.second) }
                     .map { it.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startBackingActivity)
 
-            this.remainingIsGone = this.projectAndReward
-                    .map<Boolean> { it.first.isLive && RewardUtils.isLimited(it.second) }
-                    .map<Boolean> { BooleanUtils.negate(it) }
+            this.projectAndReward
+                    .map { it.first.isLive && RewardUtils.isLimited(it.second) }
+                    .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.remainingIsGone)
 
-            this.remaining = reward
+            reward
                     .filter { RewardUtils.isLimited(it) }
                     .map { it.remaining() }
                     .map { remaining -> remaining?.let { NumberUtils.format(it) } }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.remaining)
 
-            this.rewardItems = reward
+            reward
                     .filter { RewardUtils.isItemized(it) }
                     .map { it.rewardsItems() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardItems)
 
-            this.rewardItemsAreGone = reward
-                    .map<Boolean> { RewardUtils.isItemized(it) }
-                    .map<Boolean> { BooleanUtils.negate(it) }
+            reward
+                    .map { RewardUtils.isItemized(it) }
+                    .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardItemsAreGone)
 
-            this.reward = reward
+            reward
+                    .compose(bindToLifecycle())
+                    .subscribe(this.reward)
 
-            this.endDateSectionIsGone = this.projectAndReward
+            this.projectAndReward
                     .map { expirationDateIsGone(it.first, it.second) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.endDateSectionIsGone)
 
-            this.showPledgeFragment = this.projectAndReward
+            this.projectAndReward
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showPledgeFragment)
 
-            this.titleForNoReward = this.projectAndReward
+            this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
                     .map {
                         val backed = BackingUtils.isBacked(it.first, it.second)
@@ -219,27 +271,64 @@ interface NativeCheckoutRewardViewHolderViewModel {
                             else -> R.string.Pledge_without_a_reward
                         }
                     }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.titleForNoReward)
 
-            this.titleForReward = reward
+            reward
                     .filter { RewardUtils.isReward(it) }
                     .map { it.title() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.titleForReward)
 
-            this.titleIsGone = reward
+            reward
                     .map { RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.titleIsGone)
 
-            this.shippingSummary = reward
+            reward
                     .filter { RewardUtils.isShippable(it) }
                     .map { it.shippingSummary() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingSummary)
 
-            this.shippingSummaryIsGone = this.projectAndReward
+            this.projectAndReward
                     .map { it.first.isLive && RewardUtils.isShippable(it.second) }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingSummaryIsGone)
 
-            this.limitContainerIsGone = Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone)
-            { endDateGone, remainingGone, shippingGone  -> endDateGone && remainingGone && shippingGone }
+            Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone)
+            { endDateGone, remainingGone, shippingGone -> endDateGone && remainingGone && shippingGone }
                     .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.limitContainerIsGone)
+
+            reward
+                    .map { RewardUtils.isNoReward(it) || !RewardUtils.hasBackers(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backersCountIsGone)
+
+            reward
+                    .filter { RewardUtils.isReward(it) && RewardUtils.hasBackers(it) }
+                    .map { it.backersCount() as Int }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backersCount)
+
+            reward
+                    .map { RewardUtils.isNoReward(it) || ObjectUtils.isNull(it.estimatedDeliveryOn()) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDeliveryIsGone)
+
+            reward
+                    .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                    .map<DateTime> { it.estimatedDeliveryOn() }
+                    .map { DateTimeUtils.estimatedDeliveryOn(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDelivery)
 
         }
 
@@ -268,6 +357,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
         }
 
         @NonNull
+        override fun backersCount(): Observable<Int> = this.backersCount
+
+        @NonNull
+        override fun backersCountIsGone(): Observable<Boolean> = this.backersCountIsGone
+
+        @NonNull
         override fun buttonCTA(): Observable<Int> = this.buttonCTA
 
         @NonNull
@@ -277,10 +372,10 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun buttonIsGone(): Observable<Boolean> = this.buttonIsGone
 
         @NonNull
-        override fun conversionIsGone(): Observable<Boolean> = this.conversionIsGone
+        override fun conversion(): Observable<String> = this.conversion
 
         @NonNull
-        override fun conversion(): Observable<String> = this.conversion
+        override fun conversionIsGone(): Observable<Boolean> = this.conversionIsGone
 
         @NonNull
         override fun descriptionForNoReward(): Observable<Int> = this.descriptionForNoReward
@@ -293,6 +388,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         @NonNull
         override fun endDateSectionIsGone(): Observable<Boolean> = this.endDateSectionIsGone
+
+        @NonNull
+        override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
+
+        @NonNull
+        override fun estimatedDeliveryIsGone(): Observable<Boolean> = this.estimatedDeliveryIsGone
 
         @NonNull
         override fun limitContainerIsGone(): Observable<Boolean> = this.limitContainerIsGone

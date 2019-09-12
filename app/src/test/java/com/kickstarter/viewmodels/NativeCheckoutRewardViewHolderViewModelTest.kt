@@ -319,7 +319,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testEstimatedDelivery_whenReward() {
+    fun testEstimatedDelivery_whenRewardHasEstimatedDelivery() {
         setUpEnvironment(environment())
 
         val reward = RewardFactory.reward()
@@ -330,6 +330,20 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.estimatedDelivery.assertValue("September 2019")
         this.estimatedDeliveryIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenRewardHasNoEstimatedDelivery() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .estimatedDeliveryOn(null)
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryIsGone.assertValue(true)
     }
 
     @Test

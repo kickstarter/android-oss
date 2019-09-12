@@ -156,7 +156,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.backersCount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setBackersCount(it) }
+                .subscribe { setBackersCountTextView(it) }
 
         this.viewModel.outputs.backersCountIsGone()
                 .compose(bindToLifecycle())
@@ -197,7 +197,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         return "$value $detail"
     }
 
-    private fun setBackersCount(count: Int) {
+    private fun setBackersCountTextView(count: Int) {
         val backersCountText = this.ksString.format("rewards_info_backer_count_backers", count,
                 "backer_count", NumberUtils.format(count))
         this.view.reward_backers_count.text = backersCountText

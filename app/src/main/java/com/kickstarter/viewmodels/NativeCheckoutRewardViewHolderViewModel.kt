@@ -127,9 +127,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val descriptionForNoReward = BehaviorSubject.create<Int>()
         private val descriptionForReward = BehaviorSubject.create<String?>()
         private val descriptionIsGone = BehaviorSubject.create<Boolean>()
+        private val endDateSectionIsGone = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val estimatedDeliveryIsGone = BehaviorSubject.create<Boolean>()
-        private val endDateSectionIsGone = BehaviorSubject.create<Boolean>()
         private val limitContainerIsGone = BehaviorSubject.create<Boolean>()
         private val minimumAmountTitle = PublishSubject.create<SpannableString>()
         private val remaining = BehaviorSubject.create<String>()
@@ -172,8 +172,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .subscribe(this.buttonCTA)
 
             this.projectAndReward
-                    .map { it.first.currency() != it.first.currentCurrency() }
-                    .map { BooleanUtils.negate(it) }
+                    .map { it.first }
+                    .map { it.currency() == it.currentCurrency() }
                     .compose(bindToLifecycle())
                     .subscribe(this.conversionIsGone)
 

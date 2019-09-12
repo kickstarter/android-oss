@@ -60,13 +60,6 @@ public final class CurrentConfig implements CurrentConfigType {
     return this.config;
   }
 
-  /**
-   * @return The most recent config.
-   */
-  public @NonNull Config getConfig() {
-    return this.config.getValue();
-  }
-
   public void config(final @NonNull Config config) {
     this.config.onNext(config);
   }

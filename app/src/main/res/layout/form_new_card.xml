@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:showIn="@layout/fragment_new_card">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/new_card_app_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.toolbars.KSToolbar
+      android:id="@+id/new_card_toolbar"
+      style="@style/Toolbar"
+      app:contentInsetLeft="0dp"
+      app:contentInsetStart="0dp">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.kickstarter.ui.views.IconButton
+          android:id="@+id/back_button"
+          style="@style/ToolbarIconBackButton" />
+
+        <TextView
+          style="@style/ToolbarTitle"
+          android:text="@string/Add_new_card" />
+      </RelativeLayout>
+
+    </com.kickstarter.ui.toolbars.KSToolbar>
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/grid_3">
+
+        <LinearLayout
+          android:id="@+id/form_container"
+          style="@style/SettingsLinearRow">
+
+          <com.google.android.material.textfield.TextInputLayout
+            style="@style/UnderlineTextInputLayout"
+            android:layout_marginTop="@dimen/grid_3"
+            android:hint="@string/Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+              android:id="@+id/cardholder_name"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:inputType="textPersonName"
+              android:maxLines="1" />
+
+          </com.google.android.material.textfield.TextInputLayout>
+
+          <com.stripe.android.view.CardInputWidget
+            android:id="@+id/card_input_widget"
+            style="@style/CardInputWidget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+          <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp">
+
+            <ImageView
+              android:id="@+id/card_focus"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="@dimen/grid_3"
+              android:layout_marginStart="@dimen/grid_3"
+              android:contentDescription="@null"
+              android:src="@drawable/divider_dark_grey_500_horizontal" />
+
+          </FrameLayout>
+
+          <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginBottom="@dimen/grid_2"
+            style="@style/UnderlineTextInputLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+              android:id="@+id/postal_code"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/Postal_code"
+              android:inputType="textPostalAddress"
+              android:maxLines="1" />
+
+          </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+          android:id="@+id/allowed_card_warning"
+          style="@style/Warning"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/Unsupported_card_type"
+          android:visibility="gone"
+          tools:visibility="visible" />
+
+        <LinearLayout
+          android:id="@+id/reusable_container"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_15"
+          android:layout_marginEnd="@dimen/activity_horizontal_margin"
+          android:layout_marginStart="@dimen/activity_horizontal_margin"
+          android:orientation="horizontal"
+          android:visibility="gone"
+          tools:visibility="visible">
+
+          <TextView
+            style="@style/CalloutPrimary"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/Remember_this_card" />
+
+          <Switch
+            android:id="@+id/reusable_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/grid_8"
+            android:minWidth="@dimen/grid_8" />
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-6dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    </FrameLayout>
+  </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

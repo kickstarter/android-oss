@@ -5,10 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSCurrency
-import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
@@ -21,26 +18,28 @@ import rx.observers.TestSubscriber
 class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: NativeCheckoutRewardViewHolderViewModel.ViewModel
-    private val alternatePledgeButtonText = TestSubscriber.create<Int>()
+    private val backersCount = TestSubscriber.create<Int>()
+    private val backersCountIsGone = TestSubscriber.create<Boolean>()
+    private val buttonCTA = TestSubscriber.create<Int>()
     private val buttonIsEnabled = TestSubscriber<Boolean>()
     private val buttonIsGone = TestSubscriber.create<Boolean>()
-    private val buttonTint = TestSubscriber.create<Int>()
-    private val checkBackgroundDrawable = TestSubscriber.create<Int>()
-    private val checkIsInvisible = TestSubscriber.create<Boolean>()
-    private val checkTintColor = TestSubscriber.create<Int>()
     private val conversion = TestSubscriber.create<String>()
     private val conversionIsGone = TestSubscriber.create<Boolean>()
-    private val description = TestSubscriber<String>()
+    private val descriptionForNoReward = TestSubscriber<Int>()
+    private val descriptionForReward = TestSubscriber<String?>()
     private val descriptionIsGone = TestSubscriber<Boolean>()
     private val endDateSectionIsGone = TestSubscriber<Boolean>()
+    private val estimatedDelivery = TestSubscriber<String>()
+    private val estimatedDeliveryIsGone = TestSubscriber<Boolean>()
     private val limitContainerIsGone = TestSubscriber<Boolean>()
-    private val minimumAmount = TestSubscriber<String>()
     private val minimumAmountTitle = TestSubscriber<String>()
     private val remaining = TestSubscriber<String>()
     private val remainingIsGone = TestSubscriber<Boolean>()
     private val reward = TestSubscriber<Reward>()
     private val rewardItems = TestSubscriber<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
+    private val shippingSummary = TestSubscriber<String>()
+    private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
     private val titleForNoReward = TestSubscriber<Int>()
@@ -49,31 +48,71 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment)
-        this.vm.outputs.alternatePledgeButtonText().subscribe(this.alternatePledgeButtonText)
+        this.vm.outputs.backersCount().subscribe(this.backersCount)
+        this.vm.outputs.backersCountIsGone().subscribe(this.backersCountIsGone)
+        this.vm.outputs.buttonCTA().subscribe(this.buttonCTA)
         this.vm.outputs.buttonIsEnabled().subscribe(this.buttonIsEnabled)
         this.vm.outputs.buttonIsGone().subscribe(this.buttonIsGone)
-        this.vm.outputs.buttonTint().subscribe(this.buttonTint)
-        this.vm.outputs.checkBackgroundDrawable().subscribe(this.checkBackgroundDrawable)
-        this.vm.outputs.checkIsInvisible().subscribe(this.checkIsInvisible)
-        this.vm.outputs.checkTintColor().subscribe(this.checkTintColor)
         this.vm.outputs.conversion().subscribe(this.conversion)
         this.vm.outputs.conversionIsGone().subscribe(this.conversionIsGone)
-        this.vm.outputs.description().subscribe(this.description)
+        this.vm.outputs.descriptionForNoReward().subscribe(this.descriptionForNoReward)
+        this.vm.outputs.descriptionForReward().subscribe(this.descriptionForReward)
         this.vm.outputs.descriptionIsGone().subscribe(this.descriptionIsGone)
         this.vm.outputs.endDateSectionIsGone().subscribe(this.endDateSectionIsGone)
+        this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
+        this.vm.outputs.estimatedDeliveryIsGone().subscribe(this.estimatedDeliveryIsGone)
         this.vm.outputs.remaining().subscribe(this.remaining)
         this.vm.outputs.remainingIsGone().subscribe(this.remainingIsGone)
         this.vm.outputs.limitContainerIsGone().subscribe(this.limitContainerIsGone)
-        this.vm.outputs.minimumAmount().map { it.toString() }.subscribe(this.minimumAmount)
         this.vm.outputs.minimumAmountTitle().map { it.toString() }.subscribe(this.minimumAmountTitle)
         this.vm.outputs.reward().subscribe(this.reward)
         this.vm.outputs.rewardItems().subscribe(this.rewardItems)
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
+        this.vm.outputs.shippingSummary().subscribe(this.shippingSummary)
+        this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
+    }
+
+    @Test
+    fun testBackersCount_whenReward_withBackers() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .backersCount(30)
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.backersCount.assertValue(30)
+        this.backersCountIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testBackersCount_whenReward_withNoBackers() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .backersCount(0)
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.backersCount.assertNoValues()
+        this.backersCountIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testBackersCount_whenNoReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.noReward())
+
+        this.backersCount.assertNoValues()
+        this.backersCountIsGone.assertValue(true)
     }
 
     @Test
@@ -86,59 +125,43 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         //Live project, available reward, not backed
         this.vm.inputs.projectAndReward(project, reward)
         this.buttonIsGone.assertValue(false)
-        this.buttonTint.assertValue(R.color.button_pledge_live)
-        this.minimumAmount.assertValuesAndClear("$20")
-        this.alternatePledgeButtonText.assertNoValues()
+        this.buttonCTA.assertValue(R.string.Select)
 
         //Live project, no reward, not backed
         this.vm.inputs.projectAndReward(project, noReward)
         this.buttonIsGone.assertValue(false)
-        this.buttonTint.assertValue(R.color.button_pledge_live)
-        this.minimumAmount.assertValuesAndClear("$1")
-        this.alternatePledgeButtonText.assertNoValues()
+        this.buttonCTA.assertValuesAndClear(R.string.Select)
 
         //Live project, unavailable limited reward, not backed
         this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
         this.buttonIsGone.assertValue(false)
-        this.buttonTint.assertValue(R.color.button_pledge_live)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValue(R.string.No_longer_available)
+        this.buttonCTA.assertValue(R.string.No_longer_available)
 
         //Live project, unavailable expired reward, not backed
         this.vm.inputs.projectAndReward(project, RewardFactory.ended())
         this.buttonIsGone.assertValue(false)
-        this.buttonTint.assertValue(R.color.button_pledge_live)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValuesAndClear(R.string.No_longer_available)
+        this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
 
         //Live backed project, currently backed reward
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
         this.buttonIsGone.assertValues(false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValuesAndClear(R.string.Manage_your_pledge)
+        this.buttonCTA.assertValuesAndClear(R.string.Selected)
 
         //Live backed project, not backed available reward
         this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.reward())
         this.buttonIsGone.assertValues(false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValuesAndClear(R.string.Select_this_instead)
+        this.buttonCTA.assertValuesAndClear(R.string.Select)
 
         //Live backed project, not backed unavailable limited reward
         this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.limitReached())
         this.buttonIsGone.assertValues(false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValue(R.string.No_longer_available)
+        this.buttonCTA.assertValue(R.string.No_longer_available)
 
         //Live backed project, not backed unavailable expired reward
         this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.limitReached())
         this.buttonIsGone.assertValues(false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValuesAndClear(R.string.No_longer_available)
+        this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
 
         //Ended project, available reward, not backed
         val successfulProject = ProjectFactory.successfulProject()
@@ -147,9 +170,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.inputs.projectAndReward(successfulProject, reward)
         this.buttonIsGone.assertValues(false, true)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertNoValues()
+        this.buttonCTA.assertNoValues()
 
         //Ended backed project, not pledged
         val backedSuccessfulProject = ProjectFactory.backedProject()
@@ -158,23 +179,17 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.inputs.projectAndReward(backedSuccessfulProject, reward)
         this.buttonIsGone.assertValues(false, true)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertNoValues()
+        this.buttonCTA.assertNoValues()
 
         //Ended backed project, no reward, not pledged
         this.vm.inputs.projectAndReward(backedSuccessfulProject, noReward)
         this.buttonIsGone.assertValues(false, true)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertNoValues()
+        this.buttonCTA.assertNoValues()
 
         //Ended backed project, pledged reward
         this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()?: reward)
         this.buttonIsGone.assertValues(false, true, false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValue(R.string.View_your_pledge)
+        this.buttonCTA.assertValue(R.string.Selected)
 
         val backedNoRewardSuccessfulProject = ProjectFactory.backedProjectWithNoReward()
                 .toBuilder()
@@ -183,150 +198,67 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         //Ended backed project, no reward, pledged no reward
         this.vm.inputs.projectAndReward(backedNoRewardSuccessfulProject, noReward)
         this.buttonIsGone.assertValues(false, true, false)
-        this.buttonTint.assertValues(R.color.button_pledge_live, R.color.button_pledge_manage, R.color.button_pledge_live, R.color.button_pledge_ended)
-        this.minimumAmount.assertNoValues()
-        this.alternatePledgeButtonText.assertValue(R.string.View_your_pledge)
+        this.buttonCTA.assertValue(R.string.Selected)
     }
 
     @Test
-    fun testCheckUIOutputs() {
+    fun testConversion_USDProject_currentCurrencyUSD() {
         setUpEnvironment(environment())
-        val project = ProjectFactory.project()
-        val reward = RewardFactory.reward()
 
-        this.vm.inputs.projectAndReward(project, reward)
-        this.checkIsInvisible.assertValue(true)
-        this.checkBackgroundDrawable.assertNoValues()
-        this.checkTintColor.assertNoValues()
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
-        this.checkIsInvisible.assertValue(true)
-        this.checkBackgroundDrawable.assertNoValues()
-        this.checkTintColor.assertNoValues()
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.ended())
-        this.checkIsInvisible.assertValue(true)
-        this.checkBackgroundDrawable.assertNoValues()
-        this.checkTintColor.assertNoValues()
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
-        this.checkIsInvisible.assertValue(true)
-        this.checkBackgroundDrawable.assertNoValues()
-        this.checkTintColor.assertNoValues()
-
-        val backedLiveProject = ProjectFactory.backedProject()
-        this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
-        this.checkIsInvisible.assertValues(true, false)
-        this.checkBackgroundDrawable.assertValue(R.drawable.circle_blue_alpha_6)
-        this.checkTintColor.assertValues(R.color.button_pledge_manage)
-
-        this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.reward())
-        this.checkIsInvisible.assertValues(true, false, true)
-        this.checkBackgroundDrawable.assertValues(R.drawable.circle_blue_alpha_6)
-        this.checkTintColor.assertValues(R.color.button_pledge_manage)
-
-        val successfulProject = ProjectFactory.successfulProject()
-        this.vm.inputs.projectAndReward(successfulProject, reward)
-        this.checkIsInvisible.assertValues(true, false, true)
-        this.checkBackgroundDrawable.assertValues(R.drawable.circle_blue_alpha_6)
-        this.checkTintColor.assertValues(R.color.button_pledge_manage)
-
-        val backedEndedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
-        this.vm.inputs.projectAndReward(backedEndedProject, backedEndedProject.backing()?.reward()?: RewardFactory.reward())
-        this.checkIsInvisible.assertValues(true, false, true, false)
-        this.checkBackgroundDrawable.assertValues(R.drawable.circle_blue_alpha_6, R.drawable.circle_grey_300)
-        this.checkTintColor.assertValues(R.color.button_pledge_manage, R.color.button_pledge_ended)
-    }
-
-    @Test
-    fun testConversion() {
-        setUpEnvironment(environment())
-        // Set the project currency and the user's chosen currency to the same value
         val usProject = ProjectFactory.project()
+                .toBuilder()
+                .currentCurrency("USD")
+                .build()
         val reward = RewardFactory.reward()
+                .toBuilder()
+                .minimum(50.0)
+                .convertedMinimum(50.0)
+                .build()
 
-        // the conversion should be hidden.
         this.vm.inputs.projectAndReward(usProject, reward)
-        this.conversion.assertValueCount(1)
-        this.conversionIsGone.assertValuesAndClear(true)
-
-        val caProject = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-
-        // USD conversion should shown.
-        this.vm.inputs.projectAndReward(caProject, reward)
-        this.conversion.assertValueCount(2)
-        this.conversionIsGone.assertValues(false)
+        this.conversion.assertValue("$50")
+        this.conversionIsGone.assertValue(true)
     }
 
     @Test
-    fun testConversionTextRoundsUp_USUser_prefersUSD() {
-        // Set user's country to US.
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(ConfigFactory.configForUSUser())
-        val environment = environment().toBuilder()
-                .currentConfig(currentConfig)
-                .ksCurrency(KSCurrency(currentConfig))
-                .build()
-        setUpEnvironment(environment)
-
-        // Set project's country to CA with USD preference and reward minimum to $1.30.
-        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
-
-        // USD conversion should be rounded normally.
-        this.vm.inputs.projectAndReward(project, reward)
-        // converts to $0.98
-        this.conversion.assertValuesAndClear("$1")
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
-        // converts to $1.50
-        this.conversion.assertValue("$2")
-    }
-
-    @Test
-    fun testConversionTextRoundsUp_ITUser_prefersUSD() {
-        // Set user's country to IT.
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(ConfigFactory.configForITUser())
-        val environment = environment().toBuilder()
-                .currentConfig(currentConfig)
-                .ksCurrency(KSCurrency(currentConfig))
-                .build()
-        setUpEnvironment(environment)
-
-        // Set project's country to CA with USD preference and reward minimum to $1.30.
-        val project = ProjectFactory.caProject().toBuilder().currentCurrency("USD").build()
-        val reward = RewardFactory.reward().toBuilder().minimum(1.3).build()
-
-        // USD conversion should be rounded normally.
-        this.vm.inputs.projectAndReward(project, reward)
-        // converts to $0.98
-        this.conversion.assertValuesAndClear("US$ 1")
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.reward().toBuilder().minimum(2.0).build())
-        // converts to $1.50
-        this.conversion.assertValue("US$ 2")
-    }
-
-    @Test
-    fun testDescription() {
+    fun testConversion_CADProject_currentCurrencyUSD() {
         setUpEnvironment(environment())
 
+        val caProject = ProjectFactory.caProject()
+                .toBuilder()
+                .currentCurrency("USD")
+                .build()
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .minimum(50.0)
+                .convertedMinimum(40.0)
+                .build()
+
+        this.vm.inputs.projectAndReward(caProject, reward)
+        this.conversion.assertValue("$40")
+        this.conversionIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testDescriptionOutputs() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
         setUpEnvironment(environment())
 
+        //Reward with description
         this.vm.inputs.projectAndReward(project, reward)
-        this.description.assertValue(reward.description())
+        this.descriptionForNoReward.assertNoValues()
+        this.descriptionForReward.assertValue(reward.description())
         this.descriptionIsGone.assertValue(false)
 
+        //No reward
         this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
-        this.description.assertValues(reward.description(), null)
+        this.descriptionForNoReward.assertValue(R.string.Back_it_because_you_believe_in_it)
+        this.descriptionForReward.assertValues(reward.description())
         this.descriptionIsGone.assertValue(false)
 
+        //Backed no reward
         val noRewardBacking = BackingFactory.backing()
                 .toBuilder()
                 .reward(RewardFactory.noReward())
@@ -337,11 +269,24 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .backing(noRewardBacking)
                 .build()
         this.vm.inputs.projectAndReward(backedProject, RewardFactory.noReward())
-        this.description.assertValues(reward.description(), null)
+        this.descriptionForNoReward.assertValues(R.string.Back_it_because_you_believe_in_it,
+                R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
+        this.descriptionForReward.assertValues(reward.description())
+        this.descriptionIsGone.assertValue(false)
+
+        //Reward with empty description
+        this.vm.inputs.projectAndReward(project, RewardFactory.noDescription())
+        this.descriptionForNoReward.assertValues(R.string.Back_it_because_you_believe_in_it,
+                R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
+        this.descriptionForReward.assertValues(reward.description(), "")
         this.descriptionIsGone.assertValues(false, true)
 
-        this.vm.inputs.projectAndReward(project, RewardFactory.noDescription())
-        this.description.assertValues(reward.description(), null, "")
+        //Reward with null description
+        val nullDescriptionReward = RewardFactory.noDescription().toBuilder().description(null).build()
+        this.vm.inputs.projectAndReward(project, nullDescriptionReward)
+        this.descriptionForNoReward.assertValues(R.string.Back_it_because_you_believe_in_it,
+                R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
+        this.descriptionForReward.assertValues(reward.description(), "", null)
         this.descriptionIsGone.assertValues(false, true)
     }
 
@@ -371,6 +316,44 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), expiringReward)
         this.endDateSectionIsGone.assertValues(true, false, true)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenRewardHasEstimatedDelivery() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .estimatedDeliveryOn(DateTime.parse("2019-09-11T20:12:47+00:00"))
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.estimatedDelivery.assertValue("September 2019")
+        this.estimatedDeliveryIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenRewardHasNoEstimatedDelivery() {
+        setUpEnvironment(environment())
+
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .estimatedDeliveryOn(null)
+                .build()
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), reward)
+
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testEstimatedDelivery_whenNoReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.noReward())
+
+        this.estimatedDelivery.assertNoValues()
+        this.estimatedDeliveryIsGone.assertValue(true)
     }
 
     @Test
@@ -447,66 +430,74 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testButtonIsEnabled() {
         setUpEnvironment(environment())
 
-        // A reward from a live project should be enabled.
+        // A reward from a live project that is available should be enabled.
         this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward())
         this.buttonIsEnabled.assertValue(true)
 
         // A reward from a successful project should not be enabled.
         this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), RewardFactory.reward())
         this.buttonIsEnabled.assertValues(true, false)
-        //
-        // A backed reward from a live project should be enabled.
+
+        // A backed reward from a live project should not be enabled.
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false, true)
+        this.buttonIsEnabled.assertValues(true, false)
 
-        // A backed reward from a finished project should be enabled (distinct until changed).
+        // A backed reward from an ended project should not be enabled.
         val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false, true)
+        this.buttonIsEnabled.assertValues(true, false)
 
         // A reward with its limit reached should not be enabled.
         this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.limitReached())
-        this.buttonIsEnabled.assertValues(true, false, true, false)
+        this.buttonIsEnabled.assertValues(true, false)
     }
 
     @Test
-    fun testLimitContainerIsGone() {
+    fun testLimitContainerIsGone_noLimits() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, RewardFactory.reward())
         this.limitContainerIsGone.assertValue(true)
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.limited())
-        this.limitContainerIsGone.assertValues(true, false)
-
-        this.vm.inputs.projectAndReward(project, RewardFactory.endingSoon())
-        this.limitContainerIsGone.assertValues(true, false)
-
-        val limitedExpiringReward = RewardFactory.endingSoon().toBuilder()
-                .limit(10)
-                .remaining(5)
-                .build()
-        this.vm.inputs.projectAndReward(project, limitedExpiringReward)
-        this.limitContainerIsGone.assertValues(true, false)
-
-        this.vm.inputs.projectAndReward(ProjectFactory.successfulProject(), limitedExpiringReward)
-        this.limitContainerIsGone.assertValues(true, false, true)
     }
 
     @Test
-    fun testMinimumAmount_whenCAProject() {
-        val project = ProjectFactory.caProject()
-        val reward = RewardFactory.reward().toBuilder()
-                .minimum(10.0)
-                .build()
+    fun testLimitContainerIsGone_whenLimited() {
+        val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        this.vm.inputs.projectAndReward(project, reward)
-        this.minimumAmount.assertValue("CA$ 10")
+        this.vm.inputs.projectAndReward(project, RewardFactory.limited())
+        this.limitContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testLimitContainerIsGone_whenEndingSoon() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.endingSoon())
+        this.limitContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testLimitContainerIsGone_withShipping() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.rewardWithShipping())
+        this.limitContainerIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testLimitContainerIsGone_endedProject() {
+        val project = ProjectFactory.successfulProject()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.rewardWithShipping())
+        this.limitContainerIsGone.assertValue(true)
     }
 
     @Test
@@ -578,6 +569,22 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShippingSummary() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        // Summary should be hidden when reward is not shippable.
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
+        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummary.assertNoValues()
+
+        val shippableReward = RewardFactory.rewardWithShipping()
+        this.vm.inputs.projectAndReward(project, shippableReward)
+        this.shippingSummaryIsGone.assertValues(true, false)
+        this.shippingSummary.assertValues(shippableReward.shippingSummary())
+    }
+
+    @Test
     fun testTitle() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
@@ -595,7 +602,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
         this.titleIsGone.assertValues(true, false)
         this.titleForReward.assertNoValues()
-        this.titleForNoReward.assertValuesAndClear(R.string.Make_a_pledge_without_a_reward)
+        this.titleForNoReward.assertValuesAndClear(R.string.Pledge_without_a_reward)
 
         val noRewardBacking = BackingFactory.backing()
                 .toBuilder()
@@ -609,7 +616,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.projectAndReward(backedProject, RewardFactory.noReward())
         this.titleIsGone.assertValues(true, false)
         this.titleForReward.assertNoValues()
-        this.titleForNoReward.assertValuesAndClear(R.string.Thank_you_for_supporting_this_project)
+        this.titleForNoReward.assertValuesAndClear(R.string.You_pledged_without_a_reward)
 
         val title = "Digital bundle"
         val rewardWithTitle = RewardFactory.reward().toBuilder()

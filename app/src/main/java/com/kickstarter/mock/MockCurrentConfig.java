@@ -17,11 +17,6 @@ public final class MockCurrentConfig implements CurrentConfigType {
   }
 
   @Override
-  public @NonNull Config getConfig() {
-    return this.config.getValue();
-  }
-
-  @Override
   public void config(final @NonNull Config config) {
     this.config.onNext(config);
   }

@@ -1,13 +1,15 @@
 package com.kickstarter.services
 
 import CancelBackingMutation
-import CheckoutMutation
 import ClearUserUnseenActivityMutation
+import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
+import UpdateBackingMutation
+import UpdateBackingPaymentMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -18,6 +20,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
 import rx.Observable
@@ -58,26 +61,31 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?, refTag: RefTag?): Observable<Boolean> {
         return Observable.defer {
-            val ps = PublishSubject.create<Boolean>()
-            service.mutate(CheckoutMutation.builder()
+            val createBackingMutation = CreateBackingMutation.builder()
                     .projectId(encodeRelayId(project))
                     .amount(amount)
+                    .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
                     .paymentSourceId(paymentSourceId)
                     .locationId(locationId?.let { it })
                     .rewardId(reward?.let { encodeRelayId(it) })
-                    .build())
-                    .enqueue(object : ApolloCall.Callback<CheckoutMutation.Data>() {
+                    .refParam(refTag?.tag())
+                    .build()
+
+            val ps = PublishSubject.create<Boolean>()
+
+            this.service.mutate(createBackingMutation)
+                    .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
                             ps.onError(exception)
                         }
 
-                        override fun onResponse(response: Response<CheckoutMutation.Data>) {
+                        override fun onResponse(response: Response<CreateBackingMutation.Data>) {
                             if (response.hasErrors()) {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
-                            val state = response.data()?.nativeCheckout()?.checkout()?.state()
+                            val state = response.data()?.createBacking()?.checkout()?.state()
                             val success = state == CheckoutState.VERIFYING
                             ps.onNext(success)
                             ps.onCompleted()
@@ -171,40 +179,39 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         override fun onResponse(response: Response<UserPaymentsQuery.Data>) {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
-                            }
-                            Observable.just(response.data())
-                                    .map { cards -> cards?.me()?.storedCards()?.nodes() }
-                                    .map { list ->
-                                        val storedCards = list?.asSequence()?.map {
-                                            val id = it.id()
-                                            when (id) {
-                                                null -> null
-                                                else -> StoredCard.builder()
+                            } else {
+                                Observable.just(response.data())
+                                        .map { cards -> cards?.me()?.storedCards()?.nodes() }
+                                        .map { list ->
+                                            val storedCards = list?.asSequence()?.map {
+                                                StoredCard.builder()
                                                         .expiration(it.expirationDate())
-                                                        .id(id)
+                                                        .id(it.id())
                                                         .lastFourDigits(it.lastFour())
                                                         .type(it.type())
                                                         .build()
                                             }
-                                        }?.toMutableList()
-                                        storedCards?.filterNotNull() ?: listOf()
-                                    }.subscribe{
-                                        ps.onNext(it)
-                                        ps.onCompleted()
-                                    }
+                                            storedCards?.toList() ?: listOf()
+                                        }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
                         }
                     })
             return@defer ps
         }
     }
 
-    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
         return Observable.defer {
-            val ps = PublishSubject.create<SavePaymentMethodMutation.Data>()
+            val ps = PublishSubject.create<StoredCard>()
             service.mutate(SavePaymentMethodMutation.builder()
                     .paymentType(paymentTypes)
                     .stripeToken(stripeToken)
                     .stripeCardId(cardId)
+                    .reusable(reusable)
                     .build())
                     .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
@@ -215,12 +222,16 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
-                            //why wouldn't this just be an error?
-                            val createPaymentSource = response.data()?.createPaymentSource()
-                            if (!createPaymentSource?.isSuccessful!!) {
-                                ps.onError(Exception(createPaymentSource.errorMessage()))
-                            } else {
-                                ps.onNext(response.data())
+
+                            val paymentSource = response.data()?.createPaymentSource()?.paymentSource()
+                            paymentSource?.let {
+                                val storedCard = StoredCard.builder()
+                                        .expiration(it.expirationDate())
+                                        .id(it.id())
+                                        .lastFourDigits(it.lastFour())
+                                        .type(it.type())
+                                        .build()
+                                ps.onNext(storedCard)
                                 ps.onCompleted()
                             }
                         }
@@ -268,6 +279,65 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 ps.onError(Exception(response.errors().first().message()))
                             }
                             ps.onNext(response.data())
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+        return Observable.defer {
+            val updateBackingMutation = UpdateBackingMutation.builder()
+                    .backingId(encodeRelayId(backing))
+                    .amount(amount)
+                    .locationId(locationId?.let { it })
+                    .rewardId(reward?.let { encodeRelayId(it) })
+                    .build()
+
+            val ps = PublishSubject.create<Boolean>()
+            service.mutate(updateBackingMutation)
+                    .enqueue(object : ApolloCall.Callback<UpdateBackingMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<UpdateBackingMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            val state = response.data()?.updateBacking()?.checkout()?.state()
+                            val success = state == CheckoutState.VERIFYING
+                            ps.onNext(success)
+                            ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
+        return Observable.defer {
+            val updateBackingPaymentMutation = UpdateBackingPaymentMutation.builder()
+                    .backingId(encodeRelayId(backing))
+                    .paymentSourceId(paymentSourceId)
+                    .build()
+
+            val ps = PublishSubject.create<Boolean>()
+
+            this.service.mutate(updateBackingPaymentMutation)
+                    .enqueue(object : ApolloCall.Callback<UpdateBackingPaymentMutation.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<UpdateBackingPaymentMutation.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                            }
+                            val state = response.data()?.updateBackingPaymentSource()?.checkout()?.state()
+                            val success = state == CheckoutState.VERIFYING
+                            ps.onNext(success)
                             ps.onCompleted()
                         }
                     })

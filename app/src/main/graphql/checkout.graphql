@@ -1,5 +1,5 @@
-mutation Checkout($projectId: ID!, $amount: String!,  $paymentSourceId: String!, $locationId: String, $rewardId: ID)  {
-  nativeCheckout(input: { projectId: $projectId, amount: $amount, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardId: $rewardId }) {
+mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!,  $paymentSourceId: String!, $locationId: String, $rewardId: ID, $refParam: String )  {
+  createBacking(input: { projectId: $projectId, amount: $amount, paymentType: $paymentType, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardId: $rewardId, refParam: $refParam }) {
     checkout {
       state
     }
@@ -10,6 +10,22 @@ mutation CancelBacking($backingId: ID!, $note: String) {
   cancelBacking(input: {id: $backingId, note: $note}) {
     backing {
       status
+    }
+  }
+}
+
+mutation UpdateBacking($backingId: ID!, $amount: String!, $locationId: ID, $rewardId: ID)  {
+  updateBacking(input: { id: $backingId, amount: $amount, locationId: $locationId, rewardId: $rewardId}) {
+    checkout {
+      state
+    }
+  }
+}
+
+mutation UpdateBackingPayment($backingId: ID!, $paymentSourceId: String!) {
+  updateBackingPaymentSource(input: {id: $backingId, paymentSourceId: $paymentSourceId}) {
+    checkout {
+      state
     }
   }
 }

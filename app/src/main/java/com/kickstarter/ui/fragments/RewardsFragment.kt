@@ -4,23 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.NativeCheckoutRewardsAdapter
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
-import com.kickstarter.viewmodels.RewardFragmentViewModel
+import com.kickstarter.viewmodels.RewardsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
 
-@RequiresFragmentViewModel(RewardFragmentViewModel.ViewModel::class)
-class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), NativeCheckoutRewardsAdapter.Delegate {
+@RequiresFragmentViewModel(RewardsFragmentViewModel.ViewModel::class)
+class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), NativeCheckoutRewardsAdapter.Delegate {
 
     private var rewardsAdapter = NativeCheckoutRewardsAdapter(this)
 
@@ -46,8 +48,16 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Nativ
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showPledgeFragment(it) }
+                .subscribe { showPledgeFragment(it.first, it.second) }
 
+        this.viewModel.outputs.rewardsCount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setRewardsCount(it) }
+
+        context?.apply {
+            ViewUtils.setGone(rewards_count, ViewUtils.isLandscape(this))
+        }
     }
 
     private fun scrollToReward(position: Int) {
@@ -59,6 +69,12 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Nativ
             val center = (recyclerWidth - rewardWidth - rewardMargin) / 2
             linearLayoutManager.scrollToPositionWithOffset(position, center)
         }
+    }
+
+    private fun setRewardsCount(count: Int) {
+        val rewardsCountString = this.viewModel.environment.ksString().format("Rewards_count_rewards", count,
+                "rewards_count", NumberUtils.format(count))
+        rewards_count.text = rewardsCountString
     }
 
     override fun onDetach() {
@@ -75,12 +91,8 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Nativ
     }
 
     private fun addItemDecorator() {
-        val radius = resources.getDimensionPixelSize(R.dimen.circle_radius).toFloat()
-        val inactiveColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_dark_grey_400)
-        val activeColor = ContextCompat.getColor(rewards_recycler.context, R.color.ksr_soft_black)
         val margin = resources.getDimension(R.dimen.reward_margin).toInt()
-        val padding = radius * 2
-        rewards_recycler.addItemDecoration(RewardDecoration(margin, activeColor, inactiveColor, radius, padding))
+        rewards_recycler.addItemDecoration(RewardDecoration(margin))
     }
 
     private fun setupRecyclerView() {
@@ -89,9 +101,9 @@ class RewardsFragment : BaseFragment<RewardFragmentViewModel.ViewModel>(), Nativ
         addItemDecorator()
     }
 
-    private fun showPledgeFragment(pledgeData: PledgeData) {
+    private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
         if (this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
-            val pledgeFragment = PledgeFragment.newInstance(pledgeData)
+            val pledgeFragment = PledgeFragment.newInstance(pledgeData, pledgeReason)
             this.fragmentManager?.beginTransaction()
                     ?.add(R.id.fragment_container,
                             pledgeFragment,

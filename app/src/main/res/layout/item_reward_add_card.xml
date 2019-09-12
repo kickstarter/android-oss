@@ -3,7 +3,6 @@
   android:id="@+id/card_container"
   style="@style/PledgeStoredCard"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="@dimen/stored_card_width"
   android:layout_height="wrap_content">
 
@@ -13,52 +12,16 @@
     android:orientation="vertical"
     android:padding="@dimen/grid_3">
 
-    <LinearLayout
-      android:id="@+id/card_details"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:minHeight="@dimen/grid_8"
-      android:orientation="horizontal"
-      android:visibility="invisible">
-
-      <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
-      <ImageView
-        android:id="@+id/reward_card_logo"
-        android:layout_width="@dimen/credit_card_logo_width"
-        android:layout_height="@dimen/credit_card_logo_height"
-        android:contentDescription="@null"
-        android:scaleType="fitXY"
-        tools:src="@drawable/mastercard_md" />
-
-      <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_2"
-        android:orientation="vertical">
-
-        <TextView
-          android:id="@+id/reward_card_last_four"
-          style="@style/CreditCardLastFour"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="Card ending in 1234" />
-
-        <TextView
-          android:id="@+id/reward_card_expiration_date"
-          style="@style/CreditCardExpiration"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="Expires in 03/2020" />
-      </LinearLayout>
-
-    </LinearLayout>
+    <include
+      layout="@layout/reward_card_details"
+      android:visibility="invisible" />
 
     <Button
       android:id="@+id/add_card_button"
+      style="@style/SelectButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
-      android:backgroundTint="@android:color/black"
       android:text="@string/Add_new_card" />
   </LinearLayout>
 

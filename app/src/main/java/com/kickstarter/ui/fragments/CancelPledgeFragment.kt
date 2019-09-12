@@ -1,14 +1,18 @@
 package com.kickstarter.ui.fragments
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.snackbar.Snackbar
 import com.kickstarter.KSApplication
 import com.kickstarter.R
+import com.kickstarter.extensions.snackbar
 import com.kickstarter.extensions.text
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -42,12 +46,12 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         this.viewModel.outputs.showServerError()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { Snackbar.make(snackbar_anchor, R.string.Something_went_wrong_please_try_again, Snackbar.LENGTH_SHORT).show() }
+                .subscribe { snackbar(cancel_pledge_root, getString(R.string.Something_went_wrong_please_try_again)).show() }
 
         this.viewModel.outputs.showCancelError()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { Snackbar.make(snackbar_anchor, it, Snackbar.LENGTH_SHORT).show() }
+                .subscribe { snackbar(cancel_pledge_root, it).show() }
 
         this.viewModel.outputs.dismiss()
                 .compose(bindToLifecycle())
@@ -76,10 +80,11 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         no_cancel_pledge_button.setOnClickListener {
             this.viewModel.inputs.goBackButtonClicked()
         }
+    }
 
-        cancel_pledge_toolbar.setNavigationOnClickListener {
-            this.viewModel.inputs.closeButtonClicked()
-        }
+    private fun addBoldSpan(spannableString: SpannableString, substring: String) {
+        val indexOfAmount = spannableString.indexOf(substring)
+        spannableString.setSpan(StyleSpan(Typeface.BOLD), indexOfAmount, indexOfAmount + substring.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
     }
 
     private fun dismiss() {
@@ -90,8 +95,15 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
         val amount = amountAndProjectName.first
         val name = amountAndProjectName.second
-        cancel_prompt.text = ksString.format(getString(R.string.Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name),
+        val formattedString = ksString.format(getString(R.string.Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name),
                 "amount", amount, "project_name", name)
+
+        val spannableString = SpannableString(formattedString)
+
+        addBoldSpan(spannableString, amount)
+        addBoldSpan(spannableString, name)
+
+        cancel_prompt.text = spannableString
     }
 
     companion object {

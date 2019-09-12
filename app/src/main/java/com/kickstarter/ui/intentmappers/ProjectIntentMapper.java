@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -44,8 +43,7 @@ public final class ProjectIntentMapper {
       .retry(3);
 
     return projectFromParceledProject
-      .mergeWith(projectFromParceledParam)
-      .compose(Transformers.neverError());
+      .mergeWith(projectFromParceledParam);
   }
 
   /**

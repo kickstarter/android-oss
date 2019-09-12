@@ -73,7 +73,7 @@ public interface UpdateViewModel {
         .take(1);
 
       final Observable<Project> project = intent()
-        .flatMap(i -> ProjectIntentMapper.project(i, this.client))
+        .flatMap(i -> ProjectIntentMapper.project(i, this.client).compose(neverError()))
         .share();
 
       final Observable<String> initialUpdateUrl = initialUpdate

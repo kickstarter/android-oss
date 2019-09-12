@@ -6,14 +6,13 @@ import android.view.View
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.*
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
-import com.kickstarter.libs.utils.RewardItemDecorator
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
@@ -23,8 +22,7 @@ import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.NativeCheckoutRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
-
-class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?) : KSViewHolder(view) {
+class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(view) {
 
     interface Delegate {
         fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
@@ -34,7 +32,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     private var viewModel = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
-    private val pledgeRewardCurrencyOrMoreString = context().getString(R.string.rewards_title_pledge_reward_currency_or_more)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)
 
     init {
@@ -51,13 +48,15 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setConversionTextView(it) }
 
-        this.viewModel.outputs.description()
+        this.viewModel.outputs.descriptionForNoReward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    this.view.reward_description_text_view.text = it
-                            ?: this.context().getText(R.string.Pledge_any_amount_to_help_bring_this_project_to_life)
-                }
+                .subscribe { this.view.reward_description_text_view.setText(it) }
+
+        this.viewModel.outputs.descriptionForReward()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_description_text_view.text = it }
 
         this.viewModel.outputs.descriptionIsGone()
                 .compose(bindToLifecycle())
@@ -84,15 +83,20 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setRemainingRewardsTextView(it) }
 
-        this.viewModel.outputs.alternatePledgeButtonText()
+        this.viewModel.outputs.buttonCTA()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.reward_pledge_button.setText(it) }
 
-        this.viewModel.outputs.minimumAmount()
+        this.viewModel.outputs.shippingSummary()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setMinimumButtonText(it) }
+                .subscribe { this.view.reward_shipping_summary.text = it }
+
+        this.viewModel.outputs.shippingSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.reward_shipping_summary, it)}
 
         this.viewModel.outputs.minimumAmountTitle()
                 .compose(bindToLifecycle())
@@ -144,37 +148,42 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.startBackingActivity(it) }
 
-        this.viewModel.outputs.buttonTint()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_button.backgroundTintList = ContextCompat.getColorStateList(context(), it) }
-
         this.viewModel.outputs.buttonIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setPledgeButtonVisibility(it) }
 
-        this.viewModel.outputs.checkIsInvisible()
+        this.viewModel.outputs.backersCount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setInvisible(this.view.reward_check, it) }
+                .subscribe { setBackersCountTextView(it) }
 
-        this.viewModel.outputs.checkTintColor()
+        this.viewModel.outputs.backersCountIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_check.imageTintList = ContextCompat.getColorStateList(context(), it) }
+                .subscribe { ViewUtils.setGone(this.view.reward_backers_count, this.inset || it) }
 
-        this.viewModel.outputs.checkBackgroundDrawable()
+        this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_check.setBackgroundResource(it) }
+                .subscribe { this.view.reward_estimated_delivery.text = it }
 
-        view.reward_pledge_button.setOnClickListener {
-            this.viewModel.inputs.rewardClicked()
+        this.viewModel.outputs.estimatedDeliveryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.reward_estimated_delivery_section, this.inset || it) }
+
+        RxView.clicks(this.view.reward_pledge_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.rewardClicked() }
+
+        when {
+            BooleanUtils.isTrue(this.inset) -> this.view.reward_card.setCardBackgroundColor(ContextCompat.getColor(context(), R.color.transparent))
         }
     }
 
     override fun bindData(data: Any?) {
+        @Suppress("UNCHECKED_CAST")
         val projectAndReward = requireNonNull(data as Pair<Project, Reward>)
         val project = requireNonNull(projectAndReward.first, Project::class.java)
         val reward = requireNonNull(projectAndReward.second, Reward::class.java)
@@ -188,21 +197,27 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         return "$value $detail"
     }
 
+    private fun setBackersCountTextView(count: Int) {
+        val backersCountText = this.ksString.format("rewards_info_backer_count_backers", count,
+                "backer_count", NumberUtils.format(count))
+        this.view.reward_backers_count.text = backersCountText
+    }
+
     private fun setConversionTextView(@NonNull amount: String) {
         this.view.reward_conversion_text_view.text = this.ksString.format(this.currencyConversionString,
                 "reward_amount", amount)
     }
 
-    private fun setMinimumButtonText(@NonNull minimum: String) {
-        this.view.reward_pledge_button.text = this.ksString.format(this.pledgeRewardCurrencyOrMoreString,
-                "reward_currency", minimum)
-    }
-
     private fun setPledgeButtonVisibility(gone: Boolean) {
-        ViewUtils.setGone(this.view.reward_button_container, gone)
-        when {
-            gone -> ViewUtils.setGone(this.view.reward_button_placeholder, true)
-            else -> ViewUtils.setInvisible(this.view.reward_button_placeholder, true)
+        if (BooleanUtils.isTrue(this.inset)) {
+            ViewUtils.setGone(this.view.reward_button_container, true)
+            ViewUtils.setGone(this.view.reward_button_placeholder, true)
+        } else {
+            ViewUtils.setGone(this.view.reward_button_container, gone)
+            when {
+                gone -> ViewUtils.setGone(this.view.reward_button_placeholder, true)
+                else -> ViewUtils.setInvisible(this.view.reward_button_placeholder, true)
+            }
         }
     }
 

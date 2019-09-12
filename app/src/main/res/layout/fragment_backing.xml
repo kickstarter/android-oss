@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/backing_root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/ksr_grey_300"
+  android:clickable="true"
+  android:focusable="true"
+  android:paddingTop="?android:attr/actionBarSize"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingBottom="@dimen/grid_4"
+      android:orientation="vertical">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/backer_number"
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="@string/backer_modal_backer_number" />
+
+        <TextView
+          android:id="@+id/backing_date"
+          style="@style/Caption1Secondary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_3"
+          tools:text="As of January 1, 2019" />
+
+        <include
+          layout="@layout/fragment_pledge_section_summary_pledge"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="visible"
+          android:layout_marginBottom="@dimen/grid_3" />
+
+        <include
+          layout="@layout/fragment_pledge_section_summary_shipping"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_3"
+          tools:visibility="visible" />
+
+        <include
+          layout="@layout/fragment_backing_section_summary_total"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_4" />
+
+        <include layout="@layout/horizontal_line_1dp_view" />
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_4"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:text="@string/Payment_method" />
+
+        <include layout="@layout/reward_card_details"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:layout_marginBottom="@dimen/grid_4"/>
+
+        <include layout="@layout/horizontal_line_1dp_view" />
+
+        <TextView
+          style="@style/CalloutPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_4"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:text="@string/Selected_reward" />
+
+      </LinearLayout>
+
+      <include
+        layout="@layout/item_reward"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="gone" />
+
+      <LinearLayout
+        android:id="@+id/received_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/grid_2">
+
+        <include
+          layout="@layout/horizontal_line_1dp_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_2" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <TextView
+            android:id="@+id/received_label"
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Reward_delivered" />
+
+          <CheckBox
+            android:id="@+id/mark_as_received_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

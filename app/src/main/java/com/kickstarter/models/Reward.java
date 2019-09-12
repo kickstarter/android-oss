@@ -17,6 +17,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.isZero;
 @AutoParcel
 public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable Integer backersCount();
+  public abstract double convertedMinimum();
   public abstract @Nullable String description();
   public abstract @Nullable DateTime endsAt();
   public abstract long id();
@@ -33,6 +34,7 @@ public abstract class Reward implements Parcelable, Relay {
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder backersCount(Integer __);
+    public abstract Builder convertedMinimum(double __);
     public abstract Builder description(String __);
     public abstract Builder endsAt(DateTime __);
     public abstract Builder id(long __);

@@ -2,12 +2,12 @@ package com.kickstarter.mock.services
 
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
-import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
+import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
@@ -22,7 +22,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(true)
     }
 
-    override fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?, refTag: RefTag?): Observable<Boolean> {
         return Observable.just(true)
     }
 
@@ -43,8 +43,8 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
     }
 
-    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data> {
-        return Observable.just(SavePaymentMethodMutation.Data(SavePaymentMethodMutation.CreatePaymentSource("", null, true)))
+    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+        return Observable.just(StoredCardFactory.discoverCard())
     }
 
     override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {
@@ -54,6 +54,14 @@ open class MockApolloClient : ApolloClientType {
     override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
         return Observable.just(SendEmailVerificationMutation.Data(SendEmailVerificationMutation.UserSendEmailVerification("",
                 "12345")))
+    }
+
+    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+        return Observable.just(true)
+    }
+
+    override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
+        return Observable.just(true)
     }
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {

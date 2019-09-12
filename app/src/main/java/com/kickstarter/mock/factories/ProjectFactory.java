@@ -7,6 +7,8 @@ import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
 
+import java.util.Arrays;
+
 import androidx.annotation.NonNull;
 
 public final class ProjectFactory {
@@ -37,9 +39,11 @@ public final class ProjectFactory {
       .fxRate(1.0f)
       .goal(100.0f)
       .id(IdFactory.id())
+      .location(LocationFactory.unitedStates())
       .name("Some Name")
       .pledged(50.0f)
       .photo(PhotoFactory.photo())
+      .rewards(Arrays.asList(RewardFactory.noReward(), RewardFactory.reward()))
       .staffPick(false)
       .state(Project.STATE_LIVE)
       .staticUsdRate(1.0f)
@@ -226,6 +230,7 @@ public final class ProjectFactory {
       .currentCurrency("MXN")
       .currencySymbol("$")
       .currency("MXN")
+      .location(LocationFactory.mexico())
       .staticUsdRate(0.75f)
       .fxRate(0.75f)
       .build();
@@ -282,6 +287,21 @@ public final class ProjectFactory {
       .toBuilder()
       .name("staffPickProject")
       .staffPick(true)
+      .build();
+  }
+
+  public static Project prelaunchProject(final String projectUrl) {
+
+    final Project.Urls.Web web = Project.Urls.Web.builder()
+      .project(projectUrl)
+      .rewards(projectUrl + "/rewards")
+      .updates(projectUrl + "/posts")
+      .build();
+
+    return project()
+      .toBuilder()
+      .prelaunchActivated(true)
+      .urls(Project.Urls.builder().web(web).build())
       .build();
   }
 }

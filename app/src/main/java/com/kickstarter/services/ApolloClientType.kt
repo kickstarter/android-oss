@@ -2,12 +2,12 @@ package com.kickstarter.services
 
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
-import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
+import com.kickstarter.libs.RefTag
 import com.kickstarter.models.*
 import rx.Observable
 import type.CurrencyCode
@@ -16,7 +16,7 @@ import type.PaymentTypes
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
 
-    fun checkout(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?): Observable<Boolean>
+    fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?, refTag: RefTag?): Observable<Boolean>
 
     fun clearUnseenActivity(): Observable<Int>
 
@@ -26,13 +26,17 @@ interface ApolloClientType {
 
     fun getStoredCards(): Observable<List<StoredCard>>
 
-    fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String): Observable<SavePaymentMethodMutation.Data>
+    fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard>
 
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 
+    fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean>
+
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
+
+    fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean>
 
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
 

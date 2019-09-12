@@ -11,14 +11,14 @@ class RewardCardItemDecoration(private val margin: Int) : RecyclerView.ItemDecor
             left = if (parent.getChildAdapterPosition(view) == 0) {
                 margin
             } else {
-                margin / 2
+                0
             }
             top = margin
             bottom = margin
-            right = if (parent.getChildAdapterPosition(view) == parent.childCount - 1) {
+            right = if (parent.getChildAdapterPosition(view) == state.itemCount - 1) {
                 margin
             } else {
-                margin / 2
+                0
             }
         }
     }

@@ -26,12 +26,12 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showSnackbar
-import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -40,18 +40,20 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
-import com.kickstarter.ui.activities.NewCardActivity
 import com.kickstarter.ui.activities.ThanksActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
@@ -61,10 +63,19 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_delivery.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
+import kotlin.math.max
+import kotlin.math.min
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
+
+    interface PledgeDelegate {
+        fun pledgePaymentSuccessfullyUpdated()
+        fun pledgeSuccessfullyUpdated()
+    }
 
     private val defaultAnimationDuration = 200L
     private var animDuration = defaultAnimationDuration
@@ -109,10 +120,25 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
 
-        this.viewModel.outputs.animateRewardCard()
+        this.viewModel.outputs.startRewardShrinkAnimation()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showPledgeSection(it) }
+                .subscribe { revealPledgeSection(it) }
+
+        this.viewModel.outputs.startRewardExpandAnimation()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { hidePledgeSection() }
+
+        this.viewModel.outputs.snapshotIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { configureUIBySnapshotVisibility(it) }
+
+        this.viewModel.outputs.pledgeSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(pledge_container, it) }
 
         this.viewModel.outputs.decreasePledgeButtonIsEnabled()
                 .compose(bindToLifecycle())
@@ -133,6 +159,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(pledge_estimated_delivery_container, it) }
+
+        this.viewModel.outputs.deliverySectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(delivery, it) }
+
+        this.viewModel.outputs.deliveryDividerIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(divider_delivery, it) }
 
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
@@ -187,22 +223,34 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { setTextColor(it, total_amount, total_symbol_start, total_symbol_end) }
 
-        this.viewModel.outputs.cards()
+        this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it) }
+                .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it.first, it.second) }
+
+        this.viewModel.outputs.addedCard()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    val position = (cards_recycler.adapter as RewardCardAdapter).insertCard(it)
+                    this.viewModel.inputs.addedCardPosition(position)
+                }
 
         this.viewModel.outputs.startLoginToutActivity()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
 
-        this.viewModel.outputs.startNewCardActivity()
+        this.viewModel.outputs.showNewCardFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    startActivityForResult(Intent(this.context, NewCardActivity::class.java),
-                            ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD)
+                    fragmentManager
+                            ?.beginTransaction()
+                            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
+                            ?.addToBackStack(NewCardFragment::class.java.simpleName)
+                            ?.commit()
                 }
 
         this.viewModel.outputs.selectedShippingRule()
@@ -219,6 +267,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     shipping_amount.text = it
                 }
 
+        this.viewModel.outputs.shippingSummaryAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    shipping_summary_amount.text = it
+                    setVisibility(View.VISIBLE, shipping_summary_symbol_start, shipping_summary_symbol_end)
+                }
+
+        this.viewModel.outputs.shippingSummaryLocation()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+
         this.viewModel.outputs.shippingRulesAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -228,10 +289,30 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.shippingRulesSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(shipping_rules_row, it) }
+
+        this.viewModel.outputs.shippingSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(shipping_summary, it) }
+
+        this.viewModel.outputs.pledgeSummaryAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
                 .subscribe {
-                    ViewUtils.setGone(shipping_rules_section_text_view, it)
-                    ViewUtils.setGone(shipping_rules_row, it)
+                    pledge_summary_amount.text = it
+                    setVisibility(View.VISIBLE, pledge_summary_symbol_start, pledge_summary_symbol_end)
                 }
+
+        this.viewModel.outputs.pledgeSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(pledge_summary, it) }
+
+        this.viewModel.outputs.totalDividerIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(divider_total, it) }
 
         this.viewModel.outputs.totalAmount()
                 .compose(bindToLifecycle())
@@ -255,7 +336,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { activity?.showSnackbar(pledge_root, R.string.general_error_something_wrong) }
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
 
         this.viewModel.outputs.startChromeTab()
                 .compose(bindToLifecycle())
@@ -271,37 +352,40 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { setHtmlStrings(it) }
 
-        this.viewModel.outputs.cancelPledgeButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(cancel_pledge_button, it) }
-
-        this.viewModel.outputs.changePaymentMethodButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(change_payment_method_button, it) }
-
         this.viewModel.outputs.updatePledgeButtonIsGone()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
                 .subscribe { ViewUtils.setGone(update_pledge_button, it) }
 
-        this.viewModel.outputs.totalContainerIsGone()
+        this.viewModel.outputs.updatePledgeButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(total, it) }
+                .subscribe { update_pledge_button.isEnabled = it }
 
-        this.viewModel.outputs.showCancelPledge()
+        this.viewModel.outputs.updatePledgeProgressIsGone()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe {
-                    fragmentManager
-                            ?.beginTransaction()
-                            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                            ?.add(R.id.secondary_container, CancelPledgeFragment.newInstance(it), CancelPledgeFragment::class.java.simpleName)
-                            ?.addToBackStack(CancelPledgeFragment::class.java.simpleName)
-                            ?.commit()
-                }
+                .subscribe { ViewUtils.setGone(update_pledge_button_progress, it) }
+
+        this.viewModel.outputs.showUpdatePledgeError()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+
+        this.viewModel.outputs.showUpdatePledgeSuccess()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated() }
+
+        this.viewModel.outputs.showUpdatePaymentError()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+
+        this.viewModel.outputs.showUpdatePaymentSuccess()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
 
         this.viewModel.outputs.showMinimumWarning()
                 .compose(observeForUI())
@@ -317,8 +401,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
 
         shipping_rules.setOnTouchListener { _, _ ->
-            shipping_rules_section_text_view.post {
-                pledge_root.smoothScrollTo(0, relativeTop(shipping_rules_section_text_view, pledge_root))
+            shipping_rules_label.post {
+                pledge_root.smoothScrollTo(0, relativeTop(shipping_rules_label, pledge_root))
                 shipping_rules.requestFocus()
                 shipping_rules.showDropDown()
             }
@@ -337,9 +421,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
 
-        cancel_pledge_button.setOnClickListener {
-            this.viewModel.inputs.cancelPledgeButtonClicked()
-        }
+        RxView.clicks(update_pledge_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.updatePledgeButtonClicked() }
     }
 
     override fun onDetach() {
@@ -349,6 +433,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun addNewCardButtonClicked() {
         this.viewModel.inputs.newCardButtonClicked()
+    }
+
+    fun backPressed() {
+        this.viewModel.inputs.backPressed()
+    }
+
+    fun cardAdded(storedCard: StoredCard) {
+        this.viewModel.inputs.cardSaved(storedCard)
     }
 
     override fun closePledgeButtonClicked(position: Int) {
@@ -369,6 +461,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.selectCardButtonClicked(position)
     }
 
+    private fun configureUIBySnapshotVisibility(gone: Boolean) {
+        val visibility = if (gone) View.GONE else View.VISIBLE
+        setVisibility(visibility, reward_snapshot, reward_to_copy, expand_icon_container)
+        ViewUtils.setInvisible(pledge_root, !gone)
+        pledge_background.alpha = if (gone) 1f else 0f
+    }
+
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
         shipping_rules.isEnabled = true
         adapter.populateShippingRules(shippingRules, project)
@@ -386,17 +485,25 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val symbol = symbolAndStart.first
         val symbolAtStart = symbolAndStart.second
         if (symbolAtStart) {
+            pledge_summary_symbol_start.text = symbol
             pledge_symbol_start.text = symbol
+            shipping_summary_symbol_start.text = symbol
             shipping_symbol_start.text = symbol
             total_symbol_start.text = symbol
+            pledge_summary_symbol_end.text = null
             pledge_symbol_end.text = null
+            shipping_summary_symbol_end.text = null
             shipping_symbol_end.text = null
             total_symbol_end.text = null
         } else {
+            pledge_summary_symbol_start.text = null
             pledge_symbol_start.text = null
+            shipping_summary_symbol_start.text = null
             shipping_symbol_start.text = null
             total_symbol_start.text = null
+            pledge_summary_symbol_end.text = null
             pledge_symbol_end.text = symbol
+            shipping_summary_symbol_end.text = null
             shipping_symbol_end.text = symbol
             total_symbol_end.text = symbol
         }
@@ -414,7 +521,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun setUpCardsAdapter() {
         cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.activity_vertical_margin)))
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_3_half)))
     }
 
     private fun setUpShippingAdapter() {
@@ -521,12 +628,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     //Reward card animation helper methods
-    private fun showPledgeSection(pledgeData: PledgeData) {
-        setInitialViewStates(pledgeData)
-        startPledgeAnimatorSet(true, pledgeData.rewardScreenLocation)
+    private fun revealPledgeSection(pledgeData: PledgeData) {
+        pledgeData.rewardScreenLocation?.let {
+            setInitialViewStates(pledgeData)
+            startPledgeAnimatorSet(true)
+        }
     }
 
-    private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
+    private fun hidePledgeSection() {
+        this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
+        startPledgeAnimatorSet(false)
+    }
+
+    private fun startPledgeAnimatorSet(reveal: Boolean) {
         val initMarginX: Float
         val initMarginY: Float
         val finalMarginX: Float
@@ -538,8 +652,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val initY: Float
         val finalY: Float
 
+        val location = arguments?.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation
         val margin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin).toFloat()
-        val miniRewardWidth = Math.max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
+        val miniRewardWidth = max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
         val miniRewardHeight = getMiniRewardHeight(miniRewardWidth, location)
 
         if (reveal) {
@@ -580,15 +695,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val detailsY = getYAnimator(initY, finalY)
 
         if (reveal) {
-            val shrinkClickListener = View.OnClickListener { v ->
+            val expandRewardClickListener = View.OnClickListener { v ->
                 if (!width.isRunning) {
                     v?.setOnClickListener(null)
-                    this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
-                    startPledgeAnimatorSet(false, location)
+                    this.viewModel.inputs.miniRewardClicked()
                 }
             }
-            reward_snapshot.setOnClickListener(shrinkClickListener)
-            expand_icon_container.setOnClickListener(shrinkClickListener)
+            reward_snapshot.setOnClickListener(expandRewardClickListener)
+            expand_icon_container.setOnClickListener(expandRewardClickListener)
         } else {
             width.addUpdateListener {
                 if (it.animatedFraction == 1f) {
@@ -639,7 +753,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun getMiniRewardHeight(miniRewardWidth: Float, location: ScreenLocation): Float {
         val scale = miniRewardWidth / location.width
         val scaledHeight = (location.height * scale).toInt()
-        return Math.min(resources.getDimensionPixelSize(R.dimen.mini_reward_height), scaledHeight).toFloat()
+        return min(resources.getDimensionPixelSize(R.dimen.mini_reward_height), scaledHeight).toFloat()
     }
 
     private fun getWidthAnimator(initialValue: Float, finalValue: Float) =
@@ -658,13 +772,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 addUpdateListener {
                     val animatedFraction = it.animatedFraction
                     pledge_details?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
+                    pledge_background?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
                 }
             }
 
-    private fun positionRewardSnapshot(pledgeData: PledgeData) {
-        val location = pledgeData.rewardScreenLocation
-        val reward = pledgeData.reward
-        val project = pledgeData.project
+    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward, project: Project) {
         val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
         rewardParams.leftMargin = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
@@ -693,18 +805,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setInitialViewStates(pledgeData: PledgeData) {
-        positionRewardSnapshot(pledgeData)
+        pledgeData.rewardScreenLocation?.let { positionRewardSnapshot(it, pledgeData.reward, pledgeData.project) }
         pledge_details.y = pledge_root.height.toFloat()
     }
 
     companion object {
 
-        fun newInstance(pledgeData: PledgeData): PledgeFragment {
+        fun newInstance(pledgeData: PledgeData, pledgeReason: PledgeReason): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
             argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward)
             argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT, pledgeData.project)
             argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.rewardScreenLocation)
+            argument.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
             fragment.arguments = argument
             return fragment
         }

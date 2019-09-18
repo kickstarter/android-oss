@@ -29,6 +29,7 @@ public final class BackingFactory {
       .amount(10.0f)
       .backer(backer)
       .backerId(backer.id())
+      .cancelable(true)
       .id(IdFactory.id())
       .paymentSource(PaymentSourceFactory.Companion.visa())
       .pledgedAt(DateTime.now())

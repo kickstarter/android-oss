@@ -18,6 +18,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -294,6 +295,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCancelPledgeFragment(it) }
+
+        this.viewModel.outputs.showPledgeNotCancelableDialog()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showPledgeNotCancelableDialog() }
 
         this.viewModel.outputs.revealRewardsFragment()
                 .compose(bindToLifecycle())
@@ -579,6 +585,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         Handler().postDelayed({
             showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
         }, this.animDuration)
+    }
+
+    private fun showPledgeNotCancelableDialog() {
+        AlertDialog.Builder(this, R.style.Dialog)
+                .setMessage(R.string.We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours)
+                .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ ->  dialog.dismiss()}
+                .show()
     }
 
     private fun showUpdatePledgeSuccess() {

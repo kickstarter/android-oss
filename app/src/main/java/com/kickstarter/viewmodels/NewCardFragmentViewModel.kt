@@ -13,8 +13,8 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
+import com.stripe.android.ApiResultCallback
 import com.stripe.android.CardUtils
-import com.stripe.android.TokenCallback
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
 import rx.Observable
@@ -333,7 +333,7 @@ interface NewCardFragmentViewModel {
         private fun createTokenAndSaveCard(cardAndReusable: Pair<Card, Boolean>): Observable<StoredCard> {
             return Observable.defer {
                 val ps = PublishSubject.create<StoredCard>()
-                this.stripe.createToken(cardAndReusable.first, object : TokenCallback {
+                this.stripe.createToken(cardAndReusable.first, object : ApiResultCallback<Token> {
                     override fun onSuccess(token: Token) {
                         saveCard(token, cardAndReusable.second, ps)
                     }

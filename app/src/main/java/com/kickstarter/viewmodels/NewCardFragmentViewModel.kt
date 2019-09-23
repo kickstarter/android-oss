@@ -187,9 +187,10 @@ interface NewCardFragmentViewModel {
             val saveCardNotification = cardForm
                     .map {
                         it.card?.let { card ->
-                            card.name = it.name
-                            card.addressZip = it.postalCode
-                            card
+                            card.toBuilder()
+                                    .name(it.name)
+                                    .addressZip(it.postalCode)
+                                    .build()
                         }
                     }
                     .compose<Pair<Card, Boolean>>(combineLatestPair(reusable))
@@ -349,11 +350,11 @@ interface NewCardFragmentViewModel {
 
         private fun saveCard(token: Token, reusable:Boolean, ps: PublishSubject<StoredCard>) {
             token.card?.id?.apply {
-                this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, this, reusable)
+                this@ViewModel.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, this, reusable)
                         .subscribe({
                             ps.onCompleted()
-                            this.success.onNext(it)
-                            this.koala.trackSavedPaymentMethod()
+                            this@ViewModel.success.onNext(it)
+                            this@ViewModel.koala.trackSavedPaymentMethod()
                         }, { ps.onError(it) })
             }?: run {
                 ps.onError(IllegalStateException("Card has no id"))

@@ -3,7 +3,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:animateLayoutChanges="true">
+  android:animateLayoutChanges="true"
+  tools:ignore="MergeRootFrame">
 
   <LinearLayout
     android:id="@+id/pledge_sheet_retry_container"

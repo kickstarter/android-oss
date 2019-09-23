@@ -217,9 +217,6 @@ final timber_version = "3.0.1"
 // Test support versions
 final junit_version = "4.12"
 final mockito_version = "2.8.9"
-final robolectric_version = "3.8"
-final robolectric_shadows_version = "3.0"
-final robolectric_shadows_support_version = "3.4-rc2"
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -273,11 +270,10 @@ dependencies {
     // Testing
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
-    testImplementation "org.robolectric:robolectric:$robolectric_version"
-    testImplementation "org.robolectric:shadows-multidex:$robolectric_shadows_version"
-    testImplementation "org.robolectric:shadows-play-services:$robolectric_shadows_version"
-    testImplementation "org.robolectric:shadows-support-v4:$robolectric_shadows_support_version"
+    testImplementation "org.robolectric:robolectric:4.3"
+    testImplementation "org.robolectric:shadows-multidex:4.3"
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+    androidTestImplementation "androidx.test:core:1.2.0"
     androidTestImplementation "androidx.test.ext:junit:1.1.1"
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

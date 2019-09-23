@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
+import type.CreditCardTypes;
 
 public final class ProjectFactory {
   private ProjectFactory() {}
@@ -26,6 +27,13 @@ public final class ProjectFactory {
       .build();
 
     return Project.builder()
+      .availableCardTypes(Arrays.asList(CreditCardTypes.AMEX.rawValue(),
+        CreditCardTypes.DINERS.rawValue(),
+        CreditCardTypes.DISCOVER.rawValue(),
+        CreditCardTypes.JCB.rawValue(),
+        CreditCardTypes.MASTERCARD.rawValue(),
+        CreditCardTypes.UNION_PAY.rawValue(),
+        CreditCardTypes.VISA.rawValue()))
       .backersCount(100)
       .blurb("Some blurb")
       .category(CategoryFactory.category())
@@ -64,6 +72,7 @@ public final class ProjectFactory {
     final Backing backing = Backing.builder()
       .amount(10.0f)
       .backerId(IdFactory.id())
+      .cancelable(true)
       .id(IdFactory.id())
       .sequence(1)
       .reward(reward)
@@ -90,6 +99,7 @@ public final class ProjectFactory {
     final Backing backing = Backing.builder()
       .amount(10.0f)
       .backerId(IdFactory.id())
+      .cancelable(true)
       .id(IdFactory.id())
       .sequence(1)
       .reward(reward)
@@ -116,6 +126,7 @@ public final class ProjectFactory {
     final Backing backing = Backing.builder()
       .amount(10.0f)
       .backerId(IdFactory.id())
+      .cancelable(true)
       .id(IdFactory.id())
       .sequence(1)
       .reward(reward)
@@ -142,6 +153,7 @@ public final class ProjectFactory {
     final Backing backing = Backing.builder()
       .amount(10.0f)
       .backerId(IdFactory.id())
+      .cancelable(true)
       .id(IdFactory.id())
       .sequence(1)
       .reward(reward)
@@ -198,6 +210,9 @@ public final class ProjectFactory {
   public static @NonNull Project caProject() {
     return project()
       .toBuilder()
+      .availableCardTypes(Arrays.asList(CreditCardTypes.AMEX.rawValue(),
+        CreditCardTypes.MASTERCARD.rawValue(),
+        CreditCardTypes.VISA.rawValue()))
       .name("caProject")
       .country("CA")
       .currentCurrency("CAD")
@@ -211,6 +226,9 @@ public final class ProjectFactory {
   public static @NonNull Project mxCurrencyCAProject() {
     return project()
       .toBuilder()
+      .availableCardTypes(Arrays.asList(CreditCardTypes.AMEX.rawValue(),
+        CreditCardTypes.MASTERCARD.rawValue(),
+        CreditCardTypes.VISA.rawValue()))
       .name("mxCurrencyCAProject")
       .country("CA")
       .currentCurrency("MXN")
@@ -225,6 +243,9 @@ public final class ProjectFactory {
   public static @NonNull Project mxProject() {
     return project()
       .toBuilder()
+      .availableCardTypes(Arrays.asList(CreditCardTypes.AMEX.rawValue(),
+        CreditCardTypes.MASTERCARD.rawValue(),
+        CreditCardTypes.VISA.rawValue()))
       .name("mxProject")
       .country("MX")
       .currentCurrency("MXN")
@@ -239,6 +260,9 @@ public final class ProjectFactory {
   public static @NonNull Project ukProject() {
     return project()
       .toBuilder()
+      .availableCardTypes(Arrays.asList(CreditCardTypes.AMEX.rawValue(),
+        CreditCardTypes.MASTERCARD.rawValue(),
+        CreditCardTypes.VISA.rawValue()))
       .name("ukProject")
       .country("UK")
       .currentCurrency("GBP")

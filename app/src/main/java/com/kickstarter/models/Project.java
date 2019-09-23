@@ -23,6 +23,7 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class Project implements Parcelable, Relay {
+  public abstract @Nullable List<String> availableCardTypes();
   public abstract int backersCount();
   public abstract String blurb();
   public abstract @Nullable Backing backing();
@@ -66,6 +67,7 @@ public abstract class Project implements Parcelable, Relay {
 
   @AutoParcel.Builder
   public abstract static class Builder {
+    public abstract Builder availableCardTypes(List<String> __);
     public abstract Builder backersCount(int __);
     public abstract Builder blurb(String __);
     public abstract Builder backing(Backing __);

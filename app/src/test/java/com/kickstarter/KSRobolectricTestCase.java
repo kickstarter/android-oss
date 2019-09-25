@@ -27,7 +27,7 @@ import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 @RunWith(KSRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = ShadowAndroidXMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
+@Config(shadows = ShadowAndroidXMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
   public TestSubscriber<String> koalaTest;

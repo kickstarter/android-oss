@@ -26,8 +26,8 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(true)
     }
 
-    override fun clearUnseenActivity(): Observable<Long> {
-        return Observable.just(0L)
+    override fun clearUnseenActivity(): Observable<Int> {
+        return Observable.just(0)
     }
 
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {

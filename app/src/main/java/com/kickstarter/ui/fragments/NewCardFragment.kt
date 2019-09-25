@@ -153,7 +153,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         card_input_widget.setCvcNumberTextWatcher(cardValidityWatcher)
         card_input_widget.setExpiryDateTextWatcher(cardValidityWatcher)
         card_input_widget.setCardInputListener(object : CardInputListener {
-            override fun onFocusChange(focusField: String?) {
+            override fun onFocusChange(focusField: String) {
                 this@NewCardFragment.viewModel.inputs.cardFocus(true)
             }
 

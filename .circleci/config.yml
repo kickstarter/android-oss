@@ -1,7 +1,7 @@
 base_job: &base_job
   resource_class: xlarge
   docker:
-    - image: circleci/android:api-28-alpha
+    - image: circleci/android:api-29
   working_directory: '~/project'
   environment:
     TERM: dumb

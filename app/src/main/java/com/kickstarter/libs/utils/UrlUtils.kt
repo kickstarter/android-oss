@@ -17,9 +17,16 @@ object UrlUtils {
         return builder.build()
     }
 
-    fun buildUrl(baseUrl: String, path: String): String {
+    fun appendPath(baseUrl: String, path: String): String {
         val uriBuilder = Uri.parse(baseUrl).buildUpon()
         uriBuilder.appendEncodedPath(path)
+
+        return uriBuilder.build().toString()
+    }
+
+    fun appendQueryParameter(baseUrl: String, key: String, value: String): String {
+        val uriBuilder = Uri.parse(baseUrl).buildUpon()
+        uriBuilder.appendQueryParameter(key, value)
 
         return uriBuilder.build().toString()
     }

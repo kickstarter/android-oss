@@ -67,7 +67,7 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
     }
 
     private fun buildWebEndpointUrl(path: String): String {
-        return UrlUtils.buildUrl(this.environment().webEndpoint(), path)
+        return UrlUtils.appendPath(this.environment().webEndpoint(), path)
     }
 
     private fun composeContactEmail(user: User?) {

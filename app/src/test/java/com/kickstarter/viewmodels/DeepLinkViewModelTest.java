@@ -5,6 +5,8 @@ import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.UrlUtils;
 
 import org.junit.Test;
 
@@ -58,13 +60,27 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectDeepLink_startsProjectActivity() {
+  public void testProjectDeepLinkWithRefTag_startsProjectActivity() {
+    setUpEnvironment();
+
+    final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=discovery";
+    this.vm.intent(intentWithData(url));
+
+    this.startProjectActivity.assertValue(Uri.parse(url));
+    this.startBrowser.assertNoValues();
+    this.requestPackageManager.assertNoValues();
+    this.startDiscoveryActivity.assertNoValues();
+    this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
+  }
+
+  @Test
+  public void testProjectDeepLinkWithoutRefTag_startsProjectActivity() {
     setUpEnvironment();
 
     final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
     this.vm.intent(intentWithData(url));
 
-    this.startProjectActivity.assertValue(Uri.parse(url));
+    this.startProjectActivity.assertValue(Uri.parse(UrlUtils.INSTANCE.appendRefTag(url, RefTag.deepLink().tag())));
     this.startBrowser.assertNoValues();
     this.requestPackageManager.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();

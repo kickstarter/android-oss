@@ -55,6 +55,10 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("pledge_info");
   }
 
+  public static @NonNull RefTag projectShare() {
+    return new AutoParcel_RefTag("native_android_project_share");
+  }
+
   public static @NonNull RefTag push() {
     return new AutoParcel_RefTag("push");
   }

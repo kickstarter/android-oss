@@ -209,7 +209,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.outputs.showShareSheet()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startShareIntent(it) }
+                .subscribe { startShareIntent(it) }
 
         this.viewModel.outputs.startCampaignWebViewActivity()
                 .compose(bindToLifecycle())
@@ -666,13 +666,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    // todo: limit the apps you can share to
-    private fun startShareIntent(project: Project) {
-        val shareMessage = this.ksString.format(getString(this.projectShareCopyString), "project_title", project.name())
+    private fun startShareIntent(projectNameAndShareUrl: Pair<String, String>) {
+        val name = projectNameAndShareUrl.first
+        val shareMessage = this.ksString.format(getString(this.projectShareCopyString), "project_title", name)
 
+        val url = projectNameAndShareUrl.second
         val intent = Intent(Intent.ACTION_SEND)
                 .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + project.webProjectUrl())
+                .putExtra(Intent.EXTRA_TEXT, "$shareMessage $url")
         startActivity(Intent.createChooser(intent, getString(this.projectShareLabelString)))
     }
 

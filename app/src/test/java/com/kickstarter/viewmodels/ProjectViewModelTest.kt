@@ -203,7 +203,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testShowShareSheet() {
         val creator = UserFactory.creator()
         val slug = "best-project-2k19"
-        val projectUrl = "https://www.kickstarter.com/projects/" + creator.id().toString() + "/" + slug
+        val projectUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug
 
         val webUrls = Project.Urls.Web.builder()
                 .project(projectUrl)
@@ -222,7 +222,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.shareButtonClicked()
         val expectedName = "Best Project 2K19"
-        val expectedShareUrl = "https://www.kickstarter.com/projects/" + creator.id().toString() + "/" + slug + "?ref=native_android_project_share"
+        val expectedShareUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug + "?ref=android_project_share"
         this.showShareSheet.assertValues(Pair(expectedName, expectedShareUrl))
         this.koalaTest.assertValues(
                 KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE,

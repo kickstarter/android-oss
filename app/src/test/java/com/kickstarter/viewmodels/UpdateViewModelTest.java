@@ -176,7 +176,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     vm.inputs.shareIconButtonClicked();
 
     final String expectedShareUrl = "https://www.kck.str/projects/" + project.creator().param() +
-      "/" + project.param() + "/posts/" + id + "?ref=native_android_update_share";
+      "/" + project.param() + "/posts/" + id + "?ref=android_update_share";
     startShareIntent.assertValue(Pair.create(update, expectedShareUrl));
   }
 

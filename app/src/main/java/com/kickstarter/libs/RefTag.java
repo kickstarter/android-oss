@@ -98,4 +98,8 @@ public abstract class RefTag implements Parcelable {
   public static @NonNull RefTag update() {
     return new AutoParcel_RefTag("update");
   }
+
+  public static @NonNull RefTag updateShare() {
+    return new AutoParcel_RefTag("native_android_update_share");
+  }
 }

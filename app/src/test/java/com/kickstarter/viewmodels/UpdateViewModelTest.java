@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
@@ -8,9 +9,11 @@ import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 
@@ -144,9 +147,25 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
   public void testUpdateViewModel_StartShareIntent() {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
 
-    final Update update = UpdateFactory.update();
+    final User creator = UserFactory.creator().toBuilder().id(278438049).build();
+    final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
+    final String updatesUrl = "https://www.kck.str/projects/" + project.creator().param() + "/" + project.param() + "/posts";
 
-    final TestSubscriber<Update> startShareIntent = new TestSubscriber<>();
+    final int id = 15;
+
+    final Update.Urls.Web web = Update.Urls.Web.builder()
+      .update(updatesUrl + "/" + id)
+      .likes(updatesUrl + "/likes")
+      .build();
+
+    final Update update = UpdateFactory.update()
+      .toBuilder()
+      .id(id)
+      .projectId(project.id())
+      .urls(Update.Urls.builder().web(web).build())
+      .build();
+
+    final TestSubscriber<Pair<Update, String>> startShareIntent = new TestSubscriber<>();
     vm.outputs.startShareIntent().subscribe(startShareIntent);
 
     // Start the intent with a project and update.
@@ -156,7 +175,9 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     );
     vm.inputs.shareIconButtonClicked();
 
-    startShareIntent.assertValues(update);
+    final String expectedShareUrl = "https://www.kck.str/projects/" + project.creator().param() +
+      "/" + project.param() + "/posts/" + id + "?ref=native_android_update_share";
+    startShareIntent.assertValue(Pair.create(update, expectedShareUrl));
   }
 
   @Test

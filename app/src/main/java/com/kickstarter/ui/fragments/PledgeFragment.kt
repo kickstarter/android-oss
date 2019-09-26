@@ -572,9 +572,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setHtmlStrings(baseUrl: String) {
-        val termsOfUseUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.TERMS_OF_USE)
-        val cookiePolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.COOKIES)
-        val privacyPolicyUrl = UrlUtils.buildUrl(baseUrl, HelpActivity.PRIVACY)
+        val termsOfUseUrl = UrlUtils.appendPath(baseUrl, HelpActivity.TERMS_OF_USE)
+        val cookiePolicyUrl = UrlUtils.appendPath(baseUrl, HelpActivity.COOKIES)
+        val privacyPolicyUrl = UrlUtils.appendPath(baseUrl, HelpActivity.PRIVACY)
 
         val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
         val byPledgingYouAgree = getString(R.string.By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy)
@@ -584,7 +584,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         setClickableHtml(agreementWithUrls, pledge_agreement)
 
-        val trustUrl = UrlUtils.buildUrl(baseUrl, "trust")
+        val trustUrl = UrlUtils.appendPath(baseUrl, "trust")
 
         val kickstarterIsNotAStore = getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability)
         val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)

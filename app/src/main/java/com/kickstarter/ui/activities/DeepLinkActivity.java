@@ -9,6 +9,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
+import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.DeepLinkViewModel;
 
@@ -54,7 +55,7 @@ public final class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
   private void startProjectActivity(final @NonNull Uri uri) {
     final Intent projectIntent = new Intent(this, ProjectActivity.class)
       .setData(uri);
-    final String ref = uri.getQueryParameter("ref");
+    final String ref = UrlUtils.INSTANCE.refTag(uri.toString());
     if (ref != null) {
       projectIntent.putExtra(IntentKey.REF_TAG, RefTag.from(ref));
     }

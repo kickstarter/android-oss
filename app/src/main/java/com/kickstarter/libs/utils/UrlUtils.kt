@@ -8,14 +8,7 @@ import com.kickstarter.R
 
 object UrlUtils {
 
-    fun baseCustomTabsIntent(context: Context): CustomTabsIntent {
-        val builder = CustomTabsIntent.Builder()
-
-        builder.setShowTitle(true)
-        builder.setToolbarColor(ContextCompat.getColor(context, R.color.primary))
-
-        return builder.build()
-    }
+    private const val KEY_REF = "ref"
 
     fun appendPath(baseUrl: String, path: String): String {
         val uriBuilder = Uri.parse(baseUrl).buildUpon()
@@ -29,5 +22,22 @@ object UrlUtils {
         uriBuilder.appendQueryParameter(key, value)
 
         return uriBuilder.build().toString()
+    }
+
+    fun appendRefTag(baseUrl: String, tag: String): String {
+        return appendQueryParameter(baseUrl, KEY_REF, tag)
+    }
+
+    fun baseCustomTabsIntent(context: Context): CustomTabsIntent {
+        val builder = CustomTabsIntent.Builder()
+
+        builder.setShowTitle(true)
+        builder.setToolbarColor(ContextCompat.getColor(context, R.color.primary))
+
+        return builder.build()
+    }
+
+    fun refTag(url: String): String? {
+        return Uri.parse(url).getQueryParameter(KEY_REF)
     }
 }

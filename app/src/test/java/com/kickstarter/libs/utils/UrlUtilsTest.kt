@@ -15,9 +15,9 @@ class UrlUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun testAppendQueryParameter() {
-        assertEquals("www.test.com/path?key=value", UrlUtils.appendQueryParameter("www.test.com", "key", "value"))
+        assertEquals("www.test.com?key=value", UrlUtils.appendQueryParameter("www.test.com", "key", "value"))
         assertEquals("www.test.com/path/to?key=value", UrlUtils.appendQueryParameter("www.test.com/path/to", "key", "value"))
-        assertEquals("http://www.test.com/path?key=value", UrlUtils.appendQueryParameter("http://www.test.com", "key", "value"))
+        assertEquals("http://www.test.com?key=value", UrlUtils.appendQueryParameter("http://www.test.com", "key", "value"))
         assertEquals("http://www.test.com/path/to?key=value", UrlUtils.appendQueryParameter("http://www.test.com/path/to", "key", "value"))
     }
 }

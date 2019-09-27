@@ -8,7 +8,10 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.activities.DeepLinkActivity;
 
@@ -72,6 +75,7 @@ public interface DeepLinkViewModel {
       uriFromIntent
         .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .filter(uri -> !KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .map(this::appendRefTagIfNone)
         .compose(bindToLifecycle())
         .subscribe(this.startProjectActivity::onNext);
 
@@ -115,6 +119,16 @@ public interface DeepLinkViewModel {
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(this.requestPackageManager::onNext);
+    }
+
+    private Uri appendRefTagIfNone(final @NonNull Uri uri) {
+      final String url = uri.toString();
+      final String ref = UrlUtils.INSTANCE.refTag(url);
+      if (ObjectUtils.isNull(ref)) {
+        return Uri.parse(UrlUtils.INSTANCE.appendRefTag(url, RefTag.deepLink().tag()));
+      }
+
+      return uri;
     }
 
     private boolean lastPathSegmentIsProjects(final @NonNull Uri uri) {

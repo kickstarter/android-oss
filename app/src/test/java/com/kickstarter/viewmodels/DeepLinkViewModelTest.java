@@ -58,13 +58,28 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectDeepLink_startsProjectActivity() {
+  public void testProjectDeepLinkWithRefTag_startsProjectActivity() {
+    setUpEnvironment();
+
+    final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=discovery";
+    this.vm.intent(intentWithData(url));
+
+    this.startProjectActivity.assertValue(Uri.parse(url));
+    this.startBrowser.assertNoValues();
+    this.requestPackageManager.assertNoValues();
+    this.startDiscoveryActivity.assertNoValues();
+    this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
+  }
+
+  @Test
+  public void testProjectDeepLinkWithoutRefTag_startsProjectActivity() {
     setUpEnvironment();
 
     final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
     this.vm.intent(intentWithData(url));
 
-    this.startProjectActivity.assertValue(Uri.parse(url));
+    final String expectedUrl = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=android_deep_link";
+    this.startProjectActivity.assertValue(Uri.parse(expectedUrl));
     this.startBrowser.assertNoValues();
     this.requestPackageManager.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();

@@ -1,7 +1,11 @@
 package com.kickstarter.viewmodels;
 
+import android.util.Pair;
+
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.ThanksShareViewHolder;
 
@@ -32,14 +36,14 @@ public interface ThanksShareHolderViewModel {
     /** Emits the backing's project name. */
     Observable<String> projectName();
 
-    /** Share the project using Android's app chooser. */
-    Observable<Project> startShare();
+    /** Emits the project name and url to share using Android's default share behavior. */
+    Observable<Pair<String, String>> startShare();
 
-    /** Share the project on Facebook. */
-    Observable<Project> startShareOnFacebook();
+    /** Emits the project and url to share using Facebook. */
+    Observable<Pair<Project, String>> startShareOnFacebook();
 
-    /** Share the project on Twitter. */
-    Observable<Project> startShareOnTwitter();
+    /** Emits the project name and url to share using Twitter. */
+    Observable<Pair<String, String>> startShareOnTwitter();
   }
 
   final class ViewModel extends ActivityViewModel<ThanksShareViewHolder> implements Inputs, Outputs {
@@ -52,16 +56,19 @@ public interface ThanksShareHolderViewModel {
         .subscribe(this.projectName::onNext);
 
       this.project
+        .map(p -> Pair.create(p.name(), UrlUtils.INSTANCE.appendRefTag(p.webProjectUrl(), RefTag.thanksShare().tag())))
         .compose(takeWhen(this.shareClick))
         .compose(bindToLifecycle())
         .subscribe(this.startShare::onNext);
 
       this.project
+        .map(p -> Pair.create(p, UrlUtils.INSTANCE.appendRefTag(p.webProjectUrl(), RefTag.thanksFacebookShare().tag())))
         .compose(takeWhen(this.shareOnFacebookClick))
         .compose(bindToLifecycle())
         .subscribe(this.startShareOnFacebook::onNext);
 
       this.project
+        .map(p -> Pair.create(p.name(), UrlUtils.INSTANCE.appendRefTag(p.webProjectUrl(), RefTag.thanksTwitterShare().tag())))
         .compose(takeWhen(this.shareOnTwitterClick))
         .compose(bindToLifecycle())
         .subscribe(this.startShareOnTwitter::onNext);
@@ -85,9 +92,9 @@ public interface ThanksShareHolderViewModel {
     private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
 
     private final BehaviorSubject<String> projectName = BehaviorSubject.create();
-    private final PublishSubject<Project> startShare = PublishSubject.create();
-    private final PublishSubject<Project> startShareOnFacebook = PublishSubject.create();
-    private final PublishSubject<Project> startShareOnTwitter = PublishSubject.create();
+    private final PublishSubject<Pair<String, String>> startShare = PublishSubject.create();
+    private final PublishSubject<Pair<Project, String>> startShareOnFacebook = PublishSubject.create();
+    private final PublishSubject<Pair<String, String>> startShareOnTwitter = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -105,13 +112,13 @@ public interface ThanksShareHolderViewModel {
       this.shareOnTwitterClick.onNext(null);
     }
 
-    @Override public @NonNull Observable<Project> startShare() {
+    @Override public @NonNull Observable<Pair<String, String>> startShare() {
       return this.startShare;
     }
-    @Override public @NonNull Observable<Project> startShareOnFacebook() {
+    @Override public @NonNull Observable<Pair<Project, String>> startShareOnFacebook() {
       return this.startShareOnFacebook;
     }
-    @Override public @NonNull Observable<Project> startShareOnTwitter() {
+    @Override public @NonNull Observable<Pair<String, String>> startShareOnTwitter() {
       return this.startShareOnTwitter;
     }
     @Override public @NonNull Observable<String> projectName() {

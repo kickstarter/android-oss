@@ -3,7 +3,9 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.models.Project;
@@ -41,7 +43,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> rewardsItemsAreGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> selectedHeaderIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shippingSummarySectionIsGone = new TestSubscriber<>();
-  private final TestSubscriber<String> shippingSummaryTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Integer, String>> shippingSummaryTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Project> startBackingActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, Reward>> startCheckoutActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> titleTextViewIsGone = new TestSubscriber<>();
@@ -452,20 +454,46 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShippingSummary() {
+  public void testShippingSummary_whenRewardIsNotShippable() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
 
-    // Reward with no shipping should hide shipping summary section and not emit a shipping summary string.
     this.vm.inputs.projectAndReward(project, RewardFactory.reward());
     this.shippingSummaryTextViewText.assertNoValues();
     this.shippingSummarySectionIsGone.assertValue(true);
+  }
 
-    // Reward with shipping should show shipping summary section and emit a shipping summary string.
+  @Test
+  public void testShippingSummary_whenRewardHasLimitedShipping() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    final Reward rewardWithShipping = RewardFactory.multipleLocationShipping();
+    this.vm.inputs.projectAndReward(project, rewardWithShipping);
+    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.Ships_worldwide, null));
+    this.shippingSummarySectionIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testShippingSummary_whenRewardShipsToOneLocation() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    final Reward rewardWithShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName());
+    this.vm.inputs.projectAndReward(project, rewardWithShipping);
+    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.location_name_only, "Nigeria"));
+    this.shippingSummarySectionIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testShippingSummary_whenRewardShipsWorldWide() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
     final Reward rewardWithShipping = RewardFactory.rewardWithShipping();
     this.vm.inputs.projectAndReward(project, rewardWithShipping);
-    this.shippingSummaryTextViewText.assertValue(rewardWithShipping.shippingSummary());
-    this.shippingSummarySectionIsGone.assertValues(true, false);
+    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.Limited_shipping, null));
+    this.shippingSummarySectionIsGone.assertValues(false);
   }
 
   @Test

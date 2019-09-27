@@ -165,7 +165,7 @@ public final class RewardViewHolder extends KSViewHolder {
     this.viewModel.outputs.shippingSummaryTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.shippingSummaryTextView::setText);
+      .subscribe(this::setShippingSummaryText);
 
     this.viewModel.outputs.titleTextViewIsGone()
       .compose(bindToLifecycle())
@@ -229,6 +229,16 @@ public final class RewardViewHolder extends KSViewHolder {
       this.currencyConversionString,
       "reward_amount", amount
     ));
+  }
+
+  private void setShippingSummaryText(final @NonNull Pair<Integer, String> stringResAndLocationName) {
+    final Integer stringRes = stringResAndLocationName.first;
+    final String locationName = stringResAndLocationName.second;
+    final String shippingSummary = context().getString(stringRes);
+
+    this.shippingSummaryTextView.setText(locationName != null ?
+      this.ksString.format(shippingSummary, "location_name", locationName) :
+      shippingSummary);
   }
 
   private void startBackingActivity(final @NonNull Project project) {

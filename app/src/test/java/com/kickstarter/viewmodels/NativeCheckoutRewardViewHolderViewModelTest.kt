@@ -6,6 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
@@ -38,7 +39,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val reward = TestSubscriber<Reward>()
     private val rewardItems = TestSubscriber<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
-    private val shippingSummary = TestSubscriber<String>()
+    private val shippingSummary = TestSubscriber<Pair<Int, String>>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
@@ -569,19 +570,46 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingSummary() {
+    fun testShippingSummary_whenRewardIsNotShippable() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        // Summary should be hidden when reward is not shippable.
         this.vm.inputs.projectAndReward(project, RewardFactory.reward())
-        this.shippingSummaryIsGone.assertValue(true)
         this.shippingSummary.assertNoValues()
+        this.shippingSummaryIsGone.assertValue(true)
+    }
 
-        val shippableReward = RewardFactory.rewardWithShipping()
-        this.vm.inputs.projectAndReward(project, shippableReward)
-        this.shippingSummaryIsGone.assertValues(true, false)
-        this.shippingSummary.assertValues(shippableReward.shippingSummary())
+    @Test
+    fun testShippingSummary_whenRewardHasLimitedShipping() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.multipleLocationShipping()
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.Ships_worldwide, null) as Pair<Int, String>)
+        this.shippingSummaryIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testShippingSummary_whenRewardShipsToOneLocation() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.location_name_only, "Nigeria"))
+        this.shippingSummaryIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testShippingSummary_whenRewardShipsWorldWide() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.rewardWithShipping()
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null) as Pair<Int, String>)
+        this.shippingSummaryIsGone.assertValues(false)
     }
 
     @Test

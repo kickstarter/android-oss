@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
@@ -12,10 +13,9 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
-
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class RewardUtils {
   private RewardUtils() {}
@@ -83,7 +83,8 @@ public final class RewardUtils {
    * Returns `true` if the reward has shipping enabled, `false` otherwise.
    */
   public static boolean isShippable(final @NonNull Reward reward) {
-    return isTrue(reward.shippingEnabled());
+    final String shippingType = reward.shippingType();
+    return shippingType != null && !Reward.SHIPPING_TYPE_NO_SHIPPING.equals(shippingType);
   }
 
   /**
@@ -123,6 +124,43 @@ public final class RewardUtils {
       return context.getString(R.string.discovery_baseball_card_deadline_units_hours);
     }
     return context.getString(R.string.discovery_baseball_card_deadline_units_days);
+  }
+
+  /**
+   * Returns a Pair representing a reward's shipping summary
+   * where the first value is a StringRes Integer to be used as the shipping summary
+   * and the second value is a nullable String location name for rewards with single location shipping.
+   *
+   * Returns null for rewards that are not shippable.
+   */
+  public static Pair<Integer, String> shippingSummary(final @NonNull Reward reward) {
+    if (!RewardUtils.isShippable(reward)) {
+      return null;
+    }
+
+    final String shippingType = reward.shippingType();
+    Integer stringRes = null;
+    String locationName = null;
+
+    switch (Objects.requireNonNull(shippingType)) {
+      case Reward.SHIPPING_TYPE_ANYWHERE:
+        stringRes = R.string.Ships_worldwide;
+        break;
+      case Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS:
+        stringRes = R.string.Limited_shipping;
+        break;
+      case Reward.SHIPPING_TYPE_SINGLE_LOCATION:
+        final Reward.Location location = reward.location();
+        if (ObjectUtils.isNotNull(location)) {
+          locationName = location.localizedName();
+          stringRes = R.string.location_name_only;
+        } else {
+          stringRes = R.string.Limited_shipping;
+        }
+        break;
+    }
+
+    return Pair.create(stringRes, locationName);
   }
 
   /**

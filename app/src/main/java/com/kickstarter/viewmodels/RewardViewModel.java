@@ -99,7 +99,7 @@ public interface RewardViewModel {
     Observable<Boolean> shippingSummarySectionIsGone();
 
     /** Set the shipping summary TextView's text. */
-    Observable<String> shippingSummaryTextViewText();
+    Observable<Pair<Integer, String>> shippingSummaryTextViewText();
 
     /** Start the {@link com.kickstarter.ui.activities.BackingActivity} with the project. */
     Observable<Project> startBackingActivity();
@@ -217,7 +217,8 @@ public interface RewardViewModel {
 
       this.shippingSummaryTextViewText = reward
         .filter(RewardUtils::isShippable)
-        .map(Reward::shippingSummary);
+        .map(RewardUtils::shippingSummary)
+        .filter(ObjectUtils::isNotNull);
 
       this.shippingSummarySectionIsGone = reward
         .map(RewardUtils::isShippable)
@@ -278,7 +279,7 @@ public interface RewardViewModel {
     private final Observable<String> titleTextViewText;
     private final Observable<Boolean> selectedHeaderIsGone;
     private final Observable<Boolean> shippingSummarySectionIsGone;
-    private final Observable<String> shippingSummaryTextViewText;
+    private final Observable<Pair<Integer, String>> shippingSummaryTextViewText;
     private final Observable<Project> startBackingActivity;
     private final Observable<Pair<Project, Reward>> startCheckoutActivity;
     private final Observable<Boolean> whiteOverlayIsInvisible;
@@ -350,7 +351,7 @@ public interface RewardViewModel {
     @Override public @NonNull Observable<Boolean> shippingSummarySectionIsGone() {
       return this.shippingSummarySectionIsGone;
     }
-    @Override public @NonNull Observable<String> shippingSummaryTextViewText() {
+    @Override public @NonNull Observable<Pair<Integer, String>> shippingSummaryTextViewText() {
       return this.shippingSummaryTextViewText;
     }
     @Override public @NonNull Observable<Project> startBackingActivity() {

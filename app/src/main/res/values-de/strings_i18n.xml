@@ -91,6 +91,7 @@ Unterstützer</string>
   <string name="Confirm" formatted="false">Bestätigen</string>
   <string name="Confirm_password" formatted="false">Neues Passwort bestätigen</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.</string>
+  <string name="Contact_backer" formatted="false">Unterstützer kontaktieren</string>
   <string name="Contact_creator" formatted="false">Projektgründer kontaktieren</string>
   <string name="Content_isnt_loading_right_now" formatted="false">Inhalt kann derzeit leider nicht geladen werden.</string>
   <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Inhalt kann derzeit leider nicht geladen werden.\n
@@ -265,6 +266,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Left_count_left_other" formatted="false">%{left_count} verbleibend</string>
   <string name="Left_count_left_two" formatted="false">%{left_count} übrig</string>
   <string name="Left_count_left_zero" formatted="false">%{left_count} übrig</string>
+  <string name="Limited_shipping" formatted="false">Nur bestimmte Versandziele</string>
   <string name="Live" formatted="false">Live</string>
   <string name="Live_Stream" formatted="false">Live-Stream</string>
   <string name="Live_now" formatted="false">Jetzt live</string>
@@ -287,6 +289,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Manage_your_pledge" formatted="false">Meinen Beitrag verwalten</string>
   <string name="Manage_your_pledge_below" formatted="false">Folgenden Beitrag verwalten</string>
   <string name="Manage_your_reward" formatted="false">Belohnung verwalten</string>
+  <string name="Menu" formatted="false">Menü</string>
   <string name="Message_backer" formatted="false">Nachricht an Unterstützer senden</string>
   <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Zweimal antippen, um Banner auszublenden.</string>
   <string name="Message_creator" formatted="false">Nachricht an Projektgründer senden</string>
@@ -438,6 +441,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Security_code" formatted="false">Sicherheitscode</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
   <string name="Select" formatted="false">Auswählen</string>
+  <string name="Select_an_option" formatted="false">Bitte eine Option wählen</string>
   <string name="Select_another_project" formatted="false">Wähle ein anderes Projekt aus</string>
   <string name="Select_this_instead" formatted="false">Stattdessen diese auswählen</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
@@ -456,8 +460,10 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Shipping" formatted="false">Versand</string>
   <string name="Shipping_addresses" formatted="false">Versandanschrift</string>
   <string name="Shipping_destination" formatted="false">Versandziel</string>
+  <string name="Shipping_to_country" formatted="false">Versand: %{country}</string>
   <string name="Ships_to" formatted="false">Versand an:</string>
   <string name="Ships_to_shipping_summary" formatted="false">Versand nach: %{shipping_summary}</string>
+  <string name="Ships_worldwide" formatted="false">Weltweiter Versand</string>
   <string name="Show_me_projects" formatted="false">Projekte anzeigen</string>
   <string name="Show_password" formatted="false">Passwort anzeigen</string>
   <string name="Shows_list_of_subcategories" formatted="false">Unterkategorien anzeigen.</string>
@@ -1168,6 +1174,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="invalid_api_client_alert_message" formatted="false">Du scheinst eine sehr alte Version der App zu benutzen. Um fortzufahren, installiere bitte die neueste Version aus dem App Store.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Bitte aktualisieren</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Aktualisierung</string>
+  <string name="location_name_only" formatted="false">Nur %{location_name}</string>
   <string name="login_buttons_forgot_password" formatted="false">Passwort vergessen?</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Passwort vergessen?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Anmelden</string>

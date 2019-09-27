@@ -150,7 +150,7 @@ public final class RewardUtils {
         stringRes = R.string.Limited_shipping;
         break;
       case Reward.SHIPPING_TYPE_SINGLE_LOCATION:
-        final Reward.Location location = reward.location();
+        final Reward.Location location = reward.shippingSingleLocation();
         if (ObjectUtils.isNotNull(location)) {
           locationName = location.localizedName();
           stringRes = R.string.location_name_only;

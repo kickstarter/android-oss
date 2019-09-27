@@ -602,6 +602,20 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShippingSummary_whenRewardShipsToOneLocation_withNullLocation() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.reward()
+                .toBuilder()
+                .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
+                .build()
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null) as Pair<Int, String>)
+        this.shippingSummaryIsGone.assertValues(false)
+    }
+
+    @Test
     fun testShippingSummary_whenRewardShipsWorldWide() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())

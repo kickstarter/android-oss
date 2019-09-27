@@ -24,12 +24,12 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable String description();
   public abstract @Nullable DateTime endsAt();
   public abstract long id();
-  public abstract @Nullable Location location();
   public abstract @Nullable Integer limit();
   public abstract double minimum();
   public abstract @Nullable DateTime estimatedDeliveryOn();
   public abstract @Nullable Integer remaining();
   public abstract @Nullable List<RewardsItem> rewardsItems();
+  public abstract @Nullable Location shippingSingleLocation();
   public abstract @Nullable @ShippingType String shippingType();
   public abstract @Nullable String title();
 
@@ -40,12 +40,12 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder description(String __);
     public abstract Builder endsAt(DateTime __);
     public abstract Builder id(long __);
-    public abstract Builder location(Location __);
     public abstract Builder limit(Integer __);
     public abstract Builder minimum(double __);
     public abstract Builder estimatedDeliveryOn(DateTime __);
     public abstract Builder remaining(Integer __);
     public abstract Builder rewardsItems(List<RewardsItem> __);
+    public abstract Builder shippingSingleLocation(Location __);
     public abstract Builder shippingType(@ShippingType String __);
     public abstract Builder title(String __);
     public abstract Reward build();

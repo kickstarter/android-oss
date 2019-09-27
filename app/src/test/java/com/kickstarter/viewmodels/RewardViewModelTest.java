@@ -486,6 +486,20 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testShippingSummary_whenRewardShipsToOneLocation_withNullLocation() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    final Reward rewardWithShipping = RewardFactory.reward()
+      .toBuilder()
+      .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
+      .build();
+    this.vm.inputs.projectAndReward(project, rewardWithShipping);
+    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.Limited_shipping, null));
+    this.shippingSummarySectionIsGone.assertValues(false);
+  }
+
+  @Test
   public void testShippingSummary_whenRewardShipsWorldWide() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());

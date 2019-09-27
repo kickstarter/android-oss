@@ -48,7 +48,7 @@ public abstract class RefTag implements Parcelable {
   }
 
   public static @NonNull RefTag deepLink() {
-    return new AutoParcel_RefTag("android_deeplink");
+    return new AutoParcel_RefTag("android_deep_link");
   }
 
   public static @NonNull RefTag discovery() {

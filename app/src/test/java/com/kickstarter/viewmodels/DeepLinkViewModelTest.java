@@ -78,7 +78,7 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
     this.vm.intent(intentWithData(url));
 
-    final String expectedUrl = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=android_deeplink";
+    final String expectedUrl = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=android_deep_link";
     this.startProjectActivity.assertValue(Uri.parse(expectedUrl));
     this.startBrowser.assertNoValues();
     this.requestPackageManager.assertNoValues();

@@ -470,7 +470,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     final Reward rewardWithShipping = RewardFactory.multipleLocationShipping();
     this.vm.inputs.projectAndReward(project, rewardWithShipping);
-    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.Ships_worldwide, null));
+    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.Limited_shipping, null));
     this.shippingSummarySectionIsGone.assertValues(false);
   }
 
@@ -506,7 +506,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     final Reward rewardWithShipping = RewardFactory.rewardWithShipping();
     this.vm.inputs.projectAndReward(project, rewardWithShipping);
-    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.Limited_shipping, null));
+    this.shippingSummaryTextViewText.assertValue(Pair.create(R.string.Ships_worldwide, null));
     this.shippingSummarySectionIsGone.assertValues(false);
   }
 

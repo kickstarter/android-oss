@@ -586,7 +586,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val rewardWithShipping = RewardFactory.multipleLocationShipping()
         this.vm.inputs.projectAndReward(project, rewardWithShipping)
-        this.shippingSummary.assertValue(Pair(R.string.Ships_worldwide, null) as Pair<Int, String>)
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null) as Pair<Int, String>)
         this.shippingSummaryIsGone.assertValues(false)
     }
 
@@ -622,7 +622,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val rewardWithShipping = RewardFactory.rewardWithShipping()
         this.vm.inputs.projectAndReward(project, rewardWithShipping)
-        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null) as Pair<Int, String>)
+        this.shippingSummary.assertValue(Pair(R.string.Ships_worldwide, null) as Pair<Int, String>)
         this.shippingSummaryIsGone.assertValues(false)
     }
 

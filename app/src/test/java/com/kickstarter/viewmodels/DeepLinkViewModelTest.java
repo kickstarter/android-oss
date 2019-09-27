@@ -5,8 +5,6 @@ import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.KoalaEvent;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.utils.UrlUtils;
 
 import org.junit.Test;
 
@@ -80,7 +78,8 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap";
     this.vm.intent(intentWithData(url));
 
-    this.startProjectActivity.assertValue(Uri.parse(UrlUtils.INSTANCE.appendRefTag(url, RefTag.deepLink().tag())));
+    final String expectedUrl = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=android_deeplink";
+    this.startProjectActivity.assertValue(Uri.parse(expectedUrl));
     this.startBrowser.assertNoValues();
     this.requestPackageManager.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();

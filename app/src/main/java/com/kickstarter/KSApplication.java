@@ -10,7 +10,6 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
-import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -48,10 +47,6 @@ public class KSApplication extends MultiDexApplication {
     // Only log for internal builds
     if (BuildConfig.FLAVOR.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
-    }
-
-    if (!isInUnitTests()) {
-      this.refWatcher = LeakCanary.install(this);
     }
 
     JodaTimeAndroid.init(this);

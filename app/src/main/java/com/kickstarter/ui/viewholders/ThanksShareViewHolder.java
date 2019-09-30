@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
+import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
@@ -90,8 +91,8 @@ public final class ThanksShareViewHolder extends KSViewHolder {
     this.viewModel.inputs.shareOnTwitterClick();
   }
 
-  private String shareString(final @NonNull Project project) {
-    return this.ksString.format(this.iJustBackedString, "project_name", project.name());
+  private String shareString(final @NonNull String projectName) {
+    return this.ksString.format(this.iJustBackedString, "project_name", projectName);
   }
 
   private void showBackedProject(final @NonNull String projectName) {
@@ -100,27 +101,31 @@ public final class ThanksShareViewHolder extends KSViewHolder {
     );
   }
 
-  private void startShare(final @NonNull Project project) {
+  private void startShare(final @NonNull Pair<String, String> projectNameAndShareUrl) {
+    final String projectName = projectNameAndShareUrl.first;
+    final String shareUrl = projectNameAndShareUrl.second;
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .putExtra(Intent.EXTRA_TEXT, shareString(project) + " " + project.webProjectUrl());
+      .addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+      .putExtra(Intent.EXTRA_TEXT, String.format("%s %s", shareString(projectName), shareUrl));
 
     context().startActivity(Intent.createChooser(intent, this.shareThisProjectString));
   }
 
-  private void startShareOnFacebook(final @NonNull Project project) {
+  private void startShareOnFacebook(final @NonNull Pair<Project, String> projectAndShareUrl) {
     if (!ShareDialog.canShow(ShareLinkContent.class)) {
       return;
     }
 
+    final Project project = projectAndShareUrl.first;
+    final String shareUrl = projectAndShareUrl.second;
     final Photo photo = project.photo();
     final ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
       .putString("og:type", "kickstarter:project")
       .putString("og:title", project.name())
       .putString("og:description", project.blurb())
       .putString("og:image", photo == null ? null : photo.small())
-      .putString("og:url", project.webProjectUrl())
+      .putString("og:url", shareUrl)
       .build();
 
     final ShareOpenGraphAction action = new ShareOpenGraphAction.Builder()
@@ -136,10 +141,12 @@ public final class ThanksShareViewHolder extends KSViewHolder {
     this.shareDialog.show(content);
   }
 
-  private void startShareOnTwitter(final @NonNull Project project) {
+  private void startShareOnTwitter(final @NonNull Pair<String, String> projectNameAndShareUrl) {
+    final String projectName = projectNameAndShareUrl.first;
+    final String shareUrl = projectNameAndShareUrl.second;
     new TweetComposer.Builder(context())
-      .text(shareString(project))
-      .uri(Uri.parse(project.webProjectUrl()))
+      .text(shareString(projectName))
+      .uri(Uri.parse(shareUrl))
       .show();
   }
 }

@@ -103,6 +103,18 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("thanks");
   }
 
+  public static @NonNull RefTag thanksFacebookShare() {
+    return new AutoParcel_RefTag("android_thanks_facebook_share");
+  }
+
+  public static @NonNull RefTag thanksTwitterShare() {
+    return new AutoParcel_RefTag("android_thanks_twitter_share");
+  }
+
+  public static @NonNull RefTag thanksShare() {
+    return new AutoParcel_RefTag("android_thanks_share");
+  }
+
   public static @NonNull RefTag update() {
     return new AutoParcel_RefTag("update");
   }

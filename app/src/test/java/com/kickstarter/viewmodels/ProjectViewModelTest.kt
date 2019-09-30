@@ -45,7 +45,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showCancelPledgeSuccess = TestSubscriber<Void>()
     private val showPledgeNotCancelableDialog = TestSubscriber<Void>()
     private val showSavedPromptTest = TestSubscriber<Void>()
-    private val showShareSheet = TestSubscriber<Project>()
+    private val showShareSheet = TestSubscriber<Pair<String, String>>()
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
@@ -201,14 +201,29 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowShareSheet() {
-        val project = ProjectFactory.project()
-        val user = UserFactory.user()
+        val creator = UserFactory.creator()
+        val slug = "best-project-2k19"
+        val projectUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug
 
-        setUpEnvironment(environment().toBuilder().currentUser(MockCurrentUser(user)).build())
+        val webUrls = Project.Urls.Web.builder()
+                .project(projectUrl)
+                .rewards("$projectUrl/rewards")
+                .updates("$projectUrl/posts")
+                .build()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .name("Best Project 2K19")
+                .urls(Project.Urls.builder().web(webUrls).build())
+                .build()
+
+        setUpEnvironment(environment())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.shareButtonClicked()
-        this.showShareSheet.assertValues(project)
+        val expectedName = "Best Project 2K19"
+        val expectedShareUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug + "?ref=android_project_share"
+        this.showShareSheet.assertValues(Pair(expectedName, expectedShareUrl))
         this.koalaTest.assertValues(
                 KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE,
                 KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY, KoalaEvent.SHOWED_SHARE_SHEET

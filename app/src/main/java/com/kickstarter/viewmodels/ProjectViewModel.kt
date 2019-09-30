@@ -167,8 +167,8 @@ interface ProjectViewModel {
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
 
-        /** Emits when we should show the share sheet.  */
-        fun showShareSheet(): Observable<Project>
+        /** Emits when we should show the share sheet with the name of the project and share URL.  */
+        fun showShareSheet(): Observable<Pair<String, String>>
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment]. */
         fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>>
@@ -261,7 +261,7 @@ interface ProjectViewModel {
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
         private val showPledgeNotCancelableDialog = PublishSubject.create<Void>()
         private val showRewardsFragment = BehaviorSubject.create<Project>()
-        private val showShareSheet = PublishSubject.create<Project>()
+        private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
@@ -379,6 +379,7 @@ interface ProjectViewModel {
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
+                    .map { Pair(it.name(), UrlUtils.appendRefTag(it.webProjectUrl(), RefTag.projectShare().tag())) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showShareSheet)
 
@@ -575,7 +576,8 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.scrimIsVisible)
 
-            this.showShareSheet
+            currentProject
+                    .compose<Project>(takeWhen(this.showShareSheet))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackShowProjectShareSheet(it) }
 
@@ -841,7 +843,7 @@ interface ProjectViewModel {
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
 
         @NonNull
-        override fun showShareSheet(): Observable<Project> = this.showShareSheet
+        override fun showShareSheet(): Observable<Pair<String, String>> = this.showShareSheet
 
         @NonNull
         override fun showUpdatePledge(): Observable<Pair<PledgeData, PledgeReason>> = this.showUpdatePledge

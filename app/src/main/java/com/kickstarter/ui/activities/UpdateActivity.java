@@ -126,14 +126,16 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startShareIntent(final @NonNull Update update) {
+  private void startShareIntent(final @NonNull Pair<Update, String> updateAndShareUrl) {
+    final Update update = updateAndShareUrl.first;
+    final String shareUrl = updateAndShareUrl.second;
     final String shareMessage = this.ksString.format(this.shareUpdateCountString, "update_count", NumberUtils.format(update.sequence()))
       + ": " + update.title();
 
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType("text/plain")
-      .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + update.urls().web().update());
-    startActivity(intent);
+      .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + shareUrl);
+    startActivity(Intent.createChooser(intent, getString(R.string.Share_update)));
   }
 
   @Override

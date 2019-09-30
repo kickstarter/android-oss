@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
@@ -44,7 +45,7 @@ public interface UpdateViewModel {
 
   interface Outputs {
     /** Emits when we should start the share intent to show the share sheet. */
-    Observable<Update> startShareIntent();
+    Observable<Pair<Update, String>> startShareIntent();
 
     /** Emits an update to start the comments activity with. */
     Observable<Update> startCommentsActivity();
@@ -96,6 +97,7 @@ public interface UpdateViewModel {
 
       currentUpdate
         .compose(takeWhen(this.shareButtonClicked))
+        .map(update -> Pair.create(update, UrlUtils.INSTANCE.appendRefTag(update.urls().web().update(), RefTag.updateShare().tag())))
         .compose(bindToLifecycle())
         .subscribe(this.startShareIntent::onNext);
 
@@ -139,7 +141,7 @@ public interface UpdateViewModel {
     private final PublishSubject<Request> goToUpdateRequest = PublishSubject.create();
     private final PublishSubject<Void> shareButtonClicked = PublishSubject.create();
 
-    private final PublishSubject<Update> startShareIntent = PublishSubject.create();
+    private final PublishSubject<Pair<Update, String>> startShareIntent = PublishSubject.create();
     private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
     private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<String> updateSequence = BehaviorSubject.create();
@@ -164,7 +166,7 @@ public interface UpdateViewModel {
       this.shareButtonClicked.onNext(null);
     }
 
-    @Override public Observable<Update> startShareIntent() {
+    @Override public Observable<Pair<Update, String>> startShareIntent() {
       return this.startShareIntent;
     }
     @Override public @NonNull Observable<Update> startCommentsActivity() {

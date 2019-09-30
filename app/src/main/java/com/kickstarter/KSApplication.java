@@ -1,6 +1,5 @@
 package com.kickstarter;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
@@ -10,8 +9,6 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -26,7 +23,6 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 import io.fabric.sdk.android.Fabric;
@@ -34,7 +30,6 @@ import timber.log.Timber;
 
 public class KSApplication extends MultiDexApplication {
   private ApplicationComponent component;
-  private RefWatcher refWatcher;
   @Inject protected CookieManager cookieManager;
   @Inject protected PushNotifications pushNotifications;
 
@@ -48,10 +43,6 @@ public class KSApplication extends MultiDexApplication {
     // Only log for internal builds
     if (BuildConfig.FLAVOR.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
-    }
-
-    if (!isInUnitTests()) {
-      this.refWatcher = LeakCanary.install(this);
     }
 
     JodaTimeAndroid.init(this);
@@ -77,11 +68,6 @@ public class KSApplication extends MultiDexApplication {
 
   public ApplicationComponent component() {
     return this.component;
-  }
-
-  public static RefWatcher getRefWatcher(final @NonNull Context context) {
-    final KSApplication application = (KSApplication) context.getApplicationContext();
-    return application.refWatcher;
   }
 
   public boolean isInUnitTests() {

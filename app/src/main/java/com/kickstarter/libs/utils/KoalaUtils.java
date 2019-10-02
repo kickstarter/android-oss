@@ -111,7 +111,7 @@ public final class KoalaUtils {
     return projectProperties(project, loggedInUser, "project_");
   }
 
-  private static @NonNull Map<String, Object> projectProperties(final @NonNull Project project, final @Nullable User loggedInUser, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project, final @Nullable User loggedInUser, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("backers_count", project.backersCount());

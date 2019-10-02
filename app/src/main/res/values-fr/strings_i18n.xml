@@ -67,6 +67,7 @@ contributeurs</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_pledge" formatted="false">Annuler mon engagement</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
+  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
   <string name="Card_ending_in_last_four" formatted="false">Numéro de carte se terminant par : %{last_four}</string>
   <string name="Card_number" formatted="false">N° de carte</string>
   <string name="Cardholder_name" formatted="false">Nom du titulaire</string>
@@ -91,6 +92,7 @@ contributeurs</string>
   <string name="Confirm" formatted="false">Confirmer</string>
   <string name="Confirm_password" formatted="false">Confirmer le nouveau mot de passe</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Si vous vous connectez avec votre compte Facebook, vous pourrez suivre vos amis et recevoir des notifications chaque fois qu\'ils lancent ou soutiennent de nouveaux projets.</string>
+  <string name="Contact_backer" formatted="false">Contacter le contributeur</string>
   <string name="Contact_creator" formatted="false">Contacter le créateur</string>
   <string name="Content_isnt_loading_right_now" formatted="false">Échec de chargement du contenu.</string>
   <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Impossible de charger ce contenu.\n
@@ -265,6 +267,7 @@ contributeurs</string>
   <string name="Left_count_left_other" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_two" formatted="false">%{left_count} restantes</string>
   <string name="Left_count_left_zero" formatted="false">%{left_count} restantes</string>
+  <string name="Limited_shipping" formatted="false">Livraison limitée</string>
   <string name="Live" formatted="false">En direct</string>
   <string name="Live_Stream" formatted="false">Diffusion en direct</string>
   <string name="Live_now" formatted="false">En direct en ce moment</string>
@@ -287,6 +290,7 @@ contributeurs</string>
   <string name="Manage_your_pledge" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_pledge_below" formatted="false">Gérer mon engagement</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
+  <string name="Menu" formatted="false">Menu</string>
   <string name="Message_backer" formatted="false">Envoyer un message au contributeur</string>
   <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Cliquez deux fois pour faire disparaître ce message.</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
@@ -439,6 +443,7 @@ n\'ont rien soutenu.</string>
   <string name="Security_code" formatted="false">Code de sécurité</string>
   <string name="See_all_category_name_projects" formatted="false">Tous les projets de la catégorie %{category_name}</string>
   <string name="Select" formatted="false">Sélectionner</string>
+  <string name="Select_an_option" formatted="false">Sélectionner une option</string>
   <string name="Select_another_project" formatted="false">Sélectionner un autre projet</string>
   <string name="Select_this_instead" formatted="false">Sélectionner</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
@@ -457,8 +462,10 @@ n\'ont rien soutenu.</string>
   <string name="Shipping" formatted="false">Expédition</string>
   <string name="Shipping_addresses" formatted="false">Adresses de livraison</string>
   <string name="Shipping_destination" formatted="false">Destination d\'expédition</string>
+  <string name="Shipping_to_country" formatted="false">Livraison : %{country}</string>
   <string name="Ships_to" formatted="false">Livraison :</string>
   <string name="Ships_to_shipping_summary" formatted="false">Pays de livraison : %{shipping_summary}</string>
+  <string name="Ships_worldwide" formatted="false">Livraison dans le monde entier</string>
   <string name="Show_me_projects" formatted="false">Montrez-moi des projets</string>
   <string name="Show_password" formatted="false">Afficher le mot de passe</string>
   <string name="Shows_list_of_subcategories" formatted="false">Affiche la liste des sous-catégories.</string>
@@ -1169,6 +1176,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="invalid_api_client_alert_message" formatted="false">On dirait que vous utilisez une ancienne version de l\'application. Veuillez la mettre à jour depuis l\'App Store pour continuer à l\'utiliser.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Veuillez mettre à jour</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Mise à jour</string>
+  <string name="location_name_only" formatted="false">%{location_name} seulement</string>
   <string name="login_buttons_forgot_password" formatted="false">Mot de passe oublié ?</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Mot de passe oublié ?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Connexion</string>

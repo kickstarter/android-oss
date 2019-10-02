@@ -65,6 +65,7 @@
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_pledge" formatted="false">プレッジを取り消す</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
+  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
   <string name="Card_ending_in_last_four" formatted="false">下4桁が %{last_four} のカード</string>
   <string name="Card_number" formatted="false">カード番号</string>
   <string name="Cardholder_name" formatted="false">カード名義</string>
@@ -89,6 +90,7 @@
   <string name="Confirm" formatted="false">確認</string>
   <string name="Confirm_password" formatted="false">新しいパスワードの確認</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Facebookとリンクさせ、友達がプロジェクトを作成したりバックしたりした際に通知を受け取る</string>
+  <string name="Contact_backer" formatted="false">バッカーに連絡する</string>
   <string name="Contact_creator" formatted="false">クリエイターに連絡</string>
   <string name="Content_isnt_loading_right_now" formatted="false">現在、コンテンツを読み込めません。</string>
   <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">コンテンツが読み込めません。\n
@@ -263,6 +265,7 @@
   <string name="Left_count_left_other" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_two" formatted="false">残り%{left_count}</string>
   <string name="Left_count_left_zero" formatted="false">残り%{left_count}</string>
+  <string name="Limited_shipping" formatted="false">限定配送</string>
   <string name="Live" formatted="false">ライブ</string>
   <string name="Live_Stream" formatted="false">ライブ配信</string>
   <string name="Live_now" formatted="false">ライブ配信中</string>
@@ -281,10 +284,11 @@
   <string name="MMYY" formatted="false">月月/年年</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">リワードなしでプレッジ</string>
   <string name="Making_this_change" formatted="false">この変更によって、プロジェクトゴールとプレッジ額が選択された通貨で表示されます。</string>
-  <string name="Manage" formatted="false">管理</string>
+  <string name="Manage" formatted="false">プレッジ管理</string>
   <string name="Manage_your_pledge" formatted="false">プレッジを変更</string>
   <string name="Manage_your_pledge_below" formatted="false">以下のプレッジを変更</string>
   <string name="Manage_your_reward" formatted="false">リワードの管理</string>
+  <string name="Menu" formatted="false">メニュー</string>
   <string name="Message_backer" formatted="false">バッカーにメッセージする</string>
   <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">却下するにはダブルタップ。</string>
   <string name="Message_creator" formatted="false">クリエーターにメッセージする</string>
@@ -437,6 +441,7 @@
   <string name="Security_code" formatted="false">セキュリティーコード</string>
   <string name="See_all_category_name_projects" formatted="false">%{category_name} プロジェクトをすべて見る</string>
   <string name="Select" formatted="false">選択</string>
+  <string name="Select_an_option" formatted="false">選択してください</string>
   <string name="Select_another_project" formatted="false">他のプロジェクトを選ぶ</string>
   <string name="Select_this_instead" formatted="false">代わりにこちらを選択</string>
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
@@ -455,8 +460,10 @@
   <string name="Shipping" formatted="false">配送</string>
   <string name="Shipping_addresses" formatted="false">配送先住所</string>
   <string name="Shipping_destination" formatted="false">配送地域</string>
+  <string name="Shipping_to_country" formatted="false">送料：%{country}</string>
   <string name="Ships_to" formatted="false">配送先：</string>
   <string name="Ships_to_shipping_summary" formatted="false">配送先: %{shipping_summary}</string>
+  <string name="Ships_worldwide" formatted="false">世界各地へ配送</string>
   <string name="Show_me_projects" formatted="false">プロジェクトを表示</string>
   <string name="Show_password" formatted="false">パスワードを表示する</string>
   <string name="Shows_list_of_subcategories" formatted="false">サブカテゴリーリストを見せる。</string>
@@ -1168,6 +1175,7 @@
   <string name="invalid_api_client_alert_message" formatted="false">引き続き利用するにはApp Storeからアプリのバージョンを更新してください。</string>
   <string name="invalid_api_client_alert_title" formatted="false">アップグレードしてください</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">アップグレード</string>
+  <string name="location_name_only" formatted="false">%{location_name} のみ</string>
   <string name="login_buttons_forgot_password" formatted="false">パスワードを忘れましたか？</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>パスワードを忘れましたか？&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">ログイン</string>

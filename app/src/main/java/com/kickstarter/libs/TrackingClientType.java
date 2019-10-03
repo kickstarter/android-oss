@@ -34,6 +34,7 @@ public abstract class TrackingClientType {
     hashMap.put("device_orientation", deviceOrientation());
     hashMap.put("distinct_id", androidUUID());
     hashMap.put("google_play_services", isGooglePlayServicesAvailable() ? "available" : "unavailable");
+    hashMap.put("is_vo_on", isTalkBackOn());
     hashMap.put("koala_lib", "kickstarter_android");
     hashMap.put("manufacturer", manufacturer());
     hashMap.put("model", model());
@@ -58,6 +59,7 @@ public abstract class TrackingClientType {
   protected abstract String deviceOrientation();
   protected abstract boolean isAndroidPayCapable();
   protected abstract boolean isGooglePlayServicesAvailable();
+  protected abstract boolean isTalkBackOn();
   protected abstract User loggedInUser();
   protected abstract String manufacturer();
   protected abstract String model();

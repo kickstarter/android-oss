@@ -589,6 +589,46 @@ interface ProjectViewModel {
                     .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
                     .subscribe(this.heartDrawableId)
 
+            //Tracking
+            this.rewardsButtonText
+                    .map { eventName(it) }
+                    .compose<String>(takeWhen(this.nativeProjectActionButtonClicked))
+                    .compose<Pair<String, Project>>(combineLatestPair(nativeCheckoutProject))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackProjectActionButtonClicked(it.first, it.second) }
+
+            nativeCheckoutProject
+                    .compose<Project>(takeWhen(this.updatePledgeClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "update_pledge") }
+
+            nativeCheckoutProject
+                    .compose<Project>(takeWhen(this.updatePaymentClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "change_payment_method") }
+
+            nativeCheckoutProject
+                    .filter { it.isLive }
+                    .compose<Project>(takeWhen(this.viewRewardsClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "choose_another_reward") }
+
+            nativeCheckoutProject
+                    .filter { !it.isLive }
+                    .compose<Project>(takeWhen(this.viewRewardsClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "view_rewards") }
+
+            nativeCheckoutProject
+                    .compose<Project>(takeWhen(this.cancelPledgeClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "cancel_pledge") }
+
+            nativeCheckoutProject
+                    .compose<Project>(takeWhen(this.contactCreatorClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "contact_creator") }
+
             projectOnUserChangeSave
                     .mergeWith(savedProjectOnLoginSuccess)
                     .compose(bindToLifecycle())
@@ -622,6 +662,15 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
 
+        }
+
+        private fun eventName(projectActionButtonStringRes: Int) : String {
+            return when (projectActionButtonStringRes) {
+                R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+                R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
+                R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
+                else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED
+            }
         }
 
         private fun managePledgeMenu(projectAndFragmentStackCount: Pair<Project, Int>): Int? {

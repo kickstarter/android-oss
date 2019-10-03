@@ -137,7 +137,7 @@ class KoalaTest : KSRobolectricTestCase() {
 
         assertDefaultProperties(null)
         assertProjectProperties()
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -158,7 +158,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_backer"])
         assertEquals(false, expectedProperties["user_has_starred"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -187,7 +187,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals("CREDIT_CARD", expectedProperties["payment_method"])
         assertEquals(10.0, expectedProperties["pledge_total"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -208,7 +208,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_backer"])
         assertEquals(false, expectedProperties["user_has_starred"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -229,7 +229,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_backer"])
         assertEquals(true, expectedProperties["user_has_starred"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     private fun assertDefaultProperties(user: User?) {

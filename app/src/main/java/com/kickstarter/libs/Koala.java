@@ -10,8 +10,6 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -470,7 +468,7 @@ public final class Koala {
     this.client.track("Checkout Finished Discover Open Project", props);
   }
 
-  public void trackManagePledgeOptionClicked(final @NotNull Project project, final @NotNull String cta) {
+  public void trackManagePledgeOptionClicked(final @NonNull Project project, final @NonNull String cta) {
     final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     properties.put("cta", cta);

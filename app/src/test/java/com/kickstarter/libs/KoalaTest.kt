@@ -163,7 +163,13 @@ class KoalaTest : KSRobolectricTestCase() {
 
     @Test
     fun testProjectProperties_LoggedInUser_IsBacker() {
-        val project = project().toBuilder().isBacking(true).build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .id(4)
+                .category(CategoryFactory.ceramicsCategory())
+                .location(LocationFactory.unitedStates())
+                .creator(creator())
+                .build()
         val user = user()
         val client = MockTrackingClient(MockCurrentUser(user))
         client.eventNames.subscribe(this.koalaTest)
@@ -178,6 +184,8 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_project_creator"])
         assertEquals(true, expectedProperties["user_is_backer"])
         assertEquals(false, expectedProperties["user_has_starred"])
+        assertEquals("CREDIT_CARD", expectedProperties["payment_method"])
+        assertEquals(10.0, expectedProperties["pledge_total"])
 
         this.koalaTest.assertValues("Project Page", "Viewed Project Page")
     }

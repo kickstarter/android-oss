@@ -137,7 +137,7 @@ class KoalaTest : KSRobolectricTestCase() {
 
         assertDefaultProperties(null)
         assertProjectProperties()
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -158,7 +158,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_backer"])
         assertEquals(false, expectedProperties["user_has_starred"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -179,7 +179,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(true, expectedProperties["user_is_backer"])
         assertEquals(false, expectedProperties["user_has_starred"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -200,7 +200,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_backer"])
         assertEquals(false, expectedProperties["user_has_starred"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -221,7 +221,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["user_is_backer"])
         assertEquals(true, expectedProperties["user_has_starred"])
 
-        this.koalaTest.assertValues("Project Page", "Viewed Project Page")
+        this.koalaTest.assertValues("Project Page")
     }
 
     private fun assertDefaultProperties(user: User?) {

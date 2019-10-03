@@ -112,7 +112,7 @@ public final class Koala {
     this.client.track(KoalaEvent.PROJECT_PAGE, properties);
   }
 
-  public void trackProjectActionButtonClicked(final @NotNull @KoalaEvent.ProjectAction String eventName, final @NotNull Project project) {
+  public void trackProjectActionButtonClicked(final @NonNull @KoalaEvent.ProjectAction String eventName, final @NonNull Project project) {
     final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     this.client.track(eventName, properties);
   }

@@ -68,7 +68,7 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testServerResponses() {
+    fun testCancelingPledge_whenErrorMessage() {
         setUpEnvironment(environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
@@ -82,7 +82,11 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.showCancelError.assertValuesAndClear("Error")
         this.showServerError.assertNoValues()
         this.success.assertNoValues()
+        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
+    }
 
+    @Test
+    fun testCancelingPledge_whenBackingNotCancelled() {
         setUpEnvironment(environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
@@ -96,7 +100,11 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.showCancelError.assertNoValues()
         this.showServerError.assertValueCount(1)
         this.success.assertNoValues()
+        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
+    }
 
+    @Test
+    fun testCancelingPledge_whenServerError() {
         setUpEnvironment(environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
@@ -108,17 +116,22 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.progressBarIsVisible.assertValuesAndClear(true, false)
         this.cancelButtonIsVisible.assertValuesAndClear(false, true)
         this.showCancelError.assertNoValues()
-        this.showServerError.assertValueCount(2)
+        this.showServerError.assertValueCount(1)
         this.success.assertNoValues()
+        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
+    }
 
+    @Test
+    fun testCancelingPledge_whenSuccessful() {
         setUpEnvironment(environment())
 
         this.vm.inputs.confirmCancellationClicked("")
         this.progressBarIsVisible.assertValuesAndClear(true, false)
         this.cancelButtonIsVisible.assertValuesAndClear(false, true)
         this.showCancelError.assertNoValues()
-        this.showServerError.assertValueCount(2)
+        this.showServerError.assertNoValues()
         this.success.assertValueCount(1)
+        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
     }
 
 }

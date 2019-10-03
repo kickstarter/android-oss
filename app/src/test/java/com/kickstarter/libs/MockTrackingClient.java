@@ -69,6 +69,11 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
+  protected boolean isTalkBackOn() {
+    return false;
+  }
+
+  @Override
   protected String manufacturer() {
     return "Google";
   }

@@ -115,6 +115,12 @@ public final class Koala {
     this.client.track(eventName, properties);
   }
 
+  public void trackCancelPledgeButtonClicked(final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    this.client.track(KoalaEvent.CANCEL_PLEDGE_BUTTON_CLICKED, properties);
+  }
+
   // PROJECT STAR
   public void trackProjectStar(final @NonNull Project project) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());

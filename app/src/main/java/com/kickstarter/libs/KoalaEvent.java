@@ -12,6 +12,7 @@ public final class KoalaEvent {
   public static final String ACTIVITY_VIEW = "Activity View";
   public static final String ACTIVITY_VIEW_ITEM = "Activity View Item";
   public static final String BACK_THIS_PROJECT_BUTTON_CLICKED = "Back this Project Button Clicked";
+  public static final String CANCEL_PLEDGE_BUTTON_CLICKED = "Cancel Pledge Button Clicked";
   public static final String CHANGED_EMAIL = "Changed Email";
   public static final String CHANGED_PASSWORD = "Changed Password";
   public static final String CLEARED_SEARCH_TERM = "Cleared Search Term";

@@ -636,6 +636,7 @@ interface ProjectViewModel {
 
             Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject)
             { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) }
+                    .filter { it.project.hasRewards() }
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { data ->

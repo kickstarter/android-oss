@@ -77,6 +77,7 @@ public final class ProjectFactory {
       .sequence(1)
       .reward(reward)
       .rewardId(reward.id())
+      .paymentSource(PaymentSourceFactory.Companion.visa())
       .pledgedAt(DateTime.now())
       .projectCountry(project.country())
       .projectId(project.id())

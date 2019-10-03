@@ -115,6 +115,15 @@ public final class Koala {
     this.client.track(eventName, properties);
   }
 
+  public void trackSelectRewardButtonClicked(final @NonNull Project project, final int rewardMinimum, final int rewardPosition) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    properties.put("backer_reward_minimum", rewardMinimum);
+    properties.put("reward_position", rewardPosition);
+
+    this.client.track(KoalaEvent.SELECT_REWARD_BUTTON_CLICKED, properties);
+  }
+
   public void trackCancelPledgeButtonClicked(final @NonNull Project project) {
     final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 

@@ -143,11 +143,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.delegate?.rewardClicked(ViewUtils.getScreenLocation(this.itemView), it.second) }
 
-        this.viewModel.outputs.startBackingActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.startBackingActivity(it) }
-
         this.viewModel.outputs.buttonIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -175,7 +170,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
 
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.rewardClicked() }
+                .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
 
         when {
             BooleanUtils.isTrue(this.inset) -> this.view.reward_card.setCardBackgroundColor(ContextCompat.getColor(context(), R.color.transparent))

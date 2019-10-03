@@ -51,6 +51,7 @@ public final class KoalaEvent {
   public static final String PROJECT_UNSTAR = "Project Unstar";
   public static final String RESENT_VERIFICATION_EMAIL = "Resent Verification Email";
   public static final String SAVED_PAYMENT_METHOD = "Saved Payment Method";
+  public static final String SELECT_REWARD_BUTTON_CLICKED = "Select Reward Button Clicked";
   public static final String SELECTED_CHOSEN_CURRENCY = "Selected Chosen Currency";
   public static final String SENT_MESSAGE = "Sent Message";
   public static final String SHOWED_SHARE_SHEET = "Showed Share Sheet";

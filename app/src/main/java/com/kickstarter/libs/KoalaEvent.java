@@ -6,6 +6,7 @@ public final class KoalaEvent {
   public static final String ACTIVITY_LOAD_MORE = "Activity Load More";
   public static final String ACTIVITY_VIEW = "Activity View";
   public static final String ACTIVITY_VIEW_ITEM = "Activity View Item";
+  public static final String ADD_NEW_CARD_BUTTON_CLICKED = "Add New Card Button Clicked";
   public static final String CHANGED_EMAIL = "Changed Email";
   public static final String CHANGED_PASSWORD = "Changed Password";
   public static final String CLEARED_SEARCH_TERM = "Cleared Search Term";
@@ -31,6 +32,8 @@ public final class KoalaEvent {
   public static final String OPENED_EXTERNAL_LINK = "Opened External Link";
   public static final String OPENED_NOTIFICATION = "Opened Notification";
   public static final String OPENED_PROJECT_SWITCHER = "Opened Project Switcher";
+  public static final String PLEDGE_BUTTON_CLICKED = "Pledge Button Clicked";
+  public static final String PLEDGE_SCREEN_VIEWED = "Pledge Screen Viewed";
   public static final String POSTED_COMMENT = "Posted Comment";
   public static final String PROFILE_VIEW_MY = "Profile View My";
   public static final String PROJECT_COMMENT_CREATE = "Project Comment Create";
@@ -52,6 +55,8 @@ public final class KoalaEvent {
   public static final String TWO_FACTOR_AUTH_CONFIRM_VIEW = "Two-factor Authentication Confirm View";
   public static final String TWO_FACTOR_AUTH_RESEND_CODE = "Two-factor Authentication Resend Code";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";
+  public static final String UPDATE_PLEDGE_BUTTON_CLICKED = "Update Pledge Button Clicked";
+  public static final String UPDATE_PAYMENT_METHOD_BUTTON_CLICKED = "Update Payment Method Button Clicked";
   public static final String USER_SIGNUP = "User Signup";
   public static final String VIEWED_ACCOUNT = "Viewed Account";
   public static final String VIEWED_ADD_NEW_CARD = "Viewed Add New Card";

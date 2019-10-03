@@ -11,6 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.RewardViewUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -232,13 +233,7 @@ public final class RewardViewHolder extends KSViewHolder {
   }
 
   private void setShippingSummaryText(final @NonNull Pair<Integer, String> stringResAndLocationName) {
-    final Integer stringRes = stringResAndLocationName.first;
-    final String locationName = stringResAndLocationName.second;
-    final String shippingSummary = context().getString(stringRes);
-
-    this.shippingSummaryTextView.setText(locationName != null ?
-      this.ksString.format(shippingSummary, "location_name", locationName) :
-      shippingSummary);
+    this.shippingSummaryTextView.setText(RewardViewUtils.INSTANCE.shippingSummary(context(), this.ksString, stringResAndLocationName));
   }
 
   private void startBackingActivity(final @NonNull Project project) {

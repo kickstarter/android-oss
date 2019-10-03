@@ -13,7 +13,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
@@ -134,33 +133,27 @@ public final class RewardUtils {
    * Returns null for rewards that are not shippable.
    */
   public static Pair<Integer, String> shippingSummary(final @NonNull Reward reward) {
-    if (!RewardUtils.isShippable(reward)) {
+    final String shippingType = reward.shippingType();
+
+    if (!RewardUtils.isShippable(reward) || shippingType == null) {
       return null;
     }
 
-    final String shippingType = reward.shippingType();
-    Integer stringRes = null;
-    String locationName = null;
-
-    switch (Objects.requireNonNull(shippingType)) {
+    switch (shippingType) {
       case Reward.SHIPPING_TYPE_ANYWHERE:
-        stringRes = R.string.Ships_worldwide;
-        break;
+        return Pair.create(R.string.Ships_worldwide, null);
       case Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS:
-        stringRes = R.string.Limited_shipping;
-        break;
+        return Pair.create(R.string.Limited_shipping, null);
       case Reward.SHIPPING_TYPE_SINGLE_LOCATION:
-        final Reward.Location location = reward.shippingSingleLocation();
+        final Reward.SingleLocation location = reward.shippingSingleLocation();
         if (ObjectUtils.isNotNull(location)) {
-          locationName = location.localizedName();
-          stringRes = R.string.location_name_only;
+          return Pair.create(R.string.location_name_only, location.localizedName());
         } else {
-          stringRes = R.string.Limited_shipping;
+          return Pair.create(R.string.Limited_shipping, null);
         }
-        break;
     }
 
-    return Pair.create(stringRes, locationName);
+    return null;
   }
 
   /**

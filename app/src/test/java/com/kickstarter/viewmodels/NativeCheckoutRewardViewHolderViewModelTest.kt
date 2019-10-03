@@ -39,7 +39,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val reward = TestSubscriber<Reward>()
     private val rewardItems = TestSubscriber<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
-    private val shippingSummary = TestSubscriber<Pair<Int, String>>()
+    private val shippingSummary = TestSubscriber<Pair<Int, String?>>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
     private val startBackingActivity = TestSubscriber<Project>()
@@ -586,7 +586,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val rewardWithShipping = RewardFactory.multipleLocationShipping()
         this.vm.inputs.projectAndReward(project, rewardWithShipping)
-        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null) as Pair<Int, String>)
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null))
         this.shippingSummaryIsGone.assertValues(false)
     }
 
@@ -611,7 +611,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
                 .build()
         this.vm.inputs.projectAndReward(project, rewardWithShipping)
-        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null) as Pair<Int, String>)
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null))
         this.shippingSummaryIsGone.assertValues(false)
     }
 
@@ -622,7 +622,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val rewardWithShipping = RewardFactory.rewardWithShipping()
         this.vm.inputs.projectAndReward(project, rewardWithShipping)
-        this.shippingSummary.assertValue(Pair(R.string.Ships_worldwide, null) as Pair<Int, String>)
+        this.shippingSummary.assertValue(Pair(R.string.Ships_worldwide, null))
         this.shippingSummaryIsGone.assertValues(false)
     }
 

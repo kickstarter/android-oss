@@ -29,7 +29,7 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable DateTime estimatedDeliveryOn();
   public abstract @Nullable Integer remaining();
   public abstract @Nullable List<RewardsItem> rewardsItems();
-  public abstract @Nullable Location shippingSingleLocation();
+  public abstract @Nullable SingleLocation shippingSingleLocation();
   public abstract @Nullable @ShippingType String shippingType();
   public abstract @Nullable String title();
 
@@ -45,7 +45,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder estimatedDeliveryOn(DateTime __);
     public abstract Builder remaining(Integer __);
     public abstract Builder rewardsItems(List<RewardsItem> __);
-    public abstract Builder shippingSingleLocation(Location __);
+    public abstract Builder shippingSingleLocation(SingleLocation __);
     public abstract Builder shippingType(@ShippingType String __);
     public abstract Builder title(String __);
     public abstract Reward build();
@@ -76,7 +76,7 @@ public abstract class Reward implements Parcelable, Relay {
 
   @AutoParcel
   @AutoGson
-  public abstract static class Location implements Parcelable {
+  public abstract static class SingleLocation implements Parcelable {
     public abstract long id();
     public abstract String localizedName();
 
@@ -84,11 +84,11 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract static class Builder {
       public abstract Builder id(long __);
       public abstract Builder localizedName(String __);
-      public abstract Location build();
+      public abstract SingleLocation build();
     }
 
-    public static Location.Builder builder() {
-      return new AutoParcel_Reward_Location.Builder();
+    public static SingleLocation.Builder builder() {
+      return new AutoParcel_Reward_SingleLocation.Builder();
     }
 
     public abstract Builder toBuilder();

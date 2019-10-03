@@ -254,22 +254,13 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
     final Reward rewardWithNoShipping = RewardFactory.reward();
     assertFalse(RewardUtils.isShippable(rewardWithNoShipping));
 
-    final Reward rewardWithMultipleLocationShipping = RewardFactory.multipleLocationShipping()
-      .toBuilder()
-      .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
-      .build();
+    final Reward rewardWithMultipleLocationShipping = RewardFactory.multipleLocationShipping();
     assertTrue(RewardUtils.isShippable(rewardWithMultipleLocationShipping));
 
-    final Reward rewardWithSingleLocationShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
-      .toBuilder()
-      .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
-      .build();
+    final Reward rewardWithSingleLocationShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName());
     assertTrue(RewardUtils.isShippable(rewardWithSingleLocationShipping));
 
-    final Reward rewardWithWorldWideShipping = RewardFactory.multipleLocationShipping()
-      .toBuilder()
-      .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
-      .build();
+    final Reward rewardWithWorldWideShipping = RewardFactory.multipleLocationShipping();
     assertTrue(RewardUtils.isShippable(rewardWithWorldWideShipping));
   }
 
@@ -305,22 +296,13 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
     final Reward rewardWithNoShipping = RewardFactory.reward();
     assertNull(RewardUtils.shippingSummary(rewardWithNoShipping));
 
-    final Reward rewardWithMultipleLocationShipping = RewardFactory.multipleLocationShipping()
-      .toBuilder()
-      .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
-      .build();
+    final Reward rewardWithMultipleLocationShipping = RewardFactory.multipleLocationShipping();
     assertEquals(Pair.create(R.string.Limited_shipping, null), RewardUtils.shippingSummary(rewardWithMultipleLocationShipping));
 
-    final Reward rewardWithSingleLocationShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
-      .toBuilder()
-      .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
-      .build();
+    final Reward rewardWithSingleLocationShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName());
     assertEquals(Pair.create(R.string.location_name_only, "Nigeria"), RewardUtils.shippingSummary(rewardWithSingleLocationShipping));
 
-    final Reward rewardWithWorldWideShipping = RewardFactory.multipleLocationShipping()
-      .toBuilder()
-      .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
-      .build();
+    final Reward rewardWithWorldWideShipping = RewardFactory.rewardWithShipping();
     assertEquals(Pair.create(R.string.Ships_worldwide, null), RewardUtils.shippingSummary(rewardWithWorldWideShipping));
   }
 

@@ -109,7 +109,7 @@ public final class RewardFactory {
   public static @NonNull Reward singleLocationShipping(final @NonNull String localizedLocationName) {
     return reward().toBuilder()
       .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
-      .shippingSingleLocation(Reward.Location.builder()
+      .shippingSingleLocation(Reward.SingleLocation.builder()
         .id(IdFactory.id())
         .localizedName(localizedLocationName)
         .build())

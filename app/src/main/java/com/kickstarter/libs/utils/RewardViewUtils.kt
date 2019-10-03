@@ -1,11 +1,14 @@
 package com.kickstarter.libs.utils
 
+import android.content.Context
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.RelativeSizeSpan
+import android.util.Pair
 import androidx.annotation.StringRes
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.Country
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -21,6 +24,23 @@ object RewardViewUtils {
             BackingUtils.isBacked(project, reward) -> R.string.Selected
             RewardUtils.isAvailable(project, reward) -> R.string.Select
             else -> R.string.No_longer_available
+        }
+    }
+
+    /**
+     * Returns the shipping summary for a reward.
+     */
+    fun shippingSummary(context: Context, ksString: KSString, stringResAndLocationName: Pair<Int, String?>): String {
+        val stringRes = stringResAndLocationName.first
+        val locationName = stringResAndLocationName.second
+        val shippingSummary = context.getString(stringRes)
+
+        return when (stringRes) {
+            R.string.location_name_only -> when (locationName) {
+                null -> context.getString(R.string.Limited_shipping)
+                else -> ksString.format(shippingSummary, "location_name", locationName)
+            }
+            else -> context.getString(stringRes)
         }
     }
 

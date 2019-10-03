@@ -226,16 +226,8 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 "left_count", remaining)
     }
 
-    private fun setShippingSummaryText(stringResAndLocationName: Pair<Int, String>) {
-        val stringRes = stringResAndLocationName.first
-        val locationName = stringResAndLocationName.second
-        val shippingSummary = context().getString(stringRes)
-
-        this.view.reward_shipping_summary.text = if (locationName != null) {
-            this.ksString.format(shippingSummary, "location_name", locationName)
-        } else {
-            shippingSummary
-        }
+    private fun setShippingSummaryText(stringResAndLocationName: Pair<Int, String?>) {
+        this.view.reward_shipping_summary.text = RewardViewUtils.shippingSummary(context(), this.ksString, stringResAndLocationName)
     }
 
     private fun setUpRewardItemsAdapter(): RewardItemsAdapter {

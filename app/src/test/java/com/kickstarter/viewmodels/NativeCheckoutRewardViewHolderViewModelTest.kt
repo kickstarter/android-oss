@@ -41,7 +41,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val shippingSummary = TestSubscriber<String>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
-    private val startBackingActivity = TestSubscriber<Project>()
     private val titleForNoReward = TestSubscriber<Int>()
     private val titleForReward = TestSubscriber<String?>()
     private val titleIsGone = TestSubscriber<Boolean>()
@@ -71,7 +70,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingSummary().subscribe(this.shippingSummary)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
-        this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
@@ -357,20 +355,20 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testGoToCheckoutWhenProjectIsSuccessful() {
+    fun testShowPledgeFragment_WhenProjectIsSuccessful() {
         val project = ProjectFactory.successfulProject()
         val reward = RewardFactory.reward()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.showPledgeFragment.assertNoValues()
 
-        this.vm.inputs.rewardClicked()
+        this.vm.inputs.rewardClicked(3)
         this.showPledgeFragment.assertNoValues()
+        this.koalaTest.assertNoValues()
     }
 
     @Test
-    fun testGoToCheckoutWhenProjectIsSuccessfulAndHasBeenBacked() {
+    fun testShowPledgeFragment_WhenProjectIsSuccessfulAndHasBeenBacked() {
         val project = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
@@ -378,14 +376,14 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.showPledgeFragment.assertNoValues()
 
-        this.vm.inputs.rewardClicked()
+        this.vm.inputs.rewardClicked(3)
         this.showPledgeFragment.assertNoValues()
+        this.koalaTest.assertNoValues()
     }
 
     @Test
-    fun testGoToPledgeFragmentWhenProjectIsLive() {
+    fun testShowPledgeFragment_WhenProjectIsLive() {
         val reward = RewardFactory.reward()
         val liveProject = ProjectFactory.project()
         setUpEnvironment(environment())
@@ -394,36 +392,9 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.showPledgeFragment.assertNoValues()
 
         // When a reward from a live project is clicked, start checkout.
-        this.vm.inputs.rewardClicked()
+        this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
-    }
-
-    @Test
-    fun testGoToViewPledge() {
-        val liveProject = ProjectFactory.backedProject()
-        val successfulProject = ProjectFactory.backedProject().toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
-
-        setUpEnvironment(environment())
-
-        this.vm.inputs.projectAndReward(liveProject, liveProject.backing()?.reward() as Reward)
-        this.startBackingActivity.assertNoValues()
-
-        // When the project is still live, don't go to 'view pledge'. Should go to checkout instead.
-        this.vm.inputs.rewardClicked()
-        this.startBackingActivity.assertNoValues()
-
-        // When project is successful but not backed, don't go to view pledge.
-        this.vm.inputs.projectAndReward(successfulProject, RewardFactory.reward())
-        this.vm.inputs.rewardClicked()
-        this.startBackingActivity.assertNoValues()
-
-        // When project is successful and backed, go to view pledge.
-        this.vm.inputs.projectAndReward(successfulProject, successfulProject.backing()?.reward() as Reward)
-        this.startBackingActivity.assertNoValues()
-        this.vm.inputs.rewardClicked()
-        this.startBackingActivity.assertValues(successfulProject)
+        this.koalaTest.assertValue("Select Reward Button Clicked")
     }
 
     @Test

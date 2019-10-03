@@ -10,6 +10,8 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,10 +109,12 @@ public final class Koala {
       properties.put("referrer_credit", cookieRefTag.tag());
     }
 
-    // Deprecated event
     this.client.track(KoalaEvent.PROJECT_PAGE, properties);
+  }
 
-    this.client.track(KoalaEvent.VIEWED_PROJECT_PAGE, properties);
+  public void trackProjectActionButtonClicked(final @NotNull @KoalaEvent.ProjectAction String eventName, final @NotNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+    this.client.track(eventName, properties);
   }
 
   // PROJECT STAR
@@ -464,6 +468,14 @@ public final class Koala {
   public void trackCheckoutFinishJumpToProject(final @NonNull Project project) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     this.client.track("Checkout Finished Discover Open Project", props);
+  }
+
+  public void trackManagePledgeOptionClicked(final @NotNull Project project, final @NotNull String cta) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    properties.put("cta", cta);
+
+    this.client.track(KoalaEvent.MANAGE_PLEDGE_OPTION_CLICKED, properties);
   }
 
   // SHARE

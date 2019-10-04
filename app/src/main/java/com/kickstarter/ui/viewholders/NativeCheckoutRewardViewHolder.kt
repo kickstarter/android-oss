@@ -91,7 +91,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.shippingSummary()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_shipping_summary.text = it }
+                .subscribe { setShippingSummaryText(it) }
 
         this.viewModel.outputs.shippingSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -219,6 +219,10 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {
         this.view.reward_remaining_text_view.text = this.ksString.format(this.remainingRewardsString,
                 "left_count", remaining)
+    }
+
+    private fun setShippingSummaryText(stringResAndLocationName: Pair<Int, String?>) {
+        this.view.reward_shipping_summary.text = RewardViewUtils.shippingSummary(context(), this.ksString, stringResAndLocationName)
     }
 
     private fun setUpRewardItemsAdapter(): RewardItemsAdapter {

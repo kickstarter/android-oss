@@ -6,8 +6,6 @@ import com.kickstarter.models.Reward;
 
 import androidx.annotation.NonNull;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
-
 public final class BackingUtils {
   private BackingUtils() {}
 
@@ -30,6 +28,6 @@ public final class BackingUtils {
     if (reward == null) {
       return false;
     }
-    return isTrue(reward.shippingEnabled());
+    return RewardUtils.isShippable(reward);
   }
 }

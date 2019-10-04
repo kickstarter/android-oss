@@ -92,7 +92,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         fun rewardItemsAreGone(): Observable<Boolean>
 
         /** Set the shipping summary TextView's text.  */
-        fun shippingSummary(): Observable<String>
+        fun shippingSummary(): Observable<Pair<Int, String?>>
 
         /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
         fun shippingSummaryIsGone(): Observable<Boolean>
@@ -136,7 +136,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val reward = BehaviorSubject.create<Reward>()
         private val rewardItems = BehaviorSubject.create<List<RewardsItem>>()
         private val rewardItemsAreGone = BehaviorSubject.create<Boolean>()
-        private val shippingSummary = BehaviorSubject.create<String>()
+        private val shippingSummary = BehaviorSubject.create<Pair<Int, String?>>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val showPledgeFragment = PublishSubject.create<Pair<Project, Reward>>()
         private val titleForNoReward = BehaviorSubject.create<Int>()
@@ -285,7 +285,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
             reward
                     .filter { RewardUtils.isShippable(it) }
-                    .map { it.shippingSummary() }
+                    .map { RewardUtils.shippingSummary(it) }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummary)
 
@@ -414,7 +415,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun rewardItemsAreGone(): Observable<Boolean> = this.rewardItemsAreGone
 
         @NonNull
-        override fun shippingSummary(): Observable<String> = this.shippingSummary
+        override fun shippingSummary(): Observable<Pair<Int, String?>> = this.shippingSummary
 
         @NonNull
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone

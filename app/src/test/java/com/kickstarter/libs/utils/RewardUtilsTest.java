@@ -1,9 +1,12 @@
 package com.kickstarter.libs.utils;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
 import com.kickstarter.models.Reward;
@@ -242,20 +245,23 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testIsShippable() {
-    final Reward rewardWithNullShippingEnabled = RewardFactory.reward().toBuilder()
-      .shippingEnabled(null)
+    final Reward rewardWithNullShipping = RewardFactory.reward()
+      .toBuilder()
+      .shippingType(null)
       .build();
-    assertFalse(RewardUtils.isShippable(rewardWithNullShippingEnabled));
+    assertFalse(RewardUtils.isShippable(rewardWithNullShipping));
 
-    final Reward rewardWithFalseShippingEnabled = RewardFactory.reward().toBuilder()
-      .shippingEnabled(false)
-      .build();
-    assertFalse(RewardUtils.isShippable(rewardWithFalseShippingEnabled));
+    final Reward rewardWithNoShipping = RewardFactory.reward();
+    assertFalse(RewardUtils.isShippable(rewardWithNoShipping));
 
-    final Reward rewardWithShippingEnabled = RewardFactory.reward().toBuilder()
-      .shippingEnabled(true)
-      .build();
-    assertTrue(RewardUtils.isShippable(rewardWithShippingEnabled));
+    final Reward rewardWithMultipleLocationShipping = RewardFactory.multipleLocationShipping();
+    assertTrue(RewardUtils.isShippable(rewardWithMultipleLocationShipping));
+
+    final Reward rewardWithSingleLocationShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName());
+    assertTrue(RewardUtils.isShippable(rewardWithSingleLocationShipping));
+
+    final Reward rewardWithWorldWideShipping = RewardFactory.multipleLocationShipping();
+    assertTrue(RewardUtils.isShippable(rewardWithWorldWideShipping));
   }
 
   @Test
@@ -277,6 +283,27 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
       .endsAt(DateTime.now().plusDays(2))
       .build();
     assertFalse(RewardUtils.isExpired(rewardEndingIn2Days));
+  }
+
+  @Test
+  public void testShippingSummary() {
+    final Reward rewardWithNullShipping = RewardFactory.reward()
+      .toBuilder()
+      .shippingType(null)
+      .build();
+    assertNull(RewardUtils.shippingSummary(rewardWithNullShipping));
+
+    final Reward rewardWithNoShipping = RewardFactory.reward();
+    assertNull(RewardUtils.shippingSummary(rewardWithNoShipping));
+
+    final Reward rewardWithMultipleLocationShipping = RewardFactory.multipleLocationShipping();
+    assertEquals(Pair.create(R.string.Limited_shipping, null), RewardUtils.shippingSummary(rewardWithMultipleLocationShipping));
+
+    final Reward rewardWithSingleLocationShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName());
+    assertEquals(Pair.create(R.string.location_name_only, "Nigeria"), RewardUtils.shippingSummary(rewardWithSingleLocationShipping));
+
+    final Reward rewardWithWorldWideShipping = RewardFactory.rewardWithShipping();
+    assertEquals(Pair.create(R.string.Ships_worldwide, null), RewardUtils.shippingSummary(rewardWithWorldWideShipping));
   }
 
   @Test

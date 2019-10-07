@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
@@ -18,6 +19,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
+import kotlin.math.roundToInt
 
 interface NativeCheckoutRewardViewHolderViewModel {
     interface Inputs {
@@ -25,7 +27,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         fun projectAndReward(project: Project, reward: Reward)
 
         /** Call when the user clicks on a reward. */
-        fun rewardClicked()
+        fun rewardClicked(position: Int)
     }
 
     interface Outputs {
@@ -90,16 +92,13 @@ interface NativeCheckoutRewardViewHolderViewModel {
         fun rewardItemsAreGone(): Observable<Boolean>
 
         /** Set the shipping summary TextView's text.  */
-        fun shippingSummary(): Observable<String>
+        fun shippingSummary(): Observable<Pair<Int, String?>>
 
         /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
         fun shippingSummaryIsGone(): Observable<Boolean>
 
         /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
         fun showPledgeFragment(): Observable<Pair<Project, Reward>>
-
-        /** Start the [com.kickstarter.ui.activities.BackingActivity] with the project.  */
-        fun startBackingActivity(): Observable<Project>
 
         /** Emits `true` if the title should be hidden, `false` otherwise.  */
         fun titleIsGone(): Observable<Boolean>
@@ -115,7 +114,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
-        private val rewardClicked = PublishSubject.create<Void>()
+        private val rewardClicked = PublishSubject.create<Int>()
 
         private val backersCount = BehaviorSubject.create<Int>()
         private val backersCountIsGone = BehaviorSubject.create<Boolean>()
@@ -137,10 +136,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val reward = BehaviorSubject.create<Reward>()
         private val rewardItems = BehaviorSubject.create<List<RewardsItem>>()
         private val rewardItemsAreGone = BehaviorSubject.create<Boolean>()
-        private val shippingSummary = BehaviorSubject.create<String>()
+        private val shippingSummary = BehaviorSubject.create<Pair<Int, String?>>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val showPledgeFragment = PublishSubject.create<Pair<Project, Reward>>()
-        private val startBackingActivity = PublishSubject.create<Project>()
         private val titleForNoReward = BehaviorSubject.create<Int>()
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
@@ -213,13 +211,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .subscribe(this.buttonIsEnabled)
 
             this.projectAndReward
-                    .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
-                    .filter { ProjectUtils.isCompleted(it.first) && BackingUtils.isBacked(it.first, it.second) }
-                    .map { it.first }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startBackingActivity)
-
-            this.projectAndReward
                     .map { it.first.isLive && RewardUtils.isLimited(it.second) }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
@@ -258,9 +249,15 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
             this.projectAndReward
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
-                    .compose<Pair<Project, Reward>>(takeWhen<Pair<Project, Reward>, Void>(this.rewardClicked))
+                    .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
+
+            this.projectAndReward
+                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
+                    .compose<Pair<Pair<Project, Reward>, Int>>(combineLatestPair(this.rewardClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.koala.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
 
             this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
@@ -288,7 +285,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
             reward
                     .filter { RewardUtils.isShippable(it) }
-                    .map { it.shippingSummary() }
+                    .map { RewardUtils.shippingSummary(it) }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummary)
 
@@ -352,8 +350,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
             this.projectAndReward.onNext(Pair.create(project, reward))
         }
 
-        override fun rewardClicked() {
-            this.rewardClicked.onNext(null)
+        override fun rewardClicked(position: Int) {
+            this.rewardClicked.onNext(position)
         }
 
         @NonNull
@@ -417,16 +415,13 @@ interface NativeCheckoutRewardViewHolderViewModel {
         override fun rewardItemsAreGone(): Observable<Boolean> = this.rewardItemsAreGone
 
         @NonNull
-        override fun shippingSummary(): Observable<String> = this.shippingSummary
+        override fun shippingSummary(): Observable<Pair<Int, String?>> = this.shippingSummary
 
         @NonNull
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
         @NonNull
         override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment
-
-        @NonNull
-        override fun startBackingActivity(): Observable<Project> = this.startBackingActivity
 
         @NonNull
         override fun titleForNoReward(): Observable<Int> = this.titleForNoReward

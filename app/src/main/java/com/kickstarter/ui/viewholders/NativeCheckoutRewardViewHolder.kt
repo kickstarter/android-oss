@@ -91,7 +91,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.shippingSummary()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_shipping_summary.text = it }
+                .subscribe { setShippingSummaryText(it) }
 
         this.viewModel.outputs.shippingSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -143,11 +143,6 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { this.delegate?.rewardClicked(ViewUtils.getScreenLocation(this.itemView), it.second) }
 
-        this.viewModel.outputs.startBackingActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.startBackingActivity(it) }
-
         this.viewModel.outputs.buttonIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -175,7 +170,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
 
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.rewardClicked() }
+                .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
 
         when {
             BooleanUtils.isTrue(this.inset) -> this.view.reward_card.setCardBackgroundColor(ContextCompat.getColor(context(), R.color.transparent))
@@ -224,6 +219,10 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {
         this.view.reward_remaining_text_view.text = this.ksString.format(this.remainingRewardsString,
                 "left_count", remaining)
+    }
+
+    private fun setShippingSummaryText(stringResAndLocationName: Pair<Int, String?>) {
+        this.view.reward_shipping_summary.text = RewardViewUtils.shippingSummary(context(), this.ksString, stringResAndLocationName)
     }
 
     private fun setUpRewardItemsAdapter(): RewardItemsAdapter {

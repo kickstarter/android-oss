@@ -11,6 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.RewardViewUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -165,7 +166,7 @@ public final class RewardViewHolder extends KSViewHolder {
     this.viewModel.outputs.shippingSummaryTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.shippingSummaryTextView::setText);
+      .subscribe(this::setShippingSummaryText);
 
     this.viewModel.outputs.titleTextViewIsGone()
       .compose(bindToLifecycle())
@@ -229,6 +230,10 @@ public final class RewardViewHolder extends KSViewHolder {
       this.currencyConversionString,
       "reward_amount", amount
     ));
+  }
+
+  private void setShippingSummaryText(final @NonNull Pair<Integer, String> stringResAndLocationName) {
+    this.shippingSummaryTextView.setText(RewardViewUtils.INSTANCE.shippingSummary(context(), this.ksString, stringResAndLocationName));
   }
 
   private void startBackingActivity(final @NonNull Project project) {

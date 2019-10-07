@@ -1,5 +1,10 @@
 package com.kickstarter.libs;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.StringDef;
+
 public final class KoalaEvent {
   private KoalaEvent() {}
 
@@ -7,6 +12,8 @@ public final class KoalaEvent {
   public static final String ACTIVITY_VIEW = "Activity View";
   public static final String ACTIVITY_VIEW_ITEM = "Activity View Item";
   public static final String ADD_NEW_CARD_BUTTON_CLICKED = "Add New Card Button Clicked";
+  public static final String BACK_THIS_PROJECT_BUTTON_CLICKED = "Back this Project Button Clicked";
+  public static final String CANCEL_PLEDGE_BUTTON_CLICKED = "Cancel Pledge Button Clicked";
   public static final String CHANGED_EMAIL = "Changed Email";
   public static final String CHANGED_PASSWORD = "Changed Password";
   public static final String CLEARED_SEARCH_TERM = "Cleared Search Term";
@@ -25,6 +32,8 @@ public final class KoalaEvent {
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
   public static final String LOADED_SEARCH_RESULTS = "Loaded Search Results";
   public static final String LOGIN = "Login";
+  public static final String MANAGE_PLEDGE_BUTTON_CLICKED = "Manage Pledge Button Clicked";
+  public static final String MANAGE_PLEDGE_OPTION_CLICKED = "Manage Pledge Option Clicked";
   public static final String MODAL_DIALOG_VIEW = "Modal Dialog View";
   public static final String NEW_USER = "New User";
   public static final String NOTIFICATION_OPENED_LEGACY = "Notification Opened";
@@ -45,6 +54,7 @@ public final class KoalaEvent {
   public static final String PROJECT_UNSTAR = "Project Unstar";
   public static final String RESENT_VERIFICATION_EMAIL = "Resent Verification Email";
   public static final String SAVED_PAYMENT_METHOD = "Saved Payment Method";
+  public static final String SELECT_REWARD_BUTTON_CLICKED = "Select Reward Button Clicked";
   public static final String SELECTED_CHOSEN_CURRENCY = "Selected Chosen Currency";
   public static final String SENT_MESSAGE = "Sent Message";
   public static final String SHOWED_SHARE_SHEET = "Showed Share Sheet";
@@ -58,6 +68,8 @@ public final class KoalaEvent {
   public static final String UPDATE_PLEDGE_BUTTON_CLICKED = "Update Pledge Button Clicked";
   public static final String UPDATE_PAYMENT_METHOD_BUTTON_CLICKED = "Update Payment Method Button Clicked";
   public static final String USER_SIGNUP = "User Signup";
+  public static final String VIEW_REWARDS_BUTTON_CLICKED = "View Rewards Button Clicked";
+  public static final String VIEW_YOUR_PLEDGE_BUTTON_CLICKED = "View Your Pledge Button Clicked";
   public static final String VIEWED_ACCOUNT = "Viewed Account";
   public static final String VIEWED_ADD_NEW_CARD = "Viewed Add New Card";
   public static final String VIEWED_CHANGE_EMAIL = "Viewed Change Email";
@@ -73,10 +85,13 @@ public final class KoalaEvent {
   public static final String VIEWED_PRIVACY = "Viewed Privacy";
   public static final String VIEWED_PROFILE = "Viewed Profile";
   public static final String VIEWED_PROJECT_DASHBOARD = "Viewed Project Dashboard";
-  public static final String VIEWED_PROJECT_PAGE = "Viewed Project Page";
   public static final String VIEWED_SEARCH = "Viewed Search";
   public static final String VIEWED_SENT_MESSAGES = "Viewed Sent Messages";
   public static final String VIEWED_SETTINGS = "Viewed Settings";
   public static final String VIEWED_UPDATE = "Viewed Update";
   public static final String VIEWED_UPDATES = "Viewed Updates";
+
+  @Retention(RetentionPolicy.SOURCE)
+  @StringDef({BACK_THIS_PROJECT_BUTTON_CLICKED, MANAGE_PLEDGE_BUTTON_CLICKED, VIEW_REWARDS_BUTTON_CLICKED, VIEW_YOUR_PLEDGE_BUTTON_CLICKED})
+  @interface ProjectAction {}
 }

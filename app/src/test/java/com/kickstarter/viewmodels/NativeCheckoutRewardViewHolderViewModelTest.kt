@@ -6,6 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
@@ -38,10 +39,9 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val reward = TestSubscriber<Reward>()
     private val rewardItems = TestSubscriber<List<RewardsItem>>()
     private val rewardItemsAreGone = TestSubscriber<Boolean>()
-    private val shippingSummary = TestSubscriber<String>()
+    private val shippingSummary = TestSubscriber<Pair<Int, String?>>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val showPledgeFragment = TestSubscriber<Pair<Project, Reward>>()
-    private val startBackingActivity = TestSubscriber<Project>()
     private val titleForNoReward = TestSubscriber<Int>()
     private val titleForReward = TestSubscriber<String?>()
     private val titleIsGone = TestSubscriber<Boolean>()
@@ -71,7 +71,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingSummary().subscribe(this.shippingSummary)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
-        this.vm.outputs.startBackingActivity().subscribe(this.startBackingActivity)
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
@@ -357,20 +356,20 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testGoToCheckoutWhenProjectIsSuccessful() {
+    fun testShowPledgeFragment_WhenProjectIsSuccessful() {
         val project = ProjectFactory.successfulProject()
         val reward = RewardFactory.reward()
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.showPledgeFragment.assertNoValues()
 
-        this.vm.inputs.rewardClicked()
+        this.vm.inputs.rewardClicked(3)
         this.showPledgeFragment.assertNoValues()
+        this.koalaTest.assertNoValues()
     }
 
     @Test
-    fun testGoToCheckoutWhenProjectIsSuccessfulAndHasBeenBacked() {
+    fun testShowPledgeFragment_WhenProjectIsSuccessfulAndHasBeenBacked() {
         val project = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
@@ -378,14 +377,14 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.projectAndReward(project, reward)
-        this.showPledgeFragment.assertNoValues()
 
-        this.vm.inputs.rewardClicked()
+        this.vm.inputs.rewardClicked(3)
         this.showPledgeFragment.assertNoValues()
+        this.koalaTest.assertNoValues()
     }
 
     @Test
-    fun testGoToPledgeFragmentWhenProjectIsLive() {
+    fun testShowPledgeFragment_WhenProjectIsLive() {
         val reward = RewardFactory.reward()
         val liveProject = ProjectFactory.project()
         setUpEnvironment(environment())
@@ -394,36 +393,9 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.showPledgeFragment.assertNoValues()
 
         // When a reward from a live project is clicked, start checkout.
-        this.vm.inputs.rewardClicked()
+        this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
-    }
-
-    @Test
-    fun testGoToViewPledge() {
-        val liveProject = ProjectFactory.backedProject()
-        val successfulProject = ProjectFactory.backedProject().toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
-
-        setUpEnvironment(environment())
-
-        this.vm.inputs.projectAndReward(liveProject, liveProject.backing()?.reward() as Reward)
-        this.startBackingActivity.assertNoValues()
-
-        // When the project is still live, don't go to 'view pledge'. Should go to checkout instead.
-        this.vm.inputs.rewardClicked()
-        this.startBackingActivity.assertNoValues()
-
-        // When project is successful but not backed, don't go to view pledge.
-        this.vm.inputs.projectAndReward(successfulProject, RewardFactory.reward())
-        this.vm.inputs.rewardClicked()
-        this.startBackingActivity.assertNoValues()
-
-        // When project is successful and backed, go to view pledge.
-        this.vm.inputs.projectAndReward(successfulProject, successfulProject.backing()?.reward() as Reward)
-        this.startBackingActivity.assertNoValues()
-        this.vm.inputs.rewardClicked()
-        this.startBackingActivity.assertValues(successfulProject)
+        this.koalaTest.assertValue("Select Reward Button Clicked")
     }
 
     @Test
@@ -569,19 +541,60 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingSummary() {
+    fun testShippingSummary_whenRewardIsNotShippable() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        // Summary should be hidden when reward is not shippable.
         this.vm.inputs.projectAndReward(project, RewardFactory.reward())
-        this.shippingSummaryIsGone.assertValue(true)
         this.shippingSummary.assertNoValues()
+        this.shippingSummaryIsGone.assertValue(true)
+    }
 
-        val shippableReward = RewardFactory.rewardWithShipping()
-        this.vm.inputs.projectAndReward(project, shippableReward)
-        this.shippingSummaryIsGone.assertValues(true, false)
-        this.shippingSummary.assertValues(shippableReward.shippingSummary())
+    @Test
+    fun testShippingSummary_whenRewardHasLimitedShipping() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.multipleLocationShipping()
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null))
+        this.shippingSummaryIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testShippingSummary_whenRewardShipsToOneLocation() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.location_name_only, "Nigeria"))
+        this.shippingSummaryIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testShippingSummary_whenRewardShipsToOneLocation_withNullLocation() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.reward()
+                .toBuilder()
+                .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
+                .build()
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null))
+        this.shippingSummaryIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testShippingSummary_whenRewardShipsWorldWide() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        val rewardWithShipping = RewardFactory.rewardWithShipping()
+        this.vm.inputs.projectAndReward(project, rewardWithShipping)
+        this.shippingSummary.assertValue(Pair(R.string.Ships_worldwide, null))
+        this.shippingSummaryIsGone.assertValues(false)
     }
 
     @Test

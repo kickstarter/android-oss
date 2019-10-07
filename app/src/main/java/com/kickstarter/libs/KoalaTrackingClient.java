@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.accessibility.AccessibilityManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -134,6 +135,12 @@ public final class KoalaTrackingClient extends TrackingClientType {
       this.isGooglePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.context.getApplicationContext()) != ConnectionResult.SUCCESS;
     }
     return this.isGooglePlayServicesAvailable;
+  }
+
+  @Override
+  protected boolean isTalkBackOn() {
+    final AccessibilityManager am = (AccessibilityManager) this.context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+    return am != null && am.isTouchExplorationEnabled();
   }
 
   @Override

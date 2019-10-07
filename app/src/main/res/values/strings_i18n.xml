@@ -91,6 +91,7 @@ backers</string>
   <string name="Confirm" formatted="false">Confirm</string>
   <string name="Confirm_password" formatted="false">Confirm new password</string>
   <string name="Connect_with_Facebook_to_follow_friends_and_get_notified" formatted="false">Connect with Facebook to follow friends and get notified when they back or launch projects.</string>
+  <string name="Contact_backer" formatted="false">Contact backer</string>
   <string name="Contact_creator" formatted="false">Contact creator</string>
   <string name="Content_isnt_loading_right_now" formatted="false">Content isn\'t loading right now.</string>
   <string name="Content_isnt_loading_right_now_Please_tap_to_retry" formatted="false">Content isn\'t loading right now.\n
@@ -266,6 +267,7 @@ with friends.</string>
   <string name="Left_count_left_other" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_two" formatted="false">%{left_count} left</string>
   <string name="Left_count_left_zero" formatted="false">%{left_count} left</string>
+  <string name="Limited_shipping" formatted="false">Limited shipping</string>
   <string name="Live" formatted="false">Live</string>
   <string name="Live_Stream" formatted="false">Live Stream</string>
   <string name="Live_now" formatted="false">Live now</string>
@@ -288,6 +290,7 @@ with friends.</string>
   <string name="Manage_your_pledge" formatted="false">Manage your pledge</string>
   <string name="Manage_your_pledge_below" formatted="false">Manage your pledge below</string>
   <string name="Manage_your_reward" formatted="false">Manage your reward</string>
+  <string name="Menu" formatted="false">Menu</string>
   <string name="Message_backer" formatted="false">Message backer</string>
   <string name="Message_banner_accessibility_Double_tap_to_dismiss" formatted="false">Double tap to dismiss.</string>
   <string name="Message_creator" formatted="false">Message creator</string>
@@ -441,6 +444,7 @@ daring ideas.</string>
   <string name="Security_code" formatted="false">Security code</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
   <string name="Select" formatted="false">Select</string>
+  <string name="Select_an_option" formatted="false">Select an option</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
   <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
@@ -459,8 +463,10 @@ daring ideas.</string>
   <string name="Shipping" formatted="false">Shipping</string>
   <string name="Shipping_addresses" formatted="false">Shipping addresses</string>
   <string name="Shipping_destination" formatted="false">Shipping destination</string>
+  <string name="Shipping_to_country" formatted="false">Shipping: %{country}</string>
   <string name="Ships_to" formatted="false">Ships to:</string>
   <string name="Ships_to_shipping_summary" formatted="false">Ships to: %{shipping_summary}</string>
+  <string name="Ships_worldwide" formatted="false">Ships worldwide</string>
   <string name="Show_me_projects" formatted="false">Show me projects</string>
   <string name="Show_password" formatted="false">Show password</string>
   <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
@@ -1172,6 +1178,7 @@ Please try again later.</string>
   <string name="invalid_api_client_alert_message" formatted="false">You seem to be using a really old version of the app. Please upgrade from the App Store to continue using.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Please Upgrade</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Upgrade</string>
+  <string name="location_name_only" formatted="false">%{location_name} only</string>
   <string name="login_buttons_forgot_password" formatted="false">Forgot your password?</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Log in</string>

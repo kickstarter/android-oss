@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
@@ -14,8 +15,6 @@ import org.joda.time.Duration;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class RewardUtils {
   private RewardUtils() {}
@@ -83,7 +82,8 @@ public final class RewardUtils {
    * Returns `true` if the reward has shipping enabled, `false` otherwise.
    */
   public static boolean isShippable(final @NonNull Reward reward) {
-    return isTrue(reward.shippingEnabled());
+    final String shippingType = reward.shippingType();
+    return shippingType != null && !Reward.SHIPPING_TYPE_NO_SHIPPING.equals(shippingType);
   }
 
   /**
@@ -108,8 +108,8 @@ public final class RewardUtils {
    * Returns the most appropriate unit for the time remaining until the reward
    * reaches its deadline.
    *
-   * @param  context an Android context.
-   * @return         the String unit.
+   * @param context an Android context.
+   * @return the String unit.
    */
   public static @NonNull String deadlineCountdownUnit(final @NonNull Reward reward, final @NonNull Context context) {
     final Long seconds = timeInSecondsUntilDeadline(reward);
@@ -123,6 +123,37 @@ public final class RewardUtils {
       return context.getString(R.string.discovery_baseball_card_deadline_units_hours);
     }
     return context.getString(R.string.discovery_baseball_card_deadline_units_days);
+  }
+
+  /**
+   * Returns a Pair representing a reward's shipping summary
+   * where the first value is a StringRes Integer to be used as the shipping summary
+   * and the second value is a nullable String location name for rewards with single location shipping.
+   * <p>
+   * Returns null for rewards that are not shippable.
+   */
+  public static Pair<Integer, String> shippingSummary(final @NonNull Reward reward) {
+    final String shippingType = reward.shippingType();
+
+    if (!RewardUtils.isShippable(reward) || shippingType == null) {
+      return null;
+    }
+
+    switch (shippingType) {
+      case Reward.SHIPPING_TYPE_ANYWHERE:
+        return Pair.create(R.string.Ships_worldwide, null);
+      case Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS:
+        return Pair.create(R.string.Limited_shipping, null);
+      case Reward.SHIPPING_TYPE_SINGLE_LOCATION:
+        final Reward.SingleLocation location = reward.shippingSingleLocation();
+        if (ObjectUtils.isNotNull(location)) {
+          return Pair.create(R.string.location_name_only, location.localizedName());
+        } else {
+          return Pair.create(R.string.Limited_shipping, null);
+        }
+    }
+
+    return null;
   }
 
   /**

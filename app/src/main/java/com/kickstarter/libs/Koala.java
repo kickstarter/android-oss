@@ -107,10 +107,27 @@ public final class Koala {
       properties.put("referrer_credit", cookieRefTag.tag());
     }
 
-    // Deprecated event
     this.client.track(KoalaEvent.PROJECT_PAGE, properties);
+  }
 
-    this.client.track(KoalaEvent.VIEWED_PROJECT_PAGE, properties);
+  public void trackProjectActionButtonClicked(final @NonNull @KoalaEvent.ProjectAction String eventName, final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+    this.client.track(eventName, properties);
+  }
+
+  public void trackSelectRewardButtonClicked(final @NonNull Project project, final int rewardMinimum, final int rewardPosition) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    properties.put("backer_reward_minimum", rewardMinimum);
+    properties.put("reward_position", rewardPosition);
+
+    this.client.track(KoalaEvent.SELECT_REWARD_BUTTON_CLICKED, properties);
+  }
+
+  public void trackCancelPledgeButtonClicked(final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    this.client.track(KoalaEvent.CANCEL_PLEDGE_BUTTON_CLICKED, properties);
   }
 
   // PROJECT STAR
@@ -464,6 +481,14 @@ public final class Koala {
   public void trackCheckoutFinishJumpToProject(final @NonNull Project project) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
     this.client.track("Checkout Finished Discover Open Project", props);
+  }
+
+  public void trackManagePledgeOptionClicked(final @NonNull Project project, final @NonNull String cta) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    properties.put("cta", cta);
+
+    this.client.track(KoalaEvent.MANAGE_PLEDGE_OPTION_CLICKED, properties);
   }
 
   public void trackAddNewCardButtonClicked(final @NonNull Project project, final double pledgeTotal) {

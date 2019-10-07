@@ -105,7 +105,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.projectTest.assertValues(project, project)
-        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE)
+        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE)
     }
 
     @Test
@@ -129,7 +129,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.projectTest.assertValues(project)
         this.prelaunchUrl.assertNoValues()
-        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE)
+        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE)
     }
 
     @Test
@@ -183,7 +183,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.startLoginToutActivity.assertValueCount(1)
 
         // A koala event for starring should NOT be tracked
-        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE)
+        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE)
 
         // Login
         currentUser.refresh(UserFactory.user())
@@ -195,7 +195,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // A koala event for starring should be tracked
         this.koalaTest.assertValues(
-                KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE, KoalaEvent.PROJECT_STAR, KoalaEvent.STARRED_PROJECT
+                KoalaEvent.PROJECT_PAGE, KoalaEvent.PROJECT_STAR, KoalaEvent.STARRED_PROJECT
         )
     }
 
@@ -225,8 +225,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val expectedShareUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug + "?ref=android_project_share"
         this.showShareSheet.assertValues(Pair(expectedName, expectedShareUrl))
         this.koalaTest.assertValues(
-                KoalaEvent.PROJECT_PAGE, KoalaEvent.VIEWED_PROJECT_PAGE,
-                KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY, KoalaEvent.SHOWED_SHARE_SHEET
+                KoalaEvent.PROJECT_PAGE, KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY, KoalaEvent.SHOWED_SHARE_SHEET
         )
     }
 
@@ -438,13 +437,47 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testExpandPledgeSheet_whenExpandingSheet() {
+    fun testExpandPledgeSheet_whenProjectLiveAndNotBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
         this.vm.inputs.nativeProjectActionButtonClicked()
+
         this.expandPledgeSheet.assertValue(true)
+        this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
+    }
+
+    @Test
+    fun testExpandPledgeSheet_whenProjectLiveAndBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
         this.vm.inputs.nativeProjectActionButtonClicked()
-        this.expandPledgeSheet.assertValues(true, true)
+
+        this.expandPledgeSheet.assertValue(true)
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked")
+    }
+
+    @Test
+    fun testExpandPledgeSheet_whenProjectEndedAndNotBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        this.expandPledgeSheet.assertValue(true)
+        this.koalaTest.assertValues("Project Page", "View Rewards Button Clicked")
+    }
+
+    @Test
+    fun testExpandPledgeSheet_whenProjectEndedAndBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject()))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        this.expandPledgeSheet.assertValue(true)
+        this.koalaTest.assertValues("Project Page", "View Your Pledge Button Clicked")
     }
 
     @Test
@@ -884,8 +917,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
+        this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.cancelPledgeClicked()
+
         this.showCancelPledgeFragment.assertValue(backedProject)
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked", "Manage Pledge Option Clicked")
     }
 
     @Test
@@ -903,8 +939,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
+        this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.cancelPledgeClicked()
+
         this.showCancelPledgeFragment.assertNoValues()
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked", "Manage Pledge Option Clicked")
     }
 
     @Test
@@ -915,8 +954,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val backedProject = ProjectFactory.backedProject()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
+        this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.contactCreatorClicked()
+
         this.startMessagesActivity.assertValue(backedProject)
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked", "Manage Pledge Option Clicked")
     }
 
     @Test
@@ -958,18 +1000,35 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testRevealRewardsFragment() {
+    fun testRevealRewardsFragment_whenBackedProjectLive() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
+        this.vm.inputs.nativeProjectActionButtonClicked()
         this.vm.inputs.viewRewardsClicked()
+
         this.revealRewardsFragment.assertValueCount(1)
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked", "Manage Pledge Option Clicked")
     }
 
     @Test
-    fun testShowUpdatePledge() {
+    fun testRevealRewardsFragment_whenBackedProjectEnded() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedSuccessfulProject()))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+        this.vm.inputs.viewRewardsClicked()
+
+        this.revealRewardsFragment.assertValueCount(1)
+        this.koalaTest.assertValues("Project Page", "View Your Pledge Button Clicked", "Manage Pledge Option Clicked")
+    }
+
+    @Test
+    fun testShowUpdatePledge_whenUpdatingPledge() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
@@ -985,13 +1044,33 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
-        this.showUpdatePledge.assertNoValues()
-
         this.vm.inputs.updatePledgeClicked()
+
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PLEDGE))
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
+    }
+
+    @Test
+    fun testShowUpdatePledge_whenUpdatingPaymentMethod() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        val reward = RewardFactory.reward()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .rewardId(reward.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.updatePaymentClicked()
+
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PAYMENT))
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
     }
 
     @Test

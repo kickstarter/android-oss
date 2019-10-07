@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
@@ -152,6 +153,15 @@ public final class KoalaUtils {
       prefixedMap.put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
       prefixedMap.put("user_is_backer", project.isBacking());
       prefixedMap.put("user_has_starred", project.isStarred());
+
+      final Backing backing = project.backing();
+      if (backing != null) {
+        final Backing.PaymentSource paymentSource = backing.paymentSource();
+        if (paymentSource != null) {
+          prefixedMap.put("payment_method", paymentSource.paymentType());
+        }
+        prefixedMap.put("pledge_total", backing.amount());
+      }
     }
 
     return prefixedMap;

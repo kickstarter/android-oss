@@ -65,8 +65,8 @@ public final class KoalaEvent {
   public static final String TWO_FACTOR_AUTH_CONFIRM_VIEW = "Two-factor Authentication Confirm View";
   public static final String TWO_FACTOR_AUTH_RESEND_CODE = "Two-factor Authentication Resend Code";
   public static final String UNSTARRED_PROJECT = "Unstarred Project";
-  public static final String UPDATE_PLEDGE_BUTTON_CLICKED = "Update Pledge Button Clicked";
   public static final String UPDATE_PAYMENT_METHOD_BUTTON_CLICKED = "Update Payment Method Button Clicked";
+  public static final String UPDATE_PLEDGE_BUTTON_CLICKED = "Update Pledge Button Clicked";
   public static final String USER_SIGNUP = "User Signup";
   public static final String VIEW_REWARDS_BUTTON_CLICKED = "View Rewards Button Clicked";
   public static final String VIEW_YOUR_PLEDGE_BUTTON_CLICKED = "View Your Pledge Button Clicked";

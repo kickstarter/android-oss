@@ -592,8 +592,8 @@ interface ProjectViewModel {
             //Tracking
             this.rewardsButtonText
                     .map { eventName(it) }
-                    .compose<String>(takeWhen(this.nativeProjectActionButtonClicked))
                     .compose<Pair<String, Project>>(combineLatestPair(nativeCheckoutProject))
+                    .compose<Pair<String, Project>>(takeWhen(this.nativeProjectActionButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectActionButtonClicked(it.first, it.second) }
 

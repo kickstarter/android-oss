@@ -491,6 +491,45 @@ public final class Koala {
     this.client.track(KoalaEvent.MANAGE_PLEDGE_OPTION_CLICKED, properties);
   }
 
+  public void trackAddNewCardButtonClicked(final @NonNull Project project, final double pledgeTotal) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    //Overwrite the pledge_total with the latest value
+    properties.put("pledge_total", pledgeTotal);
+
+    this.client.track(KoalaEvent.ADD_NEW_CARD_BUTTON_CLICKED, properties);
+  }
+
+  public void trackPledgeButtonClicked(final @NonNull Project project, final double pledgeTotal) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    //Overwrite the pledge_total with the latest value
+    properties.put("pledge_total", pledgeTotal);
+
+    this.client.track(KoalaEvent.PLEDGE_BUTTON_CLICKED, properties);
+  }
+
+  public void trackUpdatePledgeButtonClicked(final @NonNull Project project, final double pledgeTotal) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    //Overwrite the pledge_total with the latest value
+    properties.put("pledge_total", pledgeTotal);
+
+    this.client.track(KoalaEvent.UPDATE_PLEDGE_BUTTON_CLICKED, properties);
+  }
+
+  public void trackUpdatePaymentMethodButtonClicked(final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    this.client.track(KoalaEvent.UPDATE_PAYMENT_METHOD_BUTTON_CLICKED, properties);
+  }
+
+  public void trackPledgeScreenViewed(final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    this.client.track(KoalaEvent.PLEDGE_SCREEN_VIEWED, properties);
+  }
+
   // SHARE
   public void trackShowProjectShareSheet(final @NonNull Project project) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());

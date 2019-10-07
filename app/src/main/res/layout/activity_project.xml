@@ -11,6 +11,7 @@
     android:id="@+id/project_app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:nextFocusDown="@id/project_recycler_view"
     app:layout_constraintTop_toTopOf="parent">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -76,6 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
+        app:navigationContentDescription="@string/View_project"
         app:navigationIcon="@drawable/ic_down" />
 
     </FrameLayout>

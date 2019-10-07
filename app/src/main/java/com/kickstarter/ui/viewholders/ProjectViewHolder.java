@@ -178,7 +178,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.creatorNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(name -> this.creatorNameTextView.setText(name));
+      .subscribe(this::setCreatorName);
 
     this.viewModel.outputs.deadlineCountdownTextViewText()
       .compose(bindToLifecycle())
@@ -356,6 +356,10 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.conversionTextView));
+  }
+  private void setCreatorName(final @NonNull String name) {
+    this.creatorNameTextView.setText(name);
+
   }
 
   @Override

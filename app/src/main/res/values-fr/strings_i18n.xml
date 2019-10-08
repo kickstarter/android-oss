@@ -67,6 +67,7 @@ contributeurs</string>
   <string name="Cancel" formatted="false">Annuler</string>
   <string name="Cancel_pledge" formatted="false">Annuler mon engagement</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
+  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
   <string name="Card_ending_in_last_four" formatted="false">Numéro de carte se terminant par : %{last_four}</string>
   <string name="Card_number" formatted="false">N° de carte</string>
   <string name="Cardholder_name" formatted="false">Nom du titulaire</string>

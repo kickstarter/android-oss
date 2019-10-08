@@ -65,6 +65,7 @@
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_pledge" formatted="false">プレッジを取り消す</string>
   <string name="Cancel_your_pledge" formatted="false">プレッジを取り消す</string>
+  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
   <string name="Card_ending_in_last_four" formatted="false">下4桁が %{last_four} のカード</string>
   <string name="Card_number" formatted="false">カード番号</string>
   <string name="Cardholder_name" formatted="false">カード名義</string>

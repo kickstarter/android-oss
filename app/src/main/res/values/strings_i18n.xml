@@ -67,6 +67,7 @@ backers</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_pledge" formatted="false">Cancel pledge</string>
   <string name="Cancel_your_pledge" formatted="false">Cancel your pledge</string>
+  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
   <string name="Card_ending_in_last_four" formatted="false">Card ending in %{last_four}</string>
   <string name="Card_number" formatted="false">Card number</string>
   <string name="Cardholder_name" formatted="false">Cardholder name</string>

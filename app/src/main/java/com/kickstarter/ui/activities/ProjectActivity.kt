@@ -48,6 +48,7 @@ import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.StripeEditText
 import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.project_layout.*
+import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
@@ -132,6 +133,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                     this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
                 }
 
+                this.supportFragmentManager.addOnBackStackChangedListener {
+                    val fragments = this.supportFragmentManager.fragments
+                    val lastFragmentWithView = fragments.last { it.view != null }
+                    for (fragment in fragments) {
+                        if (fragment == lastFragmentWithView) {
+                            fragment.view?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        } else {
+                            fragment.view?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        }
+                    }
+                }
+
                 findViewById<View>(R.id.pledge_sheet_retry_container).setOnClickListener {
                     this.viewModel.inputs.reloadProjectContainerClicked()
                 }
@@ -189,7 +202,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.outputs.rewardsButtonText()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { project_action_button.setText(it) }
+                .subscribe { setProjectActionCTA(it) }
 
         this.viewModel.outputs.rewardsToolbarTitle()
                 .compose(bindToLifecycle())
@@ -345,6 +358,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
+    private fun setProjectActionCTA(stringRes: Int) {
+        project_action_button.setText(stringRes)
+        project_action_button.contentDescription = when (stringRes) {
+            R.string.Manage -> getString(R.string.Manage_your_pledge)
+            else -> getString(stringRes)
+        }
+    }
+
     override fun back() {
         if (environment().nativeCheckoutPreference().get()) {
             handleNativeCheckoutBackPress()
@@ -429,12 +450,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 override fun onAnimationEnd(animation: Animator?) {
                     if (expand) {
                         action_buttons.visibility = View.GONE
+                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        rewards_toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                     }
                 }
 
                 override fun onAnimationStart(animation: Animator?) {
                     if (!expand) {
                         action_buttons.visibility = View.VISIBLE
+                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        rewards_toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
                     }
                 }
             })

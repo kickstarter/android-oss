@@ -17,7 +17,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ProjectViewUtils;
 import com.kickstarter.libs.utils.SocialUtils;
@@ -178,7 +177,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.creatorNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setCreatorName);
+      .subscribe(this.creatorNameTextView::setText);
 
     this.viewModel.outputs.deadlineCountdownTextViewText()
       .compose(bindToLifecycle())
@@ -212,7 +211,6 @@ public final class ProjectViewHolder extends KSViewHolder {
         // todo: break down these helpers
         setLandscapeOverlayText(p);
         setLandscapeActionButton(p);
-        setStatsContentDescription(p);
         this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, context(), this.ksString));
       });
 
@@ -357,10 +355,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.conversionTextView));
   }
-  private void setCreatorName(final @NonNull String name) {
-    this.creatorNameTextView.setText(name);
-
-  }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
@@ -476,7 +470,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderCommentsClicked(this);
   }
 
-  @OnClick({R.id.creator_name, R.id.creator_info})
+  @OnClick(R.id.creator_info)
   public void creatorNameClick() {
     this.delegate.projectViewHolderCreatorClicked(this);
   }
@@ -529,16 +523,5 @@ public final class ProjectViewHolder extends KSViewHolder {
         ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid1Dimen);
       }
     }
-  }
-
-  private void setStatsContentDescription(final @NonNull Project project) {
-    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " + this.backersString;
-    final String pledgedContentDescription = this.pledgedTextView.getText() + " " + this.goalTextView.getText();
-    final String deadlineCountdownContentDescription = this.deadlineCountdownTextView.getText() + " " + this.deadlineCountdownUnitTextView
-      .getText();
-
-    this.backersCountTextView.setContentDescription(backersCountContentDescription);
-    this.pledgedTextView.setContentDescription(pledgedContentDescription);
-    this.deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
   }
 }

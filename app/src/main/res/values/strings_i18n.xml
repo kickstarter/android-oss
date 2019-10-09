@@ -135,6 +135,7 @@ Please tap to retry.</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
+  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>
   <string name="Delivered" formatted="false">Delivered</string>
   <string name="Description" formatted="false">Description</string>
@@ -240,6 +241,7 @@ Please tap to retry.</string>
   <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.</string>
   <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
   <string name="If_your_profile_is_public" formatted="false">If your profile is not private, others can also see the projects you\'ve backed, your location, bio and websites.</string>
+  <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Introduce yourself</string>

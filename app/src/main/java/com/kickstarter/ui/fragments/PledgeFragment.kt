@@ -113,7 +113,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.additionalPledgeAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { additional_pledge_amount.text = it }
+                .subscribe { setPlusTextView(additional_pledge_amount, it) }
 
         this.viewModel.outputs.additionalPledgeAmountIsGone()
                 .compose(bindToLifecycle())
@@ -216,12 +216,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeTextColor()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
+                .subscribe { setTextColor(it, pledge_amount) }
 
         this.viewModel.outputs.totalTextColor()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setTextColor(it, total_amount, total_symbol_start, total_symbol_end) }
+                .subscribe { setTextColor(it, total_amount) }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
@@ -263,17 +263,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     ViewUtils.setGone(shipping_amount_loading_view, true)
-                    setVisibility(View.VISIBLE, shipping_symbol_start, shipping_symbol_end)
-                    shipping_amount.text = it
+                    setPlusTextView(shipping_amount, it)
                 }
 
         this.viewModel.outputs.shippingSummaryAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    shipping_summary_amount.text = it
-                    setVisibility(View.VISIBLE, shipping_summary_symbol_start, shipping_summary_symbol_end)
-                }
+                .subscribe { setPlusTextView(shipping_summary_amount, it) }
 
         this.viewModel.outputs.shippingSummaryLocation()
                 .compose(bindToLifecycle())
@@ -299,10 +295,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeSummaryAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    pledge_summary_amount.text = it
-                    setVisibility(View.VISIBLE, pledge_summary_symbol_start, pledge_summary_symbol_end)
-                }
+                .subscribe { pledge_summary_amount.text = it }
 
         this.viewModel.outputs.pledgeSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -319,7 +312,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     ViewUtils.setGone(total_amount_loading_view, true)
-                    setVisibility(View.VISIBLE, total_symbol_start, total_symbol_end)
                     total_amount.text = it
                 }
 
@@ -485,28 +477,18 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val symbol = symbolAndStart.first
         val symbolAtStart = symbolAndStart.second
         if (symbolAtStart) {
-            pledge_summary_symbol_start.text = symbol
             pledge_symbol_start.text = symbol
-            shipping_summary_symbol_start.text = symbol
-            shipping_symbol_start.text = symbol
-            total_symbol_start.text = symbol
-            pledge_summary_symbol_end.text = null
             pledge_symbol_end.text = null
-            shipping_summary_symbol_end.text = null
-            shipping_symbol_end.text = null
-            total_symbol_end.text = null
         } else {
-            pledge_summary_symbol_start.text = null
             pledge_symbol_start.text = null
-            shipping_summary_symbol_start.text = null
-            shipping_symbol_start.text = null
-            total_symbol_start.text = null
-            pledge_summary_symbol_end.text = null
             pledge_symbol_end.text = symbol
-            shipping_summary_symbol_end.text = null
-            shipping_symbol_end.text = symbol
-            total_symbol_end.text = symbol
         }
+    }
+
+    private fun setPlusTextView(textView: TextView, localizedAmount: CharSequence) {
+        val ksString = this.viewModel.environment.ksString()
+        textView.contentDescription = ksString.format(getString(R.string.plus_shipping_cost), "shipping_cost", localizedAmount.toString())
+        textView.text = localizedAmount
     }
 
     private fun setTextColor(colorResId: Int, vararg textViews: TextView) {

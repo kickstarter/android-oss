@@ -52,15 +52,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val pledgeAmount = TestSubscriber<String>()
     private val pledgeHint = TestSubscriber<String>()
     private val pledgeSectionIsGone = TestSubscriber<Boolean>()
-    private val pledgeSummaryAmount = TestSubscriber<String>()
+    private val pledgeSummaryAmount = TestSubscriber<CharSequence>()
     private val pledgeSummaryIsGone = TestSubscriber<Boolean>()
     private val pledgeTextColor = TestSubscriber<Int>()
     private val projectCurrencySymbol = TestSubscriber<String>()
     private val selectedShippingRule = TestSubscriber<ShippingRule>()
-    private val shippingAmount = TestSubscriber<String>()
+    private val shippingAmount = TestSubscriber<CharSequence>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
     private val shippingRulesSectionIsGone = TestSubscriber<Boolean>()
-    private val shippingSummaryAmount = TestSubscriber<String>()
+    private val shippingSummaryAmount = TestSubscriber<CharSequence>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingSummaryLocation = TestSubscriber<String>()
     private val showMinimumWarning = TestSubscriber<String>()
@@ -77,7 +77,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val startRewardExpandAnimation = TestSubscriber<Void>()
     private val startRewardShrinkAnimation = TestSubscriber<PledgeData>()
     private val startThanksActivity = TestSubscriber<Project>()
-    private val totalAmount = TestSubscriber<String>()
+    private val totalAmount = TestSubscriber<CharSequence>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
     private val totalTextColor = TestSubscriber<Int>()
     private val updatePledgeButtonIsEnabled = TestSubscriber<Boolean>()
@@ -108,15 +108,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
         this.vm.outputs.pledgeHint().subscribe(this.pledgeHint)
         this.vm.outputs.pledgeSectionIsGone().subscribe(this.pledgeSectionIsGone)
-        this.vm.outputs.pledgeSummaryAmount().subscribe(this.pledgeSummaryAmount)
+        this.vm.outputs.pledgeSummaryAmount().map { it.toString() }.subscribe(this.pledgeSummaryAmount)
         this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.pledgeTextColor().subscribe(this.pledgeTextColor)
         this.vm.outputs.projectCurrencySymbol().map { StringUtils.trim(it.first.toString()) }.subscribe(this.projectCurrencySymbol)
         this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
-        this.vm.outputs.shippingAmount().subscribe(this.shippingAmount)
+        this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
         this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
         this.vm.outputs.shippingRulesSectionIsGone().subscribe(this.shippingRulesSectionIsGone)
-        this.vm.outputs.shippingSummaryAmount().subscribe(this.shippingSummaryAmount)
+        this.vm.outputs.shippingSummaryAmount().map { it.toString() }.subscribe(this.shippingSummaryAmount)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.shippingSummaryLocation().subscribe(this.shippingSummaryLocation)
         this.vm.outputs.showMinimumWarning().subscribe(this.showMinimumWarning)
@@ -526,7 +526,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.pledgeSummaryAmount.assertValue("30")
+        this.pledgeSummaryAmount.assertValue("$30")
     }
 
     @Test
@@ -568,7 +568,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.totalAmount.assertValue("40")
+        this.totalAmount.assertValue("$40")
     }
 
     @Test
@@ -610,7 +610,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.totalAmount.assertValue("40")
+        this.totalAmount.assertValue("$40")
     }
 
     @Test
@@ -621,7 +621,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_REWARD)
 
-        this.totalAmount.assertValue("50")
+        this.totalAmount.assertValue("$50")
     }
 
     @Test
@@ -662,8 +662,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "21")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValues("50", "51")
+        this.shippingAmount.assertValue("$30")
+        this.totalAmount.assertValues("$50", "$51")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
         this.additionalPledgeAmount.assertValues("$0", "$1")
@@ -678,8 +678,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "21", "20")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.totalAmount.assertValues("50", "51", "50")
-        this.shippingAmount.assertValue("30")
+        this.totalAmount.assertValues("$50", "$51", "$50")
+        this.shippingAmount.assertValue("$30")
         this.projectCurrencySymbol.assertValue("$")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
@@ -703,8 +703,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "40")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValues("50", "70")
+        this.shippingAmount.assertValue("$30")
+        this.totalAmount.assertValues("$50", "$70")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
         this.additionalPledgeAmount.assertValues("$0", "$20")
@@ -720,8 +720,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "40", "10")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValues("50", "70", "40")
+        this.shippingAmount.assertValue("$30")
+        this.totalAmount.assertValues("$50", "$70", "$40")
         this.totalTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
         this.projectCurrencySymbol.assertValue("$")
         this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
@@ -746,7 +746,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.shippingAmount.assertNoValues()
-        this.totalAmount.assertValues("20", "21")
+        this.totalAmount.assertValues("$20", "$21")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.conversionText.assertValues("$20.00", "$21.00")
         this.conversionTextViewIsGone.assertValues(true)
@@ -765,7 +765,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.shippingAmount.assertNoValues()
-        this.totalAmount.assertValues("20", "21", "20")
+        this.totalAmount.assertValues("$20", "$21", "$20")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.conversionText.assertValues("$20.00", "$21.00", "$20.00")
         this.conversionTextViewIsGone.assertValues(true)
@@ -791,7 +791,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.shippingAmount.assertNoValues()
-        this.totalAmount.assertValues("20", "40")
+        this.totalAmount.assertValues("$20", "$40")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
         this.additionalPledgeAmount.assertValues("$0", "$20")
@@ -808,7 +808,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
         this.shippingAmount.assertNoValues()
-        this.totalAmount.assertValues("20", "40", "10")
+        this.totalAmount.assertValues("$20", "$40", "$10")
         this.totalTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
         this.projectCurrencySymbol.assertValue("$")
         this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
@@ -836,8 +836,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValues(R.color.ksr_green_500)
-        this.shippingAmount.assertValues("30", "40")
-        this.totalAmount.assertValues("50", "60")
+        this.shippingAmount.assertValues("$30", "$40")
+        this.totalAmount.assertValues("$50", "$60")
         this.totalTextColor.assertValues(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
         this.additionalPledgeAmount.assertValues("$0")
@@ -862,8 +862,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "30")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValues("50", "60")
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 60")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("MX$")
         this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10")
@@ -878,9 +878,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "30", "20")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValues("50", "60", "50")
-        this.shippingAmount.assertValue("30")
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 60", "MX$ 50")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("MX$")
         this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10", "MX$ 0")
@@ -905,8 +904,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "40")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValues("50", "70")
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 70")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 20")
         this.projectCurrencySymbol.assertValue("MX$")
@@ -921,8 +920,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20", "40", "10")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValuesAndClear(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValuesAndClear("50", "70", "40")
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 70", "MX$ 40")
         this.totalTextColor.assertValuesAndClear(R.color.ksr_green_500, R.color.ksr_red_400)
         this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 20", "MX$ 0")
         this.projectCurrencySymbol.assertValue("MX$")
@@ -950,8 +949,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValues("30", "40")
-        this.totalAmount.assertValues("50", "60")
+        this.shippingAmount.assertValues("MX$ 30", "MX$ 40")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 60")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("MX$")
         this.additionalPledgeAmount.assertValue("MX$ 0")
@@ -1069,7 +1068,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.shippingSummaryAmount.assertValue("10")
+        this.shippingSummaryAmount.assertValue("$10")
     }
 
     @Test
@@ -1738,6 +1737,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.additionalPledgeAmount.assertValue("MX$ 0")
         this.conversionText.assertValue("$37.50")
         this.conversionTextViewIsGone.assertValues(false)
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50")
     }
 
     private fun assertInitialPledgeCurrencyStates_WithShipping_USProject() {
@@ -1745,6 +1746,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.additionalPledgeAmount.assertValue("$0")
         this.conversionText.assertValue("$50.00")
         this.conversionTextViewIsGone.assertValues(true)
+        this.shippingAmount.assertValue("$30")
+        this.totalAmount.assertValues("$50")
     }
 
     private fun assertInitialPledgeState_NoShipping() {
@@ -1755,7 +1758,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.shippingAmount.assertNoValues()
-        this.totalAmount.assertValues("20")
+        this.totalAmount.assertValues("$20")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
     }
 
@@ -1766,8 +1769,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeAmount.assertValues("20")
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue("30")
-        this.totalAmount.assertValues("50")
         this.totalTextColor.assertValue(R.color.ksr_green_500)
     }
 

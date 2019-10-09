@@ -135,6 +135,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
   <string name="Daily_summary" formatted="false">Übersicht (einmal täglich)</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
+  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
   <string name="Delivered" formatted="false">Verschickt</string>
   <string name="Description" formatted="false">Beschreibung</string>
@@ -240,6 +241,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
   <string name="If_your_profile_is_private" formatted="false">Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.</string>
   <string name="If_your_profile_is_public" formatted="false">Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.</string>
+  <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">Individuelle E-Mails</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Stelle dich vor</string>

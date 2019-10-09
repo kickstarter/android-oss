@@ -21,7 +21,6 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
-  <!-- TODO: Needs final copy for content descriptions -->
   <ImageButton
     android:id="@+id/decrease_pledge"
     android:layout_width="0dp"
@@ -29,7 +28,7 @@
     android:layout_marginTop="@dimen/grid_1"
     android:background="@drawable/bg_decrease"
     android:backgroundTint="@color/white_enabled_gray_disabled"
-    android:contentDescription="@null"
+    android:contentDescription="@string/Decrease_pledge"
     android:src="@drawable/ic_remove"
     android:tint="@color/green_enabled_dark_grey_disabled"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -43,7 +42,7 @@
     android:layout_marginTop="@dimen/grid_1"
     android:background="@drawable/bg_increase"
     android:backgroundTint="@color/white_enabled_gray_disabled"
-    android:contentDescription="@null"
+    android:contentDescription="@string/Increase_pledge"
     android:src="@drawable/ic_add"
     android:tint="@color/green_enabled_dark_grey_disabled"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -67,11 +66,10 @@
     app:layout_constraintStart_toEndOf="@id/increase_pledge"
     app:layout_constraintTop_toBottomOf="@id/pledge_amount_label">
 
-    <!-- todo: needs some a11y plz-->
     <ImageView
       android:layout_width="@dimen/grid_3"
       android:layout_height="@dimen/grid_3"
-      android:contentDescription="@null"
+      android:importantForAccessibility="no"
       android:src="@drawable/ic_add"
       android:tint="@color/ksr_dark_grey_400" />
 

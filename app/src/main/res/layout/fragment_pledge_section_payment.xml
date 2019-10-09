@@ -25,6 +25,7 @@
     android:src="@drawable/googlepay_button_content"
     android:visibility="gone" />
 
+  <!--  TODO: show this when Google Pay is available -->
   <TextView
     style="@style/FootnoteSecondary"
     android:layout_width="match_parent"
@@ -33,7 +34,8 @@
     android:layout_marginTop="@dimen/grid_3"
     android:layout_marginEnd="@dimen/activity_vertical_margin"
     android:gravity="center"
-    android:text="@string/Other_payment_methods" />
+    android:text="@string/Other_payment_methods"
+    android:visibility="gone"/>
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/cards_recycler"

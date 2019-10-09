@@ -33,6 +33,7 @@
     android:imeOptions="actionDone"
     android:inputType="text"
     android:maxLines="1"
+    android:nextFocusDown="@id/shipping_amount"
     android:scrollHorizontally="true"
     android:text="@string/Loading"
     android:textColor="@color/ksr_green_500"
@@ -52,24 +53,9 @@
     android:src="@drawable/ic_add"
     android:tint="@color/ksr_dark_grey_400"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/shipping_symbol_start"
+    app:layout_constraintEnd_toStartOf="@id/shipping_amount"
     app:layout_constraintStart_toEndOf="@id/shipping_rules"
     app:layout_constraintTop_toBottomOf="@id/shipping_rules_label" />
-
-  <TextView
-    android:id="@+id/shipping_symbol_start"
-    style="@style/PledgeCurrency"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="end"
-    android:layout_marginTop="@dimen/grid_1"
-    android:visibility="invisible"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/shipping_amount"
-    app:layout_constraintStart_toEndOf="@id/shipping_add_symbol"
-    app:layout_constraintTop_toBottomOf="@id/shipping_rules_label"
-    tools:text="$"
-    tools:visibility="visible" />
 
   <TextView
     android:id="@+id/shipping_amount"
@@ -79,27 +65,12 @@
     android:layout_marginTop="@dimen/grid_1"
     android:maxLines="1"
     app:layout_constrainedWidth="true"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/shipping_symbol_end"
-    app:layout_constraintStart_toEndOf="@id/shipping_symbol_start"
-    app:layout_constraintTop_toBottomOf="@id/shipping_rules_label"
-    tools:text="20" />
-
-  <TextView
-    android:id="@+id/shipping_symbol_end"
-    style="@style/PledgeCurrency"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="end"
-    android:layout_marginTop="@dimen/grid_1"
-    android:visibility="invisible"
+    app:layout_constraintHorizontal_bias="1"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="1"
-    app:layout_constraintStart_toEndOf="@id/shipping_amount"
+    app:layout_constraintStart_toEndOf="@id/shipping_add_symbol"
     app:layout_constraintTop_toBottomOf="@id/shipping_rules_label"
-    tools:text="$"
-    tools:visibility="visible" />
+    tools:text="@string/plus_shipping_cost" />
 
   <View
     android:id="@+id/shipping_amount_loading_view"

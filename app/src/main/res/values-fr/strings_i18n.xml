@@ -135,6 +135,7 @@ contributeurs</string>
   <string name="Daily_digest" formatted="false">Résumé quotidien</string>
   <string name="Daily_summary" formatted="false">Une fois par jour</string>
   <string name="Data_will_appear_here_once" formatted="false">Ces données seront visibles dès que vous aurez reçu votre première contribution.</string>
+  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Supprimer mon compte Kickstarter</string>
   <string name="Delivered" formatted="false">Distribué</string>
   <string name="Description" formatted="false">Description</string>
@@ -240,6 +241,7 @@ contributeurs</string>
   <string name="If_you_turn_following_off" formatted="false">Si vous désactivez les fonctionnalités de suivi, vous ne pourrez pas vous abonner aux activités des autres et plus personne ne pourra suivre les vôtres. Votre profil sera déconnecté de tous vos abonnés. Cette action ne pourra pas être annulée.</string>
   <string name="If_your_profile_is_private" formatted="false">Si votre profil est privé, seuls votre nom et votre photo seront visibles.</string>
   <string name="If_your_profile_is_public" formatted="false">Si votre profil n\'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.</string>
+  <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">E-mails individuels</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Présentez-vous ici.</string>

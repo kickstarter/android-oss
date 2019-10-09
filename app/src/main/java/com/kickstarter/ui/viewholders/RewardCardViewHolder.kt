@@ -37,6 +37,11 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
                 .compose(observeForUI())
                 .subscribe { this.view.reward_card_logo.setImageResource(it) }
 
+        this.viewModel.outputs.issuer()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_card_logo.contentDescription = it }
+
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -71,6 +76,10 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
         @Suppress("UNCHECKED_CAST")
         val cardAndProject = requireNotNull(data) as Pair<StoredCard, Project>
         this.viewModel.inputs.configureWith(cardAndProject)
+    }
+
+    override fun onClick(view: View) {
+        this.delegate.selectCardButtonClicked(adapterPosition)
     }
 
     private fun setCardNotAllowedWarningText(country: String) {

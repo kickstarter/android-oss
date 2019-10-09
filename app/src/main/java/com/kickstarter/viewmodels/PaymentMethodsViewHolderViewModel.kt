@@ -5,6 +5,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
+import com.stripe.android.model.Card
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -22,14 +23,17 @@ interface PaymentMethodsViewHolderViewModel {
     }
 
     interface Outputs {
-        /** Emits the card issuer (ex Visa, Mastercard, AMEX). */
-        fun cardIssuer(): Observable<Int>
-
         /** Emits the expiration date for a credit card. */
         fun expirationDate(): Observable<String>
 
         /** Emits the credit card id. */
         fun id(): Observable<String>
+
+        /** Emits the name of the card issuer from [Card.CardBrand]. */
+        fun issuer(): Observable<String>
+
+        /** Emits the drawable for the card issuer (ex Visa, Mastercard, AMEX). */
+        fun issuerImage(): Observable<Int>
 
         /** Emits the last four digits of the credit card. */
         fun lastFour(): Observable<String>
@@ -40,9 +44,10 @@ interface PaymentMethodsViewHolderViewModel {
         private val card = PublishSubject.create<StoredCard>()
         private val deleteCardClick = PublishSubject.create<Void>()
 
-        private val cardIssuer = BehaviorSubject.create<Int>()
         private val expirationDate = BehaviorSubject.create<String>()
         private val id = BehaviorSubject.create<String>()
+        private val issuer = BehaviorSubject.create<String>()
+        private val issuerImage = BehaviorSubject.create<Int>()
         private val lastFour = BehaviorSubject.create<String>()
 
         private val sdf = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
@@ -51,28 +56,38 @@ interface PaymentMethodsViewHolderViewModel {
         val outputs: Outputs = this
 
         init {
-            this.card.map { it.expiration() }
+            this.card
+                    .map { it.expiration() }
                     .map { sdf.format(it).toString() }
-                    .subscribe { this.expirationDate.onNext(it) }
+                    .subscribe(this.expirationDate)
 
-            this.card.map { it.id() }
+            this.card
+                    .map { it.id() }
                     .compose<String>(takeWhen(this.deleteCardClick))
-                    .subscribe { this.id.onNext(it) }
+                    .subscribe(this.id)
 
-            this.card.map { it.lastFourDigits() }
-                    .subscribe { this.lastFour.onNext(it) }
+            this.card
+                    .map { it.lastFourDigits() }
+                    .subscribe(this.lastFour)
 
-            this.card.map { it.type() }
+            this.card
+                    .map { it.type() }
                     .map { StoredCard.getCardTypeDrawable(it) }
-                    .subscribe { this.cardIssuer.onNext(it) }
+                    .subscribe(this.issuerImage)
 
+            this.card
+                    .map { it.type() }
+                    .map { StoredCard.issuer(it) }
+                    .subscribe(this.issuer)
         }
 
         override fun card(creditCard: StoredCard) = this.card.onNext(creditCard)
 
         override fun deleteIconClicked() = this.deleteCardClick.onNext(null)
 
-        override fun cardIssuer(): Observable<Int> = this.cardIssuer
+        override fun issuer(): Observable<String> = this.issuer
+
+        override fun issuerImage(): Observable<Int> = this.issuerImage
 
         override fun expirationDate(): Observable<String> = this.expirationDate
 

@@ -67,6 +67,7 @@ patrocinadores</string>
   <string name="Cancel" formatted="false">Cancelar</string>
   <string name="Cancel_pledge" formatted="false">Cancelar contribución</string>
   <string name="Cancel_your_pledge" formatted="false">Cancela tu contribución</string>
+  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
   <string name="Card_ending_in_last_four" formatted="false">Tarjeta que termina en %{last_four}</string>
   <string name="Card_number" formatted="false">Número de tarjeta</string>
   <string name="Cardholder_name" formatted="false">Nombre del titular de la tarjeta</string>

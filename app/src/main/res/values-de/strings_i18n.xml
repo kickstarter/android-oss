@@ -67,6 +67,7 @@ Unterstützer</string>
   <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_pledge" formatted="false">Beitrag zurückziehen</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
+  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
   <string name="Card_ending_in_last_four" formatted="false">Kartennummer endet auf %{last_four}</string>
   <string name="Card_number" formatted="false">Kartennummer</string>
   <string name="Cardholder_name" formatted="false">Name des Karteninhabers</string>

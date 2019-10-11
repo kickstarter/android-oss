@@ -26,7 +26,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
     private val backingDetails = TestSubscriber<String>()
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
-    private val expandPledgeSheet = TestSubscriber<Boolean>()
+    private val expandPledgeSheet = TestSubscriber<Pair<Boolean, Boolean>>()
     private val heartDrawableId = TestSubscriber<Int>()
     private val managePledgeMenu = TestSubscriber<Int?>()
     private val prelaunchUrl = TestSubscriber<String>()
@@ -56,6 +56,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
+    private val startThanksActivity = TestSubscriber<Project>()
     private val startVideoActivity = TestSubscriber<Project>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -92,6 +93,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
         this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
+        this.vm.outputs.startThanksActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
     }
 
@@ -433,7 +435,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.vm.inputs.collapsePledgeSheet()
-        this.expandPledgeSheet.assertValue(false)
+        this.expandPledgeSheet.assertValue(Pair(false, true))
     }
 
     @Test
@@ -443,7 +445,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        this.expandPledgeSheet.assertValue(true)
+        this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
     }
 
@@ -454,7 +456,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        this.expandPledgeSheet.assertValue(true)
+        this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked")
     }
 
@@ -465,7 +467,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        this.expandPledgeSheet.assertValue(true)
+        this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "View Rewards Button Clicked")
     }
 
@@ -476,7 +478,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        this.expandPledgeSheet.assertValue(true)
+        this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "View Your Pledge Button Clicked")
     }
 
@@ -598,7 +600,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectTest.assertValueCount(2)
 
         this.vm.inputs.pledgeSuccessfullyCancelled()
-        this.expandPledgeSheet.assertValue(false)
+        this.expandPledgeSheet.assertValue(Pair(false, false))
         this.showCancelPledgeSuccess.assertValueCount(1)
         this.projectTest.assertValueCount(3)
     }
@@ -1098,6 +1100,21 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
         this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.projectTest.assertValueCount(3)
+    }
+
+    @Test
+    fun testStartThanksActivity() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a unbacked project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.projectTest.assertValueCount(2)
+
+        this.vm.inputs.pledgeSuccessfullyCreated()
+        this.expandPledgeSheet.assertValue(Pair(false, false))
+        this.startThanksActivity.assertValueCount(1)
         this.projectTest.assertValueCount(3)
     }
 

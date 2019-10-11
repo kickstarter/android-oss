@@ -188,6 +188,9 @@ interface PledgeFragmentViewModel {
         /**  Emits when the pledge call was unsuccessful. */
         fun showPledgeError(): Observable<Void>
 
+        /** Emits when the creating backing mutation was successful. */
+        fun showPledgeSuccess(): Observable<Void>
+
         /**  Emits when the update payment source mutation was unsuccessful. */
         fun showUpdatePaymentError(): Observable<Void>
 
@@ -208,9 +211,6 @@ interface PledgeFragmentViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.LoginToutActivity]. */
         fun startLoginToutActivity(): Observable<Void>
-
-        /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
-        fun startThanksActivity(): Observable<Project>
 
         /** Emits the total amount string of the pledge. */
         fun totalAmount(): Observable<SpannableString>
@@ -283,6 +283,7 @@ interface PledgeFragmentViewModel {
         private val showNewCardFragment = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = PublishSubject.create<Void>()
+        private val showPledgeSuccess = PublishSubject.create<Void>()
         private val showUpdatePaymentError = PublishSubject.create<Void>()
         private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
         private val showUpdatePledgeError = PublishSubject.create<Void>()
@@ -292,7 +293,6 @@ interface PledgeFragmentViewModel {
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startRewardExpandAnimation = BehaviorSubject.create<Void>()
         private val startRewardShrinkAnimation = BehaviorSubject.create<PledgeData>()
-        private val startThanksActivity = PublishSubject.create<Project>()
         private val totalAmount = BehaviorSubject.create<SpannableString>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
         private val totalTextColor = BehaviorSubject.create<Int>()
@@ -805,10 +805,11 @@ interface PledgeFragmentViewModel {
                         this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
                     }
 
-            project
-                    .compose<Project>(takeWhen(createBackingValues.filter { BooleanUtils.isTrue(it) }))
+            createBackingValues
+                    .filter { BooleanUtils.isTrue(it) }
+                    .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe(this.startThanksActivity)
+                    .subscribe(this.showPledgeSuccess)
 
             val updatePaymentClick = pledgeReason
                     .compose<Pair<PledgeReason, String>>(takePairWhen(this.pledgeButtonClicked))
@@ -1039,6 +1040,9 @@ interface PledgeFragmentViewModel {
         override fun showPledgeError(): Observable<Void> = this.showPledgeError
 
         @NonNull
+        override fun showPledgeSuccess(): Observable<Void> = this.showPledgeSuccess
+
+        @NonNull
         override fun showUpdatePaymentError(): Observable<Void> = this.showUpdatePaymentError
 
         @NonNull
@@ -1064,9 +1068,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity
-
-        @NonNull
-        override fun startThanksActivity(): Observable<Project> = this.startThanksActivity
 
         @NonNull
         override fun totalAmount(): Observable<SpannableString> = this.totalAmount

@@ -45,10 +45,8 @@ import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
-import com.kickstarter.ui.activities.ThanksActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
@@ -74,6 +72,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     interface PledgeDelegate {
         fun pledgePaymentSuccessfullyUpdated()
+        fun pledgeSuccessfullyCreated()
         fun pledgeSuccessfullyUpdated()
     }
 
@@ -323,15 +322,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     total_amount.text = it
                 }
 
-        this.viewModel.outputs.startThanksActivity()
+        this.viewModel.outputs.showPledgeSuccess()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { project ->
-                    activity?.let {
-                        startActivity(Intent(it, ThanksActivity::class.java)
-                                .putExtra(IntentKey.PROJECT, project))
-                    }
-                }
+                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated() }
 
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())

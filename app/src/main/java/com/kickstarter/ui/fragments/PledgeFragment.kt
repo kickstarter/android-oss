@@ -775,6 +775,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             pledge_root.visibility = View.VISIBLE
             val bitmap = ViewUtils.getBitmap(reward_to_copy, location.width.toInt(), location.height.toInt())
             reward_snapshot.setImageBitmap(bitmap)
+            reward_snapshot.requestFocus()
             reward_to_copy.visibility = View.GONE
         }
     }

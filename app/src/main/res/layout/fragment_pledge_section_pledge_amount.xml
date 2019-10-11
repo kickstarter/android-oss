@@ -6,6 +6,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginBottom="@dimen/grid_4"
+  android:focusable="true"
   android:gravity="center_vertical"
   android:orientation="horizontal"
   tools:showIn="@layout/fragment_pledge">
@@ -102,6 +103,7 @@
       style="@style/PledgeCurrencySecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:focusable="true"
       android:gravity="center_vertical"
       tools:text="$" />
 

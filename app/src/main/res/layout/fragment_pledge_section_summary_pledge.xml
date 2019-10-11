@@ -5,6 +5,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:id="@+id/pledge_summary"
+  android:focusable="true"
   android:visibility="gone"
   tools:visibility="visible"
   android:orientation="vertical">

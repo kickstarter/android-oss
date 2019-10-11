@@ -6,6 +6,7 @@
   android:id="@+id/total"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:focusable="true"
   android:orientation="vertical"
   tools:showIn="@layout/fragment_pledge">
 

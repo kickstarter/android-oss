@@ -6,6 +6,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginBottom="@dimen/grid_4"
+  android:focusable="true"
   android:gravity="center_vertical"
   android:orientation="horizontal"
   tools:showIn="@layout/fragment_pledge">
@@ -70,7 +71,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@id/shipping_add_symbol"
     app:layout_constraintTop_toBottomOf="@id/shipping_rules_label"
-    tools:text="@string/plus_shipping_cost" />
+    tools:text="$10" />
 
   <View
     android:id="@+id/shipping_amount_loading_view"

@@ -85,12 +85,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
         when {
             environment().nativeCheckoutPreference().get() -> {
-                val viewTreeObserver = rewards_container.viewTreeObserver
+                val viewTreeObserver = pledge_container_root.viewTreeObserver
                 if (viewTreeObserver.isAlive) {
                     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                         override fun onGlobalLayout() {
                             this@ProjectActivity.viewModel.inputs.onGlobalLayout()
-                            rewards_container.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            pledge_container_root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         }
                     })
                 }
@@ -99,11 +99,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                     this.viewModel.inputs.nativeProjectActionButtonClicked()
                 }
 
-                rewards_toolbar.setNavigationOnClickListener {
+                pledge_toolbar.setNavigationOnClickListener {
                     this.viewModel.inputs.collapsePledgeSheet()
                 }
 
-                rewards_toolbar.setOnMenuItemClickListener {
+                pledge_toolbar.setOnMenuItemClickListener {
                     when {
                         it.itemId == R.id.update_pledge -> {
                             this.viewModel.inputs.updatePledgeClicked()
@@ -131,9 +131,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
                 this.supportFragmentManager.addOnBackStackChangedListener {
                     this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
-                }
-
-                this.supportFragmentManager.addOnBackStackChangedListener {
                     val fragments = this.supportFragmentManager.fragments
                     val lastFragmentWithView = fragments.last { it.view != null }
                     for (fragment in fragments) {
@@ -207,7 +204,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.outputs.rewardsToolbarTitle()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { rewards_toolbar.title = getString(it) }
+                .subscribe { pledge_toolbar.title = getString(it) }
 
         this.viewModel.outputs.setInitialRewardsContainerY()
                 .compose(bindToLifecycle())
@@ -428,14 +425,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
 
         val guideline = rewardsSheetGuideline()
-        val initialValue = (if (expand) rewards_container.height - guideline else 0).toFloat()
-        val finalValue = (if (expand) 0 else rewards_container.height - guideline).toFloat()
+        val initialValue = (if (expand) pledge_container_root.height - guideline else 0).toFloat()
+        val finalValue = (if (expand) 0 else pledge_container_root.height - guideline).toFloat()
         val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
 
-        val rewardsContainerYAnimator = ObjectAnimator.ofFloat(rewards_container, View.Y, initialValue, finalValue).apply {
+        val rewardsContainerYAnimator = ObjectAnimator.ofFloat(pledge_container_root, View.Y, initialValue, finalValue).apply {
             addUpdateListener { valueAnim ->
                 val radius = initialRadius * if (expand) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
-                rewards_container.radius = radius
+                pledge_container_root.radius = radius
             }
         }
 
@@ -452,16 +449,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                         action_buttons.visibility = View.GONE
                         this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                        rewards_toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        pledge_toolbar.requestFocus()
+                    } else {
+                        pledge_container.visibility = View.GONE
+                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        toolbar.requestFocus()
                     }
                 }
 
                 override fun onAnimationStart(animation: Animator?) {
-                    if (!expand) {
+                    if (expand) {
+                        pledge_container.visibility = View.VISIBLE
+                    } else {
                         action_buttons.visibility = View.VISIBLE
-                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-                        rewards_toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
                     }
                 }
             })
@@ -580,14 +581,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
-        rewards_container.y = (rewards_container.height - guideline).toFloat()
+        pledge_container_root.y = (pledge_container_root.height - guideline).toFloat()
         this.projectRecyclerView.setPadding(0, 0, 0, guideline)
     }
 
     private fun showBackingFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
                 supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0) {
+        if(!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
             supportFragmentManager.beginTransaction()
                     .show(backingFragment)
                     .hide(rewardsFragment)
@@ -641,7 +642,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun showRewardsFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
         supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0) {
+        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
             supportFragmentManager.beginTransaction()
                     .show(rewardsFragment)
                     .hide(backingFragment)
@@ -756,9 +757,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
         menu?.let {
-            rewards_toolbar.inflateMenu(it)
+            pledge_toolbar.inflateMenu(it)
         }?: run {
-            rewards_toolbar.menu.clear()
+            pledge_toolbar.menu.clear()
         }
     }
 }

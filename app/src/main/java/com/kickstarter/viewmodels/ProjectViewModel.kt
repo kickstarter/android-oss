@@ -26,6 +26,7 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.net.CookieManager
+import java.util.concurrent.TimeUnit
 
 interface ProjectViewModel {
     interface Inputs {
@@ -283,6 +284,7 @@ interface ProjectViewModel {
 
             val mappedProjectNotification = Observable.merge(intent(), intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked)))
+                    .delay(1, TimeUnit.SECONDS)
                     .flatMap {
                         ProjectIntentMapper.project(it, this.client)
                                 .doOnSubscribe {

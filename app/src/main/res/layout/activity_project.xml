@@ -31,7 +31,7 @@
     tools:listitem="@layout/project_main_layout" />
 
   <androidx.cardview.widget.CardView
-    android:id="@+id/rewards_container"
+    android:id="@+id/pledge_container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/white"
@@ -44,14 +44,12 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:alpha="0"
-      android:orientation="vertical"
       tools:alpha="0">
 
       <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:accessibilityTraversalBefore="@id/rewards_toolbar">
+        android:layout_height="match_parent">
 
         <fragment
           android:id="@+id/fragment_backing"
@@ -70,12 +68,11 @@
       </FrameLayout>
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/rewards_toolbar"
+        android:id="@+id/pledge_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:accessibilityTraversalAfter="@id/fragment_container"
         android:background="@color/transparent"
-        android:importantForAccessibility="no"
+        android:focusableInTouchMode="true"
         app:navigationContentDescription="@string/View_project"
         app:navigationIcon="@drawable/ic_arrow_down" />
 

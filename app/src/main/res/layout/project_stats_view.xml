@@ -5,6 +5,7 @@
   tools:showIn="@layout/project_main_layout"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
+  android:focusable="true"
   android:orientation="horizontal">
 
   <LinearLayout
@@ -23,7 +24,6 @@
 
     <TextView
       android:id="@+id/goal"
-      android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Caption1Secondary"
@@ -46,7 +46,6 @@
       android:layout_height="wrap_content" />
 
     <TextView
-      android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/discovery_baseball_card_stats_backers"
@@ -71,7 +70,6 @@
 
     <TextView
       android:id="@+id/deadline_countdown_unit_text_view"
-      android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/ksr_dark_grey_500"

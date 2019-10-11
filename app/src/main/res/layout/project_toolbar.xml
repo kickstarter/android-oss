@@ -8,6 +8,8 @@
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
   android:background="@color/white"
+  android:focusable="true"
+  android:focusableInTouchMode="true"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   android:elevation="@dimen/ks_toolbar_elevation">
@@ -18,24 +20,20 @@
     android:gravity="center_vertical">
 
     <com.kickstarter.ui.views.IconButton
-      style="@style/ToolbarIconBackButton"
       android:id="@+id/back_icon"
-      android:nextFocusRight="@+id/heart_icon" />
+      style="@style/ToolbarIconBackButton"
+      android:contentDescription="@string/Close_project" />
 
     <ImageButton
       style="@style/ToolbarVectorIcon"
       android:id="@+id/share_icon"
-      android:focusable="true"
       android:layout_toStartOf="@+id/heart_icon"
-      android:nextFocusRight="@+id/heart_icon"
       android:contentDescription="@string/project_accessibility_button_share_label"
       android:src="@drawable/icon__share"/>
 
     <ImageButton
       style="@style/ToolbarVectorIcon"
       android:id="@+id/heart_icon"
-      android:focusable="true"
-      android:nextFocusLeft="@+id/share_icon"
       android:contentDescription="@string/Save_this_project"
       android:layout_alignParentEnd="true"
       android:src="@drawable/icon__heart_outline" />

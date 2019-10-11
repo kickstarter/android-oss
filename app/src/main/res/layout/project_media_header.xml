@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical"
-  tools:ignore="MergeRootFrame">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+  tools:showIn="@layout/project_main_layout"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <ImageView
     android:id="@+id/project_photo"
@@ -21,10 +17,9 @@
     android:id="@+id/play_button_overlay"
     android:background="@drawable/video_button_background"
     android:contentDescription="@string/accessibility_projects_buttons_play_video"
-    android:focusable="true"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:src="@drawable/ic_play_icon"
     tools:visibility="visible"/>
-</FrameLayout>
+</merge>

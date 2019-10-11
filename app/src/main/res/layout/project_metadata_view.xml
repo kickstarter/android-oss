@@ -10,6 +10,7 @@
   android:layout_marginEnd="@dimen/grid_5"
   android:layout_gravity="bottom"
   android:background="@drawable/rect_white_grey_stroke"
+  android:focusable="true"
   android:gravity="center_vertical"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/metadata_label_height"
@@ -31,7 +32,7 @@
       android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:contentDescription="@null" />
+      android:importantForAccessibility="no" />
 
     <TextView
       style="@style/Caption1PrimaryMedium"
@@ -59,7 +60,7 @@
       android:layout_width="wrap_content"
       android:focusable="true"
       android:tint="@color/ksr_soft_black"
-      android:contentDescription="@string/Save_this_project"
+      android:importantForAccessibility="no"
       android:src="@drawable/icon__heart" />
 
     <TextView

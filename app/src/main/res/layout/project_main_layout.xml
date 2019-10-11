@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  android:id="@+id/project_scroll_view"
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -44,6 +42,7 @@
       android:layout_height="wrap_content"
       android:paddingBottom="@dimen/grid_1_half"
       tools:ignore="InconsistentLayout"
+      android:focusable="true"
       tools:text="Project name" />
 
     <LinearLayout
@@ -63,16 +62,15 @@
         android:layout_width="@dimen/project_avatar_width"
         android:layout_height="@dimen/project_avatar_height"
         android:layout_marginEnd="@dimen/grid_3_half"
+        android:importantForAccessibility="no"
         android:scaleType="centerCrop"
-        tools:background="@color/ksr_green_700"
-        tools:ignore="ContentDescription" />
+        tools:background="@color/ksr_green_700" />
 
       <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
-
 
         <TextView
           style="@style/FootnotePrimary"
@@ -90,7 +88,6 @@
           tools:text="Creator Name" />
       </LinearLayout>
 
-
     </LinearLayout>
 
     <LinearLayout
@@ -99,6 +96,7 @@
       android:layout_height="wrap_content"
       android:background="@drawable/click_indicator_light_masked"
       android:orientation="vertical"
+      android:focusable="true"
       tools:ignore="InconsistentLayout">
 
       <TextView
@@ -106,7 +104,6 @@
         style="@style/Subheadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
         android:textColor="@color/ksr_soft_black"
         tools:ignore="InconsistentLayout"
         tools:text="Description about this project." />
@@ -124,7 +121,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginEnd="@dimen/grid_1"
-          android:focusable="true"
           android:text="@string/Read_more_about_the_campaign" />
 
         <ImageView
@@ -140,6 +136,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="center_vertical"
+      android:focusable="true"
       android:orientation="horizontal">
 
       <com.kickstarter.ui.views.IconTextView
@@ -192,6 +189,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_5"
+      android:importantForAccessibility="no"
       android:minHeight="@dimen/progress_bar_min_height"
       android:progress="50"
       android:visibility="visible" />
@@ -209,6 +207,7 @@
       android:paddingStart="@dimen/grid_4"
       android:paddingTop="@dimen/grid_2"
       android:visibility="gone"
+      android:focusable="true"
       tools:visibility="visible">
 
       <TextView
@@ -243,6 +242,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_3"
+        android:focusable="true"
         android:visibility="gone"
         tools:text="Converted from" />
 
@@ -257,6 +257,7 @@
       android:orientation="horizontal"
       android:paddingBottom="@dimen/grid_1"
       android:paddingTop="@dimen/grid_1"
+      android:focusable="true"
       android:visibility="gone">
 
       <ImageView
@@ -264,7 +265,7 @@
         android:layout_width="@dimen/project_social_photo_height"
         android:layout_height="@dimen/project_social_photo_height"
         android:visibility="gone"
-        tools:ignore="ContentDescription" />
+        android:importantForAccessibility="no" />
 
       <TextView
         android:id="@+id/project_social_text"

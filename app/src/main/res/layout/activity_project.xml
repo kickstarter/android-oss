@@ -10,17 +10,14 @@
   <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/project_app_bar_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:layout_scrollFlags="scroll|enterAlways">
 
-      <include
-        android:id="@+id/project_toolbar"
-        layout="@layout/project_toolbar" />
+      <include layout="@layout/project_toolbar" />
     </com.google.android.material.appbar.CollapsingToolbarLayout>
   </com.google.android.material.appbar.AppBarLayout>
 
@@ -34,7 +31,7 @@
     tools:listitem="@layout/project_main_layout" />
 
   <androidx.cardview.widget.CardView
-    android:id="@+id/rewards_container"
+    android:id="@+id/pledge_container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardBackgroundColor="@color/white"
@@ -47,7 +44,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:alpha="0"
-      android:orientation="vertical"
       tools:alpha="0">
 
       <FrameLayout
@@ -72,11 +68,13 @@
       </FrameLayout>
 
       <androidx.appcompat.widget.Toolbar
-        android:id="@+id/rewards_toolbar"
+        android:id="@+id/pledge_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        app:navigationIcon="@drawable/ic_down" />
+        android:focusableInTouchMode="true"
+        app:navigationContentDescription="@string/View_project"
+        app:navigationIcon="@drawable/ic_arrow_down" />
 
     </FrameLayout>
 
@@ -136,7 +134,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/project_back_button"
-        android:textAllCaps="false"
         tools:visibility="visible" />
     </LinearLayout>
 

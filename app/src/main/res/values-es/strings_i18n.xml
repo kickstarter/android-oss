@@ -135,6 +135,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Daily_digest" formatted="false">Resumen diario</string>
   <string name="Daily_summary" formatted="false">Resumen diario</string>
   <string name="Data_will_appear_here_once" formatted="false">Los datos aparecerán aquí una vez que alguien patrocine tu proyecto.</string>
+  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Eliminar mi cuenta de Kickstarter</string>
   <string name="Delivered" formatted="false">Entregado</string>
   <string name="Description" formatted="false">Descripción</string>
@@ -241,6 +242,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
 </string>
   <string name="If_your_profile_is_public" formatted="false">Si tu perfil no es privado, otros usuarios también podrán ver los proyectos que has patrocinado, tu ubicación, biografía y sitios web.</string>
+  <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">Notificaciones por correo electrónico individuales</string>
   <string name="Info" formatted="false">Información</string>
   <string name="Introduce_yourself" formatted="false">Preséntate</string>

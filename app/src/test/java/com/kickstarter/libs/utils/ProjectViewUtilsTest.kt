@@ -59,8 +59,8 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
     fun testStyleCurrency_nonUS() {
         val currency = createKSCurrency("DE")
 
-        assertEquals(" US$ 30", ProjectViewUtils.styleCurrency(30.0, ProjectFactory.project(), currency).toString())
-        assertEquals(" US$ 30.50", ProjectViewUtils.styleCurrency(30.5, ProjectFactory.project(), currency).toString())
+        assertEquals("US$ 30", ProjectViewUtils.styleCurrency(30.0, ProjectFactory.project(), currency).toString())
+        assertEquals("US$ 30.50", ProjectViewUtils.styleCurrency(30.5, ProjectFactory.project(), currency).toString())
     }
 
     private fun createKSCurrency(countryCode: String): KSCurrency {

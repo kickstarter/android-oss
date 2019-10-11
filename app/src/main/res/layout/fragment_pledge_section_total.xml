@@ -6,6 +6,7 @@
   android:id="@+id/total"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:focusable="true"
   android:orientation="vertical"
   tools:showIn="@layout/fragment_pledge">
 
@@ -42,52 +43,27 @@
       android:orientation="vertical"
       app:layout_constraintGuide_percent="0.6" />
 
-    <LinearLayout
-      android:id="@+id/total_container"
-      android:layout_width="0dp"
+    <TextView
+      android:id="@+id/total_amount"
+      style="@style/PledgeCurrencySecondary"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical|end"
-      android:orientation="horizontal"
+      android:maxLines="1"
+      android:scrollHorizontally="true"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1"
       app:layout_constraintStart_toEndOf="@id/pledge_agreement"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0">
-
-      <TextView
-        android:id="@+id/total_symbol_start"
-        style="@style/PledgeCurrencySecondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        tools:text="$" />
-
-      <TextView
-        android:id="@+id/total_amount"
-        style="@style/PledgeCurrencySecondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:scrollHorizontally="true"
-        tools:text="40" />
-
-      <TextView
-        android:id="@+id/total_symbol_end"
-        style="@style/PledgeCurrencySecondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        tools:text="$" />
-
-    </LinearLayout>
+      app:layout_constraintVertical_bias="0"
+      tools:text="40" />
 
     <View
       android:id="@+id/total_amount_loading_view"
       android:layout_width="@dimen/grid_11"
       android:layout_height="@dimen/grid_2"
       android:background="@drawable/pledge_amounts_loading_states"
-      app:layout_constraintBottom_toBottomOf="@id/total_container"
+      app:layout_constraintBottom_toBottomOf="@id/total_amount"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1"
       app:layout_constraintStart_toEndOf="@id/pledge_agreement"
@@ -104,7 +80,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1"
       app:layout_constraintStart_toEndOf="@id/pledge_agreement"
-      app:layout_constraintTop_toBottomOf="@id/total_container"
+      app:layout_constraintTop_toBottomOf="@id/total_amount"
       app:layout_constraintVertical_bias="0"
       tools:text="About $40.00" />
 

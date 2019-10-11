@@ -133,6 +133,7 @@
   <string name="Daily_digest" formatted="false">デイリーダイジェスト</string>
   <string name="Daily_summary" formatted="false">1日1回の概要</string>
   <string name="Data_will_appear_here_once" formatted="false">誰かがプロジェクトをバック（支援）すると、ここにデータが表示されます。</string>
+  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Kickstarter アカウントを削除</string>
   <string name="Delivered" formatted="false">発送済</string>
   <string name="Description" formatted="false">説明</string>
@@ -238,6 +239,7 @@
   <string name="If_you_turn_following_off" formatted="false">フォローをオフにすると、あなたは誰もフォローすることができなくなり、また他の人があなたをフォローすることもできなくなります。また、既存のフォロワーとのつながりも絶たれます。この操作は後から元に戻すことはできませんのでご注意ください。</string>
   <string name="If_your_profile_is_private" formatted="false">プロフィールがプライベート (非公開) 設定の場合、あなたの名前と写真が表示されます。</string>
   <string name="If_your_profile_is_public" formatted="false">プロフィールがプライベート (非公開) 設定でない場合は、過去にあなたがバックしたプロジェクトや、あなたの地域情報、あなたの自己紹介欄とウェブサイトも表示されます。</string>
+  <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>

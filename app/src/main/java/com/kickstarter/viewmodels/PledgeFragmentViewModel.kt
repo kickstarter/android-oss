@@ -138,7 +138,7 @@ interface PledgeFragmentViewModel {
         fun pledgeSectionIsGone(): Observable<Boolean>
 
         /** Emits the pledge amount string of the backing. */
-        fun pledgeSummaryAmount(): Observable<String>
+        fun pledgeSummaryAmount(): Observable<CharSequence>
 
         /** Emits a boolean determining if the pledge summary section should be hidden. */
         fun pledgeSummaryIsGone(): Observable<Boolean>
@@ -159,7 +159,7 @@ interface PledgeFragmentViewModel {
         fun selectedShippingRule(): Observable<ShippingRule>
 
         /** Emits the shipping amount of the selected shipping rule. */
-        fun shippingAmount(): Observable<String>
+        fun shippingAmount(): Observable<CharSequence>
 
         /** Emits a pair of list of shipping rules to be selected and the project. */
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
@@ -168,7 +168,7 @@ interface PledgeFragmentViewModel {
         fun shippingRulesSectionIsGone(): Observable<Boolean>
 
         /** Emits the shipping amount of the selected shipping rule. */
-        fun shippingSummaryAmount(): Observable<String>
+        fun shippingSummaryAmount(): Observable<CharSequence>
 
         /** Emits a boolean determining if the shipping summary should be hidden. */
         fun shippingSummaryIsGone(): Observable<Boolean>
@@ -213,7 +213,7 @@ interface PledgeFragmentViewModel {
         fun startThanksActivity(): Observable<Project>
 
         /** Emits the total amount string of the pledge. */
-        fun totalAmount(): Observable<SpannableString>
+        fun totalAmount(): Observable<CharSequence>
 
         /** Emits a boolean determining if the divider above the total should be hidden. */
         fun totalDividerIsGone(): Observable<Boolean>
@@ -268,15 +268,15 @@ interface PledgeFragmentViewModel {
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeHint = BehaviorSubject.create<String>()
         private val pledgeSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val pledgeSummaryAmount = BehaviorSubject.create<String>()
+        private val pledgeSummaryAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeTextColor = BehaviorSubject.create<Int>()
         private val projectCurrencySymbol = BehaviorSubject.create<Pair<SpannableString, Boolean>>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
-        private val shippingAmount = BehaviorSubject.create<String>()
+        private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val shippingSummaryAmount = BehaviorSubject.create<String>()
+        private val shippingSummaryAmount = BehaviorSubject.create<CharSequence>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val shippingSummaryLocation = BehaviorSubject.create<String>()
         private val showMinimumWarning = PublishSubject.create<String>()
@@ -293,7 +293,7 @@ interface PledgeFragmentViewModel {
         private val startRewardExpandAnimation = BehaviorSubject.create<Void>()
         private val startRewardShrinkAnimation = BehaviorSubject.create<PledgeData>()
         private val startThanksActivity = PublishSubject.create<Project>()
-        private val totalAmount = BehaviorSubject.create<SpannableString>()
+        private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
         private val totalTextColor = BehaviorSubject.create<Int>()
         private val updatePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
@@ -320,13 +320,15 @@ interface PledgeFragmentViewModel {
                     .compose<Bundle>(takeWhen(this.onGlobalLayout))
 
             val reward = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward }
+                    .map { it.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward? }
+                    .ofType(Reward::class.java)
 
             val screenLocation = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation? }
 
             val project = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project }
+                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project? }
+                    .ofType(Project::class.java)
 
             val pledgeReason = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -545,7 +547,8 @@ interface PledgeFragmentViewModel {
                     .map { it.cost() }
 
             shippingAmount
-                    .map { NumberUtils.format(it.toInt()) }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
@@ -569,7 +572,8 @@ interface PledgeFragmentViewModel {
             val total = Observable.merge(unshippableTotal, shippableTotal)
 
             total
-                    .map { ProjectViewUtils.styleCurrency(it) }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
 
@@ -592,7 +596,8 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.updatePledgeButtonIsGone)
 
             backingAmount
-                    .map { NumberUtils.format(it.toFloat(), NumberOptions.builder().precision(NumberUtils.precision(it, RoundingMode.HALF_UP)).build()) }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeSummaryAmount)
@@ -615,7 +620,9 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.shippingSummaryIsGone)
 
             backing
-                    .map { NumberUtils.format(it.shippingAmount()) }
+                    .map { it.shippingAmount().toDouble() }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummaryAmount)
 
@@ -994,7 +1001,7 @@ interface PledgeFragmentViewModel {
         override fun pledgeSectionIsGone(): Observable<Boolean> = this.pledgeSectionIsGone
 
         @NonNull
-        override fun pledgeSummaryAmount(): Observable<String> = this.pledgeSummaryAmount
+        override fun pledgeSummaryAmount(): Observable<CharSequence> = this.pledgeSummaryAmount
 
         @NonNull
         override fun pledgeSummaryIsGone(): Observable<Boolean> = this.pledgeSummaryIsGone
@@ -1009,7 +1016,7 @@ interface PledgeFragmentViewModel {
         override fun selectedShippingRule(): Observable<ShippingRule> = this.selectedShippingRule
 
         @NonNull
-        override fun shippingAmount(): Observable<String> = this.shippingAmount
+        override fun shippingAmount(): Observable<CharSequence> = this.shippingAmount
 
         @NonNull
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
@@ -1018,7 +1025,7 @@ interface PledgeFragmentViewModel {
         override fun shippingRulesSectionIsGone(): Observable<Boolean> = this.shippingRulesSectionIsGone
 
         @NonNull
-        override fun shippingSummaryAmount(): Observable<String> = this.shippingSummaryAmount
+        override fun shippingSummaryAmount(): Observable<CharSequence> = this.shippingSummaryAmount
 
         @NonNull
         override fun shippingSummaryLocation(): Observable<String> = this.shippingSummaryLocation
@@ -1069,7 +1076,7 @@ interface PledgeFragmentViewModel {
         override fun startThanksActivity(): Observable<Project> = this.startThanksActivity
 
         @NonNull
-        override fun totalAmount(): Observable<SpannableString> = this.totalAmount
+        override fun totalAmount(): Observable<CharSequence> = this.totalAmount
 
         @NonNull
         override fun totalDividerIsGone(): Observable<Boolean> = this.totalDividerIsGone

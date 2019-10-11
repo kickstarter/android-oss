@@ -3,11 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:clickable="true"
-  android:fillViewport="true"
-  android:focusable="true"
-  android:focusableInTouchMode="true">
+  android:layout_height="match_parent">
 
   <FrameLayout
     android:id="@+id/pledge_background"
@@ -36,28 +32,31 @@
 
       <include
         android:id="@+id/reward_to_copy"
+        android:importantForAccessibility="noHideDescendants"
         layout="@layout/item_reward"
         tools:visibility="gone" />
 
-      <!-- todo: what's the content description? -->
       <com.kickstarter.ui.views.BottomCropImageView
         android:id="@+id/reward_snapshot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:contentDescription="@null"
-        android:elevation="@dimen/mini_reward_elevation"
+        android:accessibilityTraversalBefore="@id/pledge_details"
+        android:contentDescription="@string/View_rewards"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:importantForAccessibility="yes"
         tools:background="@color/white"
         tools:layout_height="@dimen/mini_reward_height"
         tools:layout_width="@dimen/mini_reward_width" />
 
-      <!-- todo: what's the content description? -->
       <FrameLayout
         android:id="@+id/expand_icon_container"
         android:layout_width="@dimen/grid_8"
         android:layout_height="@dimen/grid_8"
         android:alpha="0"
         android:elevation="@dimen/mini_reward_elevation"
+        android:importantForAccessibility="no"
         app:layout_anchor="@id/reward_snapshot"
         app:layout_anchorGravity="end"
         tools:alpha="1">
@@ -67,7 +66,7 @@
           android:layout_height="wrap_content"
           android:layout_marginStart="@dimen/grid_1"
           android:layout_marginTop="@dimen/grid_2"
-          android:contentDescription="@null"
+          android:importantForAccessibility="no"
           android:src="@drawable/ic_expand" />
       </FrameLayout>
 
@@ -75,6 +74,7 @@
         android:id="@+id/pledge_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:importantForAccessibility="yes"
         android:orientation="vertical">
 
         <include layout="@layout/fragment_pledge_section_delivery" />

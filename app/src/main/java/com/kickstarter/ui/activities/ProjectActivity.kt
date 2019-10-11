@@ -50,6 +50,7 @@ import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
 class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate,
@@ -332,16 +333,19 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .subscribe { openProjectAndFinish(it) }
 
         this.viewModel.outputs.projectActionButtonContainerIsGone()
+                .delay(1, TimeUnit.SECONDS)
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(action_buttons, it) }
 
         this.viewModel.outputs.progressBarIsGone()
+                .delay(1, TimeUnit.SECONDS)
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(findViewById(R.id.project_progress_bar), it) }
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
+                .delay(1, TimeUnit.SECONDS)
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(findViewById(R.id.pledge_sheet_retry_container), it) }

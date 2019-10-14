@@ -26,6 +26,7 @@
   <string name="All_Theater_Projects" formatted="false">Alle Projekte der Kategorie Theater</string>
   <string name="All_category_name_Projects" formatted="false">Alle Projekte der Kategorie %{category_name}</string>
   <string name="All_gone" formatted="false">Alle weg</string>
+  <string name="Almost_there" formatted="false">Fast geschafft!</string>
   <string name="Amount_previous_amount" formatted="false">Jetziger Betrag: %{amount}, vorheriger Betrag: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Betrag: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Die angezeigten Beträge stellen nur eine ungefähre Umrechnung dar. Nach erfolgreicher Finanzierung des Projekts wird dein Finanzierungsbeitrag in der Währung des Erstellungslandes abgebucht. Dieser Betrag wird ebenso angezeigt.</string>
@@ -63,11 +64,12 @@ Unterstützer</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Kreative Projekte werden Wirklichkeit!</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Bei Leistung eines Finanzierungsbeitrags erkennst du Kickstarters &lt;a href="%{terms_of_use_link}">Nutzungsbedingungen&lt;/a>, &lt;a href="%{privacy_policy_link}">Datenschutzrichtlinien&lt;/a> und &lt;a href="%{cookie_policy_link}">Cookie-Richtlinien&lt;/a> an.</string>
+  <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Bei Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu. Unsere Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unserer Services und unserer Webseite nutzen.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Abbrechen</string>
   <string name="Cancel_pledge" formatted="false">Beitrag zurückziehen</string>
   <string name="Cancel_your_pledge" formatted="false">Deinen Beitrag zurückziehen</string>
-  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
+  <string name="Cancellation_reason" formatted="false">Grund der Annullierung</string>
   <string name="Card_ending_in_last_four" formatted="false">Kartennummer endet auf %{last_four}</string>
   <string name="Card_number" formatted="false">Kartennummer</string>
   <string name="Cardholder_name" formatted="false">Name des Karteninhabers</string>
@@ -100,6 +102,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Continue" formatted="false">Weiter</string>
   <string name="Continue_to_payment" formatted="false">Weiter zur Zahlung</string>
   <string name="Continue_to_update_pledge" formatted="false">Weiter zu Beitrag aktualisieren</string>
+  <string name="Continue_with_Facebook" formatted="false">Weiter mit Facebook</string>
   <string name="Couldnt_add_attachment" formatted="false">Anhang konnte nicht hinzugefügt werden</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Live-Stream konnte nicht geöffnet werden. Bitte versuche es später noch einmal.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Anhang konnte nicht entfernt werden</string>
@@ -225,6 +228,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Games_newsletter" formatted="false">Jetzt abonnieren - du erhältst von Kickstarters Games-Team alle zwei Wochen News zu neuen Projekten und Updates rund um Games.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Möchtest du benachrichtigt werden bei neuen Nachrichten?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.</string>
+  <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Get notified when your friends back and launch projects</string>
   <string name="Get_reminded_about_this_project" formatted="false">Möchtest du an dieses Projekt erinnert werden?</string>
   <string name="Go_to_project_page" formatted="false">Zu Projektseite</string>
   <string name="Got_it" formatted="false">Alles klar!</string>
@@ -350,6 +354,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Payment_method" formatted="false">Zahlungsmethode</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Zahlungsmethode wurde erfolgreich belastet.</string>
   <string name="Payment_methods" formatted="false">Zahlungsmethoden</string>
+  <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Bitte gebe einen Betrag zwischen %{min} und %{max} ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Bitte gib einen Finanzierungsbeitrag von %{amount} oder weniger ein.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Bitte gib einen Finanzierungsbeitrag von mindestens %{amount} ein.</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Um dieses Projekt zu unterstützen, musst du dich bitte anmelden oder registrieren.</string>
@@ -392,6 +397,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Read_more_about_the_campaign" formatted="false">Mehr über diese Kampagne lesen</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">Mehr über diese Kampagne lesen  →</string>
   <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Aktiviere Benachrichtigungen - wir schicken dir eine Erinnerung 48 Stunden, bevor dieses und andere gespeicherte Projekte abläuft.</string>
+  <string name="Receive_a_weekly_mix_of_handpicked_projects_plus_occasional_Kickstarter_news" formatted="false">Du erhältst unseren wöchentlichen Mix handverlesener Projekte plus gelegentliche Nachrichten von Kickstarter.</string>
   <string name="Receive_project_updates_and_more" formatted="false">Aktiviere Benachrichtigungen - so weißt du immer über Projektaktualisierungen Bescheid.</string>
   <string name="Receive_project_updates_messages_and_more" formatted="false">Aktiviere Benachrichtigungen - so weißt du immer über Projektaktualisierungen, neue Nachrichten und ähnliches Bescheid.</string>
   <string name="Recent_live_stream" formatted="false">Kürzlich gesendeter Live-Stream</string>
@@ -420,6 +426,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_delivered" formatted="false">Belohnung versandt?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">Voraussichtliche Lieferung der &lt;b>Belohnung&lt;/b> im %{delivery_date}</string>
+  <string name="Reward_received" formatted="false">Belohnung erhalten</string>
   <string name="Reward_selected" formatted="false">Ausgewählte Belohnung</string>
   <string name="Reward_surveys" formatted="false">Befragungen</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} Belohnungen:</string>
@@ -470,6 +477,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Show_me_projects" formatted="false">Projekte anzeigen</string>
   <string name="Show_password" formatted="false">Passwort anzeigen</string>
   <string name="Shows_list_of_subcategories" formatted="false">Unterkategorien anzeigen.</string>
+  <string name="Sign_up" formatted="false">Registrieren</string>
   <string name="Sign_up_newsletter" formatted="false">Abonniere unsere "Team Favoriten" und wir schicken dir einmal pro Woche eine Auswahl von bemerkenswerten Projekten, handverlesen von unserem Team.</string>
   <string name="Signs_up_with_Email" formatted="false">Mit E-Mail-Adresse registrieren.</string>
   <string name="Something_catch_your_eye" formatted="false">Etwas interessantes gefunden?</string>
@@ -500,6 +508,8 @@ Bitte antippen und erneut versuchen.</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Live-Stream wurde unterbrochen</string>
   <string name="The_live_stream_will_start_soon" formatted="false">Live-Stream started in Kürze</string>
   <string name="The_live_stream_will_start_time" formatted="false">Dieser Live-Stream started in %{time}.</string>
+  <string name="The_maximum_pledge_is_max_pledge" formatted="false">Höchstbetrag ist %{max_pledge}.</string>
+  <string name="The_minimum_pledge_is_min_pledge" formatted="false">Mindestfinanzierungsbeitrag ist %{min_pledge}.</string>
   <string name="The_replay_will_start_soon" formatted="false">Wiedergabe started in Kürze</string>
   <string name="The_zeitgeist_delivered_to_your_inbox_via_new" formatted="false">Hol dir den Zeitgeist direkt in deine Inbox: neue Projekte und Stories, die in aller Munde sind.</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">Es ist ein Problem bei der Zahlung aufgetreten.</string>
@@ -553,6 +563,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Sobald du dein Passwort geändert hast, wirst du aufgefordert, dich erneut auf der Kickstarter App anzumelden.</string>
+  <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">We\'ll import your name and profile photo, and access your friend list. We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
@@ -1201,8 +1212,8 @@ Bitte versuche es später noch einmal.</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
-  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">Bei Erstellung eines Kontos stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unsere Services und unserer Webseite nutzen.</string>
-  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">Bei Erstellung eines Kontos stimmst du unseren &lt;u>Nutzungsbedingungen&lt;/u>, &lt;u>Datenschutzrichtlinien&lt;/u> und &lt;u>Cookie-Richtlinien&lt;/u> zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unsere Services und unserer Webseite nutzen.</string>
+  <string name="login_tout_disclaimer_agree_to_terms" formatted="false">Bei Erstellung eines Kontos stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unserer Services und unserer Webseite nutzen.</string>
+  <string name="login_tout_disclaimer_agree_to_terms_html" formatted="false">Bei Erstellung eines Kontos stimmst du unseren &lt;u>Nutzungsbedingungen&lt;/u>, &lt;u>Datenschutzrichtlinien&lt;/u> und &lt;u>Cookie-Richtlinien&lt;/u> zu. Unsere Datenschutz- und Cookie-Richtlinien erläutern, wie wir deine Daten zur Bereitstellung, Verbesserung und Promotion unserer Services und unserer Webseite nutzen.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Weiterlesen</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
   <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Versuche es noch einmal!</string>

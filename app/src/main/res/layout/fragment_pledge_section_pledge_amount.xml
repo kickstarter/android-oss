@@ -116,7 +116,7 @@
       android:imeOptions="actionDone"
       android:importantForAutofill="no"
       android:inputType="numberDecimal"
-      android:maxLines="1"
+      android:maxLength="9"
       tools:ignore="LabelFor"
       tools:targetApi="o"
       tools:text="20" />

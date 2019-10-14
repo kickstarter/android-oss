@@ -377,7 +377,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showMinimumWarning()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { showPledgeWarning(it) }
+                .subscribe { showPledgeMinimumWarning(it) }
+
+        this.viewModel.outputs.showMaximumWarning()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { showPledgeMaximumWarning(it) }
 
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
@@ -569,18 +574,29 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         setClickableHtml(accountabilityWithUrls, accountability)
     }
 
-    private fun showPledgeWarning(rewardMinimum: String) {
+    private fun showPledgeMaximumWarning(maximumAmount: String) {
+        val ksString = this.viewModel.environment.ksString()
+        val message = ksString.format(getString(R.string.The_maximum_pledge_is_max_pledge),
+                "max_pledge", maximumAmount)
+
+        showOKDialog(message)
+    }
+
+    private fun showPledgeMinimumWarning(minimumAmount: String) {
+        val ksString = this.viewModel.environment.ksString()
+        val message = ksString.format(getString(R.string.You_need_to_pledge_at_least_reward_minimum_for_this_reward),
+                "reward_minimum", minimumAmount)
+
+        showOKDialog(message)
+    }
+
+    private fun showOKDialog(message: String) {
         context?.apply {
-            val ksString = (this.applicationContext as KSApplication).component().environment().ksString()
-            val message = ksString.format(getString(R.string.You_need_to_pledge_at_least_reward_minimum_for_this_reward),
-                    "reward_minimum", rewardMinimum)
-
-            val dialog = AlertDialog.Builder(this, R.style.Dialog)
+            AlertDialog.Builder(this, R.style.Dialog)
                     .setMessage(message)
-                    .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ ->  dialog.dismiss()}
+                    .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ -> dialog.dismiss() }
                     .create()
-
-            dialog.show()
+                    .show()
         }
     }
 

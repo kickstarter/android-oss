@@ -4,6 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.stripe.android.model.Card
 import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.*
@@ -12,20 +13,24 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: PaymentMethodsViewHolderViewModel.ViewModel
 
-    private val cardIssuer = TestSubscriber<Int>()
+    private val id = TestSubscriber<String>()
+    private val issuer = TestSubscriber<String>()
+    private val issuerImage = TestSubscriber<Int>()
     private val expirationDate = TestSubscriber<String>()
     private val lastFour = TestSubscriber<String>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = PaymentMethodsViewHolderViewModel.ViewModel(environment)
 
-        this.vm.outputs.cardIssuer().subscribe(this.cardIssuer)
+        this.vm.outputs.id().subscribe(this.id)
+        this.vm.outputs.issuer().subscribe(this.issuer)
+        this.vm.outputs.issuerImage().subscribe(this.issuerImage)
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
         this.vm.outputs.lastFour().subscribe(this.lastFour)
     }
 
     @Test
-    fun testCardExpirationDate() {
+    fun testExpirationDate() {
         setUpEnvironment(environment())
         val calendar = GregorianCalendar(2019, 2, 1)
         val date: Date = calendar.time
@@ -41,7 +46,7 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardLastFourDigits() {
+    fun testLastFour() {
         setUpEnvironment(environment())
         val creditCard = StoredCardFactory.discoverCard()
 
@@ -51,12 +56,22 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardType() {
+    fun testIssuer() {
         setUpEnvironment(environment())
         val creditCard = StoredCardFactory.discoverCard()
 
         this.vm.inputs.card(creditCard)
 
-        this.cardIssuer.assertValue(R.drawable.discover_md)
+        this.issuer.assertValue(Card.CardBrand.DISCOVER)
+    }
+
+    @Test
+    fun testIssuerImage() {
+        setUpEnvironment(environment())
+        val creditCard = StoredCardFactory.discoverCard()
+
+        this.vm.inputs.card(creditCard)
+
+        this.issuerImage.assertValue(R.drawable.discover_md)
     }
 }

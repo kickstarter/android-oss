@@ -6,6 +6,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.stripe.android.model.Card
 import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.*
@@ -16,6 +17,7 @@ class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private val expirationDate = TestSubscriber.create<String>()
     private val id = TestSubscriber.create<String>()
+    private val issuer = TestSubscriber.create<String>()
     private val issuerImage = TestSubscriber.create<Int>()
     private val lastFour = TestSubscriber.create<String>()
 
@@ -24,6 +26,7 @@ class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
         this.vm.outputs.id().subscribe(this.id)
+        this.vm.outputs.issuer().subscribe(this.issuer)
         this.vm.outputs.issuerImage().subscribe(this.issuerImage)
         this.vm.outputs.lastFour().subscribe(this.lastFour)
     }
@@ -61,6 +64,16 @@ class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.issuerImage.assertValue(R.drawable.discover_md)
+    }
+
+    @Test
+    fun testIssuer() {
+        setUpEnvironment(environment())
+        val creditCard = StoredCardFactory.discoverCard()
+
+        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
+
+        this.issuer.assertValue(Card.CardBrand.DISCOVER)
     }
 
     @Test

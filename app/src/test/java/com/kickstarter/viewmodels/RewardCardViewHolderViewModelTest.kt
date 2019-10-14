@@ -8,6 +8,7 @@ import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.PaymentSourceFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.stripe.android.model.Card
 import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.*
@@ -20,6 +21,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val buttonEnabled = TestSubscriber.create<Boolean>()
     private val expirationDate = TestSubscriber.create<String>()
     private val id = TestSubscriber.create<String>()
+    private val issuer = TestSubscriber.create<String>()
     private val issuerImage = TestSubscriber.create<Int>()
     private val lastFour = TestSubscriber.create<String>()
     private val notAvailableCopyIsVisible = TestSubscriber.create<Boolean>()
@@ -32,6 +34,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.buttonEnabled().subscribe(this.buttonEnabled)
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
         this.vm.outputs.id().subscribe(this.id)
+        this.vm.outputs.issuer().subscribe(this.issuer)
         this.vm.outputs.issuerImage().subscribe(this.issuerImage)
         this.vm.outputs.lastFour().subscribe(this.lastFour)
         this.vm.outputs.notAvailableCopyIsVisible().subscribe(this.notAvailableCopyIsVisible)
@@ -188,6 +191,16 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.id.assertValue(creditCard.id())
+    }
+
+    @Test
+    fun testIssuer() {
+        setUpEnvironment(environment())
+        val creditCard = StoredCardFactory.discoverCard()
+
+        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
+
+        this.issuer.assertValue(Card.CardBrand.DISCOVER)
     }
 
     @Test

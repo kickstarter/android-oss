@@ -32,13 +32,14 @@
         android:contentDescription="@string/Cancel"
         android:paddingStart="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_2"
+        android:descendantFocusability="blocksDescendants"
         tools:ignore="RtlSymmetry">
 
         <ImageButton
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/circle_black_alpha"
-          android:contentDescription="@null"
+          android:importantForAccessibility="no"
           android:src="@drawable/ic_close" />
 
       </FrameLayout>

@@ -78,10 +78,6 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
         this.viewModel.inputs.configureWith(cardAndProject)
     }
 
-    override fun onClick(view: View) {
-        this.delegate.selectCardButtonClicked(adapterPosition)
-    }
-
     private fun setCardNotAllowedWarningText(country: String) {
         this.view.card_not_allowed_warning.text = this.ksString.format(this.cardNotAllowedString,
                 "project_country", country)

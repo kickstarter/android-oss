@@ -26,6 +26,7 @@
   <string name="All_Theater_Projects" formatted="false">全ての演劇プロジェクト</string>
   <string name="All_category_name_Projects" formatted="false">%{category_name} の全プロジェクト</string>
   <string name="All_gone" formatted="false">終了</string>
+  <string name="Almost_there" formatted="false">もう少しです!</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
   <string name="Amounts_shown" formatted="false">表示されている金額は、おおよその換算金額ですのでご注意ください。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められ、その換算額も表示されます。</string>
@@ -61,6 +62,7 @@
   <string name="Bookmarks" formatted="false">ブックマーク</string>
   <string name="Bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトに生命を。</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">プレッジをすることにより、Kickstarter の &lt;a href="%{terms_of_use_link}">利用規約&lt;/a>、&lt;a href="%{privacy_policy_link}">プライバシーポリシー&lt;/a>、&lt;a href="%{cookie_policy_link}">Cookie ポリシー&lt;/a>に同意したとみなされます。</string>
+  <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">サインアップすることで、Kickstarter の利用規約、プライバシーポリシー、Cookie ポリシーに同意するものとみなされます。当社のポリシーでは、Kickstarter のサービスとサイトを配信、改善、促進するために、同社がお客様のデータをどのように使用しているか、そしてそのようなデータ使用を管理するためのお客様の権利について説明しています。</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">キャンセル</string>
   <string name="Cancel_pledge" formatted="false">プレッジを取り消す</string>
@@ -98,6 +100,7 @@
   <string name="Continue" formatted="false">続行する</string>
   <string name="Continue_to_payment" formatted="false">支払いを続ける</string>
   <string name="Continue_to_update_pledge" formatted="false">プレッジをアップデート</string>
+  <string name="Continue_with_Facebook" formatted="false">Facebook で続行する</string>
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">ライブ配信を開けませんでした。後ほどお試しください。</string>
   <string name="Couldnt_remove_attachment" formatted="false">添付ファイルを削除できませんでした</string>
@@ -223,6 +226,7 @@
   <string name="Games_newsletter" formatted="false">Kickstarter の「ゲーム」チーム選りすぐりの、ゲームに関するあらゆる新プロジェクトや更新情報を毎月2回お届けするニュースレターに登録しましょう。</string>
   <string name="Get_notified_about_new_messages" formatted="false">新規メッセージについて通知の受信を希望しますか？</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">このクリエイターのライブ配信通知を受け取る</string>
+  <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">友達がプロジェクトをバックしたりローンチしたりした際に通知を受け取りましょう。</string>
   <string name="Get_reminded_about_this_project" formatted="false">このプロジェクトについてリマインダーを希望しますか？</string>
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Got_it" formatted="false">完了</string>
@@ -348,6 +352,7 @@
   <string name="Payment_method" formatted="false">支払方法</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">支払い方法が登録されました。</string>
   <string name="Payment_methods" formatted="false">お支払い方法</string>
+  <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">%{min} から %{max} までのプレッジ額を入力してください。</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">%{amount} 以下の金額を入力してくだささい。</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">%{amount} 以上の金額を入力してください。</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">このプロジェクトにバックするにはログインまたはサインアップをお願いします</string>
@@ -391,6 +396,7 @@
   <string name="Read_more_about_the_campaign" formatted="false">キャンペーンの詳細をみる</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">キャンペーンの詳細をみる  →</string>
   <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">通知を有効にして、このプロジェクトやその他の保存済みプロジェクトが終了する48時間前にリマインダーを受け取ります。</string>
+  <string name="Receive_a_weekly_mix_of_handpicked_projects_plus_occasional_Kickstarter_news" formatted="false">毎週送られる Kickstarter イチオシのプロジェクトを紹介するニュースレターを受信する (随時送られる Kickstarter ニュースも)。</string>
   <string name="Receive_project_updates_and_more" formatted="false">通知を有効にして、プロジェクトの更新情報等を受け取ります。</string>
   <string name="Receive_project_updates_messages_and_more" formatted="false">通知を有効にして、プロジェクトの更新情報、メッセージ等を受け取ります。</string>
   <string name="Recent_live_stream" formatted="false">最近のライブ配信</string>
@@ -419,6 +425,7 @@
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} リワードのサーベイ</string>
   <string name="Reward_delivered" formatted="false">リワードを受け取りましたか？</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配達予定日は%{delivery_date}</string>
+  <string name="Reward_received" formatted="false">リワードを受け取りました</string>
   <string name="Reward_selected" formatted="false">選択中のリワード</string>
   <string name="Reward_surveys" formatted="false">リワードのサーベイ</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} 種類のリワード</string>
@@ -469,6 +476,7 @@
   <string name="Show_me_projects" formatted="false">プロジェクトを表示</string>
   <string name="Show_password" formatted="false">パスワードを表示する</string>
   <string name="Shows_list_of_subcategories" formatted="false">サブカテゴリーリストを見せる。</string>
+  <string name="Sign_up" formatted="false">サインアップ。</string>
   <string name="Sign_up_newsletter" formatted="false">Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。</string>
   <string name="Signs_up_with_Email" formatted="false">Eメールでサインアップする。</string>
   <string name="Something_catch_your_eye" formatted="false">何か目にとまるものはありましたか？</string>
@@ -499,6 +507,8 @@
   <string name="The_live_stream_was_interrupted" formatted="false">ライブ配信が中断されました</string>
   <string name="The_live_stream_will_start_soon" formatted="false">ライブ配信が開始します</string>
   <string name="The_live_stream_will_start_time" formatted="false">%{time} にライブ配信が開始されます。</string>
+  <string name="The_maximum_pledge_is_max_pledge" formatted="false">最高プレッジ額は %{max_pledge} です。</string>
+  <string name="The_minimum_pledge_is_min_pledge" formatted="false">最低プレッジ額は %{min_pledge} です。</string>
   <string name="The_replay_will_start_soon" formatted="false">リプレイが始まります</string>
   <string name="The_zeitgeist_delivered_to_your_inbox_via_new" formatted="false">気になる話題や最新プロジェクトなど、この時代を特徴づける思想「ツァイトガイスト」をいち早くお届けします。</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">支払いに問題があります。</string>
@@ -552,6 +562,7 @@
   <string name="Websites" formatted="false">ウェブサイト</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">パスワードを変更したら、Kickstarter アプリにもう一度サインインし直すように促されます。</string>
+  <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Kickstarter はあなたの名前とプロフィール写真をインポートし、友達リストにアクセスできるようになります。Kickstarter があなたの許可なしに Facebook に投稿することは決してありません。</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">プロジェクトを保存し、終了の48時間前にリマインドする。</string>

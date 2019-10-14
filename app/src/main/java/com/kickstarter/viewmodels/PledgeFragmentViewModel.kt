@@ -134,6 +134,9 @@ interface PledgeFragmentViewModel {
         /** Emits the hint text for the pledge amount. */
         fun pledgeHint(): Observable<String>
 
+        /** Emits the minimum pledge amount in the project's currency. */
+        fun pledgeMinimum(): Observable<String>
+
         /** Emits a boolean determining if the pledge section should be hidden. */
         fun pledgeSectionIsGone(): Observable<Boolean>
 
@@ -264,6 +267,7 @@ interface PledgeFragmentViewModel {
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeHint = BehaviorSubject.create<String>()
+        private val pledgeMinimum = BehaviorSubject.create<String>()
         private val pledgeSectionIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeSummaryAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
@@ -389,6 +393,12 @@ interface PledgeFragmentViewModel {
                     .map { NumberUtils.format(it.toInt()) }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeHint)
+
+            rewardMinimum
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { this.ksCurrency.format(it.first, it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeMinimum)
 
             project
                     .map { ProjectViewUtils.currencySymbolAndPosition(it, this.ksCurrency) }
@@ -989,6 +999,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun pledgeHint(): Observable<String> = this.pledgeHint
+
+        @NonNull
+        override fun pledgeMinimum(): Observable<String> = this.pledgeMinimum
 
         @NonNull
         override fun pledgeSectionIsGone(): Observable<Boolean> = this.pledgeSectionIsGone

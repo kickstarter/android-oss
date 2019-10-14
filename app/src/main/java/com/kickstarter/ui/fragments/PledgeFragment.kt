@@ -208,6 +208,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { pledge_amount.hint = it }
 
+        this.viewModel.outputs.pledgeMinimum()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setPledgeMinimumText(it) }
+
         this.viewModel.outputs.projectCurrencySymbol()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -478,6 +483,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             pledge_symbol_start.text = null
             pledge_symbol_end.text = symbol
         }
+    }
+
+    private fun setPledgeMinimumText(minimumAmount: String) {
+        val ksString = this.viewModel.environment.ksString()
+        pledge_minimum.text = ksString.format(getString(R.string.The_minimum_pledge_is_min_pledge), "min_pledge", minimumAmount)
     }
 
     private fun setPlusTextView(textView: TextView, localizedAmount: CharSequence) {

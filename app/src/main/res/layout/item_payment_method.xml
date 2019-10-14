@@ -54,7 +54,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:contentDescription="@null"
+    android:contentDescription="@string/Remove_this_card"
     android:foreground="@drawable/circular_click_indicator_light"
     android:padding="@dimen/grid_2"
     android:src="@drawable/icon_trash" />

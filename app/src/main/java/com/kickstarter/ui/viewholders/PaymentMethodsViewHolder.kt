@@ -22,10 +22,10 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
 
     init {
 
-        this.vm.outputs.cardIssuer()
+        this.vm.outputs.issuerImage()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { itemView.credit_card_logo.setImageResource(it) }
+                .subscribe { this.itemView.credit_card_logo.setImageResource(it) }
 
         this.vm.outputs.expirationDate()
                 .compose(bindToLifecycle())
@@ -42,7 +42,12 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
                 .compose(observeForUI())
                 .subscribe { setLastFourTextView(it) }
 
-        itemView.delete_card.setOnClickListener { this.vm.inputs.deleteIconClicked() }
+        this.vm.outputs.issuer()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.itemView.credit_card_logo.contentDescription = it }
+
+        this.itemView.delete_card.setOnClickListener { this.vm.inputs.deleteIconClicked() }
 
     }
 
@@ -52,12 +57,12 @@ class PaymentMethodsViewHolder(@NonNull view: View, @NonNull val delegate: Deleg
     }
 
     private fun setExpirationDateTextView(date: String) {
-        itemView.credit_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
+        this.itemView.credit_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
                 "expiration_date", date)
     }
 
     private fun setLastFourTextView(lastFour: String) {
-        itemView.credit_card_last_four_digits.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
+        this.itemView.credit_card_last_four_digits.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
     }
 
 }

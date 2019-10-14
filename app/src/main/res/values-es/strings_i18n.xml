@@ -26,6 +26,7 @@
   <string name="All_Theater_Projects" formatted="false">Todos los proyectos de la categoría Teatro</string>
   <string name="All_category_name_Projects" formatted="false">Todos los proyectos de la categoría %{category_name}</string>
   <string name="All_gone" formatted="false">¡Recompensas agotadas!</string>
+  <string name="Almost_there" formatted="false">Cerca de la meta!</string>
   <string name="Amount_previous_amount" formatted="false">Monto actual: %{amount}, monto previo: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Monto: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Los montos mostrados son una conversión aproximada. Si el proyecto tiene éxito, tu contribución se recaudará en la moneda nativa del proyecto, que también se mostrará.</string>
@@ -63,11 +64,12 @@ patrocinadores</string>
   <string name="Bookmarks" formatted="false">Marcadores</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Dale vida a proyectos creativos.</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Al contribuir, aceptas las &lt;a href="%{terms_of_use_link}">Condiciones de uso&lt;/a>, &lt;a href="%{privacy_policy_link}">Política de privacidad&lt;/a> y &lt;a href="%{cookie_policy_link}">Política de cookies&lt;/a> de Kickstarter.</string>
+  <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">Al registrarte, aceptas nuestros Términos de uso, Política de privacidad y Política de cookies. Nuestras políticas explican cómo utilizamos tus datos para entregar, mejorar y promocionar nuestro servicio y nuestro sitio, y cómo puedes ejercer tus derechos para controlar dicho uso.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Cancelar</string>
   <string name="Cancel_pledge" formatted="false">Cancelar contribución</string>
   <string name="Cancel_your_pledge" formatted="false">Cancela tu contribución</string>
-  <string name="Cancellation_reason" formatted="false">Cancellation reason</string>
+  <string name="Cancellation_reason" formatted="false">Motivo de cancelación</string>
   <string name="Card_ending_in_last_four" formatted="false">Tarjeta que termina en %{last_four}</string>
   <string name="Card_number" formatted="false">Número de tarjeta</string>
   <string name="Cardholder_name" formatted="false">Nombre del titular de la tarjeta</string>
@@ -100,6 +102,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Continue" formatted="false">Continuar</string>
   <string name="Continue_to_payment" formatted="false">Continuar a pago</string>
   <string name="Continue_to_update_pledge" formatted="false">Continuar a Actualizar contribución</string>
+  <string name="Continue_with_Facebook" formatted="false">Continuar con Facebook</string>
   <string name="Couldnt_add_attachment" formatted="false">No se pudo añadir el anexo</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.</string>
   <string name="Couldnt_remove_attachment" formatted="false">No se pudo remover el anexo</string>
@@ -135,7 +138,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Daily_digest" formatted="false">Resumen diario</string>
   <string name="Daily_summary" formatted="false">Resumen diario</string>
   <string name="Data_will_appear_here_once" formatted="false">Los datos aparecerán aquí una vez que alguien patrocine tu proyecto.</string>
-  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
+  <string name="Decrease_pledge" formatted="false">Reducir contribución</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Eliminar mi cuenta de Kickstarter</string>
   <string name="Delivered" formatted="false">Entregado</string>
   <string name="Description" formatted="false">Descripción</string>
@@ -225,6 +228,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Games_newsletter" formatted="false">Suscríbete para recibir, cada dos semanas, una combinación de nuevos proyectos y actualizaciones sobre todo lo relacionado a juegos, seleccionados exclusivamente para ti por el equipo de Juegos de Kickstarter.</string>
   <string name="Get_notified_about_new_messages" formatted="false">¿Deseas recibir notificaciones sobre nuevos mensajes?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Recibe notificaciones sobre los Live Streams de este creador</string>
+  <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Recibe notificaciones cuando tus amigos patrocinan o publican un proyecto</string>
   <string name="Get_reminded_about_this_project" formatted="false">¿Deseas recibir recordatorios sobre este proyecto?</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
@@ -242,7 +246,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
 </string>
   <string name="If_your_profile_is_public" formatted="false">Si tu perfil no es privado, otros usuarios también podrán ver los proyectos que has patrocinado, tu ubicación, biografía y sitios web.</string>
-  <string name="Increase_pledge" formatted="false">Increase pledge</string>
+  <string name="Increase_pledge" formatted="false">Incrementar contribución</string>
   <string name="Individual_Emails" formatted="false">Notificaciones por correo electrónico individuales</string>
   <string name="Info" formatted="false">Información</string>
   <string name="Introduce_yourself" formatted="false">Preséntate</string>
@@ -351,6 +355,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Payment_method" formatted="false">Método de pago</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Cargo efectuado a método de pago indicado.</string>
   <string name="Payment_methods" formatted="false">Métodos de pago</string>
+  <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Por favor ingresa un monto de contribución entre %{min} y %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Ingresa un monto de contribución de %{amount} o menor.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Ingresa un monto de contribución de %{amount} o más.</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Por favor inicia sesión o regístrate para patrocinar este proyecto.</string>
@@ -393,6 +398,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Read_more_about_the_campaign" formatted="false">Leer más sobre la campaña</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">Leer más sobre esta campaña  →</string>
   <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Recibe un recordatorio 48 horas antes de que este o cualquier otro proyecto guardado finalice habilitando las notificaciones.</string>
+  <string name="Receive_a_weekly_mix_of_handpicked_projects_plus_occasional_Kickstarter_news" formatted="false">Recibe una combinación semanal de proyectos seleccionados exclusivamente para ti, además de noticias ocasionales de Kickstarter.</string>
   <string name="Receive_project_updates_and_more" formatted="false">Recibe actualizaciones de proyectos y más habilitando las notificaciones.</string>
   <string name="Receive_project_updates_messages_and_more" formatted="false">Recibe actualizaciones de proyectos, mensajes y más habilitando las notificaciones.</string>
   <string name="Recent_live_stream" formatted="false">Live-Stream reciente</string>
@@ -421,6 +427,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_delivered" formatted="false">¿Recompensa entregada?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
+  <string name="Reward_received" formatted="false">Recompensa recibida</string>
   <string name="Reward_selected" formatted="false">Recompensa seleccionada</string>
   <string name="Reward_surveys" formatted="false">Cuestionarios sobre recompensas</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} recompensas:</string>
@@ -471,6 +478,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Show_me_projects" formatted="false">Múestrame proyectos</string>
   <string name="Show_password" formatted="false">Mostrar contraseña</string>
   <string name="Shows_list_of_subcategories" formatted="false">Mostrar lista de subcategorías.</string>
+  <string name="Sign_up" formatted="false">Registrarse</string>
   <string name="Sign_up_newsletter" formatted="false">Suscríbete a Nuestros favoritos para recibir una combinación semanal de proyectos destacados, seleccionados por el equipo de Kickstarter.</string>
   <string name="Signs_up_with_Email" formatted="false">Registro con correo electrónico.</string>
   <string name="Something_catch_your_eye" formatted="false">¿Algo que te haya llamado la atención?</string>
@@ -501,6 +509,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Transmisión en vivo fue interrumpida</string>
   <string name="The_live_stream_will_start_soon" formatted="false">Transmisión en vivo comienza en breve</string>
   <string name="The_live_stream_will_start_time" formatted="false">Live-Stream comienza en %{time}.</string>
+  <string name="The_maximum_pledge_is_max_pledge" formatted="false">La contribución máxima es %{max_pledge}.</string>
+  <string name="The_minimum_pledge_is_min_pledge" formatted="false">La contribución mínima es %{min_pledge}.</string>
   <string name="The_replay_will_start_soon" formatted="false">Repetición comienza en breve</string>
   <string name="The_zeitgeist_delivered_to_your_inbox_via_new" formatted="false">Recibe la actualidad en tu correo electrónico a través de nuevos proyectos e historias interesantes.</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">Ocurrió un error con el pago.</string>
@@ -554,6 +564,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Websites" formatted="false">Sitios web</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Bienvenidos a nuestra biblioteca. Descubre montones de libros con nosotros.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Te pediremos que inicies sesión de nuevo en la aplicación de Kickstarter una vez que hayas cambiado tu contraseña.</string>
+  <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Importaremos tu nombre y tu foto de perfil, y tendremos acceso a tu lista de amigos. Nunca publicaremos nada sin tu permiso.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Te recordaremos 48 horas antes de que finalice este proyecto y recibirás un recordatorio sobre todos los proyectos que guardes de aquí en adelante. Para ver todo lo que has guardado, visita tu perfil.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Cuando el seguimiento está activado, puedes seguir la actividad de los demás y otros pueden seguir tu actividad. Desactiva el seguimiento para eliminar esta información definitivamente.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>

@@ -218,9 +218,6 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the divider above the total should be hidden. */
         fun totalDividerIsGone(): Observable<Boolean>
 
-        /** Emits the color resource ID of the total amount. */
-        fun totalTextColor(): Observable<Int>
-
         /** Emits a boolean determining if the update pledge button should be enabled. */
         fun updatePledgeButtonIsEnabled(): Observable<Boolean>
 
@@ -295,7 +292,6 @@ interface PledgeFragmentViewModel {
         private val startThanksActivity = PublishSubject.create<Project>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
-        private val totalTextColor = BehaviorSubject.create<Int>()
         private val updatePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val updatePledgeButtonIsGone = BehaviorSubject.create<Boolean>()
         private val updatePledgeProgressIsGone = BehaviorSubject.create<Boolean>()
@@ -412,10 +408,7 @@ interface PledgeFragmentViewModel {
                     .map { if (it) R.color.ksr_red_400 else R.color.ksr_green_500 }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        this.pledgeTextColor.onNext(it)
-                        this.totalTextColor.onNext(it)
-                    }
+                    .subscribe(this.pledgeTextColor)
 
             val country = project
                     .map { Country.findByCurrencyCode(it.currency()) }
@@ -1080,9 +1073,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun totalDividerIsGone(): Observable<Boolean> = this.totalDividerIsGone
-
-        @NonNull
-        override fun totalTextColor(): Observable<Int> = this.totalTextColor
 
         @NonNull
         override fun updatePledgeButtonIsEnabled(): Observable<Boolean> = this.updatePledgeButtonIsEnabled

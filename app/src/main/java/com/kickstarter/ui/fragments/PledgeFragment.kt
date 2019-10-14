@@ -218,11 +218,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { setTextColor(it, pledge_amount) }
 
-        this.viewModel.outputs.totalTextColor()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setTextColor(it, total_amount) }
-
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

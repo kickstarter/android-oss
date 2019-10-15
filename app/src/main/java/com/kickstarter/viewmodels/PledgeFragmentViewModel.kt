@@ -681,8 +681,14 @@ interface PledgeFragmentViewModel {
             val shippingOrAmountChanged = shippingRuleUpdated
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(amountUpdated))
                     .map { it.first || it.second }
+                    .distinctUntilChanged()
 
-            Observable.merge(updatingReward, shippingOrAmountChanged.skip(1).zipWith(totalIsValid, { change, valid -> change && valid }))
+            val validChange = shippingOrAmountChanged
+                    .skip(1)
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(totalIsValid))
+                    .map { it.first && it.second }
+
+            Observable.merge(updatingReward, validChange)
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.updatePledgeButtonIsEnabled)

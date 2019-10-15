@@ -39,6 +39,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val additionalPledgeAmountIsGone = TestSubscriber<Boolean>()
     private val baseUrlForTerms = TestSubscriber<String>()
     private val cardsAndProject = TestSubscriber<Pair<List<StoredCard>, Project>>()
+    private val continueButtonIsEnabled = TestSubscriber<Boolean>()
     private val continueButtonIsGone = TestSubscriber<Boolean>()
     private val conversionText = TestSubscriber<String>()
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
@@ -51,6 +52,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val paymentContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeAmount = TestSubscriber<String>()
     private val pledgeHint = TestSubscriber<String>()
+    private val pledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val pledgeMinimum = TestSubscriber<String>()
     private val pledgeSectionIsGone = TestSubscriber<Boolean>()
     private val pledgeSummaryAmount = TestSubscriber<CharSequence>()
@@ -64,7 +66,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingSummaryAmount = TestSubscriber<CharSequence>()
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingSummaryLocation = TestSubscriber<String>()
-    private val showMinimumWarning = TestSubscriber<String>()
     private val showNewCardFragment = TestSubscriber<Project>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
@@ -95,6 +96,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.additionalPledgeAmountIsGone().subscribe(this.additionalPledgeAmountIsGone)
         this.vm.outputs.baseUrlForTerms().subscribe(this.baseUrlForTerms)
         this.vm.outputs.cardsAndProject().subscribe(this.cardsAndProject)
+        this.vm.outputs.continueButtonIsEnabled().subscribe(this.continueButtonIsEnabled)
         this.vm.outputs.continueButtonIsGone().subscribe(this.continueButtonIsGone)
         this.vm.outputs.conversionText().subscribe(this.conversionText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
@@ -106,6 +108,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.increasePledgeButtonIsEnabled().subscribe(this.increasePledgeButtonIsEnabled)
         this.vm.outputs.paymentContainerIsGone().subscribe(this.paymentContainerIsGone)
         this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
+        this.vm.outputs.pledgeButtonIsEnabled().subscribe(this.pledgeButtonIsEnabled)
         this.vm.outputs.pledgeHint().subscribe(this.pledgeHint)
         this.vm.outputs.pledgeMinimum().subscribe(this.pledgeMinimum)
         this.vm.outputs.pledgeSectionIsGone().subscribe(this.pledgeSectionIsGone)
@@ -120,7 +123,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingSummaryAmount().map { it.toString() }.subscribe(this.shippingSummaryAmount)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.shippingSummaryLocation().subscribe(this.shippingSummaryLocation)
-        this.vm.outputs.showMinimumWarning().subscribe(this.showMinimumWarning)
         this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
@@ -256,10 +258,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPledgeScreenConfiguration_whenPledgingShippableRewardAndNotLoggedIn() {
         setUpEnvironment(environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules()))
 
+        this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(false)
         this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
@@ -277,10 +281,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPledgeScreenConfiguration_whenPledgingDigitalRewardAndNotLoggedIn() {
         setUpEnvironment(environment(), reward = RewardFactory.noReward())
 
+        this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(false)
         this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
@@ -302,10 +308,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
+        this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
@@ -323,10 +331,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPledgeScreenConfiguration_whenPledgingDigitalRewardAndLoggedIn() {
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward())
 
+        this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
@@ -354,17 +364,19 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), shippableReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
+        this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
+        this.updatePledgeButtonIsEnabled.assertNoValues()
         this.updatePledgeButtonIsGone.assertValue(false)
         this.updatePledgeProgressIsGone.assertNoValues()
 
@@ -385,17 +397,19 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
+        this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
+        this.updatePledgeButtonIsEnabled.assertNoValues()
         this.updatePledgeButtonIsGone.assertValue(false)
         this.updatePledgeProgressIsGone.assertNoValues()
 
@@ -416,17 +430,19 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
+        this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonIsEnabled.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(false)
         this.snapshotIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
+        this.updatePledgeButtonIsEnabled.assertNoValues()
         this.updatePledgeButtonIsGone.assertValue(true)
         this.updatePledgeProgressIsGone.assertNoValues()
 
@@ -447,17 +463,19 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
+        this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(true)
         this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonIsEnabled.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
+        this.updatePledgeButtonIsEnabled.assertNoValues()
         this.updatePledgeButtonIsGone.assertValue(true)
         this.updatePledgeProgressIsGone.assertNoValues()
 
@@ -468,12 +486,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testPledgeScreenConfiguration_whenUpdatingRewardToShippableReward() {
         val shippableReward = RewardFactory.rewardWithShipping()
 
-        setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), shippableReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .build()
+        setUpEnvironment(environment, shippableReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
+        this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
@@ -493,10 +517,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
+        this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(true)
         this.deliveryDividerIsGone.assertValue(false)
         this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
@@ -656,35 +682,39 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.increasePledgeButtonClicked()
 
+        this.additionalPledgeAmount.assertValues("$0", "$1")
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$50.00", "$51.00")
+        this.conversionTextViewIsGone.assertValues(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.pledgeAmount.assertValues("20", "21")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.shippingAmount.assertValue("$30")
         this.totalAmount.assertValues("$50", "$51")
         this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$1")
-        this.conversionText.assertValues("$50.00", "$51.00")
-        this.conversionTextViewIsGone.assertValues(true)
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
+        this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$50.00", "$51.00", "$50.00")
+        this.conversionTextViewIsGone.assertValues(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
         this.pledgeAmount.assertValues("20", "21", "20")
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
         this.totalAmount.assertValues("$50", "$51", "$50")
         this.shippingAmount.assertValue("$30")
-        this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
-        this.conversionText.assertValues("$50.00", "$51.00", "$50.00")
-        this.conversionTextViewIsGone.assertValues(true)
     }
 
     @Test
@@ -697,36 +727,57 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeInput("40")
 
+        this.additionalPledgeAmount.assertValues("$0", "$20")
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$50.00", "$70.00")
+        this.conversionTextViewIsGone.assertValues(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.pledgeAmount.assertValues("20", "40")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
         this.shippingAmount.assertValue("$30")
         this.totalAmount.assertValues("$50", "$70")
-        this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$20")
-        this.conversionText.assertValues("$50.00", "$70.00")
-        this.conversionTextViewIsGone.assertValues(true)
 
         this.vm.inputs.pledgeInput("10")
 
+        this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
+        this.continueButtonIsEnabled.assertValues(true, false)
+        this.conversionText.assertValues("$50.00", "$70.00", "$40.00")
+        this.conversionTextViewIsGone.assertValues(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
         this.pledgeAmount.assertValues("20", "40", "10")
+        this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
         this.shippingAmount.assertValue("$30")
         this.totalAmount.assertValues("$50", "$70", "$40")
         this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
-        this.conversionText.assertValues("$50.00", "$70.00", "$40.00")
+
+        this.vm.inputs.pledgeInput("10,000")
+
+        this.continueButtonIsEnabled.assertValues(true, false)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
+        this.additionalPledgeAmount.assertValues("$0", "$20", "$0", "$9,980")
+        this.conversionText.assertValues("$50.00", "$70.00", "$40.00", "$10,030.00")
         this.conversionTextViewIsGone.assertValues(true)
+        this.pledgeAmount.assertValues("20", "40", "10", "10,000")
+        this.pledgeHint.assertValue("20")
+        this.pledgeMinimum.assertValue("$20")
+        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
+        this.shippingAmount.assertValue("$30")
+        this.totalAmount.assertValues("$50", "$70", "$40", "$10,030")
+        this.projectCurrencySymbol.assertValue("$")
     }
 
     @Test
@@ -738,41 +789,39 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.increasePledgeButtonClicked()
 
+        this.additionalPledgeAmount.assertValues("$0", "$1")
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$20.00", "$21.00")
+        this.conversionTextViewIsGone.assertValues(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.additionalPledgeAmount.assertValues("$0", "$1")
         this.pledgeAmount.assertValues("20", "21")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
         this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues("$20", "$21")
-        this.conversionText.assertValues("$20.00", "$21.00")
-        this.conversionTextViewIsGone.assertValues(true)
-        this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$1")
-        this.conversionText.assertValues("$20.00", "$21.00")
-        this.conversionTextViewIsGone.assertValues(true)
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
+        this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$20.00", "$21.00", "$20.00")
+        this.conversionTextViewIsGone.assertValues(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
         this.pledgeAmount.assertValues("20", "21", "20")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
         this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues("$20", "$21", "$20")
-        this.conversionText.assertValues("$20.00", "$21.00", "$20.00")
-        this.conversionTextViewIsGone.assertValues(true)
-        this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$1", "$0")
-        this.conversionText.assertValues("$20.00", "$21.00", "$20.00")
-        this.conversionTextViewIsGone.assertValues(true)
     }
 
     @Test
@@ -784,36 +833,59 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeInput("40")
 
+        this.additionalPledgeAmount.assertValues("$0", "$20")
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$20.00", "$40.00")
+        this.conversionTextViewIsGone.assertValues(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.pledgeAmount.assertValues("20", "40")
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
         this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues("$20", "$40")
-        this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$20")
-        this.conversionText.assertValues("$20.00", "$40.00")
-        this.conversionTextViewIsGone.assertValues(true)
 
         this.vm.inputs.pledgeInput("10")
 
+
+        this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
+        this.continueButtonIsEnabled.assertValues(true, false)
+        this.conversionText.assertValues("$20.00", "$40.00", "$10.00")
+        this.conversionTextViewIsGone.assertValues(true)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
         this.pledgeAmount.assertValues("20", "40", "10")
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.projectCurrencySymbol.assertValue("$")
         this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues("$20", "$40", "$10")
-        this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0", "$20", "$0")
-        this.conversionText.assertValues("$20.00", "$40.00", "$10.00")
+
+        //US max is 10,000
+        this.vm.inputs.pledgeInput("10001")
+
+        this.additionalPledgeAmount.assertValues("$0", "$20", "$0", "$9,981")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
+        this.continueButtonIsEnabled.assertValues(true, false)
+        this.conversionText.assertValues("$20.00", "$40.00", "$10.00", "$10,001.00")
         this.conversionTextViewIsGone.assertValues(true)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeAmount.assertValues("20", "40", "10", "10,001")
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeHint.assertValue("20")
+        this.pledgeMinimum.assertValue("$20")
+        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
+        this.projectCurrencySymbol.assertValue("$")
+        this.shippingAmount.assertNoValues()
+        this.totalAmount.assertValues("$20", "$40", "$10", "$10,001")
     }
 
     @Test
@@ -830,20 +902,22 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val selectedRule = ShippingRuleFactory.germanyShippingRule()
         this.vm.inputs.shippingRuleSelected(selectedRule)
 
+        this.additionalPledgeAmountIsGone.assertValues(true)
+        this.additionalPledgeAmount.assertValues("$0")
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$50.00", "$60.00")
+        this.conversionTextViewIsGone.assertValues(true)
         this.decreasePledgeButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true)
         this.pledgeAmount.assertValues("20")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("$20")
         this.pledgeTextColor.assertValues(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
+        this.selectedShippingRule.assertValues(defaultRule, selectedRule)
         this.shippingAmount.assertValues("$30", "$40")
         this.totalAmount.assertValues("$50", "$60")
-        this.projectCurrencySymbol.assertValue("$")
-        this.additionalPledgeAmount.assertValues("$0")
-        this.conversionText.assertValues("$50.00", "$60.00")
-        this.conversionTextViewIsGone.assertValues(true)
-        this.selectedShippingRule.assertValues(defaultRule, selectedRule)
     }
 
     @Test
@@ -856,35 +930,39 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.increasePledgeButtonClicked()
 
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10")
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$37.50", "$45.00")
+        this.conversionTextViewIsGone.assertValues(false)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.pledgeAmount.assertValues("20", "30")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("MX$ 20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue("MX$ 30")
         this.totalAmount.assertValues("MX$ 50", "MX$ 60")
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10")
-        this.conversionText.assertValues("$37.50", "$45.00")
-        this.conversionTextViewIsGone.assertValues(false)
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10", "MX$ 0")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$37.50", "$45.00", "$37.50")
+        this.conversionTextViewIsGone.assertValues(false)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
         this.pledgeAmount.assertValues("20", "30", "20")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("MX$ 20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue("MX$ 30")
         this.totalAmount.assertValues("MX$ 50", "MX$ 60", "MX$ 50")
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10", "MX$ 0")
-        this.conversionText.assertValues("$37.50", "$45.00", "$37.50")
-        this.conversionTextViewIsGone.assertValues(false)
     }
 
     @Test
@@ -898,35 +976,58 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeInput("40")
 
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 20")
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$37.50", "$52.50")
+        this.conversionTextViewIsGone.assertValues(false)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.pledgeAmount.assertValues("20", "40")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("MX$ 20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue("MX$ 30")
         this.totalAmount.assertValues("MX$ 50", "MX$ 70")
-        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 20")
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.conversionText.assertValues("$37.50", "$52.50")
-        this.conversionTextViewIsGone.assertValues(false)
 
         this.vm.inputs.pledgeInput("10")
 
-        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false, true, false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValuesAndClear(true, false, true)
-        this.pledgeAmount.assertValues("20", "40", "10")
-        this.pledgeHint.assertValue("20")
-        this.pledgeMinimum.assertValue("MX$ 20")
-        this.pledgeTextColor.assertValuesAndClear(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.shippingAmount.assertValue("MX$ 30")
-        this.totalAmount.assertValues("MX$ 50", "MX$ 70", "MX$ 40")
         this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 20", "MX$ 0")
-        this.projectCurrencySymbol.assertValue("MX$")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
+        this.continueButtonIsEnabled.assertValues(true, false)
         this.conversionText.assertValues("$37.50", "$52.50", "$30.00")
         this.conversionTextViewIsGone.assertValues(false)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+        this.pledgeAmount.assertValues("20", "40", "10")
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeHint.assertValue("20")
+        this.pledgeMinimum.assertValue("MX$ 20")
+        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
+        this.projectCurrencySymbol.assertValue("MX$")
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 70", "MX$ 40")
+
+        //MX max is 200,000
+        this.vm.inputs.pledgeInput("200000")
+
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 20", "MX$ 0", "MX$ 199,980")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
+        this.continueButtonIsEnabled.assertValues(true, false)
+        this.conversionText.assertValues("$37.50", "$52.50", "$30.00", "$150,022.50")
+        this.conversionTextViewIsGone.assertValues(false)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeAmount.assertValues("20", "40", "10", "200,000")
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeHint.assertValue("20")
+        this.pledgeMinimum.assertValue("MX$ 20")
+        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
+        this.projectCurrencySymbol.assertValue("MX$")
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 70", "MX$ 40", "MX$ 200,030")
     }
 
     @Test
@@ -943,20 +1044,22 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val selectedRule = ShippingRuleFactory.germanyShippingRule()
         this.vm.inputs.shippingRuleSelected(selectedRule)
 
+        this.additionalPledgeAmount.assertValue("MX$ 0")
+        this.additionalPledgeAmountIsGone.assertValues(true)
+        this.continueButtonIsEnabled.assertValue(true)
+        this.conversionText.assertValues("$37.50", "$45.00")
+        this.conversionTextViewIsGone.assertValues(false)
         this.decreasePledgeButtonIsEnabled.assertValues(false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValues(true)
         this.pledgeAmount.assertValues("20")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeMinimum.assertValue("MX$ 20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("MX$")
+        this.selectedShippingRule.assertValues(initialRule, selectedRule)
         this.shippingAmount.assertValues("MX$ 30", "MX$ 40")
         this.totalAmount.assertValues("MX$ 50", "MX$ 60")
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.additionalPledgeAmount.assertValue("MX$ 0")
-        this.conversionText.assertValues("$37.50", "$45.00")
-        this.conversionTextViewIsGone.assertValues(false)
-        this.selectedShippingRule.assertValues(initialRule, selectedRule)
     }
 
     @Test
@@ -1452,20 +1555,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartLoginToutActivity() {
-        setUpEnvironment(environment())
+        setUpEnvironment(environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules()))
 
         this.vm.inputs.continueButtonClicked()
 
         //Login tout should start with a valid pledge amount
         this.startLoginToutActivity.assertValueCount(1)
-        this.showMinimumWarning.assertValueCount(0)
-
-        this.vm.inputs.pledgeInput("10")
-        this.vm.inputs.continueButtonClicked()
-
-        //Login tout should not start with a invalid pledge amount, warning should show
-        this.startLoginToutActivity.assertValueCount(1)
-        this.showMinimumWarning.assertValueCount(1)
+        this.continueButtonIsEnabled.assertValue(true)
     }
 
     @Test
@@ -1508,29 +1604,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment(), RewardFactory.noReward(), project)
 
-        this.vm.inputs.pledgeInput("0")
         this.vm.inputs.selectCardButtonClicked(0)
 
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        //Trying to pledge with an invalid amount should show warning
-        this.showMinimumWarning.assertValueCount(1)
-        this.showPledgeCard.assertNoValues()
-        this.startThanksActivity.assertNoValues()
-        this.showPledgeError.assertNoValues()
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
-
-        this.vm.inputs.pledgeInput("1")
-        this.vm.inputs.pledgeButtonClicked("t3st")
-
         //Successfully pledging with a valid amount should show the thanks page
-        this.showMinimumWarning.assertValueCount(1)
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
         this.startThanksActivity.assertValue(project)
         this.showPledgeError.assertNoValues()
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked", "Pledge Button Clicked")
+        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
     @Test
@@ -1539,29 +1623,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.reward()
         setUpEnvironment(environment(), reward, project)
 
-        this.vm.inputs.pledgeInput(reward.minimum().minus(1.0).toString())
         this.vm.inputs.selectCardButtonClicked(0)
 
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        //Trying to pledge with an invalid amount should show warning
-        this.showMinimumWarning.assertValueCount(1)
-        this.showPledgeCard.assertNoValues()
-        this.startThanksActivity.assertNoValues()
-        this.showPledgeError.assertNoValues()
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
-
-        this.vm.inputs.pledgeInput(reward.minimum().toString())
-        this.vm.inputs.pledgeButtonClicked("t3st")
-
         //Successfully pledging with a valid amount should show the thanks page
-        this.showMinimumWarning.assertValueCount(1)
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
         this.startThanksActivity.assertValue(project)
         this.showPledgeError.assertNoValues()
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked", "Pledge Button Clicked")
+        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
     @Test
@@ -1570,29 +1642,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.rewardWithShipping()
         setUpEnvironment(environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules()), reward, project)
 
-        this.vm.inputs.pledgeInput(reward.minimum().minus(1.0).toString())
         this.vm.inputs.selectCardButtonClicked(0)
 
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        //Trying to pledge with an invalid amount should show warning
-        this.showMinimumWarning.assertValueCount(1)
-        this.showPledgeCard.assertNoValues()
-        this.startThanksActivity.assertNoValues()
-        this.showPledgeError.assertNoValues()
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
-
-        this.vm.inputs.pledgeInput(reward.minimum().toString())
-        this.vm.inputs.pledgeButtonClicked("t3st")
-
         //Successfully pledging with a valid amount should show the thanks page
-        this.showMinimumWarning.assertValueCount(1)
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
         this.startThanksActivity.assertValue(project)
         this.showPledgeError.assertNoValues()
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked", "Pledge Button Clicked")
+        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
     @Test
@@ -1679,7 +1739,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val backingShippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .amount(40.0)
+                .amount(50.0)
                 .location(unitedStates)
                 .locationId(unitedStates.id())
                 .reward(reward)
@@ -1713,12 +1773,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
+        this.selectedShippingRule.assertValue(backingShippingRule)
         this.updatePledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
+        this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule)
         this.updatePledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.shippingRuleSelected(backingShippingRule)
+        this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule, backingShippingRule)
         this.updatePledgeButtonIsEnabled.assertValues(false, true, false)
 
         this.vm.inputs.pledgeInput("500")
@@ -1751,10 +1814,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun assertInitialPledgeState_NoShipping() {
+        this.additionalPledgeAmountIsGone.assertValue(true)
+        this.continueButtonIsEnabled.assertValue(true)
         this.decreasePledgeButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValue(true)
         this.pledgeAmount.assertValues("20")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.shippingAmount.assertNoValues()
@@ -1762,10 +1827,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun assertInitialPledgeState_WithShipping() {
+        this.additionalPledgeAmountIsGone.assertValue(true)
+        this.continueButtonIsEnabled.assertValue(true)
         this.decreasePledgeButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.additionalPledgeAmountIsGone.assertValue(true)
         this.pledgeAmount.assertValues("20")
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
     }

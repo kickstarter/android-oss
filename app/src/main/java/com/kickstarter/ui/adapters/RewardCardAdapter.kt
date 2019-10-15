@@ -13,6 +13,7 @@ import rx.Observable
 class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     interface Delegate : RewardCardViewHolder.Delegate, RewardPledgeCardViewHolder.Delegate, RewardAddCardViewHolder.Delegate
 
+    private var enabled = true
     private var selectedPosition = Pair(RecyclerView.NO_POSITION, CardState.SELECT)
 
     init {
@@ -42,7 +43,7 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when (layout) {
             R.layout.item_reward_add_card -> RewardAddCardViewHolder(view, this.delegate)
-            R.layout.item_reward_pledge_card -> RewardPledgeCardViewHolder(view, this.delegate)
+            R.layout.item_reward_pledge_card -> RewardPledgeCardViewHolder(view, this.delegate, this.enabled)
             R.layout.item_reward_credit_card -> RewardCardViewHolder(view, this.delegate)
             R.layout.item_reward_loading_card -> RewardLoadingCardViewHolder(view)
             else -> EmptyViewHolder(view)
@@ -81,6 +82,14 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyItemInserted(position)
 
         return position
+    }
+
+    fun setPledgeEnabled(enabled: Boolean) {
+        val selectedIndex = this.selectedPosition.first
+        if (selectedIndex != RecyclerView.NO_POSITION) {
+            this.enabled = enabled
+            notifyItemChanged(this.selectedPosition.first)
+        }
     }
 
 }

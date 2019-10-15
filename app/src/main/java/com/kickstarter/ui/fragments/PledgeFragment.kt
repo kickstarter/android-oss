@@ -21,7 +21,6 @@ import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -379,15 +378,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
 
-        this.viewModel.outputs.showMinimumWarning()
+        this.viewModel.outputs.pledgeButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { showPledgeMinimumWarning(it) }
+                .subscribe { enablePledgeButton(it) }
 
-        this.viewModel.outputs.showMaximumWarning()
+        this.viewModel.outputs.continueButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { showPledgeMaximumWarning(it) }
+                .subscribe { continue_to_tout.isEnabled = it }
 
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
@@ -421,6 +420,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(update_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.updatePledgeButtonClicked() }
+    }
+
+    private fun enablePledgeButton(enabled: Boolean) {
+        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
+        rewardCardAdapter.setPledgeEnabled(enabled)
     }
 
     override fun onDetach() {
@@ -582,32 +586,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)
 
         setClickableHtml(accountabilityWithUrls, accountability)
-    }
-
-    private fun showPledgeMaximumWarning(maximumAmount: String) {
-        val ksString = this.viewModel.environment.ksString()
-        val message = ksString.format(getString(R.string.The_maximum_pledge_is_max_pledge),
-                "max_pledge", maximumAmount)
-
-        showOKDialog(message)
-    }
-
-    private fun showPledgeMinimumWarning(minimumAmount: String) {
-        val ksString = this.viewModel.environment.ksString()
-        val message = ksString.format(getString(R.string.You_need_to_pledge_at_least_reward_minimum_for_this_reward),
-                "reward_minimum", minimumAmount)
-
-        showOKDialog(message)
-    }
-
-    private fun showOKDialog(message: String) {
-        context?.apply {
-            AlertDialog.Builder(this, R.style.Dialog)
-                    .setMessage(message)
-                    .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ -> dialog.dismiss() }
-                    .create()
-                    .show()
-        }
     }
 
     private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {

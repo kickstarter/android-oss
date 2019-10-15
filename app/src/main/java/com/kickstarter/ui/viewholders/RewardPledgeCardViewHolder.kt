@@ -11,7 +11,7 @@ import com.kickstarter.viewmodels.RewardPledgeCardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward_pledge_card.view.*
 import kotlinx.android.synthetic.main.reward_card_details.view.*
 
-class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
+class RewardPledgeCardViewHolder(val view: View, val delegate: Delegate, val enabled: Boolean) : KSViewHolder(view) {
 
     interface Delegate {
         fun pledgeButtonClicked(id: String)
@@ -58,6 +58,8 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
         this.view.close_pledge.setOnClickListener {
             this.delegate.closePledgeButtonClicked(adapterPosition)
         }
+
+        this.view.pledge_button.isEnabled = this.enabled
     }
 
     override fun bindData(data: Any?) {

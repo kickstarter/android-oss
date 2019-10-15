@@ -74,6 +74,9 @@ interface ProjectViewModel {
         /** Call when the pledge has been successfully canceled.  */
         fun pledgeSuccessfullyCancelled()
 
+        /** Call when the pledge has been successfully created.  */
+        fun pledgeSuccessfullyCreated()
+
         /** Call when the pledge has been successfully updated. */
         fun pledgeSuccessfullyUpdated()
 
@@ -106,8 +109,8 @@ interface ProjectViewModel {
         /** Emits a boolean that determines if the backing details should be visible. */
         fun backingDetailsIsVisible(): Observable<Boolean>
 
-        /** Emits when rewards sheet should expand. */
-        fun expandPledgeSheet(): Observable<Boolean>
+        /** Emits when rewards sheet should expand and if it should animate. */
+        fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>>
 
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
@@ -203,6 +206,9 @@ interface ProjectViewModel {
         /** Emits when we should start [com.kickstarter.ui.activities.ProjectUpdatesActivity].  */
         fun startProjectUpdatesActivity(): Observable<Project>
 
+        /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
+        fun startThanksActivity(): Observable<Project>
+
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
     }
@@ -231,6 +237,7 @@ interface ProjectViewModel {
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
+        private val pledgeSuccessfullyCreated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
         private val reloadProjectContainerClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
@@ -242,7 +249,7 @@ interface ProjectViewModel {
 
         private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
-        private val expandPledgeSheet = BehaviorSubject.create<Boolean>()
+        private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
         private val prelaunchUrl = PublishSubject.create<String>()
@@ -256,11 +263,11 @@ interface ProjectViewModel {
         private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
-        private val showBackingFragment = BehaviorSubject.create<Project>()
+        private val showBackingFragment = PublishSubject.create<Project>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
         private val showPledgeNotCancelableDialog = PublishSubject.create<Void>()
-        private val showRewardsFragment = BehaviorSubject.create<Project>()
+        private val showRewardsFragment = PublishSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
@@ -273,6 +280,7 @@ interface ProjectViewModel {
         private val startManagePledgeActivity = PublishSubject.create<Project>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Project>()
+        private val startThanksActivity = PublishSubject.create<Project>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
 
@@ -337,15 +345,23 @@ interface ProjectViewModel {
                     .share()
 
             val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled,
+                    this.pledgeSuccessfullyCreated,
                     this.pledgeSuccessfullyUpdated,
                     this.pledgePaymentSuccessfullyUpdated)
 
-            val refreshedProject = initialProject
+            val refreshedProjectNotification = initialProject
                     .compose(takeWhen<Project, Void>(refreshProjectEvent))
                     .switchMap {
                         this.client.fetchProject(it)
-                                .compose(neverError())
+                            .doOnSubscribe {
+                                this.progressBarIsGone.onNext(false)
+                            }
+                            .doAfterTerminate {
+                                this.progressBarIsGone.onNext(true)
+                            }
+                            .materialize()
                     }
+                    .share()
 
             loggedOutUserOnHeartClick
                     .compose(ignoreValues())
@@ -361,7 +377,7 @@ interface ProjectViewModel {
 
             val currentProject = Observable.merge(
                     initialProject,
-                    refreshedProject,
+                    refreshedProjectNotification.compose(values()),
                     projectOnUserChangeSave,
                     savedProjectOnLoginSuccess
             )
@@ -429,12 +445,17 @@ interface ProjectViewModel {
                     .subscribe(this.setInitialRewardPosition)
 
             this.nativeProjectActionButtonClicked
-                    .map { true }
+                    .map { Pair(true, true) }
                     .compose(bindToLifecycle())
                     .subscribe(this.expandPledgeSheet)
 
-            Observable.merge(this.collapsePledgeSheet, this.pledgeSuccessfullyCancelled)
-                    .map { false }
+            this.collapsePledgeSheet
+                    .map { Pair(false, true) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.expandPledgeSheet)
+
+            Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyCreated)
+                    .map { Pair(false, false) }
                     .compose(bindToLifecycle())
                     .subscribe(this.expandPledgeSheet)
 
@@ -468,13 +489,11 @@ interface ProjectViewModel {
 
             nativeCheckoutProject
                     .filter { it.isBacking && it.hasRewards() }
-                    .distinctUntilChanged { old, new -> old.backing() == new.backing() }
                     .compose(bindToLifecycle())
                     .subscribe(this.showBackingFragment)
 
             nativeCheckoutProject
                     .filter { !it.isBacking && it.hasRewards() }
-                    .distinctUntilChanged { old, new -> old.backing() == new.backing() }
                     .compose(bindToLifecycle())
                     .subscribe(this.showRewardsFragment)
 
@@ -564,6 +583,11 @@ interface ProjectViewModel {
             this.pledgeSuccessfullyCancelled
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeSuccess)
+
+            nativeCheckoutProject
+                    .compose<Project>(takeWhen(this.pledgeSuccessfullyCreated))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startThanksActivity)
 
             this.pledgeSuccessfullyUpdated
                     .compose(bindToLifecycle())
@@ -750,6 +774,10 @@ interface ProjectViewModel {
             this.pledgeSuccessfullyCancelled.onNext(null)
         }
 
+        override fun pledgeSuccessfullyCreated() {
+            this.pledgeSuccessfullyCreated.onNext(null)
+        }
+
         override fun pledgeSuccessfullyUpdated() {
             this.pledgeSuccessfullyUpdated.onNext(null)
         }
@@ -833,7 +861,7 @@ interface ProjectViewModel {
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
 
         @NonNull
-        override fun expandPledgeSheet(): Observable<Boolean> = this.expandPledgeSheet
+        override fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>> = this.expandPledgeSheet
 
         @NonNull
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
@@ -924,6 +952,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startMessagesActivity(): Observable<Project> = this.startMessagesActivity
+
+        @NonNull
+        override fun startThanksActivity(): Observable<Project> = this.startThanksActivity
 
         @NonNull
         override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity

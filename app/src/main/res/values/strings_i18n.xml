@@ -26,6 +26,7 @@
   <string name="All_Theater_Projects" formatted="false">All Theater Projects</string>
   <string name="All_category_name_Projects" formatted="false">All %{category_name} Projects</string>
   <string name="All_gone" formatted="false">All gone</string>
+  <string name="Almost_there" formatted="false">Almost there!</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
@@ -63,6 +64,7 @@ backers</string>
   <string name="Bookmarks" formatted="false">Bookmarks</string>
   <string name="Bring_creative_projects_to_life" formatted="false">Bring creative projects to life.</string>
   <string name="By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By pledging you agree to Kickstarter\'s &lt;a href="%{terms_of_use_link}">Terms of Use&lt;/a>, &lt;a href="%{privacy_policy_link}">Privacy Policy&lt;/a> and &lt;a href="%{cookie_policy_link}">Cookie Policy&lt;/a>.</string>
+  <string name="By_signing_up_you_agree_to_our_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" formatted="false">By signing up, you agree to our Terms of Use, Privacy Policy, and Cookie Policy. Our policies explain how we use your data to deliver, improve, and promote our service and our site, and how you can exercise your rights to control that use.</string>
   <string name="CVC" formatted="false">CVC</string>
   <string name="Cancel" formatted="false">Cancel</string>
   <string name="Cancel_pledge" formatted="false">Cancel pledge</string>
@@ -100,6 +102,7 @@ Please tap to retry.</string>
   <string name="Continue" formatted="false">Continue</string>
   <string name="Continue_to_payment" formatted="false">Continue to payment</string>
   <string name="Continue_to_update_pledge" formatted="false">Continue to update pledge</string>
+  <string name="Continue_with_Facebook" formatted="false">Continue with Facebook</string>
   <string name="Couldnt_add_attachment" formatted="false">Couldn\'t add attachment</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Couldn‘t open live stream. Try again later.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Couldn\'t remove attachment</string>
@@ -135,6 +138,7 @@ Please tap to retry.</string>
   <string name="Daily_digest" formatted="false">Daily digest</string>
   <string name="Daily_summary" formatted="false">Daily summary</string>
   <string name="Data_will_appear_here_once" formatted="false">Data will appear here once somebody backs your project.</string>
+  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Delete my Kickstarter account</string>
   <string name="Delivered" formatted="false">Delivered</string>
   <string name="Description" formatted="false">Description</string>
@@ -224,6 +228,7 @@ Please tap to retry.</string>
   <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Get notified about new messages?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Get notified about this creator’s live streams</string>
+  <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Get notified when your friends back and launch projects</string>
   <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
   <string name="Got_it" formatted="false">Got it</string>
@@ -240,6 +245,7 @@ Please tap to retry.</string>
   <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.</string>
   <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
   <string name="If_your_profile_is_public" formatted="false">If your profile is not private, others can also see the projects you\'ve backed, your location, bio and websites.</string>
+  <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
@@ -350,6 +356,7 @@ from friends yet.</string>
   <string name="Payment_method" formatted="false">Payment method</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
   <string name="Payment_methods" formatted="false">Payment methods</string>
+  <string name="Please_enter_a_pledge_amount_between_min_and_max" formatted="false">Please enter a pledge amount between %{min} and %{max}.</string>
   <string name="Please_enter_an_amount_of_amount_or_less" formatted="false">Please enter an amount of %{amount} or less.</string>
   <string name="Please_enter_an_amount_of_amount_or_more" formatted="false">Please enter an amount of %{amount} or more.</string>
   <string name="Please_log_in_or_sign_up_to_back_this_project" formatted="false">Please log in or sign up to back this project.</string>
@@ -393,6 +400,7 @@ daring ideas.</string>
   <string name="Read_more_about_the_campaign" formatted="false">Read more about the campaign</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">Read more about the campaign  →</string>
   <string name="Receive_a_reminder_forty_eight_hours_before_this_project_ends" formatted="false">Receive a reminder 48 hours before this and any other saved project ends by enabling notifications.</string>
+  <string name="Receive_a_weekly_mix_of_handpicked_projects_plus_occasional_Kickstarter_news" formatted="false">Receive a weekly mix of handpicked projects, plus occasional Kickstarter news.</string>
   <string name="Receive_project_updates_and_more" formatted="false">Receive project updates and more by enabling notifications.</string>
   <string name="Receive_project_updates_messages_and_more" formatted="false">Receive project updates, messages, and more by enabling notifications.</string>
   <string name="Recent_live_stream" formatted="false">Recent live stream</string>
@@ -421,6 +429,7 @@ daring ideas.</string>
   <string name="Reward_Surveys_zero" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_delivered" formatted="false">Reward delivered?</string>
   <string name="Reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Reward&lt;/b> estimated for delivery in %{delivery_date}</string>
+  <string name="Reward_received" formatted="false">Reward received</string>
   <string name="Reward_selected" formatted="false">Reward selected</string>
   <string name="Reward_surveys" formatted="false">Reward surveys</string>
   <string name="Rewards_count_rewards_colon_few" formatted="false">%{rewards_count} rewards:</string>
@@ -471,6 +480,7 @@ daring ideas.</string>
   <string name="Show_me_projects" formatted="false">Show me projects</string>
   <string name="Show_password" formatted="false">Show password</string>
   <string name="Shows_list_of_subcategories" formatted="false">Shows list of subcategories.</string>
+  <string name="Sign_up" formatted="false">Sign up</string>
   <string name="Sign_up_newsletter" formatted="false">Sign up for Projects We Love to receive a weekly mix of noteworthy projects, handpicked by our team.</string>
   <string name="Signs_up_with_Email" formatted="false">Signs up with Email.</string>
   <string name="Something_catch_your_eye" formatted="false">Something\n
@@ -502,6 +512,8 @@ catch your eye?</string>
   <string name="The_live_stream_was_interrupted" formatted="false">The live stream was interrupted</string>
   <string name="The_live_stream_will_start_soon" formatted="false">The live stream will start soon</string>
   <string name="The_live_stream_will_start_time" formatted="false">The live stream will start %{time}.</string>
+  <string name="The_maximum_pledge_is_max_pledge" formatted="false">The maximum pledge is %{max_pledge}.</string>
+  <string name="The_minimum_pledge_is_min_pledge" formatted="false">The minimum pledge is %{min_pledge}.</string>
   <string name="The_replay_will_start_soon" formatted="false">The replay will start soon</string>
   <string name="The_zeitgeist_delivered_to_your_inbox_via_new" formatted="false">The zeitgeist delivered to your inbox, via new projects and buzzworthy stories.</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">There was a problem with this payment.</string>
@@ -555,6 +567,7 @@ Please try again later.</string>
   <string name="Websites" formatted="false">Websites</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Welcome to our library. Peruse the stacks with us.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">We\'ll ask you to sign back into the Kickstarter app once you\'ve changed your password.</string>
+  <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">We\'ll import your name and profile photo, and access your friend list. We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>

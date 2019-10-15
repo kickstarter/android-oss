@@ -32,6 +32,11 @@ class RewardLoadingCardViewHolder(val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe { this.view.reward_card_logo.setImageResource(it) }
 
+        this.viewModel.outputs.issuer()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_card_logo.contentDescription = it }
+
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

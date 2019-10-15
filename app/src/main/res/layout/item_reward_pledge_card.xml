@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/card_container"
   style="@style/PledgeStoredCard"
   xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,6 +15,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:baselineAligned="false"
       android:minHeight="@dimen/grid_8"
       android:orientation="horizontal">
 
@@ -24,15 +25,24 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
-      <!--todo what should the content description be?-->
-      <!--todo this button is too smol-->
-      <ImageButton
+      <FrameLayout
         android:id="@+id/close_pledge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/circle_black_alpha"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_close" />
+        android:contentDescription="@string/Cancel"
+        android:paddingStart="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_2"
+        android:descendantFocusability="blocksDescendants"
+        tools:ignore="RtlSymmetry">
+
+        <ImageButton
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/circle_black_alpha"
+          android:importantForAccessibility="no"
+          android:src="@drawable/ic_close" />
+
+      </FrameLayout>
 
     </LinearLayout>
 

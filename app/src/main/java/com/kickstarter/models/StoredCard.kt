@@ -3,6 +3,7 @@ package com.kickstarter.models
 import android.os.Parcelable
 import auto.parcel.AutoParcel
 import com.kickstarter.R
+import com.stripe.android.model.Card
 import type.CreditCardTypes
 import java.util.*
 
@@ -30,19 +31,6 @@ abstract class StoredCard : Parcelable {
             return AutoParcel_StoredCard.Builder()
         }
 
-        private val allowedCardTypes = listOf(CreditCardTypes.AMEX,
-                CreditCardTypes.DINERS,
-                CreditCardTypes.DISCOVER,
-                CreditCardTypes.JCB,
-                CreditCardTypes.MASTERCARD,
-                CreditCardTypes.UNION_PAY,
-                CreditCardTypes.VISA)
-
-        val usdCardTypes = allowedCardTypes;
-        val nonUsdCardTypes = listOf(CreditCardTypes.AMEX,
-                CreditCardTypes.MASTERCARD,
-                CreditCardTypes.VISA)
-
         internal fun getCardTypeDrawable(cardType: CreditCardTypes): Int {
             return when (cardType) {
                 CreditCardTypes.AMEX -> R.drawable.amex_md
@@ -53,6 +41,19 @@ abstract class StoredCard : Parcelable {
                 CreditCardTypes.UNION_PAY -> R.drawable.union_pay_md
                 CreditCardTypes.VISA -> R.drawable.visa_md
                 else -> R.drawable.generic_bank_md
+            }
+        }
+
+        internal fun issuer(cardType: CreditCardTypes): String {
+            return when (cardType) {
+                CreditCardTypes.AMEX -> Card.CardBrand.AMERICAN_EXPRESS
+                CreditCardTypes.DINERS -> Card.CardBrand.DINERS_CLUB
+                CreditCardTypes.DISCOVER -> Card.CardBrand.DISCOVER
+                CreditCardTypes.JCB -> Card.CardBrand.JCB
+                CreditCardTypes.MASTERCARD -> Card.CardBrand.MASTERCARD
+                CreditCardTypes.UNION_PAY -> Card.CardBrand.UNIONPAY
+                CreditCardTypes.VISA -> Card.CardBrand.VISA
+                else -> Card.CardBrand.UNKNOWN
             }
         }
 

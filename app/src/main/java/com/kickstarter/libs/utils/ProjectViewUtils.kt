@@ -88,25 +88,6 @@ object ProjectViewUtils {
     }
 
     /**
-     * Returns a SpannableString representing formatted currency and shrinking the precision if the value is not whole.
-     *
-     */
-    fun styleCurrency(value: Double): SpannableString {
-        val precision = NumberUtils.precision(value, RoundingMode.HALF_UP)
-        val formattedNumber = NumberUtils.format(value.toFloat(), NumberOptions.builder().precision(precision).build())
-        val spannableString = SpannableString(formattedNumber)
-
-        if (precision != 0) {
-            val startOfPrecision = formattedNumber.length - precision - 1
-            val endOfPrecision = formattedNumber.length
-            spannableString.setSpan(RelativeSizeSpan(.5f), startOfPrecision, endOfPrecision, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(CenterSpan(), startOfPrecision, endOfPrecision, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-
-        return spannableString
-    }
-
-    /**
      * Returns a Pair of SpannableString and a Boolean where the
      * SpannableString represents a project's currency symbol that shrinks currency symbol if it's necessary and the
      * Boolean represents whether the symbol should be shown at the end or the start of the currency.
@@ -135,6 +116,25 @@ object ProjectViewUtils {
     }
 
     /**
+     * Returns a SpannableString representing formatted currency and shrinking the precision if the value is not whole.
+     *
+     */
+    private fun styleCurrency(value: Double): SpannableString {
+        val precision = NumberUtils.precision(value, RoundingMode.HALF_UP)
+        val formattedNumber = NumberUtils.format(value.toFloat(), NumberOptions.builder().precision(precision).build())
+        val spannableString = SpannableString(formattedNumber)
+
+        if (precision != 0) {
+            val startOfPrecision = formattedNumber.length - precision - 1
+            val endOfPrecision = formattedNumber.length
+            spannableString.setSpan(RelativeSizeSpan(.5f), startOfPrecision, endOfPrecision, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(CenterSpan(), startOfPrecision, endOfPrecision, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        return spannableString
+    }
+
+    /**
      * Returns a CharSequence representing a value in a project's currency based on a user's locale.
      * The precision is shrunken and centered if the number is not whole.
      * The currency symbol is shrunken and centered.
@@ -156,10 +156,12 @@ object ProjectViewUtils {
         spannedCurrencySymbol.setSpan(RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannedCurrencySymbol.setSpan(CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        return if (formattedCurrency.startsWith(StringUtils.trim(currencySymbolToDisplay))) {
+        val styledCurrency = if (formattedCurrency.startsWith(StringUtils.trim(currencySymbolToDisplay))) {
             TextUtils.concat(spannedCurrencySymbol, spannedDigits)
         } else {
             TextUtils.concat(spannedDigits, spannedCurrencySymbol)
         }
+
+        return styledCurrency.trim()
     }
 }

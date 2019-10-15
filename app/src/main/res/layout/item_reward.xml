@@ -208,6 +208,7 @@
       style="@style/PledgeButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:contentDescription="@string/Select_this_reward"
       tools:text="Select" />
 
   </FrameLayout>

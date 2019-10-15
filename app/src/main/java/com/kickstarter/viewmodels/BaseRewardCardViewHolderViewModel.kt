@@ -6,6 +6,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.viewholders.KSViewHolder
+import com.stripe.android.model.Card
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -25,6 +26,9 @@ interface BaseRewardCardViewHolderViewModel {
         /** Emits the expiration date for a credit card. */
         fun expirationDate(): Observable<String>
 
+        /** Emits the name of the card issuer from [Card.CardBrand]. */
+        fun issuer(): Observable<String>
+
         /** Emits the drawable for the card issuer (ex Visa, Mastercard, AMEX). */
         fun issuerImage(): Observable<Int>
 
@@ -37,6 +41,7 @@ interface BaseRewardCardViewHolderViewModel {
 
         private val expirationDate = BehaviorSubject.create<String>()
         private val id = BehaviorSubject.create<String>()
+        private val issuer = BehaviorSubject.create<String>()
         private val issuerImage = BehaviorSubject.create<Int>()
         private val lastFour = BehaviorSubject.create<String>()
 
@@ -47,24 +52,35 @@ interface BaseRewardCardViewHolderViewModel {
             val card = cardAndProject
                     .map { it.first }
 
-            card.map { it.id() }
+            card
+                    .map { it.id() }
                     .subscribe(this.id)
 
-            card.map { it.expiration() }
+            card
+                    .map { it.expiration() }
                     .map { sdf.format(it).toString() }
-                    .subscribe { this.expirationDate.onNext(it) }
+                    .subscribe(this.expirationDate)
 
-            card.map { it.lastFourDigits() }
-                    .subscribe { this.lastFour.onNext(it) }
+            card
+                    .map { it.lastFourDigits() }
+                    .subscribe(this.lastFour)
 
-            card.map { it.type() }
+            card
+                    .map { it.type() }
                     .map { StoredCard.getCardTypeDrawable(it) }
-                    .subscribe { this.issuerImage.onNext(it) }
+                    .subscribe(this.issuerImage)
+
+            card
+                    .map { it.type() }
+                    .map { StoredCard.issuer(it) }
+                    .subscribe(this.issuer)
 
         }
         override fun configureWith(cardAndProject: Pair<StoredCard, Project>) = this.cardAndProject.onNext(cardAndProject)
 
         override fun id(): Observable<String> = this.id
+
+        override fun issuer(): Observable<String> = this.issuer
 
         override fun issuerImage(): Observable<Int> = this.issuerImage
 

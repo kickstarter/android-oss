@@ -207,6 +207,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { pledge_amount.hint = it }
 
+        this.viewModel.outputs.pledgeMaximum()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setPledgeMaximumText(it) }
+
+        this.viewModel.outputs.pledgeMaximumIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setInvisible(pledge_maximum, it) }
+
         this.viewModel.outputs.pledgeMinimum()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -494,6 +504,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
     }
 
+    private fun setPledgeMaximumText(maximumAmount: String) {
+        val ksString = this.viewModel.environment.ksString()
+        pledge_maximum.text = ksString.format(getString(R.string.The_maximum_pledge_is_max_pledge), "max_pledge", maximumAmount)
+    }
+
     private fun setPledgeMinimumText(minimumAmount: String) {
         val ksString = this.viewModel.environment.ksString()
         pledge_minimum.text = ksString.format(getString(R.string.The_minimum_pledge_is_min_pledge), "min_pledge", minimumAmount)
@@ -515,8 +530,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setUpCardsAdapter() {
-        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         cards_recycler.adapter = RewardCardAdapter(this)
+        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_3_half)))
     }
 

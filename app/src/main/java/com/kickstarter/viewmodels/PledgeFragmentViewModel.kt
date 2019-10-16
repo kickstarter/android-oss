@@ -138,6 +138,12 @@ interface PledgeFragmentViewModel {
         /** Emits the hint text for the pledge amount. */
         fun pledgeHint(): Observable<String>
 
+        /** Emits the maximum pledge amount in the project's currency. */
+        fun pledgeMaximum(): Observable<String>
+
+        /** Emits a boolean determining if the pledge maximum should be hidden. */
+        fun pledgeMaximumIsGone(): Observable<Boolean>
+
         /** Emits the minimum pledge amount in the project's currency. */
         fun pledgeMinimum(): Observable<String>
 
@@ -270,6 +276,8 @@ interface PledgeFragmentViewModel {
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val pledgeHint = BehaviorSubject.create<String>()
+        private val pledgeMaximum = BehaviorSubject.create<String>()
+        private val pledgeMaximumIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeMinimum = BehaviorSubject.create<String>()
         private val pledgeSectionIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeSummaryAmount = BehaviorSubject.create<CharSequence>()
@@ -424,13 +432,13 @@ interface PledgeFragmentViewModel {
 
             additionalAmountOrZero
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map<String> { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
+                    .map { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.additionalPledgeAmount)
 
             additionalAmountOrZero
-                    .map { IntegerUtils.isZero(it.toInt()) }
+                    .map { it <= 0.0 }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.additionalPledgeAmountIsGone)
@@ -466,14 +474,8 @@ interface PledgeFragmentViewModel {
                     .subscribe { additionalPledgeAmount.onNext(it) }
 
             pledgeInput
-                    .compose<Pair<Double, Country>>(combineLatestPair(country))
-                    .map { it.first < it.second.maxPledge }
-                    .distinctUntilChanged()
-                    .subscribe(this.increasePledgeButtonIsEnabled)
-
-            pledgeInput
                     .compose<Pair<Double, Double>>(combineLatestPair(rewardMinimum))
-                    .map { Math.max(it.first, it.second) > it.second }
+                    .map { max(it.first, it.second) > it.second }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.decreasePledgeButtonIsEnabled)
@@ -532,8 +534,11 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.selectedShippingRule)
 
-            val shippingAmount = shippingRule
-                    .map { it.cost() }
+            val unshippableShippingAmount = reward
+                    .filter { !RewardUtils.isShippable(it) || RewardUtils.isNoReward(it) }
+                    .map { 0.0 }
+
+            val shippingAmount = Observable.merge(unshippableShippingAmount, shippingRule.map { it.cost() })
 
             shippingAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -542,23 +547,10 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.shippingAmount)
 
             // Total pledge section
-            val basePledgeAmount = pledgeAmount
-
-            val unshippableTotal = basePledgeAmount
-                    .compose<Pair<Double, Reward>>(combineLatestPair(reward))
-                    .filter { RewardUtils.isNoReward(it.second) || !RewardUtils.isShippable(it.second) }
-                    .map<Double> { it.first }
-                    .distinctUntilChanged()
-
-            val shippableTotal = basePledgeAmount
+            val total = pledgeAmount
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
-                    .compose<Pair<Double, Reward>>(combineLatestPair(reward))
-                    .filter { RewardUtils.isReward(it.second) && RewardUtils.isShippable(it.second) }
-                    .map<Double> { it.first }
                     .distinctUntilChanged()
-
-            val total = Observable.merge(unshippableTotal, shippableTotal)
 
             total
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -579,21 +571,10 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.conversionTextViewIsGone)
 
-            val unshippableMinimum = rewardMinimum
-                    .compose<Pair<Double, Reward>>(combineLatestPair(reward))
-                    .filter { RewardUtils.isNoReward(it.second) || !RewardUtils.isShippable(it.second) }
-                    .map<Double> { it.first }
-                    .distinctUntilChanged()
-
-            val shippableMinimum = rewardMinimum
+            val minimumPledge = rewardMinimum
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
-                    .compose<Pair<Double, Reward>>(combineLatestPair(reward))
-                    .filter { RewardUtils.isReward(it.second) && RewardUtils.isShippable(it.second) }
-                    .map<Double> { it.first }
                     .distinctUntilChanged()
-
-            val minimumPledge = Observable.merge(unshippableMinimum, shippableMinimum)
 
             val maximumPledge = country
                     .map { it.maxPledge.toDouble() }
@@ -613,6 +594,30 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeTextColor)
+
+            total
+                    .compose<Pair<Double, Double>>(combineLatestPair(maximumPledge))
+                    .map { it.first > it.second }
+                    .map { BooleanUtils.negate(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeMaximumIsGone)
+
+            maximumPledge
+                    .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
+                    .map { it.first - it.second }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeMaximum)
+
+            pledgeInput
+                    .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))
+                    .map { it.second.second - it.first >= it.second.first }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.increasePledgeButtonIsEnabled)
 
             // Manage pledge section
             pledgeReason
@@ -688,7 +693,12 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(totalIsValid))
                     .map { it.first && it.second }
 
-            Observable.merge(updatingReward, validChange)
+            val updatePledgeButtonIsEnabled = Observable.merge(updatingReward, validChange)
+
+            pledgeReason
+                    .filter { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
+                    .compose<Pair<PledgeReason, Boolean>>(combineLatestPair(updatePledgeButtonIsEnabled))
+                    .map { it.second }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.updatePledgeButtonIsEnabled)
@@ -790,12 +800,19 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startLoginToutActivity)
 
-            totalIsValid
+            userIsLoggedIn
+                    .filter { BooleanUtils.isFalse(it) }
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(totalIsValid))
+                    .map { it.second }
                     .compose(bindToLifecycle())
-                    .subscribe{
-                        this.pledgeButtonIsEnabled.onNext(it)
-                        this.continueButtonIsEnabled.onNext(it)
-                    }
+                    .subscribe(this.continueButtonIsEnabled)
+
+            pledgeReason
+                    .filter { it == PledgeReason.PLEDGE || it == PledgeReason.UPDATE_PAYMENT }
+                    .compose<Pair<PledgeReason, Boolean>>(combineLatestPair(totalIsValid))
+                    .map { it.second }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeButtonIsEnabled)
 
             val validPledgeClick = totalIsValid
                     .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
@@ -1023,6 +1040,12 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun pledgeHint(): Observable<String> = this.pledgeHint
+
+        @NonNull
+        override fun pledgeMaximum(): Observable<String> = this.pledgeMaximum
+
+        @NonNull
+        override fun pledgeMaximumIsGone(): Observable<Boolean> = this.pledgeMaximumIsGone
 
         @NonNull
         override fun pledgeMinimum(): Observable<String> = this.pledgeMinimum

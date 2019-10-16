@@ -29,7 +29,10 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
                 if (sectionRow.row() == this.selectedPosition.first) {
                     return when {
                         this.selectedPosition.second == CardState.SELECT -> R.layout.item_reward_credit_card
-                        this.selectedPosition.second == CardState.PLEDGE -> R.layout.item_reward_pledge_card
+                        this.selectedPosition.second == CardState.PLEDGE -> when {
+                            this.enabled -> R.layout.item_reward_pledge_card
+                            else -> R.layout.item_reward_pledge_card_disabled
+                        }
                         else -> R.layout.item_reward_loading_card
                     }
                 }
@@ -43,7 +46,8 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when (layout) {
             R.layout.item_reward_add_card -> RewardAddCardViewHolder(view, this.delegate)
-            R.layout.item_reward_pledge_card -> RewardPledgeCardViewHolder(view, this.delegate, this.enabled)
+            R.layout.item_reward_pledge_card -> RewardPledgeCardViewHolder(view, this.delegate)
+            R.layout.item_reward_pledge_card_disabled -> RewardPledgeCardViewHolder(view, this.delegate)
             R.layout.item_reward_credit_card -> RewardCardViewHolder(view, this.delegate)
             R.layout.item_reward_loading_card -> RewardLoadingCardViewHolder(view)
             else -> EmptyViewHolder(view)
@@ -86,8 +90,8 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
 
     fun setPledgeEnabled(enabled: Boolean) {
         val selectedIndex = this.selectedPosition.first
+        this.enabled = enabled
         if (selectedIndex != RecyclerView.NO_POSITION) {
-            this.enabled = enabled
             notifyItemChanged(this.selectedPosition.first)
         }
     }

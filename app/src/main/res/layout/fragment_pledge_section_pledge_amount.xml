@@ -5,7 +5,8 @@
   android:id="@+id/pledge_container"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_marginBottom="@dimen/grid_4"
+  android:layout_marginBottom="@dimen/grid_3"
+  android:animateLayoutChanges="true"
   android:focusable="true"
   android:gravity="center_vertical"
   android:orientation="horizontal"
@@ -18,11 +19,22 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_4"
     android:text="@string/Your_pledge_amount"
-    app:layout_constraintBottom_toTopOf="@id/decrease_pledge"
+    app:layout_constraintBottom_toTopOf="@id/pledge_minimum"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/pledge_minimum"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toTopOf="@id/decrease_pledge"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label"
+    tools:text="The minimum pledge is $30." />
 
   <ImageButton
     android:id="@+id/decrease_pledge"
@@ -34,9 +46,9 @@
     android:contentDescription="@string/Decrease_pledge"
     android:src="@drawable/ic_remove"
     android:tint="@color/green_enabled_dark_grey_disabled"
-    app:layout_constraintBottom_toTopOf="@id/pledge_minimum"
+    app:layout_constraintBottom_toBottomOf="@id/pledge_amount_container"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label" />
+    app:layout_constraintTop_toBottomOf="@id/pledge_minimum" />
 
   <ImageButton
     android:id="@+id/increase_pledge"
@@ -61,12 +73,12 @@
     android:focusable="true"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    app:layout_constraintBottom_toTopOf="@id/pledge_minimum"
+    app:layout_constraintBottom_toBottomOf="@id/pledge_amount_container"
     app:layout_constraintEnd_toStartOf="@id/pledge_amount_container"
     app:layout_constraintHorizontal_bias="1"
     app:layout_constraintHorizontal_chainStyle="packed"
     app:layout_constraintStart_toEndOf="@id/increase_pledge"
-    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label">
+    app:layout_constraintTop_toBottomOf="@id/pledge_minimum">
 
     <ImageView
       android:layout_width="@dimen/grid_3"
@@ -93,11 +105,11 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     app:layout_constrainedWidth="true"
-    app:layout_constraintBottom_toTopOf="@id/pledge_minimum"
+    app:layout_constraintBottom_toTopOf="@id/pledge_maximum"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="1"
     app:layout_constraintStart_toEndOf="@id/additional_pledge_amount_container"
-    app:layout_constraintTop_toBottomOf="@id/pledge_amount_label">
+    app:layout_constraintTop_toBottomOf="@id/pledge_minimum">
 
     <TextView
       android:id="@+id/pledge_symbol_start"
@@ -131,15 +143,19 @@
   </LinearLayout>
 
   <TextView
-    android:id="@+id/pledge_minimum"
+    android:id="@+id/pledge_maximum"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_1"
+    android:gravity="end"
+    android:textColor="@color/ksr_red_400"
+    android:visibility="invisible"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0"
+    app:layout_constraintHorizontal_bias="1"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/decrease_pledge"
-    tools:text="The minimum pledge is $30." />
+    app:layout_constraintTop_toBottomOf="@id/pledge_amount_container"
+    tools:text="The maximum pledge is $10,000."
+    tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

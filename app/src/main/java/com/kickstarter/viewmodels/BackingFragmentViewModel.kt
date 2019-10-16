@@ -15,8 +15,8 @@ import com.kickstarter.ui.fragments.BackingFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import type.CreditCardPaymentType
 import type.CreditCardTypes
-import type.PaymentTypes
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -180,7 +180,9 @@ interface BackingFragmentViewModel {
                     .ofType(Backing.PaymentSource::class.java)
 
             paymentSource
-                    .map { PaymentTypes.safeValueOf(it.paymentType()) != PaymentTypes.CREDIT_CARD }
+                    .map { CreditCardPaymentType.safeValueOf(it.paymentType()) }
+                    .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
+                    .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardIsGone)

@@ -91,6 +91,42 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
+    fun testCardIsGone_whenGooglePay() {
+        val paymentSource = PaymentSourceFactory.googlePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testCardIsGone_whenApplePay() {
+        val paymentSource = PaymentSourceFactory.applePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardIsGone.assertValue(false)
+    }
+
+    @Test
     fun testCardIsGone_whenCreditCard() {
         val paymentSource = PaymentSourceFactory.visa()
         val backing = BackingFactory.backing()
@@ -109,8 +145,8 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardIsGone_whenNotCreditCard() {
-        val paymentSource = PaymentSourceFactory.googlePay()
+    fun testCardIsGone_whenNotCardType() {
+        val paymentSource = PaymentSourceFactory.bankAccount()
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .paymentSource(paymentSource)

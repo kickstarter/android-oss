@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -12,6 +12,8 @@
     <include layout="@layout/feature_flag_toolbar" />
 
   </com.google.android.material.appbar.AppBarLayout>
+
+
 
   <ScrollView
     android:layout_width="match_parent"
@@ -23,27 +25,19 @@
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-      <LinearLayout
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/config_flags"
+        tools:listitem="@layout/item_feature_flag"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/grid_2"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"/>
 
-        <TextView
-          style="@style/CalloutPrimary"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:text="@string/Native_Checkout" />
-
-        <androidx.appcompat.widget.SwitchCompat
-          android:id="@+id/native_checkout_switch"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-      </LinearLayout>
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/flag_overrides"
+        tools:listitem="@layout/item_feature_flag_override"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     </LinearLayout>
 
   </ScrollView>

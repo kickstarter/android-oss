@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:clickable="true"
+  android:focusable="true"
+  android:orientation="horizontal"
+  android:paddingStart="@dimen/activity_horizontal_margin"
+  android:paddingEnd="@dimen/activity_horizontal_margin">
+
+  <TextView
+    style="@style/CalloutPrimary"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    tools:text="@string/Native_Checkout" />
+
+  <androidx.appcompat.widget.SwitchCompat
+    android:id="@+id/native_checkout_switch"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="false" />
+
+</LinearLayout>

@@ -100,7 +100,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.feature_flags_button)
   public void featureFlagsClick() {
-    final Intent featureFlagIntent = new Intent(this, FeatureFlagActivity.class);
+    final Intent featureFlagIntent = new Intent(this, FeatureFlagsActivity.class);
     startActivity(featureFlagIntent);
   }
 

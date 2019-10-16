@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
@@ -202,8 +203,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.cardLastFour)
 
             paymentSource
-                    .map { it.type() }
-                    .map {  StoredCard.getCardTypeDrawable(CreditCardTypes.safeValueOf(it)) }
+                    .map { cardLogo(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardLogo)
@@ -238,6 +238,15 @@ interface BackingFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.receivedSectionIsGone)
+        }
+
+        private fun cardLogo(paymentSource: Backing.PaymentSource) : Int {
+            return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
+                CreditCardPaymentType.ANDROID_PAY -> R.drawable.google_pay_mark
+                CreditCardPaymentType.APPLE_PAY -> R.drawable.apple_pay_mark
+                CreditCardPaymentType.CREDIT_CARD -> StoredCard.getCardTypeDrawable(CreditCardTypes.safeValueOf(paymentSource.type()))
+                else -> R.drawable.generic_bank_md
+            }
         }
 
         override fun pledgeSuccessfullyUpdated() {

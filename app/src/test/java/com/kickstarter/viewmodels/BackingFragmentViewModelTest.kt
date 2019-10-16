@@ -91,8 +91,8 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardIsGone_whenGooglePay() {
-        val paymentSource = PaymentSourceFactory.googlePay()
+    fun testCardIsGone_whenApplePay() {
+        val paymentSource = PaymentSourceFactory.applePay()
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .paymentSource(paymentSource)
@@ -109,8 +109,8 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardIsGone_whenApplePay() {
-        val paymentSource = PaymentSourceFactory.applePay()
+    fun testCardIsGone_whenGooglePay() {
+        val paymentSource = PaymentSourceFactory.googlePay()
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .paymentSource(paymentSource)
@@ -163,7 +163,43 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardLogo() {
+    fun testCardLogo_whenApplePay() {
+        val paymentSource = PaymentSourceFactory.applePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardLogo.assertValue(R.drawable.apple_pay_mark)
+    }
+
+    @Test
+    fun testCardLogo_whenGooglePay() {
+        val paymentSource = PaymentSourceFactory.googlePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardLogo.assertValue(R.drawable.google_pay_mark)
+    }
+
+    @Test
+    fun testCardLogo_whenCreditCard() {
         val paymentSource = PaymentSourceFactory.visa()
         val backing = BackingFactory.backing()
                 .toBuilder()

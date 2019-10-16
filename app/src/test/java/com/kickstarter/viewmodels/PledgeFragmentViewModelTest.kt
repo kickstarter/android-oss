@@ -71,6 +71,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val showNewCardFragment = TestSubscriber<Project>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
+    private val showPledgeSuccess = TestSubscriber<Void>()
     private val showUpdatePaymentError = TestSubscriber<Void>()
     private val showUpdatePaymentSuccess = TestSubscriber<Void>()
     private val showUpdatePledgeError = TestSubscriber<Void>()
@@ -80,7 +81,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startRewardExpandAnimation = TestSubscriber<Void>()
     private val startRewardShrinkAnimation = TestSubscriber<PledgeData>()
-    private val startThanksActivity = TestSubscriber<Project>()
     private val totalAmount = TestSubscriber<CharSequence>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
     private val updatePledgeButtonIsEnabled = TestSubscriber<Boolean>()
@@ -130,6 +130,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
         this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
+        this.vm.outputs.showPledgeSuccess().subscribe(this.showPledgeSuccess)
         this.vm.outputs.showUpdatePaymentError().subscribe(this.showUpdatePaymentError)
         this.vm.outputs.showUpdatePaymentSuccess().subscribe(this.showUpdatePaymentSuccess)
         this.vm.outputs.showUpdatePledgeError().subscribe(this.showUpdatePledgeError)
@@ -139,7 +140,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
         this.vm.outputs.startRewardExpandAnimation().subscribe(this.startRewardExpandAnimation)
         this.vm.outputs.startRewardShrinkAnimation().subscribe(this.startRewardShrinkAnimation)
-        this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
         this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
         this.vm.outputs.updatePledgeButtonIsEnabled().subscribe(this.updatePledgeButtonIsEnabled)
@@ -1670,7 +1670,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartThanksActivity_whenNoReward() {
+    fun testShowPledgeSuccess_whenNoReward() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment(), RewardFactory.noReward(), project)
 
@@ -1682,13 +1682,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         //Successfully pledging with a valid amount should show the thanks page
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
-        this.startThanksActivity.assertValue(project)
+        this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
     @Test
-    fun testStartThanksActivity_whenDigitalReward() {
+    fun testShowPledgeSuccess_whenDigitalReward() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
         setUpEnvironment(environment(), reward, project)
@@ -1701,13 +1701,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         //Successfully pledging with a valid amount should show the thanks page
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
-        this.startThanksActivity.assertValue(project)
+        this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
     @Test
-    fun testStartThanksActivity_whenPhysicalReward() {
+    fun testShowPledgeSuccess_whenPhysicalReward() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.rewardWithShipping()
         setUpEnvironment(environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules()), reward, project)
@@ -1720,13 +1720,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         //Successfully pledging with a valid amount should show the thanks page
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
-        this.startThanksActivity.assertValue(project)
+        this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
     @Test
-    fun testStartThanksActivity_error() {
+    fun testShowPledgeSuccess_error() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
@@ -1746,13 +1746,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked("t3st")
 
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
-        this.startThanksActivity.assertNoValues()
+        this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
     @Test
-    fun testStartThanksActivity_unsuccessful() {
+    fun testShowPledgeSuccess_unsuccessful() {
         val project = ProjectFactory.project()
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
@@ -1772,7 +1772,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked("t3st")
 
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
-        this.startThanksActivity.assertNoValues()
+        this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }

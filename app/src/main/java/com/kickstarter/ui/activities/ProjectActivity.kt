@@ -8,7 +8,6 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
@@ -50,7 +49,6 @@ import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
-import java.util.concurrent.TimeUnit
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
 class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate,
@@ -215,7 +213,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.outputs.expandPledgeSheet()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { animateRewards(it) }
+                .subscribe { expandPledgeSheet(it) }
 
         this.viewModel.outputs.showShareSheet()
                 .compose(bindToLifecycle())
@@ -333,22 +331,24 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .subscribe { openProjectAndFinish(it) }
 
         this.viewModel.outputs.projectActionButtonContainerIsGone()
-                .delay(1, TimeUnit.SECONDS)
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(action_buttons, it) }
 
         this.viewModel.outputs.progressBarIsGone()
-                .delay(1, TimeUnit.SECONDS)
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(findViewById(R.id.project_progress_bar), it) }
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
-                .delay(1, TimeUnit.SECONDS)
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(findViewById(R.id.pledge_sheet_retry_container), it) }
+
+        this.viewModel.outputs.startThanksActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showCreatePledgeSuccess(it) }
 
         this.heartIcon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
@@ -400,6 +400,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
     }
 
+    override fun pledgeSuccessfullyCreated() {
+        this.viewModel.inputs.pledgeSuccessfullyCreated()
+    }
+
     override fun pledgeSuccessfullyUpdated() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
@@ -419,60 +423,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     override fun onDestroy() {
         super.onDestroy()
         this.projectRecyclerView.adapter = null
-    }
-
-    private fun animateRewards(expand: Boolean) {
-        val targetToShow = if (!expand) action_buttons else pledge_container
-        val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
-
-        val targetToHide = if (!expand) pledge_container else action_buttons
-        val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
-
-        val guideline = rewardsSheetGuideline()
-        val initialValue = (if (expand) pledge_container_root.height - guideline else 0).toFloat()
-        val finalValue = (if (expand) 0 else pledge_container_root.height - guideline).toFloat()
-        val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
-
-        val rewardsContainerYAnimator = ObjectAnimator.ofFloat(pledge_container_root, View.Y, initialValue, finalValue).apply {
-            addUpdateListener { valueAnim ->
-                val radius = initialRadius * if (expand) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
-                pledge_container_root.radius = radius
-            }
-        }
-
-        AnimatorSet().apply {
-            playTogether(showRewardsFragmentAnimator, hideRewardsFragmentAnimator, rewardsContainerYAnimator)
-            duration = animDuration
-
-            addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {}
-                override fun onAnimationCancel(animation: Animator?) {}
-
-                override fun onAnimationEnd(animation: Animator?) {
-                    if (expand) {
-                        action_buttons.visibility = View.GONE
-                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                        pledge_toolbar.requestFocus()
-                    } else {
-                        pledge_container.visibility = View.GONE
-                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-                        toolbar.requestFocus()
-                    }
-                }
-
-                override fun onAnimationStart(animation: Animator?) {
-                    if (expand) {
-                        pledge_container.visibility = View.VISIBLE
-                    } else {
-                        action_buttons.visibility = View.VISIBLE
-                    }
-                }
-            })
-
-            start()
-        }
     }
 
     private fun animateScrimVisibility(show: Boolean) {
@@ -502,6 +452,67 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun clearFragmentBackStack() {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    }
+
+    private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
+        val expand = expandAndAnimate.first
+        val animate = expandAndAnimate.second
+        val targetToShow = if (!expand) action_buttons else pledge_container
+        val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
+
+        val targetToHide = if (!expand) pledge_container else action_buttons
+        val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
+
+        val guideline = rewardsSheetGuideline()
+        val initialValue = (if (expand) pledge_container_root.height - guideline else 0).toFloat()
+        val finalValue = (if (expand) 0 else pledge_container_root.height - guideline).toFloat()
+        val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
+
+        val rewardsContainerYAnimator = ObjectAnimator.ofFloat(pledge_container_root, View.Y, initialValue, finalValue).apply {
+            addUpdateListener { valueAnim ->
+                val radius = initialRadius * if (expand) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
+                pledge_container_root.radius = radius
+            }
+        }
+
+        AnimatorSet().apply {
+            playTogether(showRewardsFragmentAnimator, hideRewardsFragmentAnimator, rewardsContainerYAnimator)
+            duration = when {
+                animate -> animDuration
+                else -> 0L
+            }
+
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {}
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    if (expand) {
+                        action_buttons.visibility = View.GONE
+                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        pledge_toolbar.requestFocus()
+                    } else {
+                        pledge_container.visibility = View.GONE
+                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        if (animate) {
+                            toolbar.requestFocus()
+                        }
+                    }
+                }
+
+                override fun onAnimationStart(animation: Animator?) {
+                    if (expand) {
+                        pledge_container.visibility = View.VISIBLE
+                    } else {
+                        action_buttons.visibility = View.VISIBLE
+                    }
+                }
+            })
+
+            start()
+        }
     }
 
     private fun handleNativeCheckoutBackPress() {
@@ -585,18 +596,18 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
-        pledge_container_root.y = (pledge_container_root.height - guideline).toFloat()
-        this.projectRecyclerView.setPadding(0, 0, 0, guideline)
+        pledge_container_root.y = (root.height - guideline).toFloat()
+        val params = pledge_container_root.layoutParams
+        params.height = root.height
+        pledge_container_root.layoutParams = params
     }
 
     private fun showBackingFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
                 supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
-            supportFragmentManager.beginTransaction()
-                    .show(backingFragment)
-                    .hide(rewardsFragment)
-                    .commit()
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            rewardsFragment.view?.visibility = View.GONE
+            backingFragment.view?.visibility = View.VISIBLE
         }
         renderProject(backingFragment, rewardsFragment, project)
     }
@@ -614,9 +625,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun showCancelPledgeSuccess() {
         clearFragmentBackStack()
-        Handler().postDelayed({
-            showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
-        }, this.animDuration)
+        showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
+    }
+
+    private fun showCreatePledgeSuccess(project: Project) {
+        clearFragmentBackStack()
+        startActivity(Intent(this, ThanksActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project))
     }
 
     private fun showPledgeNotCancelableDialog() {
@@ -646,11 +661,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun showRewardsFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
         supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
-            supportFragmentManager.beginTransaction()
-                    .show(rewardsFragment)
-                    .hide(backingFragment)
-                    .commit()
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            rewardsFragment.view?.visibility = View.VISIBLE
+            backingFragment.view?.visibility = View.GONE
         }
         renderProject(backingFragment, rewardsFragment, project)
     }

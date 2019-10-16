@@ -86,7 +86,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
                             val state = response.data()?.createBacking()?.checkout()?.state()
-                            val success = state == CheckoutState.VERIFYING
+                            val success = state == CheckoutState.SUCCESSFUL
                             ps.onNext(success)
                             ps.onCompleted()
                         }

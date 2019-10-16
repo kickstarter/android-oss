@@ -112,7 +112,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
 
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
-    ApplicationUtils.resumeDiscoveryActivity(this);
+    if (environment().nativeCheckoutPreference().get()) {
+      finish();
+    } else {
+      ApplicationUtils.resumeDiscoveryActivity(this);
+    }
   }
 
   private void showConfirmGamesNewsletterDialog() {

@@ -83,7 +83,7 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.error()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(new_card_root, getString(R.string.Something_went_wrong_please_try_again)) }
+                .subscribe { showSnackbar(new_card_toolbar, getString(R.string.Something_went_wrong_please_try_again)) }
 
         this.viewModel.outputs.modalError()
                 .compose(bindToLifecycle())

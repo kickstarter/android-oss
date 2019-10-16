@@ -40,14 +40,14 @@ interface BackingFragmentViewModel {
         /** Emits the expiration of the backing's card. */
         fun cardExpiration(): Observable<String>
 
-        /** Emits a boolean determining if the card section should be visible. */
-        fun cardIsGone(): Observable<Boolean>
-
         /** Emits the last four digits of the backing's card. */
         fun cardLastFour(): Observable<String>
 
         /** Emits the card brand drawable to display. */
         fun cardLogo(): Observable<Int>
+
+        /** Emits a boolean determining if the payment method section should be visible. */
+        fun paymentMethodIsGone(): Observable<Boolean>
 
         /** Emits the amount pledged minus the shipping. */
         fun pledgeAmount(): Observable<CharSequence>
@@ -88,9 +88,9 @@ interface BackingFragmentViewModel {
 
         private val backerNumber = BehaviorSubject.create<String>()
         private val cardExpiration = BehaviorSubject.create<String>()
-        private val cardIsGone = BehaviorSubject.create<Boolean>()
         private val cardLastFour = BehaviorSubject.create<String>()
         private val cardLogo = BehaviorSubject.create<Int>()
+        private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeDate = BehaviorSubject.create<String>()
         private val projectAndReward = BehaviorSubject.create<Pair<Project, Reward>>()
@@ -186,7 +186,7 @@ interface BackingFragmentViewModel {
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.cardIsGone)
+                    .subscribe(this.paymentMethodIsGone)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
@@ -265,11 +265,11 @@ interface BackingFragmentViewModel {
 
         override fun cardExpiration(): Observable<String> = this.cardExpiration
 
-        override fun cardIsGone(): Observable<Boolean> = this.cardIsGone
-
         override fun cardLastFour(): Observable<String> = this.cardLastFour
 
         override fun cardLogo(): Observable<Int> = this.cardLogo
+
+        override fun paymentMethodIsGone(): Observable<Boolean> = this.paymentMethodIsGone
 
         override fun pledgeAmount(): Observable<CharSequence> = this.pledgeAmount
 

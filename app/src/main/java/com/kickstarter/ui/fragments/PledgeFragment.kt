@@ -426,11 +426,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe { this.viewModel.inputs.updatePledgeButtonClicked() }
     }
 
-    private fun enablePledgeButton(enabled: Boolean) {
-        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
-        rewardCardAdapter.setPledgeEnabled(enabled)
-    }
-
     override fun onDetach() {
         super.onDetach()
         cards_recycler?.adapter = null
@@ -476,6 +471,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
         shipping_rules.isEnabled = true
         adapter.populateShippingRules(shippingRules, project)
+    }
+
+    private fun enablePledgeButton(enabled: Boolean) {
+        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
+        rewardCardAdapter.setPledgeEnabled(enabled)
     }
 
     private fun relativeTop(view: View, parent: ViewGroup): Int {
@@ -524,8 +524,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setUpCardsAdapter() {
-        cards_recycler.adapter = RewardCardAdapter(this)
         cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        cards_recycler.adapter = RewardCardAdapter(this)
         cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_3_half)))
     }
 

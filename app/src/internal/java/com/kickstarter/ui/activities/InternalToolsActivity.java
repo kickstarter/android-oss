@@ -21,7 +21,7 @@ import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.ui.viewmodels.InternalToolsViewModel;
+import com.kickstarter.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
 

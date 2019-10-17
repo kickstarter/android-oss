@@ -29,7 +29,7 @@ class FeatureFlagViewHolder(val view: View) : KSViewHolder(view) {
 
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
-        val flag = data as Map.Entry<String, Boolean>
+        val flag = data as Pair<String, Boolean>
 
         this.vm.inputs.featureFlag(flag)
     }

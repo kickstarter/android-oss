@@ -11,7 +11,7 @@ import rx.subjects.PublishSubject
 interface FeatureFlagViewHolderViewModel {
     interface Inputs {
         /** Call with the current feature flag. */
-        fun featureFlag(flag: Map.Entry<String, Boolean>)
+        fun featureFlag(flag: Pair<String, Boolean>)
     }
 
     interface Outputs {
@@ -27,7 +27,7 @@ interface FeatureFlagViewHolderViewModel {
 
     class ViewModel(environment: Environment) : ActivityViewModel<FeatureFlagViewHolder>(environment), Inputs, Outputs {
 
-        private val featureFlag = PublishSubject.create<Map.Entry<String, Boolean>>()
+        private val featureFlag = PublishSubject.create<Pair<String, Boolean>>()
 
         private val key = BehaviorSubject.create<String>()
         private val value = BehaviorSubject.create<String>()
@@ -39,12 +39,12 @@ interface FeatureFlagViewHolderViewModel {
         init {
 
             this.featureFlag
-                    .map { it.key }
+                    .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.key)
 
             val enabled = this.featureFlag
-                    .map { it.value }
+                    .map { it.second }
 
             enabled
                     .map { it.toString() }
@@ -52,12 +52,12 @@ interface FeatureFlagViewHolderViewModel {
                     .subscribe(this.value)
 
             enabled
-                    .map { if (it) R.color.text_secondary else R.color.text_primary }
+                    .map { if (it) R.color.text_primary else R.color.text_secondary }
                     .compose(bindToLifecycle())
                     .subscribe(this.valueTextColor)
         }
 
-        override fun featureFlag(flag: Map.Entry<String, Boolean>) = this.featureFlag.onNext(flag)
+        override fun featureFlag(flag: Pair<String, Boolean>) = this.featureFlag.onNext(flag)
 
         override fun key(): Observable<String> = this.key
 

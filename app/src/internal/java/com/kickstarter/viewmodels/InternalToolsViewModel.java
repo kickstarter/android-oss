@@ -1,4 +1,4 @@
-package com.kickstarter.ui.viewmodels;
+package com.kickstarter.viewmodels;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;

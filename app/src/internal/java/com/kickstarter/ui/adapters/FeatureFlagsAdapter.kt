@@ -17,7 +17,7 @@ class FeatureFlagsAdapter : KSAdapter() {
         }
     }
 
-    fun takeFlags(flags: List<Map.Entry<String, Boolean>>) {
+    fun takeFlags(flags: List<Pair<String, Boolean>>) {
         sections().clear()
         sections().add(flags)
     }

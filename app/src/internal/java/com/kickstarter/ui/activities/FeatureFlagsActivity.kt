@@ -8,7 +8,8 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.ui.adapters.FeatureFlagAdapter
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.ui.adapters.FeatureFlagsAdapter
 import com.kickstarter.ui.itemdecorations.TableItemDecoration
 import com.kickstarter.viewmodels.FeatureFlagsViewModel
 import kotlinx.android.synthetic.internal.activity_feature_flags.*
@@ -21,7 +22,7 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feature_flags)
 
-        val featureFlagAdapter = FeatureFlagAdapter()
+        val featureFlagAdapter = FeatureFlagsAdapter()
         config_flags.adapter = featureFlagAdapter
         config_flags.addItemDecoration(TableItemDecoration())
 
@@ -35,16 +36,14 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {
 
     @Suppress("SameParameterValue")
     private fun displayPreference(@StringRes labelRes: Int, booleanPreferenceType: BooleanPreferenceType, overrideContainer: View) {
-        val enabled = booleanPreferenceType.get()
         overrideContainer.override_label.setText(labelRes)
+
         val switch = overrideContainer.override_switch
-        if (enabled) {
-            switch.isChecked = enabled
-        }
+        switch.isChecked = booleanPreferenceType.get()
 
         overrideContainer.setOnClickListener {
-            val isEnabled = switch.isChecked
-            booleanPreferenceType.set(isEnabled)
+            booleanPreferenceType.set(BooleanUtils.negate(booleanPreferenceType.get()))
+            switch.isChecked = booleanPreferenceType.get()
         }
     }
 }

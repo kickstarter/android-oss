@@ -12,7 +12,7 @@
   android:paddingBottom="@dimen/activity_vertical_margin">
 
   <TextView
-    android:id="@+id/flag_name"
+    android:id="@+id/flag_key"
     style="@style/CalloutPrimaryMedium"
     android:layout_width="0dp"
     android:layout_height="wrap_content"

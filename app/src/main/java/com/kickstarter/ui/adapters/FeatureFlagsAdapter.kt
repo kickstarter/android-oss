@@ -6,7 +6,7 @@ import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.FeatureFlagViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 
-class FeatureFlagAdapter : KSAdapter() {
+class FeatureFlagsAdapter : KSAdapter() {
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.item_feature_flag
 

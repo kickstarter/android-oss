@@ -560,6 +560,7 @@ interface PledgeFragmentViewModel {
 
             total
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .filter { it.second.currency() != it.second.currentCurrency() }
                     .map { this.ksCurrency.formatWithUserPreference(it.first, it.second, RoundingMode.UP, 2) }
                     .compose(bindToLifecycle())
                     .subscribe(this.conversionText)
@@ -576,12 +577,12 @@ interface PledgeFragmentViewModel {
                     .map { it.first + it.second }
                     .distinctUntilChanged()
 
-            val maximumPledge = country
+            val countryPledgeMaximum = country
                     .map { it.maxPledge.toDouble() }
                     .distinctUntilChanged()
 
             val minAndMaxPledge = minimumPledge
-                    .compose<Pair<Double, Double>>(combineLatestPair(maximumPledge))
+                    .compose<Pair<Double, Double>>(combineLatestPair(countryPledgeMaximum))
                     .map { Pair(it.first, it.second) }
 
             val totalIsValid = total
@@ -595,15 +596,14 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeTextColor)
 
-            total
-                    .compose<Pair<Double, Double>>(combineLatestPair(maximumPledge))
+            countryPledgeMaximum
+                    .compose<Pair<Double, Double>>(combineLatestPair(total))
                     .map { it.first > it.second }
-                    .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMaximumIsGone)
 
-            maximumPledge
+            countryPledgeMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first - it.second }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -612,7 +612,7 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMaximum)
 
-            pledgeInput
+            total
                     .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))
                     .map { it.second.second - it.first >= it.second.first }
                     .distinctUntilChanged()
@@ -793,31 +793,33 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showNewCardFragment)
 
-            totalIsValid
-                    .compose<Boolean>(takeWhen(this.continueButtonClicked))
-                    .filter { BooleanUtils.isTrue(it) }
-                    .compose(ignoreValues())
+            this.continueButtonClicked
                     .compose(bindToLifecycle())
                     .subscribe(this.startLoginToutActivity)
 
             userIsLoggedIn
                     .filter { BooleanUtils.isFalse(it) }
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(totalIsValid))
+                    .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE }
+                    .compose<Pair<Pair<Boolean, PledgeReason>, Boolean>>(combineLatestPair(totalIsValid))
                     .map { it.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.continueButtonIsEnabled)
 
-            pledgeReason
-                    .filter { it == PledgeReason.PLEDGE || it == PledgeReason.UPDATE_PAYMENT }
-                    .compose<Pair<PledgeReason, Boolean>>(combineLatestPair(totalIsValid))
+            userIsLoggedIn
+                    .filter { BooleanUtils.isTrue(it) }
+                    .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT }
+                    .compose<Pair<Pair<Boolean, PledgeReason>, Boolean>>(combineLatestPair(totalIsValid))
                     .map { it.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeButtonIsEnabled)
 
-            val validPledgeClick = totalIsValid
+            val pledgeButtonClicked = userIsLoggedIn
                     .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .compose<Pair<Boolean, PledgeReason>>(takeWhen(this.pledgeButtonClicked))
-                    .filter { BooleanUtils.isTrue(it.first) && it.second == PledgeReason.PLEDGE }
+                    .filter { it.first && it.second == PledgeReason.PLEDGE }
+                    .compose<Pair<Pair<Boolean, PledgeReason>, String>>(takePairWhen(this.pledgeButtonClicked))
+                    .map { it.second }
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = project
@@ -831,7 +833,7 @@ interface PledgeFragmentViewModel {
                     reward,
                     cookieRefTag)
             { p, a, id, l, r, c -> CreateBacking(p, a, id, l, r, c) }
-                    .compose<CreateBacking>(takeWhen(validPledgeClick))
+                    .compose<CreateBacking>(takeWhen(pledgeButtonClicked))
                     .switchMap {
                         this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }

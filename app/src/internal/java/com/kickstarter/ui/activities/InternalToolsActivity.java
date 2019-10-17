@@ -44,8 +44,9 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Inject Build build;
   @Inject Logout logout;
 
+  @Bind(R.id.api_endpoint) TextView apiEndpoint;
   @Bind(R.id.build_date) TextView buildDate;
-  @Bind(R.id.sha) TextView sha;
+  @Bind(R.id.commit_sha) TextView commitSha;
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
   @Bind(R.id.version_name) TextView versionName;
@@ -146,8 +147,9 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @SuppressLint("SetTextI18n")
   private void setupBuildInformationSection() {
-    this.buildDate.setText(this.build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
-    this.sha.setText(this.build.sha());
+    this.apiEndpoint.setText(this.apiEndpointPreference.get());
+    this.buildDate.setText(this.build.buildDate().toString(DateTimeFormat.forPattern("MMM dd, yyyy h:mm:ss aa zzz")));
+    this.commitSha.setText(this.build.sha());
     this.variant.setText(this.build.variant());
     this.versionCode.setText(this.build.versionCode().toString());
     this.versionName.setText(this.build.versionName());

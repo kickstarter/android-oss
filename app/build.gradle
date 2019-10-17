@@ -44,7 +44,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
-        buildConfigField "String", "BUILD_DATE", "\"${commitTime()}\""
+        buildConfigField "String", "BUILD_DATE", "\"${buildDate()}\""
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
@@ -290,11 +290,8 @@ def commitSha() {
     return value
 }
 
-def commitTime() {
-    def file = new File(project.buildDir, "commit-timestamp.txt")
-    if (file.exists()) {
-        return file.text
-    }
+def buildDate() {
+    def file = new File(project.buildDir, "build-date.txt")
 
     def date = new Date()
     def value = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))

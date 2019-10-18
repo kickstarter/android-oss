@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +23,6 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.stripe.android.Stripe
-import com.stripe.android.model.SetupIntent
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject

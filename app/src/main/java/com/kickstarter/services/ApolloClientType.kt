@@ -16,7 +16,7 @@ import type.PaymentTypes
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
 
-    fun createBacking(createBacking: CreateBacking): Observable<Checkout?>
+    fun createBacking(createBacking: CreateBacking): Observable<Checkout>
 
     fun clearUnseenActivity(): Observable<Int>
 

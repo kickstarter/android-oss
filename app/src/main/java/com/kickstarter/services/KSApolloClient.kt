@@ -61,7 +61,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createBacking(createBacking: CreateBacking): Observable<Checkout?> {
+    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()
                     .projectId(encodeRelayId(createBacking.project))
@@ -73,7 +73,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .refParam(createBacking.refTag?.tag())
                     .build()
 
-            val ps = PublishSubject.create<Checkout?>()
+            val ps = PublishSubject.create<Checkout>()
 
             this.service.mutate(createBackingMutation)
                     .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {

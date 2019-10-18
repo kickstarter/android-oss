@@ -23,7 +23,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(true)
     }
 
-    override fun createBacking(createBacking: CreateBacking): Observable<Checkout?> {
+    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
         return Observable.just(CheckoutFactory.successful())
     }
 

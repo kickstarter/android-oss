@@ -631,7 +631,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun showCreatePledgeSuccess(project: Project) {
-        if(clearFragmentBackStack()) {
+        if (clearFragmentBackStack()) {
             showBackingFragment(project)
             startActivity(Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, project))

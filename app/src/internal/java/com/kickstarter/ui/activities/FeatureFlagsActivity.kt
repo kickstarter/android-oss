@@ -13,7 +13,7 @@ import com.kickstarter.ui.adapters.FeatureFlagsAdapter
 import com.kickstarter.ui.itemdecorations.TableItemDecoration
 import com.kickstarter.viewmodels.FeatureFlagsViewModel
 import kotlinx.android.synthetic.internal.activity_feature_flags.*
-import kotlinx.android.synthetic.main.item_feature_flag_override.view.*
+import kotlinx.android.synthetic.internal.item_feature_flag_override.view.*
 
 @RequiresActivityViewModel(FeatureFlagsViewModel.ViewModel::class)
 class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {

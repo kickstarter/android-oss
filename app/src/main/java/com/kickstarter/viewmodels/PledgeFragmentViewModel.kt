@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.stripe.android.Stripe
+import com.stripe.android.model.SetupIntent
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -312,7 +314,7 @@ interface PledgeFragmentViewModel {
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
-        private val stripe: Stripe = environment.stripe()()
+        private val stripe: Stripe = environment.stripe()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -834,16 +836,6 @@ interface PledgeFragmentViewModel {
                     .map { it.backing() }
                     .filter { BooleanUtils.isTrue(it.requiresAction()) }
                     .map { it.clientSecret() }
-                    .map {
-                        Observable.defer {
-                            try {
-                                return@defer this.stripe.retrieveSetupIntentSynchronous(it)
-                            } catch (t: Throwable) {
-
-                            }
-
-                        }
-                    }
                     .compose(bindToLifecycle())
                     .subscribe(this.showSCAFlow)
 

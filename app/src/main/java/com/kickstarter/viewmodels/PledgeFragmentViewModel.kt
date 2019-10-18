@@ -10,11 +10,11 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
-import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
+import com.kickstarter.models.mutations.CreateBacking
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
@@ -22,6 +22,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
+import com.stripe.android.Stripe
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -194,6 +195,9 @@ interface PledgeFragmentViewModel {
         /** Emits when the creating backing mutation was successful. */
         fun showPledgeSuccess(): Observable<Void>
 
+        /** Emits when we should show the SCA flow with the client secret. */
+        fun showSCAFlow(): Observable<String>
+
         /**  Emits when the update payment source mutation was unsuccessful. */
         fun showUpdatePaymentError(): Observable<Void>
 
@@ -285,6 +289,7 @@ interface PledgeFragmentViewModel {
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = PublishSubject.create<Void>()
         private val showPledgeSuccess = PublishSubject.create<Void>()
+        private val showSCAFlow = PublishSubject.create<String>()
         private val showUpdatePaymentError = PublishSubject.create<Void>()
         private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
         private val showUpdatePledgeError = PublishSubject.create<Void>()
@@ -307,6 +312,7 @@ interface PledgeFragmentViewModel {
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val stripe: Stripe = environment.stripe()()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -797,29 +803,49 @@ interface PledgeFragmentViewModel {
                     cookieRefTag)
             { p, a, id, l, r, c -> CreateBacking(p, a, id, l, r, c) }
                     .compose<CreateBacking>(takeWhen(validPledgeClick))
+                    .map { CreateBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag) }
                     .switchMap {
-                        this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag)
+                        this.apolloClient.createBacking(it)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
                             .materialize()
                     }
                     .share()
 
-            val createBackingValues = createBackingNotification
-                    .compose(values())
-
-            Observable.merge(createBackingNotification.compose(errors()), createBackingValues.filter { BooleanUtils.isFalse(it) })
+            createBackingNotification
+                    .compose(errors())
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe{
+                    .subscribe {
                         this.showPledgeError.onNext(null)
                         this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
                     }
 
+            val createBackingValues = createBackingNotification
+                    .compose(values())
+
             createBackingValues
-                    .filter { BooleanUtils.isTrue(it) }
+                    .map { it.backing().requiresAction() }
+                    .filter { BooleanUtils.isFalse(it) }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeSuccess)
+
+            createBackingValues
+                    .map { it.backing() }
+                    .filter { BooleanUtils.isTrue(it.requiresAction()) }
+                    .map { it.clientSecret() }
+                    .map {
+                        Observable.defer {
+                            try {
+                                return@defer this.stripe.retrieveSetupIntentSynchronous(it)
+                            } catch (t: Throwable) {
+
+                            }
+
+                        }
+                    }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showSCAFlow)
 
             val updatePaymentClick = pledgeReason
                     .compose<Pair<PledgeReason, String>>(takePairWhen(this.pledgeButtonClicked))
@@ -914,7 +940,6 @@ interface PledgeFragmentViewModel {
                     .compose(neverError())
         }
 
-        data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?, val refTag: RefTag?)
         data class UpdateBacking(val backing: Backing, val amount: String, val locationId: String?, val reward: Reward?)
         data class UpdateBackingPayment(val backing: Backing, val paymentSourceId: String)
 
@@ -1054,6 +1079,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun showPledgeSuccess(): Observable<Void> = this.showPledgeSuccess
+
+        @NonNull
+        override fun showSCAFlow(): Observable<String> = this.showSCAFlow
 
         @NonNull
         override fun showUpdatePaymentError(): Observable<Void> = this.showUpdatePaymentError

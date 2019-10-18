@@ -20,9 +20,9 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
-import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
+import com.kickstarter.models.mutations.CreateBacking
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState
@@ -61,19 +61,19 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?, refTag: RefTag?): Observable<Boolean> {
+    override fun createBacking(createBacking: CreateBacking): Observable<Checkout?> {
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()
-                    .projectId(encodeRelayId(project))
-                    .amount(amount)
+                    .projectId(encodeRelayId(createBacking.project))
+                    .amount(createBacking.amount)
                     .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
-                    .paymentSourceId(paymentSourceId)
-                    .locationId(locationId?.let { it })
-                    .rewardId(reward?.let { encodeRelayId(it) })
-                    .refParam(refTag?.tag())
+                    .paymentSourceId(createBacking.paymentSourceId)
+                    .locationId(createBacking.locationId?.let { it })
+                    .rewardId(createBacking.reward?.let { encodeRelayId(it) })
+                    .refParam(createBacking.refTag?.tag())
                     .build()
 
-            val ps = PublishSubject.create<Boolean>()
+            val ps = PublishSubject.create<Checkout?>()
 
             this.service.mutate(createBackingMutation)
                     .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
@@ -85,9 +85,18 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
-                            val state = response.data()?.createBacking()?.checkout()?.state()
-                            val success = state == CheckoutState.SUCCESSFUL
-                            ps.onNext(success)
+
+                            val checkoutPayload = response.data()?.createBacking()?.checkout()
+                            val backing = Checkout.Backing.builder()
+                                    .clientSecret(checkoutPayload?.backing()?.clientSecret())
+                                    .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
+                                    .build()
+                            val checkout = Checkout.builder()
+                                    .backing(backing)
+                                    .state(checkoutPayload?.state()?.rawValue()?: CheckoutState.`$UNKNOWN`.rawValue())
+                                    .build()
+
+                            ps.onNext(checkout)
                             ps.onCompleted()
                         }
                     })
@@ -464,3 +473,5 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
         }
     }
 }
+
+

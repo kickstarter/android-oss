@@ -44,6 +44,9 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
+import com.stripe.android.model.ConfirmPaymentIntentParams
+import com.stripe.android.model.ConfirmSetupIntentParams
+import com.stripe.android.model.PaymentMethodCreateParams
 import com.stripe.android.view.StripeEditText
 import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.project_layout.*
@@ -406,6 +409,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun pledgeSuccessfullyUpdated() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
+    }
+
+    override fun showSCAFlow(clientSecret: String) {
+        val stripe = environment().stripe()
+
+        stripe.confirmSetupIntent(this, ConfirmSetupIntentParams.create(PaymentMethodCreateParams.create()).create(clientSecret) )
     }
 
     override fun cardSaved(storedCard: StoredCard) {

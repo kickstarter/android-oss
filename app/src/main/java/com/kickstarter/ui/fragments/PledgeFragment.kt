@@ -74,6 +74,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         fun pledgePaymentSuccessfullyUpdated()
         fun pledgeSuccessfullyCreated()
         fun pledgeSuccessfullyUpdated()
+        fun showSCAFlow(clientSecret: String)
     }
 
     private val defaultAnimationDuration = 200L
@@ -318,6 +319,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated() }
+
+        this.viewModel.outputs.showSCAFlow()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { (activity as PledgeDelegate?)?.showSCAFlow(it) }
 
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())

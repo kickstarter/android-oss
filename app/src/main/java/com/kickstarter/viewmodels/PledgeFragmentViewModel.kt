@@ -575,10 +575,6 @@ interface PledgeFragmentViewModel {
                     .map { it.first + it.second }
                     .distinctUntilChanged()
 
-            val currencyMinimum = country
-                    .map { it.minPledge.toDouble() }
-                    .distinctUntilChanged()
-
             val currencyMaximum = country
                     .map { it.maxPledge.toDouble() }
                     .distinctUntilChanged()
@@ -586,9 +582,6 @@ interface PledgeFragmentViewModel {
             val pledgeMaximum = currencyMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first - it.second }
-
-            val minAndMaxPledge = minimumPledge
-                    .compose<Pair<Double, Double>>(combineLatestPair(pledgeMaximum))
 
             val minAndMaxTotal = minimumPledge
                     .compose<Pair<Double, Double>>(combineLatestPair(currencyMaximum))

@@ -481,7 +481,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeMaximumIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
@@ -516,7 +516,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeMaximumIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
@@ -1195,7 +1195,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.additionalPledgeAmount.assertValue("$0")
         this.additionalPledgeAmountIsGone.assertValue(true)
         this.decreasePledgeButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(false)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+
+        this.vm.inputs.increasePledgeButtonClicked()
+
+        this.additionalPledgeAmount.assertValuesAndClear("$0", "$1")
+        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false, true)
+        this.increasePledgeButtonIsEnabled.assertValuesAndClear(true, false)
+        this.additionalPledgeAmountIsGone.assertValuesAndClear(true, false)
     }
 
     @Test
@@ -1209,7 +1216,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.additionalPledgeAmount.assertValue("MX$ 0")
         this.additionalPledgeAmountIsGone.assertValue(true)
         this.decreasePledgeButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(false)
+        this.increasePledgeButtonIsEnabled.assertValue(true)
+
+        this.vm.inputs.increasePledgeButtonClicked()
+
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 10")
+        this.additionalPledgeAmountIsGone.assertValues(true, false)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
     }
 
     @Test

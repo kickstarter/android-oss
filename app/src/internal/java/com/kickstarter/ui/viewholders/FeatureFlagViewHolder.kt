@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.FeatureFlagViewHolderViewModel
-import kotlinx.android.synthetic.main.item_feature_flag.view.*
+import kotlinx.android.synthetic.internal.item_feature_flag.view.*
 
 class FeatureFlagViewHolder(val view: View) : KSViewHolder(view) {
 

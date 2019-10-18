@@ -1,6 +1,5 @@
 package com.kickstarter;
 
-import com.kickstarter.ui.activities.FeatureFlagActivity;
 import com.kickstarter.ui.activities.InternalToolsActivity;
 import com.kickstarter.ui.views.DebugPushNotificationsView;
 
@@ -13,5 +12,4 @@ import dagger.Component;
 public interface ApplicationComponent extends ApplicationGraph {
   void inject(DebugPushNotificationsView __);
   void inject(InternalToolsActivity __);
-  void inject(FeatureFlagActivity __);
 }

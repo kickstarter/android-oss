@@ -21,7 +21,6 @@ import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -207,6 +206,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { pledge_amount.hint = it }
 
+        this.viewModel.outputs.pledgeMaximum()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setPledgeMaximumText(it) }
+
+        this.viewModel.outputs.pledgeMaximumIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setInvisible(pledge_maximum, it) }
+
         this.viewModel.outputs.pledgeMinimum()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -373,10 +382,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
 
-        this.viewModel.outputs.showMinimumWarning()
+        this.viewModel.outputs.pledgeButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { showPledgeWarning(it) }
+                .subscribe { enablePledgeButton(it) }
+
+        this.viewModel.outputs.continueButtonIsEnabled()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { continue_to_tout.isEnabled = it }
 
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
@@ -459,6 +473,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         adapter.populateShippingRules(shippingRules, project)
     }
 
+    private fun enablePledgeButton(enabled: Boolean) {
+        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
+        rewardCardAdapter.setPledgeEnabled(enabled)
+    }
+
     private fun relativeTop(view: View, parent: ViewGroup): Int {
         val offsetViewBounds = Rect()
         view.getDrawingRect(offsetViewBounds)
@@ -477,6 +496,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             pledge_symbol_start.text = null
             pledge_symbol_end.text = symbol
         }
+    }
+
+    private fun setPledgeMaximumText(maximumAmount: String) {
+        val ksString = this.viewModel.environment.ksString()
+        pledge_maximum.text = ksString.format(getString(R.string.The_maximum_pledge_is_max_pledge), "max_pledge", maximumAmount)
     }
 
     private fun setPledgeMinimumText(minimumAmount: String) {
@@ -571,21 +595,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)
 
         setClickableHtml(accountabilityWithUrls, accountability)
-    }
-
-    private fun showPledgeWarning(rewardMinimum: String) {
-        context?.apply {
-            val ksString = (this.applicationContext as KSApplication).component().environment().ksString()
-            val message = ksString.format(getString(R.string.You_need_to_pledge_at_least_reward_minimum_for_this_reward),
-                    "reward_minimum", rewardMinimum)
-
-            val dialog = AlertDialog.Builder(this, R.style.Dialog)
-                    .setMessage(message)
-                    .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ ->  dialog.dismiss()}
-                    .create()
-
-            dialog.show()
-        }
     }
 
     private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {

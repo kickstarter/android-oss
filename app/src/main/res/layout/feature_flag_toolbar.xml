@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/activity_feature_flag"
+  tools:showIn="@layout/activity_feature_flags"
   style="@style/Toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">

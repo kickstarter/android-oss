@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.ui.viewmodels.PlaygroundViewModel;
+import com.kickstarter.viewmodels.PlaygroundViewModel;
 
 import androidx.annotation.Nullable;
 

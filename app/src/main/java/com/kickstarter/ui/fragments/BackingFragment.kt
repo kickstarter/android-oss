@@ -54,10 +54,10 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { setCardLastFourText(it) }
 
-        this.viewModel.outputs.cardIsGone()
+        this.viewModel.outputs.paymentMethodIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(card_details, it) }
+                .subscribe { ViewUtils.setGone(payment_method, it) }
 
         this.viewModel.outputs.projectAndReward()
                 .compose(bindToLifecycle())

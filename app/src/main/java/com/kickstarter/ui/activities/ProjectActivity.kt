@@ -408,12 +408,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 
-    override fun showSCAFlow(clientSecret: String) {
-        val stripe = environment().stripe()
-
-        stripe.authenticateSetup(this, clientSecret)
-    }
-
     override fun cardSaved(storedCard: StoredCard) {
         val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
         pledgeFragment?.cardAdded(storedCard)
@@ -603,9 +597,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
         pledge_container_root.y = (root.height - guideline).toFloat()
-        val params = pledge_container_root.layoutParams
-        params.height = root.height
-        pledge_container_root.layoutParams = params
     }
 
     private fun showBackingFragment(project: Project) {

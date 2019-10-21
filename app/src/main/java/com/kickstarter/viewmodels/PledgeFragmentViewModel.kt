@@ -22,7 +22,6 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
-import com.stripe.android.Stripe
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -76,6 +75,12 @@ interface PledgeFragmentViewModel {
 
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
+
+        /** Call when Stripe SCA is successful. */
+        fun stripeSetupResultSuccessful()
+
+        /** Call when Stripe SCA is unsuccessful. */
+        fun stripeSetupResultUnsuccessful(exception: Exception)
 
         /** Call when user clicks the update pledge button. */
         fun updatePledgeButtonClicked()
@@ -259,6 +264,8 @@ interface PledgeFragmentViewModel {
         private val pledgeInput = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
+        private val stripeSetupResultSuccessful = PublishSubject.create<Void>()
+        private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
         private val updatePledgeButtonClicked = PublishSubject.create<Void>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
@@ -322,7 +329,6 @@ interface PledgeFragmentViewModel {
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
-        private val stripe: Stripe = environment.stripe()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -856,9 +862,12 @@ interface PledgeFragmentViewModel {
                     }
                     .share()
 
-            createBackingNotification
-                    .compose(errors())
-                    .compose(ignoreValues())
+            val createBackingError = Observable.merge(this.stripeSetupResultUnsuccessful,
+                    createBackingNotification
+                            .compose(errors())
+                            .compose(ignoreValues()))
+
+            createBackingError
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.showPledgeError.onNext(null)
@@ -868,10 +877,13 @@ interface PledgeFragmentViewModel {
             val createBackingValues = createBackingNotification
                     .compose(values())
 
-            createBackingValues
-                    .map { it.backing().requiresAction() }
-                    .filter { BooleanUtils.isFalse(it) }
-                    .compose(ignoreValues())
+            val createBackingSuccess = Observable.merge(this.stripeSetupResultSuccessful,
+                    createBackingValues
+                            .map { it.backing().requiresAction() }
+                            .filter { BooleanUtils.isFalse(it) }
+                            .compose(ignoreValues()))
+
+            createBackingSuccess
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeSuccess)
 
@@ -1004,9 +1016,13 @@ interface PledgeFragmentViewModel {
 
         override fun pledgeButtonClicked(cardId: String) = this.pledgeButtonClicked.onNext(cardId)
 
+        override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
+
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
-        override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
+        override fun stripeSetupResultSuccessful() = this.stripeSetupResultSuccessful.onNext(null)
+
+        override fun stripeSetupResultUnsuccessful(exception: Exception) = this.stripeSetupResultUnsuccessful.onNext(exception)
 
         override fun updatePledgeButtonClicked() = this.updatePledgeButtonClicked.onNext(null)
 

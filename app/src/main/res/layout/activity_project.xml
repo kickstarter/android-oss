@@ -34,7 +34,7 @@
     android:id="@+id/pledge_container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/reward_fragment_guideline_constraint_end"
+    android:layout_marginTop="1px"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/card_container_radius"
     app:cardElevation="@dimen/grid_2"

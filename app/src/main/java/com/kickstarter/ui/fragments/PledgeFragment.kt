@@ -55,6 +55,8 @@ import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
+import com.stripe.android.ApiResultCallback
+import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_delivery.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
@@ -73,7 +75,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         fun pledgePaymentSuccessfullyUpdated()
         fun pledgeSuccessfullyCreated()
         fun pledgeSuccessfullyUpdated()
-        fun showSCAFlow(clientSecret: String)
     }
 
     private val defaultAnimationDuration = 200L
@@ -332,7 +333,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showSCAFlow()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { (activity as PledgeDelegate?)?.showSCAFlow(it) }
+                .subscribe { this.viewModel.environment.stripe().authenticateSetup(this, it) }
 
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())
@@ -430,6 +431,20 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(update_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.updatePledgeButtonClicked() }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val stripe = this.viewModel.environment.stripe()
+        stripe.onSetupResult(requestCode, data, object : ApiResultCallback<SetupIntentResult> {
+            override fun onSuccess(result: SetupIntentResult) {
+                this@PledgeFragment.viewModel.inputs.stripeSetupResultSuccessful()
+            }
+
+            override fun onError(e: Exception) {
+                this@PledgeFragment.viewModel.inputs.stripeSetupResultUnsuccessful(e)
+            }
+        })
     }
 
     override fun onDetach() {

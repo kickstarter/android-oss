@@ -44,7 +44,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
-import com.stripe.android.view.StripeEditText
+import com.stripe.android.view.CardInputWidget
 import kotlinx.android.synthetic.main.activity_project.*
 import kotlinx.android.synthetic.main.project_layout.*
 import kotlinx.android.synthetic.main.project_toolbar.*
@@ -377,12 +377,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action == MotionEvent.ACTION_DOWN) {
-            var view = currentFocus
-            if (view is EditText) {
+            val view = currentFocus
+            if (view is EditText || view?.parent is CardInputWidget) {
                 val outRect = Rect()
-                if (view is StripeEditText) {
-                    view = view.parent as View
-                }
                 view.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
                     hideKeyboard()

@@ -11,6 +11,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import type.CurrencyCode
 import type.PaymentTypes
@@ -56,11 +57,7 @@ open class MockApolloClient : ApolloClientType {
                 "12345")))
     }
 
-    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
-        return Observable.just(true)
-    }
-
-    override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
+    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
         return Observable.just(true)
     }
 

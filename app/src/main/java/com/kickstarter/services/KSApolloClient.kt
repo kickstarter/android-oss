@@ -291,8 +291,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val updateBackingMutation = UpdateBackingMutation.builder()
                     .backingId(encodeRelayId(updateBacking.backing))
                     .amount(updateBacking.amount)
-                    .locationId(updateBacking.locationId?.let { it })
+                    .locationId(updateBacking.locationId)
                     .rewardId(updateBacking.reward?.let { encodeRelayId(it) })
+                    .paymentSourceId(updateBacking.paymentSourceId)
                     .build()
 
             val ps = PublishSubject.create<Boolean>()

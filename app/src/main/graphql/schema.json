@@ -394,7 +394,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "EditorialToolsConnection",
+                "name": "EditorialConnection",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -631,19 +631,25 @@
             },
             {
               "name": "project",
-              "description": "Fetches a project given its slug.",
+              "description": "Fetches a project given its slug or pid.",
               "args": [
+                {
+                  "name": "pid",
+                  "description": "",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
                 {
                   "name": "slug",
                   "description": "",
                   "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
                   },
                   "defaultValue": null
                 }
@@ -819,6 +825,16 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "recommendationsModel",
+                  "description": "The recommendations model to use",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "RecommendationsModel",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "recommendationsSource",
                   "description": "The source for recommendations.",
                   "type": {
@@ -849,6 +865,16 @@
                 {
                   "name": "similarTo",
                   "description": "Find projects similar to the given project term.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "similarToPid",
+                  "description": "Find projects similar to the given project by pid.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -946,6 +972,24 @@
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "excludeQuizProjectIds",
+                  "description": "Exclude certain quiz projects from the results",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null
                 },
@@ -1332,6 +1376,22 @@
               "deprecationReason": null
             },
             {
+              "name": "convertedAmount",
+              "description": "Desired amount backer has pledged to the project, including the shipping amount, converted to the backer’s chosen currency",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Money",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "errorReason",
               "description": "The reason for an errored backing",
               "args": [],
@@ -1366,6 +1426,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Location",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "paymentSource",
+              "description": "Payment source used on a backing.",
+              "args": [],
+              "type": {
+                "kind": "UNION",
+                "name": "PaymentSource",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -1409,7 +1481,7 @@
             },
             {
               "name": "requiresAction",
-              "description": "Whether this checkout requires additional client-side authentication steps (e.g. 3DS2)",
+              "description": "Whether this checkout requires additional client-side authentication steps\n(e.g. 3DS2) to complete the on-session pledge flow",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -3163,6 +3235,26 @@
                   "defaultValue": null
                 },
                 {
+                  "name": "deadlineAfter",
+                  "description": "Get saved projects with deadlines after this date",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "DateTime",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "deadlineBefore",
+                  "description": "Get saved projects with deadlines before this date",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "DateTime",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "first",
                   "description": "Returns the first _n_ elements from the list.",
                   "type": {
@@ -3546,6 +3638,18 @@
                   "name": "UsedCreatorInvitationsConnection",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "vizNotification",
+              "description": "Is the user opted in to receive a notification about visualizations",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -4515,8 +4619,40 @@
               "deprecationReason": null
             },
             {
+              "name": "isDisliked",
+              "description": "Has the current user disliked this project?",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "isLaunched",
               "description": "The project has launched",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "isLiked",
+              "description": "Has the current user liked this project?",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -4999,6 +5135,22 @@
               "deprecationReason": null
             },
             {
+              "name": "showCtaToLiveProjects",
+              "description": "Whether or not to show ended to live cta",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "slug",
               "description": "The project's unique URL identifier.",
               "args": [],
@@ -5010,6 +5162,18 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "spreadsheet",
+              "description": "The URL of the Google Sheet associated to this project",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -5143,6 +5307,30 @@
               "deprecationReason": null
             },
             {
+              "name": "targetLaunchDate",
+              "description": "The project's target launch date",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ISO8601DateTime",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "targetLaunchDateUpdatedAt",
+              "description": "The time that the project's target launch date was updated",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "ISO8601DateTime",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "timeline",
               "description": "The timeline of project events, including updates and milestones.",
               "args": [
@@ -5182,6 +5370,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "withPinnedFirst",
+                  "description": "Makes any pinned post the first item in the timeline",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   },
                   "defaultValue": null
@@ -14416,6 +14614,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "ISO8601DateTime",
+          "description": "An ISO 8601-encoded datetime",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "ProjectTimelineConnection",
           "description": "The connection type for ProjectTimelineEvent.",
@@ -16582,6 +16790,12 @@
           "inputFields": null,
           "interfaces": null,
           "enumValues": [
+            {
+              "name": "authentication_required",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "canceled",
               "description": "",
@@ -23407,6 +23621,12 @@
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "vestigial",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -24548,12 +24768,6 @@
               "deprecationReason": null
             },
             {
-              "name": "creator_resources_migration",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "default_to_campaign_on_mobile",
               "description": "",
               "isDeprecated": false,
@@ -24608,19 +24822,31 @@
               "deprecationReason": null
             },
             {
+              "name": "fulfillment_dashboard_beta_message",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "funding_build",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "funding_calculator",
+              "name": "funding_sheet",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "identity_verification_project_overview",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "image_uploader_alt_text",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24776,13 +25002,13 @@
               "deprecationReason": null
             },
             {
-              "name": "new_payments_ui_project_build",
+              "name": "new_payments_ui_refunds",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "new_payments_ui_refunds",
+              "name": "new_payments_ui_render_on_native",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24806,19 +25032,25 @@
               "deprecationReason": null
             },
             {
+              "name": "new_project_feedback",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "new_project_preview",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "pinned_posts",
+              "name": "pinned_posts_on_feed",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "posts_feed",
+              "name": "positive_negative_signal",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24830,19 +25062,43 @@
               "deprecationReason": null
             },
             {
+              "name": "profile_projects_react",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "project_build_claims_detection",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "refresh",
+              "name": "project_build_rewards_explorer",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "sca_pledge_flow",
+              "name": "project_build_zendesk",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "remind_me_bookmark",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rich_text_embedifier",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rich_text_survey_intro_editor",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -24855,6 +25111,18 @@
             },
             {
               "name": "sca_recovery_flow",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stripe_document_upload",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "target_launch_date",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -25454,6 +25722,22 @@
             {
               "name": "musicNewsletter",
               "description": "The subscription to the MusicNewsletter newsletter",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "projectsYoullLoveNewsletter",
+              "description": "The subscription to the ProjectsYoullLoveNewsletter newsletter",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -26135,9 +26419,13 @@
               "description": "The last four digits of the account number.",
               "args": [],
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -26814,6 +27102,27 @@
           "possibleTypes": null
         },
         {
+          "kind": "UNION",
+          "name": "PaymentSource",
+          "description": "Payment sources",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "BankAccount",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "CreditCard",
+              "ofType": null
+            }
+          ]
+        },
+        {
           "kind": "OBJECT",
           "name": "Checkout",
           "description": "Intermediary set of changes that have yet to be applied to a backing",
@@ -26920,6 +27229,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "redirectUrl",
+              "description": "The URL to redirect to on a successful checkout",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 }
               },
@@ -27391,8 +27716,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "EditorialToolsConnection",
-          "description": "The connection type for EditorialTools.",
+          "name": "EditorialConnection",
+          "description": "The connection type for Editorial.",
           "fields": [
             {
               "name": "edges",
@@ -27403,7 +27728,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "EditorialToolsEdge",
+                  "name": "EditorialEdge",
                   "ofType": null
                 }
               },
@@ -27419,7 +27744,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "UNION",
-                  "name": "EditorialTools",
+                  "name": "Editorial",
                   "ofType": null
                 }
               },
@@ -27466,7 +27791,7 @@
         },
         {
           "kind": "OBJECT",
-          "name": "EditorialToolsEdge",
+          "name": "EditorialEdge",
           "description": "An edge in a connection.",
           "fields": [
             {
@@ -27491,7 +27816,7 @@
               "args": [],
               "type": {
                 "kind": "UNION",
-                "name": "EditorialTools",
+                "name": "Editorial",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -27505,7 +27830,7 @@
         },
         {
           "kind": "UNION",
-          "name": "EditorialTools",
+          "name": "Editorial",
           "description": "Editorial tool to create and modify content modules on discovery pages",
           "fields": null,
           "inputFields": null,
@@ -27525,6 +27850,11 @@
             {
               "kind": "OBJECT",
               "name": "Header",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "MastheadImage",
               "ofType": null
             },
             {
@@ -28159,6 +28489,69 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MastheadImage",
+          "description": "A masthead image with text for an editorial layout.",
+          "fields": [
+            {
+              "name": "header",
+              "description": "The header text overlaying the masthead image.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "imageUrl",
+              "description": "The url for the backgrorund image of the masthead.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "subheader",
+              "description": "The smaller subheader text overlaying the masthead image.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -29212,6 +29605,35 @@
         },
         {
           "kind": "ENUM",
+          "name": "RecommendationsModel",
+          "description": "What model to use for project recommendations",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "BLEND",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CF",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LSI",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
           "name": "RecommendationsSource",
           "description": "What source to use for project recommendations",
           "fields": null,
@@ -29974,6 +30396,33 @@
               "deprecationReason": null
             },
             {
+              "name": "applyPaymentSourceToCheckout",
+              "description": "Given a checkout that already exists, this mutation just applies a specific\npayment source to its backing. That's it! If you need to create a checkout and\nbacking from scratch, use CreateBackingType.",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "ApplyPaymentSourceToCheckoutInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ApplyPaymentSourceToCheckoutPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "attachThankYouMedia",
               "description": "Attaching thank you media to a drop",
               "args": [
@@ -30217,8 +30666,8 @@
               "deprecationReason": null
             },
             {
-              "name": "createApplePayCheckout",
-              "description": "Create a checkout with Apple Pay.",
+              "name": "createApplePayBacking",
+              "description": "[DEPRECATED in favor of CreateBackingType] Create a checkout with Apple Pay.",
               "args": [
                 {
                   "name": "input",
@@ -30228,7 +30677,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "CreateApplePayCheckoutInput",
+                      "name": "CreateApplePayBackingInput",
                       "ofType": null
                     }
                   },
@@ -30237,7 +30686,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "CreateApplePayCheckoutPayload",
+                "name": "CreateApplePayBackingPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -30525,7 +30974,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "CreateEditorialToolsLayoutTypeInput",
+                      "name": "CreateEditorialLayoutTypeInput",
                       "ofType": null
                     }
                   },
@@ -30534,7 +30983,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "CreateEditorialToolsLayoutTypePayload",
+                "name": "CreateEditorialLayoutTypePayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -30595,8 +31044,8 @@
               "deprecationReason": null
             },
             {
-              "name": "createGooglePayCheckout",
-              "description": "Create a checkout with Google Pay.",
+              "name": "createGooglePayBacking",
+              "description": "[DEPRECATED in favor of CreateBackingType] Create a checkout with Google Pay.",
               "args": [
                 {
                   "name": "input",
@@ -30606,7 +31055,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "CreateGooglePayCheckoutInput",
+                      "name": "CreateGooglePayBackingInput",
                       "ofType": null
                     }
                   },
@@ -30615,7 +31064,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "CreateGooglePayCheckoutPayload",
+                "name": "CreateGooglePayBackingPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -30886,6 +31335,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CreateRewardItemPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createSheetForProject",
+              "description": "Creates a copy of the master Sheet and shares it with the project owner",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "CreateSheetForProjectInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CreateSheetForProjectPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -31432,7 +31908,7 @@
               "deprecationReason": null
             },
             {
-              "name": "dislikeQuizProject",
+              "name": "dislikeProject",
               "description": "Adds disliked projects to a users taste profile",
               "args": [
                 {
@@ -31443,7 +31919,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "DislikeQuizProjectInput",
+                      "name": "DislikeProjectInput",
                       "ofType": null
                     }
                   },
@@ -31452,7 +31928,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "DislikeQuizProjectPayload",
+                "name": "DislikeProjectPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -31642,6 +32118,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "LikePostPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "likeProject",
+              "description": "Adds a like for the passed in project to the user's taste profile",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "LikeProjectInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "LikeProjectPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -31875,7 +32378,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "PublishEditorialToolsLayoutTypeInput",
+                      "name": "PublishEditorialLayoutTypeInput",
                       "ofType": null
                     }
                   },
@@ -31884,7 +32387,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "PublishEditorialToolsLayoutTypePayload",
+                "name": "PublishEditorialLayoutTypePayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -31972,6 +32475,33 @@
               "deprecationReason": null
             },
             {
+              "name": "removeSheetFromProject",
+              "description": "Removes the spreadsheet associated to a project",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "RemoveSheetFromProjectInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "RemoveSheetFromProjectPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "removeThankYouMedia",
               "description": "Removing thank you media from a drop",
               "args": [
@@ -32047,33 +32577,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "RequestPasswordResetPayload",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "retryPayment",
-              "description": "",
-              "args": [
-                {
-                  "name": "input",
-                  "description": "",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "RetryPaymentInput",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "RetryPaymentPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -32469,7 +32972,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "INPUT_OBJECT",
-                      "name": "TranslateEditorialToolsLayoutTypeInput",
+                      "name": "TranslateEditorialLayoutTypeInput",
                       "ofType": null
                     }
                   },
@@ -32478,7 +32981,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "TranslateEditorialToolsLayoutTypePayload",
+                "name": "TranslateEditorialLayoutTypePayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -32506,6 +33009,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UnblockDripSubscriberPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "undislikeProject",
+              "description": "Removes a like for the passed in project from the user's taste profile",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UndislikeProjectInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UndislikeProjectPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -32587,6 +33117,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UnlikePostPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "unlikeProject",
+              "description": "Removes a like for the passed in project from the user's taste profile",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UnlikeProjectInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UnlikeProjectPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -33403,6 +33960,33 @@
               "deprecationReason": null
             },
             {
+              "name": "updateVizNotificationUserSetting",
+              "description": "Update user's viz_notification usersetting",
+              "args": [
+                {
+                  "name": "input",
+                  "description": "",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UpdateVizNotificationUserSettingInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpdateVizNotificationUserSettingPayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userSendEmailVerification",
               "description": "send email verification",
               "args": [
@@ -33591,6 +34175,94 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Project",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "ApplyPaymentSourceToCheckoutInput",
+          "description": "Autogenerated input type of ApplyPaymentSourceToCheckout",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "checkoutId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "paymentSourceId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ApplyPaymentSourceToCheckoutPayload",
+          "description": "Autogenerated return type of ApplyPaymentSourceToCheckout",
+          "fields": [
+            {
+              "name": "checkout",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Checkout",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -34522,8 +35194,8 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "CreateApplePayCheckoutInput",
-          "description": "Autogenerated input type of CreateApplePayCheckout",
+          "name": "CreateApplePayBackingInput",
+          "description": "Autogenerated input type of CreateApplePayBacking",
           "fields": null,
           "inputFields": [
             {
@@ -34551,7 +35223,7 @@
               "description": "",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null
@@ -34592,9 +35264,19 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "String",
+                  "name": "ID",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "refParam",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -34603,7 +35285,7 @@
               "description": "",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "ID",
                 "ofType": null
               },
               "defaultValue": null
@@ -34643,8 +35325,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "CreateApplePayCheckoutPayload",
-          "description": "Autogenerated return type of CreateApplePayCheckout",
+          "name": "CreateApplePayBackingPayload",
+          "description": "Autogenerated return type of CreateApplePayBacking",
           "fields": [
             {
               "name": "checkout",
@@ -34847,11 +35529,31 @@
               "defaultValue": null
             },
             {
+              "name": "applePay",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ApplePayInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "googlePay",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "GooglePayInput",
                 "ofType": null
               },
               "defaultValue": null
@@ -34870,13 +35572,9 @@
               "name": "paymentSourceId",
               "description": "",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -34884,13 +35582,9 @@
               "name": "paymentType",
               "description": "",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -34925,6 +35619,140 @@
                 "kind": "SCALAR",
                 "name": "ID",
                 "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "ApplePayInput",
+          "description": "Necessary fields for Apple Pay",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "paymentInstrumentName",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "paymentNetwork",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "token",
+              "description": "Stripe token",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "transactionIdentifier",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "GooglePayInput",
+          "description": "Necessary fields for Google Pay",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "googleTransactionId",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "instrumentDetails",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "instrumentType",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "token",
+              "description": "Stripe token",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             }
@@ -35768,8 +36596,8 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "CreateEditorialToolsLayoutTypeInput",
-          "description": "Autogenerated input type of CreateEditorialToolsLayoutType",
+          "name": "CreateEditorialLayoutTypeInput",
+          "description": "Autogenerated input type of CreateEditorialLayoutType",
           "fields": null,
           "inputFields": [
             {
@@ -35925,6 +36753,12 @@
               "deprecationReason": null
             },
             {
+              "name": "MastheadImage",
+              "description": "MastheadImage",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "NewsCollection",
               "description": "NewsCollection",
               "isDeprecated": false,
@@ -35953,8 +36787,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "CreateEditorialToolsLayoutTypePayload",
-          "description": "Autogenerated return type of CreateEditorialToolsLayoutType",
+          "name": "CreateEditorialLayoutTypePayload",
+          "description": "Autogenerated return type of CreateEditorialLayoutType",
           "fields": [
             {
               "name": "clientMutationId",
@@ -36085,7 +36919,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "EditorialToolsConnection",
+                  "name": "EditorialConnection",
                   "ofType": null
                 }
               },
@@ -36324,8 +37158,8 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "CreateGooglePayCheckoutInput",
-          "description": "Autogenerated input type of CreateGooglePayCheckout",
+          "name": "CreateGooglePayBackingInput",
+          "description": "Autogenerated input type of CreateGooglePayBacking",
           "fields": null,
           "inputFields": [
             {
@@ -36395,7 +37229,7 @@
               "description": "",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null
@@ -36408,9 +37242,19 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "String",
+                  "name": "ID",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "refParam",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -36419,7 +37263,7 @@
               "description": "",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "ID",
                 "ofType": null
               },
               "defaultValue": null
@@ -36445,8 +37289,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "CreateGooglePayCheckoutPayload",
-          "description": "Autogenerated return type of CreateGooglePayCheckout",
+          "name": "CreateGooglePayBackingPayload",
+          "description": "Autogenerated return type of CreateGooglePayBacking",
           "fields": [
             {
               "name": "checkout",
@@ -37813,6 +38657,86 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "CreateSheetForProjectInput",
+          "description": "Autogenerated input type of CreateSheetForProject",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "email",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CreateSheetForProjectPayload",
+          "description": "Autogenerated return type of CreateSheetForProject",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sheetsUrl",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "CreateUserSlugInput",
           "description": "Autogenerated input type of CreateUserSlug",
           "fields": null,
@@ -38377,6 +39301,11 @@
             {
               "kind": "OBJECT",
               "name": "FreeformPost",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "InterviewAnswer",
               "ofType": null
             },
             {
@@ -39338,8 +40267,8 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "DislikeQuizProjectInput",
-          "description": "Autogenerated input type of DislikeQuizProject",
+          "name": "DislikeProjectInput",
+          "description": "Autogenerated input type of DislikeProject",
           "fields": null,
           "inputFields": [
             {
@@ -39353,23 +40282,15 @@
               "defaultValue": null
             },
             {
-              "name": "quizProjectIds",
-              "description": "The ids of the quiz projects that the user has disliked",
+              "name": "id",
+              "description": "The id of the project that the user has disliked",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "ID",
-                      "ofType": null
-                    }
-                  }
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
                 }
               },
               "defaultValue": null
@@ -39381,8 +40302,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "DislikeQuizProjectPayload",
-          "description": "Autogenerated return type of DislikeQuizProject",
+          "name": "DislikeProjectPayload",
+          "description": "Autogenerated return type of DislikeProject",
           "fields": [
             {
               "name": "clientMutationId",
@@ -39397,12 +40318,24 @@
               "deprecationReason": null
             },
             {
-              "name": "success",
+              "name": "project",
               "description": "",
               "args": [],
               "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
+                "kind": "OBJECT",
+                "name": "Project",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -39960,6 +40893,88 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "LikeProjectInput",
+          "description": "Autogenerated input type of LikeProject",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "The id of the project that the user has liked",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "LikeProjectPayload",
+          "description": "Autogenerated return type of LikeProject",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "LikeQuizProjectInput",
           "description": "Autogenerated input type of LikeQuizProject",
           "fields": null,
@@ -40407,8 +41422,8 @@
               "description": "",
               "args": [],
               "type": {
-                "kind": "OBJECT",
-                "name": "FreeformPost",
+                "kind": "INTERFACE",
+                "name": "Postable",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -40487,8 +41502,8 @@
               "description": "",
               "args": [],
               "type": {
-                "kind": "OBJECT",
-                "name": "FreeformPost",
+                "kind": "INTERFACE",
+                "name": "Postable",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -40572,8 +41587,8 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "PublishEditorialToolsLayoutTypeInput",
-          "description": "Autogenerated input type of PublishEditorialToolsLayoutType",
+          "name": "PublishEditorialLayoutTypeInput",
+          "description": "Autogenerated input type of PublishEditorialLayoutType",
           "fields": null,
           "inputFields": [
             {
@@ -40621,8 +41636,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "PublishEditorialToolsLayoutTypePayload",
-          "description": "Autogenerated return type of PublishEditorialToolsLayoutType",
+          "name": "PublishEditorialLayoutTypePayload",
+          "description": "Autogenerated return type of PublishEditorialLayoutType",
           "fields": [
             {
               "name": "clientMutationId",
@@ -40991,6 +42006,76 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "RemoveSheetFromProjectInput",
+          "description": "Autogenerated input type of RemoveSheetFromProject",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "RemoveSheetFromProjectPayload",
+          "description": "Autogenerated return type of RemoveSheetFromProject",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sheetsUrl",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "RemoveThankYouMediaInput",
           "description": "Autogenerated input type of RemoveThankYouMedia",
           "fields": null,
@@ -41285,102 +42370,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Email",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "RetryPaymentInput",
-          "description": "Autogenerated input type of RetryPayment",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "checkoutId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "paymentSourceId",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "RetryPaymentPayload",
-          "description": "Autogenerated return type of RetryPayment",
-          "fields": [
-            {
-              "name": "checkout",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Checkout",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "clientMutationId",
-              "description": "A unique identifier for the client performing the mutation.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "redirectUrl",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -43299,8 +44288,8 @@
         },
         {
           "kind": "INPUT_OBJECT",
-          "name": "TranslateEditorialToolsLayoutTypeInput",
-          "description": "Autogenerated input type of TranslateEditorialToolsLayoutType",
+          "name": "TranslateEditorialLayoutTypeInput",
+          "description": "Autogenerated input type of TranslateEditorialLayoutType",
           "fields": null,
           "inputFields": [
             {
@@ -43348,8 +44337,8 @@
         },
         {
           "kind": "OBJECT",
-          "name": "TranslateEditorialToolsLayoutTypePayload",
-          "description": "Autogenerated return type of TranslateEditorialToolsLayoutType",
+          "name": "TranslateEditorialLayoutTypePayload",
+          "description": "Autogenerated return type of TranslateEditorialLayoutType",
           "fields": [
             {
               "name": "clientMutationId",
@@ -43428,6 +44417,88 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UndislikeProjectInput",
+          "description": "Autogenerated input type of UndislikeProject",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "The id of the project that the user has un-disliked",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UndislikeProjectPayload",
+          "description": "Autogenerated return type of UndislikeProject",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -43650,6 +44721,88 @@
               "type": {
                 "kind": "INTERFACE",
                 "name": "Postable",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UnlikeProjectInput",
+          "description": "Autogenerated input type of UnlikeProject",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "id",
+              "description": "The id of the project that the user has unliked",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UnlikeProjectPayload",
+          "description": "Autogenerated return type of UnlikeProject",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "user",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "User",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -44068,6 +45221,16 @@
                 }
               },
               "defaultValue": null
+            },
+            {
+              "name": "trackingContext",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,
@@ -44285,13 +45448,19 @@
               "name": "amount",
               "description": "",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "applePay",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ApplePayInput",
+                "ofType": null
               },
               "defaultValue": null
             },
@@ -44301,6 +45470,16 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "googlePay",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "GooglePayInput",
                 "ofType": null
               },
               "defaultValue": null
@@ -44324,7 +45503,17 @@
               "description": "",
               "type": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "paymentSourceId",
+              "description": "new payment source id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               },
               "defaultValue": null
@@ -44349,22 +45538,6 @@
           "name": "UpdateBackingPayload",
           "description": "Autogenerated return type of UpdateBacking",
           "fields": [
-            {
-              "name": "backing",
-              "description": "",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Backing",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
             {
               "name": "checkout",
               "description": "",
@@ -44402,11 +45575,31 @@
           "fields": null,
           "inputFields": [
             {
+              "name": "applePay",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ApplePayInput",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "clientMutationId",
               "description": "A unique identifier for the client performing the mutation.",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "googlePay",
+              "description": "",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "GooglePayInput",
                 "ofType": null
               },
               "defaultValue": null
@@ -44429,13 +45622,9 @@
               "name": "paymentSourceId",
               "description": "new payment source id",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             }
@@ -44501,19 +45690,15 @@
               "name": "answers",
               "description": "",
               "type": {
-                "kind": "NON_NULL",
+                "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "LIST",
+                  "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "InterviewAnswerInput",
-                      "ofType": null
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "InterviewAnswerInput",
+                    "ofType": null
                   }
                 }
               },
@@ -44540,6 +45725,26 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "public",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "title",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             }
@@ -45994,6 +47199,16 @@
                 "ofType": null
               },
               "defaultValue": null
+            },
+            {
+              "name": "targetLaunchDate",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "ISO8601DateTime",
+                "ofType": null
+              },
+              "defaultValue": null
             }
           ],
           "interfaces": null,
@@ -46976,20 +48191,6 @@
                 "ofType": null
               },
               "defaultValue": null
-            },
-            {
-              "name": "id",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
             }
           ],
           "interfaces": null,
@@ -47014,17 +48215,79 @@
               "deprecationReason": null
             },
             {
-              "name": "userConfirmedNotice",
+              "name": "user",
               "description": "",
               "args": [],
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "User",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateVizNotificationUserSettingInput",
+          "description": "Autogenerated input type of UpdateVizNotificationUserSetting",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "value",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UpdateVizNotificationUserSettingPayload",
+          "description": "Autogenerated return type of UpdateVizNotificationUserSetting",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "vizNotification",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -47118,6 +48381,16 @@
                   "name": "ID",
                   "ofType": null
                 }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "trackingContext",
+              "description": "",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null
             }

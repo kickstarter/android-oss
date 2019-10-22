@@ -9,7 +9,6 @@ import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
 import UpdateBackingMutation
-import UpdateBackingPaymentMutation
 import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
@@ -23,6 +22,7 @@ import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
+import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState
@@ -286,13 +286,13 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
         return Observable.defer {
             val updateBackingMutation = UpdateBackingMutation.builder()
-                    .backingId(encodeRelayId(backing))
-                    .amount(amount)
-                    .locationId(locationId?.let { it })
-                    .rewardId(reward?.let { encodeRelayId(it) })
+                    .backingId(encodeRelayId(updateBacking.backing))
+                    .amount(updateBacking.amount)
+                    .locationId(updateBacking.locationId?.let { it })
+                    .rewardId(updateBacking.reward?.let { encodeRelayId(it) })
                     .build()
 
             val ps = PublishSubject.create<Boolean>()
@@ -307,36 +307,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
                             val state = response.data()?.updateBacking()?.checkout()?.state()
-                            val success = state == CheckoutState.VERIFYING
-                            ps.onNext(success)
-                            ps.onCompleted()
-                        }
-                    })
-            return@defer ps
-        }
-    }
-
-    override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
-        return Observable.defer {
-            val updateBackingPaymentMutation = UpdateBackingPaymentMutation.builder()
-                    .backingId(encodeRelayId(backing))
-                    .paymentSourceId(paymentSourceId)
-                    .build()
-
-            val ps = PublishSubject.create<Boolean>()
-
-            this.service.mutate(updateBackingPaymentMutation)
-                    .enqueue(object : ApolloCall.Callback<UpdateBackingPaymentMutation.Data>() {
-                        override fun onFailure(exception: ApolloException) {
-                            ps.onError(exception)
-                        }
-
-                        override fun onResponse(response: Response<UpdateBackingPaymentMutation.Data>) {
-                            if (response.hasErrors()) {
-                                ps.onError(java.lang.Exception(response.errors().first().message()))
-                            }
-                            val state = response.data()?.updateBackingPaymentSource()?.checkout()?.state()
-                            val success = state == CheckoutState.VERIFYING
+                            val success = state == CheckoutState.SUCCESSFUL
                             ps.onNext(success)
                             ps.onCompleted()
                         }

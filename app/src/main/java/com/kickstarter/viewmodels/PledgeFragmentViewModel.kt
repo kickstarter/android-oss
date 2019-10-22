@@ -359,7 +359,6 @@ interface PledgeFragmentViewModel {
                     .filter { BackingUtils.isBacked(it.first, it.second) }
                     .map { it.first.backing() }
                     .ofType(Backing::class.java)
-                    .distinctUntilChanged()
 
             // Mini reward card
             Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
@@ -715,7 +714,13 @@ interface PledgeFragmentViewModel {
 
             val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
 
-            val updateBackingNotification = Observable.combineLatest(backing,
+            val backingForMutation = project
+                    .filter { it.isBacking }
+                    .map { it.backing() }
+                    .ofType(Backing::class.java)
+                    .distinctUntilChanged()
+
+            val updateBackingNotification = Observable.combineLatest(backingForMutation,
                     total.map { it.toString() },
                     location.map { it?.id()?.toString() },
                     reward)
@@ -867,7 +872,7 @@ interface PledgeFragmentViewModel {
                     .filter { it.first == PledgeReason.UPDATE_PAYMENT }
                     .map { it.second }
 
-            val updatePaymentNotification = Observable.combineLatest(backing, updatePaymentClick)
+            val updatePaymentNotification = Observable.combineLatest(backingForMutation, updatePaymentClick)
             { b, id -> UpdateBacking(b, paymentSourceId = id) }
                     .switchMap {
                         this.apolloClient.updateBacking(it)

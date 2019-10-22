@@ -22,7 +22,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
-import com.kickstarter.models.mutations.CreateBacking
+import com.kickstarter.services.mutations.CreateBacking
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState

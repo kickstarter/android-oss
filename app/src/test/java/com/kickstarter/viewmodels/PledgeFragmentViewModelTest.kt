@@ -17,7 +17,7 @@ import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.*
-import com.kickstarter.models.mutations.CreateBacking
+import com.kickstarter.services.mutations.CreateBacking
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState

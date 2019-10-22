@@ -14,7 +14,7 @@ import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
-import com.kickstarter.models.mutations.CreateBacking
+import com.kickstarter.services.mutations.CreateBacking
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState

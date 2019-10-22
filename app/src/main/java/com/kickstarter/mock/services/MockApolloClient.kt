@@ -10,7 +10,7 @@ import UserPrivacyQuery
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
-import com.kickstarter.models.mutations.CreateBacking
+import com.kickstarter.services.mutations.CreateBacking
 import com.kickstarter.services.ApolloClientType
 import rx.Observable
 import type.CurrencyCode

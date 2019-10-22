@@ -8,7 +8,7 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.models.*
-import com.kickstarter.models.mutations.CreateBacking
+import com.kickstarter.services.mutations.CreateBacking
 import rx.Observable
 import type.CurrencyCode
 import type.PaymentTypes

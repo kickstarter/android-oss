@@ -1,4 +1,4 @@
-package com.kickstarter.models.mutations
+package com.kickstarter.services.mutations
 
 import com.kickstarter.libs.RefTag
 import com.kickstarter.models.Project

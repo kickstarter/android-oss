@@ -650,7 +650,7 @@ interface PledgeFragmentViewModel {
                     .map { it.first || !RewardUtils.isShippable(it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe{
+                    .subscribe {
                         this.pledgeSummaryIsGone.onNext(it)
                         this.shippingSummaryIsGone.onNext(it)
                     }

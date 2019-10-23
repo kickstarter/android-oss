@@ -226,6 +226,9 @@ interface PledgeFragmentViewModel {
         /** Emits the total amount string of the pledge. */
         fun totalAmount(): Observable<CharSequence>
 
+        /** Emits the total pledge amount in the project's currency and the project's deadline. */
+        fun totalAndDeadline(): Observable<Pair<String, String>>
+
         /** Emits a boolean determining if the divider above the total should be hidden. */
         fun totalDividerIsGone(): Observable<Boolean>
 
@@ -306,6 +309,7 @@ interface PledgeFragmentViewModel {
         private val startRewardExpandAnimation = BehaviorSubject.create<Void>()
         private val startRewardShrinkAnimation = BehaviorSubject.create<PledgeData>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
+        private val totalAndDeadline = BehaviorSubject.create<Pair<String, String>>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
         private val updatePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val updatePledgeButtonIsGone = BehaviorSubject.create<Boolean>()
@@ -556,6 +560,15 @@ interface PledgeFragmentViewModel {
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
+
+            total
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .map { Pair(this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP), it.second) }
+                    .filter { ObjectUtils.isNotNull(it.second.deadline()) }
+                    .map { totalAndProject -> totalAndProject.second.deadline()?.let { Pair(totalAndProject.first, DateTimeUtils.longDate(it)) } }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.totalAndDeadline)
 
             total
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -1136,6 +1149,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun totalAmount(): Observable<CharSequence> = this.totalAmount
+
+        @NonNull
+        override fun totalAndDeadline(): Observable<Pair<String, String>> = this.totalAndDeadline
 
         @NonNull
         override fun totalDividerIsGone(): Observable<Boolean> = this.totalDividerIsGone

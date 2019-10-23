@@ -108,6 +108,22 @@
             layout="@layout/fragment_pledge_section_total"
             tools:visibility="gone" />
 
+          <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_3"
+            android:animateLayoutChanges="true">
+
+            <TextView
+              android:id="@+id/deadline_warning"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline"
+              android:visibility="invisible" />
+
+          </FrameLayout>
+
           <Button
             android:id="@+id/continue_to_tout"
             android:layout_width="match_parent"

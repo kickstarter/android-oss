@@ -323,6 +323,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     total_amount.text = it
                 }
 
+        this.viewModel.outputs.totalAndDeadline()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setDeadlineWarning(it) }
+
         this.viewModel.outputs.showPledgeSuccess()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -484,6 +489,23 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         parent.offsetDescendantRectToMyCoords(view, offsetViewBounds)
 
         return offsetViewBounds.top - parent.paddingTop
+    }
+
+    private fun setDeadlineWarning(totalAndDeadline: Pair<String, String>) {
+        val total = totalAndDeadline.first
+        val deadline = totalAndDeadline.second
+        val ksString = this.viewModel.environment.ksString()
+        val warning = ksString.format(getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline),
+                "total", total,
+                "project_deadline", deadline)
+
+        val spannableWarning = SpannableString(warning)
+
+        ViewUtils.addBoldSpan(spannableWarning, total)
+        ViewUtils.addBoldSpan(spannableWarning, deadline)
+
+        deadline_warning.text = spannableWarning
+        deadline_warning.visibility = View.VISIBLE
     }
 
     private fun setCurrencySymbols(symbolAndStart: Pair<SpannableString, Boolean>) {

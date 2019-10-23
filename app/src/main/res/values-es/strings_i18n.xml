@@ -242,6 +242,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el &lt;b>%{project_deadline}&lt;/b>.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el monto de &lt;b>%{total}&lt;/b> el &lt;b>%{project_deadline}&lt;/b>.</string>
   <string name="If_you_turn_following_off" formatted="false">Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
 </string>

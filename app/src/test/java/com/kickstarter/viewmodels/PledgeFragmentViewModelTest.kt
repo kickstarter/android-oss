@@ -519,7 +519,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeMaximumIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
-        this.pledgeSummaryIsGone.assertValue(false)
+        this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.snapshotIsGone.assertValue(true)

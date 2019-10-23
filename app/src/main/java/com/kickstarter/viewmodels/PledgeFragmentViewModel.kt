@@ -16,6 +16,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.mutations.UpdateBacking
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
@@ -726,7 +727,7 @@ interface PledgeFragmentViewModel {
             { b, a, l, r -> UpdateBacking(b, a, l, r) }
                     .compose<UpdateBacking>(takeWhen(this.updatePledgeButtonClicked))
                     .switchMap {
-                        this.apolloClient.updateBacking(it.backing, it.amount, it.locationId, it.reward)
+                        this.apolloClient.updateBacking(it)
                                 .doOnSubscribe { this.updatePledgeProgressIsGone.onNext(false) }
                                 .materialize()
                     }
@@ -871,11 +872,10 @@ interface PledgeFragmentViewModel {
                     .filter { it.first == PledgeReason.UPDATE_PAYMENT }
                     .map { it.second }
 
-            val updatePaymentNotification = Observable.combineLatest(backingForMutation,
-                    updatePaymentClick)
-            { b, id -> UpdateBackingPayment(b, id) }
+            val updatePaymentNotification = Observable.combineLatest(backingForMutation, updatePaymentClick)
+            { b, id -> UpdateBacking(b, paymentSourceId = id) }
                     .switchMap {
-                        this.apolloClient.updateBackingPayment(it.backing, it.paymentSourceId)
+                        this.apolloClient.updateBacking(it)
                                 .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
                                 .materialize()
                     }
@@ -960,8 +960,6 @@ interface PledgeFragmentViewModel {
         }
 
         data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?, val refTag: RefTag?)
-        data class UpdateBacking(val backing: Backing, val amount: String, val locationId: String?, val reward: Reward?)
-        data class UpdateBackingPayment(val backing: Backing, val paymentSourceId: String)
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 

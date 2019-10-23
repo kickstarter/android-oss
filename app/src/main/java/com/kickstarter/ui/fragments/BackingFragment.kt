@@ -79,6 +79,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { pledge_summary_amount.text = it }
 
+        this.viewModel.outputs.pledgeSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(pledge_summary, it) }
+
         this.viewModel.outputs.shippingAmount()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())

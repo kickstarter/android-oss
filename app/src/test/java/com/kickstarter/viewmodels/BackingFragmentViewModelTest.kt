@@ -23,6 +23,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private val paymentMethodIsGone = TestSubscriber.create<Boolean>()
     private val pledgeAmount = TestSubscriber.create<CharSequence>()
     private val pledgeDate = TestSubscriber.create<String>()
+    private val pledgeSummaryIsGone = TestSubscriber.create<Boolean>()
     private val projectAndReward = TestSubscriber.create<Pair<Project, Reward>>()
     private val receivedCheckboxChecked = TestSubscriber.create<Boolean>()
     private val receivedSectionIsGone = TestSubscriber.create<Boolean>()
@@ -41,6 +42,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm.outputs.paymentMethodIsGone().subscribe(this.paymentMethodIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.pledgeDate().subscribe(this.pledgeDate)
+        this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.projectAndReward().subscribe(this.projectAndReward)
         this.vm.outputs.receivedCheckboxChecked().subscribe(this.receivedCheckboxChecked)
         this.vm.outputs.receivedSectionIsGone().subscribe(this.receivedSectionIsGone)
@@ -250,6 +252,40 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.project(backedProject)
         this.pledgeDate.assertValue("August 28, 2019")
+    }
+
+    @Test
+    fun testPledgeSummaryIsGone_whenDigitalReward() {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .locationId(null)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeSummaryIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testPledgeSummaryIsGone_whenShippableReward() {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .locationId(4L)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeSummaryIsGone.assertValue(false)
     }
 
     @Test

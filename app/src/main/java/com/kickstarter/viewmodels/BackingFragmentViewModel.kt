@@ -55,6 +55,9 @@ interface BackingFragmentViewModel {
         /** Emits the date the backing was pledged on. */
         fun pledgeDate(): Observable<String>
 
+        /** Emits a boolean determining if the pledge summary should be visible. */
+        fun pledgeSummaryIsGone(): Observable<Boolean>
+
         /** Emits the project and currently backed reward. */
         fun projectAndReward(): Observable<Pair<Project, Reward>>
 
@@ -93,6 +96,7 @@ interface BackingFragmentViewModel {
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeDate = BehaviorSubject.create<String>()
+        private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val projectAndReward = BehaviorSubject.create<Pair<Project, Reward>>()
         private val receivedCheckboxChecked = BehaviorSubject.create<Boolean>()
         private val receivedSectionIsGone = BehaviorSubject.create<Boolean>()
@@ -151,7 +155,10 @@ interface BackingFragmentViewModel {
                     .map { ObjectUtils.isNull(it.locationId()) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.shippingSummaryIsGone)
+                    .subscribe {
+                        this.pledgeSummaryIsGone.onNext(it)
+                        this.shippingSummaryIsGone.onNext(it)
+                    }
 
             backing
                     .map { it.shippingAmount() }
@@ -274,6 +281,8 @@ interface BackingFragmentViewModel {
         override fun pledgeAmount(): Observable<CharSequence> = this.pledgeAmount
 
         override fun pledgeDate(): Observable<String> = this.pledgeDate
+
+        override fun pledgeSummaryIsGone(): Observable<Boolean> = this.pledgeSummaryIsGone
 
         override fun projectAndReward(): Observable<Pair<Project, Reward>> = this.projectAndReward
 

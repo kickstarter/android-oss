@@ -641,11 +641,6 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.pledgeSummaryAmount)
 
             updatingPayment
-                    .map { BooleanUtils.negate(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeSummaryIsGone)
-
-            updatingPayment
                     .compose(bindToLifecycle())
                     .subscribe(this.totalDividerIsGone)
 
@@ -655,7 +650,10 @@ interface PledgeFragmentViewModel {
                     .map { it.first || !RewardUtils.isShippable(it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.shippingSummaryIsGone)
+                    .subscribe{
+                        this.pledgeSummaryIsGone.onNext(it)
+                        this.shippingSummaryIsGone.onNext(it)
+                    }
 
             backing
                     .map { it.shippingAmount().toDouble() }

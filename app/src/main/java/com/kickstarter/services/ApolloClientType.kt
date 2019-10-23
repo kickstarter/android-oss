@@ -9,6 +9,7 @@ import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.models.*
 import com.kickstarter.services.mutations.CreateBacking
+import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import type.CurrencyCode
 import type.PaymentTypes
@@ -32,11 +33,9 @@ interface ApolloClientType {
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 
-    fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean>
+    fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean>
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
-
-    fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean>
 
     fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data>
 

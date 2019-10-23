@@ -19,6 +19,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.*
 import com.kickstarter.services.mutations.CreateBacking
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.mutations.UpdateBacking
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
@@ -1389,7 +1390,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBackingPayment(backing: Backing, paymentSourceId: String): Observable<Boolean> {
+                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })
@@ -1458,7 +1459,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })
@@ -1490,7 +1491,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })
@@ -1510,7 +1511,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })
@@ -1529,7 +1530,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(backing: Backing, amount: String, locationId: String?, reward: Reward?): Observable<Boolean> {
+                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
                         return Observable.just(false)
                     }
                 })

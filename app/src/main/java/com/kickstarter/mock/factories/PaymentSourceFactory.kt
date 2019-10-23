@@ -1,6 +1,7 @@
 package com.kickstarter.mock.factories
 
 import com.kickstarter.models.Backing
+import type.CreditCardPaymentType
 import java.util.*
 
 class PaymentSourceFactory private constructor() {
@@ -10,7 +11,7 @@ class PaymentSourceFactory private constructor() {
                     .id(IdFactory.id().toString())
                     .expirationDate(Date())
                     .lastFour("4321")
-                    .paymentType("CREDIT_CARD")
+                    .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
                     .state("ACTIVE")
                     .type("VISA")
                     .build()
@@ -19,7 +20,7 @@ class PaymentSourceFactory private constructor() {
         fun googlePay(): Backing.PaymentSource {
             return Backing.PaymentSource.builder()
                     .id(IdFactory.id().toString())
-                    .paymentType("GOOGLE_PAY")
+                    .paymentType(CreditCardPaymentType.ANDROID_PAY.rawValue())
                     .state("ACTIVE")
                     .build()
         }
@@ -27,7 +28,15 @@ class PaymentSourceFactory private constructor() {
         fun applePay(): Backing.PaymentSource {
             return Backing.PaymentSource.builder()
                     .id(IdFactory.id().toString())
-                    .paymentType("APPLE_PAY")
+                    .paymentType(CreditCardPaymentType.APPLE_PAY.rawValue())
+                    .state("ACTIVE")
+                    .build()
+        }
+
+        fun bankAccount(): Backing.PaymentSource {
+            return Backing.PaymentSource.builder()
+                    .id(IdFactory.id().toString())
+                    .paymentType(CreditCardPaymentType.BANK_ACCOUNT.rawValue())
                     .state("ACTIVE")
                     .build()
         }

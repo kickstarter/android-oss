@@ -68,20 +68,28 @@
 
         <include layout="@layout/horizontal_line_1dp_view" />
 
-        <TextView
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:id="@+id/payment_method"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_4"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:text="@string/Payment_method" />
+          android:orientation="vertical">
 
-        <include layout="@layout/reward_card_details"
-          android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
-          android:layout_marginBottom="@dimen/grid_4"/>
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/grid_4"
+            android:layout_marginBottom="@dimen/grid_3"
+            android:text="@string/Payment_method" />
 
-        <include layout="@layout/horizontal_line_1dp_view" />
+          <include layout="@layout/reward_card_details"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="@dimen/grid_4"/>
+
+          <include layout="@layout/horizontal_line_1dp_view" />
+
+        </LinearLayout>
 
         <TextView
           style="@style/CalloutPrimaryMedium"

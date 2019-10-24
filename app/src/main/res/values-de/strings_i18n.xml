@@ -138,7 +138,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Daily_digest" formatted="false">Tägliche Zusammenfassung</string>
   <string name="Daily_summary" formatted="false">Übersicht (einmal täglich)</string>
   <string name="Data_will_appear_here_once" formatted="false">Info wird hier angezeigt, sobald jemand dein Projekt unterstützt.</string>
-  <string name="Decrease_pledge" formatted="false">Decrease pledge</string>
+  <string name="Decrease_pledge" formatted="false">Finanzierungsbeitrag reduzieren</string>
   <string name="Delete_my_Kickstarter_Account" formatted="false">Mein Kickstarter-Konto löschen</string>
   <string name="Delivered" formatted="false">Verschickt</string>
   <string name="Description" formatted="false">Beschreibung</string>
@@ -242,10 +242,11 @@ Bitte antippen und erneut versuchen.</string>
   <string name="How_backers_found_your_project" formatted="false">Wie Unterstützer dein Projekt gefunden haben</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am &lt;b>%{project_deadline}&lt;/b> belastet.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Wenn dieses Projekt das Finanzierungsziel erreicht, wird deine Karte am &lt;b>%{project_deadline}&lt;/b> mit &lt;b>%{total}&lt;/b> belastet.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
   <string name="If_your_profile_is_private" formatted="false">Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.</string>
   <string name="If_your_profile_is_public" formatted="false">Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.</string>
-  <string name="Increase_pledge" formatted="false">Increase pledge</string>
+  <string name="Increase_pledge" formatted="false">Finanzierungsbeitrag erhöhen</string>
   <string name="Individual_Emails" formatted="false">Individuelle E-Mails</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Stelle dich vor</string>

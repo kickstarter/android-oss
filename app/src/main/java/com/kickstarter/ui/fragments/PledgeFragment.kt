@@ -328,6 +328,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { setDeadlineWarning(it) }
 
+        this.viewModel.outputs.totalAndDeadlineIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setInvisible(deadline_warning, false) }
+
         this.viewModel.outputs.showPledgeSuccess()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -491,6 +496,18 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         return offsetViewBounds.top - parent.paddingTop
     }
 
+    private fun setCurrencySymbols(symbolAndStart: Pair<SpannableString, Boolean>) {
+        val symbol = symbolAndStart.first
+        val symbolAtStart = symbolAndStart.second
+        if (symbolAtStart) {
+            pledge_symbol_start.text = symbol
+            pledge_symbol_end.text = null
+        } else {
+            pledge_symbol_start.text = null
+            pledge_symbol_end.text = symbol
+        }
+    }
+
     private fun setDeadlineWarning(totalAndDeadline: Pair<String, String>) {
         val total = totalAndDeadline.first
         val deadline = totalAndDeadline.second
@@ -505,19 +522,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         ViewUtils.addBoldSpan(spannableWarning, deadline)
 
         deadline_warning.text = spannableWarning
-        deadline_warning.visibility = View.VISIBLE
-    }
-
-    private fun setCurrencySymbols(symbolAndStart: Pair<SpannableString, Boolean>) {
-        val symbol = symbolAndStart.first
-        val symbolAtStart = symbolAndStart.second
-        if (symbolAtStart) {
-            pledge_symbol_start.text = symbol
-            pledge_symbol_end.text = null
-        } else {
-            pledge_symbol_start.text = null
-            pledge_symbol_end.text = symbol
-        }
     }
 
     private fun setPledgeMaximumText(maximumAmount: String) {

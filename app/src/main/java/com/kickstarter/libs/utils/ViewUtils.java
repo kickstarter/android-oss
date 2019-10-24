@@ -37,9 +37,11 @@ public final class ViewUtils {
   private ViewUtils() {}
 
   public static void addBoldSpan(final @NonNull SpannableString spannableString, final @NonNull String substring) {
-    final int index = spannableString.toString().indexOf(substring);
-    final StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-    spannableString.setSpan(boldSpan, index, index + substring.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+    if (spannableString.toString().contains(substring)) {
+      final int index = spannableString.toString().indexOf(substring);
+      final StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+      spannableString.setSpan(boldSpan, index, index + substring.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+    }
   }
 
   public static Bitmap getBitmap(final @NonNull View view, final int width, final int height) {

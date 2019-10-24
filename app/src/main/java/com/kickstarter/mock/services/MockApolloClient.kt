@@ -7,11 +7,11 @@ import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
-import com.kickstarter.mock.factories.CheckoutFactory
+import com.kickstarter.mock.factories.CheckoutBackingFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
-import com.kickstarter.services.mutations.CreateBacking
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import type.CurrencyCode
@@ -24,8 +24,8 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(true)
     }
 
-    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
-        return Observable.just(CheckoutFactory.successful())
+    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
+        return Observable.just(CheckoutBackingFactory.requiresAction(false))
     }
 
     override fun clearUnseenActivity(): Observable<Int> {

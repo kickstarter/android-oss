@@ -17,8 +17,8 @@ import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.*
-import com.kickstarter.services.mutations.CreateBacking
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBacking
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
@@ -1241,10 +1241,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .cookieManager(cookieManager)
                 .sharedPreferences(sharedPreferences)
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
                         //Assert that stored cookie is passed in
-                        TestCase.assertEquals(createBacking.refTag, RefTag.discovery())
-                        return super.createBacking(createBacking)
+                        TestCase.assertEquals(createBackingData.refTag, RefTag.discovery())
+                        return super.createBacking(createBackingData)
                     }
                 })
                 .build()
@@ -1776,7 +1776,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
                         return Observable.error(Throwable("error"))
                     }
                 })
@@ -1801,8 +1801,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
-                        return Observable.just(CheckoutFactory.requiresSCA())
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
+                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -1831,8 +1831,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
-                        return Observable.just(CheckoutFactory.requiresSCA())
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
+                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
                     }
                 })
                 .build()

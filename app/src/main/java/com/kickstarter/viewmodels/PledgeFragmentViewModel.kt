@@ -15,7 +15,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
-import com.kickstarter.services.mutations.CreateBacking
+import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBacking
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
@@ -853,9 +853,9 @@ interface PledgeFragmentViewModel {
                     location.map { it?.id()?.toString() },
                     reward,
                     cookieRefTag)
-            { p, a, id, l, r, c -> CreateBacking(p, a, id, l, r, c) }
-                    .compose<CreateBacking>(takeWhen(pledgeButtonClicked))
-                    .map { CreateBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag) }
+            { p, a, id, l, r, c -> CreateBackingData(p, a, id, l, r, c) }
+                    .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
+                    .map { CreateBackingData(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag) }
                     .switchMap {
                         this.apolloClient.createBacking(it)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
@@ -863,12 +863,8 @@ interface PledgeFragmentViewModel {
                     }
                     .share()
 
-            val createBackingError = Observable.merge(this.stripeSetupResultUnsuccessful,
-                    createBackingNotification
-                            .compose(errors())
-                            .compose(ignoreValues()))
-
-            createBackingError
+            Observable.merge(this.stripeSetupResultUnsuccessful, createBackingNotification.compose(errors()))
+                    .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.showPledgeError.onNext(null)
@@ -880,7 +876,7 @@ interface PledgeFragmentViewModel {
 
             val createBackingSuccess = Observable.merge(this.stripeSetupResultSuccessful,
                     createBackingValues
-                            .map { it.backing().requiresAction() }
+                            .map { it.requiresAction() }
                             .filter { BooleanUtils.isFalse(it) }
                             .compose(ignoreValues()))
 
@@ -889,7 +885,6 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.showPledgeSuccess)
 
             createBackingValues
-                    .map { it.backing() }
                     .filter { BooleanUtils.isTrue(it.requiresAction()) }
                     .map { it.clientSecret() }
                     .compose(bindToLifecycle())

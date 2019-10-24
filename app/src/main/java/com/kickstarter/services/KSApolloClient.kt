@@ -21,7 +21,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
-import com.kickstarter.services.mutations.CreateBacking
+import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -61,19 +61,19 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createBacking(createBacking: CreateBacking): Observable<Checkout> {
+    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()
-                    .projectId(encodeRelayId(createBacking.project))
-                    .amount(createBacking.amount)
+                    .projectId(encodeRelayId(createBackingData.project))
+                    .amount(createBackingData.amount)
                     .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
-                    .paymentSourceId(createBacking.paymentSourceId)
-                    .locationId(createBacking.locationId?.let { it })
-                    .rewardId(createBacking.reward?.let { encodeRelayId(it) })
-                    .refParam(createBacking.refTag?.tag())
+                    .paymentSourceId(createBackingData.paymentSourceId)
+                    .locationId(createBackingData.locationId?.let { it })
+                    .rewardId(createBackingData.reward?.let { encodeRelayId(it) })
+                    .refParam(createBackingData.refTag?.tag())
                     .build()
 
-            val ps = PublishSubject.create<Checkout>()
+            val ps = PublishSubject.create<Checkout.Backing>()
 
             this.service.mutate(createBackingMutation)
                     .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
@@ -91,12 +91,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     .clientSecret(checkoutPayload?.backing()?.clientSecret())
                                     .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
                                     .build()
-                            val checkout = Checkout.builder()
-                                    .backing(backing)
-                                    .state(checkoutPayload?.state()?.rawValue()?: CheckoutState.`$UNKNOWN`.rawValue())
-                                    .build()
 
-                            ps.onNext(checkout)
+                            ps.onNext(backing)
                             ps.onCompleted()
                         }
                     })
@@ -445,5 +441,3 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
         }
     }
 }
-
-

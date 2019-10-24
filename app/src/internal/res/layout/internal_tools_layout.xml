@@ -1,47 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="match_parent">
 
-  <LinearLayout
+  <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <include layout="@layout/internal_tools_toolbar" />
 
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
     <LinearLayout
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:clipToPadding="false"
       android:orientation="vertical"
-      android:paddingBottom="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_3"
-      android:paddingStart="@dimen/grid_3"
-      android:paddingTop="@dimen/grid_2">
+      android:paddingStart="@dimen/activity_horizontal_margin"
+      android:paddingTop="@dimen/activity_vertical_margin"
+      android:paddingEnd="@dimen/activity_horizontal_margin"
+      android:paddingBottom="@dimen/activity_vertical_margin">
+
+      <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:stretchColumns="*">
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/CalloutPrimaryMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:text="@string/Build_information" />
+
+        </TableRow>
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/InternalToolsKey"
+            android:text="@string/API_Endpoint" />
+
+          <TextView
+            android:id="@+id/api_endpoint"
+            style="@style/InternalToolsValue"
+            tools:text="http://www.test.com" />
+
+        </TableRow>
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/InternalToolsKey"
+            android:text="@string/Build_date" />
+
+          <TextView
+            android:id="@+id/build_date"
+            style="@style/InternalToolsValue"
+            tools:text="Oct 17, 2019 12:19:21 PM EDT" />
+
+        </TableRow>
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/InternalToolsKey"
+            android:text="@string/Commit_SHA" />
+
+          <TextView
+            android:id="@+id/commit_sha"
+            style="@style/InternalToolsValue"
+            tools:text="aaaaaaaa" />
+        </TableRow>
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/InternalToolsKey"
+            android:text="@string/Variant" />
+
+          <TextView
+            android:id="@+id/variant"
+            style="@style/InternalToolsValue"
+            tools:text="internalDebug" />
+
+        </TableRow>
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/InternalToolsKey"
+            android:text="@string/Version_code" />
+
+          <TextView
+            android:id="@+id/version_code"
+            style="@style/InternalToolsValue"
+            tools:text="1910021248" />
+
+        </TableRow>
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/InternalToolsKey"
+            android:text="@string/Version_name" />
+
+          <TextView
+            android:id="@+id/version_name"
+            style="@style/InternalToolsValue"
+            tools:text="1.18.0" />
+
+        </TableRow>
+      </TableLayout>
+
+      <include layout="@layout/horizontal_line_1dp_view" />
 
       <Button
         android:id="@+id/feature_flags_button"
-        style="@style/BorderButton"
+        style="@style/SecondaryButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/Feature_flags" />
 
       <Button
         android:id="@+id/playground_button"
-        style="@style/BorderButton"
+        style="@style/SecondaryButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/internal_tools_playground" />
 
       <Button
         android:id="@+id/push_notifications_button"
-        style="@style/BorderButton"
+        style="@style/SecondaryButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/internal_tools_push_notifications" />
 
       <include layout="@layout/horizontal_line_1dp_view" />
@@ -57,174 +162,34 @@
         android:id="@+id/change_endpoint_production_button"
         style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/Production" />
 
       <Button
         android:id="@+id/change_endpoint_staging_button"
         style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/Staging" />
 
       <Button
         android:id="@+id/change_endpoint_hivequeen_button"
         style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_1"
         android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/Hivequeen" />
 
       <Button
         android:id="@+id/change_endpoint_custom_button"
         style="@style/BorderButton"
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/Custom" />
-
-      <include layout="@layout/horizontal_line_1dp_view" />
-
-      <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:layout_marginTop="@dimen/grid_3"
-        android:stretchColumns="*">
-
-        <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_1"
-          android:weightSum="1">
-
-          <TextView
-            style="@style/CalloutPrimaryMedium"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_span="2"
-            android:text="@string/Build_information" />
-
-        </TableRow>
-
-        <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_1"
-          android:weightSum="1">
-
-          <TextView
-            style="@style/BodySecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:text="@string/Variant" />
-
-          <TextView
-            android:id="@+id/variant"
-            style="@style/BodyPrimary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1" />
-
-        </TableRow>
-
-        <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_1"
-          android:weightSum="1">
-
-          <TextView
-            style="@style/BodySecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:text="@string/Version_code" />
-
-          <TextView
-            android:id="@+id/version_code"
-            style="@style/BodyPrimary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1" />
-
-        </TableRow>
-
-        <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_1"
-          android:weightSum="1">
-
-          <TextView
-            style="@style/BodySecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:text="@string/Version_name" />
-
-          <TextView
-            android:id="@+id/version_name"
-            style="@style/BodyPrimary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1" />
-
-        </TableRow>
-
-        <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_1"
-          android:weightSum="1">
-
-          <TextView
-            style="@style/BodySecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:text="@string/Build_date" />
-
-          <TextView
-            android:id="@+id/build_date"
-            style="@style/BodyPrimary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1" />
-
-        </TableRow>
-
-        <TableRow
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_1"
-          android:weightSum="1">
-
-          <TextView
-            style="@style/BodySecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:text="@string/Sha" />
-
-          <TextView
-            android:id="@+id/sha"
-            style="@style/BodyPrimary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1" />
-
-        </TableRow>
-      </TableLayout>
     </LinearLayout>
-  </LinearLayout>
-</ScrollView>
+
+  </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

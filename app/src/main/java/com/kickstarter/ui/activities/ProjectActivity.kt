@@ -447,8 +447,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
-    private fun clearFragmentBackStack() {
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    private fun clearFragmentBackStack() : Boolean {
+        return supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
@@ -602,9 +602,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun showBackingFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
                 supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if (supportFragmentManager.backStackEntryCount == 0) {
-            rewardsFragment.view?.visibility = View.GONE
-            backingFragment.view?.visibility = View.VISIBLE
+        if(!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
+            supportFragmentManager.beginTransaction()
+                    .show(backingFragment)
+                    .hide(rewardsFragment)
+                    .commitNow()
         }
         renderProject(backingFragment, rewardsFragment, project)
     }
@@ -626,9 +628,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun showCreatePledgeSuccess(project: Project) {
-        clearFragmentBackStack()
-        startActivity(Intent(this, ThanksActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project))
+        if (clearFragmentBackStack()) {
+            showBackingFragment(project)
+            startActivity(Intent(this, ThanksActivity::class.java)
+                    .putExtra(IntentKey.PROJECT, project))
+        }
     }
 
     private fun showPledgeNotCancelableDialog() {
@@ -658,9 +662,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun showRewardsFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
         supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if (supportFragmentManager.backStackEntryCount == 0) {
-            rewardsFragment.view?.visibility = View.VISIBLE
-            backingFragment.view?.visibility = View.GONE
+        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
+            supportFragmentManager.beginTransaction()
+                    .show(rewardsFragment)
+                    .hide(backingFragment)
+                    .commitNow()
         }
         renderProject(backingFragment, rewardsFragment, project)
     }

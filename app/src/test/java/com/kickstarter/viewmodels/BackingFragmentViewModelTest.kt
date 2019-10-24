@@ -18,9 +18,9 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
     private val backerNumber = TestSubscriber.create<String>()
     private val cardExpiration = TestSubscriber.create<String>()
-    private val cardIsGone = TestSubscriber.create<Boolean>()
     private val cardLastFour = TestSubscriber.create<String>()
     private val cardLogo = TestSubscriber.create<Int>()
+    private val paymentMethodIsGone = TestSubscriber.create<Boolean>()
     private val pledgeAmount = TestSubscriber.create<CharSequence>()
     private val pledgeDate = TestSubscriber.create<String>()
     private val projectAndReward = TestSubscriber.create<Pair<Project, Reward>>()
@@ -36,9 +36,9 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm = BackingFragmentViewModel.ViewModel(environment)
         this.vm.outputs.backerNumber().subscribe(this.backerNumber)
         this.vm.outputs.cardExpiration().subscribe(this.cardExpiration)
-        this.vm.outputs.cardIsGone().subscribe(this.cardIsGone)
         this.vm.outputs.cardLastFour().subscribe(this.cardLastFour)
         this.vm.outputs.cardLogo().subscribe(this.cardLogo)
+        this.vm.outputs.paymentMethodIsGone().subscribe(this.paymentMethodIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.pledgeDate().subscribe(this.pledgeDate)
         this.vm.outputs.projectAndReward().subscribe(this.projectAndReward)
@@ -91,8 +91,8 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCardIsGone_whenCreditCard() {
-        val paymentSource = PaymentSourceFactory.visa()
+    fun testPaymentMethodIsGone_whenApplePay() {
+        val paymentSource = PaymentSourceFactory.applePay()
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .paymentSource(paymentSource)
@@ -105,11 +105,11 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.project(backedProject)
-        this.cardIsGone.assertValue(false)
+        this.paymentMethodIsGone.assertValue(false)
     }
 
     @Test
-    fun testCardIsGone_whenNotCreditCard() {
+    fun testPaymentMethodIsGone_whenGooglePay() {
         val paymentSource = PaymentSourceFactory.googlePay()
         val backing = BackingFactory.backing()
                 .toBuilder()
@@ -123,11 +123,83 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.vm.inputs.project(backedProject)
-        this.cardIsGone.assertValue(true)
+        this.paymentMethodIsGone.assertValue(false)
     }
 
     @Test
-    fun testCardLogo() {
+    fun testPaymentMethodIsGone_whenCreditCard() {
+        val paymentSource = PaymentSourceFactory.visa()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.paymentMethodIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testPaymentMethodIsGone_whenNotCardType() {
+        val paymentSource = PaymentSourceFactory.bankAccount()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.paymentMethodIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testCardLogo_whenApplePay() {
+        val paymentSource = PaymentSourceFactory.applePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardLogo.assertValue(R.drawable.apple_pay_mark)
+    }
+
+    @Test
+    fun testCardLogo_whenGooglePay() {
+        val paymentSource = PaymentSourceFactory.googlePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardLogo.assertValue(R.drawable.google_pay_mark)
+    }
+
+    @Test
+    fun testCardLogo_whenCreditCard() {
         val paymentSource = PaymentSourceFactory.visa()
         val backing = BackingFactory.backing()
                 .toBuilder()

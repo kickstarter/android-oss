@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="InternalToolsKey" parent="BodySecondaryMedium">
+    <item name="android:layout_weight">2</item>
+    <item name="android:layout_column">0</item>
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
+  <style name="InternalToolsValue" parent="BodyPrimary">
+    <item name="android:layout_weight">4</item>
+    <item name="android:layout_column">1</item>
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
+  <style name="InternalToolsRow">
+    <item name="android:layout_marginTop">@dimen/grid_3_half</item>
+    <item name="android:layout_marginBottom">@dimen/grid_3_half</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+</resources>

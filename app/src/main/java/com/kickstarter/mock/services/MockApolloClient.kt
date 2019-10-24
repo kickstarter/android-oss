@@ -11,10 +11,10 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import type.CurrencyCode
-import type.PaymentTypes
 import java.util.*
 
 open class MockApolloClient : ApolloClientType {
@@ -44,7 +44,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
     }
 
-    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+    override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
         return Observable.just(StoredCardFactory.discoverCard())
     }
 

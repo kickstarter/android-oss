@@ -7,15 +7,16 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.CardFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.mock.factories.TokenFactory
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.mock.services.MockStripe
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
+import com.stripe.android.model.Card
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import type.PaymentTypes
 
 class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
@@ -24,6 +25,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     private val allowedCardWarningIsVisible = TestSubscriber<Boolean>()
     private val appBarLayoutHasElevation = TestSubscriber<Boolean>()
     private val cardWidgetFocusDrawable = TestSubscriber<Int>()
+    private val createStripeToken = TestSubscriber<Card>()
     private val dividerIsVisible = TestSubscriber<Boolean>()
     private val error = TestSubscriber<Void>()
     private val modalError = TestSubscriber<Void>()
@@ -38,6 +40,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.allowedCardWarningIsVisible().subscribe(this.allowedCardWarningIsVisible)
         this.vm.outputs.appBarLayoutHasElevation().subscribe(this.appBarLayoutHasElevation)
         this.vm.outputs.cardWidgetFocusDrawable().subscribe(this.cardWidgetFocusDrawable)
+        this.vm.outputs.createStripeToken().subscribe(this.createStripeToken)
         this.vm.outputs.dividerIsVisible().subscribe(this.dividerIsVisible)
         this.vm.outputs.error().subscribe(this.error)
         this.vm.outputs.modalError().subscribe(this.modalError)
@@ -278,74 +281,66 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testAPIError() {
-        val apolloClient = object : MockApolloClient() {
-            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
-                return Observable.error(Exception("oops"))
-            }
-        }
-        val environment = environment().toBuilder().apolloClient(apolloClient).build()
-        setUpEnvironment(environment)
+        setUpEnvironment(environmentWithSavePaymentMethodError())
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
         this.vm.inputs.saveCardClicked()
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.createStripeToken.assertValueCount(1)
         this.error.assertValueCount(1)
         this.koalaTest.assertValues("Viewed Add New Card", "Failed Payment Method Creation")
     }
 
     @Test
     fun testAPIError_whenModal() {
-        val apolloClient = object : MockApolloClient() {
-            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
-                return Observable.error(Exception("oops"))
-            }
-        }
-        val environment = environment().toBuilder().apolloClient(apolloClient).build()
-        setUpEnvironment(environment, true)
+        setUpEnvironment(environmentWithSavePaymentMethodError(), true)
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
         this.vm.inputs.saveCardClicked()
+        this.createStripeToken.assertValueCount(1)
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
         this.modalError.assertValueCount(1)
         this.koalaTest.assertValues("Viewed Add New Card", "Failed Payment Method Creation")
     }
 
     @Test
     fun testStripeError() {
-        val mockStripe = MockStripe(context(), true)
-        val environment = environment().toBuilder().stripe(mockStripe).build()
-        setUpEnvironment(environment)
+        setUpEnvironment(environment())
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
         this.vm.inputs.saveCardClicked()
+        this.createStripeToken.assertValueCount(1)
+        this.vm.inputs.stripeTokenResultUnsuccessful(java.lang.Exception("yikes"))
         this.error.assertValueCount(1)
         this.modalError.assertNoValues()
     }
 
     @Test
     fun testStripeError_whenModal() {
-        val mockStripe = MockStripe(context(), true)
-        val environment = environment().toBuilder().stripe(mockStripe).build()
-        setUpEnvironment(environment, true)
+        setUpEnvironment(environment(), true)
 
         this.vm.inputs.name("Nathan Squid")
         this.vm.inputs.postalCode("11222")
         this.vm.inputs.card(CardFactory.card())
         this.vm.inputs.cardNumber(CardFactory.card().number ?: "")
         this.vm.inputs.saveCardClicked()
+        this.createStripeToken.assertValueCount(1)
+        this.vm.inputs.stripeTokenResultUnsuccessful(java.lang.Exception("yikes"))
         this.error.assertNoValues()
         this.modalError.assertValueCount(1)
     }
 
     @Test
-    fun testProgressBarIsVisible() {
+    fun testProgressBarIsVisible_whenSuccessful() {
         setUpEnvironment(environment())
 
         this.vm.inputs.name("Nathan Squid")
@@ -354,6 +349,38 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(card)
         this.vm.inputs.cardNumber(card.number ?: "")
         this.vm.inputs.saveCardClicked()
+        this.createStripeToken.assertValueCount(1)
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.progressBarIsVisible.assertValues(true)
+    }
+
+    @Test
+    fun testProgressBarIsVisible_whenAPIError() {
+        setUpEnvironment(environmentWithSavePaymentMethodError())
+
+        this.vm.inputs.name("Nathan Squid")
+        this.vm.inputs.postalCode("11222")
+        val card = CardFactory.card()
+        this.vm.inputs.card(card)
+        this.vm.inputs.cardNumber(card.number ?: "")
+        this.vm.inputs.saveCardClicked()
+        this.createStripeToken.assertValueCount(1)
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
+        this.progressBarIsVisible.assertValues(true, false)
+    }
+
+    @Test
+    fun testProgressBarIsVisible_whenStripeError() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.name("Nathan Squid")
+        this.vm.inputs.postalCode("11222")
+        val card = CardFactory.card()
+        this.vm.inputs.card(card)
+        this.vm.inputs.cardNumber(card.number ?: "")
+        this.vm.inputs.saveCardClicked()
+        this.createStripeToken.assertValueCount(1)
+        this.vm.inputs.stripeTokenResultUnsuccessful(java.lang.Exception("yikes"))
         this.progressBarIsVisible.assertValues(true, false)
     }
 
@@ -488,7 +515,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     fun testSuccess() {
         val visa = StoredCardFactory.visa()
         val apolloClient = object : MockApolloClient() {
-            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+            override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
                 return Observable.just(visa)
             }
         }
@@ -502,7 +529,22 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.card(card)
         this.vm.inputs.cardNumber(card.number ?: "")
         this.vm.inputs.saveCardClicked()
+        this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
         this.success.assertValue(visa)
         this.koalaTest.assertValues("Viewed Add New Card", "Saved Payment Method")
+    }
+
+
+
+    private fun environmentWithSavePaymentMethodError(): Environment {
+        val apolloClient = object : MockApolloClient() {
+            override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
+                return Observable.error(Exception("oops"))
+            }
+        }
+        return environment()
+                .toBuilder()
+                .apolloClient(apolloClient)
+                .build()
     }
 }

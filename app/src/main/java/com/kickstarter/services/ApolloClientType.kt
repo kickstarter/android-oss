@@ -9,10 +9,10 @@ import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.libs.RefTag
 import com.kickstarter.models.*
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import type.CurrencyCode
-import type.PaymentTypes
 
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
@@ -27,7 +27,7 @@ interface ApolloClientType {
 
     fun getStoredCards(): Observable<List<StoredCard>>
 
-    fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard>
+    fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>
 
     fun sendMessage(project: Project, recipient: User, body: String): Observable<Long>
 

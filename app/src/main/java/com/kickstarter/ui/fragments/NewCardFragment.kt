@@ -20,9 +20,11 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.viewmodels.NewCardFragmentViewModel
+import com.stripe.android.ApiResultCallback
+import com.stripe.android.model.Card
+import com.stripe.android.model.Token
 import com.stripe.android.view.CardInputListener
 import kotlinx.android.synthetic.main.form_new_card.*
-import kotlinx.android.synthetic.main.fragment_new_card.*
 import kotlinx.android.synthetic.main.modal_fragment_new_card.*
 import rx.android.schedulers.AndroidSchedulers
 
@@ -105,6 +107,11 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { form_container.showDividers = if (it) LinearLayout.SHOW_DIVIDER_END else LinearLayout.SHOW_DIVIDER_NONE }
 
+        this.viewModel.outputs.createStripeToken()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { createStripeToken(it) }
+
         RxView.clicks(reusable_switch)
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -176,6 +183,18 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
 
     private fun cardChanged() {
         this.viewModel.inputs.card(card_input_widget.card)
+    }
+
+    private fun createStripeToken(card: Card) {
+        this.viewModel.environment.stripe().createToken(card, object : ApiResultCallback<Token> {
+            override fun onSuccess(result: Token) {
+                this@NewCardFragment.viewModel.inputs.stripeTokenResultSuccessful(result)
+            }
+
+            override fun onError(e: Exception) {
+                this@NewCardFragment.viewModel.inputs.stripeTokenResultUnsuccessful(e)
+            }
+        })
     }
 
     private fun modal(): Boolean {

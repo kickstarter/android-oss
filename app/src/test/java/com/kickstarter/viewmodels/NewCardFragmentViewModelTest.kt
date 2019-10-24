@@ -11,12 +11,12 @@ import com.kickstarter.mock.factories.TokenFactory
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
 import com.stripe.android.model.Card
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import type.PaymentTypes
 
 class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
@@ -515,7 +515,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     fun testSuccess() {
         val visa = StoredCardFactory.visa()
         val apolloClient = object : MockApolloClient() {
-            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+            override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
                 return Observable.just(visa)
             }
         }
@@ -538,7 +538,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 
     private fun environmentWithSavePaymentMethodError(): Environment {
         val apolloClient = object : MockApolloClient() {
-            override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+            override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
                 return Observable.error(Exception("oops"))
             }
         }

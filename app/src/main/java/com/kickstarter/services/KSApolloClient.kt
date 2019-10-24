@@ -22,6 +22,7 @@ import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -204,14 +205,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun savePaymentMethod(paymentTypes: PaymentTypes, stripeToken: String, cardId: String, reusable: Boolean): Observable<StoredCard> {
+    override fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard> {
         return Observable.defer {
             val ps = PublishSubject.create<StoredCard>()
             service.mutate(SavePaymentMethodMutation.builder()
-                    .paymentType(paymentTypes)
-                    .stripeToken(stripeToken)
-                    .stripeCardId(cardId)
-                    .reusable(reusable)
+                    .paymentType(savePaymentMethodData.paymentType)
+                    .stripeToken(savePaymentMethodData.stripeToken)
+                    .stripeCardId(savePaymentMethodData.stripeCardId)
+                    .reusable(savePaymentMethodData.reusable)
                     .build())
                     .enqueue(object : ApolloCall.Callback<SavePaymentMethodMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {

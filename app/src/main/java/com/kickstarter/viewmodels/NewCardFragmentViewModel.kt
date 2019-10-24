@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
 import com.stripe.android.CardUtils
@@ -19,7 +20,6 @@ import com.stripe.android.model.Token
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import type.PaymentTypes
 
 interface NewCardFragmentViewModel {
     interface Inputs {
@@ -208,15 +208,16 @@ interface NewCardFragmentViewModel {
             val saveCardNotification = this.stripeTokenResultSuccessful
                     .map { token -> token.card?.id?.let { Pair(token.id, it) } }
                     .compose<Pair<Pair<String, String>, Boolean>>(combineLatestPair(reusable))
-                    .switchMap { this.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, it.first.first, it.first.second, it.second).materialize() }
+                    .map { SavePaymentMethodData(stripeToken = it.first.first, stripeCardId = it.first.second, reusable = it.second)  }
+                    .switchMap { this.apolloClient.savePaymentMethod(it).materialize() }
                     .share()
 
             saveCardNotification
                     .compose(values())
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this@ViewModel.success.onNext(it)
-                        this@ViewModel.koala.trackSavedPaymentMethod()
+                        this.success.onNext(it)
+                        this.koala.trackSavedPaymentMethod()
                     }
 
             val errors = Observable.merge(saveCardNotification.compose(errors()), this.stripeTokenResultUnsuccessful)

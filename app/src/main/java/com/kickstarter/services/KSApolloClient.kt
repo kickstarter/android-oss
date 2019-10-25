@@ -23,11 +23,10 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
-import com.kickstarter.services.mutations.UpdateBacking
+import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState
-import type.CheckoutState
 import type.CurrencyCode
 import type.PaymentTypes
 import java.nio.charset.Charset
@@ -292,17 +291,17 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
+    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
         return Observable.defer {
             val updateBackingMutation = UpdateBackingMutation.builder()
-                    .backingId(encodeRelayId(updateBacking.backing))
-                    .amount(updateBacking.amount)
-                    .locationId(updateBacking.locationId)
-                    .rewardId(updateBacking.reward?.let { encodeRelayId(it) })
-                    .paymentSourceId(updateBacking.paymentSourceId)
+                    .backingId(encodeRelayId(updateBackingData.backing))
+                    .amount(updateBackingData.amount.toString())
+                    .locationId(updateBackingData.locationId)
+                    .rewardId(updateBackingData.reward?.let { encodeRelayId(it) })
+                    .paymentSourceId(updateBackingData.paymentSourceId)
                     .build()
 
-            val ps = PublishSubject.create<Boolean>()
+            val ps = PublishSubject.create<Checkout.Backing>()
             service.mutate(updateBackingMutation)
                     .enqueue(object : ApolloCall.Callback<UpdateBackingMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
@@ -313,9 +312,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
-                            val state = response.data()?.updateBacking()?.checkout()?.state()
-                            val success = state == CheckoutState.SUCCESSFUL
-                            ps.onNext(success)
+
+                            val checkoutPayload = response.data()?.updateBacking()?.checkout()
+                            val backing = Checkout.Backing.builder()
+                                    .clientSecret(checkoutPayload?.backing()?.clientSecret())
+                                    .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
+                                    .build()
+
+                            ps.onNext(backing)
                             ps.onCompleted()
                         }
                     })

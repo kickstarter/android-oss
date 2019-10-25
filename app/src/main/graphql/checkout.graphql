@@ -20,7 +20,10 @@ mutation CancelBacking($backingId: ID!, $note: String) {
 mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String, $rewardId: ID, $paymentSourceId: String)  {
   updateBacking(input: { id: $backingId, amount: $amount, locationId: $locationId, rewardId: $rewardId, paymentSourceId: $paymentSourceId}) {
     checkout {
-      state
+      backing {
+        clientSecret
+        requiresAction
+      }
     }
   }
 }

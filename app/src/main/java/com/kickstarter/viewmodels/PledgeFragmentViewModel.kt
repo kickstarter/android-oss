@@ -16,7 +16,7 @@ import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
-import com.kickstarter.services.mutations.UpdateBacking
+import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
@@ -747,44 +747,6 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.updatePledgeButtonIsEnabled)
 
-            val location: Observable<Location?> = Observable.merge(Observable.just(null as Location?), shippingRule.map { it.location() })
-
-            val backingForMutation = project
-                    .filter { it.isBacking }
-                    .map { it.backing() }
-                    .ofType(Backing::class.java)
-                    .distinctUntilChanged()
-
-            val updateBackingNotification = Observable.combineLatest(backingForMutation,
-                    total.map { it.toString() },
-                    location.map { it?.id()?.toString() },
-                    reward)
-            { b, a, l, r -> UpdateBacking(b, a, l, r) }
-                    .compose<UpdateBacking>(takeWhen(this.updatePledgeButtonClicked))
-                    .switchMap {
-                        this.apolloClient.updateBacking(it)
-                                .doOnSubscribe { this.updatePledgeProgressIsGone.onNext(false) }
-                                .materialize()
-                    }
-                    .share()
-
-            val updateBackingNotificationValues = updateBackingNotification
-                    .compose(values())
-
-            Observable.merge(updateBackingNotification.compose(errors()), updateBackingNotificationValues.filter { BooleanUtils.isFalse(it) })
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.showUpdatePledgeError.onNext(null)
-                        this.updatePledgeProgressIsGone.onNext(true)
-                    }
-
-            updateBackingNotificationValues
-                    .filter { BooleanUtils.isTrue(it) }
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showUpdatePledgeSuccess)
-
             // Payment section
             pledgeReason
                     .map { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
@@ -870,10 +832,21 @@ interface PledgeFragmentViewModel {
                     .take(1)
                     .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
+            val locationId: Observable<String?> = Observable.merge(Observable.just(null as String?),
+                    shippingRule.map { it.location() }
+                            .map { it.id() }
+                            .map { it.toString() })
+
+            val backingToUpdate = project
+                    .filter { it.isBacking }
+                    .map { it.backing() }
+                    .ofType(Backing::class.java)
+                    .distinctUntilChanged()
+
             val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },
                     this.pledgeButtonClicked,
-                    location.map { it?.id()?.toString() },
+                    locationId,
                     reward,
                     cookieRefTag)
             { p, a, id, l, r, c -> CreateBackingData(p, a, id, l, r, c) }
@@ -886,7 +859,73 @@ interface PledgeFragmentViewModel {
                     }
                     .share()
 
-            Observable.merge(this.stripeSetupResultUnsuccessful, createBackingNotification.compose(errors()))
+            val paymentMethodId: Observable<String?> = Observable.merge(Observable.just(null as String?), this.pledgeButtonClicked)
+            val totalString = Observable.merge(Observable.just(null as String?), total
+                    .map { it.toString() })
+
+            val updatePaymentClick = pledgeReason
+                    .compose<Pair<PledgeReason, String>>(takePairWhen(this.pledgeButtonClicked))
+                    .filter { it.first == PledgeReason.UPDATE_PAYMENT }
+                    .map { it.second }
+
+            val updateBackingNotification = Observable.combineLatest(backingToUpdate,
+                    totalString,
+                    locationId,
+                    reward,
+                    paymentMethodId)
+            { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
+                    .compose<UpdateBackingData>(takeWhen(Observable.merge(this.updatePledgeButtonClicked, updatePaymentClick)))
+                    .switchMap {
+                        this.apolloClient.updateBacking(it)
+                                .doOnSubscribe {
+                                    this.updatePledgeProgressIsGone.onNext(false)
+                                    this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING))
+                                }
+                                .materialize()
+                    }
+                    .share()
+
+            val createBackingValues = createBackingNotification
+                    .compose(values())
+
+            val updateBackingValues = updateBackingNotification
+                    .compose(values())
+
+            val successAndPledgeReason = Observable.merge(this.stripeSetupResultSuccessful,
+                    createBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) },
+                    updateBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) })
+                    .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
+
+            successAndPledgeReason
+                    .filter { it.second == PledgeReason.PLEDGE }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showPledgeSuccess)
+
+            successAndPledgeReason
+                    .filter { it.second == PledgeReason.UPDATE_PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePledgeSuccess)
+
+            successAndPledgeReason
+                    .filter { it.second == PledgeReason.UPDATE_PAYMENT }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePaymentSuccess)
+
+            Observable.merge(createBackingValues, updateBackingValues)
+                    .filter { BooleanUtils.isTrue(it.requiresAction()) }
+                    .map { it.clientSecret() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showSCAFlow)
+
+            val errorAndPledgeReason = Observable.merge(this.stripeSetupResultUnsuccessful, createBackingNotification.compose(errors()),
+                    updateBackingNotification.compose(errors()))
+                    .compose<Pair<Throwable, PledgeReason>>(combineLatestPair(pledgeReason))
+
+            errorAndPledgeReason
+                    .filter { it.second == PledgeReason.PLEDGE }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe {
@@ -894,50 +933,23 @@ interface PledgeFragmentViewModel {
                         this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
                     }
 
-            val createBackingValues = createBackingNotification
-                    .compose(values())
-
-            Observable.merge(this.stripeSetupResultSuccessful, createBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) })
+            errorAndPledgeReason
+                    .filter { it.second == PledgeReason.UPDATE_PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe(this.showPledgeSuccess)
-
-            createBackingValues
-                    .filter { BooleanUtils.isTrue(it.requiresAction()) }
-                    .map { it.clientSecret() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showSCAFlow)
-
-            val updatePaymentClick = pledgeReason
-                    .compose<Pair<PledgeReason, String>>(takePairWhen(this.pledgeButtonClicked))
-                    .filter { it.first == PledgeReason.UPDATE_PAYMENT }
-                    .map { it.second }
-
-            val updatePaymentNotification = Observable.combineLatest(backingForMutation, updatePaymentClick)
-            { b, id -> UpdateBacking(b, paymentSourceId = id) }
-                    .switchMap {
-                        this.apolloClient.updateBacking(it)
-                                .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
-                                .materialize()
+                    .subscribe {
+                        this.showUpdatePledgeError.onNext(null)
+                        this.updatePledgeProgressIsGone.onNext(true)
                     }
-                    .share()
 
-            val updatePaymentNotificationValues = updatePaymentNotification
-                    .compose(values())
-
-            Observable.merge(updatePaymentNotification.compose(errors()), updatePaymentNotificationValues.filter { BooleanUtils.isFalse(it) })
+            errorAndPledgeReason
+                    .filter { it.second == PledgeReason.UPDATE_PAYMENT }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe{
+                    .subscribe {
                         this.showUpdatePaymentError.onNext(null)
                         this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
                     }
-
-            updatePaymentNotificationValues
-                    .filter { BooleanUtils.isTrue(it) }
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showUpdatePaymentSuccess)
 
             this.baseUrlForTerms.onNext(this.environment.webEndpoint())
 

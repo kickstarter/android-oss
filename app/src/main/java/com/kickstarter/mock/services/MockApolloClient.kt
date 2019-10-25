@@ -13,7 +13,7 @@ import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
-import com.kickstarter.services.mutations.UpdateBacking
+import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
 import java.util.*
@@ -58,8 +58,8 @@ open class MockApolloClient : ApolloClientType {
                 "12345")))
     }
 
-    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
-        return Observable.just(true)
+    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+        return Observable.just(CheckoutBackingFactory.requiresAction(false))
     }
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {

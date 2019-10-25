@@ -19,7 +19,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
-import com.kickstarter.services.mutations.UpdateBacking
+import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.PledgeData
@@ -1435,8 +1435,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
-                        return Observable.just(false)
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.error(Exception("womp"))
                     }
                 })
                 .build()
@@ -1463,6 +1463,66 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
 
         this.showUpdatePaymentSuccess.assertValueCount(1)
+        this.koalaTest.assertValues("Update Payment Method Button Clicked")
+    }
+
+    @Test
+    fun testShowUpdatePaymentSuccess_whenRequiresAction_isSuccessful() {
+        val environment = environmentForLoggedInUser(UserFactory.user())
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePaymentError.assertNoValues()
+        this.showUpdatePaymentSuccess.assertNoValues()
+
+        this.vm.inputs.stripeSetupResultSuccessful()
+
+        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePaymentError.assertNoValues()
+        this.showUpdatePaymentSuccess.assertValueCount(1)
+        this.koalaTest.assertValues("Update Payment Method Button Clicked")
+    }
+
+    @Test
+    fun testShowUpdatePaymentSuccess_whenRequiresAction_isUnsuccessful() {
+        val environment = environmentForLoggedInUser(UserFactory.user())
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+
+        this.vm.inputs.selectCardButtonClicked(0)
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+
+        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePaymentError.assertNoValues()
+        this.showUpdatePaymentSuccess.assertNoValues()
+
+        this.vm.inputs.stripeSetupResultUnsuccessful(Exception("eek"))
+
+        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePaymentError.assertValueCount(1)
+        this.showUpdatePaymentSuccess.assertNoValues()
         this.koalaTest.assertValues("Update Payment Method Button Clicked")
     }
 
@@ -1504,8 +1564,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
-                        return Observable.just(false)
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.error(Exception("womp"))
                     }
                 })
                 .build()
@@ -1536,8 +1596,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
-                        return Observable.just(false)
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.error(Exception("womp"))
                     }
                 })
                 .build()
@@ -1556,8 +1616,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
-                        return Observable.just(false)
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.error(Exception("womp"))
                     }
                 })
                 .build()
@@ -1575,8 +1635,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBacking: UpdateBacking): Observable<Boolean> {
-                        return Observable.just(false)
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.error(Exception("womp"))
                     }
                 })
                 .build()
@@ -1682,6 +1742,88 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.updatePledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.koalaTest.assertValues("Update Pledge Button Clicked")
+    }
+
+    @Test
+    fun testShowUpdatePledgeSuccess_whenRequiresAction_isSuccessful() {
+        val reward = RewardFactory.noReward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(30.0)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val environment = environmentForLoggedInUser(UserFactory.user())
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
+
+        this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.updatePledgeButtonClicked()
+
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePledgeError.assertNoValues()
+        this.showUpdatePledgeSuccess.assertNoValues()
+        this.updatePledgeProgressIsGone.assertValue(false)
+
+        this.vm.inputs.stripeSetupResultSuccessful()
+
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePledgeError.assertNoValues()
+        this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.updatePledgeProgressIsGone.assertValue(false)
+        this.koalaTest.assertValues("Update Pledge Button Clicked")
+    }
+
+    @Test
+    fun testShowUpdatePledgeSuccess_whenRequiresAction_isUnsuccessful() {
+        val reward = RewardFactory.noReward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(30.0)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val environment = environmentForLoggedInUser(UserFactory.user())
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
+
+        this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.updatePledgeButtonClicked()
+
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePledgeError.assertNoValues()
+        this.showUpdatePledgeSuccess.assertNoValues()
+        this.updatePledgeProgressIsGone.assertValue(false)
+
+        this.vm.inputs.stripeSetupResultUnsuccessful(Exception("woops"))
+
+        this.showSCAFlow.assertValueCount(1)
+        this.showUpdatePledgeError.assertValueCount(1)
+        this.showUpdatePledgeSuccess.assertNoValues()
+        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -1830,13 +1972,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
+        this.showSCAFlow.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
     }
 
@@ -1862,6 +2005,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
+        this.showSCAFlow.assertValueCount(1)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
 
         this.vm.inputs.stripeSetupResultSuccessful()
@@ -1889,14 +2033,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.showPledgeCard.assertValue(Pair(0, CardState.LOADING))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
+        this.showSCAFlow.assertValueCount(1)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("yikes"))
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showPledgeCard.assertValues(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
     }

@@ -88,7 +88,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
    * This method is called from {@link com.kickstarter.services.KSWebViewClient} when an Android Pay
    * payload has been obtained from the webview.
    *
-   * Deprecated 10/25/2019: We no longer support Android Pay from the webview.
+   * @deprecated 10/25/2019: We no longer support Android Pay from the webview.
    */
   @Deprecated
   public void takeAndroidPayPayloadString(final @Nullable String payloadString) {

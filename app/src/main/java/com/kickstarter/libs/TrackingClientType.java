@@ -23,7 +23,6 @@ public abstract class TrackingClientType {
       hashMap.putAll(KoalaUtils.userProperties(loggedInUser()));
     }
 
-    hashMap.put("android_pay_capable", isAndroidPayCapable());
     hashMap.put("android_uuid", androidUUID());
     hashMap.put("app_version", versionName());
     hashMap.put("brand", brand());
@@ -57,7 +56,6 @@ public abstract class TrackingClientType {
   protected abstract String brand();
   protected abstract String deviceFormat();
   protected abstract String deviceOrientation();
-  protected abstract boolean isAndroidPayCapable();
   protected abstract boolean isGooglePlayServicesAvailable();
   protected abstract boolean isTalkBackOn();
   protected abstract User loggedInUser();

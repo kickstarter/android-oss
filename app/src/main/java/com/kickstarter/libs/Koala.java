@@ -44,19 +44,6 @@ public final class Koala {
     this.client.track("Opened App Banner");
   }
 
-  // ANDROID PAY
-  public void trackShowAndroidPaySheet() {
-    this.client.track("Android Pay Show Sheet");
-  }
-
-  public void trackAndroidPayFinished() {
-    this.client.track("Android Pay Finished");
-  }
-
-  public void trackAndroidPayCanceled() {
-    this.client.track("Android Pay Canceled");
-  }
-
   // BACKING
   public void trackViewedPledgeInfo(final @NonNull Project project) {
     this.client.track(KoalaEvent.VIEWED_PLEDGE_INFO, KoalaUtils.projectProperties(project, this.client.loggedInUser()));

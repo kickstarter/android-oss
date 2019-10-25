@@ -35,7 +35,6 @@ import timber.log.Timber;
 public final class KoalaTrackingClient extends TrackingClientType {
   private static final String TAG = KoalaTrackingClient.class.getSimpleName();
   @Inject CurrentUserType currentUser;
-  @Inject AndroidPayCapability androidPayCapability;
   @Inject Build build;
   @Nullable private User loggedInUser;
   private final @NonNull Context context;
@@ -46,12 +45,10 @@ public final class KoalaTrackingClient extends TrackingClientType {
   public KoalaTrackingClient(
     final @ApplicationContext @NonNull Context context,
     final @NonNull CurrentUserType currentUser,
-    final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull Build build) {
 
     this.context = context;
     this.currentUser = currentUser;
-    this.androidPayCapability = androidPayCapability;
     this.build = build;
 
     // Cache the most recent logged in user for default Koala properties.
@@ -120,11 +117,6 @@ public final class KoalaTrackingClient extends TrackingClientType {
   @NonNull
   protected String deviceFormat() {
     return this.context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone";
-  }
-
-  @Override
-  protected boolean isAndroidPayCapable() {
-    return this.androidPayCapability.isCapable();
   }
 
   /**

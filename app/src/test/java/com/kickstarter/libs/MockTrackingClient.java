@@ -59,11 +59,6 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected boolean isAndroidPayCapable() {
-    return false;
-  }
-
-  @Override
   protected boolean isGooglePlayServicesAvailable() {
     return false;
   }

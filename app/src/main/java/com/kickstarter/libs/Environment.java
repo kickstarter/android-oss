@@ -20,7 +20,6 @@ import rx.Scheduler;
 @AutoParcel
 public abstract class Environment implements Parcelable {
   public abstract IntPreferenceType activitySamplePreference();
-  public abstract AndroidPayCapability androidPayCapability();
   public abstract ApiClientType apiClient();
   public abstract ApolloClientType apolloClient();
   public abstract Build build();
@@ -47,7 +46,6 @@ public abstract class Environment implements Parcelable {
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder activitySamplePreference(IntPreferenceType __);
-    public abstract Builder androidPayCapability(AndroidPayCapability __);
     public abstract Builder apiClient(ApiClientType __);
     public abstract Builder apolloClient(ApolloClientType __);
     public abstract Builder build(Build __);

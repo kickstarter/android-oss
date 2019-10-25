@@ -11,21 +11,23 @@ import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
+import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.NewCardFragment
-import com.stripe.android.ApiResultCallback
 import com.stripe.android.CardUtils
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import type.PaymentTypes
 
 interface NewCardFragmentViewModel {
     interface Inputs {
         /** Call when the card validity changes. */
         fun card(card: Card?)
+
+        /** Call when the card input has focus. */
+        fun cardFocus(hasFocus: Boolean)
 
         /** Call when the card number text changes. */
         fun cardNumber(cardNumber: String)
@@ -42,8 +44,11 @@ interface NewCardFragmentViewModel {
         /** Call when the user clicks the save icon. */
         fun saveCardClicked()
 
-        /** Call when the card input has focus. */
-        fun cardFocus(hasFocus: Boolean)
+        /** Call when Stripe token creation is successful. */
+        fun stripeTokenResultSuccessful(token: Token)
+
+        /** Call when Stripe token creation is unsuccessful. */
+        fun stripeTokenResultUnsuccessful(exception: Exception)
     }
 
     interface Outputs {
@@ -58,6 +63,9 @@ interface NewCardFragmentViewModel {
 
         /** Emits a drawable to be shown based on when the card widget has focus. */
         fun cardWidgetFocusDrawable(): Observable<Int>
+
+        /** Emits when we should create a Stripe token using card. */
+        fun createStripeToken(): Observable<Card>
 
         /** Emits a boolean determining if the form divider should be visible. */
         fun dividerIsVisible(): Observable<Boolean>
@@ -91,11 +99,14 @@ interface NewCardFragmentViewModel {
         private val postalCode = PublishSubject.create<String>()
         private val reusable = PublishSubject.create<Boolean>()
         private val saveCardClicked = PublishSubject.create<Void>()
+        private val stripeTokenResultSuccessful = PublishSubject.create<Token>()
+        private val stripeTokenResultUnsuccessful = PublishSubject.create<Exception>()
 
         private val allowedCardWarning = BehaviorSubject.create<Pair<Int?, Project?>>()
         private val allowedCardWarningIsVisible = BehaviorSubject.create<Boolean>()
         private val appBarLayoutHasElevation = BehaviorSubject.create<Boolean>()
         private val cardWidgetFocusDrawable = BehaviorSubject.create<Int>()
+        private val createStripeToken = PublishSubject.create<Card>()
         private val dividerIsVisible = BehaviorSubject.create<Boolean>()
         private val error = BehaviorSubject.create<Void>()
         private val modalError = BehaviorSubject.create<Void>()
@@ -184,46 +195,52 @@ interface NewCardFragmentViewModel {
                     .distinctUntilChanged()
                     .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
 
-            val saveCardNotification = cardForm
-                    .map {
-                        it.card?.let { card ->
-                            card.toBuilder()
-                                    .name(it.name)
-                                    .addressZip(it.postalCode)
-                                    .build()
-                        }
-                    }
-                    .compose<Pair<Card, Boolean>>(combineLatestPair(reusable))
-                    .compose<Pair<Card, Boolean>>(takeWhen(this.saveCardClicked))
-                    .switchMap { createTokenAndSaveCard(it).materialize() }
+            cardForm
+                    .map { it.card?.toBuilder()?.name(it.name)?.addressZip(it.postalCode)?.build() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .compose<Card>(takeWhen(this.saveCardClicked))
                     .compose(bindToLifecycle())
+                    .subscribe {
+                        this.createStripeToken.onNext(it)
+                        this.progressBarIsVisible.onNext(true)
+                    }
+
+            val saveCardNotification = this.stripeTokenResultSuccessful
+                    .map { token -> token.card?.id?.let { Pair(token.id, it) } }
+                    .compose<Pair<Pair<String, String>, Boolean>>(combineLatestPair(reusable))
+                    .map { SavePaymentMethodData(stripeToken = it.first.first, stripeCardId = it.first.second, reusable = it.second)  }
+                    .switchMap { this.apolloClient.savePaymentMethod(it).materialize() }
                     .share()
 
             saveCardNotification
                     .compose(values())
+                    .compose(bindToLifecycle())
                     .subscribe {
-                        this.success.onNext(null)
+                        this.success.onNext(it)
                         this.koala.trackSavedPaymentMethod()
                     }
 
-            val error = saveCardNotification
-                    .compose(errors())
+            val errors = Observable.merge(saveCardNotification.compose(errors()), this.stripeTokenResultUnsuccessful)
                     .compose(ignoreValues())
+
+            val errorsAndModal = errors
                     .compose<Pair<Void, Boolean>>(combineLatestPair(modal))
 
-            error
+            errorsAndModal
                     .filter { !it.second }
                     .map { it.first }
                     .subscribe(this.error)
 
-            error
+            errorsAndModal
                     .filter { it.second }
                     .map { it.first }
                     .subscribe(this.modalError)
 
-            saveCardNotification
-                    .compose(errors())
-                    .subscribe { this.koala.trackFailedPaymentMethodCreation() }
+            errors
+                    .subscribe {
+                        this.koala.trackFailedPaymentMethodCreation()
+                        this.progressBarIsVisible.onNext(false)
+                    }
 
             this.koala.trackViewedAddNewCard()
         }
@@ -256,6 +273,14 @@ interface NewCardFragmentViewModel {
             this.saveCardClicked.onNext(null)
         }
 
+        override fun stripeTokenResultSuccessful(token: Token) {
+            this.stripeTokenResultSuccessful.onNext(token)
+        }
+
+        override fun stripeTokenResultUnsuccessful(exception: Exception) {
+            this.stripeTokenResultUnsuccessful.onNext(exception)
+        }
+
         override fun allowedCardWarning(): Observable<Pair<Int?, Project?>> = this.allowedCardWarning
 
         override fun allowedCardWarningIsVisible(): Observable<Boolean> = this.allowedCardWarningIsVisible
@@ -263,6 +288,8 @@ interface NewCardFragmentViewModel {
         override fun appBarLayoutHasElevation(): Observable<Boolean> = this.appBarLayoutHasElevation
 
         override fun cardWidgetFocusDrawable(): Observable<Int> = this.cardWidgetFocusDrawable
+
+        override fun createStripeToken(): Observable<Card> = this.createStripeToken
 
         override fun dividerIsVisible(): Observable<Boolean> = this.dividerIsVisible
 
@@ -327,37 +354,6 @@ interface NewCardFragmentViewModel {
                 private val nonUsdCardTypes = arrayOf(Card.CardBrand.AMERICAN_EXPRESS,
                         Card.CardBrand.MASTERCARD,
                         Card.CardBrand.VISA)
-            }
-        }
-
-        private fun createTokenAndSaveCard(cardAndReusable: Pair<Card, Boolean>): Observable<StoredCard> {
-            return Observable.defer {
-                val ps = PublishSubject.create<StoredCard>()
-                this.stripe.createToken(cardAndReusable.first, object : ApiResultCallback<Token> {
-                    override fun onSuccess(token: Token) {
-                        saveCard(token, cardAndReusable.second, ps)
-                    }
-
-                    override fun onError(e: Exception) {
-                        ps.onError(e)
-                    }
-                })
-                return@defer ps
-            }
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-        }
-
-        private fun saveCard(token: Token, reusable:Boolean, ps: PublishSubject<StoredCard>) {
-            token.card?.id?.apply {
-                this@ViewModel.apolloClient.savePaymentMethod(PaymentTypes.CREDIT_CARD, token.id, this, reusable)
-                        .subscribe({
-                            ps.onCompleted()
-                            this@ViewModel.success.onNext(it)
-                            this@ViewModel.koala.trackSavedPaymentMethod()
-                        }, { ps.onError(it) })
-            }?: run {
-                ps.onError(IllegalStateException("Card has no id"))
             }
         }
     }

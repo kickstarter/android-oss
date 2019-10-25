@@ -7,9 +7,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +35,14 @@ import rx.functions.Action1;
 
 public final class ViewUtils {
   private ViewUtils() {}
+
+  public static void addBoldSpan(final @NonNull SpannableString spannableString, final @NonNull String substring) {
+    if (spannableString.toString().contains(substring)) {
+      final int index = spannableString.toString().indexOf(substring);
+      final StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+      spannableString.setSpan(boldSpan, index, index + substring.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+    }
+  }
 
   public static Bitmap getBitmap(final @NonNull View view, final int width, final int height) {
     final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);

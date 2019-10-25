@@ -7,11 +7,12 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.MockTrackingClient;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApolloClient;
-import com.kickstarter.mock.services.MockStripe;
 import com.kickstarter.mock.services.MockWebClient;
+import com.stripe.android.Stripe;
 
 import junit.framework.TestCase;
 
@@ -48,7 +49,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
       .apolloClient(new MockApolloClient())
       .currentConfig(new MockCurrentConfig())
       .webClient(new MockWebClient())
-      .stripe(new MockStripe(context(), false))
+      .stripe(new Stripe(context(), Secrets.StripePublishableKey.STAGING))
       .koala(new Koala(testTrackingClient))
       .build();
   }

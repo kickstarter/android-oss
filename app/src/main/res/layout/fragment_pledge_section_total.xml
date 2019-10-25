@@ -21,7 +21,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_4"
+    android:layout_marginBottom="@dimen/grid_2"
     android:orientation="horizontal">
 
     <TextView

@@ -1,10 +1,7 @@
 package com.kickstarter.ui.fragments
 
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -82,11 +79,6 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         }
     }
 
-    private fun addBoldSpan(spannableString: SpannableString, substring: String) {
-        val indexOfAmount = spannableString.indexOf(substring)
-        spannableString.setSpan(StyleSpan(Typeface.BOLD), indexOfAmount, indexOfAmount + substring.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-    }
-
     private fun dismiss() {
         fragmentManager?.popBackStack(CancelPledgeFragment::class.java.simpleName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
@@ -100,8 +92,8 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
 
         val spannableString = SpannableString(formattedString)
 
-        addBoldSpan(spannableString, amount)
-        addBoldSpan(spannableString, name)
+        ViewUtils.addBoldSpan(spannableString, amount)
+        ViewUtils.addBoldSpan(spannableString, name)
 
         cancel_prompt.text = spannableString
     }

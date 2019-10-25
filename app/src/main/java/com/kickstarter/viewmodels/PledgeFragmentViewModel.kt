@@ -874,13 +874,8 @@ interface PledgeFragmentViewModel {
             val createBackingValues = createBackingNotification
                     .compose(values())
 
-            val createBackingSuccess = Observable.merge(this.stripeSetupResultSuccessful,
-                    createBackingValues
-                            .map { it.requiresAction() }
-                            .filter { BooleanUtils.isFalse(it) }
-                            .compose(ignoreValues()))
-
-            createBackingSuccess
+            Observable.merge(this.stripeSetupResultSuccessful, createBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) })
+                    .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeSuccess)
 

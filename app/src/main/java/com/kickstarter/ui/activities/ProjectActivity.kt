@@ -594,9 +594,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
         pledge_container_root.y = (root.height - guideline).toFloat()
-        val params = pledge_container_root.layoutParams
-        params.height = root.height
-        pledge_container_root.layoutParams = params
     }
 
     private fun showBackingFragment(project: Project) {

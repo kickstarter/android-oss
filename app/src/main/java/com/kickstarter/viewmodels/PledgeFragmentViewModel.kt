@@ -10,12 +10,12 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
-import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
+import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBacking
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.CardState
@@ -76,6 +76,12 @@ interface PledgeFragmentViewModel {
 
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
+
+        /** Call when Stripe SCA is successful. */
+        fun stripeSetupResultSuccessful()
+
+        /** Call when Stripe SCA is unsuccessful. */
+        fun stripeSetupResultUnsuccessful(exception: Exception)
 
         /** Call when user clicks the update pledge button. */
         fun updatePledgeButtonClicked()
@@ -202,6 +208,9 @@ interface PledgeFragmentViewModel {
         /** Emits when the creating backing mutation was successful. */
         fun showPledgeSuccess(): Observable<Void>
 
+        /** Emits when we should show the SCA flow with the client secret. */
+        fun showSCAFlow(): Observable<String>
+
         /**  Emits when the update payment source mutation was unsuccessful. */
         fun showUpdatePaymentError(): Observable<Void>
 
@@ -262,6 +271,8 @@ interface PledgeFragmentViewModel {
         private val pledgeInput = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
+        private val stripeSetupResultSuccessful = PublishSubject.create<Void>()
+        private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
         private val updatePledgeButtonClicked = PublishSubject.create<Void>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
@@ -302,6 +313,7 @@ interface PledgeFragmentViewModel {
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = PublishSubject.create<Void>()
         private val showPledgeSuccess = PublishSubject.create<Void>()
+        private val showSCAFlow = PublishSubject.create<String>()
         private val showUpdatePaymentError = PublishSubject.create<Void>()
         private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
         private val showUpdatePledgeError = PublishSubject.create<Void>()
@@ -864,31 +876,37 @@ interface PledgeFragmentViewModel {
                     location.map { it?.id()?.toString() },
                     reward,
                     cookieRefTag)
-            { p, a, id, l, r, c -> CreateBacking(p, a, id, l, r, c) }
-                    .compose<CreateBacking>(takeWhen(pledgeButtonClicked))
+            { p, a, id, l, r, c -> CreateBackingData(p, a, id, l, r, c) }
+                    .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
+                    .map { CreateBackingData(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag) }
                     .switchMap {
-                        this.apolloClient.createBacking(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag)
+                        this.apolloClient.createBacking(it)
                             .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
                             .materialize()
                     }
                     .share()
 
-            val createBackingValues = createBackingNotification
-                    .compose(values())
-
-            Observable.merge(createBackingNotification.compose(errors()), createBackingValues.filter { BooleanUtils.isFalse(it) })
+            Observable.merge(this.stripeSetupResultUnsuccessful, createBackingNotification.compose(errors()))
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe{
+                    .subscribe {
                         this.showPledgeError.onNext(null)
                         this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
                     }
 
-            createBackingValues
-                    .filter { BooleanUtils.isTrue(it) }
+            val createBackingValues = createBackingNotification
+                    .compose(values())
+
+            Observable.merge(this.stripeSetupResultSuccessful, createBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) })
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeSuccess)
+
+            createBackingValues
+                    .filter { BooleanUtils.isTrue(it.requiresAction()) }
+                    .map { it.clientSecret() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showSCAFlow)
 
             val updatePaymentClick = pledgeReason
                     .compose<Pair<PledgeReason, String>>(takePairWhen(this.pledgeButtonClicked))
@@ -982,8 +1000,6 @@ interface PledgeFragmentViewModel {
                     .compose(neverError())
         }
 
-        data class CreateBacking(val project: Project, val amount: String, val paymentSourceId: String, val locationId: String?, val reward: Reward?, val refTag: RefTag?)
-
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 
         override fun backPressed() = this.backPressed.onNext(null)
@@ -1010,9 +1026,13 @@ interface PledgeFragmentViewModel {
 
         override fun pledgeButtonClicked(cardId: String) = this.pledgeButtonClicked.onNext(cardId)
 
+        override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
+
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
-        override fun selectCardButtonClicked(position: Int) = this.selectCardButtonClicked.onNext(position)
+        override fun stripeSetupResultSuccessful() = this.stripeSetupResultSuccessful.onNext(null)
+
+        override fun stripeSetupResultUnsuccessful(exception: Exception) = this.stripeSetupResultUnsuccessful.onNext(exception)
 
         override fun updatePledgeButtonClicked() = this.updatePledgeButtonClicked.onNext(null)
 
@@ -1129,6 +1149,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun showPledgeSuccess(): Observable<Void> = this.showPledgeSuccess
+
+        @NonNull
+        override fun showSCAFlow(): Observable<String> = this.showSCAFlow
 
         @NonNull
         override fun showUpdatePaymentError(): Observable<Void> = this.showUpdatePaymentError

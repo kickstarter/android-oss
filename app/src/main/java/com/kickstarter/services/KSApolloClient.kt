@@ -19,9 +19,9 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.google.android.gms.common.util.Base64Utils
-import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
+import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBacking
 import rx.Observable
@@ -62,19 +62,19 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createBacking(project: Project, amount: String, paymentSourceId: String, locationId: String?, reward: Reward?, refTag: RefTag?): Observable<Boolean> {
+    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()
-                    .projectId(encodeRelayId(project))
-                    .amount(amount)
+                    .projectId(encodeRelayId(createBackingData.project))
+                    .amount(createBackingData.amount)
                     .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
-                    .paymentSourceId(paymentSourceId)
-                    .locationId(locationId?.let { it })
-                    .rewardId(reward?.let { encodeRelayId(it) })
-                    .refParam(refTag?.tag())
+                    .paymentSourceId(createBackingData.paymentSourceId)
+                    .locationId(createBackingData.locationId?.let { it })
+                    .rewardId(createBackingData.reward?.let { encodeRelayId(it) })
+                    .refParam(createBackingData.refTag?.tag())
                     .build()
 
-            val ps = PublishSubject.create<Boolean>()
+            val ps = PublishSubject.create<Checkout.Backing>()
 
             this.service.mutate(createBackingMutation)
                     .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
@@ -86,9 +86,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             if (response.hasErrors()) {
                                 ps.onError(java.lang.Exception(response.errors().first().message()))
                             }
-                            val state = response.data()?.createBacking()?.checkout()?.state()
-                            val success = state == CheckoutState.SUCCESSFUL
-                            ps.onNext(success)
+
+                            val checkoutPayload = response.data()?.createBacking()?.checkout()
+                            val backing = Checkout.Backing.builder()
+                                    .clientSecret(checkoutPayload?.backing()?.clientSecret())
+                                    .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
+                                    .build()
+
+                            ps.onNext(backing)
                             ps.onCompleted()
                         }
                     })

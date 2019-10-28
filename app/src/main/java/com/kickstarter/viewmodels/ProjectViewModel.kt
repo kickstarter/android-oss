@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Pair
 import androidx.annotation.NonNull
-import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -26,6 +25,8 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.net.CookieManager
+
+
 
 interface ProjectViewModel {
     interface Inputs {
@@ -215,9 +216,9 @@ interface ProjectViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
         private val client: ApiClientType = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentConfig: CurrentConfigType = environment.currentConfig()
+        private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val nativeCheckoutPreference: BooleanPreferenceType = environment.nativeCheckoutPreference()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
@@ -288,6 +289,9 @@ interface ProjectViewModel {
         val outputs: Outputs = this
 
         init {
+            val nativeCheckoutEnabled = this.currentConfig.observable()
+                    .map { it.features() }
+                    .map { ObjectUtils.coalesce(it?.get(FeatureKey.ANDROID_NATIVE_CHECKOUT), this.nativeCheckoutPreference.get()) }
 
             val mappedProjectNotification = Observable.merge(intent(), intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked)))
@@ -308,7 +312,7 @@ interface ProjectViewModel {
 
             val mappedProjectErrors = mappedProjectNotification
                     .compose(errors())
-                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
+                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
 
             mappedProjectValues
@@ -460,9 +464,9 @@ interface ProjectViewModel {
                     .subscribe(this.expandPledgeSheet)
 
             val nativeCheckoutProject = currentProject
-                    .compose<Pair<Project, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
+                    .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
-                    .map<Project> { it.first }
+                    .map { it.first }
 
             val projectHasRewards = nativeCheckoutProject
                     .map { it.hasRewards() }
@@ -610,7 +614,7 @@ interface ProjectViewModel {
                     .subscribe { this.koala.trackVideoStart(it) }
 
             currentProject
-                    .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
+                    .map { p -> if (p.isStarred) com.kickstarter.R.drawable.icon__heart else com.kickstarter.R.drawable.icon__heart_outline }
                     .subscribe(this.heartDrawableId)
 
             //Tracking
@@ -690,9 +694,9 @@ interface ProjectViewModel {
 
         private fun eventName(projectActionButtonStringRes: Int) : String {
             return when (projectActionButtonStringRes) {
-                R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
-                R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
+                com.kickstarter.R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+                com.kickstarter.R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
+                com.kickstarter.R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
                 else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED
             }
         }
@@ -702,8 +706,8 @@ interface ProjectViewModel {
             val count = projectAndFragmentStackCount.second
             return when {
                 !project.isBacking || IntegerUtils.isNonZero(count) -> null
-                project.isLive -> R.menu.manage_pledge_live
-                else -> R.menu.manage_pledge_ended
+                project.isLive -> com.kickstarter.R.menu.manage_pledge_live
+                else -> com.kickstarter.R.menu.manage_pledge_ended
             }
         }
 
@@ -783,11 +787,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderBackProjectClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference.get()) {
-                this.nativeProjectActionButtonClicked()
-            } else {
-                this.backProjectButtonClicked()
-            }
+            this.backProjectButtonClicked()
         }
 
         override fun projectViewHolderBlurbClicked(viewHolder: ProjectViewHolder) {
@@ -803,11 +803,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderManagePledgeClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference.get()) {
-                this.nativeProjectActionButtonClicked()
-            } else {
-                this.managePledgeButtonClicked()
-            }
+            this.managePledgeButtonClicked()
         }
 
         override fun projectViewHolderVideoStarted(viewHolder: ProjectViewHolder) {
@@ -815,11 +811,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderViewPledgeClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference.get()) {
-                this.nativeProjectActionButtonClicked()
-            } else {
-                this.viewPledgeButtonClicked()
-            }
+            this.viewPledgeButtonClicked()
         }
 
         override fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder) {

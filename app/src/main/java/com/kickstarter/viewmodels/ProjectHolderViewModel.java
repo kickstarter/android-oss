@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.BooleanUtils;
@@ -97,6 +98,9 @@ public interface ProjectHolderViewModel {
     /** Emits the pledged amount for display. */
     Observable<String> pledgedTextViewText();
 
+    /** Emits a boolean determining if the project action buttons should be visible. */
+    Observable<Boolean> projectActionButtonsAreVisible();
+
     /** Emits the date time to be displayed in the disclaimer. */
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
 
@@ -165,6 +169,7 @@ public interface ProjectHolderViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
+    private final CurrentConfigType currentConfig;
     private final KSCurrency ksCurrency;
 
     public ViewModel(final @NonNull Environment environment) {
@@ -234,6 +239,9 @@ public interface ProjectHolderViewModel {
 
       this.pledgedTextViewText = project
         .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p));
+
+      this.projectActionButtonsAreVisible = this.currentConfig.observable()
+
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -323,6 +331,7 @@ public interface ProjectHolderViewModel {
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
+    private final Observable<Boolean> projectActionButtonsAreVisible;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
@@ -409,6 +418,9 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
+    }
+    @Override public @NonNull Observable<Boolean> projectActionButtonsAreVisible() {
+      return this.projectActionButtonsAreVisible;
     }
     @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;

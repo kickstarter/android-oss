@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.Either
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ViewUtils
@@ -48,6 +49,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { setCardExpirationText(it) }
+
+        this.viewModel.outputs.cardIssuer()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { setCardIssuerContentDescription(it) }
 
         this.viewModel.outputs.cardLastFour()
                 .compose(bindToLifecycle())
@@ -136,6 +142,12 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
     private fun setCardExpirationText(expiration: String) {
         reward_card_expiration_date.text = this.viewModel.ksString.format(getString(R.string.Credit_card_expiration),
                 "expiration_date", expiration)
+    }
+
+    private fun setCardIssuerContentDescription(cardIssuerOrStringRes: Either<String, Int>) {
+        val cardIssuer = cardIssuerOrStringRes.left()
+        val stringRes = cardIssuerOrStringRes.right()
+        reward_card_logo.contentDescription = stringRes?.let { getString(it) }?: cardIssuer
     }
 
     private fun setCardLastFourText(lastFour: String) {

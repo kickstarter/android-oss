@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
+import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
@@ -13,6 +14,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.fragments.BackingFragment
+import com.stripe.android.model.Card
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -39,6 +41,9 @@ interface BackingFragmentViewModel {
 
         /** Emits the expiration of the backing's card. */
         fun cardExpiration(): Observable<String>
+
+        /** Emits the name of the card issuer from [Card.CardBrand] or Google Pay or Apple Pay string resources. */
+        fun cardIssuer(): Observable<Either<String, Int>>
 
         /** Emits the last four digits of the backing's card. */
         fun cardLastFour(): Observable<String>
@@ -88,6 +93,7 @@ interface BackingFragmentViewModel {
 
         private val backerNumber = BehaviorSubject.create<String>()
         private val cardExpiration = BehaviorSubject.create<String>()
+        private val cardIssuer = BehaviorSubject.create<Either<String, Int>>()
         private val cardLastFour = BehaviorSubject.create<String>()
         private val cardLogo = BehaviorSubject.create<Int>()
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
@@ -197,6 +203,12 @@ interface BackingFragmentViewModel {
                     .subscribe(this.cardExpiration)
 
             paymentSource
+                    .map { cardIssuer(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.cardIssuer)
+
+            paymentSource
                     .map { it.lastFour()?: "" }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -240,6 +252,15 @@ interface BackingFragmentViewModel {
                     .subscribe(this.receivedSectionIsGone)
         }
 
+        private fun cardIssuer(paymentSource: Backing.PaymentSource) : Either<String, Int> {
+            return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
+                CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
+                CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
+                CreditCardPaymentType.CREDIT_CARD -> Either.Left(StoredCard.issuer(CreditCardTypes.safeValueOf(paymentSource.type())))
+                else -> Either.Left(Card.CardBrand.UNKNOWN)
+            }
+        }
+
         private fun cardLogo(paymentSource: Backing.PaymentSource) : Int {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> R.drawable.google_pay_mark
@@ -264,6 +285,8 @@ interface BackingFragmentViewModel {
         override fun backerNumber(): Observable<String> = this.backerNumber
 
         override fun cardExpiration(): Observable<String> = this.cardExpiration
+
+        override fun cardIssuer(): Observable<Either<String, Int>> = this.cardIssuer
 
         override fun cardLastFour(): Observable<String> = this.cardLastFour
 

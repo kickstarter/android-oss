@@ -4,11 +4,13 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.stripe.android.model.Card
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -18,6 +20,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
     private val backerNumber = TestSubscriber.create<String>()
     private val cardExpiration = TestSubscriber.create<String>()
+    private val cardIssuer = TestSubscriber.create<Either<String, Int>>()
     private val cardLastFour = TestSubscriber.create<String>()
     private val cardLogo = TestSubscriber.create<Int>()
     private val paymentMethodIsGone = TestSubscriber.create<Boolean>()
@@ -36,6 +39,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm = BackingFragmentViewModel.ViewModel(environment)
         this.vm.outputs.backerNumber().subscribe(this.backerNumber)
         this.vm.outputs.cardExpiration().subscribe(this.cardExpiration)
+        this.vm.outputs.cardIssuer().subscribe(this.cardIssuer)
         this.vm.outputs.cardLastFour().subscribe(this.cardLastFour)
         this.vm.outputs.cardLogo().subscribe(this.cardLogo)
         this.vm.outputs.paymentMethodIsGone().subscribe(this.paymentMethodIsGone)
@@ -214,6 +218,60 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.project(backedProject)
         this.cardLogo.assertValue(R.drawable.visa_md)
+    }
+
+    @Test
+    fun testCardIssuer_whenApplePay() {
+        val paymentSource = PaymentSourceFactory.applePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardIssuer.assertValue(Either.Right(R.string.apple_pay_content_description))
+    }
+
+    @Test
+    fun testCardIssuer_whenGooglePay() {
+        val paymentSource = PaymentSourceFactory.googlePay()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardIssuer.assertValue(Either.Right(R.string.googlepay_button_content_description))
+    }
+
+    @Test
+    fun testCardIssuer_whenCreditCard() {
+        val paymentSource = PaymentSourceFactory.visa()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.cardIssuer.assertValue(Either.Left(Card.CardBrand.VISA))
     }
 
     @Test

@@ -66,4 +66,15 @@ sealed class Either<out A, out B> {
     is Left -> Left(transform(this.left))
     is Right -> Right(this.right)
   }
+
+  override fun equals(other: Any?): Boolean {
+    return when {
+      other == null || javaClass != other.javaClass -> false
+      this === other -> true
+      else -> {
+        val that = other as Either<*, *>
+        this.left() == that.left() && this.right() == that.right()
+      }
+    }
+  }
 }

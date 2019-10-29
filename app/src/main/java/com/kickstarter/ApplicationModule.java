@@ -13,7 +13,6 @@ import com.apollographql.apollo.ApolloClient;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.Build;
@@ -108,7 +107,6 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
-    final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull ApiClientType apiClient,
     final @NonNull ApolloClientType apolloClient,
     final @NonNull Build build,
@@ -134,7 +132,6 @@ public final class ApplicationModule {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
-      .androidPayCapability(androidPayCapability)
       .apiClient(apiClient)
       .apolloClient(apolloClient)
       .build(build)
@@ -315,8 +312,8 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull AndroidPayCapability androidPayCapability) {
-    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, androidPayCapability);
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
   }
 
   @Provides
@@ -341,14 +338,6 @@ public final class ApplicationModule {
   @NonNull
   static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, SharedPreferenceKey.ACCESS_TOKEN);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static AndroidPayCapability provideAndroidPayCapability(final @NonNull PlayServicesCapability playServicesCapability,
-    final @ApplicationContext @NonNull Context context) {
-    return new AndroidPayCapability(playServicesCapability, context);
   }
 
   @Provides
@@ -399,8 +388,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull AndroidPayCapability androidPayCapability, final @NonNull Build build) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability, build));
+    final @NonNull Build build) {
+    return new Koala(new KoalaTrackingClient(context, currentUser, build));
   }
 
   @Provides

@@ -2,7 +2,6 @@ package com.kickstarter.services.interceptors;
 
 import android.net.Uri;
 
-import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.InternalToolsType;
@@ -25,16 +24,13 @@ public final class WebRequestInterceptor implements Interceptor {
   private final @NonNull String endpoint;
   private final @NonNull InternalToolsType internalTools;
   private final @NonNull Build build;
-  private final @NonNull AndroidPayCapability androidPayCapability;
 
   public WebRequestInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String endpoint,
-    final InternalToolsType internalTools, final @NonNull Build build,
-    final @NonNull AndroidPayCapability androidPayCapability) {
+    final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
     this.currentUser = currentUser;
     this.endpoint = endpoint;
     this.internalTools = internalTools;
     this.build = build;
-    this.androidPayCapability = androidPayCapability;
   }
 
   @Override
@@ -55,9 +51,6 @@ public final class WebRequestInterceptor implements Interceptor {
       requestBuilder.addHeader("Authorization", "token " + this.currentUser.getAccessToken());
     } else if (shouldAddBasicAuthorizationHeader(initialRequest) && isNotNull(basicAuthorizationHeader)) {
       requestBuilder.addHeader("Authorization", basicAuthorizationHeader);
-    }
-    if (this.androidPayCapability.isCapable()) {
-      requestBuilder.addHeader("Kickstarter-Android-Pay", "1");
     }
 
     return requestBuilder.build();

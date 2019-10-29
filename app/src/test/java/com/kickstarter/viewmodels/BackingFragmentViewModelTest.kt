@@ -255,7 +255,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryIsGone_whenDigitalReward() {
+    fun testPledgeSummaryIsGone_whenLocationId_isNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .locationId(null)
@@ -272,7 +272,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryIsGone_whenShippableReward() {
+    fun testPledgeSummaryIsGone_whenLocationId_isNotNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .locationId(4L)
@@ -429,7 +429,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingSummaryIsGone_whenDigitalReward() {
+    fun testShippingSummaryIsGone_whenLocationId_isNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .locationId(null)
@@ -446,7 +446,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingSummaryIsGone_whenShippableReward() {
+    fun testShippingSummaryIsGone_whenLocationId_isNotNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .locationId(4L)

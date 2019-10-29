@@ -13,15 +13,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.showSnackbar
@@ -46,7 +43,8 @@ import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.CardInputWidget
 import kotlinx.android.synthetic.main.activity_project.*
-import kotlinx.android.synthetic.main.project_layout.*
+import kotlinx.android.synthetic.main.pledge_container.*
+import kotlinx.android.synthetic.main.project_retry.*
 import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 
@@ -55,10 +53,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         NewCardFragment.OnCardSavedListener, PledgeFragment.PledgeDelegate {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
-    private lateinit var heartIcon: ImageButton
-    private lateinit var progressBar: ProgressBar
-    private lateinit var projectRecyclerView: RecyclerView
-    private lateinit var shareIcon: ImageButton
 
     private val projectBackButtonString = R.string.project_back_button
     private val managePledgeString = R.string.project_checkout_manage_navbar_title
@@ -71,124 +65,100 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(when {
-            environment().nativeCheckoutPreference().get() -> R.layout.activity_project
-            else -> R.layout.project_layout
-        })
+        setContentView(R.layout.activity_project)
         this.ksString = environment().ksString()
 
-        this.projectRecyclerView = findViewById(R.id.project_recycler_view)
-        this.progressBar = findViewById(R.id.project_progress_bar)
-        this.heartIcon = findViewById(R.id.heart_icon)
-        this.shareIcon = findViewById(R.id.share_icon)
-
-        when {
-            environment().nativeCheckoutPreference().get() -> {
-                val viewTreeObserver = pledge_container_root.viewTreeObserver
-                if (viewTreeObserver.isAlive) {
-                    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            this@ProjectActivity.viewModel.inputs.onGlobalLayout()
-                            pledge_container_root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        }
-                    })
+        val viewTreeObserver = pledge_container_root.viewTreeObserver
+        if (viewTreeObserver.isAlive) {
+            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    this@ProjectActivity.viewModel.inputs.onGlobalLayout()
+                    pledge_container_root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
+            })
+        }
 
-                project_action_button.setOnClickListener {
-                    this.viewModel.inputs.nativeProjectActionButtonClicked()
-                }
-
-                pledge_toolbar.setNavigationOnClickListener {
-                    this.viewModel.inputs.collapsePledgeSheet()
-                }
-
-                pledge_toolbar.setOnMenuItemClickListener {
-                    when {
-                        it.itemId == R.id.update_pledge -> {
-                            this.viewModel.inputs.updatePledgeClicked()
-                            true
-                        }
-                        it.itemId == R.id.rewards -> {
-                            this.viewModel.inputs.viewRewardsClicked()
-                            true
-                        }
-                        it.itemId == R.id.update_payment -> {
-                            this.viewModel.inputs.updatePaymentClicked()
-                            true
-                        }
-                        it.itemId == R.id.cancel_pledge -> {
-                            this.viewModel.inputs.cancelPledgeClicked()
-                            true
-                        }
-                        it.itemId == R.id.contact_creator -> {
-                            this.viewModel.inputs.contactCreatorClicked()
-                            true
-                        }
-                        else -> false
-                    }
-                }
-
-                this.supportFragmentManager.addOnBackStackChangedListener {
-                    this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
-                    val fragments = this.supportFragmentManager.fragments
-                    val lastFragmentWithView = fragments.last { it.view != null }
-                    for (fragment in fragments) {
-                        if (fragment == lastFragmentWithView) {
-                            fragment.view?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-                        } else {
-                            fragment.view?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                        }
-                    }
-                }
-
-                findViewById<View>(R.id.pledge_sheet_retry_container).setOnClickListener {
-                    this.viewModel.inputs.reloadProjectContainerClicked()
-                }
-
-            }
-            else -> {
-                project_action_buttons.visibility = when {
-                    ViewUtils.isLandscape(this) -> View.GONE
-                    else -> View.VISIBLE
-                }
-
-                back_project_button.setOnClickListener {
-                    this.viewModel.inputs.backProjectButtonClicked()
-                }
-
-                manage_pledge_button.setOnClickListener {
-                    this.viewModel.inputs.managePledgeButtonClicked()
-                }
-
-                view_pledge_button.setOnClickListener {
-                    this.viewModel.inputs.viewPledgeButtonClicked()
+        this.supportFragmentManager.addOnBackStackChangedListener {
+            this.viewModel.inputs.fragmentStackCount(this.supportFragmentManager.backStackEntryCount)
+            val fragments = this.supportFragmentManager.fragments
+            val lastFragmentWithView = fragments.last { it.view != null }
+            for (fragment in fragments) {
+                if (fragment == lastFragmentWithView) {
+                    fragment.view?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                } else {
+                    fragment.view?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 }
             }
         }
 
         this.adapter = ProjectAdapter(this.viewModel)
-        projectRecyclerView.adapter = this.adapter
-        projectRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        this.viewModel.outputs.heartDrawableId()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.heartIcon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
+        project_recycler_view.adapter = this.adapter
+        project_recycler_view.layoutManager = LinearLayoutManager(this)
 
         this.viewModel.outputs.backingDetailsIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { styleProjectActionButton(it) }
 
+        this.viewModel.outputs.backingDetails()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { reward_infos.text = it }
+
+        this.viewModel.outputs.expandPledgeSheet()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { expandPledgeSheet(it) }
+
+        this.viewModel.outputs.heartDrawableId()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
+
+        this.viewModel.outputs.horizontalProgressBarIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(project_progress_bar, it) }
+
+        this.viewModel.outputs.managePledgeMenu()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { updateManagePledgeMenu(it) }
+
+        this.viewModel.outputs.pledgeActionButtonContainerIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(pledge_action_buttons, it) }
+
+        this.viewModel.outputs.pledgeContainerIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(pledge_container_root, it) }
+
+        this.viewModel.outputs.prelaunchUrl()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { openProjectAndFinish(it) }
+
+        this.viewModel.outputs.projectActionButtonContainerIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(project_action_buttons, if (ViewUtils.isLandscape(this)) true else it) }
+
         this.viewModel.outputs.projectAndUserCountry()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { renderProject(it) }
 
-        this.viewModel.outputs.backingDetails()
+        this.viewModel.outputs.reloadProjectContainerIsGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { reward_infos.text = it }
+                .subscribe { ViewUtils.setGone(pledge_sheet_retry_container, it) }
+
+        this.viewModel.outputs.retryProgressBarIsGone()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { ViewUtils.setGone(pledge_sheet_progress_bar, it) }
 
         this.viewModel.outputs.rewardsButtonColor()
                 .compose(bindToLifecycle())
@@ -210,20 +180,30 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setInitialRewardsContainerY() }
 
-        this.viewModel.outputs.expandPledgeSheet()
+        this.viewModel.outputs.showSavedPrompt()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { expandPledgeSheet(it) }
+                .subscribe { this.showStarToast() }
 
         this.viewModel.outputs.showShareSheet()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { startShareIntent(it) }
 
+        this.viewModel.outputs.startBackingActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startBackingActivity(it) }
+
         this.viewModel.outputs.startCampaignWebViewActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCampaignWebViewActivity(it) }
+
+        this.viewModel.outputs.startCheckoutActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCheckoutActivity(it) }
 
         this.viewModel.outputs.startCommentsActivity()
                 .compose(bindToLifecycle())
@@ -245,25 +225,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startVideoActivity(it) }
 
-        this.viewModel.outputs.startCheckoutActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCheckoutActivity(it) }
-
         this.viewModel.outputs.startManagePledgeActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startManagePledge(it) }
-
-        this.viewModel.outputs.startBackingActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startBackingActivity(it) }
-
-        this.viewModel.outputs.showSavedPrompt()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.showStarToast() }
 
         this.viewModel.outputs.startLoginToutActivity()
                 .compose(bindToLifecycle())
@@ -295,11 +260,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showBackingFragment(it) }
 
-        this.viewModel.outputs.managePledgeMenu()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { updateManagePledgeMenu(it) }
-
         this.viewModel.outputs.showCancelPledgeFragment()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -325,36 +285,75 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { startMessagesActivity(it) }
 
-        this.viewModel.outputs.prelaunchUrl()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { openProjectAndFinish(it) }
-
-        this.viewModel.outputs.projectActionButtonContainerIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(action_buttons, it) }
-
-        this.viewModel.outputs.progressBarIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(findViewById(R.id.project_progress_bar), it) }
-
-        this.viewModel.outputs.reloadProjectContainerIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(findViewById(R.id.pledge_sheet_retry_container), it) }
-
         this.viewModel.outputs.startThanksActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCreatePledgeSuccess(it) }
 
-        this.heartIcon.setOnClickListener {
+        setClickListeners()
+    }
+
+    private fun setClickListeners() {
+        project_action_button.setOnClickListener {
+            this.viewModel.inputs.nativeProjectActionButtonClicked()
+        }
+
+        pledge_toolbar.setNavigationOnClickListener {
+            this.viewModel.inputs.collapsePledgeSheet()
+        }
+
+        pledge_toolbar.setOnMenuItemClickListener {
+            when {
+                it.itemId == R.id.update_pledge -> {
+                    this.viewModel.inputs.updatePledgeClicked()
+                    true
+                }
+                it.itemId == R.id.rewards -> {
+                    this.viewModel.inputs.viewRewardsClicked()
+                    true
+                }
+                it.itemId == R.id.update_payment -> {
+                    this.viewModel.inputs.updatePaymentClicked()
+                    true
+                }
+                it.itemId == R.id.cancel_pledge -> {
+                    this.viewModel.inputs.cancelPledgeClicked()
+                    true
+                }
+                it.itemId == R.id.contact_creator -> {
+                    this.viewModel.inputs.contactCreatorClicked()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        pledge_sheet_retry_container.setOnClickListener {
+            this.viewModel.inputs.reloadProjectContainerClicked()
+        }
+
+        project_action_buttons.visibility = when {
+            ViewUtils.isLandscape(this) -> View.GONE
+            else -> View.VISIBLE
+        }
+
+        back_project_button.setOnClickListener {
+            this.viewModel.inputs.backProjectButtonClicked()
+        }
+
+        manage_pledge_button.setOnClickListener {
+            this.viewModel.inputs.managePledgeButtonClicked()
+        }
+
+        view_pledge_button.setOnClickListener {
+            this.viewModel.inputs.viewPledgeButtonClicked()
+        }
+
+        heart_icon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
 
-        this.shareIcon.setOnClickListener {
+        share_icon.setOnClickListener {
             this.viewModel.inputs.shareButtonClicked()
         }
     }
@@ -368,7 +367,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     override fun back() {
-        if (environment().nativeCheckoutPreference().get()) {
+        if (pledge_container != null) {
             handleNativeCheckoutBackPress()
         } else {
             super.back()
@@ -419,7 +418,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     override fun onDestroy() {
         super.onDestroy()
-        this.projectRecyclerView.adapter = null
+        project_recycler_view.adapter = null
     }
 
     private fun animateScrimVisibility(show: Boolean) {
@@ -447,17 +446,17 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
-    private fun clearFragmentBackStack() : Boolean {
+    private fun clearFragmentBackStack(): Boolean {
         return supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     private fun expandPledgeSheet(expandAndAnimate: Pair<Boolean, Boolean>) {
         val expand = expandAndAnimate.first
         val animate = expandAndAnimate.second
-        val targetToShow = if (!expand) action_buttons else pledge_container
+        val targetToShow = if (!expand) pledge_action_buttons else pledge_container
         val showRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToShow, View.ALPHA, 0f, 1f)
 
-        val targetToHide = if (!expand) pledge_container else action_buttons
+        val targetToHide = if (!expand) pledge_container else pledge_action_buttons
         val hideRewardsFragmentAnimator = ObjectAnimator.ofFloat(targetToHide, View.ALPHA, 1f, 0f)
 
         val guideline = rewardsSheetGuideline()
@@ -485,13 +484,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
                 override fun onAnimationEnd(animation: Animator?) {
                     if (expand) {
-                        action_buttons.visibility = View.GONE
-                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        pledge_action_buttons.visibility = View.GONE
+                        this@ProjectActivity.project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         pledge_toolbar.requestFocus()
                     } else {
                         pledge_container.visibility = View.GONE
-                        this@ProjectActivity.projectRecyclerView.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        this@ProjectActivity.project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         if (animate) {
                             toolbar.requestFocus()
@@ -503,7 +502,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                     if (expand) {
                         pledge_container.visibility = View.VISIBLE
                     } else {
-                        action_buttons.visibility = View.VISIBLE
+                        pledge_action_buttons.visibility = View.VISIBLE
                     }
                 }
             })
@@ -599,7 +598,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun showBackingFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
                 supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
+        if (!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
             supportFragmentManager.beginTransaction()
                     .show(backingFragment)
                     .hide(rewardsFragment)
@@ -635,7 +634,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun showPledgeNotCancelableDialog() {
         AlertDialog.Builder(this, R.style.Dialog)
                 .setMessage(R.string.We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours)
-                .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ ->  dialog.dismiss()}
+                .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ -> dialog.dismiss() }
                 .show()
     }
 
@@ -658,8 +657,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun showRewardsFragment(project: Project) {
         val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
-        supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if(!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
+                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        if (!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
             supportFragmentManager.beginTransaction()
                     .show(rewardsFragment)
                     .hide(backingFragment)
@@ -775,7 +774,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
         menu?.let {
             pledge_toolbar.inflateMenu(it)
-        }?: run {
+        } ?: run {
             pledge_toolbar.menu.clear()
         }
     }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-  android:id="@+id/root"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/root"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -21,131 +20,62 @@
     </com.google.android.material.appbar.CollapsingToolbarLayout>
   </com.google.android.material.appbar.AppBarLayout>
 
+  <ProgressBar
+    android:id="@+id/project_progress_bar"
+    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/project_app_bar_layout"
+    android:indeterminate="true"
+    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/project_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    android:paddingBottom="@dimen/reward_fragment_guideline_constraint_end"
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
     tools:listitem="@layout/project_main_layout" />
 
-  <androidx.cardview.widget.CardView
-    android:id="@+id/pledge_container_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="1px"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="@dimen/card_container_radius"
-    app:cardElevation="@dimen/grid_2"
-    tools:layout_marginTop="620dp">
-
-    <FrameLayout
-      android:id="@+id/pledge_container"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:alpha="0"
-      tools:alpha="0">
-
-      <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <fragment
-          android:id="@+id/fragment_backing"
-          android:name="com.kickstarter.ui.fragments.BackingFragment"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          tools:layout="@layout/fragment_backing" />
-
-        <fragment
-          android:id="@+id/fragment_rewards"
-          android:name="com.kickstarter.ui.fragments.RewardsFragment"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          tools:layout="@layout/fragment_rewards" />
-
-      </FrameLayout>
-
-      <androidx.appcompat.widget.Toolbar
-        android:id="@+id/pledge_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:focusableInTouchMode="true"
-        app:navigationContentDescription="@string/View_project"
-        app:navigationIcon="@drawable/ic_arrow_down" />
-
-    </FrameLayout>
-
-    <FrameLayout
-      android:id="@+id/scrim"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:alpha="0"
-      android:background="@color/black_alpha_40"
-      android:clickable="true"
-      android:focusable="true"
-      android:visibility="gone" />
-
-    <FrameLayout
-      android:id="@+id/secondary_container"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent" />
-
-    <LinearLayout
-      android:id="@+id/action_buttons"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/activity_horizontal_margin"
-      android:layout_marginStart="@dimen/activity_horizontal_margin"
-      android:orientation="horizontal"
-      android:visibility="gone">
-
-      <LinearLayout
-        android:id="@+id/backing_details"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-          android:id="@+id/you_backer_text"
-          style="@style/SubheadlineMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:text="@string/Youre_a_backer" />
-
-        <TextView
-          android:id="@+id/reward_infos"
-          style="@style/Caption1Secondary"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:ellipsize="end"
-          android:lines="1"
-          tools:text="$20 . Funky Reward Title..." />
-      </LinearLayout>
-
-      <com.google.android.material.button.MaterialButton
-        android:id="@+id/project_action_button"
-        style="@style/ExtendedFab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/project_back_button"
-        tools:visibility="visible" />
-    </LinearLayout>
-
-    <include layout="@layout/project_retry" />
-
-  </androidx.cardview.widget.CardView>
+  <include layout="@layout/pledge_container" />
 
   <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end"
     android:id="@+id/snackbar_anchor"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end" />
+
+  <RelativeLayout
+    android:id="@+id/project_action_buttons"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    android:animateLayoutChanges="true"
+    android:focusable="true"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <Button
+      android:id="@+id/back_project_button"
+      style="@style/ProjectActionButton"
+      android:text="@string/project_back_button"
+      android:visibility="gone"
+      tools:visibility="visible" />
+
+    <Button
+      android:id="@+id/manage_pledge_button"
+      style="@style/ProjectActionButton"
+      android:text="@string/project_manage_button"
+      android:visibility="gone"
+      app:backgroundTint="@color/button_secondary" />
+
+    <Button
+      android:id="@+id/view_pledge_button"
+      style="@style/ProjectActionButton"
+      android:text="@string/project_view_button"
+      android:visibility="gone"
+      app:backgroundTint="@color/button_secondary" />
+  </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

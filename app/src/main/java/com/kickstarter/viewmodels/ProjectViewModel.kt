@@ -116,14 +116,20 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
+        /** Emits a boolean that determines if the progress bar should be visible. */
+        fun horizontalProgressBarIsGone(): Observable<Boolean>
+
         /** Emits a menu for managing your pledge or null if there's no menu. */
         fun managePledgeMenu(): Observable<Int?>
 
+        /** Emits a boolean that determines if the pledge container should be visible. */
+        fun pledgeContainerIsGone(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the pledge action button container should be visible. */
+        fun pledgeActionButtonContainerIsGone(): Observable<Boolean>
+
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
-
-        /** Emits a boolean that determines if the progress bar should be visible. */
-        fun progressBarIsGone(): Observable<Boolean>
 
         /** Emits a boolean that determines if the project action button container should be visible. */
         fun projectActionButtonContainerIsGone(): Observable<Boolean>
@@ -134,6 +140,9 @@ interface ProjectViewModel {
 
         /** Emits a boolean that determines if the reload project container should be visible. */
         fun reloadProjectContainerIsGone(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the progress bar should be visible. */
+        fun retryProgressBarIsGone(): Observable<Boolean>
 
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment] with an animation. */
         fun revealRewardsFragment(): Observable<Void>
@@ -253,9 +262,12 @@ interface ProjectViewModel {
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
+        private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
+        private val pledgeContainerIsGone = BehaviorSubject.create<Boolean>()
+        private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val prelaunchUrl = PublishSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
-        private val progressBarIsGone = BehaviorSubject.create<Boolean>()
+        private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
@@ -291,21 +303,47 @@ interface ProjectViewModel {
         init {
             val nativeCheckoutEnabled = this.currentConfig.observable()
                     .map { it.features() }
-                    .map { ObjectUtils.coalesce(it?.get(FeatureKey.ANDROID_NATIVE_CHECKOUT), this.nativeCheckoutPreference.get()) }
+                    .map { Pair(it?.get(FeatureKey.ANDROID_NATIVE_CHECKOUT), this.nativeCheckoutPreference.get()) }
+                    .map { ObjectUtils.coalesce(it.first, false) && it.second }
+
+            nativeCheckoutEnabled
+                    .compose(bindToLifecycle())
+                    .subscribe(this.projectActionButtonContainerIsGone)
+
+            nativeCheckoutEnabled
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeContainerIsGone)
+
+            val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(intent(), intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked)))
                     .flatMap {
                         ProjectIntentMapper.project(it, this.client)
                                 .doOnSubscribe {
-                                    this.progressBarIsGone.onNext(false)
+                                    progressBarIsGone.onNext(false)
                                 }
                                 .doAfterTerminate {
-                                    this.progressBarIsGone.onNext(true)
+                                    progressBarIsGone.onNext(true)
                                 }
                                 .materialize()
                     }
                     .share()
+
+            progressBarIsGone
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
+                    .filter { BooleanUtils.isFalse(it.second) }
+                    .map { it.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.horizontalProgressBarIsGone)
+
+            progressBarIsGone
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
+                    .filter { BooleanUtils.isTrue(it.second) }
+                    .map { it.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.retryProgressBarIsGone)
 
             val mappedProjectValues = mappedProjectNotification
                     .compose(values())
@@ -358,10 +396,10 @@ interface ProjectViewModel {
                     .switchMap {
                         this.client.fetchProject(it)
                             .doOnSubscribe {
-                                this.progressBarIsGone.onNext(false)
+                                this.retryProgressBarIsGone.onNext(false)
                             }
                             .doAfterTerminate {
-                                this.progressBarIsGone.onNext(true)
+                                this.retryProgressBarIsGone.onNext(true)
                             }
                             .materialize()
                     }
@@ -489,7 +527,7 @@ interface ProjectViewModel {
             projectHasRewards
                     .map { BooleanUtils.negate(it) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectActionButtonContainerIsGone)
+                    .subscribe(this.pledgeActionButtonContainerIsGone)
 
             nativeCheckoutProject
                     .filter { it.isBacking && it.hasRewards() }
@@ -865,7 +903,7 @@ interface ProjectViewModel {
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
-        override fun progressBarIsGone(): Observable<Boolean> = this.progressBarIsGone
+        override fun horizontalProgressBarIsGone(): Observable<Boolean> = this.horizontalProgressBarIsGone
 
         @NonNull
         override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
@@ -953,6 +991,12 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
+
+        override fun retryProgressBarIsGone() = this.retryProgressBarIsGone
+
+        override fun pledgeContainerIsGone() = this.pledgeContainerIsGone
+
+        override fun pledgeActionButtonContainerIsGone() = this.pledgeActionButtonContainerIsGone
 
         private fun backingDetails(project: Project): String {
             return project.backing()?.let { backing ->

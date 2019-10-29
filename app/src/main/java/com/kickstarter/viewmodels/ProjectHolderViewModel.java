@@ -4,9 +4,12 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -169,13 +172,15 @@ public interface ProjectHolderViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
-    private final CurrentConfigType currentConfig;
     private final KSCurrency ksCurrency;
+    private final BooleanPreferenceType nativeCheckoutPreference;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
+      final CurrentConfigType currentConfig = environment.currentConfig();
       this.ksCurrency = environment.ksCurrency();
+      this.nativeCheckoutPreference = environment.nativeCheckoutPreference();
 
       final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
       final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
@@ -240,8 +245,10 @@ public interface ProjectHolderViewModel {
       this.pledgedTextViewText = project
         .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p));
 
-      this.projectActionButtonsAreVisible = this.currentConfig.observable()
-
+      this.projectActionButtonsAreGone = currentConfig.observable()
+        .map(Config::features)
+        .map(featuresMap -> ObjectUtils.coalesce(featuresMap.get(FeatureKey.ANDROID_NATIVE_CHECKOUT),
+          this.nativeCheckoutPreference.get()));
 
       this.projectDisclaimerGoalReachedDateTime = project
         .filter(Project::isFunded)
@@ -331,7 +338,7 @@ public interface ProjectHolderViewModel {
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
-    private final Observable<Boolean> projectActionButtonsAreVisible;
+    private final Observable<Boolean> projectActionButtonsAreGone;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
@@ -420,7 +427,7 @@ public interface ProjectHolderViewModel {
       return this.pledgedTextViewText;
     }
     @Override public @NonNull Observable<Boolean> projectActionButtonsAreVisible() {
-      return this.projectActionButtonsAreVisible;
+      return this.projectActionButtonsAreGone;
     }
     @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;

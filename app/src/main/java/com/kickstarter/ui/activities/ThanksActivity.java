@@ -70,6 +70,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
       .compose(observeForUI())
       .subscribe(__ -> showConfirmGamesNewsletterDialog());
 
+    this.viewModel.outputs.finish()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> finish());
+
     //I'm not sure why we would attempt to show a dialog after a delay but hopefully this helps
     this.viewModel.outputs.showGamesNewsletterDialog()
       .compose(bindToLifecycle())
@@ -93,6 +98,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
         }
       });
 
+    this.viewModel.outputs.resumeDiscoveryActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> ApplicationUtils.resumeDiscoveryActivity(this));
+
     this.viewModel.outputs.startDiscoveryActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -112,11 +122,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
 
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
-    if (environment().nativeCheckoutPreference().get()) {
-      finish();
-    } else {
-      ApplicationUtils.resumeDiscoveryActivity(this);
-    }
+    this.viewModel.inputs.closeButtonClicked();
   }
 
   private void showConfirmGamesNewsletterDialog() {

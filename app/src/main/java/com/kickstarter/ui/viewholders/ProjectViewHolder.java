@@ -78,6 +78,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.project_action_buttons) @Nullable ViewGroup projectActionButtonsContainer;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
@@ -233,6 +234,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.pledgedTextView::setText);
+
+    this.viewModel.outputs.projectActionButtonsAreVisible()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectActionButtonsContainerVisibility);
 
     this.viewModel.outputs.projectDisclaimerGoalNotReachedString()
       .compose(bindToLifecycle())
@@ -397,6 +403,12 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
   }
 
+  private void setProjectActionButtonsContainerVisibility(final boolean gone) {
+    if (this.projectActionButtonsContainer != null) {
+      ViewUtils.setGone(this.projectActionButtonsContainer, gone);
+    }
+  }
+
   private void setProjectDisclaimerGoalReachedString(final @NonNull DateTime deadline) {
     this.projectDisclaimerTextView.setText(this.ksString.format(
       this.projectDisclaimerGoalReachedString,
@@ -500,10 +512,7 @@ public final class ProjectViewHolder extends KSViewHolder {
    */
   private void setLandscapeActionButton(final @NonNull Project project) {
     if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
-      final boolean nativeCheckoutEnabled = environment().nativeCheckoutPreference().get();
-      if (!nativeCheckoutEnabled) {
         ProjectViewUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
-      }
     }
   }
 

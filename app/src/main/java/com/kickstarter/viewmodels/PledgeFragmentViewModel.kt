@@ -23,6 +23,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
+import com.stripe.android.StripeIntentResult
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -78,7 +79,7 @@ interface PledgeFragmentViewModel {
         fun shippingRuleSelected(shippingRule: ShippingRule)
 
         /** Call when Stripe SCA is successful. */
-        fun stripeSetupResultSuccessful()
+        fun stripeSetupResultSuccessful(outcome: Int)
 
         /** Call when Stripe SCA is unsuccessful. */
         fun stripeSetupResultUnsuccessful(exception: Exception)
@@ -271,7 +272,7 @@ interface PledgeFragmentViewModel {
         private val pledgeInput = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
         private val shippingRule = PublishSubject.create<ShippingRule>()
-        private val stripeSetupResultSuccessful = PublishSubject.create<Void>()
+        private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
         private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
         private val updatePledgeButtonClicked = PublishSubject.create<Void>()
 
@@ -891,7 +892,7 @@ interface PledgeFragmentViewModel {
             val updateBackingValues = updateBackingNotification
                     .compose(values())
 
-            val successAndPledgeReason = Observable.merge(this.stripeSetupResultSuccessful,
+            val successAndPledgeReason = Observable.merge(this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED },
                     createBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) },
                     updateBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) })
                     .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
@@ -920,9 +921,12 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showSCAFlow)
 
-            val errorAndPledgeReason = Observable.merge(this.stripeSetupResultUnsuccessful, createBackingNotification.compose(errors()),
+            val errorAndPledgeReason = Observable.merge(this.stripeSetupResultUnsuccessful,
+                    this.stripeSetupResultSuccessful.filter { it != StripeIntentResult.Outcome.SUCCEEDED },
+                    createBackingNotification.compose(errors()),
                     updateBackingNotification.compose(errors()))
-                    .compose<Pair<Throwable, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .compose(ignoreValues())
+                    .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
 
             errorAndPledgeReason
                     .filter { it.second == PledgeReason.PLEDGE }
@@ -1042,7 +1046,7 @@ interface PledgeFragmentViewModel {
 
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
-        override fun stripeSetupResultSuccessful() = this.stripeSetupResultSuccessful.onNext(null)
+        override fun stripeSetupResultSuccessful(@StripeIntentResult.Outcome outcome: Int) = this.stripeSetupResultSuccessful.onNext(outcome)
 
         override fun stripeSetupResultUnsuccessful(exception: Exception) = this.stripeSetupResultUnsuccessful.onNext(exception)
 

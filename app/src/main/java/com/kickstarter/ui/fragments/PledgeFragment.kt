@@ -448,7 +448,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val stripe = this.viewModel.environment.stripe()
         stripe.onSetupResult(requestCode, data, object : ApiResultCallback<SetupIntentResult> {
             override fun onSuccess(result: SetupIntentResult) {
-                this@PledgeFragment.viewModel.inputs.stripeSetupResultSuccessful()
+                this@PledgeFragment.viewModel.inputs.stripeSetupResultSuccessful(result.outcome)
             }
 
             override fun onError(e: Exception) {

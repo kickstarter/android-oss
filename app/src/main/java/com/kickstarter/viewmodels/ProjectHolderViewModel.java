@@ -14,7 +14,6 @@ import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
@@ -40,7 +39,7 @@ public interface ProjectHolderViewModel {
 
   interface Inputs {
     /** Call to configure view holder with a project and the config country. */
-    void configureWith(Pair<Project, String> projectAndCountry);
+    void configureWith(Project project);
 
     /** Call when the project social view group is clicked. */
     void projectSocialViewGroupClicked();
@@ -182,37 +181,37 @@ public interface ProjectHolderViewModel {
       this.ksCurrency = environment.ksCurrency();
       this.nativeCheckoutPreference = environment.nativeCheckoutPreference();
 
-      final Observable<Project> project = this.projectAndCountry.map(PairUtils::first);
-      final Observable<ProjectUtils.Metadata> projectMetadata = project.map(ProjectUtils::metadataForProject);
+      final Observable<ProjectUtils.Metadata> projectMetadata = this.project
+        .map(ProjectUtils::metadataForProject);
 
-      this.avatarPhotoUrl = project.map(p -> p.creator().avatar().medium());
-      this.backersCountTextViewText = project.map(Project::backersCount).map(NumberUtils::format);
+      this.avatarPhotoUrl = this.project.map(p -> p.creator().avatar().medium());
+      this.backersCountTextViewText = this.project.map(Project::backersCount).map(NumberUtils::format);
 
       this.backingViewGroupIsGone = projectMetadata
         .map(ProjectUtils.Metadata.BACKING::equals)
         .map(BooleanUtils::negate);
 
-      this.blurbTextViewText = project.map(Project::blurb);
-      this.categoryTextViewText = project.map(Project::category).filter(ObjectUtils::isNotNull).map(Category::name);
+      this.blurbTextViewText = this.project.map(Project::blurb);
+      this.categoryTextViewText = this.project.map(Project::category).filter(ObjectUtils::isNotNull).map(Category::name);
 
-      this.commentsCountTextViewText = project
+      this.commentsCountTextViewText = this.project
         .map(Project::commentsCount)
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
 
-      this.conversionTextViewIsGone = project
+      this.conversionTextViewIsGone = this.project
         .map(pc -> !pc.currency().equals(pc.currentCurrency()))
         .map(BooleanUtils::negate);
 
-      this.conversionPledgedAndGoalText = project
+      this.conversionPledgedAndGoalText = this.project
         .map(p -> {
           final String pledged = this.ksCurrency.format(p.pledged(), p);
           final String goal = this.ksCurrency.format(p.goal(), p);
           return Pair.create(pledged, goal);
         });
 
-      this.creatorNameTextViewText = project.map(p -> p.creator().name());
-      this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
+      this.creatorNameTextViewText = this.project.map(p -> p.creator().name());
+      this.deadlineCountdownTextViewText = this.project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = projectMetadata
         .map(ProjectUtils.Metadata.CATEGORY_FEATURED::equals)
@@ -220,29 +219,29 @@ public interface ProjectHolderViewModel {
 
       this.featuredTextViewRootCategory = this.featuredViewGroupIsGone
         .filter(BooleanUtils::isFalse)
-        .compose(combineLatestPair(project))
+        .compose(combineLatestPair(this.project))
         .map(bp -> bp.second.category())
         .filter(ObjectUtils::isNotNull)
         .map(Category::root)
         .filter(ObjectUtils::isNotNull)
         .map(Category::name);
 
-      this.goalStringForTextView = project
+      this.goalStringForTextView = this.project
         .map(p -> this.ksCurrency.formatWithUserPreference(p.goal(), p));
 
-      this.locationTextViewText = project
+      this.locationTextViewText = this.project
         .map(Project::location)
         .filter(ObjectUtils::isNotNull)
         .map(Location::displayableName);
 
-      this.percentageFundedProgress = project.map(Project::percentageFunded).map(ProgressBarUtils::progress);
+      this.percentageFundedProgress = this.project.map(Project::percentageFunded).map(ProgressBarUtils::progress);
 
-      this.percentageFundedProgressBarIsGone = project
+      this.percentageFundedProgressBarIsGone = this.project
         .map(p -> p.isSuccessful() || p.isCanceled() || p.isFailed() || p.isSuspended());
 
-      this.playButtonIsGone = project.map(Project::hasVideo).map(BooleanUtils::negate);
+      this.playButtonIsGone = this.project.map(Project::hasVideo).map(BooleanUtils::negate);
 
-      this.pledgedTextViewText = project
+      this.pledgedTextViewText = this.project
         .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p));
 
       this.projectActionButtonsAreGone = currentConfig.observable()
@@ -250,15 +249,15 @@ public interface ProjectHolderViewModel {
         .map(featuresMap -> ObjectUtils.coalesce(featuresMap.get(FeatureKey.ANDROID_NATIVE_CHECKOUT),
           this.nativeCheckoutPreference.get()));
 
-      this.projectDisclaimerGoalReachedDateTime = project
+      this.projectDisclaimerGoalReachedDateTime = this.project
         .filter(Project::isFunded)
         .map(Project::deadline);
 
-      this.projectDisclaimerGoalNotReachedString = project
+      this.projectDisclaimerGoalNotReachedString = this.project
         .filter(p -> p.deadline() != null && p.isLive() && !p.isFunded())
         .map(p -> Pair.create(this.ksCurrency.format(p.goal(), p), p.deadline()));
 
-      this.projectDisclaimerTextViewIsGone = project.map(p -> p.deadline() == null || !p.isLive());
+      this.projectDisclaimerTextViewIsGone = this.project.map(p -> p.deadline() == null || !p.isLive());
 
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
         .filter(ProjectUtils.Metadata.BACKING::equals)
@@ -267,57 +266,57 @@ public interface ProjectHolderViewModel {
       this.projectMetadataViewGroupIsGone = projectMetadata
         .map(m -> m != ProjectUtils.Metadata.CATEGORY_FEATURED && m != ProjectUtils.Metadata.BACKING);
 
-      this.projectNameTextViewText = project.map(Project::name);
-      this.projectOutput = project;
-      this.projectPhoto = project.map(Project::photo);
+      this.projectNameTextViewText = this.project.map(Project::name);
+      this.projectOutput = this.project;
+      this.projectPhoto = this.project.map(Project::photo);
 
-      this.projectSocialImageViewUrl = project
+      this.projectSocialImageViewUrl = this.project
         .filter(Project::isFriendBacking)
         .map(Project::friends)
         .map(ListUtils::first)
         .map(f -> f.avatar().small());
 
-      this.projectSocialTextViewFriends = project
+      this.projectSocialTextViewFriends = this.project
         .filter(Project::isFriendBacking)
         .map(Project::friends);
 
-      this.projectSocialViewGroupIsGone = project.map(Project::isFriendBacking).map(BooleanUtils::negate);
+      this.projectSocialViewGroupIsGone = this.project.map(Project::isFriendBacking).map(BooleanUtils::negate);
 
-      this.projectStateViewGroupBackgroundColorInt = project
+      this.projectStateViewGroupBackgroundColorInt = this.project
         .filter(p -> !p.isLive())
         .map(p -> p.state().equals(Project.STATE_SUCCESSFUL) ? R.color.green_alpha_50 : R.color.ksr_grey_400);
 
-      this.projectStateViewGroupIsGone = project.map(Project::isLive);
+      this.projectStateViewGroupIsGone = this.project.map(Project::isLive);
 
       this.projectSocialImageViewIsGone = this.projectSocialViewGroupIsGone;
       this.shouldSetDefaultStatsMargins = this.projectSocialViewGroupIsGone;
-      this.setCanceledProjectStateView = project.filter(Project::isCanceled).compose(ignoreValues());
+      this.setCanceledProjectStateView = this.project.filter(Project::isCanceled).compose(ignoreValues());
 
-      this.setProjectSocialClickListener = project
+      this.setProjectSocialClickListener = this.project
         .filter(Project::isFriendBacking)
         .map(Project::friends)
         .filter(fs -> fs.size() > 2)
         .compose(ignoreValues());
 
-      this.setSuccessfulProjectStateView = project
+      this.setSuccessfulProjectStateView = this.project
         .filter(Project::isSuccessful)
         .map(p -> ObjectUtils.coalesce(p.stateChangedAt(), new DateTime()));
 
-      this.setSuspendedProjectStateView = project.filter(Project::isSuspended).compose(ignoreValues());
+      this.setSuspendedProjectStateView = this.project.filter(Project::isSuspended).compose(ignoreValues());
 
-      this.setUnsuccessfulProjectStateView = project
+      this.setUnsuccessfulProjectStateView = this.project
         .filter(Project::isFailed)
         .map(p -> ObjectUtils.coalesce(p.stateChangedAt(), new DateTime()));
 
-      this.startProjectSocialActivity = project.compose(takeWhen(this.projectSocialViewGroupClicked));
+      this.startProjectSocialActivity = this.project.compose(takeWhen(this.projectSocialViewGroupClicked));
 
-      this.updatesCountTextViewText = project
+      this.updatesCountTextViewText = this.project
         .map(Project::updatesCount)
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
     }
 
-    private final PublishSubject<Pair<Project, String>> projectAndCountry = PublishSubject.create();
+    private final PublishSubject<Project> project = PublishSubject.create();
     private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
 
     private final Observable<String> avatarPhotoUrl;
@@ -365,8 +364,8 @@ public interface ProjectHolderViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void configureWith(final @NonNull Pair<Project, String> projectAndCountry) {
-      this.projectAndCountry.onNext(projectAndCountry);
+    @Override public void configureWith(final @NonNull Project project) {
+      this.project.onNext(project);
     }
     @Override public void projectSocialViewGroupClicked() {
       this.projectSocialViewGroupClicked.onNext(null);

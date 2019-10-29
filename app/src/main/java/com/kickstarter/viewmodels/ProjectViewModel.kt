@@ -134,9 +134,9 @@ interface ProjectViewModel {
         /** Emits a boolean that determines if the project action button container should be visible. */
         fun projectActionButtonContainerIsGone(): Observable<Boolean>
 
-        /** Emits a project and country when a new value is available. If the view model is created with a full project
-         * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
-        fun projectAndUserCountry(): Observable<Pair<Project, String>>
+        /** Emits a project and whether the native checkout feature is enabled. If the view model is created with a full project
+         * model, this observable will emit that project immediately, and then again when it has updated from the api. */
+        fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>>
 
         /** Emits a boolean that determines if the reload project container should be visible. */
         fun reloadProjectContainerIsGone(): Observable<Boolean>
@@ -162,14 +162,14 @@ interface ProjectViewModel {
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
 
+        /** Emits when we should reveal the [com.kickstarter.ui.fragments.BackingFragment]. */
+        fun showBackingFragment(): Observable<Project>
+
         /** Emits when we should show the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
         fun showCancelPledgeFragment(): Observable<Project>
 
         /** Emits when the backing has successfully been canceled. */
         fun showCancelPledgeSuccess(): Observable<Void>
-
-        /** Emits when we should reveal the [com.kickstarter.ui.fragments.BackingFragment]. */
-        fun showBackingFragment(): Observable<Project>
 
         /** Emits when we should show the not cancelable dialog. */
         fun showPledgeNotCancelableDialog(): Observable<Void>
@@ -268,7 +268,7 @@ interface ProjectViewModel {
         private val prelaunchUrl = PublishSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
-        private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val projectAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<Project, Boolean>>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
@@ -302,9 +302,10 @@ interface ProjectViewModel {
 
         init {
             val nativeCheckoutEnabled = this.currentConfig.observable()
-                    .map { it.features() }
-                    .map { Pair(it?.get(FeatureKey.ANDROID_NATIVE_CHECKOUT), this.nativeCheckoutPreference.get()) }
-                    .map { ObjectUtils.coalesce(it.first, false) && it.second }
+                    .map { it.features()?.get(FeatureKey.ANDROID_NATIVE_CHECKOUT)?: false }
+                    .map { Pair(it, this.nativeCheckoutPreference.get()) }
+                    .map { if (Build.isExternal()) it.first else it.second }
+                    .distinctUntilChanged()
 
             nativeCheckoutEnabled
                     .compose(bindToLifecycle())
@@ -431,9 +432,9 @@ interface ProjectViewModel {
                     .subscribe(this.showSavedPrompt)
 
             currentProject
-                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
+                    .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectAndUserCountry)
+                    .subscribe(this.projectAndNativeCheckoutEnabled)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -909,7 +910,7 @@ interface ProjectViewModel {
         override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
 
         @NonNull
-        override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry
+        override fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>> = this.projectAndNativeCheckoutEnabled
 
         @NonNull
         override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone

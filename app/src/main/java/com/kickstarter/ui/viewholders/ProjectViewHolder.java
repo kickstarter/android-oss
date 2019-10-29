@@ -365,8 +365,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     @SuppressWarnings("unchecked")
-    final Pair<Project, String> projectAndCountry = requireNonNull((Pair<Project, String>) data);
-    this.viewModel.inputs.configureWith(projectAndCountry);
+    final Project project = requireNonNull((Project) data);
+    this.viewModel.inputs.configureWith(project);
   }
 
   private void setConvertedCurrencyView(final @NonNull Pair<String, String> pledgedAndGoal) {

@@ -145,7 +145,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(project_action_buttons, if (ViewUtils.isLandscape(this)) true else it) }
 
-        this.viewModel.outputs.projectAndUserCountry()
+        this.viewModel.outputs.projectAndNativeCheckoutEnabled()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { renderProject(it) }
@@ -250,16 +250,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showUpdatePledgeSuccess() }
 
-        this.viewModel.outputs.showRewardsFragment()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showRewardsFragment(it) }
-
-        this.viewModel.outputs.showBackingFragment()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showBackingFragment(it) }
-
         this.viewModel.outputs.showCancelPledgeFragment()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -291,6 +281,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .subscribe { showCreatePledgeSuccess(it) }
 
         setClickListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        this.viewModel.outputs.showRewardsFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showRewardsFragment(it) }
+
+        this.viewModel.outputs.showBackingFragment()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { showBackingFragment(it) }
     }
 
     private fun setClickListeners() {
@@ -563,14 +567,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         finish()
     }
 
-    private fun renderProject(projectAndCountry: Pair<Project, String>) {
-        val project = projectAndCountry.first
-        val country = projectAndCountry.second
-        val nativeCheckoutEnabled = environment().nativeCheckoutPreference().get()
-        this.adapter.takeProject(project, country, nativeCheckoutEnabled)
-        if (!nativeCheckoutEnabled) {
-            ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
-        }
+    private fun renderProject(projectAndNativeCheckoutEnabled: Pair<Project, Boolean>) {
+        val project = projectAndNativeCheckoutEnabled.first
+        val nativeCheckoutEnabled = projectAndNativeCheckoutEnabled.second
+        this.adapter.takeProject(project, nativeCheckoutEnabled)
+        ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
     }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, project: Project) {

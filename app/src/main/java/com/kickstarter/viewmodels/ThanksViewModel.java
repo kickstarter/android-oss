@@ -3,11 +3,9 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
@@ -122,10 +120,9 @@ public interface ThanksViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
 
-      final Observable<Boolean> nativeCheckoutEnabled = this.currentConfig.observable()
-        .map(Config::features)
-        .map(featuresMap -> ObjectUtils.coalesce(featuresMap.get(FeatureKey.ANDROID_NATIVE_CHECKOUT),
-          this.nativeCheckoutPreference.get()));
+      final Observable<Boolean> nativeCheckoutEnabled = intent()
+        .map(i -> i.getBooleanExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false))
+        .take(1);
 
       nativeCheckoutEnabled
         .compose(takeWhen(this.closeButtonClicked))

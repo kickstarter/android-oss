@@ -6,9 +6,9 @@ import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.FeatureKey
 import com.kickstarter.libs.KoalaEvent
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
@@ -28,12 +28,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
     private val expandPledgeSheet = TestSubscriber<Pair<Boolean, Boolean>>()
     private val heartDrawableId = TestSubscriber<Int>()
+    private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
     private val managePledgeMenu = TestSubscriber<Int?>()
+    private val pledgeContainerIsGone = TestSubscriber<Boolean>()
+    private val pledgeActionButtonContainerIsGone = TestSubscriber<Boolean>()
     private val prelaunchUrl = TestSubscriber<String>()
-    private val progressBarIsGone = TestSubscriber<Boolean>()
     private val projectActionButtonContainerIsGone = TestSubscriber<Boolean>()
-    private val projectTest = TestSubscriber<Project>()
+    private val projectAndNativeCheckoutEnabled = TestSubscriber<Pair<Project, Boolean>>()
     private val reloadProjectContainerIsGone = TestSubscriber<Boolean>()
+    private val reloadProgressBarIsGone = TestSubscriber<Boolean>()
     private val revealRewardsFragment = TestSubscriber<Void>()
     private val rewardsButtonColor = TestSubscriber<Int>()
     private val rewardsButtonText = TestSubscriber<Int>()
@@ -58,6 +61,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
     private val startThanksActivity = TestSubscriber<Project>()
     private val startVideoActivity = TestSubscriber<Project>()
+    private val updateFragments = TestSubscriber<Project>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
@@ -65,12 +69,14 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
         this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
+        this.vm.outputs.horizontalProgressBarIsGone().subscribe(this.horizontalProgressBarIsGone)
         this.vm.outputs.managePledgeMenu().subscribe(this.managePledgeMenu)
-        this.vm.outputs.pledgeContainerActionButtonContainerIsGone().subscribe(this.pledgeContainerActionButtonContainerIsGone)
+        this.vm.outputs.pledgeContainerIsGone().subscribe(this.pledgeContainerIsGone)
+        this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe(this.pledgeActionButtonContainerIsGone)
         this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
-        this.vm.outputs.horizontalProgressBarIsGone().subscribe(this.progressBarIsGone)
         this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone)
-        this.vm.outputs.projectAndNativeCheckoutEnabled().map { pc -> pc.first }.subscribe(this.projectTest)
+        this.vm.outputs.projectAndNativeCheckoutEnabled().subscribe(this.projectAndNativeCheckoutEnabled)
+        this.vm.outputs.reloadProgressBarIsGone().subscribe(this.reloadProgressBarIsGone)
         this.vm.outputs.reloadProjectContainerIsGone().subscribe(this.reloadProjectContainerIsGone)
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
@@ -96,23 +102,145 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
+        this.vm.outputs.updateFragments().subscribe(this.updateFragments)
     }
 
     @Test
-    fun testEmitsProjectWithStandardSetUp() {
-        val project = ProjectFactory.project()
+    fun testProjectAndNativeCheckoutEnabled_fromIntent() {
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
 
-        setUpEnvironment(environment().toBuilder().currentConfig(currentConfig).build())
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project()
+        val environment = environment()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject(refreshedProject))
+                .currentConfig(currentConfig)
+                .build()
 
-        this.projectTest.assertValues(project, project)
-        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE)
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.horizontalProgressBarIsGone.assertValues(false, true)
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeContainerIsGone.assertValue(true)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValues(false)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, false), Pair(refreshedProject, false))
+        this.reloadProjectContainerIsGone.assertNoValues()
+        this.reloadProgressBarIsGone.assertNoValues()
+        this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
     @Test
-    fun testEmitsProjectWithDeepLink() {
+    fun testProjectAndNativeCheckoutEnabled_fromIntent_isUnsuccessful() {
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.config())
+
+        val environment = environment()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProject())
+                .currentConfig(currentConfig)
+                .build()
+        setUpEnvironment(environment)
+
+        val projectWithNullRewards = ProjectFactory.project()
+                .toBuilder()
+                .rewards(null)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNullRewards))
+
+        this.horizontalProgressBarIsGone.assertValues(false, true)
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeContainerIsGone.assertValue(true)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValues(false)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(projectWithNullRewards, false), Pair(projectWithNullRewards, false),
+                Pair(projectWithNullRewards, false), Pair(projectWithNullRewards, false))
+        this.reloadProjectContainerIsGone.assertNoValues()
+        this.reloadProgressBarIsGone.assertNoValues()
+        this.koalaTest.assertNoValues()
+    }
+
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_fromIntent_whenNativeCheckoutEnabled() {
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project()
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject(refreshedProject))
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.horizontalProgressBarIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertValues(false)
+        this.pledgeContainerIsGone.assertValue(false)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(refreshedProject, true))
+        this.reloadProjectContainerIsGone.assertValue(true)
+        this.reloadProgressBarIsGone.assertValues(false, true)
+        this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
+    }
+
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_fromIntent_whenNativeCheckoutEnabled_isUnsuccessful() {
+        var error = true
+        val initialProject = ProjectFactory.initialProject()
+        val refreshedProject = ProjectFactory.project()
+
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(object : MockApiClient() {
+                    override fun fetchProject(project: Project): Observable<Project> {
+                        val observable = when {
+                            error -> Observable.error(Throwable("boop"))
+                            else -> {
+                                Observable.just(refreshedProject)
+                            }
+                        }
+                        return observable
+                    }
+                })
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
+
+        this.horizontalProgressBarIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertValues(true)
+        this.pledgeContainerIsGone.assertValue(false)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(initialProject, true),
+                Pair(initialProject, true), Pair(initialProject, true))
+        this.reloadProjectContainerIsGone.assertValue(false)
+        this.reloadProgressBarIsGone.assertValues(false, true)
+
+        error = false
+        this.vm.inputs.reloadProjectContainerClicked()
+
+        this.pledgeActionButtonContainerIsGone.assertValues(true, false)
+
+        this.horizontalProgressBarIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertValues(true, false)
+        this.pledgeContainerIsGone.assertValue(false)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(initialProject, true),
+                Pair(initialProject, true), Pair(initialProject, true),
+                Pair(refreshedProject, true))
+        this.reloadProjectContainerIsGone.assertValues(false, true, true)
+        this.reloadProgressBarIsGone.assertValues(false, true, false, true)
+        this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
+    }
+
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_fromDeepLink() {
         val project = ProjectFactory.project()
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
@@ -130,13 +258,116 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val intent = deepLinkIntent()
         this.vm.intent(intent)
 
-        this.projectTest.assertValues(project)
+        this.horizontalProgressBarIsGone.assertValues(false, true)
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeContainerIsGone.assertValue(true)
         this.prelaunchUrl.assertNoValues()
-        this.koalaTest.assertValues(KoalaEvent.PROJECT_PAGE)
+        this.projectActionButtonContainerIsGone.assertValues(false)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(project, false))
+        this.reloadProjectContainerIsGone.assertNoValues()
+        this.reloadProgressBarIsGone.assertNoValues()
+        this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
     @Test
-    fun testEmitsProjectWithDeepLink_preLaunchActivated() {
+    fun testProjectAndNativeCheckoutEnabled_fromDeepLink_isUnsuccessful() {
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(ConfigFactory.config())
+
+        val environment = environment()
+                .toBuilder()
+                .apiClient(apiClientWithErrorFetchingProjectFromParam())
+                .currentConfig(currentConfig)
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.horizontalProgressBarIsGone.assertValues(false, true)
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeContainerIsGone.assertValue(true)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValues(false)
+        this.projectAndNativeCheckoutEnabled.assertNoValues()
+        this.reloadProjectContainerIsGone.assertNoValues()
+        this.reloadProgressBarIsGone.assertNoValues()
+        this.koalaTest.assertNoValues()
+    }
+
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_fromDeepLink_whenNativeCheckoutEnabled() {
+        val project = ProjectFactory.project()
+
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(object : MockApiClient(){
+                    override fun fetchProject(param: String): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
+                .build()
+
+        setUpEnvironment(environment)
+        val intent = deepLinkIntent()
+        this.vm.intent(intent)
+
+        this.horizontalProgressBarIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertValues(false)
+        this.pledgeContainerIsGone.assertValue(false)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.projectAndNativeCheckoutEnabled.assertValue(Pair(project, true))
+        this.reloadProgressBarIsGone.assertValues(false, true)
+        this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
+    }
+
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_fromDeepLink_whenNativeCheckoutEnabled_isUnsuccessful() {
+        var error = true
+        val refreshedProject = ProjectFactory.project()
+
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(object : MockApiClient() {
+                    override fun fetchProject(param: String): Observable<Project> {
+                        val observable = when {
+                            error -> Observable.error(Throwable("boop"))
+                            else -> Observable.just(refreshedProject)
+                        }
+                        return observable
+                    }
+                })
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(deepLinkIntent())
+
+        this.horizontalProgressBarIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeContainerIsGone.assertValue(false)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.projectAndNativeCheckoutEnabled.assertNoValues()
+        this.reloadProgressBarIsGone.assertValues(false, true)
+        this.reloadProjectContainerIsGone.assertValue(false)
+
+        error = false
+        this.vm.inputs.reloadProjectContainerClicked()
+
+        this.horizontalProgressBarIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertValues(false)
+        this.pledgeContainerIsGone.assertValue(false)
+        this.prelaunchUrl.assertNoValues()
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.projectAndNativeCheckoutEnabled.assertValue(Pair(refreshedProject, true))
+        this.reloadProgressBarIsGone.assertValues(false, true, false, true)
+        this.reloadProjectContainerIsGone.assertValues(false, true, true)
+        this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
+    }
+
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_preLaunchActivated() {
         val url = "https://www.kickstarter.com/projects/1186238668/skull-graphic-tee"
         val project = ProjectFactory.prelaunchProject(url)
         val currentConfig = MockCurrentConfig()
@@ -155,8 +386,41 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val uri = Uri.parse(url)
         this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
 
-        this.projectTest.assertNoValues()
+        this.horizontalProgressBarIsGone.assertValues(false, true)
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeContainerIsGone.assertValue(true)
         this.prelaunchUrl.assertValue(url)
+        this.projectActionButtonContainerIsGone.assertValues(false)
+        this.projectAndNativeCheckoutEnabled.assertNoValues()
+        this.reloadProgressBarIsGone.assertNoValues()
+        this.koalaTest.assertNoValues()
+    }
+
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_preLaunchActivated_whenNativeCheckoutEnabled() {
+        val url = "https://www.kickstarter.com/projects/1186238668/skull-graphic-tee"
+        val project = ProjectFactory.prelaunchProject(url)
+
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(object : MockApiClient(){
+                    override fun fetchProject(param: String): Observable<Project> {
+                        return Observable.just(project)
+                    }
+                })
+                .build()
+
+        setUpEnvironment(environment)
+        val uri = Uri.parse(url)
+        this.vm.intent(Intent(Intent.ACTION_VIEW, uri))
+
+        this.horizontalProgressBarIsGone.assertNoValues()
+        this.pledgeActionButtonContainerIsGone.assertNoValues()
+        this.pledgeContainerIsGone.assertValue(false)
+        this.prelaunchUrl.assertValue(url)
+        this.projectActionButtonContainerIsGone.assertValue(true)
+        this.projectAndNativeCheckoutEnabled.assertNoValues()
+        this.reloadProgressBarIsGone.assertValues(false, true)
         this.koalaTest.assertNoValues()
     }
 
@@ -173,15 +437,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()))
 
-        this.savedTest.assertValues(false, false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
+        this.savedTest.assertValues(false)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
 
         // Try starring while logged out
         this.vm.inputs.heartButtonClicked()
 
         // The project shouldn't be saved, and a login prompt should be shown.
-        this.savedTest.assertValues(false, false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
+        this.savedTest.assertValues(false)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
         this.showSavedPromptTest.assertValueCount(0)
         this.startLoginToutActivity.assertValueCount(1)
 
@@ -192,8 +456,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         currentUser.refresh(UserFactory.user())
 
         // The project should be saved, and a star prompt should be shown.
-        this.savedTest.assertValues(false, false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.savedTest.assertValues(false, true)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(1)
 
         // A koala event for starring should be tracked
@@ -372,7 +636,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRewardsButtonUIOutputs() {
-        setUpEnvironment(environment().toBuilder().nativeCheckoutPreference(MockBooleanPreference(true)).build())
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
@@ -598,12 +862,12 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.projectTest.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
 
         this.vm.inputs.pledgeSuccessfullyCancelled()
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.showCancelPledgeSuccess.assertValueCount(1)
-        this.projectTest.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
     }
 
     @Test
@@ -655,254 +919,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.fragmentStackCount(0)
         this.managePledgeMenu.assertValues(R.menu.manage_pledge_live, null, R.menu.manage_pledge_live)
-    }
-
-    @Test
-    fun testProjectActionButtonContainerIsGone_whenProjectFromIntentSuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProject())
-                .build()
-        setUpEnvironment(environment)
-
-        val projectWithNoRewards = ProjectFactory.project()
-                .toBuilder()
-                .rewards(null)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
-
-        this.projectActionButtonContainerIsGone.assertValues(true, false)
-    }
-
-    @Test
-    fun testProjectActionButtonContainerIsGone_whenProjectFromIntentUnsuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithErrorFetchingProject())
-                .build()
-        setUpEnvironment(environment)
-
-        val projectWithNoRewards = ProjectFactory.project()
-                .toBuilder()
-                .rewards(null)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
-
-        this.projectActionButtonContainerIsGone.assertValues(true)
-    }
-
-    @Test
-    fun testProjectActionButtonContainerIsGone_whenProjectFromDeepLinkSuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProjectFromParam())
-                .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(deepLinkIntent())
-
-        this.projectActionButtonContainerIsGone.assertValues(false)
-    }
-
-    @Test
-    fun testProjectActionButtonContainerIsGone_whenProjectFromDeepLinkUnsuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithErrorFetchingProjectFromParam())
-                .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(deepLinkIntent())
-
-        this.projectActionButtonContainerIsGone.assertNoValues()
-    }
-
-    @Test
-    fun testProgressBarIsGone_whenProjectFromIntentSuccessfullyLoads() {
-        val environment = environment()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProject())
-                .build()
-        setUpEnvironment(environment)
-
-        val projectWithNoRewards = ProjectFactory.project()
-                .toBuilder()
-                .rewards(null)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
-
-        this.progressBarIsGone.assertValues(false, true)
-    }
-
-    @Test
-    fun testProgressBarIsGone_whenProjectFromIntentUnsuccessfullyLoads() {
-        val environment = environment()
-                .toBuilder()
-                .apiClient(apiClientWithErrorFetchingProject())
-                .build()
-        setUpEnvironment(environment)
-
-        val projectWithNoRewards = ProjectFactory.project()
-                .toBuilder()
-                .rewards(null)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
-
-        this.progressBarIsGone.assertValues(false, true)
-    }
-
-    @Test
-    fun testProgressBarIsGone_whenProjectFromDeepLinkSuccessfullyLoads() {
-        val environment = environment()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProjectFromParam())
-                .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(deepLinkIntent())
-
-        this.progressBarIsGone.assertValues(false, true)
-    }
-
-    @Test
-    fun testProgressBarIsGone_whenProjectFromDeepLinkUnsuccessfullyLoads() {
-        val environment = environment()
-                .toBuilder()
-                .apiClient(apiClientWithErrorFetchingProjectFromParam())
-                .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(deepLinkIntent())
-
-        this.progressBarIsGone.assertValues(false, true)
-    }
-
-    @Test
-    fun testReloadProjectContainerIsGone_whenProjectFromIntentSuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProject())
-                .build()
-        setUpEnvironment(environment)
-
-        val projectWithNoRewards = ProjectFactory.project()
-                .toBuilder()
-                .rewards(null)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
-
-        this.reloadProjectContainerIsGone.assertValue(true)
-    }
-
-    @Test
-    fun testReloadProjectContainerIsGone_whenProjectFromIntentUnsuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithErrorFetchingProject())
-                .build()
-        setUpEnvironment(environment)
-
-        val projectWithNoRewards = ProjectFactory.project()
-                .toBuilder()
-                .rewards(null)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
-
-        this.reloadProjectContainerIsGone.assertValues(false)
-    }
-
-    @Test
-    fun testReloadProjectContainerIsGone_whenProjectFromDeepLinkSuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProjectFromParam())
-                .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(deepLinkIntent())
-
-        this.reloadProjectContainerIsGone.assertValue(true)
-    }
-
-    @Test
-    fun testReloadProjectContainerIsGone_whenProjectFromDeepLinkUnsuccessfullyLoads() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithErrorFetchingProjectFromParam())
-                .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(deepLinkIntent())
-
-        this.reloadProjectContainerIsGone.assertValue(false)
-    }
-
-    @Test
-    fun testReloadingProject_fromIntent() {
-        var error = true
-
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(object : MockApiClient() {
-                    override fun fetchProject(project: Project): Observable<Project> {
-                        val observable = when {
-                            error -> Observable.error(Throwable("boop"))
-                            else -> Observable.just(ProjectFactory.project())
-                        }
-                        return observable
-                    }
-                })
-                .build()
-        setUpEnvironment(environment)
-
-        val projectWithNoRewards = ProjectFactory.project()
-                .toBuilder()
-                .rewards(null)
-                .build()
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, projectWithNoRewards))
-
-        this.projectActionButtonContainerIsGone.assertValue(true)
-        this.progressBarIsGone.assertValues(false, true)
-        this.reloadProjectContainerIsGone.assertValue(false)
-
-        error = false
-        this.vm.inputs.reloadProjectContainerClicked()
-
-        this.projectActionButtonContainerIsGone.assertValues(true, false)
-        this.progressBarIsGone.assertValues(false, true, false, true)
-        this.reloadProjectContainerIsGone.assertValues(false, true, true)
-    }
-
-    @Test
-    fun testReloadingProject_fromDeepLink() {
-        var error = true
-
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(object : MockApiClient() {
-                    override fun fetchProject(param: String): Observable<Project> {
-                        val observable = when {
-                            error -> Observable.error(Throwable("boop"))
-                            else -> Observable.just(ProjectFactory.project())
-                        }
-                        return observable
-                    }
-                })
-                .build()
-        setUpEnvironment(environment)
-
-        this.vm.intent(deepLinkIntent())
-
-        this.projectActionButtonContainerIsGone.assertNoValues()
-        this.progressBarIsGone.assertValues(false, true)
-        this.reloadProjectContainerIsGone.assertValues(false)
-
-        error = false
-        this.vm.inputs.reloadProjectContainerClicked()
-
-        this.projectActionButtonContainerIsGone.assertValue(false)
-        this.progressBarIsGone.assertValues(false, true, false, true)
-        this.reloadProjectContainerIsGone.assertValues(false, true, true)
     }
 
     @Test
@@ -1078,45 +1094,57 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject(ProjectFactory.backedProject()))
+                .build()
+        setUpEnvironment(environment)
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.projectTest.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
 
         this.vm.inputs.pledgePaymentSuccessfullyUpdated()
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.projectTest.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
     }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject(ProjectFactory.backedProject()))
+                .build()
+        setUpEnvironment(environment)
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.projectTest.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.projectTest.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
     }
 
     @Test
     fun testStartThanksActivity() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProject(ProjectFactory.backedProject()))
+                .build()
+        setUpEnvironment(environment)
 
         // Start the view model with a unbacked project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        this.projectTest.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
 
         this.vm.inputs.pledgeSuccessfullyCreated()
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.startThanksActivity.assertValueCount(1)
-        this.projectTest.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
     }
 
     private fun apiClientWithErrorFetchingProject(): MockApiClient {
@@ -1127,10 +1155,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         }
     }
 
-    private fun apiClientWithSuccessFetchingProject(): MockApiClient {
+    private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApiClient {
         return object : MockApiClient() {
             override fun fetchProject(project: Project): Observable<Project> {
-                return Observable.just(ProjectFactory.project())
+                return Observable.just(refreshedProject)
             }
         }
     }
@@ -1143,29 +1171,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         }
     }
 
-    private fun apiClientWithSuccessFetchingProjectFromParam(): MockApiClient {
-        return object : MockApiClient() {
-            override fun fetchProject(param: String): Observable<Project> {
-                return Observable.just(ProjectFactory.project())
-            }
-        }
-    }
-
     private fun deepLinkIntent(): Intent {
         val uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
         return Intent(Intent.ACTION_VIEW, uri)
     }
 
     private fun environmentWithNativeCheckoutEnabled() : Environment {
-        val currentUser = MockCurrentUser()
-        val rewardsEnabled: BooleanPreferenceType = MockBooleanPreference(true)
         val currentConfig = MockCurrentConfig()
-        currentConfig.config(ConfigFactory.config())
+        currentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_NATIVE_CHECKOUT))
 
-        return environment().toBuilder()
+        return environment()
+                .toBuilder()
                 .currentConfig(currentConfig)
-                .currentUser(currentUser)
-                .nativeCheckoutPreference(rewardsEnabled)
+                .nativeCheckoutPreference(MockBooleanPreference(true))
                 .build()
     }
 }

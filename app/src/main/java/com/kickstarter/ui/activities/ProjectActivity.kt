@@ -95,15 +95,15 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         project_recycler_view.adapter = this.adapter
         project_recycler_view.layoutManager = LinearLayoutManager(this)
 
-        this.viewModel.outputs.backingDetailsIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { styleProjectActionButton(it) }
-
         this.viewModel.outputs.backingDetails()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { reward_infos.text = it }
+
+        this.viewModel.outputs.backingDetailsIsVisible()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { styleProjectActionButton(it) }
 
         this.viewModel.outputs.expandPledgeSheet()
                 .compose(bindToLifecycle())
@@ -155,7 +155,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(pledge_sheet_retry_container, it) }
 
-        this.viewModel.outputs.retryProgressBarIsGone()
+        this.viewModel.outputs.reloadProgressBarIsGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(pledge_sheet_progress_bar, it) }
@@ -175,70 +175,15 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { pledge_toolbar.title = getString(it) }
 
-        this.viewModel.outputs.setInitialRewardsContainerY()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setInitialRewardsContainerY() }
-
-        this.viewModel.outputs.showSavedPrompt()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.showStarToast() }
-
-        this.viewModel.outputs.showShareSheet()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startShareIntent(it) }
-
-        this.viewModel.outputs.startBackingActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startBackingActivity(it) }
-
-        this.viewModel.outputs.startCampaignWebViewActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCampaignWebViewActivity(it) }
-
-        this.viewModel.outputs.startCheckoutActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCheckoutActivity(it) }
-
-        this.viewModel.outputs.startCommentsActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCommentsActivity(it) }
-
-        this.viewModel.outputs.startCreatorBioWebViewActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCreatorBioWebViewActivity(it) }
-
-        this.viewModel.outputs.startProjectUpdatesActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startProjectUpdatesActivity(it) }
-
-        this.viewModel.outputs.startVideoActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startVideoActivity(it) }
-
-        this.viewModel.outputs.startManagePledgeActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startManagePledge(it) }
-
-        this.viewModel.outputs.startLoginToutActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startLoginToutActivity() }
-
         this.viewModel.outputs.scrimIsVisible()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { animateScrimVisibility(it) }
+
+        this.viewModel.outputs.setInitialRewardsContainerY()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setInitialRewardsContainerY() }
 
         this.viewModel.outputs.showCancelPledgeSuccess()
                 .compose(bindToLifecycle())
@@ -265,10 +210,60 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { revealRewardsFragment() }
 
+        this.viewModel.outputs.showSavedPrompt()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.showStarToast() }
+
+        this.viewModel.outputs.showShareSheet()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { startShareIntent(it) }
+
         this.viewModel.outputs.showUpdatePledge()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showPledgeFragment(it) }
+
+        this.viewModel.outputs.startBackingActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startBackingActivity(it) }
+
+        this.viewModel.outputs.startCampaignWebViewActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCampaignWebViewActivity(it) }
+
+        this.viewModel.outputs.startCheckoutActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCheckoutActivity(it) }
+
+        this.viewModel.outputs.startCommentsActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCommentsActivity(it) }
+
+        this.viewModel.outputs.startCreatorBioWebViewActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCreatorBioWebViewActivity(it) }
+
+        this.viewModel.outputs.startManagePledgeActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startManagePledge(it) }
+
+        this.viewModel.outputs.startProjectUpdatesActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startProjectUpdatesActivity(it) }
+
+        this.viewModel.outputs.startLoginToutActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startLoginToutActivity() }
 
         this.viewModel.outputs.startMessagesActivity()
                 .compose(bindToLifecycle())
@@ -280,89 +275,21 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showCreatePledgeSuccess(it) }
 
+        this.viewModel.outputs.startVideoActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startVideoActivity(it) }
+
         setClickListeners()
     }
 
     override fun onResume() {
         super.onResume()
 
-        this.viewModel.outputs.updatePrimaryFragment()
+        this.viewModel.outputs.updateFragments()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { updateFragments(it) }
-    }
-
-    private fun setClickListeners() {
-        project_action_button.setOnClickListener {
-            this.viewModel.inputs.nativeProjectActionButtonClicked()
-        }
-
-        pledge_toolbar.setNavigationOnClickListener {
-            this.viewModel.inputs.collapsePledgeSheet()
-        }
-
-        pledge_toolbar.setOnMenuItemClickListener {
-            when {
-                it.itemId == R.id.update_pledge -> {
-                    this.viewModel.inputs.updatePledgeClicked()
-                    true
-                }
-                it.itemId == R.id.rewards -> {
-                    this.viewModel.inputs.viewRewardsClicked()
-                    true
-                }
-                it.itemId == R.id.update_payment -> {
-                    this.viewModel.inputs.updatePaymentClicked()
-                    true
-                }
-                it.itemId == R.id.cancel_pledge -> {
-                    this.viewModel.inputs.cancelPledgeClicked()
-                    true
-                }
-                it.itemId == R.id.contact_creator -> {
-                    this.viewModel.inputs.contactCreatorClicked()
-                    true
-                }
-                else -> false
-            }
-        }
-
-        pledge_sheet_retry_container.setOnClickListener {
-            this.viewModel.inputs.reloadProjectContainerClicked()
-        }
-
-        project_action_buttons.visibility = when {
-            ViewUtils.isLandscape(this) -> View.GONE
-            else -> View.VISIBLE
-        }
-
-        back_project_button.setOnClickListener {
-            this.viewModel.inputs.backProjectButtonClicked()
-        }
-
-        manage_pledge_button.setOnClickListener {
-            this.viewModel.inputs.managePledgeButtonClicked()
-        }
-
-        view_pledge_button.setOnClickListener {
-            this.viewModel.inputs.viewPledgeButtonClicked()
-        }
-
-        heart_icon.setOnClickListener {
-            this.viewModel.inputs.heartButtonClicked()
-        }
-
-        share_icon.setOnClickListener {
-            this.viewModel.inputs.shareButtonClicked()
-        }
-    }
-
-    private fun setProjectActionCTA(stringRes: Int) {
-        project_action_button.setText(stringRes)
-        project_action_button.contentDescription = when (stringRes) {
-            R.string.Manage -> getString(R.string.Manage_your_pledge)
-            else -> getString(stringRes)
-        }
     }
 
     override fun back() {
@@ -586,43 +513,74 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun rewardsSheetGuideline(): Int = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
 
+    private fun setClickListeners() {
+        project_action_button.setOnClickListener {
+            this.viewModel.inputs.nativeProjectActionButtonClicked()
+        }
+
+        pledge_toolbar.setNavigationOnClickListener {
+            this.viewModel.inputs.collapsePledgeSheet()
+        }
+
+        pledge_toolbar.setOnMenuItemClickListener {
+            when {
+                it.itemId == R.id.update_pledge -> {
+                    this.viewModel.inputs.updatePledgeClicked()
+                    true
+                }
+                it.itemId == R.id.rewards -> {
+                    this.viewModel.inputs.viewRewardsClicked()
+                    true
+                }
+                it.itemId == R.id.update_payment -> {
+                    this.viewModel.inputs.updatePaymentClicked()
+                    true
+                }
+                it.itemId == R.id.cancel_pledge -> {
+                    this.viewModel.inputs.cancelPledgeClicked()
+                    true
+                }
+                it.itemId == R.id.contact_creator -> {
+                    this.viewModel.inputs.contactCreatorClicked()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        pledge_sheet_retry_container.setOnClickListener {
+            this.viewModel.inputs.reloadProjectContainerClicked()
+        }
+
+        project_action_buttons.visibility = when {
+            ViewUtils.isLandscape(this) -> View.GONE
+            else -> View.VISIBLE
+        }
+
+        back_project_button.setOnClickListener {
+            this.viewModel.inputs.backProjectButtonClicked()
+        }
+
+        manage_pledge_button.setOnClickListener {
+            this.viewModel.inputs.managePledgeButtonClicked()
+        }
+
+        view_pledge_button.setOnClickListener {
+            this.viewModel.inputs.viewPledgeButtonClicked()
+        }
+
+        heart_icon.setOnClickListener {
+            this.viewModel.inputs.heartButtonClicked()
+        }
+
+        share_icon.setOnClickListener {
+            this.viewModel.inputs.shareButtonClicked()
+        }
+    }
+
     private fun setInitialRewardsContainerY() {
         val guideline = rewardsSheetGuideline()
         pledge_container_root.y = (root.height - guideline).toFloat()
-    }
-
-    private fun showBackingFragment(project: Project) {
-        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
-                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if (!rewardsFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
-            supportFragmentManager.beginTransaction()
-                    .show(backingFragment)
-                    .hide(rewardsFragment)
-                    .commitNow()
-        }
-        renderProject(backingFragment, rewardsFragment, project)
-    }
-
-    private fun updateFragments(project: Project) {
-        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
-                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        when {
-            supportFragmentManager.backStackEntryCount == 0 -> when {
-                project.isBacking -> if (!rewardsFragment.isHidden) {
-                    supportFragmentManager.beginTransaction()
-                            .show(backingFragment)
-                            .hide(rewardsFragment)
-                            .commitNow()
-                }
-                else -> if (!backingFragment.isHidden) {
-                    supportFragmentManager.beginTransaction()
-                            .show(rewardsFragment)
-                            .hide(backingFragment)
-                            .commitNow()
-                }
-            }
-        }
-        renderProject(backingFragment, rewardsFragment, project)
     }
 
     private fun showCancelPledgeFragment(project: Project) {
@@ -645,7 +603,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         if (clearFragmentBackStack()) {
             updateFragments(project)
             startActivity(Intent(this, ThanksActivity::class.java)
-                    .putExtra(IntentKey.PROJECT, project))
+                    .putExtra(IntentKey.PROJECT, project)
+                    .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true))
         }
     }
 
@@ -654,12 +613,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .setMessage(R.string.We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours)
                 .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ -> dialog.dismiss() }
                 .show()
-    }
-
-    private fun showUpdatePledgeSuccess() {
-        clearFragmentBackStack()
-        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        backingFragment.pledgeSuccessfullyUpdated()
     }
 
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
@@ -673,20 +626,22 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .commit()
     }
 
-    private fun showRewardsFragment(project: Project) {
-        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
-                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        if (!backingFragment.isHidden && supportFragmentManager.backStackEntryCount == 0 && !isFinishing) {
-            supportFragmentManager.beginTransaction()
-                    .show(rewardsFragment)
-                    .hide(backingFragment)
-                    .commitNow()
+    private fun setProjectActionCTA(stringRes: Int) {
+        project_action_button.setText(stringRes)
+        project_action_button.contentDescription = when (stringRes) {
+            R.string.Manage -> getString(R.string.Manage_your_pledge)
+            else -> getString(stringRes)
         }
-        renderProject(backingFragment, rewardsFragment, project)
     }
 
     private fun showStarToast() {
         ViewUtils.showToastFromTop(this, getString(this.projectStarConfirmationString), 0, resources.getDimensionPixelSize(R.dimen.grid_8))
+    }
+
+    private fun showUpdatePledgeSuccess() {
+        clearFragmentBackStack()
+        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        backingFragment.pledgeSuccessfullyUpdated()
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
@@ -788,6 +743,29 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
         project_action_button.layoutParams = buttonParams
     }
+
+    private fun updateFragments(project: Project) {
+        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
+                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        when {
+            supportFragmentManager.backStackEntryCount == 0 -> when {
+                project.isBacking -> if (!rewardsFragment.isHidden) {
+                    supportFragmentManager.beginTransaction()
+                            .show(backingFragment)
+                            .hide(rewardsFragment)
+                            .commitNow()
+                }
+                else -> if (!backingFragment.isHidden) {
+                    supportFragmentManager.beginTransaction()
+                            .show(rewardsFragment)
+                            .hide(backingFragment)
+                            .commitNow()
+                }
+            }
+        }
+        renderProject(backingFragment, rewardsFragment, project)
+    }
+
 
     private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
         menu?.let {

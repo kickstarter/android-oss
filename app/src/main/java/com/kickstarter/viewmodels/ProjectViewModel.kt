@@ -141,8 +141,8 @@ interface ProjectViewModel {
         /** Emits a boolean that determines if the reload project container should be visible. */
         fun reloadProjectContainerIsGone(): Observable<Boolean>
 
-        /** Emits a boolean that determines if the progress bar should be visible. */
-        fun retryProgressBarIsGone(): Observable<Boolean>
+        /** Emits a boolean that determines if the progress bar in the retry container should be visible. */
+        fun reloadProgressBarIsGone(): Observable<Boolean>
 
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment] with an animation. */
         fun revealRewardsFragment(): Observable<Void>
@@ -162,9 +162,6 @@ interface ProjectViewModel {
         /** Emits when we should set the Y position of the rewards container. */
         fun setInitialRewardsContainerY(): Observable<Void>
 
-        /** Emits when we should reveal the [com.kickstarter.ui.fragments.BackingFragment]. */
-        fun showBackingFragment(): Observable<Project>
-
         /** Emits when we should show the [com.kickstarter.ui.fragments.CancelPledgeFragment]. */
         fun showCancelPledgeFragment(): Observable<Project>
 
@@ -173,9 +170,6 @@ interface ProjectViewModel {
 
         /** Emits when we should show the not cancelable dialog. */
         fun showPledgeNotCancelableDialog(): Observable<Void>
-
-        /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment]. */
-        fun showRewardsFragment(): Observable<Project>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -222,8 +216,8 @@ interface ProjectViewModel {
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
 
-        /** Emits when we should update the primary fragment.  */
-        fun updatePrimaryFragment(): Observable<Project>
+        /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
+        fun updateFragments(): Observable<Project>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -279,11 +273,9 @@ interface ProjectViewModel {
         private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
-        private val showBackingFragment = PublishSubject.create<Project>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
         private val showPledgeNotCancelableDialog = PublishSubject.create<Void>()
-        private val showRewardsFragment = PublishSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
@@ -299,7 +291,7 @@ interface ProjectViewModel {
         private val startThanksActivity = PublishSubject.create<Project>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
-        private val updatePrimaryFragment = BehaviorSubject.create<Project>()
+        private val updateFragments = BehaviorSubject.create<Project>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -537,7 +529,7 @@ interface ProjectViewModel {
             nativeCheckoutProject
                     .filter { it.hasRewards() }
                     .compose(bindToLifecycle())
-                    .subscribe(this.updatePrimaryFragment)
+                    .subscribe(this.updateFragments)
 
             nativeCheckoutProject
                     .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
@@ -897,13 +889,19 @@ interface ProjectViewModel {
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
         @NonNull
+        override fun horizontalProgressBarIsGone(): Observable<Boolean> = this.horizontalProgressBarIsGone
+
+        @NonNull
         override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
 
         @NonNull
-        override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
+        override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> = this.pledgeActionButtonContainerIsGone
 
         @NonNull
-        override fun horizontalProgressBarIsGone(): Observable<Boolean> = this.horizontalProgressBarIsGone
+        override fun pledgeContainerIsGone(): Observable<Boolean> = this.pledgeContainerIsGone
+
+        @NonNull
+        override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
         override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
@@ -913,6 +911,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone
+
+        @NonNull
+        override fun reloadProgressBarIsGone(): Observable<Boolean> = this.retryProgressBarIsGone
 
         @NonNull
         override fun revealRewardsFragment(): Observable<Void> = this.revealRewardsFragment
@@ -933,9 +934,6 @@ interface ProjectViewModel {
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
         @NonNull
-        override fun showBackingFragment(): Observable<Project> = this.showBackingFragment
-
-        @NonNull
         override fun showCancelPledgeFragment(): Observable<Project> = this.showCancelPledgeFragment
 
         @NonNull
@@ -943,9 +941,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun showPledgeNotCancelableDialog(): Observable<Void> = this.showPledgeNotCancelableDialog
-
-        @NonNull
-        override fun showRewardsFragment(): Observable<Project> = this.showRewardsFragment
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
@@ -992,13 +987,9 @@ interface ProjectViewModel {
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
-        override fun retryProgressBarIsGone() = this.retryProgressBarIsGone
+        @NonNull
+        override fun updateFragments(): Observable<Project> = this.updateFragments
 
-        override fun pledgeContainerIsGone() = this.pledgeContainerIsGone
-
-        override fun pledgeActionButtonContainerIsGone() = this.pledgeActionButtonContainerIsGone
-
-        override fun updatePrimaryFragment() = this.updatePrimaryFragment
 
         private fun backingDetails(project: Project): String {
             return project.backing()?.let { backing ->

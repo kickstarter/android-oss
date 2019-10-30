@@ -221,6 +221,9 @@ interface ProjectViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
+
+        /** Emits when we should update the primary fragment.  */
+        fun updatePrimaryFragment(): Observable<Project>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -296,6 +299,7 @@ interface ProjectViewModel {
         private val startThanksActivity = PublishSubject.create<Project>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
+        private val updatePrimaryFragment = BehaviorSubject.create<Project>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -531,14 +535,9 @@ interface ProjectViewModel {
                     .subscribe(this.pledgeActionButtonContainerIsGone)
 
             nativeCheckoutProject
-                    .filter { it.isBacking && it.hasRewards() }
+                    .filter { it.hasRewards() }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showBackingFragment)
-
-            nativeCheckoutProject
-                    .filter { !it.isBacking && it.hasRewards() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showRewardsFragment)
+                    .subscribe(this.updatePrimaryFragment)
 
             nativeCheckoutProject
                     .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
@@ -998,6 +997,8 @@ interface ProjectViewModel {
         override fun pledgeContainerIsGone() = this.pledgeContainerIsGone
 
         override fun pledgeActionButtonContainerIsGone() = this.pledgeActionButtonContainerIsGone
+
+        override fun updatePrimaryFragment() = this.updatePrimaryFragment
 
         private fun backingDetails(project: Project): String {
             return project.backing()?.let { backing ->

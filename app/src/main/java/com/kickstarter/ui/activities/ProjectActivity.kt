@@ -286,15 +286,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     override fun onResume() {
         super.onResume()
 
-        this.viewModel.outputs.showRewardsFragment()
+        this.viewModel.outputs.updatePrimaryFragment()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showRewardsFragment(it) }
-
-        this.viewModel.outputs.showBackingFragment()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showBackingFragment(it) }
+                .subscribe { updateFragments(it) }
     }
 
     private fun setClickListeners() {
@@ -608,6 +603,28 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         renderProject(backingFragment, rewardsFragment, project)
     }
 
+    private fun updateFragments(project: Project) {
+        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
+                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
+        when {
+            supportFragmentManager.backStackEntryCount == 0 -> when {
+                project.isBacking -> if (!rewardsFragment.isHidden) {
+                    supportFragmentManager.beginTransaction()
+                            .show(backingFragment)
+                            .hide(rewardsFragment)
+                            .commitNow()
+                }
+                else -> if (!backingFragment.isHidden) {
+                    supportFragmentManager.beginTransaction()
+                            .show(rewardsFragment)
+                            .hide(backingFragment)
+                            .commitNow()
+                }
+            }
+        }
+        renderProject(backingFragment, rewardsFragment, project)
+    }
+
     private fun showCancelPledgeFragment(project: Project) {
         val cancelPledgeFragment = CancelPledgeFragment.newInstance(project)
         val tag = CancelPledgeFragment::class.java.simpleName
@@ -626,7 +643,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun showCreatePledgeSuccess(project: Project) {
         if (clearFragmentBackStack()) {
-            showBackingFragment(project)
+            updateFragments(project)
             startActivity(Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, project))
         }

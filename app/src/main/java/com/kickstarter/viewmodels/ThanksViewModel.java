@@ -136,7 +136,7 @@ public interface ThanksViewModel {
 
       nativeCheckoutEnabled
         .compose(takeWhen(this.closeButtonClicked))
-        .filter(BooleanUtils::isTrue)
+        .filter(BooleanUtils::isFalse)
         .compose(ignoreValues())
         .compose(bindToLifecycle())
         .subscribe(this.resumeDiscoveryActivity);

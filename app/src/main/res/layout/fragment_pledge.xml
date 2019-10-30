@@ -135,6 +135,7 @@
             tools:visibility="gone" />
 
           <FrameLayout
+            android:id="@+id/update_pledge_button_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -145,7 +146,6 @@
               android:layout_marginBottom="@dimen/grid_4"
               android:enabled="false"
               android:text="@string/Update_pledge"
-              android:visibility="gone"
               tools:visibility="visible" />
 
             <FrameLayout

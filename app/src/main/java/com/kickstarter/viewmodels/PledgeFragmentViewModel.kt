@@ -479,7 +479,7 @@ interface PledgeFragmentViewModel {
 
             pledgeInput
                     .compose<Double>(takeWhen(this.increasePledgeButtonClicked))
-                    .compose<Pair<Double,Int>>(combineLatestPair(stepAmount))
+                    .compose<Pair<Double, Int>>(combineLatestPair(stepAmount))
                     .map { it.first + it.second }
                     .map { it.toString() }
                     .compose(bindToLifecycle())
@@ -487,7 +487,7 @@ interface PledgeFragmentViewModel {
 
             pledgeInput
                     .compose<Double>(takeWhen(this.decreasePledgeButtonClicked))
-                    .compose<Pair<Double,Int>>(combineLatestPair(stepAmount))
+                    .compose<Pair<Double, Int>>(combineLatestPair(stepAmount))
                     .map { it.first - it.second }
                     .map { it.toString() }
                     .compose(bindToLifecycle())
@@ -855,8 +855,8 @@ interface PledgeFragmentViewModel {
                     .map { CreateBackingData(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag) }
                     .switchMap {
                         this.apolloClient.createBacking(it)
-                            .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
-                            .materialize()
+                                .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
+                                .materialize()
                     }
                     .share()
 
@@ -889,15 +889,12 @@ interface PledgeFragmentViewModel {
                     }
                     .share()
 
-            val createBackingValues = createBackingNotification
+            val createOrUpdateSuccess = Observable.merge(createBackingNotification, updateBackingNotification)
                     .compose(values())
+                    .filter { BooleanUtils.isFalse(it.requiresAction()) }
 
-            val updateBackingValues = updateBackingNotification
-                    .compose(values())
-
-            val successAndPledgeReason = Observable.merge(this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED },
-                    createBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) },
-                    updateBackingValues.filter { BooleanUtils.isFalse(it.requiresAction()) })
+            val successAndPledgeReason = Observable.merge(createOrUpdateSuccess,
+                    this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED })
                     .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
 
             successAndPledgeReason
@@ -918,16 +915,20 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePaymentSuccess)
 
-            Observable.merge(createBackingValues, updateBackingValues)
+            Observable.merge(createBackingNotification, updateBackingNotification)
+                    .compose(values())
                     .filter { BooleanUtils.isTrue(it.requiresAction()) }
                     .map { it.clientSecret() }
                     .compose(bindToLifecycle())
                     .subscribe(this.showSCAFlow)
 
-            val errorAndPledgeReason = Observable.merge(this.stripeSetupResultUnsuccessful,
-                    this.stripeSetupResultSuccessful.filter { it != StripeIntentResult.Outcome.SUCCEEDED },
-                    createBackingNotification.compose(errors()),
+            val createOrUpdateError = Observable.merge(createBackingNotification.compose(errors()),
                     updateBackingNotification.compose(errors()))
+
+            val stripeSetupError = Observable.merge(this.stripeSetupResultUnsuccessful,
+                    this.stripeSetupResultSuccessful.filter { it != StripeIntentResult.Outcome.SUCCEEDED })
+
+            val errorAndPledgeReason = Observable.merge(createOrUpdateError, stripeSetupError)
                     .compose(ignoreValues())
                     .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
 

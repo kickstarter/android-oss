@@ -833,10 +833,10 @@ interface PledgeFragmentViewModel {
                     .take(1)
                     .map { p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences) }
 
-            val locationId: Observable<String?> = Observable.merge(Observable.just(null as String?),
-                    shippingRule.map { it.location() }
-                            .map { it.id() }
-                            .map { it.toString() })
+            val locationId: Observable<String?> = shippingRule.map { it.location() }
+                    .map { it.id() }
+                    .map { it.toString() }
+                    .startWith(null as String?)
 
             val backingToUpdate = project
                     .filter { it.isBacking }
@@ -860,9 +860,12 @@ interface PledgeFragmentViewModel {
                     }
                     .share()
 
-            val paymentMethodId: Observable<String?> = Observable.merge(Observable.just(null as String?), this.pledgeButtonClicked)
-            val totalString = Observable.merge(Observable.just(null as String?), total
-                    .map { it.toString() })
+            val paymentMethodId: Observable<String?> = this.pledgeButtonClicked
+                    .startWith(null as String?)
+
+            val totalString: Observable<String?> = total
+                    .map { it.toString() }
+                    .startWith(null as String?)
 
             val updatePaymentClick = pledgeReason
                     .compose<Pair<PledgeReason, String>>(takePairWhen(this.pledgeButtonClicked))

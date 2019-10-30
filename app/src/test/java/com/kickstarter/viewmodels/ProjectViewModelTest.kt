@@ -177,7 +177,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
 
         this.horizontalProgressBarIsGone.assertNoValues()
-        this.pledgeActionButtonContainerIsGone.assertValues(false)
+        this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.pledgeContainerIsGone.assertValue(false)
         this.prelaunchUrl.assertNoValues()
         this.projectActionButtonContainerIsGone.assertValue(true)
@@ -232,7 +232,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.prelaunchUrl.assertNoValues()
         this.projectActionButtonContainerIsGone.assertValue(true)
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(initialProject, true),
-                Pair(initialProject, true), Pair(initialProject, true),
+                Pair(initialProject, true), Pair(initialProject, true), Pair(initialProject, true),
                 Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
@@ -437,15 +437,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()))
 
-        this.savedTest.assertValues(false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
+        this.savedTest.assertValues(false, false)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
 
         // Try starring while logged out
         this.vm.inputs.heartButtonClicked()
 
         // The project shouldn't be saved, and a login prompt should be shown.
-        this.savedTest.assertValues(false)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline)
+        this.savedTest.assertValues(false, false)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline)
         this.showSavedPromptTest.assertValueCount(0)
         this.startLoginToutActivity.assertValueCount(1)
 
@@ -456,8 +456,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         currentUser.refresh(UserFactory.user())
 
         // The project should be saved, and a star prompt should be shown.
-        this.savedTest.assertValues(false, true)
-        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart)
+        this.savedTest.assertValues(false, false, true)
+        this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(1)
 
         // A koala event for starring should be tracked

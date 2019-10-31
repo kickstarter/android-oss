@@ -7,6 +7,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
@@ -40,6 +41,9 @@ public interface ThanksViewModel {
 
   interface Inputs extends ProjectCardViewHolder.Delegate, ThanksCategoryViewHolder.Delegate,
     ThanksAdapter.Delegate {
+    /** Call when the user clicks the close button. */
+    void closeButtonClicked();
+
     /** Call when the user accepts the prompt to signup to the Games newsletter. */
     void signupToGamesNewsletterClick();
   }
@@ -47,6 +51,12 @@ public interface ThanksViewModel {
   interface Outputs {
     /** Emits the data to configure the adapter with. */
     Observable<ThanksData> adapterData();
+
+    /** Emits when we should finish the {@link com.kickstarter.ui.activities.ThanksActivity}. */
+    Observable<Void> finish();
+
+    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    Observable<Void> resumeDiscoveryActivity();
 
     /** Show a dialog confirming the user will be signed up to the games newsletter. Required for German users. */
     Observable<Void> showConfirmGamesNewsletterDialog();
@@ -104,6 +114,24 @@ public interface ThanksViewModel {
         .map(c -> DiscoveryParams.builder().category(c).build())
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
+
+      final Observable<Boolean> nativeCheckoutEnabled = intent()
+        .map(i -> i.getBooleanExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false))
+        .take(1);
+
+      nativeCheckoutEnabled
+        .compose(takeWhen(this.closeButtonClicked))
+        .filter(BooleanUtils::isTrue)
+        .compose(ignoreValues())
+        .compose(bindToLifecycle())
+        .subscribe(this.finish);
+
+      nativeCheckoutEnabled
+        .compose(takeWhen(this.closeButtonClicked))
+        .filter(BooleanUtils::isFalse)
+        .compose(ignoreValues())
+        .compose(bindToLifecycle())
+        .subscribe(this.resumeDiscoveryActivity);
 
       this.projectCardViewHolderClicked
         .compose(bindToLifecycle())
@@ -237,10 +265,13 @@ public interface ThanksViewModel {
     }
 
     private final PublishSubject<Category> categoryCardViewHolderClicked = PublishSubject.create();
+    private final PublishSubject<Void> closeButtonClicked = PublishSubject.create();
     private final PublishSubject<Project> projectCardViewHolderClicked  = PublishSubject.create();
     private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
 
     private final BehaviorSubject<ThanksData> adapterData = BehaviorSubject.create();
+    private final PublishSubject<Void> finish = PublishSubject.create();
+    private final PublishSubject<Void> resumeDiscoveryActivity = PublishSubject.create();
     private final PublishSubject<Void> showConfirmGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showRatingDialog = PublishSubject.create();
@@ -254,6 +285,9 @@ public interface ThanksViewModel {
     @Override public void categoryViewHolderClicked(final @NonNull Category category) {
       this.categoryCardViewHolderClicked.onNext(category);
     }
+    @Override public void closeButtonClicked() {
+      this.closeButtonClicked.onNext(null);
+    }
     @Override public void signupToGamesNewsletterClick() {
       this.signupToGamesNewsletterClick.onNext(null);
     }
@@ -263,6 +297,12 @@ public interface ThanksViewModel {
 
     @Override public @NonNull Observable<ThanksData> adapterData() {
       return this.adapterData;
+    }
+    @Override public @NonNull Observable<Void> finish() {
+      return this.finish;
+    }
+    @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
+      return this.resumeDiscoveryActivity;
     }
     @Override public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
       return this.showConfirmGamesNewsletterDialog;

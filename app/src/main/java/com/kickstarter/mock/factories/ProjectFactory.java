@@ -357,4 +357,11 @@ public final class ProjectFactory {
       .urls(Project.Urls.builder().web(web).build())
       .build();
   }
+
+  public static Project initialProject() {
+    return project()
+      .toBuilder()
+      .rewards(null)
+      .build();
+  }
 }

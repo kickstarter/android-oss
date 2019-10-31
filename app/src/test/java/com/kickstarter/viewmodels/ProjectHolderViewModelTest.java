@@ -6,7 +6,9 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -41,6 +43,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> blurbTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> categoryTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> commentsCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, String>> conversionPledgedAndGoalText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> conversionTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> featuredTextViewRootCategory = new TestSubscriber<>();
@@ -51,6 +55,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> playButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> pledgedTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectActionButtonContainerIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectDisclaimerGoalReachedDateTime = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectDisclaimerTextViewIsGone = new TestSubscriber<>();
@@ -73,8 +78,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<DateTime> setUnsuccessfulProjectStateView = new TestSubscriber<>();
   private final TestSubscriber<Project> startProjectSocialActivity = new TestSubscriber<>();
   private final TestSubscriber<String> updatesCountTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Pair<String, String>> usdConversionPledgedAndGoalText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> usdConversionTextViewIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectHolderViewModel.ViewModel(environment);
@@ -84,6 +87,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.blurbTextViewText().subscribe(this.blurbTextViewText);
     this.vm.outputs.categoryTextViewText().subscribe(this.categoryTextViewText);
     this.vm.outputs.commentsCountTextViewText().subscribe(this.commentsCountTextViewText);
+    this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.conversionPledgedAndGoalText);
+    this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone);
     this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
     this.vm.outputs.deadlineCountdownTextViewText().subscribe(this.deadlineCountdownTextViewText);
     this.vm.outputs.featuredTextViewRootCategory().subscribe(this.featuredTextViewRootCategory);
@@ -94,6 +99,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
     this.vm.outputs.playButtonIsGone().subscribe(this.playButtonIsGone);
     this.vm.outputs.pledgedTextViewText().subscribe(this.pledgedTextViewText);
+    this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone);
     this.vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe(this.projectDisclaimerGoalReachedDateTime);
     this.vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(this.projectDisclaimerGoalNotReachedString);
     this.vm.outputs.projectDisclaimerTextViewIsGone().subscribe(this.projectDisclaimerTextViewIsGone);
@@ -116,15 +122,13 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
-    this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.usdConversionPledgedAndGoalText);
-    this.vm.outputs.conversionTextViewIsGone().subscribe(this.usdConversionTextViewIsGone);
   }
 
   @Test
   public void testCreatorDataEmits() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "CA"));
+    this.vm.inputs.configureWith(project);
 
     this.avatarPhotoUrl.assertValues(project.creator().avatar().medium());
     this.creatorNameTextViewText.assertValues(project.creator().name());
@@ -138,7 +142,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.backingViewGroupIsGone.assertValues(false);
     this.featuredViewGroupIsGone.assertValues(true);
@@ -154,7 +158,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.backingViewGroupIsGone.assertValues(false);
     this.featuredTextViewRootCategory.assertNoValues();
@@ -173,7 +177,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertValues(category.root().name());
@@ -189,7 +193,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertNoValues();
@@ -206,7 +210,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
     this.playButtonIsGone.assertValues(true);
   }
 
@@ -218,7 +222,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
     this.playButtonIsGone.assertValues(false);
   }
 
@@ -231,7 +235,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment());
 
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
     this.percentageFundedProgress.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
     this.percentageFundedProgressBarIsGone.assertValues(false);
   }
@@ -245,17 +249,43 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment());
 
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
     this.percentageFundedProgressBarIsGone.assertValues(true);
   }
 
   @Test
-  public void testProjectDataEmits() {
-    // Set user's country to US.
-    final Config config = ConfigFactory.configForUSUser();
-    final Environment environment = environment();
-    environment.currentConfig().config(config);
+  public void testProjectActionButtonContainerIsGone_whenNativeCheckoutDisabled() {
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.config());
+
+    final Environment environment = environment()
+      .toBuilder()
+      .currentConfig(currentConfig)
+      .build();
     setUpEnvironment(environment);
+
+    this.projectActionButtonContainerIsGone.assertValue(false);
+  }
+
+  @Test
+  public void testProjectActionButtonContainerIsGone_whenNativeCheckoutEnabled() {
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_NATIVE_CHECKOUT));
+
+    final Environment environment = environment()
+      .toBuilder()
+      .currentConfig(currentConfig)
+      .nativeCheckoutPreference(new MockBooleanPreference(true))
+      .build();
+
+    setUpEnvironment(environment);
+
+    this.projectActionButtonContainerIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testProjectDataEmits() {
+    setUpEnvironment(environment());
 
     final Category category = CategoryFactory.tabletopGamesCategory();
     final Location location = LocationFactory.unitedStates();
@@ -267,12 +297,12 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .updatesCount(10)
       .build();
 
-    this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
+    this.vm.inputs.configureWith(project);
 
     this.blurbTextViewText.assertValues(project.blurb());
     this.categoryTextViewText.assertValues(category.name());
     this.commentsCountTextViewText.assertValues("5,000");
-    this.goalStringForTextView.assertValueCount(1); // todo: flaky tests
+    this.goalStringForTextView.assertValueCount(1);
     this.locationTextViewText.assertValues(location.displayableName());
     this.pledgedTextViewText.assertValueCount(1);
     this.projectNameTextViewText.assertValues(project.name());
@@ -291,7 +321,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    this.vm.inputs.configureWith(project);
 
     this.projectDisclaimerGoalReachedDateTime.assertValueCount(1);
     this.projectDisclaimerTextViewIsGone.assertValues(false);
@@ -308,7 +338,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    this.vm.inputs.configureWith(project);
 
     this.projectDisclaimerGoalNotReachedString.assertValueCount(1);
     this.projectDisclaimerTextViewIsGone.assertValues(false);
@@ -318,7 +348,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectDisclaimer_NoDisclaimer() {
     final Project project = ProjectFactory.successfulProject();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    this.vm.inputs.configureWith(project);
 
     // Disclaimer is not shown for completed projects.
     this.projectDisclaimerTextViewIsGone.assertValues(true);
@@ -334,7 +364,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    this.vm.inputs.configureWith(project);
 
     // On click listener should be set for view with > 2 friends.
     this.setProjectSocialClickListener.assertValueCount(1);
@@ -356,7 +386,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    this.vm.inputs.configureWith(project);
 
     this.projectSocialImageViewIsGone.assertValues(true);
     this.projectSocialImageViewUrl.assertNoValues();
@@ -374,7 +404,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    this.vm.inputs.configureWith(project);
 
     this.projectSocialImageViewIsGone.assertValues(true);
     this.projectSocialImageViewUrl.assertNoValues();
@@ -394,7 +424,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "US"));
+    this.vm.inputs.configureWith(project);
 
     // On click listener should be not set for view with < 2 friends.
     this.setProjectSocialClickListener.assertNoValues();
@@ -413,7 +443,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -428,7 +458,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.projectStateViewGroupBackgroundColorInt.assertNoValues();
     this.projectStateViewGroupIsGone.assertValues(true);
@@ -446,7 +476,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.green_alpha_50);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -461,7 +491,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -479,7 +509,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(Pair.create(project, "US"));
+    this.vm.configureWith(project);
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -490,7 +520,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectStatsEmit() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(Pair.create(project, "MX"));
+    this.vm.inputs.configureWith(project);
 
     this.backersCountTextViewText.assertValues(NumberUtils.format(project.backersCount()));
     this.deadlineCountdownTextViewText.assertValues(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
@@ -506,11 +536,11 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     // Set the current config for a US user. KSCurrency needs this config for conversions.
     setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
-    this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
+    this.vm.inputs.configureWith(project);
 
     // USD conversion shown for non US project.
-    this.usdConversionPledgedAndGoalText.assertValueCount(1);
-    this.usdConversionTextViewIsGone.assertValue(false);
+    this.conversionPledgedAndGoalText.assertValueCount(1);
+    this.conversionTextViewIsGone.assertValue(false);
   }
 
   @Test
@@ -525,9 +555,9 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     currentConfig.config(config);
 
     setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
-    this.vm.inputs.configureWith(Pair.create(project, config.countryCode()));
+    this.vm.inputs.configureWith(project);
 
     // USD conversion not shown for US project.
-    this.usdConversionTextViewIsGone.assertValue(true);
+    this.conversionTextViewIsGone.assertValue(true);
   }
 }

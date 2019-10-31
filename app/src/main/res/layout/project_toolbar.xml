@@ -4,7 +4,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/project_layout"
+  tools:showIn="@layout/activity_project"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
   android:background="@color/white"

@@ -255,7 +255,14 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectActionButtonContainerIsGone() {
-    setUpEnvironment(environment());
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.config());
+
+    final Environment environment = environment()
+      .toBuilder()
+      .currentConfig(currentConfig)
+      .build();
+    setUpEnvironment(environment);
 
     this.projectActionButtonContainerIsGone.assertValue(false);
   }

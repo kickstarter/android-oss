@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -25,8 +26,6 @@ import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import java.net.CookieManager
-
-
 
 interface ProjectViewModel {
     interface Inputs {
@@ -644,7 +643,7 @@ interface ProjectViewModel {
                     .subscribe { this.koala.trackVideoStart(it) }
 
             currentProject
-                    .map { p -> if (p.isStarred) com.kickstarter.R.drawable.icon__heart else com.kickstarter.R.drawable.icon__heart_outline }
+                    .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
                     .subscribe(this.heartDrawableId)
 
             //Tracking
@@ -724,9 +723,9 @@ interface ProjectViewModel {
 
         private fun eventName(projectActionButtonStringRes: Int) : String {
             return when (projectActionButtonStringRes) {
-                com.kickstarter.R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
-                com.kickstarter.R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
-                com.kickstarter.R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
+                R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+                R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
+                R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
                 else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED
             }
         }
@@ -736,8 +735,8 @@ interface ProjectViewModel {
             val count = projectAndFragmentStackCount.second
             return when {
                 !project.isBacking || IntegerUtils.isNonZero(count) -> null
-                project.isLive -> com.kickstarter.R.menu.manage_pledge_live
-                else -> com.kickstarter.R.menu.manage_pledge_ended
+                project.isLive -> R.menu.manage_pledge_live
+                else -> R.menu.manage_pledge_ended
             }
         }
 
@@ -989,7 +988,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun updateFragments(): Observable<Project> = this.updateFragments
-
 
         private fun backingDetails(project: Project): String {
             return project.backing()?.let { backing ->

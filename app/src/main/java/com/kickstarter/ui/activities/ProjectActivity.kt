@@ -293,10 +293,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     override fun back() {
-        if (pledge_container != null) {
-            handleNativeCheckoutBackPress()
-        } else {
+        if (pledge_container_root.visibility == View.GONE) {
             super.back()
+        } else {
+            handleNativeCheckoutBackPress()
         }
     }
 
@@ -411,12 +411,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 override fun onAnimationEnd(animation: Animator?) {
                     if (expand) {
                         pledge_action_buttons.visibility = View.GONE
-                        this@ProjectActivity.project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                        project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         pledge_toolbar.requestFocus()
                     } else {
                         pledge_container.visibility = View.GONE
-                        this@ProjectActivity.project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                        project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         toolbar.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
                         if (animate) {
                             toolbar.requestFocus()

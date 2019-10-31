@@ -22,7 +22,7 @@ public final class IntentKey {
   public static final String LOGIN_REASON = "com.kickstarter.kickstarter.intent_login_reason";
   public static final String MASKED_WALLET = "com.kickstarter.kickstarter.masked_wallet";
   public static final String MESSAGE_THREAD = "com.kickstarter.kickstarter.intent_message_thread";
-  public static final String NATIVE_CHECKOUT_ENABLED = "com.kickstarter.kickstarter.native_checkout_enabled";
+  public static final String NATIVE_CHECKOUT_ENABLED = "com.kickstarter.kickstarter.intent_native_checkout_enabled";
   public static final String PASSWORD = "com.kickstarter.kickstarter.intent_password";
   public static final String PROJECT = "com.kickstarter.kickstarter.intent_project";
   public static final String PROJECT_PARAM = "com.kickstarter.kickstarter.intent_project_param";

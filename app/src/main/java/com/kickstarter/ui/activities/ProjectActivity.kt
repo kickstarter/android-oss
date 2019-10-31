@@ -494,6 +494,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val nativeCheckoutEnabled = projectAndNativeCheckoutEnabled.second
         this.adapter.takeProject(project, nativeCheckoutEnabled)
         ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+        project_recycler_view.setPadding(0, 0, 0, if (nativeCheckoutEnabled) rewardsSheetGuideline() else 0)
     }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, project: Project) {

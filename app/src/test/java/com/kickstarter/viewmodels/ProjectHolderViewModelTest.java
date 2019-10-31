@@ -254,7 +254,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectActionButtonContainerIsGone() {
+  public void testProjectActionButtonContainerIsGone_whenNativeCheckoutDisabled() {
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(ConfigFactory.config());
 

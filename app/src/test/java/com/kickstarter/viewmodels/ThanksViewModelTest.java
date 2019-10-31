@@ -65,32 +65,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testFinishAndResumeDiscoveryActivity() {
-    setUpEnvironment(environment());
-
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    this.vm.inputs.closeButtonClicked();
-
-    this.finish.assertNoValues();
-    this.resumeDiscoveryActivity.assertValueCount(1);
-  }
-
-  @Test
-  public void testFinishAndResumeDiscoveryActivity_whenNativeCheckout_isFalse() {
-    setUpEnvironment(environment());
-
-    final Intent intent = new Intent()
-      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
-      .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false);
-    this.vm.intent(intent);
-    this.vm.inputs.closeButtonClicked();
-
-    this.finish.assertNoValues();
-    this.resumeDiscoveryActivity.assertValueCount(1);
-  }
-
-  @Test
-  public void testFinishAndResumeDiscoveryActivity_whenNativeCheckout_isTrue() {
+  public void testFinishEmits_whenNativeCheckoutExtra_isTrue() {
     setUpEnvironment(environment());
 
     final Intent intent = new Intent()
@@ -101,6 +76,31 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.finish.assertValueCount(1);
     this.resumeDiscoveryActivity.assertNoValues();
+  }
+
+  @Test
+  public void testResumeDiscoveryActivityEmits_whenNativeCheckoutExtra_isNull() {
+    setUpEnvironment(environment());
+
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    this.vm.inputs.closeButtonClicked();
+
+    this.finish.assertNoValues();
+    this.resumeDiscoveryActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testResumeDiscoveryActivityEmits_whenNativeCheckoutExtra_isFalse() {
+    setUpEnvironment(environment());
+
+    final Intent intent = new Intent()
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+      .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false);
+    this.vm.intent(intent);
+    this.vm.inputs.closeButtonClicked();
+
+    this.finish.assertNoValues();
+    this.resumeDiscoveryActivity.assertValueCount(1);
   }
 
   @Test

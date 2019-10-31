@@ -30,8 +30,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val heartDrawableId = TestSubscriber<Int>()
     private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
     private val managePledgeMenu = TestSubscriber<Int?>()
-    private val pledgeContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeActionButtonContainerIsGone = TestSubscriber<Boolean>()
+    private val pledgeContainerIsGone = TestSubscriber<Boolean>()
     private val prelaunchUrl = TestSubscriber<String>()
     private val projectActionButtonContainerIsGone = TestSubscriber<Boolean>()
     private val projectAndNativeCheckoutEnabled = TestSubscriber<Pair<Project, Boolean>>()
@@ -71,8 +71,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.horizontalProgressBarIsGone().subscribe(this.horizontalProgressBarIsGone)
         this.vm.outputs.managePledgeMenu().subscribe(this.managePledgeMenu)
-        this.vm.outputs.pledgeContainerIsGone().subscribe(this.pledgeContainerIsGone)
         this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe(this.pledgeActionButtonContainerIsGone)
+        this.vm.outputs.pledgeContainerIsGone().subscribe(this.pledgeContainerIsGone)
         this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
         this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone)
         this.vm.outputs.projectAndNativeCheckoutEnabled().subscribe(this.projectAndNativeCheckoutEnabled)
@@ -106,7 +106,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromIntent() {
+    fun testUIOutputs_whenNativeCheckoutDisabled_andFetchProjectFromIntent_isSuccessful() {
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
 
@@ -134,7 +134,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromIntent_isUnsuccessful() {
+    fun testUIOutputs_whenNativeCheckoutDisabled_andFetchProjectFromIntent_isUnsuccessful() {
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
 
@@ -164,7 +164,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromIntent_whenNativeCheckoutEnabled() {
+    fun testUIOutputs_whenNativeCheckoutEnabled_andFetchProjectFromIntent_isSuccessful() {
         val initialProject = ProjectFactory.initialProject()
         val refreshedProject = ProjectFactory.project()
         val environment = environmentWithNativeCheckoutEnabled()
@@ -188,7 +188,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromIntent_whenNativeCheckoutEnabled_isUnsuccessful() {
+    fun testUIOutputs_whenNativeCheckoutEnabled_andFetchProjectFromIntent_isUnsuccessful() {
         var error = true
         val initialProject = ProjectFactory.initialProject()
         val refreshedProject = ProjectFactory.project()
@@ -224,8 +224,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         error = false
         this.vm.inputs.reloadProjectContainerClicked()
 
-        this.pledgeActionButtonContainerIsGone.assertValues(true, false)
-
         this.horizontalProgressBarIsGone.assertNoValues()
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.pledgeContainerIsGone.assertValue(false)
@@ -240,7 +238,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromDeepLink() {
+    fun testUIOutputs_whenNativeCheckoutDisabled_andFetchProjectFromDeepLink_isSuccessful() {
         val project = ProjectFactory.project()
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
@@ -270,7 +268,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromDeepLink_isUnsuccessful() {
+    fun testUIOutputs_whenNativeCheckoutDisabled_andFetchProjectFromDeepLink_isUnsuccessful() {
         val currentConfig = MockCurrentConfig()
         currentConfig.config(ConfigFactory.config())
 
@@ -296,7 +294,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromDeepLink_whenNativeCheckoutEnabled() {
+    fun testUIOutputs_whenNativeCheckoutEnabled_andFetchProjectFromDeepLink_isSuccessful() {
         val project = ProjectFactory.project()
 
         val environment = environmentWithNativeCheckoutEnabled()
@@ -323,7 +321,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_fromDeepLink_whenNativeCheckoutEnabled_isUnsuccessful() {
+    fun testUIOutputs_whenNativeCheckoutEnabled_andFetchProjectFromDeepLink_isUnsuccessful() {
         var error = true
         val refreshedProject = ProjectFactory.project()
 
@@ -367,7 +365,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_preLaunchActivated() {
+    fun testUIOutputs_whenNativeCheckoutDisabled_andFetchProjectReturnsPrelaunchActivatedProject() {
         val url = "https://www.kickstarter.com/projects/1186238668/skull-graphic-tee"
         val project = ProjectFactory.prelaunchProject(url)
         val currentConfig = MockCurrentConfig()
@@ -397,7 +395,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndNativeCheckoutEnabled_preLaunchActivated_whenNativeCheckoutEnabled() {
+    fun testUIOutputs_whenNativeCheckoutEnabled_andFetchProjectReturnsPrelaunchActivatedProject() {
         val url = "https://www.kickstarter.com/projects/1186238668/skull-graphic-tee"
         val project = ProjectFactory.prelaunchProject(url)
 
@@ -1094,11 +1092,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProject(ProjectFactory.backedProject()))
-                .build()
-        setUpEnvironment(environment)
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
@@ -1112,11 +1106,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProject(ProjectFactory.backedProject()))
-                .build()
-        setUpEnvironment(environment)
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
@@ -1130,11 +1120,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testStartThanksActivity() {
-        val environment = environmentWithNativeCheckoutEnabled()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProject(ProjectFactory.backedProject()))
-                .build()
-        setUpEnvironment(environment)
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a unbacked project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))

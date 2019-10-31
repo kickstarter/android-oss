@@ -271,11 +271,11 @@ public interface ThanksViewModel {
 
     private final BehaviorSubject<ThanksData> adapterData = BehaviorSubject.create();
     private final PublishSubject<Void> finish = PublishSubject.create();
+    private final PublishSubject<Void> resumeDiscoveryActivity = PublishSubject.create();
     private final PublishSubject<Void> showConfirmGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showRatingDialog = PublishSubject.create();
     private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
-    private final PublishSubject<Void> resumeDiscoveryActivity = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> startDiscoveryActivity = PublishSubject.create();
     private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
 
@@ -301,6 +301,9 @@ public interface ThanksViewModel {
     @Override public @NonNull Observable<Void> finish() {
       return this.finish;
     }
+    @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
+      return this.resumeDiscoveryActivity;
+    }
     @Override public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
       return this.showConfirmGamesNewsletterDialog;
     }
@@ -309,9 +312,6 @@ public interface ThanksViewModel {
     }
     @Override public @NonNull Observable<Void> showRatingDialog() {
       return this.showRatingDialog;
-    }
-    @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
-      return this.resumeDiscoveryActivity;
     }
     @Override public @NonNull Observable<DiscoveryParams> startDiscoveryActivity() {
       return this.startDiscoveryActivity;

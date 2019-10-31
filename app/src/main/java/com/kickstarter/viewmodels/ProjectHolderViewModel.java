@@ -39,7 +39,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface ProjectHolderViewModel {
 
   interface Inputs {
-    /** Call to configure view holder with a project and the config country. */
+    /** Call to configure view holder with a project. */
     void configureWith(Project project);
 
     /** Call when the project social view group is clicked. */

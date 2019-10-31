@@ -115,7 +115,7 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
-        /** Emits a boolean that determines if the progress bar should be visible. */
+        /** Emits a boolean that determines if the horizontal progress bar should be visible. */
         fun horizontalProgressBarIsGone(): Observable<Boolean>
 
         /** Emits a menu for managing your pledge or null if there's no menu. */
@@ -497,12 +497,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.expandPledgeSheet)
 
-            val nativeCheckoutProject = currentProject
+            val currentProjectFeatureEnabled = currentProject
                     .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map { it.first }
 
-            val projectHasRewards = nativeCheckoutProject
+            val projectHasRewards = currentProjectFeatureEnabled
                     .map { it.hasRewards() }
                     .distinctUntilChanged()
                     .takeUntil(this.expandPledgeSheet)
@@ -525,19 +525,19 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonContainerIsGone)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .filter { it.hasRewards() }
                     .compose(bindToLifecycle())
                     .subscribe(this.updateFragments)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
                     .map { managePledgeMenu(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.managePledgeMenu)
 
-            val backedProject = nativeCheckoutProject
+            val backedProject = currentProjectFeatureEnabled
                     .filter { it.isBacking }
 
             backedProject
@@ -553,12 +553,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeNotCancelableDialog)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .compose<Project>(takeWhen(this.contactCreatorClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startMessagesActivity)
 
-            val projectAndBackedReward = nativeCheckoutProject
+            val projectAndBackedReward = currentProjectFeatureEnabled
                     .map { project -> Pair(project, project.rewards()?.firstOrNull { BackingUtils.isBacked(project, it) }) }
                     .map { projectAndReward -> projectAndReward.second?.let { Pair(projectAndReward.first, it) } }
 
@@ -578,32 +578,32 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.revealRewardsFragment)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .map { it.isBacking && it.isLive }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetailsIsVisible)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .filter { it.isBacking && it.isLive }
                     .map { backingDetails(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetails)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .map { ProjectViewUtils.rewardsButtonText(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.rewardsButtonText.onNext(it) }
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .map { ProjectViewUtils.rewardsToolbarTitle(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsToolbarTitle)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .map { ProjectViewUtils.rewardsButtonColor(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -617,7 +617,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeSuccess)
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .compose<Project>(takeWhen(this.pledgeSuccessfullyCreated))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
@@ -627,7 +627,7 @@ interface ProjectViewModel {
                     .subscribe(this.showUpdatePledgeSuccess)
 
             this.fragmentStackCount
-                    .compose<Pair<Int, Project>>(combineLatestPair(nativeCheckoutProject))
+                    .compose<Pair<Int, Project>>(combineLatestPair(currentProjectFeatureEnabled))
                     .map { if (it.second.isBacking) it.first > 2 else it.first > 1}
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -649,39 +649,39 @@ interface ProjectViewModel {
             //Tracking
             this.rewardsButtonText
                     .map { eventName(it) }
-                    .compose<Pair<String, Project>>(combineLatestPair(nativeCheckoutProject))
+                    .compose<Pair<String, Project>>(combineLatestPair(currentProjectFeatureEnabled))
                     .compose<Pair<String, Project>>(takeWhen(this.nativeProjectActionButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectActionButtonClicked(it.first, it.second) }
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .compose<Project>(takeWhen(this.updatePledgeClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "update_pledge") }
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .compose<Project>(takeWhen(this.updatePaymentClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "change_payment_method") }
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .filter { it.isLive }
                     .compose<Project>(takeWhen(this.viewRewardsClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "choose_another_reward") }
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .filter { !it.isLive }
                     .compose<Project>(takeWhen(this.viewRewardsClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "view_rewards") }
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "cancel_pledge") }
 
-            nativeCheckoutProject
+            currentProjectFeatureEnabled
                     .compose<Project>(takeWhen(this.contactCreatorClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "contact_creator") }

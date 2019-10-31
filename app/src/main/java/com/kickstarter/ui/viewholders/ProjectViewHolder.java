@@ -235,7 +235,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.pledgedTextView::setText);
 
-    this.viewModel.outputs.projectActionButtonsAreVisible()
+    this.viewModel.outputs.projectActionButtonContainerIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectActionButtonsContainerVisibility);

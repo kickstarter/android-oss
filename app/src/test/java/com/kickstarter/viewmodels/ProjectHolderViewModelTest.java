@@ -6,7 +6,9 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -41,6 +43,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> blurbTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> categoryTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> commentsCountTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Pair<String, String>> conversionPledgedAndGoalText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> conversionTextViewIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> featuredTextViewRootCategory = new TestSubscriber<>();
@@ -51,6 +55,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> playButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> pledgedTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectActionButtonContainerIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectDisclaimerGoalReachedDateTime = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectDisclaimerTextViewIsGone = new TestSubscriber<>();
@@ -73,8 +78,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<DateTime> setUnsuccessfulProjectStateView = new TestSubscriber<>();
   private final TestSubscriber<Project> startProjectSocialActivity = new TestSubscriber<>();
   private final TestSubscriber<String> updatesCountTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Pair<String, String>> usdConversionPledgedAndGoalText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> usdConversionTextViewIsGone = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ProjectHolderViewModel.ViewModel(environment);
@@ -84,6 +87,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.blurbTextViewText().subscribe(this.blurbTextViewText);
     this.vm.outputs.categoryTextViewText().subscribe(this.categoryTextViewText);
     this.vm.outputs.commentsCountTextViewText().subscribe(this.commentsCountTextViewText);
+    this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.conversionPledgedAndGoalText);
+    this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone);
     this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
     this.vm.outputs.deadlineCountdownTextViewText().subscribe(this.deadlineCountdownTextViewText);
     this.vm.outputs.featuredTextViewRootCategory().subscribe(this.featuredTextViewRootCategory);
@@ -94,6 +99,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
     this.vm.outputs.playButtonIsGone().subscribe(this.playButtonIsGone);
     this.vm.outputs.pledgedTextViewText().subscribe(this.pledgedTextViewText);
+    this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone);
     this.vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe(this.projectDisclaimerGoalReachedDateTime);
     this.vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(this.projectDisclaimerGoalNotReachedString);
     this.vm.outputs.projectDisclaimerTextViewIsGone().subscribe(this.projectDisclaimerTextViewIsGone);
@@ -116,8 +122,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
-    this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.usdConversionPledgedAndGoalText);
-    this.vm.outputs.conversionTextViewIsGone().subscribe(this.usdConversionTextViewIsGone);
   }
 
   @Test
@@ -247,6 +251,29 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.configureWith(project);
     this.percentageFundedProgressBarIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testProjectActionButtonContainerIsGone() {
+    setUpEnvironment(environment());
+
+    this.projectActionButtonContainerIsGone.assertValue(false);
+  }
+
+  @Test
+  public void testProjectActionButtonContainerIsGone_whenNativeCheckoutEnabled() {
+    final MockCurrentConfig currentConfig = new MockCurrentConfig();
+    currentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_NATIVE_CHECKOUT));
+
+    final Environment environment = environment()
+      .toBuilder()
+      .currentConfig(currentConfig)
+      .nativeCheckoutPreference(new MockBooleanPreference(true))
+      .build();
+
+    setUpEnvironment(environment);
+
+    this.projectActionButtonContainerIsGone.assertValue(true);
   }
 
   @Test
@@ -505,8 +532,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(project);
 
     // USD conversion shown for non US project.
-    this.usdConversionPledgedAndGoalText.assertValueCount(1);
-    this.usdConversionTextViewIsGone.assertValue(false);
+    this.conversionPledgedAndGoalText.assertValueCount(1);
+    this.conversionTextViewIsGone.assertValue(false);
   }
 
   @Test
@@ -524,6 +551,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(project);
 
     // USD conversion not shown for US project.
-    this.usdConversionTextViewIsGone.assertValue(true);
+    this.conversionTextViewIsGone.assertValue(true);
   }
 }

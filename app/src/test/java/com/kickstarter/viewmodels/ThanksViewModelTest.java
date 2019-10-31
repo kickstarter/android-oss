@@ -31,6 +31,8 @@ import rx.observers.TestSubscriber;
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
   private ThanksViewModel.ViewModel vm;
   private final TestSubscriber<ThanksData> adapterData = new TestSubscriber<>();
+  private final TestSubscriber<Void> finish = new TestSubscriber<>();
+  private final TestSubscriber<Void> resumeDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
@@ -40,6 +42,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ThanksViewModel.ViewModel(environment);
     this.vm.outputs.adapterData().subscribe(this.adapterData);
+    this.vm.outputs.finish().subscribe(this.finish);
+    this.vm.outputs.resumeDiscoveryActivity().subscribe(this.resumeDiscoveryActivity);
     this.vm.outputs.showGamesNewsletterDialog().subscribe(this.showGamesNewsletterDialogTest);
     this.vm.outputs.showRatingDialog().subscribe(this.showRatingDialogTest);
     this.vm.outputs.showConfirmGamesNewsletterDialog().subscribe(this.showConfirmGamesNewsletterDialogTest);
@@ -58,6 +62,45 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
     this.adapterData.assertValueCount(1);
+  }
+
+  @Test
+  public void testFinishAndResumeDiscoveryActivity() {
+    setUpEnvironment(environment());
+
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    this.vm.inputs.closeButtonClicked();
+
+    this.finish.assertNoValues();
+    this.resumeDiscoveryActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testFinishAndResumeDiscoveryActivity_whenNativeCheckout_isFalse() {
+    setUpEnvironment(environment());
+
+    final Intent intent = new Intent()
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+      .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false);
+    this.vm.intent(intent);
+    this.vm.inputs.closeButtonClicked();
+
+    this.finish.assertNoValues();
+    this.resumeDiscoveryActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testFinishAndResumeDiscoveryActivity_whenNativeCheckout_isTrue() {
+    setUpEnvironment(environment());
+
+    final Intent intent = new Intent()
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+      .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true);
+    this.vm.intent(intent);
+    this.vm.inputs.closeButtonClicked();
+
+    this.finish.assertValueCount(1);
+    this.resumeDiscoveryActivity.assertNoValues();
   }
 
   @Test

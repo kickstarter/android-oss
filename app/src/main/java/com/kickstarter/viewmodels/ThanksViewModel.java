@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
@@ -42,7 +41,7 @@ public interface ThanksViewModel {
 
   interface Inputs extends ProjectCardViewHolder.Delegate, ThanksCategoryViewHolder.Delegate,
     ThanksAdapter.Delegate {
-    /** Call when the user accepts the prompt to signup to the Games newsletter. */
+    /** Call when the user clicks the close button. */
     void closeButtonClicked();
 
     /** Call when the user accepts the prompt to signup to the Games newsletter. */
@@ -56,6 +55,9 @@ public interface ThanksViewModel {
     /** Emits when we should finish the {@link com.kickstarter.ui.activities.ThanksActivity}. */
     Observable<Void> finish();
 
+    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
+    Observable<Void> resumeDiscoveryActivity();
+
     /** Show a dialog confirming the user will be signed up to the games newsletter. Required for German users. */
     Observable<Void> showConfirmGamesNewsletterDialog();
 
@@ -64,9 +66,6 @@ public interface ThanksViewModel {
 
     /** Show a dialog prompting the user to rate the app. */
     Observable<Void> showRatingDialog();
-
-    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
-    Observable<Void> resumeDiscoveryActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<DiscoveryParams> startDiscoveryActivity();
@@ -79,19 +78,15 @@ public interface ThanksViewModel {
     private final ApiClientType apiClient;
     private final BooleanPreferenceType hasSeenAppRatingPreference;
     private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
-    private final CurrentConfigType currentConfig;
     private final CurrentUserType currentUser;
-    private final BooleanPreferenceType nativeCheckoutPreference;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.apiClient = environment.apiClient();
-      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
       this.hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
       this.hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference();
-      this.nativeCheckoutPreference = environment.nativeCheckoutPreference();
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))

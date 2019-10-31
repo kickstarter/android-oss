@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
@@ -101,7 +102,7 @@ public interface ProjectHolderViewModel {
     Observable<String> pledgedTextViewText();
 
     /** Emits a boolean determining if the project action buttons should be visible. */
-    Observable<Boolean> projectActionButtonsAreVisible();
+    Observable<Boolean> projectActionButtonContainerIsGone();
 
     /** Emits the date time to be displayed in the disclaimer. */
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
@@ -244,10 +245,12 @@ public interface ProjectHolderViewModel {
       this.pledgedTextViewText = this.project
         .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p));
 
-      this.projectActionButtonsAreGone = currentConfig.observable()
+      this.projectActionButtonContainerIsGone = currentConfig.observable()
         .map(Config::features)
-        .map(featuresMap -> ObjectUtils.coalesce(featuresMap.get(FeatureKey.ANDROID_NATIVE_CHECKOUT),
-          this.nativeCheckoutPreference.get()));
+        .map(features -> ObjectUtils.isNotNull(features) ? ObjectUtils.coalesce(features.get(FeatureKey.ANDROID_NATIVE_CHECKOUT), false) : false)
+        .map(enabled -> Pair.create(enabled, this.nativeCheckoutPreference.get()))
+        .map(enabledAndOverride -> Build.isExternal() ? enabledAndOverride.first : enabledAndOverride.second)
+        .distinctUntilChanged();
 
       this.projectDisclaimerGoalReachedDateTime = this.project
         .filter(Project::isFunded)
@@ -325,8 +328,8 @@ public interface ProjectHolderViewModel {
     private final Observable<String> blurbTextViewText;
     private final Observable<String> categoryTextViewText;
     private final Observable<String> commentsCountTextViewText;
-    private final Observable<Boolean> conversionTextViewIsGone;
     private final Observable<Pair<String, String>> conversionPledgedAndGoalText;
+    private final Observable<Boolean> conversionTextViewIsGone;
     private final Observable<String> creatorNameTextViewText;
     private final Observable<String> deadlineCountdownTextViewText;
     private final Observable<String> featuredTextViewRootCategory;
@@ -337,7 +340,7 @@ public interface ProjectHolderViewModel {
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
-    private final Observable<Boolean> projectActionButtonsAreGone;
+    private final Observable<Boolean> projectActionButtonContainerIsGone;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
@@ -425,8 +428,8 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
     }
-    @Override public @NonNull Observable<Boolean> projectActionButtonsAreVisible() {
-      return this.projectActionButtonsAreGone;
+    @Override public @NonNull Observable<Boolean> projectActionButtonContainerIsGone() {
+      return this.projectActionButtonContainerIsGone;
     }
     @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;

@@ -497,12 +497,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.expandPledgeSheet)
 
-            val currentProjectFeatureEnabled = currentProject
+            val currentProjectWhenFeatureEnabled = currentProject
                     .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map { it.first }
 
-            val projectHasRewards = currentProjectFeatureEnabled
+            val projectHasRewards = currentProjectWhenFeatureEnabled
                     .map { it.hasRewards() }
                     .distinctUntilChanged()
                     .takeUntil(this.expandPledgeSheet)
@@ -525,19 +525,19 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonContainerIsGone)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .filter { it.hasRewards() }
                     .compose(bindToLifecycle())
                     .subscribe(this.updateFragments)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
                     .map { managePledgeMenu(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.managePledgeMenu)
 
-            val backedProject = currentProjectFeatureEnabled
+            val backedProject = currentProjectWhenFeatureEnabled
                     .filter { it.isBacking }
 
             backedProject
@@ -553,12 +553,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeNotCancelableDialog)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.contactCreatorClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startMessagesActivity)
 
-            val projectAndBackedReward = currentProjectFeatureEnabled
+            val projectAndBackedReward = currentProjectWhenFeatureEnabled
                     .map { project -> Pair(project, project.rewards()?.firstOrNull { BackingUtils.isBacked(project, it) }) }
                     .map { projectAndReward -> projectAndReward.second?.let { Pair(projectAndReward.first, it) } }
 
@@ -578,32 +578,32 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.revealRewardsFragment)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .map { it.isBacking && it.isLive }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetailsIsVisible)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .filter { it.isBacking && it.isLive }
                     .map { backingDetails(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetails)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsButtonText(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.rewardsButtonText.onNext(it) }
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsToolbarTitle(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsToolbarTitle)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsButtonColor(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -617,7 +617,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeSuccess)
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.pledgeSuccessfullyCreated))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
@@ -627,7 +627,7 @@ interface ProjectViewModel {
                     .subscribe(this.showUpdatePledgeSuccess)
 
             this.fragmentStackCount
-                    .compose<Pair<Int, Project>>(combineLatestPair(currentProjectFeatureEnabled))
+                    .compose<Pair<Int, Project>>(combineLatestPair(currentProjectWhenFeatureEnabled))
                     .map { if (it.second.isBacking) it.first > 2 else it.first > 1}
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -649,39 +649,39 @@ interface ProjectViewModel {
             //Tracking
             this.rewardsButtonText
                     .map { eventName(it) }
-                    .compose<Pair<String, Project>>(combineLatestPair(currentProjectFeatureEnabled))
+                    .compose<Pair<String, Project>>(combineLatestPair(currentProjectWhenFeatureEnabled))
                     .compose<Pair<String, Project>>(takeWhen(this.nativeProjectActionButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectActionButtonClicked(it.first, it.second) }
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.updatePledgeClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "update_pledge") }
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.updatePaymentClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "change_payment_method") }
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .filter { it.isLive }
                     .compose<Project>(takeWhen(this.viewRewardsClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "choose_another_reward") }
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .filter { !it.isLive }
                     .compose<Project>(takeWhen(this.viewRewardsClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "view_rewards") }
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "cancel_pledge") }
 
-            currentProjectFeatureEnabled
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.contactCreatorClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "contact_creator") }

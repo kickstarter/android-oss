@@ -340,7 +340,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         }
 
-        private fun buttonIsGone(project: Project, reward: Reward, userCreatedProject: Boolean):Boolean {
+        private fun buttonIsGone(project: Project, reward: Reward, userCreatedProject: Boolean): Boolean {
             return when {
                 userCreatedProject -> true
                 BackingUtils.isBacked(project, reward) || project.isLive -> false

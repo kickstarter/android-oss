@@ -37,7 +37,7 @@
   </LinearLayout>
 
   <ProgressBar
-    android:id="@+id/project_progress_bar"
+    android:id="@+id/pledge_sheet_progress_bar"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"

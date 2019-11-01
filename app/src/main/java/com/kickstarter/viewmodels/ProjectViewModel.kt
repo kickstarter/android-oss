@@ -115,24 +115,33 @@ interface ProjectViewModel {
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
+        /** Emits a boolean that determines if the horizontal progress bar should be visible. */
+        fun horizontalProgressBarIsGone(): Observable<Boolean>
+
         /** Emits a menu for managing your pledge or null if there's no menu. */
         fun managePledgeMenu(): Observable<Int?>
+
+        /** Emits a boolean that determines if the pledge container should be visible. */
+        fun pledgeContainerIsGone(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the pledge action button container should be visible. */
+        fun pledgeActionButtonContainerIsGone(): Observable<Boolean>
 
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
 
-        /** Emits a boolean that determines if the progress bar should be visible. */
-        fun progressBarIsGone(): Observable<Boolean>
-
         /** Emits a boolean that determines if the project action button container should be visible. */
         fun projectActionButtonContainerIsGone(): Observable<Boolean>
 
-        /** Emits a project and country when a new value is available. If the view model is created with a full project
-         * model, this observable will emit that project immediately, and then again when it has updated from the api.  */
-        fun projectAndUserCountry(): Observable<Pair<Project, String>>
+        /** Emits a project and whether the native checkout feature is enabled. If the view model is created with a full project
+         * model, this observable will emit that project immediately, and then again when it has updated from the api. */
+        fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>>
 
         /** Emits a boolean that determines if the reload project container should be visible. */
         fun reloadProjectContainerIsGone(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the progress bar in the retry container should be visible. */
+        fun reloadProgressBarIsGone(): Observable<Boolean>
 
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment] with an animation. */
         fun revealRewardsFragment(): Observable<Void>
@@ -158,14 +167,8 @@ interface ProjectViewModel {
         /** Emits when the backing has successfully been canceled. */
         fun showCancelPledgeSuccess(): Observable<Void>
 
-        /** Emits when we should reveal the [com.kickstarter.ui.fragments.BackingFragment]. */
-        fun showBackingFragment(): Observable<Project>
-
         /** Emits when we should show the not cancelable dialog. */
         fun showPledgeNotCancelableDialog(): Observable<Void>
-
-        /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment]. */
-        fun showRewardsFragment(): Observable<Project>
 
         /** Emits when the success prompt for saving should be displayed.  */
         fun showSavedPrompt(): Observable<Void>
@@ -211,13 +214,16 @@ interface ProjectViewModel {
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
+
+        /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
+        fun updateFragments(): Observable<Project>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
         private val client: ApiClientType = environment.apiClient()
-        private val currentUser: CurrentUserType = environment.currentUser()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentConfig: CurrentConfigType = environment.currentConfig()
+        private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val nativeCheckoutPreference: BooleanPreferenceType = environment.nativeCheckoutPreference()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
@@ -252,10 +258,13 @@ interface ProjectViewModel {
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
+        private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
+        private val pledgeContainerIsGone = BehaviorSubject.create<Boolean>()
+        private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val prelaunchUrl = PublishSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
-        private val progressBarIsGone = BehaviorSubject.create<Boolean>()
-        private val projectAndUserCountry = BehaviorSubject.create<Pair<Project, String>>()
+        private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
+        private val projectAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<Project, Boolean>>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
@@ -263,11 +272,9 @@ interface ProjectViewModel {
         private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
-        private val showBackingFragment = PublishSubject.create<Project>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
         private val showCancelPledgeSuccess = PublishSubject.create<Void>()
         private val showPledgeNotCancelableDialog = PublishSubject.create<Void>()
-        private val showRewardsFragment = PublishSubject.create<Project>()
         private val showShareSheet = PublishSubject.create<Pair<String, String>>()
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
@@ -283,32 +290,63 @@ interface ProjectViewModel {
         private val startThanksActivity = PublishSubject.create<Project>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
+        private val updateFragments = BehaviorSubject.create<Project>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
+            val nativeCheckoutEnabled = this.currentConfig.observable()
+                    .map { it.features()?.get(FeatureKey.ANDROID_NATIVE_CHECKOUT)?: false }
+                    .map { Pair(it, this.nativeCheckoutPreference.get()) }
+                    .map { if (Build.isExternal()) it.first else it.second }
+                    .distinctUntilChanged()
+
+            nativeCheckoutEnabled
+                    .compose(bindToLifecycle())
+                    .subscribe(this.projectActionButtonContainerIsGone)
+
+            nativeCheckoutEnabled
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeContainerIsGone)
+
+            val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(intent(), intent()
                     .compose(takeWhen<Intent, Void>(this.reloadProjectContainerClicked)))
                     .flatMap {
                         ProjectIntentMapper.project(it, this.client)
                                 .doOnSubscribe {
-                                    this.progressBarIsGone.onNext(false)
+                                    progressBarIsGone.onNext(false)
                                 }
                                 .doAfterTerminate {
-                                    this.progressBarIsGone.onNext(true)
+                                    progressBarIsGone.onNext(true)
                                 }
                                 .materialize()
                     }
                     .share()
+
+            progressBarIsGone
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
+                    .filter { BooleanUtils.isFalse(it.second) }
+                    .map { it.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.horizontalProgressBarIsGone)
+
+            progressBarIsGone
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
+                    .filter { BooleanUtils.isTrue(it.second) }
+                    .map { it.first }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.retryProgressBarIsGone)
 
             val mappedProjectValues = mappedProjectNotification
                     .compose(values())
 
             val mappedProjectErrors = mappedProjectNotification
                     .compose(errors())
-                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
+                    .compose<Pair<Throwable, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
 
             mappedProjectValues
@@ -354,10 +392,10 @@ interface ProjectViewModel {
                     .switchMap {
                         this.client.fetchProject(it)
                             .doOnSubscribe {
-                                this.progressBarIsGone.onNext(false)
+                                this.retryProgressBarIsGone.onNext(false)
                             }
                             .doAfterTerminate {
-                                this.progressBarIsGone.onNext(true)
+                                this.retryProgressBarIsGone.onNext(true)
                             }
                             .materialize()
                     }
@@ -389,9 +427,9 @@ interface ProjectViewModel {
                     .subscribe(this.showSavedPrompt)
 
             currentProject
-                    .compose<Pair<Project, String>>(combineLatestPair(this.currentConfig.observable().map { it.countryCode() }))
+                    .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectAndUserCountry)
+                    .subscribe(this.projectAndNativeCheckoutEnabled)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -459,12 +497,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.expandPledgeSheet)
 
-            val nativeCheckoutProject = currentProject
-                    .compose<Pair<Project, Boolean>>(combineLatestPair(Observable.just(this.nativeCheckoutPreference.get())))
+            val currentProjectWhenFeatureEnabled = currentProject
+                    .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
-                    .map<Project> { it.first }
+                    .map { it.first }
 
-            val projectHasRewards = nativeCheckoutProject
+            val projectHasRewards = currentProjectWhenFeatureEnabled
                     .map { it.hasRewards() }
                     .distinctUntilChanged()
                     .takeUntil(this.expandPledgeSheet)
@@ -485,26 +523,21 @@ interface ProjectViewModel {
             projectHasRewards
                     .map { BooleanUtils.negate(it) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectActionButtonContainerIsGone)
+                    .subscribe(this.pledgeActionButtonContainerIsGone)
 
-            nativeCheckoutProject
-                    .filter { it.isBacking && it.hasRewards() }
+            currentProjectWhenFeatureEnabled
+                    .filter { it.hasRewards() }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showBackingFragment)
+                    .subscribe(this.updateFragments)
 
-            nativeCheckoutProject
-                    .filter { !it.isBacking && it.hasRewards() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showRewardsFragment)
-
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
                     .map { managePledgeMenu(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.managePledgeMenu)
 
-            val backedProject = nativeCheckoutProject
+            val backedProject = currentProjectWhenFeatureEnabled
                     .filter { it.isBacking }
 
             backedProject
@@ -520,12 +553,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeNotCancelableDialog)
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.contactCreatorClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startMessagesActivity)
 
-            val projectAndBackedReward = nativeCheckoutProject
+            val projectAndBackedReward = currentProjectWhenFeatureEnabled
                     .map { project -> Pair(project, project.rewards()?.firstOrNull { BackingUtils.isBacked(project, it) }) }
                     .map { projectAndReward -> projectAndReward.second?.let { Pair(projectAndReward.first, it) } }
 
@@ -545,32 +578,32 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.revealRewardsFragment)
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .map { it.isBacking && it.isLive }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetailsIsVisible)
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .filter { it.isBacking && it.isLive }
                     .map { backingDetails(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetails)
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsButtonText(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.rewardsButtonText.onNext(it) }
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsToolbarTitle(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsToolbarTitle)
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsButtonColor(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -584,7 +617,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeSuccess)
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.pledgeSuccessfullyCreated))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
@@ -594,7 +627,7 @@ interface ProjectViewModel {
                     .subscribe(this.showUpdatePledgeSuccess)
 
             this.fragmentStackCount
-                    .compose<Pair<Int, Project>>(combineLatestPair(nativeCheckoutProject))
+                    .compose<Pair<Int, Project>>(combineLatestPair(currentProjectWhenFeatureEnabled))
                     .map { if (it.second.isBacking) it.first > 2 else it.first > 1}
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -616,39 +649,39 @@ interface ProjectViewModel {
             //Tracking
             this.rewardsButtonText
                     .map { eventName(it) }
-                    .compose<Pair<String, Project>>(combineLatestPair(nativeCheckoutProject))
+                    .compose<Pair<String, Project>>(combineLatestPair(currentProjectWhenFeatureEnabled))
                     .compose<Pair<String, Project>>(takeWhen(this.nativeProjectActionButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectActionButtonClicked(it.first, it.second) }
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.updatePledgeClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "update_pledge") }
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.updatePaymentClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "change_payment_method") }
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .filter { it.isLive }
                     .compose<Project>(takeWhen(this.viewRewardsClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "choose_another_reward") }
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .filter { !it.isLive }
                     .compose<Project>(takeWhen(this.viewRewardsClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "view_rewards") }
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "cancel_pledge") }
 
-            nativeCheckoutProject
+            currentProjectWhenFeatureEnabled
                     .compose<Project>(takeWhen(this.contactCreatorClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackManagePledgeOptionClicked(it, "contact_creator") }
@@ -783,11 +816,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderBackProjectClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference.get()) {
-                this.nativeProjectActionButtonClicked()
-            } else {
-                this.backProjectButtonClicked()
-            }
+            this.backProjectButtonClicked()
         }
 
         override fun projectViewHolderBlurbClicked(viewHolder: ProjectViewHolder) {
@@ -803,11 +832,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderManagePledgeClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference.get()) {
-                this.nativeProjectActionButtonClicked()
-            } else {
-                this.managePledgeButtonClicked()
-            }
+            this.managePledgeButtonClicked()
         }
 
         override fun projectViewHolderVideoStarted(viewHolder: ProjectViewHolder) {
@@ -815,11 +840,7 @@ interface ProjectViewModel {
         }
 
         override fun projectViewHolderViewPledgeClicked(viewHolder: ProjectViewHolder) {
-            if (this.nativeCheckoutPreference.get()) {
-                this.nativeProjectActionButtonClicked()
-            } else {
-                this.viewPledgeButtonClicked()
-            }
+            this.viewPledgeButtonClicked()
         }
 
         override fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder) {
@@ -867,22 +888,31 @@ interface ProjectViewModel {
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
         @NonNull
+        override fun horizontalProgressBarIsGone(): Observable<Boolean> = this.horizontalProgressBarIsGone
+
+        @NonNull
         override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
+
+        @NonNull
+        override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> = this.pledgeActionButtonContainerIsGone
+
+        @NonNull
+        override fun pledgeContainerIsGone(): Observable<Boolean> = this.pledgeContainerIsGone
 
         @NonNull
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
 
         @NonNull
-        override fun progressBarIsGone(): Observable<Boolean> = this.progressBarIsGone
-
-        @NonNull
         override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
 
         @NonNull
-        override fun projectAndUserCountry(): Observable<Pair<Project, String>> = this.projectAndUserCountry
+        override fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>> = this.projectAndNativeCheckoutEnabled
 
         @NonNull
         override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone
+
+        @NonNull
+        override fun reloadProgressBarIsGone(): Observable<Boolean> = this.retryProgressBarIsGone
 
         @NonNull
         override fun revealRewardsFragment(): Observable<Void> = this.revealRewardsFragment
@@ -903,9 +933,6 @@ interface ProjectViewModel {
         override fun setInitialRewardsContainerY(): Observable<Void> = this.setInitialRewardPosition
 
         @NonNull
-        override fun showBackingFragment(): Observable<Project> = this.showBackingFragment
-
-        @NonNull
         override fun showCancelPledgeFragment(): Observable<Project> = this.showCancelPledgeFragment
 
         @NonNull
@@ -913,9 +940,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun showPledgeNotCancelableDialog(): Observable<Void> = this.showPledgeNotCancelableDialog
-
-        @NonNull
-        override fun showRewardsFragment(): Observable<Project> = this.showRewardsFragment
 
         @NonNull
         override fun showSavedPrompt(): Observable<Void> = this.showSavedPrompt
@@ -961,6 +985,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
+
+        @NonNull
+        override fun updateFragments(): Observable<Project> = this.updateFragments
 
         private fun backingDetails(project: Project): String {
             return project.backing()?.let { backing ->

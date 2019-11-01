@@ -34,6 +34,7 @@
   <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API</string>
   <string name="Enter_Hivequeen_name">Enter Hivequeen name (e.g.: christopher)</string>
   <string name="Feature_flags">Feature flags</string>
+  <string name="Force_a_crash">Force a crash 💥</string>
   <string name="Hivequeen">Hivequeen</string>
   <string name="Instructions">Instructions</string>
   <string name="internal_tools_internal_tools">Internal tools</string>

@@ -44,15 +44,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageButton
-          android:id="@+id/back_button"
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:background="@drawable/click_indicator_light"
-          android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-          android:focusable="true"
-          android:padding="@dimen/grid_2"
-          android:src="@drawable/ic_action_icon__arrow_left" />
+        <com.kickstarter.ui.views.IconButton
+          style="@style/ToolbarIconBackButton"
+          android:id="@+id/back_button" />
 
         <TextView
           android:id="@+id/creator_dashboard_project_name_small"

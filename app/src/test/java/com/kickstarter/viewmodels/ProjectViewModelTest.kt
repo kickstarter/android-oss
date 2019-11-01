@@ -27,6 +27,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val backingDetails = TestSubscriber<String>()
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
     private val expandPledgeSheet = TestSubscriber<Pair<Boolean, Boolean>>()
+    private val goBack = TestSubscriber<Void>()
     private val heartDrawableId = TestSubscriber<Int>()
     private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
     private val managePledgeMenu = TestSubscriber<Int?>()
@@ -40,7 +41,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val revealRewardsFragment = TestSubscriber<Void>()
     private val rewardsButtonColor = TestSubscriber<Int>()
     private val rewardsButtonText = TestSubscriber<Int>()
-    private val rewardsToolbarTitle = TestSubscriber<Int>()
+    private val pledgeToolbarNavigationIcon = TestSubscriber<Int>()
+    private val pledgeToolbarTitle = TestSubscriber<Int>()
     private val savedTest = TestSubscriber<Boolean>()
     private val scrimIsVisible = TestSubscriber<Boolean>()
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
@@ -68,11 +70,14 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.backingDetails().subscribe(this.backingDetails)
         this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
         this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
+        this.vm.outputs.goBack().subscribe(this.goBack)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.horizontalProgressBarIsGone().subscribe(this.horizontalProgressBarIsGone)
         this.vm.outputs.managePledgeMenu().subscribe(this.managePledgeMenu)
         this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe(this.pledgeActionButtonContainerIsGone)
         this.vm.outputs.pledgeContainerIsGone().subscribe(this.pledgeContainerIsGone)
+        this.vm.outputs.pledgeToolbarNavigationIcon().subscribe(this.pledgeToolbarNavigationIcon)
+        this.vm.outputs.pledgeToolbarTitle().subscribe(this.pledgeToolbarTitle)
         this.vm.outputs.prelaunchUrl().subscribe(this.prelaunchUrl)
         this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone)
         this.vm.outputs.projectAndNativeCheckoutEnabled().subscribe(this.projectAndNativeCheckoutEnabled)
@@ -81,7 +86,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
         this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
         this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
-        this.vm.outputs.rewardsToolbarTitle().subscribe(this.rewardsToolbarTitle)
         this.vm.outputs.scrimIsVisible().subscribe(this.scrimIsVisible)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showCancelPledgeFragment().subscribe(this.showCancelPledgeFragment)
@@ -676,27 +680,70 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testRewardsToolbarTitle() {
-        val project = ProjectFactory.project()
+    fun testPledgeToolbarNavigationIcon_whenNativeCheckoutDisabled() {
         setUpEnvironment(environment())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        this.rewardsToolbarTitle.assertNoValues()
+        this.pledgeToolbarNavigationIcon.assertNoValues()
+    }
 
+    @Test
+    fun testPledgeToolbarNavigationIcon_whenNativeCheckoutEnabled() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        this.rewardsToolbarTitle.assertValuesAndClear(R.string.Back_this_project)
+        this.pledgeToolbarNavigationIcon.assertValue(R.drawable.ic_arrow_down)
+
+        this.vm.inputs.fragmentStackCount(1)
+
+        this.pledgeToolbarNavigationIcon.assertValues(R.drawable.ic_arrow_down, R.drawable.ic_arrow_back)
+
+        this.vm.inputs.fragmentStackCount(0)
+
+        this.pledgeToolbarNavigationIcon.assertValues(R.drawable.ic_arrow_down, R.drawable.ic_arrow_back, R.drawable.ic_arrow_down)
+    }
+
+    @Test
+    fun testPledgeToolbarTitle_whenNativeCheckoutDisabled() {
+        setUpEnvironment(environment())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.pledgeToolbarTitle.assertNoValues()
+    }
+
+    @Test
+    fun testPledgeToolbarTitle_whenNativeCheckoutEnabled_projectIsLiveAndUnbacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.pledgeToolbarTitle.assertValue(R.string.Back_this_project)
+    }
+
+    @Test
+    fun testPledgeToolbarTitle_whenNativeCheckoutEnabled_projectIsLiveAndBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        this.rewardsToolbarTitle.assertValuesAndClear(R.string.Manage_your_pledge)
+        this.pledgeToolbarTitle.assertValue(R.string.Manage_your_pledge)
+    }
+
+    @Test
+    fun testPledgeToolbarTitle_whenNativeCheckoutEnabled_projectIsEndedAndUnbacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
 
-        this.rewardsToolbarTitle.assertValuesAndClear(R.string.View_rewards)
+        this.pledgeToolbarTitle.assertValuesAndClear(R.string.View_rewards)
+    }
+
+    @Test
+    fun testPledgeToolbarTitle_whenNativeCheckoutEnabled_projectIsEndedAndBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
@@ -704,15 +751,21 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
-        this.rewardsToolbarTitle.assertValue(R.string.View_your_pledge)
+        this.pledgeToolbarTitle.assertValue(R.string.View_your_pledge)
     }
 
     @Test
     fun testExpandPledgeSheet_whenCollapsingSheet() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
-        this.vm.inputs.collapsePledgeSheet()
-        this.expandPledgeSheet.assertValue(Pair(false, true))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+        this.expandPledgeSheet.assertValue(Pair(true, true))
+
+        this.vm.inputs.pledgeToolbarNavigationClicked()
+        this.expandPledgeSheet.assertValues(Pair(true, true), Pair(false, true))
+        this.goBack.assertNoValues()
+        this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
     }
 
     @Test
@@ -757,6 +810,30 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "View Your Pledge Button Clicked")
+    }
+
+    @Test
+    fun testGoBack_whenFragmentBackStackIsEmpty() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.vm.inputs.pledgeToolbarNavigationClicked()
+        this.goBack.assertNoValues()
+    }
+
+    @Test
+    fun testGoBack_whenFragmentBackStackIsNotEmpty() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.vm.inputs.fragmentStackCount(3)
+        this.vm.inputs.pledgeToolbarNavigationClicked()
+        this.goBack.assertValueCount(1)
+
+        this.vm.inputs.fragmentStackCount(2)
+        this.vm.inputs.pledgeToolbarNavigationClicked()
+        this.goBack.assertValueCount(2)
+        this.expandPledgeSheet.assertNoValues()
     }
 
     @Test

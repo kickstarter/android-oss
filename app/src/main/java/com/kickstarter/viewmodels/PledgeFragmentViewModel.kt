@@ -633,7 +633,7 @@ interface PledgeFragmentViewModel {
 
             val pledgeMaximumIsGone = pledgeMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(pledgeInput))
-                    .map { it.first > it.second }
+                    .map { it.first >= it.second }
                     .distinctUntilChanged()
 
             pledgeMaximumIsGone

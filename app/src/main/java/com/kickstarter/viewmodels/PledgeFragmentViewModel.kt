@@ -620,8 +620,8 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first - it.second }
 
-            val minAndMaxPledge = minimumPledge
-                    .compose(combineLatestPair(pledgeMaximum))
+            val minAndMaxPledge = rewardMinimum
+                    .compose<Pair<Double, Double>>(combineLatestPair(pledgeMaximum))
 
             pledgeInput
                     .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))

@@ -2,7 +2,7 @@
   Naming guidelines: https://github.com/kickstarter/styleguide/tree/master/android#style-inheritance
   Other resources: https://kickstarter.wiki/pages/android-links.html#styles
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" >
 
   <style name="None">
   </style>
@@ -773,5 +773,24 @@
     <item name="android:layout_marginBottom">-30dp</item>
     <item name="android:layout_gravity">bottom</item>
   </style>
+
+  <!-- Stripe 3DS2 override -->
+  <style name="Stripe3DS2Theme" parent="StripeDefault3DS2Theme" tools:override="true">
+    <item name="colorPrimary">@color/primary</item>
+    <item name="colorPrimaryDark">@color/primary_dark</item>
+    <item name="colorAccent">@color/primary</item>
+    <item name="colorSurface">@color/white</item>
+    <item name="android:textColor">@color/text_primary</item>
+    <item name="android:textColorLink">@color/accent</item>
+    <item name="android:textColorPrimary">@color/text_primary</item>
+    <item name="android:textColorSecondary">@color/text_secondary</item>
+    <item name="android:windowBackground">@color/window_background</item>
+    <item name="materialButtonStyle">@style/Button</item>
+    <item name="toolbarStyle">@style/Toolbar</item>
+    <item name="android:statusBarColor">@color/status_bar</item>
+    <item name="android:windowLightStatusBar">true</item>
+  </style>
+
+  <style name="Stripe3DS2Button" parent="Button" tools:override="true"/>
 
 </resources>

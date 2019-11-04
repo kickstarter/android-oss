@@ -355,6 +355,30 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testProjectLaunchDate() {
+    final Project project = ProjectFactory.successfulProject();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(project);
+
+  }
+
+  @Test
+  public void testProjectLaunchDateIsGone_whenCurrentUserIsProjectCreator() {
+    final Project project = ProjectFactory.successfulProject();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(project);
+
+  }
+
+  @Test
+  public void testProjectLaunchDateIsGone_whenCurrentUserIsNotProjectCreator() {
+    final Project project = ProjectFactory.successfulProject();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(project);
+
+  }
+
+  @Test
   public void testProjectSocialView_Clickable() {
     final User myFriend = UserFactory.germanUser();
 

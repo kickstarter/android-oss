@@ -99,6 +99,11 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     setEndpointAndRelaunch(ApiEndpoint.PRODUCTION);
   }
 
+  @OnClick(R.id.crash_button)
+  public void crashButtonClicked() {
+    throw new RuntimeException("Forced a crash!");
+  }
+
   @OnClick(R.id.feature_flags_button)
   public void featureFlagsClick() {
     final Intent featureFlagIntent = new Intent(this, FeatureFlagsActivity.class);

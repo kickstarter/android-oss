@@ -110,6 +110,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { expandPledgeSheet(it) }
 
+        this.viewModel.outputs.goBack()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { back() }
+
         this.viewModel.outputs.heartDrawableId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -134,6 +139,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(pledge_container_root, it) }
+
+        this.viewModel.outputs.pledgeToolbarNavigationIcon()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { pledge_toolbar.navigationIcon = ContextCompat.getDrawable(this, it) }
+
+        this.viewModel.outputs.pledgeToolbarTitle()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { pledge_toolbar.title = getString(it) }
 
         this.viewModel.outputs.prelaunchUrl()
                 .compose(bindToLifecycle())
@@ -169,11 +184,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setProjectActionCTA(it) }
-
-        this.viewModel.outputs.rewardsToolbarTitle()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pledge_toolbar.title = getString(it) }
 
         this.viewModel.outputs.scrimIsVisible()
                 .compose(bindToLifecycle())
@@ -331,8 +341,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     override fun cardSaved(storedCard: StoredCard) {
-        val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
-        pledgeFragment?.cardAdded(storedCard)
+        pledgeFragment()?.cardAdded(storedCard)
         supportFragmentManager.popBackStack()
     }
 
@@ -390,7 +399,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val finalValue = (if (expand) 0 else pledge_container_root.height - guideline).toFloat()
         val initialRadius = resources.getDimensionPixelSize(R.dimen.fab_radius).toFloat()
 
-        val rewardsContainerYAnimator = ObjectAnimator.ofFloat(pledge_container_root, View.Y, initialValue, finalValue).apply {
+        val pledgeContainerYAnimator = ObjectAnimator.ofFloat(pledge_container_root, View.Y, initialValue, finalValue).apply {
             addUpdateListener { valueAnim ->
                 val radius = initialRadius * if (expand) 1 - valueAnim.animatedFraction else valueAnim.animatedFraction
                 pledge_container_root.radius = radius
@@ -398,7 +407,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
 
         AnimatorSet().apply {
-            playTogether(showRewardsFragmentAnimator, hideRewardsFragmentAnimator, rewardsContainerYAnimator)
+            playTogether(showRewardsFragmentAnimator, hideRewardsFragmentAnimator, pledgeContainerYAnimator)
             duration = when {
                 animate -> animDuration
                 else -> 0L
@@ -438,28 +447,13 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun handleNativeCheckoutBackPress() {
-        val pledgeSheetIsExpanded = pledge_container.alpha == 1f
-
-        val pledgeFragment = supportFragmentManager.findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
-        val backStackEntryCount = supportFragmentManager.backStackEntryCount
-        val backStackIsNotEmpty = backStackEntryCount > 0
-        val topOfStackIndex = backStackEntryCount.minus(1)
-
-        val pledgeReason = when {
-            backStackIsNotEmpty && supportFragmentManager.getBackStackEntryAt(topOfStackIndex).name == PledgeFragment::class.java.simpleName -> {
-                pledgeFragment?.arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON)
-            }
-            else -> null
-        }
+        val pledgeSheetIsExpanded = pledge_container_root.y == 0f
 
         when {
-            pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD -> pledgeFragment?.backPressed()
-            backStackIsNotEmpty && pledgeSheetIsExpanded -> supportFragmentManager.popBackStack()
-            pledgeSheetIsExpanded -> this.viewModel.inputs.collapsePledgeSheet()
-            else -> {
-                clearFragmentBackStack()
-                super.back()
-            }
+            pledgeFragmentShouldAnimateOut() -> pledgeFragment()?.backPressed()
+            supportFragmentManager.backStackEntryCount > 0 && pledgeSheetIsExpanded -> supportFragmentManager.popBackStack()
+            pledgeSheetIsExpanded -> this.viewModel.inputs.pledgeToolbarNavigationClicked()
+            else -> super.back()
         }
     }
 
@@ -487,6 +481,22 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
 
         finish()
+    }
+
+    private fun pledgeFragment() = supportFragmentManager
+            .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
+
+    private fun pledgeFragmentShouldAnimateOut(): Boolean {
+        val backStackEntryCount = supportFragmentManager.backStackEntryCount
+        val backStackIsNotEmpty = backStackEntryCount > 0
+        val topOfStackIndex = backStackEntryCount.minus(1)
+        val pledgeReason = when {
+            backStackIsNotEmpty && supportFragmentManager.getBackStackEntryAt(topOfStackIndex).name == PledgeFragment::class.java.simpleName -> {
+                pledgeFragment()?.arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON)
+            }
+            else -> null
+        }
+        return pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD
     }
 
     private fun renderProject(projectAndNativeCheckoutEnabled: Pair<Project, Boolean>) {
@@ -520,7 +530,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
 
         pledge_toolbar.setNavigationOnClickListener {
-            this.viewModel.inputs.collapsePledgeSheet()
+            this.viewModel.inputs.pledgeToolbarNavigationClicked()
         }
 
         pledge_toolbar.setOnMenuItemClickListener {

@@ -38,9 +38,6 @@ interface ProjectViewModel {
         /** Call when the cancel pledge option is clicked.  */
         fun cancelPledgeClicked()
 
-        /** Call when horizontal rewards sheet should collapse. */
-        fun collapsePledgeSheet()
-
         /** Call when the comments text view is clicked.  */
         fun commentsTextViewClicked()
 
@@ -80,6 +77,9 @@ interface ProjectViewModel {
         /** Call when the pledge has been successfully updated. */
         fun pledgeSuccessfullyUpdated()
 
+        /** Call when the user clicks the navigation icon of the pledge toolbar. */
+        fun pledgeToolbarNavigationClicked()
+
         /** Call when the reload container is clicked.  */
         fun reloadProjectContainerClicked()
 
@@ -112,6 +112,9 @@ interface ProjectViewModel {
         /** Emits when rewards sheet should expand and if it should animate. */
         fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>>
 
+        /** Emits when we should go back in the navigation hierarchy. */
+        fun goBack(): Observable<Void>
+
         /** Emits a drawable id that corresponds to whether the project is saved. */
         fun heartDrawableId(): Observable<Int>
 
@@ -121,11 +124,17 @@ interface ProjectViewModel {
         /** Emits a menu for managing your pledge or null if there's no menu. */
         fun managePledgeMenu(): Observable<Int?>
 
+        /** Emits a boolean that determines if the pledge action button container should be visible. */
+        fun pledgeActionButtonContainerIsGone(): Observable<Boolean>
+
         /** Emits a boolean that determines if the pledge container should be visible. */
         fun pledgeContainerIsGone(): Observable<Boolean>
 
-        /** Emits a boolean that determines if the pledge action button container should be visible. */
-        fun pledgeActionButtonContainerIsGone(): Observable<Boolean>
+        /** Emits the proper string resource ID for the pledge toolbar navigation icon. */
+        fun pledgeToolbarNavigationIcon(): Observable<Int>
+
+        /** Emits the proper string resource ID for the pledge toolbar title. */
+        fun pledgeToolbarTitle(): Observable<Int>
 
         /** Emits the url of a prelaunch activated project to open in the browser. */
         fun prelaunchUrl(): Observable<String>
@@ -151,9 +160,6 @@ interface ProjectViewModel {
 
         /** Emits the proper string resource ID for the reward button. */
         fun rewardsButtonText(): Observable<Int>
-
-        /** Emits the proper string resource ID for the rewards toolbar. */
-        fun rewardsToolbarTitle(): Observable<Int>
 
         /** Emits a boolean that determines if the scrim for secondary pledging actions should be visible. */
         fun scrimIsVisible(): Observable<Boolean>
@@ -231,7 +237,6 @@ interface ProjectViewModel {
         private val backProjectButtonClicked = PublishSubject.create<Void>()
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val cancelPledgeClicked = PublishSubject.create<Void>()
-        private val collapsePledgeSheet = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
@@ -245,6 +250,7 @@ interface ProjectViewModel {
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCreated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
+        private val pledgeToolbarNavigationClicked = PublishSubject.create<Void>()
         private val reloadProjectContainerClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatePaymentClicked = PublishSubject.create<Void>()
@@ -256,20 +262,22 @@ interface ProjectViewModel {
         private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
+        private val goBack = PublishSubject.create<Void>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
         private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeContainerIsGone = BehaviorSubject.create<Boolean>()
-        private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
+        private val pledgeToolbarNavigationIcon = BehaviorSubject.create<Int>()
+        private val pledgeToolbarTitle = BehaviorSubject.create<Int>()
         private val prelaunchUrl = PublishSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val projectAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<Project, Boolean>>()
+        private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
         private val rewardsButtonColor = BehaviorSubject.create<Int>()
         private val rewardsButtonText = BehaviorSubject.create<Int>()
-        private val rewardsToolbarTitle = BehaviorSubject.create<Int>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
@@ -487,10 +495,21 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.expandPledgeSheet)
 
-            this.collapsePledgeSheet
+            val fragmentStackCount = this.fragmentStackCount.startWith(0)
+
+            fragmentStackCount
+                    .compose<Int>(takeWhen(this.pledgeToolbarNavigationClicked))
+                    .filter { it <= 0 }
                     .map { Pair(false, true) }
                     .compose(bindToLifecycle())
                     .subscribe(this.expandPledgeSheet)
+
+            fragmentStackCount
+                    .compose<Int>(takeWhen(this.pledgeToolbarNavigationClicked))
+                    .filter { it > 0 }
+                    .compose(ignoreValues())
+                    .compose(bindToLifecycle())
+                    .subscribe(this.goBack)
 
             Observable.merge(this.pledgeSuccessfullyCancelled, this.pledgeSuccessfullyCreated)
                     .map { Pair(false, false) }
@@ -531,7 +550,7 @@ interface ProjectViewModel {
                     .subscribe(this.updateFragments)
 
             currentProjectWhenFeatureEnabled
-                    .compose<Pair<Project, Int>>(combineLatestPair(this.fragmentStackCount.startWith(0)))
+                    .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
                     .map { managePledgeMenu(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -598,10 +617,17 @@ interface ProjectViewModel {
                     .subscribe { this.rewardsButtonText.onNext(it) }
 
             currentProjectWhenFeatureEnabled
+                    .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
+                    .map { if (it.second <= 0) R.drawable.ic_arrow_down else R.drawable.ic_arrow_back }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeToolbarNavigationIcon)
+
+            currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsToolbarTitle(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.rewardsToolbarTitle)
+                    .subscribe(this.pledgeToolbarTitle)
 
             currentProjectWhenFeatureEnabled
                     .map { ProjectViewUtils.rewardsButtonColor(it) }
@@ -759,10 +785,6 @@ interface ProjectViewModel {
             this.cancelPledgeClicked.onNext(null)
         }
 
-        override fun collapsePledgeSheet() {
-            this.collapsePledgeSheet.onNext(null)
-        }
-
         override fun commentsTextViewClicked() {
             this.commentsTextViewClicked.onNext(null)
         }
@@ -813,6 +835,10 @@ interface ProjectViewModel {
 
         override fun pledgeSuccessfullyUpdated() {
             this.pledgeSuccessfullyUpdated.onNext(null)
+        }
+
+        override fun pledgeToolbarNavigationClicked() {
+            this.pledgeToolbarNavigationClicked.onNext(null)
         }
 
         override fun projectViewHolderBackProjectClicked(viewHolder: ProjectViewHolder) {
@@ -885,6 +911,9 @@ interface ProjectViewModel {
         override fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>> = this.expandPledgeSheet
 
         @NonNull
+        override fun goBack(): Observable<Void> = this.goBack
+
+        @NonNull
         override fun heartDrawableId(): Observable<Int> = this.heartDrawableId
 
         @NonNull
@@ -898,6 +927,12 @@ interface ProjectViewModel {
 
         @NonNull
         override fun pledgeContainerIsGone(): Observable<Boolean> = this.pledgeContainerIsGone
+
+        @NonNull
+        override fun pledgeToolbarNavigationIcon(): Observable<Int> = this.pledgeToolbarNavigationIcon
+
+        @NonNull
+        override fun pledgeToolbarTitle(): Observable<Int> = this.pledgeToolbarTitle
 
         @NonNull
         override fun prelaunchUrl(): Observable<String> = this.prelaunchUrl
@@ -922,9 +957,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
-
-        @NonNull
-        override fun rewardsToolbarTitle(): Observable<Int> = this.rewardsToolbarTitle
 
         @NonNull
         override fun scrimIsVisible(): Observable<Boolean> = this.scrimIsVisible

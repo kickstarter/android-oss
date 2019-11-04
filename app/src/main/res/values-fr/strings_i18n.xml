@@ -241,8 +241,8 @@ contributeurs</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité le &lt;b>%{project_deadline}&lt;/b>.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité de &lt;b>%{total}&lt;/b> le &lt;b>%{project_deadline}&lt;/b>.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité le %{project_deadline}.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si l\'objectif de financement est atteint, vous serez débité de %{total} le %{project_deadline}.</string>
   <string name="If_you_turn_following_off" formatted="false">Si vous désactivez les fonctionnalités de suivi, vous ne pourrez pas vous abonner aux activités des autres et plus personne ne pourra suivre les vôtres. Votre profil sera déconnecté de tous vos abonnés. Cette action ne pourra pas être annulée.</string>
   <string name="If_your_profile_is_private" formatted="false">Si votre profil est privé, seuls votre nom et votre photo seront visibles.</string>
   <string name="If_your_profile_is_public" formatted="false">Si votre profil n\'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.</string>
@@ -547,6 +547,8 @@ n\'ont rien soutenu.</string>
   <string name="Verification_email_sent" formatted="false">Nous venons de vous envoyer un e-mail de vérification. Cliquez sur le lien qu\'il contient pour vérifier votre adresse.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Vidéo désactivée en attente d\'une meilleure connexion Internet</string>
   <string name="View" formatted="false">Afficher</string>
+  <string name="View_dashboard" formatted="false">View dashboard</string>
+  <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">Afficher le projet</string>
   <string name="View_rewards" formatted="false">Afficher les récompenses</string>
   <string name="View_your_pledge" formatted="false">Afficher mon engagement</string>
@@ -579,6 +581,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">Impossible d\'accepter cette carte pour soutenir un projet depuis le pays suivant : %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Vous vous êtes engagé à soutenir le projet &lt;b>%{project_name}&lt;/b>. Ce projet se rapproche tout doucement de son objectif grâce à vous. Parlez-en à votre entourage !</string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}.</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Vous devez vous engager à hauteur de %{reward_minimum} ou plus pour sélectionner cette récompense.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Votre engagement&lt;/b> du %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Engagement sans récompense</string>

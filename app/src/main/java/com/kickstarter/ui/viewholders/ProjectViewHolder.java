@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
@@ -79,6 +80,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.project_action_buttons) @Nullable ViewGroup projectActionButtonsContainer;
+  protected @Bind(R.id.project_launch_date) TextView projectLaunchDateTextView;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
@@ -255,6 +257,16 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(this.projectDisclaimerTextView));
 
+    this.viewModel.outputs.projectLaunchDate()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setProjectLaunchDateString);
+
+    this.viewModel.outputs.projectLaunchDateIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectLaunchDateTextView));
+
     this.viewModel.outputs.projectMetadataViewGroupBackgroundDrawableInt()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -425,6 +437,17 @@ public final class ProjectViewHolder extends KSViewHolder {
       "deadline",
       mediumDateShortTime(goalAndDeadline.second)
     ));
+  }
+
+  private void setProjectLaunchDateString(final @NonNull String launchDate) {
+    final SpannableString launchedDateSpannableString = new SpannableString( this.ksString.format(
+      context().getString(R.string.You_launched_this_project_on_launch_date),
+      "launch_date",
+      launchDate
+    ));
+
+    ViewUtils.addBoldSpan(launchedDateSpannableString, launchDate);
+    this.projectLaunchDateTextView.setText(launchedDateSpannableString);
   }
 
   private void setProjectSocialClickListener() {

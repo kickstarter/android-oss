@@ -241,8 +241,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el &lt;b>%{project_deadline}&lt;/b>.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el monto de &lt;b>%{total}&lt;/b> el &lt;b>%{project_deadline}&lt;/b>.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el %{project_deadline}.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Si el proyecto alcanza su meta de financiamiento, se te cobrará el monto de %{total} el %{project_deadline}.</string>
   <string name="If_you_turn_following_off" formatted="false">Si desactivas el seguimiento, no podrás seguir a nadie y nadie podrá seguirte. Tu perfil se desconectará de todos tus seguidores. Esto no se puede deshacer.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
 </string>
@@ -547,6 +547,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="Verification_email_sent" formatted="false">Te acabamos de enviar un correo electrónico de verificación. Haz clic en el enlace incluido y se verificará tu dirección.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video desactivado hasta se reestablezca la conexión de internet</string>
   <string name="View" formatted="false">Ver</string>
+  <string name="View_dashboard" formatted="false">View dashboard</string>
+  <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">Ver proyecto</string>
   <string name="View_rewards" formatted="false">Ver recompensas</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
@@ -579,6 +581,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">No puedes usar esta tarjeta de crédito para patrocinar un proyecto de %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!</string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}.</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Debes contribuir, al menos, %{reward_minimum} para obtener esta recompensa.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Contribuiste sin recompensa</string>

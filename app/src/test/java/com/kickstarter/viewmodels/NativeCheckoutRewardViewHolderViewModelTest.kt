@@ -5,10 +5,8 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.LocationFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
@@ -115,89 +113,181 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testButtonUIOutputs() {
+    fun testButtonUIOutputs_whenProjectIsLiveAndUnbacked_availableReward() {
         setUpEnvironment(environment())
-        val project = ProjectFactory.project()
-        val reward = RewardFactory.reward()
-        val noReward = RewardFactory.noReward()
 
-        //Live project, available reward, not backed
-        this.vm.inputs.projectAndReward(project, reward)
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValue(R.string.Select)
+    }
 
-        //Live project, no reward, not backed
-        this.vm.inputs.projectAndReward(project, noReward)
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndUnbacked_noReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.noReward())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.Select)
+    }
 
-        //Live project, unavailable limited reward, not backed
-        this.vm.inputs.projectAndReward(project, RewardFactory.limitReached())
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndUnbacked_soldOutReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.limitReached())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValue(R.string.No_longer_available)
+    }
 
-        //Live project, unavailable expired reward, not backed
-        this.vm.inputs.projectAndReward(project, RewardFactory.ended())
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndUnbacked_expiredReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.ended())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
+    }
 
-        //Live backed project, currently backed reward
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_backedReward() {
+        setUpEnvironment(environment())
+
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.projectAndReward(backedLiveProject, backedLiveProject.backing()?.reward()?: RewardFactory.reward())
-        this.buttonIsGone.assertValues(false)
+        this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.Selected)
+    }
 
-        //Live backed project, not backed available reward
-        this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.reward())
-        this.buttonIsGone.assertValues(false)
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_availableReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.backedProject(), RewardFactory.reward())
+        this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.Select)
+    }
 
-        //Live backed project, not backed unavailable limited reward
-        this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.limitReached())
-        this.buttonIsGone.assertValues(false)
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_soldOutReward() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.backedProject(), RewardFactory.limitReached())
+        this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValue(R.string.No_longer_available)
+    }
 
-        //Live backed project, not backed unavailable expired reward
-        this.vm.inputs.projectAndReward(backedLiveProject, RewardFactory.limitReached())
-        this.buttonIsGone.assertValues(false)
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_soldOutReward_andUnbacked() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.projectAndReward(ProjectFactory.backedProject(), RewardFactory.ended())
+        this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
+    }
 
-        //Ended project, available reward, not backed
+    @Test
+    fun testButtonUIOutputs_whenProjectIsEndedAndUnbacked_availableReward() {
+        setUpEnvironment(environment())
+
         val successfulProject = ProjectFactory.successfulProject()
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
-        this.vm.inputs.projectAndReward(successfulProject, reward)
-        this.buttonIsGone.assertValues(false, true)
-        this.buttonCTA.assertNoValues()
+        this.vm.inputs.projectAndReward(successfulProject, RewardFactory.reward())
+        this.buttonIsGone.assertValue(true)
+        this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
+    }
 
-        //Ended backed project, not pledged
+    @Test
+    fun testButtonUIOutputs_whenProjectIsEndedAndBacked_availableReward() {
+        setUpEnvironment(environment())
+
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
-        this.vm.inputs.projectAndReward(backedSuccessfulProject, reward)
-        this.buttonIsGone.assertValues(false, true)
-        this.buttonCTA.assertNoValues()
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, RewardFactory.reward())
+        this.buttonIsGone.assertValue(true)
+        this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
+    }
 
-        //Ended backed project, no reward, not pledged
-        this.vm.inputs.projectAndReward(backedSuccessfulProject, noReward)
-        this.buttonIsGone.assertValues(false, true)
-        this.buttonCTA.assertNoValues()
+    @Test
+    fun testButtonUIOutputs_whenProjectIsEndedAndBacked_noReward() {
+        setUpEnvironment(environment())
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
 
-        //Ended backed project, pledged reward
-        this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()?: reward)
-        this.buttonIsGone.assertValues(false, true, false)
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, RewardFactory.noReward())
+        this.buttonIsGone.assertValue(true)
+        this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsEndedAndBacked_backedReward() {
+        setUpEnvironment(environment())
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        this.vm.inputs.projectAndReward(backedSuccessfulProject, backedSuccessfulProject.backing()?.reward()?: RewardFactory.reward())
+        this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValue(R.string.Selected)
+    }
 
+    @Test
+    fun testButtonUIOutputs_whenProjectIsEndedAndBacked_backedNoReward() {
+        setUpEnvironment(environment())
         val backedNoRewardSuccessfulProject = ProjectFactory.backedProjectWithNoReward()
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
-        //Ended backed project, no reward, pledged no reward
-        this.vm.inputs.projectAndReward(backedNoRewardSuccessfulProject, noReward)
-        this.buttonIsGone.assertValues(false, true, false)
+
+        this.vm.inputs.projectAndReward(backedNoRewardSuccessfulProject, RewardFactory.noReward())
+        this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValue(R.string.Selected)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLive_availableReward_currentUserIsCreator() {
+        val creator = UserFactory.creator()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(creator))
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.reward())
+        this.buttonIsGone.assertValue(true)
+        this.buttonCTA.assertValue(R.string.Select)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLive_noReward_currentUserIsCreator() {
+        val creator = UserFactory.creator()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(creator))
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.projectAndReward(project, RewardFactory.noReward())
+        this.buttonIsGone.assertValue(true)
+        this.buttonCTA.assertValue(R.string.Select)
     }
 
     @Test

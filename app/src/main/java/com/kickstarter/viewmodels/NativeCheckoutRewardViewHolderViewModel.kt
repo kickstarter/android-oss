@@ -5,6 +5,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -13,6 +14,7 @@ import com.kickstarter.libs.utils.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
+import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import org.joda.time.DateTime
 import rx.Observable
@@ -111,6 +113,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<NativeCheckoutRewardViewHolder>(environment), Inputs, Outputs {
+        private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
@@ -156,9 +159,16 @@ interface NativeCheckoutRewardViewHolderViewModel {
             val reward = this.projectAndReward
                     .map { it.second }
 
+            val project = this.projectAndReward
+                    .map { it.first }
+
+            val userCreatedProject = this.currentUser.observable()
+                    .compose<Pair<User?, Project>>(combineLatestPair(project))
+                    .map { it.first?.id() == it.second.creator().id() }
+
             this.projectAndReward
-                    .map { BackingUtils.isBacked(it.first, it.second) || it.first.isLive }
-                    .map { BooleanUtils.negate(it) }
+                    .compose<Pair<Pair<Project, Reward>, Boolean>>(combineLatestPair(userCreatedProject))
+                    .map { buttonIsGone(it.first.first, it.first.second, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonIsGone)
@@ -328,6 +338,14 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDelivery)
 
+        }
+
+        private fun buttonIsGone(project: Project, reward: Reward, userCreatedProject: Boolean): Boolean {
+            return when {
+                userCreatedProject -> true
+                BackingUtils.isBacked(project, reward) || project.isLive -> false
+                else -> true
+            }
         }
 
         private fun expirationDateIsGone(project: Project, reward: Reward): Boolean {

@@ -588,7 +588,6 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.totalAndDeadline)
 
             this.totalAndDeadline
-                    .take(1)
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAndDeadlineIsVisible)

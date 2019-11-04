@@ -189,6 +189,18 @@
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/Custom" />
+
+      <include layout="@layout/horizontal_line_1dp_view" />
+
+      <Button
+        android:id="@+id/crash_button"
+        style="@style/Button"
+        app:backgroundTint="@color/ksr_red_400"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/Force_a_crash" />
+
     </LinearLayout>
 
   </ScrollView>

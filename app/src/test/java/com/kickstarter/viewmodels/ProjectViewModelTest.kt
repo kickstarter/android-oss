@@ -130,6 +130,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, false), Pair(refreshedProject, false))
         this.reloadProjectContainerIsGone.assertNoValues()
         this.reloadProgressBarIsGone.assertNoValues()
+        this.updateFragments.assertNoValues()
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
@@ -160,6 +161,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 Pair(projectWithNullRewards, false), Pair(projectWithNullRewards, false))
         this.reloadProjectContainerIsGone.assertNoValues()
         this.reloadProgressBarIsGone.assertNoValues()
+        this.updateFragments.assertNoValues()
         this.koalaTest.assertNoValues()
     }
 
@@ -184,6 +186,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValue(true)
         this.reloadProgressBarIsGone.assertValues(false, true)
+        this.updateFragments.assertValue(refreshedProject)
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
@@ -220,6 +223,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 Pair(initialProject, true), Pair(initialProject, true))
         this.reloadProjectContainerIsGone.assertValue(false)
         this.reloadProgressBarIsGone.assertValues(false, true)
+        this.updateFragments.assertNoValues()
 
         error = false
         this.vm.inputs.reloadProjectContainerClicked()
@@ -234,6 +238,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
+        this.updateFragments.assertValue(refreshedProject)
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
@@ -264,6 +269,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(project, false))
         this.reloadProjectContainerIsGone.assertNoValues()
         this.reloadProgressBarIsGone.assertNoValues()
+        this.updateFragments.assertNoValues()
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
@@ -290,6 +296,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertNoValues()
         this.reloadProjectContainerIsGone.assertNoValues()
         this.reloadProgressBarIsGone.assertNoValues()
+        this.updateFragments.assertNoValues()
         this.koalaTest.assertNoValues()
     }
 
@@ -317,6 +324,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectActionButtonContainerIsGone.assertValue(true)
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(project, true))
         this.reloadProgressBarIsGone.assertValues(false, true)
+        this.updateFragments.assertValue(project)
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
@@ -349,6 +357,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertNoValues()
         this.reloadProgressBarIsGone.assertValues(false, true)
         this.reloadProjectContainerIsGone.assertValue(false)
+        this.updateFragments.assertNoValues()
 
         error = false
         this.vm.inputs.reloadProjectContainerClicked()
@@ -361,6 +370,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(refreshedProject, true))
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
+        this.updateFragments.assertValue(refreshedProject)
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
     }
 
@@ -391,6 +401,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectActionButtonContainerIsGone.assertValues(false)
         this.projectAndNativeCheckoutEnabled.assertNoValues()
         this.reloadProgressBarIsGone.assertNoValues()
+        this.reloadProjectContainerIsGone.assertNoValues()
+        this.updateFragments.assertNoValues()
         this.koalaTest.assertNoValues()
     }
 
@@ -419,6 +431,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectActionButtonContainerIsGone.assertValue(true)
         this.projectAndNativeCheckoutEnabled.assertNoValues()
         this.reloadProgressBarIsGone.assertValues(false, true)
+        this.reloadProjectContainerIsGone.assertNoValues()
+        this.updateFragments.assertNoValues()
         this.koalaTest.assertNoValues()
     }
 
@@ -1098,10 +1112,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
         this.projectAndNativeCheckoutEnabled.assertValueCount(2)
+        this.showUpdatePledgeSuccess.assertNoValues()
+        this.updateFragments.assertValueCount(2)
 
         this.vm.inputs.pledgePaymentSuccessfullyUpdated()
-        this.showUpdatePledgeSuccess.assertValueCount(1)
         this.projectAndNativeCheckoutEnabled.assertValueCount(3)
+        this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.updateFragments.assertValueCount(3)
     }
 
     @Test
@@ -1112,10 +1129,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
         this.projectAndNativeCheckoutEnabled.assertValueCount(2)
+        this.showUpdatePledgeSuccess.assertNoValues()
+        this.updateFragments.assertValueCount(2)
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
-        this.showUpdatePledgeSuccess.assertValueCount(1)
         this.projectAndNativeCheckoutEnabled.assertValueCount(3)
+        this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.updateFragments.assertValueCount(3)
     }
 
     @Test

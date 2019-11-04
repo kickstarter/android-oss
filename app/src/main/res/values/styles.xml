@@ -2,7 +2,7 @@
   Naming guidelines: https://github.com/kickstarter/styleguide/tree/master/android#style-inheritance
   Other resources: https://kickstarter.wiki/pages/android-links.html#styles
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" >
 
   <style name="None">
   </style>
@@ -775,7 +775,7 @@
   </style>
 
   <!-- Stripe 3DS2 override -->
-  <style xmlns:tools="http://schemas.android.com/tools" name="Stripe3DS2Theme" parent="StripeDefault3DS2Theme" tools:override="true">
+  <style name="Stripe3DS2Theme" parent="StripeDefault3DS2Theme" tools:override="true">
     <item name="colorPrimary">@color/primary</item>
     <item name="colorPrimaryDark">@color/primary_dark</item>
     <item name="colorAccent">@color/primary</item>
@@ -790,5 +790,7 @@
     <item name="android:statusBarColor">@color/status_bar</item>
     <item name="android:windowLightStatusBar">true</item>
   </style>
+
+  <style name="Stripe3DS2Button" parent="Button" tools:override="true"/>
 
 </resources>

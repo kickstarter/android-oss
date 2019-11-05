@@ -553,6 +553,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="View_rewards" formatted="false">Ver recompensas</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
+  <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">No pudimos procesar tu contribución.</string>

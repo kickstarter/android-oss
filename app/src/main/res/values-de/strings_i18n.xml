@@ -552,6 +552,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="View_rewards" formatted="false">Belohnungen ansehen</string>
   <string name="View_your_pledge" formatted="false">Deinen Finanzierungsbeitrag ansehen</string>
   <string name="View_your_reward" formatted="false">Belohnung ansehen</string>
+  <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">Live ansehen</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">Dein Finanzierungsbeitrag konnte nicht bearbeitet werden.</string>

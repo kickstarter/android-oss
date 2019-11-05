@@ -553,6 +553,7 @@ n\'ont rien soutenu.</string>
   <string name="View_rewards" formatted="false">Afficher les récompenses</string>
   <string name="View_your_pledge" formatted="false">Afficher mon engagement</string>
   <string name="View_your_reward" formatted="false">Afficher ma récompense</string>
+  <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">Regarder en direct</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Pas de résultats pour « %{search_term} ».</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">Impossible de traiter votre engagement.</string>

@@ -556,6 +556,7 @@ catch your eye?</string>
   <string name="View_rewards" formatted="false">View rewards</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
+  <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">Watch live</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for “%{search_term}”.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">We couldn\'t process your pledge.</string>

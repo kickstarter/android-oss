@@ -551,6 +551,7 @@
   <string name="View_rewards" formatted="false">リワードを見る</string>
   <string name="View_your_pledge" formatted="false">プレッジをみる</string>
   <string name="View_your_reward" formatted="false">リワードをみる</string>
+  <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">プレッジを処理できませんでした。</string>

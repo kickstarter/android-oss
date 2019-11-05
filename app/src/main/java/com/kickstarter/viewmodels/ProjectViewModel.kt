@@ -156,10 +156,10 @@ interface ProjectViewModel {
         fun revealRewardsFragment(): Observable<Void>
 
         /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
-        fun rewardsButtonColor(): Observable<Int>
+        fun pledgeActionButtonColor(): Observable<Int>
 
         /** Emits the proper string resource ID for the reward button. */
-        fun rewardsButtonText(): Observable<Int>
+        fun pledgeActionButtonText(): Observable<Int>
 
         /** Emits a boolean that determines if the scrim for secondary pledging actions should be visible. */
         fun scrimIsVisible(): Observable<Boolean>
@@ -265,7 +265,9 @@ interface ProjectViewModel {
         private val goBack = PublishSubject.create<Void>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
         private val managePledgeMenu = BehaviorSubject.create<Int?>()
+        private val pledgeActionButtonColor = BehaviorSubject.create<Int>()
         private val pledgeActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
+        private val pledgeActionButtonText = BehaviorSubject.create<Int>()
         private val pledgeContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeToolbarNavigationIcon = BehaviorSubject.create<Int>()
         private val pledgeToolbarTitle = BehaviorSubject.create<Int>()
@@ -276,8 +278,6 @@ interface ProjectViewModel {
         private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
-        private val rewardsButtonColor = BehaviorSubject.create<Int>()
-        private val rewardsButtonText = BehaviorSubject.create<Int>()
         private val scrimIsVisible = BehaviorSubject.create<Boolean>()
         private val setInitialRewardPosition = BehaviorSubject.create<Void>()
         private val showCancelPledgeFragment = PublishSubject.create<Project>()
@@ -610,11 +610,14 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetails)
 
-            currentProjectWhenFeatureEnabled
-                    .map { ProjectViewUtils.rewardsButtonText(it) }
+            val currentProjectAndUser = currentProjectWhenFeatureEnabled
+                    .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
+
+            currentProjectAndUser
+                    .map { ProjectViewUtils.pledgeActionButtonText(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe { this.rewardsButtonText.onNext(it) }
+                    .subscribe(this.pledgeActionButtonText)
 
             currentProjectWhenFeatureEnabled
                     .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
@@ -623,17 +626,17 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeToolbarNavigationIcon)
 
-            currentProjectWhenFeatureEnabled
-                    .map { ProjectViewUtils.rewardsToolbarTitle(it) }
+            currentProjectAndUser
+                    .map { ProjectViewUtils.pledgeToolbarTitle(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeToolbarTitle)
 
-            currentProjectWhenFeatureEnabled
-                    .map { ProjectViewUtils.rewardsButtonColor(it) }
+            currentProjectAndUser
+                    .map { ProjectViewUtils.pledgeActionButtonColor(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.rewardsButtonColor)
+                    .subscribe(this.pledgeActionButtonColor)
 
             this.pledgePaymentSuccessfullyUpdated
                     .compose(bindToLifecycle())
@@ -673,7 +676,7 @@ interface ProjectViewModel {
                     .subscribe(this.heartDrawableId)
 
             //Tracking
-            this.rewardsButtonText
+            this.pledgeActionButtonText
                     .map { eventName(it) }
                     .compose<Pair<String, Project>>(combineLatestPair(currentProjectWhenFeatureEnabled))
                     .compose<Pair<String, Project>>(takeWhen(this.nativeProjectActionButtonClicked))
@@ -923,7 +926,13 @@ interface ProjectViewModel {
         override fun managePledgeMenu(): Observable<Int?> = this.managePledgeMenu
 
         @NonNull
+        override fun pledgeActionButtonColor(): Observable<Int> = this.pledgeActionButtonColor
+
+        @NonNull
         override fun pledgeActionButtonContainerIsGone(): Observable<Boolean> = this.pledgeActionButtonContainerIsGone
+
+        @NonNull
+        override fun pledgeActionButtonText(): Observable<Int> = this.pledgeActionButtonText
 
         @NonNull
         override fun pledgeContainerIsGone(): Observable<Boolean> = this.pledgeContainerIsGone
@@ -951,12 +960,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun revealRewardsFragment(): Observable<Void> = this.revealRewardsFragment
-
-        @NonNull
-        override fun rewardsButtonColor(): Observable<Int> = this.rewardsButtonColor
-
-        @NonNull
-        override fun rewardsButtonText(): Observable<Int> = this.rewardsButtonText
 
         @NonNull
         override fun scrimIsVisible(): Observable<Boolean> = this.scrimIsVisible

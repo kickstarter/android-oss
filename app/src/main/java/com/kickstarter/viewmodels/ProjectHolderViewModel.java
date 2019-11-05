@@ -278,9 +278,8 @@ public interface ProjectHolderViewModel {
         .map(DateTimeUtils::longDate);
 
       this.projectLaunchDateIsGone = this.project
-        .map(Project::creator)
         .compose(combineLatestPair(this.currentUser.observable()))
-        .map(creatorAndCurrentUser -> creatorAndCurrentUser.second == null || creatorAndCurrentUser.first.id() != creatorAndCurrentUser.second.id());
+        .map(this::projectLaunchDateIsGone);
 
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
         .filter(ProjectUtils.Metadata.BACKING::equals)
@@ -337,6 +336,19 @@ public interface ProjectHolderViewModel {
         .map(Project::updatesCount)
         .filter(ObjectUtils::isNotNull)
         .map(NumberUtils::format);
+    }
+
+    private boolean projectLaunchDateIsGone(final @NonNull Pair<Project, User> projectAndCurrentUser) {
+      final Project project = projectAndCurrentUser.first;
+      final User currentUser = projectAndCurrentUser.second;
+
+      if (ObjectUtils.isNull(project.launchedAt())) {
+        return true;
+      } else if (ObjectUtils.isNull(currentUser)) {
+        return true;
+      } else {
+        return project.creator().id() != currentUser.id();
+      }
     }
 
     private final PublishSubject<Project> project = PublishSubject.create();

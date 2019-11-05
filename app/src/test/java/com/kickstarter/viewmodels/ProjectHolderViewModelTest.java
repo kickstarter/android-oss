@@ -8,6 +8,7 @@ import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -59,6 +60,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<DateTime> projectDisclaimerGoalReachedDateTime = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectDisclaimerTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> projectLaunchDate = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectLaunchDateIsGone = new TestSubscriber<>();
   private final TestSubscriber<Integer> projectMetadataViewGroupBackgroundDrawableInt = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectMetadataViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
@@ -103,6 +106,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe(this.projectDisclaimerGoalReachedDateTime);
     this.vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(this.projectDisclaimerGoalNotReachedString);
     this.vm.outputs.projectDisclaimerTextViewIsGone().subscribe(this.projectDisclaimerTextViewIsGone);
+    this.vm.outputs.projectLaunchDate().subscribe(this.projectLaunchDate);
+    this.vm.outputs.projectLaunchDateIsGone().subscribe(this.projectLaunchDateIsGone);
     this.vm.outputs.projectMetadataViewGroupBackgroundDrawableInt().subscribe(this.projectMetadataViewGroupBackgroundDrawableInt);
     this.vm.outputs.projectMetadataViewGroupIsGone().subscribe(this.projectMetadataViewGroupIsGone);
     this.vm.outputs.projectNameTextViewText().subscribe(this.projectNameTextViewText);
@@ -355,27 +360,65 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectLaunchDate() {
-    final Project project = ProjectFactory.successfulProject();
+  public void testProjectLaunchDate_whenLaunchedAtIsNull() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .launchedAt(null)
+      .build();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(project);
 
+    this.projectLaunchDate.assertNoValues();
+  }
+
+  @Test
+  public void testProjectLaunchDate_whenLaunchedAtIsNotNull() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .launchedAt(DateTime.parse("2019-11-05T14:21:42Z"))
+      .build();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(project);
+
+    this.projectLaunchDate.assertValue("November 5, 2019");
   }
 
   @Test
   public void testProjectLaunchDateIsGone_whenCurrentUserIsProjectCreator() {
-    final Project project = ProjectFactory.successfulProject();
-    setUpEnvironment(environment());
+    final User creator = UserFactory.creator();
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .creator(creator)
+      .build();
+    final Environment environment = environment()
+      .toBuilder()
+      .currentUser(new MockCurrentUser(creator))
+      .build();
+    setUpEnvironment(environment);
     this.vm.inputs.configureWith(project);
 
+    this.projectLaunchDateIsGone.assertValue(false);
   }
 
   @Test
   public void testProjectLaunchDateIsGone_whenCurrentUserIsNotProjectCreator() {
-    final Project project = ProjectFactory.successfulProject();
+    final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
     this.vm.inputs.configureWith(project);
 
+    this.projectLaunchDateIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testProjectLaunchDateIsGone_whenLaunchedAtIsNull() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .launchedAt(null)
+      .build();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(project);
+
+    this.projectLaunchDateIsGone.assertValue(true);
   }
 
   @Test

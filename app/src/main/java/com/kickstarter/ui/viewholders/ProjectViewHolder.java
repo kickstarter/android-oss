@@ -440,7 +440,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   private void setProjectLaunchDateString(final @NonNull String launchDate) {
-    final SpannableString launchedDateSpannableString = new SpannableString( this.ksString.format(
+    final SpannableString launchedDateSpannableString = new SpannableString(this.ksString.format(
       context().getString(R.string.You_launched_this_project_on_launch_date),
       "launch_date",
       launchDate

@@ -124,8 +124,14 @@ interface ProjectViewModel {
         /** Emits a menu for managing your pledge or null if there's no menu. */
         fun managePledgeMenu(): Observable<Int?>
 
+        /** Emits the color resource ID for the pledge action button. */
+        fun pledgeActionButtonColor(): Observable<Int>
+
         /** Emits a boolean that determines if the pledge action button container should be visible. */
         fun pledgeActionButtonContainerIsGone(): Observable<Boolean>
+
+        /** Emits the string resource ID for the pledge action button. */
+        fun pledgeActionButtonText(): Observable<Int>
 
         /** Emits a boolean that determines if the pledge container should be visible. */
         fun pledgeContainerIsGone(): Observable<Boolean>
@@ -154,12 +160,6 @@ interface ProjectViewModel {
 
         /** Emits when we should reveal the [com.kickstarter.ui.fragments.RewardsFragment] with an animation. */
         fun revealRewardsFragment(): Observable<Void>
-
-        /** Emits the color resource ID for the reward button based on (View, Manage, or Back this project). */
-        fun pledgeActionButtonColor(): Observable<Int>
-
-        /** Emits the proper string resource ID for the reward button. */
-        fun pledgeActionButtonText(): Observable<Int>
 
         /** Emits a boolean that determines if the scrim for secondary pledging actions should be visible. */
         fun scrimIsVisible(): Observable<Boolean>

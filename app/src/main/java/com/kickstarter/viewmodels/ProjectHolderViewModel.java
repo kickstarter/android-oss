@@ -279,7 +279,7 @@ public interface ProjectHolderViewModel {
 
       this.projectLaunchDateIsGone = this.project
         .compose(combineLatestPair(this.currentUser.observable()))
-        .map(this::projectLaunchDateIsGone);
+        .map(projectAndCurrentUser -> projectLaunchDateIsGone(projectAndCurrentUser));
 
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
         .filter(ProjectUtils.Metadata.BACKING::equals)

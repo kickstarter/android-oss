@@ -61,7 +61,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment().toBuilder().currentUser(currentUser).build());
-    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
+    this.vm.inputs.configureWith(Pair.create(project, projectStatsEnvelope));
 
     // Messages button is gone if current user is not the project creator (e.g. a collaborator).
     this.messagesButtonIsGone.assertValue(true);
@@ -73,7 +73,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final CurrentUserType collaborator = new MockCurrentUser(collaboratorWith1Project);
 
     setUpEnvironment(environment().toBuilder().currentUser(collaborator).build());
-    this.vm.inputs.projectAndStats(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+    this.vm.inputs.configureWith(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
 
     this.otherProjectsButtonIsGone.assertValue(true);
   }
@@ -83,7 +83,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final CurrentUserType collaborator = new MockCurrentUser(UserFactory.collaborator());
 
     setUpEnvironment(environment().toBuilder().currentUser(collaborator).build());
-    this.vm.inputs.projectAndStats(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+    this.vm.inputs.configureWith(Pair.create(ProjectFactory.project(), ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
 
     this.otherProjectsButtonIsGone.assertValue(false);
   }
@@ -94,7 +94,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
+    this.vm.inputs.configureWith(Pair.create(project, projectStatsEnvelope));
     this.projectBackersCountText.assertValue("10");
   }
 
@@ -104,7 +104,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
+    this.vm.inputs.configureWith(Pair.create(project, projectStatsEnvelope));
     this.projectNameTextViewText.assertValue("somebody once told me");
   }
 
@@ -114,7 +114,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final Project project = ProjectFactory.project();
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
-    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
+    this.vm.inputs.configureWith(Pair.create(project, projectStatsEnvelope));
     final String percentageFundedOutput = NumberUtils.flooredPercentage(project.percentageFunded());
     this.percentageFunded.assertValues(percentageFundedOutput);
     final int percentageFundedProgressOutput = ProgressBarUtils.progress(project.percentageFunded());
@@ -125,7 +125,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_LiveProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_LIVE));
+    this.vm.inputs.configureWith(getProjectAndStats(Project.STATE_LIVE));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -133,7 +133,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_SubmittedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUBMITTED));
+    this.vm.inputs.configureWith(getProjectAndStats(Project.STATE_SUBMITTED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -141,7 +141,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_StartedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_STARTED));
+    this.vm.inputs.configureWith(getProjectAndStats(Project.STATE_STARTED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -149,7 +149,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_SuccessfulProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUCCESSFUL));
+    this.vm.inputs.configureWith(getProjectAndStats(Project.STATE_SUCCESSFUL));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -157,7 +157,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_FailedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_FAILED));
+    this.vm.inputs.configureWith(getProjectAndStats(Project.STATE_FAILED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
@@ -165,7 +165,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_CanceledProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_CANCELED));
+    this.vm.inputs.configureWith(getProjectAndStats(Project.STATE_CANCELED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
@@ -173,7 +173,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_SuspendedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.projectAndStats(getProjectAndStats(Project.STATE_SUSPENDED));
+    this.vm.inputs.configureWith(getProjectAndStats(Project.STATE_SUSPENDED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
@@ -185,7 +185,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
 
     setUpEnvironment(environment().toBuilder().currentUser(currentUser).build());
 
-    this.vm.inputs.projectAndStats(Pair.create(project, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+    this.vm.inputs.configureWith(Pair.create(project, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
     this.vm.inputs.messagesButtonClicked();
 
     // Messages button is shown to project creator, messages activity starts.
@@ -199,7 +199,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     setUpEnvironment(environment());
-    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
+    this.vm.inputs.configureWith(Pair.create(project, projectStatsEnvelope));
     this.vm.inputs.projectButtonClicked();
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.dashboard()));
   }
@@ -211,7 +211,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);
 
-    this.vm.inputs.projectAndStats(Pair.create(project, projectStatsEnvelope));
+    this.vm.inputs.configureWith(Pair.create(project, projectStatsEnvelope));
     this.timeRemainingText.assertValue(NumberUtils.format(deadlineVal));
   }
 

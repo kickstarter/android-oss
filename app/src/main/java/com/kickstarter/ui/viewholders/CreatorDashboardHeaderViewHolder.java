@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 
 import android.content.Intent;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -16,10 +15,10 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
 import androidx.annotation.NonNull;
@@ -139,9 +138,9 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-    final Pair<Project, ProjectStatsEnvelope> projectAndProjectStats = requireNonNull((Pair<Project, ProjectStatsEnvelope>) data);
-    this.viewModel.inputs.projectAndStats(projectAndProjectStats);
+  public void bindData(final @Nullable Object data) {
+    final ProjectDashboardData projectDashboardData = requireNonNull((ProjectDashboardData) data);
+    this.viewModel.inputs.configureWith(projectDashboardData);
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {

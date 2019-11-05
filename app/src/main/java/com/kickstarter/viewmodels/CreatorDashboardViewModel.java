@@ -4,12 +4,14 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
@@ -33,16 +35,17 @@ public interface CreatorDashboardViewModel {
   }
 
   interface Outputs {
-    /** Emits current project and associated stats object. */
+    /** Emits when the bottom sheet should be expanded. */
+    Observable<Void> openBottomSheet();
+
+    /** Emits a boolean determining if the progress bar should be visible. */
+    Observable<Boolean> progressBarIsVisible();
+
+    /** Emits the current project and associated stats object. */
     Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
 
     /** Emits when project dropdown should be shown. */
     Observable<List<Project>> projectsForBottomSheet();
-
-    /** Emits when progress bar should be visible (during network calls). */
-    Observable<Boolean> progressBarIsVisible();
-
-    Observable<Void> openBottomSheet();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardActivity> implements Inputs, Outputs {
@@ -52,10 +55,14 @@ public interface CreatorDashboardViewModel {
       super(environment);
       this.client = environment.apiClient();
 
-      final Observable<Notification<ProjectsEnvelope>> projectsNotification =
-        this.client.fetchProjects(true)
+      final Observable<Boolean> intentHasProjectExtra = intent()
+        .map(intent -> intent.hasExtra(IntentKey.PROJECT));
+
+      final Observable<Notification<ProjectsEnvelope>> projectsNotification = intentHasProjectExtra
+        .filter(BooleanUtils::isFalse)
+        .switchMap(i -> this.client.fetchProjects(true)
           .materialize()
-          .share();
+          .share());
 
       final Observable<ProjectsEnvelope> projectsEnvelope = projectsNotification
         .compose(values());
@@ -66,8 +73,13 @@ public interface CreatorDashboardViewModel {
       final Observable<Project> firstProject = projects
         .map(ListUtils::first);
 
+      final Observable<Project> intentProject = intent()
+        .map(intent -> intent.getParcelableExtra(IntentKey.PROJECT))
+        .filter(ObjectUtils::isNotNull)
+        .ofType(Project.class);
+
       final Observable<Project> currentProject = Observable
-        .merge(firstProject, this.projectSelectionInput)
+        .merge(firstProject, this.projectSelectionInput, intentProject)
         .filter(ObjectUtils::isNotNull);
 
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject

@@ -10,12 +10,11 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import androidx.annotation.NonNull;
@@ -28,11 +27,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface CreatorDashboardHeaderHolderViewModel {
 
   interface Inputs {
+    /** Call to configure the view model with ProjectDashboardData data. */
+    void configureWith(ProjectDashboardData projectDashboardData);
+
     /** Call when the messages button is clicked. */
     void messagesButtonClicked();
-
-    /** Call to configure the view model with Project and Stats. */
-    void projectAndStats(Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope);
 
     /** Call when the project button is clicked. */
     void projectButtonClicked();
@@ -89,8 +88,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .map(count -> count <= 1)
         .compose(bindToLifecycle());
 
-      this.currentProject = this.projectAndStats
-        .map(PairUtils::first);
+      this.currentProject = this.projectDashboardHeader
+        .map(ProjectDashboardData::getProject);
 
       this.messagesButtonIsGone = this.currentProject
         .compose(combineLatestPair(user))
@@ -134,8 +133,8 @@ public interface CreatorDashboardHeaderHolderViewModel {
     public final Outputs outputs = this;
 
     private final PublishSubject<Void> messagesButtonClicked = PublishSubject.create();
-    private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = PublishSubject.create();
     private final PublishSubject<Void> projectButtonClicked = PublishSubject.create();
+    private final PublishSubject<ProjectDashboardData> projectDashboardHeader = PublishSubject.create();
 
     private final Observable<Project> currentProject;
     private final Observable<Boolean> messagesButtonIsGone;
@@ -149,15 +148,16 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
 
+    @Override public void configureWith(final @NonNull ProjectDashboardData projectDashboardData) {
+      this.projectDashboardHeader.onNext(projectDashboardData);
+    }
     @Override public void messagesButtonClicked() {
       this.messagesButtonClicked.onNext(null);
     }
     @Override public void projectButtonClicked() {
       this.projectButtonClicked.onNext(null);
     }
-    @Override public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
-      this.projectAndStats.onNext(projectAndProjectStatsEnvelope);
-    }
+
 
     @Override public @NonNull Observable<Project> currentProject() {
       return this.currentProject;

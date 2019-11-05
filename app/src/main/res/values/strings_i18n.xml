@@ -241,7 +241,7 @@ Please tap to retry.</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">How backers found your project</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">I’d just like to support the project.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on &lt;b>%{project_deadline}&lt;/b>.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged on %{project_deadline}.</string>
   <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">If the project reaches its funding goal, you will be charged %{total} on %{project_deadline}.</string>
   <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.</string>
   <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
@@ -550,10 +550,13 @@ catch your eye?</string>
   <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>
   <string name="View" formatted="false">View</string>
+  <string name="View_dashboard" formatted="false">View dashboard</string>
+  <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">View project</string>
   <string name="View_rewards" formatted="false">View rewards</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
+  <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">Watch live</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for “%{search_term}”.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">We couldn\'t process your pledge.</string>
@@ -582,6 +585,7 @@ Please try again later.</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">You can’t use this credit card to back a project from %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}.</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">You need to pledge at least %{reward_minimum} for this reward.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">You pledged without a reward</string>

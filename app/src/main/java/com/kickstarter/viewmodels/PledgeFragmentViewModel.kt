@@ -588,7 +588,6 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.totalAndDeadline)
 
             this.totalAndDeadline
-                    .take(1)
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAndDeadlineIsVisible)
@@ -620,15 +619,12 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first - it.second }
 
-            val minAndMaxTotal = minimumPledge
-                    .compose<Pair<Double, Double>>(combineLatestPair(currencyMaximum))
+            val minAndMaxPledge = rewardMinimum
+                    .compose<Pair<Double, Double>>(combineLatestPair(pledgeMaximum))
 
-            val totalIsValid = total
-                    .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxTotal))
+            pledgeInput
+                    .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))
                     .map { it.first in it.second.first..it.second.second }
-                    .distinctUntilChanged()
-
-            totalIsValid
                     .map { if (it) R.color.ksr_green_500 else R.color.ksr_red_400 }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -636,7 +632,7 @@ interface PledgeFragmentViewModel {
 
             val pledgeMaximumIsGone = pledgeMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(pledgeInput))
-                    .map { it.first > it.second }
+                    .map { it.first >= it.second }
                     .distinctUntilChanged()
 
             pledgeMaximumIsGone
@@ -730,6 +726,14 @@ interface PledgeFragmentViewModel {
             val shippingOrAmountChanged = shippingRuleUpdated
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(amountUpdated))
                     .map { it.first || it.second }
+                    .distinctUntilChanged()
+
+            val minAndMaxTotal = minimumPledge
+                    .compose<Pair<Double, Double>>(combineLatestPair(currencyMaximum))
+
+            val totalIsValid = total
+                    .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxTotal))
+                    .map { it.first in it.second.first..it.second.second }
                     .distinctUntilChanged()
 
             val validChange = shippingOrAmountChanged

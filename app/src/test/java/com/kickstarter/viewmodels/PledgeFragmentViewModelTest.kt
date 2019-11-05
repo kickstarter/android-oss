@@ -820,7 +820,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingAmount.assertValue("$30")
         this.totalAmount.assertValues("$50", "$70")
         this.totalAndDeadline.assertValues(Pair("$50", "October 23, 2020"), Pair("$70", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
 
         this.vm.inputs.pledgeInput("10")
 
@@ -843,7 +843,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("$50", "$70", "$40")
         this.totalAndDeadline.assertValues(Pair("$50", "October 23, 2020"), Pair("$70", "October 23, 2020"),
                 Pair("$40", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(3)
 
         this.vm.inputs.pledgeInput("10,000")
 
@@ -866,7 +866,30 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("$50", "$70", "$40", "$10,030")
         this.totalAndDeadline.assertValues(Pair("$50", "October 23, 2020"), Pair("$70", "October 23, 2020"),
                 Pair("$40", "October 23, 2020"), Pair("$10,030", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(4)
+
+        this.vm.inputs.pledgeInput("9,970")
+
+        this.continueButtonIsEnabled.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
+        this.additionalPledgeAmount.assertValues("$0", "$20", "$0", "$9,980", "$9,950")
+        this.conversionText.assertNoValues()
+        this.conversionTextViewIsGone.assertValues(true)
+        this.pledgeAmount.assertValues("20", "40", "10", "10,000", "9,970")
+        this.pledgeHint.assertValue("20")
+        this.pledgeMaximum.assertValues("$9,970")
+        this.pledgeMaximumIsGone.assertValues(true, false, true)
+        this.pledgeMinimum.assertValue("$20")
+        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400, R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
+        this.shippingAmount.assertValue("$30")
+        this.totalAmount.assertValues("$50", "$70", "$40", "$10,030", "$10,000")
+        this.totalAndDeadline.assertValues(Pair("$50", "October 23, 2020"), Pair("$70", "October 23, 2020"),
+                Pair("$40", "October 23, 2020"), Pair("$10,030", "October 23, 2020"), Pair("$10,000", "October 23, 2020"))
+        this.totalAndDeadlineIsVisible.assertValueCount(5)
     }
 
     @Test
@@ -896,7 +919,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingAmount.assertValue("$0")
         this.totalAmount.assertValues("$20", "$21")
         this.totalAndDeadline.assertValues(Pair("$20", "October 23, 2020"), Pair("$21", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
@@ -919,7 +942,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("$20", "$21", "$20")
         this.totalAndDeadline.assertValues(Pair("$20", "October 23, 2020"), Pair("$21", "October 23, 2020"),
                 Pair("$20", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(3)
     }
 
     @Test
@@ -949,7 +972,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingAmount.assertValue("$0")
         this.totalAmount.assertValues("$20", "$40")
         this.totalAndDeadline.assertValues(Pair("$20", "October 23, 2020"), Pair("$40", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
 
         this.vm.inputs.pledgeInput("10")
 
@@ -972,7 +995,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("$20", "$40", "$10")
         this.totalAndDeadline.assertValues(Pair("$20", "October 23, 2020"), Pair("$40", "October 23, 2020"),
                 Pair("$10", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(3)
 
         //US max is 10,000
         this.vm.inputs.pledgeInput("10001")
@@ -996,7 +1019,31 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("$20", "$40", "$10", "$10,001")
         this.totalAndDeadline.assertValues(Pair("$20", "October 23, 2020"), Pair("$40", "October 23, 2020"),
                 Pair("$10", "October 23, 2020"), Pair("$10,001", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(4)
+
+        //US max is 10,000
+        this.vm.inputs.pledgeInput("10000")
+
+        this.additionalPledgeAmount.assertValues("$0", "$20", "$0", "$9,981", "$9,980")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
+        this.continueButtonIsEnabled.assertNoValues()
+        this.conversionText.assertNoValues()
+        this.conversionTextViewIsGone.assertValues(true)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeAmount.assertValues("20", "40", "10", "10,001", "10,000")
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeHint.assertValue("20")
+        this.pledgeMaximum.assertValues("$10,000")
+        this.pledgeMaximumIsGone.assertValues(true, false, true)
+        this.pledgeMinimum.assertValue("$20")
+        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400, R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("$")
+        this.shippingAmount.assertValue("$0")
+        this.totalAmount.assertValues("$20", "$40", "$10", "$10,001", "$10,000")
+        this.totalAndDeadline.assertValues(Pair("$20", "October 23, 2020"), Pair("$40", "October 23, 2020"),
+                Pair("$10", "October 23, 2020"), Pair("$10,001", "October 23, 2020"), Pair("$10,000", "October 23, 2020"))
+        this.totalAndDeadlineIsVisible.assertValueCount(5)
     }
 
     @Test
@@ -1034,7 +1081,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.selectedShippingRule.assertValues(defaultRule, selectedRule)
         this.shippingAmount.assertValues("$30", "$40")
         this.totalAmount.assertValues("$50", "$60")
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
     }
 
     @Test
@@ -1069,7 +1116,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingAmount.assertValue("MX$ 30")
         this.totalAmount.assertValues("MX$ 50", "MX$ 60")
         this.totalAndDeadline.assertValues(Pair("MX$ 50", "October 23, 2020"), Pair("MX$ 60", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
@@ -1092,7 +1139,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("MX$ 50", "MX$ 60", "MX$ 50")
         this.totalAndDeadline.assertValues(Pair("MX$ 50", "October 23, 2020"), Pair("MX$ 60", "October 23, 2020"),
                 Pair("MX$ 50", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(3)
     }
 
     @Test
@@ -1127,7 +1174,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingAmount.assertValue("MX$ 30")
         this.totalAmount.assertValues("MX$ 50", "MX$ 70")
         this.totalAndDeadline.assertValues(Pair("MX$ 50", "October 23, 2020"), Pair("MX$ 70", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
 
         this.vm.inputs.pledgeInput("10")
 
@@ -1150,7 +1197,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("MX$ 50", "MX$ 70", "MX$ 40")
         this.totalAndDeadline.assertValues(Pair("MX$ 50", "October 23, 2020"), Pair("MX$ 70", "October 23, 2020"),
                 Pair("MX$ 40", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(3)
 
         //MX max is 200,000
         this.vm.inputs.pledgeInput("200000")
@@ -1174,7 +1221,30 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalAmount.assertValues("MX$ 50", "MX$ 70", "MX$ 40", "MX$ 200,030")
         this.totalAndDeadline.assertValues(Pair("MX$ 50", "October 23, 2020"), Pair("MX$ 70", "October 23, 2020"),
                 Pair("MX$ 40", "October 23, 2020"), Pair("MX$ 200,030", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(4)
+
+        this.vm.inputs.pledgeInput("199,970")
+
+        this.additionalPledgeAmount.assertValues("MX$ 0", "MX$ 20", "MX$ 0", "MX$ 199,980", "MX$ 199,950")
+        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
+        this.continueButtonIsEnabled.assertNoValues()
+        this.conversionText.assertValues("$37.50", "$52.50", "$30.00", "$150,022.50", "$150,000.00")
+        this.conversionTextViewIsGone.assertValues(false)
+        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.increasePledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeAmount.assertValues("20", "40", "10", "200,000", "199,970")
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeHint.assertValue("20")
+        this.pledgeMaximum.assertValues("MX$ 199,970")
+        this.pledgeMaximumIsGone.assertValues(true, false, true)
+        this.pledgeMinimum.assertValue("MX$ 20")
+        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400, R.color.ksr_green_500)
+        this.projectCurrencySymbol.assertValue("MX$")
+        this.shippingAmount.assertValue("MX$ 30")
+        this.totalAmount.assertValues("MX$ 50", "MX$ 70", "MX$ 40", "MX$ 200,030", "MX$ 200,000")
+        this.totalAndDeadline.assertValues(Pair("MX$ 50", "October 23, 2020"), Pair("MX$ 70", "October 23, 2020"),
+                Pair("MX$ 40", "October 23, 2020"), Pair("MX$ 200,030", "October 23, 2020"), Pair("MX$ 200,000", "October 23, 2020"))
+        this.totalAndDeadlineIsVisible.assertValueCount(5)
     }
 
     @Test
@@ -1213,7 +1283,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingAmount.assertValues("MX$ 30", "MX$ 40")
         this.totalAmount.assertValues("MX$ 50", "MX$ 60")
         this.totalAndDeadline.assertValues(Pair("MX$ 50", "October 23, 2020"), Pair("MX$ 60", "October 23, 2020"))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
     }
 
     @Test

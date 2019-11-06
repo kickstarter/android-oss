@@ -176,7 +176,6 @@ public interface CreatorDashboardHeaderHolderViewModel {
       this.projectButtonClicked.onNext(null);
     }
 
-
     @Override public @NonNull Observable<Project> currentProject() {
       return this.currentProject;
     }

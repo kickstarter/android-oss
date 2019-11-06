@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.viewmodels.CreatorDashboardViewModel;
 
 import java.util.List;
@@ -72,17 +73,12 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.viewModel.outputs.projectDashboardData()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(projectAndStats -> this.adapter.takeProjectAndStats(projectAndStats));
+      .subscribe(this.adapter::takeProjectDashboardData);
 
     this.viewModel.outputs.projectDashboardData()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(projectDashboardData -> this.projectNameTextView.setText(projectDashboardData.getProject().name()));
-
-    this.viewModel.outputs.projectDashboardData()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(projectDashboardData -> this.collapsedToolbarTitle.setText(projectDashboardData.getProject().name()));
+      .subscribe(this::setProjectNameTextViews);
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())
@@ -143,6 +139,12 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
   private void setProjectsForDropdown(final @NonNull List<Project> projects) {
     this.bottomSheetAdapter.takeProjects(projects);
+  }
+
+  private void setProjectNameTextViews(final @NonNull ProjectDashboardData projectDashboardData) {
+    final String projectName = projectDashboardData.getProject().name();
+    this.projectNameTextView.setText(projectName);
+    this.collapsedToolbarTitle.setText(projectName);
   }
 
   private void newProjectClicked() {

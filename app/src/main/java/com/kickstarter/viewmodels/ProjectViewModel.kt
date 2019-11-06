@@ -206,7 +206,7 @@ interface ProjectViewModel {
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
 
-        /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorDashboardActivity].  */
+        /** Emits when we should start the creator dashboard [com.kickstarter.ui.activities.CreatorDashboardActivity].  */
         fun startCreatorDashboardActivity(): Observable<Project>
 
         /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */
@@ -245,8 +245,8 @@ interface ProjectViewModel {
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
+        private val creatorDashboardButtonClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
-        private val dashboardButtonClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
@@ -474,7 +474,7 @@ interface ProjectViewModel {
                     .subscribe(this.startCommentsActivity)
 
             currentProject
-                    .compose<Project>(takeWhen(this.dashboardButtonClicked))
+                    .compose<Project>(takeWhen(this.creatorDashboardButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCreatorDashboardActivity)
 
@@ -809,12 +809,12 @@ interface ProjectViewModel {
             this.contactCreatorClicked.onNext(null)
         }
 
-        override fun creatorNameTextViewClicked() {
-            this.creatorNameTextViewClicked.onNext(null)
+        override fun creatorDashboardButtonClicked() {
+            this.creatorDashboardButtonClicked.onNext(null)
         }
 
-        override fun creatorDashboardButtonClicked() {
-            this.dashboardButtonClicked.onNext(null)
+        override fun creatorNameTextViewClicked() {
+            this.creatorNameTextViewClicked.onNext(null)
         }
 
         override fun fragmentStackCount(count: Int) {

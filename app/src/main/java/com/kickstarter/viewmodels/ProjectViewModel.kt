@@ -44,6 +44,9 @@ interface ProjectViewModel {
         /** Call when the contact creator option is clicked.  */
         fun contactCreatorClicked()
 
+        /** Call when the creator dashboard button is clicked.  */
+        fun creatorDashboardButtonClicked()
+
         /** Call when the creator name is clicked.  */
         fun creatorNameTextViewClicked()
 
@@ -203,6 +206,9 @@ interface ProjectViewModel {
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
 
+        /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorDashboardActivity].  */
+        fun startCreatorDashboardActivity(): Observable<Project>
+
         /** Emits when we should start [com.kickstarter.ui.activities.LoginToutActivity].  */
         fun startLoginToutActivity(): Observable<Void>
 
@@ -240,6 +246,7 @@ interface ProjectViewModel {
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
+        private val dashboardButtonClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
@@ -291,6 +298,7 @@ interface ProjectViewModel {
         private val startCheckoutActivity = PublishSubject.create<Project>()
         private val startCommentsActivity = PublishSubject.create<Project>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
+        private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startManagePledgeActivity = PublishSubject.create<Project>()
         private val startMessagesActivity = PublishSubject.create<Project>()
@@ -464,6 +472,11 @@ interface ProjectViewModel {
                     .compose<Project>(takeWhen(this.commentsTextViewClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCommentsActivity)
+
+            currentProject
+                    .compose<Project>(takeWhen(this.dashboardButtonClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startCreatorDashboardActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.managePledgeButtonClicked))
@@ -800,6 +813,10 @@ interface ProjectViewModel {
             this.creatorNameTextViewClicked.onNext(null)
         }
 
+        override fun creatorDashboardButtonClicked() {
+            this.dashboardButtonClicked.onNext(null)
+        }
+
         override fun fragmentStackCount(count: Int) {
             this.fragmentStackCount.onNext(count)
         }
@@ -858,6 +875,10 @@ interface ProjectViewModel {
 
         override fun projectViewHolderCreatorClicked(viewHolder: ProjectViewHolder) {
             this.creatorNameTextViewClicked()
+        }
+
+        override fun projectViewHolderDashboardClicked(viewHolder: ProjectViewHolder) {
+            this.creatorDashboardButtonClicked()
         }
 
         override fun projectViewHolderManagePledgeClicked(viewHolder: ProjectViewHolder) {
@@ -1002,6 +1023,9 @@ interface ProjectViewModel {
 
         @NonNull
         override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity
+
+        @NonNull
+        override fun startCreatorDashboardActivity(): Observable<Project> = this.startCreatorDashboardActivity
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity

@@ -67,11 +67,11 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
-    /** Emits a boolean determining if the view project button should be gone. */
-    Observable<Boolean> viewProjectButtonIsGone();
-
     /** time remaining for latest project (no units) */
     Observable<String> timeRemainingText();
+
+    /** Emits a boolean determining if the view project button should be gone. */
+    Observable<Boolean> viewProjectButtonIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements Inputs, Outputs {

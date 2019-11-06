@@ -20,21 +20,22 @@
       android:id="@+id/creator_links"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_4"
       android:divider="@drawable/divider_grey_500_horizontal"
       android:orientation="vertical"
-      android:showDividers="middle|end">
+      android:showDividers="middle">
 
       <RelativeLayout
         android:id="@+id/creator_view_project_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_9"
+        android:layout_height="wrap_content"
         android:background="@drawable/click_indicator_light_masked"
-        android:focusable="true">
+        android:focusable="true"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_2">
 
         <TextView
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:layout_alignParentStart="true"
           android:gravity="center_vertical"
           android:text="@string/View_project"
@@ -54,13 +55,15 @@
       <RelativeLayout
         android:id="@+id/creator_dashboard_messages"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_9"
+        android:layout_height="wrap_content"
         android:background="@drawable/click_indicator_light_masked"
-        android:focusable="true">
+        android:focusable="true"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_2">
 
-        <TextView
+      <TextView
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:layout_alignParentStart="true"
           android:gravity="center_vertical"
           android:text="@string/accessibility_dashboard_buttons_messages"
@@ -82,8 +85,9 @@
     <Button
       android:id="@+id/creator_dashboard_project_selector"
       style="@style/SecondaryButton"
-      android:layout_height="wrap_content"
       android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_4"
       android:text="@string/Select_another_project" />
 
   </LinearLayout>
@@ -92,7 +96,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/grid_5">
+    android:paddingTop="@dimen/grid_2">
 
     <LinearLayout
       android:layout_width="match_parent"

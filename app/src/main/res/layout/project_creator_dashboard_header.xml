@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/project_dashboard_container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:gravity="center"
+  android:orientation="horizontal"
+  android:padding="@dimen/project_padding_x">
+
+  <TextView
+    android:id="@+id/project_launch_date"
+    style="@style/BodyPrimary"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/grid_3"
+    android:layout_weight="1"
+    android:visibility="gone"
+    tools:showIn="@layout/project_main_layout"
+    tools:text="@string/You_launched_this_project_on_launch_date"
+    tools:visibility="visible" />
+
+  <Button
+    android:id="@+id/project_dashboard_button"
+    style="@style/TertiaryButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:text="@string/View_dashboard" />
+</LinearLayout>

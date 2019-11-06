@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels;
 
 
-import android.util.Pair;
+import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
@@ -14,12 +14,15 @@ import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
+import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import rx.Observable;
@@ -29,17 +32,17 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   private CreatorDashboardViewModel.ViewModel vm;
 
   private final TestSubscriber<Void> openBottomSheet = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, ProjectStatsEnvelope>> projectAndStats = new TestSubscriber<>();
+  private final TestSubscriber<ProjectDashboardData> projectDashboardData = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> projectsForBottomSheet = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardViewModel.ViewModel(environment);
     this.vm.outputs.openBottomSheet().subscribe(this.openBottomSheet);
-    this.vm.outputs.projectDashboardData().subscribe(this.projectAndStats);
+    this.vm.outputs.projectDashboardData().subscribe(this.projectDashboardData);
     this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
   }
 
-  public void testProjectAndStats() {
+  public void testProjectAndStats_whenIntentDoesNotHaveProjectExtra() {
     final List<Project> projects = Collections.singletonList(ProjectFactory.project());
 
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
@@ -54,8 +57,24 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-    final Pair<Project, ProjectStatsEnvelope> outputPair = Pair.create(ListUtils.first(projects), projectStatsEnvelope);
-    this.projectAndStats.assertValue(outputPair);
+    this.vm.intent(new Intent());
+    this.projectDashboardData.assertValue(new ProjectDashboardData(Objects.requireNonNull(ListUtils.first(projects)), projectStatsEnvelope, false));
+    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
+  }
+
+  public void testProjectAndStats_whenIntentHasProjectExtra() {
+    final Project project = ProjectFactory.project();
+
+    final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override public @NonNull Observable<ProjectStatsEnvelope> fetchProjectStats(final @NonNull Project project) {
+        return Observable.just(projectStatsEnvelope);
+      }
+    };
+
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.projectDashboardData.assertValue(new ProjectDashboardData(project, projectStatsEnvelope, true));
     this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 
@@ -87,6 +106,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
       }
     };
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent());
     this.projectsForBottomSheet.assertValue(Collections.singletonList(project2));
   }
 
@@ -110,9 +130,10 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
       }
     };
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
-
+    this.vm.intent(new Intent());
     this.vm.inputs.projectSelectionInput(project2);
-    this.projectAndStats.assertValues(Pair.create(project1, ProjectStatsEnvelopeFactory.projectStatsEnvelope()), Pair.create(project2, ProjectStatsEnvelopeFactory.projectStatsEnvelope()));
+    this.projectDashboardData.assertValues(new ProjectDashboardData(project1, ProjectStatsEnvelopeFactory.projectStatsEnvelope(), false),
+      new ProjectDashboardData(project2, ProjectStatsEnvelopeFactory.projectStatsEnvelope(), false));
     this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD, KoalaEvent.SWITCHED_PROJECTS, KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 

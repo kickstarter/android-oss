@@ -9,7 +9,10 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
-import com.kickstarter.models.*
+import com.kickstarter.models.Backing
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
+import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
 import rx.Observable
@@ -138,10 +141,7 @@ interface BackingFragmentViewModel {
                     .map { it.backing() }
                     .ofType(Backing::class.java)
 
-            val backer = backing
-                    .map { it.backer() }
-                    .compose<Pair<User?, User>>(combineLatestPair(this.currentUser.observable()))
-                    .map { ObjectUtils.coalesce(it.first, it.second) }
+            val backer = this.currentUser.loggedInUser()
 
             backer
                     .map { it.name() }

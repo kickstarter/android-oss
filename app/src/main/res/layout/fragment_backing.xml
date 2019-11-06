@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/backing_root"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/backing_root"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/ksr_grey_300"
   android:clickable="true"
   android:focusable="true"
-  android:paddingTop="?android:attr/actionBarSize"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  android:paddingTop="?android:attr/actionBarSize">
 
   <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
@@ -20,8 +20,8 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingBottom="@dimen/grid_4"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:paddingBottom="@dimen/grid_4">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -31,27 +31,58 @@
         android:layout_marginEnd="@dimen/grid_3"
         android:orientation="vertical">
 
-        <TextView
-          android:id="@+id/backer_number"
-          style="@style/CalloutPrimaryMedium"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          tools:text="@string/backer_modal_backer_number" />
-
-        <TextView
-          android:id="@+id/backing_date"
-          style="@style/Caption1Secondary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
           android:layout_marginBottom="@dimen/grid_3"
-          tools:text="As of January 1, 2019" />
+          android:orientation="horizontal">
+
+          <ImageView
+            android:id="@+id/backing_avatar"
+            android:layout_width="@dimen/grid_9"
+            android:layout_height="@dimen/grid_9"
+            android:focusable="false"
+            android:importantForAccessibility="no"
+            tools:background="@color/ksr_cobalt_500" />
+
+          <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_2"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+              android:id="@+id/backer_name"
+              style="@style/CalloutPrimaryMedium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="Nathan Squid" />
+
+            <TextView
+              android:id="@+id/backer_number"
+              style="@style/FootnotePrimaryMedium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="@string/backer_modal_backer_number" />
+
+            <TextView
+              android:id="@+id/backing_date"
+              style="@style/FootnoteSecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="As of January 1, 2019" />
+          </LinearLayout>
+        </LinearLayout>
+
 
         <include
           layout="@layout/fragment_pledge_section_summary_pledge"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:visibility="visible"
-          android:layout_marginBottom="@dimen/grid_3" />
+          android:layout_marginBottom="@dimen/grid_3"
+          android:visibility="visible" />
 
         <include
           layout="@layout/fragment_pledge_section_summary_shipping"
@@ -83,10 +114,11 @@
             android:layout_marginBottom="@dimen/grid_3"
             android:text="@string/Payment_method" />
 
-          <include layout="@layout/reward_card_details"
-            android:layout_height="wrap_content"
+          <include
+            layout="@layout/reward_card_details"
             android:layout_width="wrap_content"
-            android:layout_marginBottom="@dimen/grid_4"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_4" />
 
           <include layout="@layout/horizontal_line_1dp_view" />
 

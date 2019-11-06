@@ -6,6 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -18,6 +19,8 @@ import rx.observers.TestSubscriber
 class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private lateinit var vm: BackingFragmentViewModel.ViewModel
 
+    private val backerAvatar = TestSubscriber.create<String>()
+    private val backerName = TestSubscriber.create<String>()
     private val backerNumber = TestSubscriber.create<String>()
     private val cardExpiration = TestSubscriber.create<String>()
     private val cardIssuer = TestSubscriber.create<Either<String, Int>>()
@@ -38,6 +41,8 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingFragmentViewModel.ViewModel(environment)
+        this.vm.outputs.backerAvatar().subscribe(this.backerAvatar)
+        this.vm.outputs.backerName().subscribe(this.backerName)
         this.vm.outputs.backerNumber().subscribe(this.backerNumber)
         this.vm.outputs.cardExpiration().subscribe(this.cardExpiration)
         this.vm.outputs.cardIssuer().subscribe(this.cardIssuer)
@@ -55,6 +60,38 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
+    }
+
+    @Test
+    fun testBackerAvatar() {
+        val user = UserFactory.user()
+                .toBuilder()
+                .avatar(AvatarFactory.avatar("www.avatars.com/"))
+                .build()
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(user))
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.project(ProjectFactory.backedProject())
+        this.backerAvatar.assertValue("www.avatars.com/medium.jpg")
+    }
+
+    @Test
+    fun testBackerName() {
+        val user = UserFactory.user()
+                .toBuilder()
+                .name("Nathan Squid")
+                .build()
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(user))
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.project(ProjectFactory.backedProject())
+        this.backerName.assertValue("Nathan Squid")
     }
 
     @Test

@@ -12,11 +12,13 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_backing.*
 import kotlinx.android.synthetic.main.fragment_backing_section_summary_total.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
@@ -35,10 +37,20 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        this.viewModel.outputs.showUpdatePledgeSuccess()
+        this.viewModel.outputs.backerAvatar()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+                .subscribe { setBackerImageView(it) }
+
+        this.viewModel.outputs.backerName()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { backer_name.text = it }
+
+        this.viewModel.outputs.backerNumber()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { setBackerNumberText(it) }
 
         this.viewModel.outputs.cardLogo()
                 .compose(bindToLifecycle())
@@ -65,30 +77,35 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { ViewUtils.setGone(payment_method, it) }
 
-        this.viewModel.outputs.projectAndReward()
+        this.viewModel.outputs.pledgeAmount()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { bindDataToRewardViewHolder(it) }
-
-        this.viewModel.outputs.backerNumber()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setBackerNumberText(it) }
+                .subscribe { pledge_summary_amount.text = it }
 
         this.viewModel.outputs.pledgeDate()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { setPledgeDateText(it) }
 
-        this.viewModel.outputs.pledgeAmount()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { pledge_summary_amount.text = it }
-
         this.viewModel.outputs.pledgeSummaryIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { ViewUtils.setGone(pledge_summary, it) }
+
+        this.viewModel.outputs.projectAndReward()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { bindDataToRewardViewHolder(it) }
+
+        this.viewModel.outputs.receivedCheckboxChecked()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { mark_as_received_checkbox.isChecked = it }
+
+        this.viewModel.outputs.receivedSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(received_section, it) }
 
         this.viewModel.outputs.shippingAmount()
                 .compose(bindToLifecycle())
@@ -105,20 +122,15 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { ViewUtils.setGone(shipping_summary, it) }
 
+        this.viewModel.outputs.showUpdatePledgeSuccess()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+
         this.viewModel.outputs.totalAmount()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { total_summary_amount.text = it }
-
-        this.viewModel.outputs.receivedSectionIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(received_section, it) }
-
-        this.viewModel.outputs.receivedCheckboxChecked()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { mark_as_received_checkbox.isChecked = it }
 
         RxView.clicks(mark_as_received_checkbox)
                 .compose(bindToLifecycle())
@@ -138,6 +150,14 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
         val project = projectAndReward.first
         val reward = projectAndReward.second
         rewardViewHolder.bindData(Pair(project, reward))
+    }
+
+    private fun setBackerImageView(url: String) {
+        context?.apply {
+            Picasso.with(this).load(url)
+                    .transform(CircleTransformation())
+                    .into(backing_avatar)
+        }
     }
 
     private fun setBackerNumberText(it: String?) {

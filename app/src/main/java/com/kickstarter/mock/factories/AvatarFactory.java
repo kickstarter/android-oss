@@ -13,4 +13,12 @@ public final class AvatarFactory {
       .thumb(baseUrl + "thumb.jpg")
       .build();
   }
+
+  public static Avatar avatar(final String baseUrl) {
+    return Avatar.builder()
+      .medium(baseUrl + "medium.jpg")
+      .small(baseUrl + "small.jpg")
+      .thumb(baseUrl + "thumb.jpg")
+      .build();
+  }
 }

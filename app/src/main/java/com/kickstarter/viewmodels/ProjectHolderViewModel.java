@@ -7,11 +7,13 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -113,6 +115,12 @@ public interface ProjectHolderViewModel {
     /** Emits when the disclaimer view should be gone. */
     Observable<Boolean> projectDisclaimerTextViewIsGone();
 
+    /** Emits the localized date time to be displayed in the launch date text view. */
+    Observable<String> projectLaunchDate();
+
+    /** Emits when the launch date view should be gone. */
+    Observable<Boolean> projectLaunchDateIsGone();
+
     /** Emits the background drawable for the metadata view group. */
     Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt();
 
@@ -172,6 +180,7 @@ public interface ProjectHolderViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
+    private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
     private final BooleanPreferenceType nativeCheckoutPreference;
 
@@ -179,6 +188,7 @@ public interface ProjectHolderViewModel {
       super(environment);
 
       final CurrentConfigType currentConfig = environment.currentConfig();
+      this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
       this.nativeCheckoutPreference = environment.nativeCheckoutPreference();
 
@@ -262,6 +272,15 @@ public interface ProjectHolderViewModel {
 
       this.projectDisclaimerTextViewIsGone = this.project.map(p -> p.deadline() == null || !p.isLive());
 
+      this.projectLaunchDate = this.project
+        .map(Project::launchedAt)
+        .filter(ObjectUtils::isNotNull)
+        .map(DateTimeUtils::longDate);
+
+      this.projectLaunchDateIsGone = this.project
+        .compose(combineLatestPair(this.currentUser.observable()))
+        .map(projectAndCurrentUser -> projectLaunchDateIsGone(projectAndCurrentUser));
+
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
         .filter(ProjectUtils.Metadata.BACKING::equals)
         .map(__ -> R.drawable.rect_green_grey_stroke);
@@ -319,6 +338,19 @@ public interface ProjectHolderViewModel {
         .map(NumberUtils::format);
     }
 
+    private boolean projectLaunchDateIsGone(final @NonNull Pair<Project, User> projectAndCurrentUser) {
+      final Project project = projectAndCurrentUser.first;
+      final User currentUser = projectAndCurrentUser.second;
+
+      if (ObjectUtils.isNull(project.launchedAt())) {
+        return true;
+      } else if (ObjectUtils.isNull(currentUser)) {
+        return true;
+      } else {
+        return project.creator().id() != currentUser.id();
+      }
+    }
+
     private final PublishSubject<Project> project = PublishSubject.create();
     private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
 
@@ -344,6 +376,8 @@ public interface ProjectHolderViewModel {
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
+    private final Observable<String> projectLaunchDate;
+    private final Observable<Boolean> projectLaunchDateIsGone;
     private final Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt;
     private final Observable<Boolean> projectMetadataViewGroupIsGone;
     private final Observable<String> projectNameTextViewText;
@@ -439,6 +473,12 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> projectDisclaimerTextViewIsGone() {
       return this.projectDisclaimerTextViewIsGone;
+    }
+    @Override public @NonNull Observable<String> projectLaunchDate() {
+      return this.projectLaunchDate;
+    }
+    @Override public @NonNull Observable<Boolean> projectLaunchDateIsGone() {
+      return this.projectLaunchDateIsGone;
     }
     @Override public @NonNull Observable<Integer> projectMetadataViewGroupBackgroundDrawableInt() {
       return this.projectMetadataViewGroupBackgroundDrawableInt;

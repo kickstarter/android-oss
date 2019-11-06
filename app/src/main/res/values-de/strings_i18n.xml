@@ -228,7 +228,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Games_newsletter" formatted="false">Jetzt abonnieren - du erhältst von Kickstarters Games-Team alle zwei Wochen News zu neuen Projekten und Updates rund um Games.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Möchtest du benachrichtigt werden bei neuen Nachrichten?</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Benachrichtigungen zu den Live-Streams dieses Projektgründers erhalten.</string>
-  <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Get notified when your friends back and launch projects</string>
+  <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Du wirst benachrichtigt, wenn deine Freunde ein Projekt unterstützen oder veröffentlichen</string>
   <string name="Get_reminded_about_this_project" formatted="false">Möchtest du an dieses Projekt erinnert werden?</string>
   <string name="Go_to_project_page" formatted="false">Zu Projektseite</string>
   <string name="Got_it" formatted="false">Alles klar!</string>
@@ -241,8 +241,8 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Home" formatted="false">Home</string>
   <string name="How_backers_found_your_project" formatted="false">Wie Unterstützer dein Projekt gefunden haben</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Ich möchte das Projekt einfach nur unterstützen.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am &lt;b>%{project_deadline}&lt;/b> belastet.</string>
-  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Wenn dieses Projekt das Finanzierungsziel erreicht, wird deine Karte am &lt;b>%{project_deadline}&lt;/b> mit &lt;b>%{total}&lt;/b> belastet.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_on_project_deadline" formatted="false">Wenn das Projekt erfolgreich finanziert wird, wird deine Karte am %{project_deadline} belastet.</string>
+  <string name="If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" formatted="false">Wenn dieses Projekt das Finanzierungsziel erreicht, wird deine Karte am %{project_deadline} mit %{total} belastet.</string>
   <string name="If_you_turn_following_off" formatted="false">Wenn du diese Funktion abwählst, kannst du niemandem mehr folgen und es wird dir auch niemand folgen können. Dein Profil wird den Leuten, denen du gefolgt bist, nicht mehr angezeigt. Dies kann nicht rückgängig gemacht werden.</string>
   <string name="If_your_profile_is_private" formatted="false">Wenn dein Profil privat ist, sind dein Namen und dein Profilbild für Andere sichtbar.</string>
   <string name="If_your_profile_is_public" formatted="false">Wenn dein Profil nicht privat ist, sind außerdem die Projekte, die du unterstützt hast, dein Standort, deine Biografie und deine Websites für Andere sichtbar.</string>
@@ -546,6 +546,8 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Verification_email_sent" formatted="false">Wir haben dir gerade eine Bestätigungs-E-Mail geschickt. Bitte klicke auf den Link in der E-Mail, um deine Adresse zu bestätigen.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video bis zur Wiederherstellung der Internetverbindung deaktiviert</string>
   <string name="View" formatted="false">Anzeigen</string>
+  <string name="View_dashboard" formatted="false">View dashboard</string>
+  <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">Projekt ansehen</string>
   <string name="View_rewards" formatted="false">Belohnungen ansehen</string>
   <string name="View_your_pledge" formatted="false">Deinen Finanzierungsbeitrag ansehen</string>
@@ -564,7 +566,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Sobald du dein Passwort geändert hast, wirst du aufgefordert, dich erneut auf der Kickstarter App anzumelden.</string>
-  <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">We\'ll import your name and profile photo, and access your friend list. We\'ll never post anything without your permission.</string>
+  <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Wir importieren deinen Namen und dein Profilfoto und können auf die Liste deiner Freunde zugreifen. Wir werden jedoch niemals etwas ohne deine Zustimmung posten.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
@@ -578,6 +580,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="You_backed_this_project" formatted="false">Du hast dieses Projekt unterstützt.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">Diese Karte kann nicht verwendet werden, um ein Projekt aus dem folgenden Land zu unterstützen: %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Dank deiner Unterstützung ist &lt;b>%{project_name}&lt;/b> seiner Verwirklichung einen Schritt näher. Sag es weiter!</string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}.</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">Diese Belohnung hat einen Mindestfinanzierungsbeitrag von %{reward_minimum}.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Finanzierungsbeitrag geleistet&lt;/b> im %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Unterstützt ohne Belohnung</string>

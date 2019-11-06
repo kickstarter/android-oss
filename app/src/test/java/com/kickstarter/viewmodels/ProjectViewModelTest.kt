@@ -31,18 +31,18 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val heartDrawableId = TestSubscriber<Int>()
     private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
     private val managePledgeMenu = TestSubscriber<Int?>()
+    private val pledgeActionButtonColor = TestSubscriber<Int>()
     private val pledgeActionButtonContainerIsGone = TestSubscriber<Boolean>()
+    private val pledgeActionButtonText = TestSubscriber<Int>()
     private val pledgeContainerIsGone = TestSubscriber<Boolean>()
+    private val pledgeToolbarNavigationIcon = TestSubscriber<Int>()
+    private val pledgeToolbarTitle = TestSubscriber<Int>()
     private val prelaunchUrl = TestSubscriber<String>()
     private val projectActionButtonContainerIsGone = TestSubscriber<Boolean>()
     private val projectAndNativeCheckoutEnabled = TestSubscriber<Pair<Project, Boolean>>()
     private val reloadProjectContainerIsGone = TestSubscriber<Boolean>()
     private val reloadProgressBarIsGone = TestSubscriber<Boolean>()
     private val revealRewardsFragment = TestSubscriber<Void>()
-    private val pledgeActionButtonColor = TestSubscriber<Int>()
-    private val pledgeActionButtonText = TestSubscriber<Int>()
-    private val pledgeToolbarNavigationIcon = TestSubscriber<Int>()
-    private val pledgeToolbarTitle = TestSubscriber<Int>()
     private val savedTest = TestSubscriber<Boolean>()
     private val scrimIsVisible = TestSubscriber<Boolean>()
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
@@ -661,7 +661,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenProjectIsLivedAndBacked() {
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenProjectIsLiveAndBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
@@ -671,7 +671,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLivedAndNotBacked() {
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLiveAndNotBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))

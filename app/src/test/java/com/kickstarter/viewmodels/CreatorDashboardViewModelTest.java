@@ -35,7 +35,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardViewModel.ViewModel(environment);
     this.vm.outputs.openBottomSheet().subscribe(this.openBottomSheet);
-    this.vm.outputs.projectAndStats().subscribe(this.projectAndStats);
+    this.vm.outputs.projectDashboardData().subscribe(this.projectAndStats);
     this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
   }
 

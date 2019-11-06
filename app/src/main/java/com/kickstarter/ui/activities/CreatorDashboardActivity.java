@@ -69,27 +69,27 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(visible -> ViewUtils.setGone(this.progressBar, !visible));
 
-    this.viewModel.outputs.projectAndStats()
+    this.viewModel.outputs.projectDashboardData()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndStats -> this.adapter.takeProjectAndStats(projectAndStats));
 
-    this.viewModel.outputs.projectAndStats()
+    this.viewModel.outputs.projectDashboardData()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pair -> this.projectNameTextView.setText(pair.first.name()));
+      .subscribe(projectDashboardData -> this.projectNameTextView.setText(projectDashboardData.getProject().name()));
 
-    this.viewModel.outputs.projectAndStats()
+    this.viewModel.outputs.projectDashboardData()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pair -> this.collapsedToolbarTitle.setText(pair.first.name()));
+      .subscribe(projectDashboardData -> this.collapsedToolbarTitle.setText(projectDashboardData.getProject().name()));
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectsForDropdown);
 
-    this.viewModel.outputs.projectAndStats()
+    this.viewModel.outputs.projectDashboardData()
        .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(__ -> newProjectClicked());

@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.util.Pair;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
@@ -15,6 +13,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CreatorDashboardActivity;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 
 import java.util.List;
 
@@ -24,7 +23,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 
@@ -41,8 +39,8 @@ public interface CreatorDashboardViewModel {
     /** Emits a boolean determining if the progress bar should be visible. */
     Observable<Boolean> progressBarIsVisible();
 
-    /** Emits the current project and associated stats object. */
-    Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats();
+    /** Emits the current project dashboard data. */
+    Observable<ProjectDashboardData> projectDashboardData();
 
     /** Emits when project dropdown should be shown. */
     Observable<List<Project>> projectsForBottomSheet();
@@ -101,11 +99,10 @@ public interface CreatorDashboardViewModel {
           .toList())
         .flatMap(listObservable -> listObservable);
 
-      currentProject
-        .compose(combineLatestPair(projectStatsEnvelope))
+      Observable.combineLatest(currentProject, projectStatsEnvelope, intentHasProjectExtra, ProjectDashboardData::new)
         .compose(bindToLifecycle())
         .distinctUntilChanged()
-        .subscribe(this.projectAndStats);
+        .subscribe(this.projectDashboardData);
 
       this.projectsListButtonClicked
         .compose(bindToLifecycle())
@@ -129,7 +126,7 @@ public interface CreatorDashboardViewModel {
 
     private final BehaviorSubject<Void> openBottomSheet = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> progressBarIsVisible = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = BehaviorSubject.create();
+    private final BehaviorSubject<ProjectDashboardData> projectDashboardData = BehaviorSubject.create();
     private final Observable<List<Project>> projectsForBottomSheet;
 
     public final Inputs inputs = this;
@@ -150,8 +147,8 @@ public interface CreatorDashboardViewModel {
     @Override public Observable<Boolean> progressBarIsVisible() {
       return this.progressBarIsVisible;
     }
-    @Override public @NonNull Observable<Pair<Project, ProjectStatsEnvelope>> projectAndStats() {
-      return this.projectAndStats;
+    @Override public @NonNull Observable<ProjectDashboardData> projectDashboardData() {
+      return this.projectDashboardData;
     }
     @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
       return this.projectsForBottomSheet;

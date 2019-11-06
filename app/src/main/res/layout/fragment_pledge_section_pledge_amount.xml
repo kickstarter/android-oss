@@ -89,7 +89,7 @@
 
     <TextView
       android:id="@+id/additional_pledge_amount"
-      style="@style/PledgeCurrency"
+      style="@style/PledgeCurrencySecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textSize="@dimen/headline"
@@ -113,7 +113,7 @@
 
     <TextView
       android:id="@+id/pledge_symbol_start"
-      style="@style/PledgeCurrencySecondary"
+      style="@style/PledgeCurrencyInput"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:focusable="true"
@@ -122,7 +122,7 @@
 
     <EditText
       android:id="@+id/pledge_amount"
-      style="@style/PledgeCurrencySecondary"
+      style="@style/PledgeCurrencyInput"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@null"
@@ -136,7 +136,7 @@
 
     <TextView
       android:id="@+id/pledge_symbol_end"
-      style="@style/PledgeCurrencySecondary"
+      style="@style/PledgeCurrencyInput"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="$" />

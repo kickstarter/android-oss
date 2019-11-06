@@ -15,27 +15,30 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
 import com.kickstarter.models.Project
+import com.kickstarter.models.User
 import com.kickstarter.ui.views.CenterSpan
 import java.math.RoundingMode
 
 object ProjectViewUtils {
 
     /**
-     * Returns the color resource ID of the rewards button based on project and backing status.
+     * Returns the color resource ID of the pledge action button based on project and backing status.
      */
     @ColorRes
-    fun rewardsButtonColor(project: Project): Int {
+    fun pledgeActionButtonColor(project: Project, currentUser: User?): Int {
         return if (project.isBacking && project.isLive) {
             R.color.button_pledge_manage
-        } else if (!project.isLive) {
+        } else if (!project.isLive || project.creator().id() == currentUser?.id()) {
             R.color.button_pledge_ended
         } else {
             R.color.button_pledge_live
         }
     }
 
-    fun rewardsButtonText(project: Project): Int {
-        return if (!project.isBacking && project.isLive) {
+    fun pledgeActionButtonText(project: Project, currentUser: User?): Int {
+        return if (project.creator().id() == currentUser?.id()) {
+            R.string.View_your_rewards
+        } else if (!project.isBacking && project.isLive) {
             R.string.Back_this_project
         } else if (project.isBacking && project.isLive) {
             R.string.Manage
@@ -47,8 +50,10 @@ object ProjectViewUtils {
     }
 
     @StringRes
-    fun rewardsToolbarTitle(project: Project): Int {
-        return if (!project.isBacking && project.isLive) {
+    fun pledgeToolbarTitle(project: Project, currentUser: User?): Int {
+        return if (project.creator().id() == currentUser?.id()) {
+            R.string.View_your_rewards
+        } else if (!project.isBacking && project.isLive) {
             R.string.Back_this_project
         } else if (project.isBacking && project.isLive) {
             R.string.Manage_your_pledge

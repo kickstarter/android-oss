@@ -102,8 +102,8 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-      android:id="@+id/project_action_button"
-      style="@style/ExtendedFab"
+      android:id="@+id/pledge_action_button"
+      style="@style/PledgeActionButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/project_back_button"

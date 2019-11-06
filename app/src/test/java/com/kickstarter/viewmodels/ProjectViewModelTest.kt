@@ -31,18 +31,18 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val heartDrawableId = TestSubscriber<Int>()
     private val horizontalProgressBarIsGone = TestSubscriber<Boolean>()
     private val managePledgeMenu = TestSubscriber<Int?>()
+    private val pledgeActionButtonColor = TestSubscriber<Int>()
     private val pledgeActionButtonContainerIsGone = TestSubscriber<Boolean>()
+    private val pledgeActionButtonText = TestSubscriber<Int>()
     private val pledgeContainerIsGone = TestSubscriber<Boolean>()
+    private val pledgeToolbarNavigationIcon = TestSubscriber<Int>()
+    private val pledgeToolbarTitle = TestSubscriber<Int>()
     private val prelaunchUrl = TestSubscriber<String>()
     private val projectActionButtonContainerIsGone = TestSubscriber<Boolean>()
     private val projectAndNativeCheckoutEnabled = TestSubscriber<Pair<Project, Boolean>>()
     private val reloadProjectContainerIsGone = TestSubscriber<Boolean>()
     private val reloadProgressBarIsGone = TestSubscriber<Boolean>()
     private val revealRewardsFragment = TestSubscriber<Void>()
-    private val rewardsButtonColor = TestSubscriber<Int>()
-    private val rewardsButtonText = TestSubscriber<Int>()
-    private val pledgeToolbarNavigationIcon = TestSubscriber<Int>()
-    private val pledgeToolbarTitle = TestSubscriber<Int>()
     private val savedTest = TestSubscriber<Boolean>()
     private val scrimIsVisible = TestSubscriber<Boolean>()
     private val setInitialRewardsContainerY = TestSubscriber<Void>()
@@ -74,7 +74,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
         this.vm.outputs.horizontalProgressBarIsGone().subscribe(this.horizontalProgressBarIsGone)
         this.vm.outputs.managePledgeMenu().subscribe(this.managePledgeMenu)
+        this.vm.outputs.pledgeActionButtonColor().subscribe(this.pledgeActionButtonColor)
         this.vm.outputs.pledgeActionButtonContainerIsGone().subscribe(this.pledgeActionButtonContainerIsGone)
+        this.vm.outputs.pledgeActionButtonText().subscribe(this.pledgeActionButtonText)
         this.vm.outputs.pledgeContainerIsGone().subscribe(this.pledgeContainerIsGone)
         this.vm.outputs.pledgeToolbarNavigationIcon().subscribe(this.pledgeToolbarNavigationIcon)
         this.vm.outputs.pledgeToolbarTitle().subscribe(this.pledgeToolbarTitle)
@@ -84,8 +86,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.reloadProgressBarIsGone().subscribe(this.reloadProgressBarIsGone)
         this.vm.outputs.reloadProjectContainerIsGone().subscribe(this.reloadProjectContainerIsGone)
         this.vm.outputs.revealRewardsFragment().subscribe(this.revealRewardsFragment)
-        this.vm.outputs.rewardsButtonColor().subscribe(this.rewardsButtonColor)
-        this.vm.outputs.rewardsButtonText().subscribe(this.rewardsButtonText)
         this.vm.outputs.scrimIsVisible().subscribe(this.scrimIsVisible)
         this.vm.outputs.setInitialRewardsContainerY().subscribe(this.setInitialRewardsContainerY)
         this.vm.outputs.showCancelPledgeFragment().subscribe(this.showCancelPledgeFragment)
@@ -651,32 +651,75 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testRewardsButtonUIOutputs() {
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutDisabled() {
+        setUpEnvironment(environment())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.pledgeActionButtonColor.assertNoValues()
+        this.pledgeActionButtonText.assertNoValues()
+    }
+
+    @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenProjectIsLiveAndBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.pledgeActionButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
+        this.pledgeActionButtonText.assertValuesAndClear(R.string.Manage)
+    }
+
+    @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLiveAndNotBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
-        this.rewardsButtonColor.assertValuesAndClear(R.color.button_pledge_live)
-        this.rewardsButtonText.assertValuesAndClear(R.string.Back_this_project)
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
+        this.pledgeActionButtonText.assertValue(R.string.Back_this_project)
+    }
 
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
-
-        this.rewardsButtonColor.assertValuesAndClear(R.color.button_pledge_manage)
-        this.rewardsButtonText.assertValuesAndClear(R.string.Manage)
-
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
-
-        this.rewardsButtonColor.assertValue(R.color.button_pledge_ended)
-        this.rewardsButtonText.assertValuesAndClear(R.string.View_rewards)
-
+    @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenProjectIsEndedAndBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
-        this.rewardsButtonColor.assertValue(R.color.button_pledge_ended)
-        this.rewardsButtonText.assertValue(R.string.View_your_pledge)
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_ended)
+        this.pledgeActionButtonText.assertValue(R.string.View_your_pledge)
+    }
+
+    @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenProjectIsEndedAndNotBacked() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))
+
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_ended)
+        this.pledgeActionButtonText.assertValuesAndClear(R.string.View_rewards)
+    }
+
+    @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenCurrentUserIsProjectCreator() {
+        val creator = UserFactory.creator()
+        val creatorProject = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .build()
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .currentUser(MockCurrentUser(creator))
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, creatorProject))
+
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_ended)
+        this.pledgeActionButtonText.assertValuesAndClear(R.string.View_your_rewards)
     }
 
     @Test

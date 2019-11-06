@@ -130,10 +130,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { updateManagePledgeMenu(it) }
 
+        this.viewModel.outputs.pledgeActionButtonColor()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { pledge_action_button.backgroundTintList = ContextCompat.getColorStateList(this, it) }
+
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(pledge_action_buttons, it) }
+
+        this.viewModel.outputs.pledgeActionButtonText()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { setPledgeActionButtonCTA(it) }
 
         this.viewModel.outputs.pledgeContainerIsGone()
                 .compose(bindToLifecycle())
@@ -174,16 +184,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(pledge_sheet_progress_bar, it) }
-
-        this.viewModel.outputs.rewardsButtonColor()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { project_action_button.backgroundTintList = ContextCompat.getColorStateList(this@ProjectActivity, it) }
-
-        this.viewModel.outputs.rewardsButtonText()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setProjectActionCTA(it) }
 
         this.viewModel.outputs.scrimIsVisible()
                 .compose(bindToLifecycle())
@@ -525,7 +525,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun rewardsSheetGuideline(): Int = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
 
     private fun setClickListeners() {
-        project_action_button.setOnClickListener {
+        pledge_action_button.setOnClickListener {
             this.viewModel.inputs.nativeProjectActionButtonClicked()
         }
 
@@ -637,9 +637,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .commit()
     }
 
-    private fun setProjectActionCTA(stringRes: Int) {
-        project_action_button.setText(stringRes)
-        project_action_button.contentDescription = when (stringRes) {
+    private fun setPledgeActionButtonCTA(stringRes: Int) {
+        pledge_action_button.setText(stringRes)
+        pledge_action_button.contentDescription = when (stringRes) {
             R.string.Manage -> getString(R.string.Manage_your_pledge)
             else -> getString(stringRes)
         }
@@ -739,20 +739,20 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun styleProjectActionButton(detailsAreVisible: Boolean) {
-        val buttonParams = project_action_button.layoutParams as LinearLayout.LayoutParams
+        val buttonParams = pledge_action_button.layoutParams as LinearLayout.LayoutParams
         when {
             detailsAreVisible -> {
                 backing_details.visibility = View.VISIBLE
                 buttonParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
-                project_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.grid_2)
+                pledge_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.grid_2)
             }
             else -> {
                 backing_details.visibility = View.GONE
                 buttonParams.width = LinearLayout.LayoutParams.MATCH_PARENT
-                project_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.fab_radius)
+                pledge_action_button.cornerRadius = resources.getDimensionPixelSize(R.dimen.fab_radius)
             }
         }
-        project_action_button.layoutParams = buttonParams
+        pledge_action_button.layoutParams = buttonParams
     }
 
     private fun updateFragments(project: Project) {

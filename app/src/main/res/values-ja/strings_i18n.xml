@@ -545,12 +545,13 @@
   <string name="Verification_email_sent" formatted="false">認証メールを送信しました。メール内のリンクをクリックすればメールアドレスが認証済みとなります。</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>
   <string name="View" formatted="false">みる</string>
-  <string name="View_dashboard" formatted="false">View dashboard</string>
-  <string name="View_progress" formatted="false">View progress</string>
+  <string name="View_dashboard" formatted="false">ダッシュボードを表示</string>
+  <string name="View_progress" formatted="false">進捗状況を表示</string>
   <string name="View_project" formatted="false">プロジェクトを見る</string>
   <string name="View_rewards" formatted="false">リワードを見る</string>
   <string name="View_your_pledge" formatted="false">プレッジをみる</string>
   <string name="View_your_reward" formatted="false">リワードをみる</string>
+  <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">プレッジを処理できませんでした。</string>
@@ -579,7 +580,7 @@
   <string name="You_backed_this_project" formatted="false">バック済</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">%{project_country} のプロジェクトをバックするのにこのクレジットカードを利用することはできません。</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">&lt;b>%{project_name}&lt;/b>へのバックが完了しました。このプロジェクトは、成功に一歩近づきました！ありがとうございます。</string>
-  <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}.</string>
+  <string name="You_launched_this_project_on_launch_date" formatted="false">このプロジェクトを %{launch_date} にローンチしました。</string>
   <string name="You_need_to_pledge_at_least_reward_minimum_for_this_reward" formatted="false">このリワードには、最低%{reward_minimum}のプレッジが必要です。</string>
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_pledged_without_a_reward" formatted="false">リワードなしでプレッジしました</string>

@@ -71,11 +71,10 @@
 
     <TextView
       android:id="@+id/total_amount_conversion"
-      style="@style/Caption1Secondary"
+      style="@style/Caption1Primary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|end"
-      android:textSize="@dimen/caption_1"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1"

@@ -36,6 +36,12 @@ interface BackingFragmentViewModel {
     }
 
     interface Outputs {
+        /** Emits the backer's avatar URL. */
+        fun backerAvatar(): Observable<String>
+
+        /** Emits the backer's name. */
+        fun backerName(): Observable<String>
+
         /** Emits the backer's sequence. */
         fun backerNumber(): Observable<String>
 
@@ -94,6 +100,8 @@ interface BackingFragmentViewModel {
         private val projectInput = PublishSubject.create<Project>()
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
 
+        private val backerAvatar = BehaviorSubject.create<String>()
+        private val backerName = BehaviorSubject.create<String>()
         private val backerNumber = BehaviorSubject.create<String>()
         private val cardExpiration = BehaviorSubject.create<String>()
         private val cardIssuer = BehaviorSubject.create<Either<String, Int>>()
@@ -113,6 +121,7 @@ interface BackingFragmentViewModel {
         private val totalAmount = BehaviorSubject.create<CharSequence>()
 
         private val apiClient = this.environment.apiClient()
+        private val currentUser = this.environment.currentUser()
         private val ksCurrency = this.environment.ksCurrency()
         val ksString: KSString = this.environment.ksString()
 
@@ -131,6 +140,18 @@ interface BackingFragmentViewModel {
             val backing = backedProject
                     .map { it.backing() }
                     .ofType(Backing::class.java)
+
+            val backer = this.currentUser.loggedInUser()
+
+            backer
+                    .map { it.name() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backerName)
+
+            backer
+                    .map { it.avatar().medium() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backerAvatar)
 
             backedProject
                     .map { project -> project.rewards()?.firstOrNull { BackingUtils.isBacked(project, it) }?.let { Pair(project, it) } }
@@ -288,6 +309,10 @@ interface BackingFragmentViewModel {
         override fun receivedCheckboxToggled(checked: Boolean) {
             this.receivedCheckboxToggled.onNext(checked)
         }
+
+        override fun backerAvatar(): Observable<String> = this.backerAvatar
+
+        override fun backerName(): Observable<String> = this.backerName
 
         override fun backerNumber(): Observable<String> = this.backerNumber
 

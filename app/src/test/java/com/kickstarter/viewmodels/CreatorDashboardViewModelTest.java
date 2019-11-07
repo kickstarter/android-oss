@@ -31,15 +31,57 @@ import rx.observers.TestSubscriber;
 public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   private CreatorDashboardViewModel.ViewModel vm;
 
-  private final TestSubscriber<Void> openBottomSheet = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> bottomSheetShouldExpand = new TestSubscriber<>();
   private final TestSubscriber<ProjectDashboardData> projectDashboardData = new TestSubscriber<>();
   private final TestSubscriber<List<Project>> projectsForBottomSheet = new TestSubscriber<>();
+  private final TestSubscriber<String> projectName = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardViewModel.ViewModel(environment);
-    this.vm.outputs.openBottomSheet().subscribe(this.openBottomSheet);
+    this.vm.outputs.bottomSheetShouldExpand().subscribe(this.bottomSheetShouldExpand);
     this.vm.outputs.projectDashboardData().subscribe(this.projectDashboardData);
     this.vm.outputs.projectsForBottomSheet().subscribe(this.projectsForBottomSheet);
+    this.vm.outputs.projectName().subscribe(this.projectName);
+  }
+
+  @Test
+  public void testBottomSheetShouldExpand_whenBackClicked() {
+    setUpEnvironment(environment());
+    this.vm.intent(new Intent());
+    this.vm.inputs.backClicked();
+
+    this.bottomSheetShouldExpand.assertValue(false);
+    this.koalaTest.assertNoValues();
+  }
+
+  @Test
+  public void testBottomSheetShouldExpand_whenNewProjectSelected() {
+    setUpEnvironment(environment());
+    this.vm.intent(new Intent());
+    this.vm.inputs.projectSelectionInput(ProjectFactory.project());
+
+    this.bottomSheetShouldExpand.assertValue(false);
+    this.koalaTest.assertValues("Switched Projects", "Viewed Project Dashboard");
+  }
+
+  @Test
+  public void testBottomSheetShouldExpand_whenProjectsListButtonClicked() {
+    setUpEnvironment(environment());
+    this.vm.intent(new Intent());
+    this.vm.inputs.projectsListButtonClicked();
+
+    this.bottomSheetShouldExpand.assertValue(true);
+    this.koalaTest.assertValue("Opened Project Switcher");
+  }
+
+  @Test
+  public void testBottomSheetShouldExpand_whenScrimClicked() {
+    setUpEnvironment(environment());
+    this.vm.intent(new Intent());
+    this.vm.inputs.scrimClicked();
+
+    this.bottomSheetShouldExpand.assertValue(false);
+    this.koalaTest.assertNoValues();
   }
 
   public void testProjectAndStats_whenIntentDoesNotHaveProjectExtra() {
@@ -138,10 +180,43 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectsListButtonClicked() {
-    setUpEnvironment(environment());
-    this.vm.inputs.projectsListButtonClicked();
-    this.openBottomSheet.assertValueCount(1);
-    this.koalaTest.assertValue(KoalaEvent.OPENED_PROJECT_SWITCHER);
+  public void testProjectName_whenMultipleProjects() {
+    final Project project1 = ProjectFactory.project()
+      .toBuilder()
+      .name("Best Project 2K19")
+      .build();
+    final Project project2 = ProjectFactory.project();
+    final List<Project> projects = Arrays.asList(
+      project1,
+      project2
+    );
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
+        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(projects));
+      }
+    };
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent());
+    this.projectName.assertValue("Best Project 2K19");
+  }
+
+  @Test
+  public void testProjectName_whenSingleProject() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .name("Best Project 2K19")
+      .build();
+
+    final MockApiClient apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<ProjectsEnvelope> fetchProjects(final boolean member) {
+        return Observable.just(ProjectsEnvelopeFactory.projectsEnvelope(Collections.singletonList(project)));
+      }
+    };
+    setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    this.projectName.assertValue("Best Project 2K19");
   }
 }

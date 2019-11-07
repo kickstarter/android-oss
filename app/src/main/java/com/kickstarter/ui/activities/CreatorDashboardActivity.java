@@ -15,7 +15,6 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.adapters.CreatorDashboardAdapter;
 import com.kickstarter.ui.adapters.CreatorDashboardBottomSheetAdapter;
-import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.viewmodels.CreatorDashboardViewModel;
 
 import java.util.List;
@@ -65,6 +64,11 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
     ToolbarUtils.INSTANCE.fadeAndTranslateToolbarTitleOnExpand(this.appBarLayout, this.collapsedToolbarTitle);
 
+    this.viewModel.outputs.bottomSheetShouldExpand()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::bottomSheetShouldExpand);
+
     this.viewModel.outputs.progressBarIsVisible()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -75,7 +79,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .compose(observeForUI())
       .subscribe(this.adapter::takeProjectDashboardData);
 
-    this.viewModel.outputs.projectDashboardData()
+    this.viewModel.outputs.projectName()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectNameTextViews);
@@ -85,23 +89,13 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
       .compose(observeForUI())
       .subscribe(this::setProjectsForDropdown);
 
-    this.viewModel.outputs.projectDashboardData()
-       .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> newProjectClicked());
-
-    this.viewModel.outputs.openBottomSheet()
-       .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> toggleBottomSheetClick());
-
     createAndSetBottomSheetCallback();
   }
 
   @Override
   public void back() {
     if (this.bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-      hideBottomSheet();
+      this.viewModel.inputs.backClicked();
     } else {
       super.back();
     }
@@ -109,7 +103,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
   @OnClick(R.id.creator_dashboard_bottom_sheet_scrim)
   protected void bottomSheetScrimClicked() {
-    hideBottomSheet();
+    this.viewModel.inputs.scrimClicked();
   }
 
   @Override
@@ -118,6 +112,14 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.recyclerView.setAdapter(null);
     this.bottomSheetRecyclerView.setAdapter(null);
     this.bottomSheetBehavior.setBottomSheetCallback(null);
+  }
+
+  public void bottomSheetShouldExpand(final boolean expand) {
+    if(expand) {
+      showBottomSheet();
+    } else {
+      hideBottomSheet();
+    }
   }
 
   private void createAndSetBottomSheetCallback() {
@@ -141,14 +143,9 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.bottomSheetAdapter.takeProjects(projects);
   }
 
-  private void setProjectNameTextViews(final @NonNull ProjectDashboardData projectDashboardData) {
-    final String projectName = projectDashboardData.getProject().name();
+  private void setProjectNameTextViews(final @NonNull String projectName) {
     this.projectNameTextView.setText(projectName);
     this.collapsedToolbarTitle.setText(projectName);
-  }
-
-  private void newProjectClicked() {
-    hideBottomSheet();
   }
 
   private void hideBottomSheet() {
@@ -156,7 +153,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.bottomSheetScrim.setVisibility(View.GONE);
   }
 
-  public void toggleBottomSheetClick() {
+  public void showBottomSheet() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     this.bottomSheetScrim.setVisibility(View.VISIBLE);
   }

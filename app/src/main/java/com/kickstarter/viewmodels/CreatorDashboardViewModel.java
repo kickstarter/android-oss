@@ -28,19 +28,28 @@ import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface CreatorDashboardViewModel {
   interface Inputs extends CreatorDashboardBottomSheetAdapter.Delegate, CreatorDashboardAdapter.Delegate {
+    /** Call when the back button is clicked and the bottom sheet is expanded. */
+    void backClicked();
+
     /** Call when project selection should be shown. */
     void projectsListButtonClicked();
+
+    /** Call when the scrim is clicked. */
+    void scrimClicked();
   }
 
   interface Outputs {
-    /** Emits when the bottom sheet should be expanded. */
-    Observable<Void> openBottomSheet();
+    /** Emits a boolean determining if the bottom sheet should expand. */
+    Observable<Boolean> bottomSheetShouldExpand();
 
     /** Emits a boolean determining if the progress bar should be visible. */
     Observable<Boolean> progressBarIsVisible();
 
     /** Emits the current project dashboard data. */
     Observable<ProjectDashboardData> projectDashboardData();
+
+    /** Emits the current project's name. */
+    Observable<String> projectName();
 
     /** Emits when project dropdown should be shown. */
     Observable<List<Project>> projectsForBottomSheet();
@@ -62,10 +71,8 @@ public interface CreatorDashboardViewModel {
           .materialize()
           .share());
 
-      final Observable<ProjectsEnvelope> projectsEnvelope = projectsNotification
-        .compose(values());
-
-      final Observable<List<Project>> projects = projectsEnvelope
+      final Observable<List<Project>> projects = projectsNotification
+        .compose(values())
         .map(ProjectsEnvelope::projects);
 
       final Observable<Project> firstProject = projects
@@ -80,6 +87,11 @@ public interface CreatorDashboardViewModel {
         .merge(firstProject, this.projectSelectionInput, intentProject)
         .filter(ObjectUtils::isNotNull);
 
+      currentProject
+        .map(Project::name)
+        .compose(bindToLifecycle())
+        .subscribe(this.projectName);
+
       final Observable<Notification<ProjectStatsEnvelope>> projectStatsEnvelopeNotification = currentProject
         .switchMap(project -> this.client.fetchProjectStats(project)
           .doOnSubscribe(() -> this.progressBarIsVisible.onNext(true))
@@ -90,14 +102,16 @@ public interface CreatorDashboardViewModel {
       final Observable<ProjectStatsEnvelope> projectStatsEnvelope = projectStatsEnvelopeNotification
         .compose(values());
 
-      this.projectsForBottomSheet = Observable.combineLatest(
+      Observable.combineLatest(
         projects.filter(projectList -> projectList.size() > 1),
         currentProject,
         (projectList, project) -> Observable
           .from(projectList)
           .filter(p -> p.id() != project.id())
           .toList())
-        .flatMap(listObservable -> listObservable);
+        .flatMap(listObservable -> listObservable)
+        .compose(bindToLifecycle())
+        .subscribe(this.projectsForBottomSheet);
 
       Observable.combineLatest(currentProject, projectStatsEnvelope, intentHasProjectExtra, ProjectDashboardData::new)
         .compose(bindToLifecycle())
@@ -105,8 +119,14 @@ public interface CreatorDashboardViewModel {
         .subscribe(this.projectDashboardData);
 
       this.projectsListButtonClicked
+        .map(__ -> true)
         .compose(bindToLifecycle())
-        .subscribe(this.openBottomSheet);
+        .subscribe(this.bottomSheetShouldExpand);
+
+      Observable.merge(this.backClicked, this.scrimClicked, this.projectSelectionInput)
+        .map(__ -> false)
+        .compose(bindToLifecycle())
+        .subscribe(this.bottomSheetShouldExpand);
 
       this.projectSelectionInput
         .compose(bindToLifecycle())
@@ -121,28 +141,36 @@ public interface CreatorDashboardViewModel {
         .subscribe(this.koala::trackViewedProjectDashboard);
     }
 
+    private final PublishSubject<Void> backClicked = PublishSubject.create();
+    private final PublishSubject<Void> scrimClicked = PublishSubject.create();
     private final PublishSubject<Project> projectSelectionInput = PublishSubject.create();
     private final PublishSubject<Void> projectsListButtonClicked = PublishSubject.create();
 
-    private final BehaviorSubject<Void> openBottomSheet = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> bottomSheetShouldExpand = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> progressBarIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<ProjectDashboardData> projectDashboardData = BehaviorSubject.create();
-    private final Observable<List<Project>> projectsForBottomSheet;
+    private final BehaviorSubject<List<Project>> projectsForBottomSheet = BehaviorSubject.create();
+    private final BehaviorSubject<String> projectName = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override
-    public void projectSelectionInput(final @NonNull Project project) {
-      this.projectSelectionInput.onNext(project);
+
+    @Override public void backClicked() {
+      this.backClicked.onNext(null);
     }
-    @Override
-    public void projectsListButtonClicked() {
+    @Override public void projectsListButtonClicked() {
       this.projectsListButtonClicked.onNext(null);
     }
+    @Override public void projectSelectionInput(final @NonNull Project project) {
+      this.projectSelectionInput.onNext(project);
+    }
+    @Override public void scrimClicked() {
+      this.scrimClicked.onNext(null);
+    }
 
-    @Override public @NonNull Observable<Void> openBottomSheet() {
-      return this.openBottomSheet;
+    @Override public @NonNull Observable<Boolean> bottomSheetShouldExpand() {
+      return this.bottomSheetShouldExpand;
     }
     @Override public Observable<Boolean> progressBarIsVisible() {
       return this.progressBarIsVisible;
@@ -153,6 +181,8 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
       return this.projectsForBottomSheet;
     }
-
+    @Override public @NonNull Observable<String> projectName() {
+      return this.projectName;
+    }
   }
 }

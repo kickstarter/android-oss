@@ -522,12 +522,15 @@
   </style>
 
   <style name="PledgeCurrency" parent="TextPrimary">
-    <item name="android:textColor">@color/ksr_dark_grey_500</item>
     <item name="android:textSize">@dimen/title_1</item>
   </style>
 
   <style name="PledgeCurrencySecondary" parent="PledgeCurrency">
-    <item name="android:textColor">@color/primary</item>
+    <item name="android:textColor">@color/ksr_dark_grey_500</item>
+  </style>
+
+  <style name="PledgeCurrencyInput" parent="PledgeCurrency">
+    <item name="android:textColor">@color/accent</item>
   </style>
 
   <style name="CreditCardExpiration" parent="Caption2SecondaryMedium">

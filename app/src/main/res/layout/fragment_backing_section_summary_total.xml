@@ -19,7 +19,7 @@
 
   <TextView
     android:id="@+id/total_summary_amount"
-    style="@style/PledgeCurrencySecondary"
+    style="@style/PledgeCurrency"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:gravity="center_vertical|end"

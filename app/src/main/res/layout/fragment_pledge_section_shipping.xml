@@ -60,7 +60,7 @@
 
   <TextView
     android:id="@+id/shipping_amount"
-    style="@style/PledgeCurrency"
+    style="@style/PledgeCurrencySecondary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_1"

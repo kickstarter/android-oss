@@ -9,15 +9,7 @@
   android:background="@color/white"
   android:orientation="vertical">
 
-  <TextView
-    style="@style/BodyPrimary"
-    android:id="@+id/project_launch_date"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:visibility="gone"
-    tools:visibility="visible"
-    android:padding="@dimen/project_padding_x"
-    tools:text="@string/You_launched_this_project_on_launch_date"/>
+  <include layout="@layout/project_creator_dashboard_header" />
 
   <include layout="@layout/project_media_header" />
 

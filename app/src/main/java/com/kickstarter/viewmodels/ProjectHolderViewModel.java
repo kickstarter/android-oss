@@ -106,6 +106,12 @@ public interface ProjectHolderViewModel {
     /** Emits a boolean determining if the project action buttons should be visible. */
     Observable<Boolean> projectActionButtonContainerIsGone();
 
+    /** Emits the string resource ID of the project dashboard button. */
+    Observable<Integer> projectDashboardButtonText();
+
+    /** Emits a boolean determining if the project dashboard container should be visible. */
+    Observable<Boolean> projectDashboardContainerIsGone();
+
     /** Emits the date time to be displayed in the disclaimer. */
     Observable<DateTime> projectDisclaimerGoalReachedDateTime();
 
@@ -262,6 +268,21 @@ public interface ProjectHolderViewModel {
         .map(enabledAndOverride -> Build.isExternal() ? enabledAndOverride.first : enabledAndOverride.second)
         .distinctUntilChanged();
 
+      final Observable<Boolean> userIsCreatorOfProject = this.project
+        .map(Project::creator)
+        .compose(combineLatestPair(this.currentUser.observable()))
+        .map(creatorAndCurrentUser -> ObjectUtils.isNotNull(creatorAndCurrentUser.second) && creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id());
+
+      this.projectDashboardButtonText = this.project
+        .map(Project::isLive)
+        .map(live -> live ? R.string.View_progress : R.string.View_dashboard)
+        .compose(combineLatestPair(userIsCreatorOfProject))
+        .filter(buttonTextAndIsCreator -> buttonTextAndIsCreator.second)
+        .map(buttonTextAndIsCreator -> buttonTextAndIsCreator.first);
+
+      this.projectDashboardContainerIsGone = userIsCreatorOfProject
+        .map(BooleanUtils::negate);
+
       this.projectDisclaimerGoalReachedDateTime = this.project
         .filter(Project::isFunded)
         .map(Project::deadline);
@@ -278,8 +299,10 @@ public interface ProjectHolderViewModel {
         .map(DateTimeUtils::longDate);
 
       this.projectLaunchDateIsGone = this.project
-        .compose(combineLatestPair(this.currentUser.observable()))
-        .map(projectAndCurrentUser -> projectLaunchDateIsGone(projectAndCurrentUser));
+        .map(Project::launchedAt)
+        .compose(combineLatestPair(userIsCreatorOfProject))
+        .map(launchDateAndIsCreator -> ObjectUtils.isNotNull(launchDateAndIsCreator.first) && BooleanUtils.isTrue(launchDateAndIsCreator.second))
+        .map(BooleanUtils::negate);
 
       this.projectMetadataViewGroupBackgroundDrawableInt = projectMetadata
         .filter(ProjectUtils.Metadata.BACKING::equals)
@@ -338,19 +361,6 @@ public interface ProjectHolderViewModel {
         .map(NumberUtils::format);
     }
 
-    private boolean projectLaunchDateIsGone(final @NonNull Pair<Project, User> projectAndCurrentUser) {
-      final Project project = projectAndCurrentUser.first;
-      final User currentUser = projectAndCurrentUser.second;
-
-      if (ObjectUtils.isNull(project.launchedAt())) {
-        return true;
-      } else if (ObjectUtils.isNull(currentUser)) {
-        return true;
-      } else {
-        return project.creator().id() != currentUser.id();
-      }
-    }
-
     private final PublishSubject<Project> project = PublishSubject.create();
     private final PublishSubject<Void> projectSocialViewGroupClicked = PublishSubject.create();
 
@@ -373,6 +383,8 @@ public interface ProjectHolderViewModel {
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
     private final Observable<Boolean> projectActionButtonContainerIsGone;
+    private final Observable<Integer> projectDashboardButtonText;
+    private final Observable<Boolean> projectDashboardContainerIsGone;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
     private final Observable<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString;
     private final Observable<Boolean> projectDisclaimerTextViewIsGone;
@@ -464,6 +476,12 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> projectActionButtonContainerIsGone() {
       return this.projectActionButtonContainerIsGone;
+    }
+    @Override public @NonNull Observable<Integer> projectDashboardButtonText() {
+      return this.projectDashboardButtonText;
+    }
+    @Override public @NonNull Observable<Boolean> projectDashboardContainerIsGone() {
+      return this.projectDashboardContainerIsGone;
     }
     @Override public @NonNull Observable<DateTime> projectDisclaimerGoalReachedDateTime() {
       return this.projectDisclaimerGoalReachedDateTime;

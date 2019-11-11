@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -80,6 +81,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.project_action_buttons) @Nullable ViewGroup projectActionButtonsContainer;
+  protected @Bind(R.id.project_dashboard_button) Button projectDashboardButton;
+  protected @Bind(R.id.project_dashboard_container) ViewGroup projectDashboardContainer;
   protected @Bind(R.id.project_launch_date) TextView projectLaunchDateTextView;
   protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
@@ -128,6 +131,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderDashboardClicked(ProjectViewHolder viewHolder);
     void projectViewHolderManagePledgeClicked(ProjectViewHolder viewHolder);
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
     void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
@@ -241,6 +245,16 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectActionButtonsContainerVisibility);
+
+    this.viewModel.outputs.projectDashboardButtonText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.projectDashboardButton::setText);
+
+    this.viewModel.outputs.projectDashboardContainerIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.projectDashboardContainer));
 
     this.viewModel.outputs.projectDisclaimerGoalNotReachedString()
       .compose(bindToLifecycle())
@@ -496,18 +510,23 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   @OnClick({R.id.blurb_view, R.id.campaign})
-  public void blurbClick() {
+  public void blurbOnClick() {
     this.delegate.projectViewHolderBlurbClicked(this);
   }
 
   @OnClick(R.id.comments)
-  public void commentsClick() {
+  public void commentsOnClick() {
     this.delegate.projectViewHolderCommentsClicked(this);
   }
 
   @OnClick(R.id.creator_info)
-  public void creatorNameClick() {
+  public void creatorNameOnClick() {
     this.delegate.projectViewHolderCreatorClicked(this);
+  }
+
+  @OnClick(R.id.project_dashboard_button)
+  public void creatorDashboardOnClick() {
+    this.delegate.projectViewHolderDashboardClicked(this);
   }
 
   @Nullable @OnClick(R.id.manage_pledge_button)
@@ -516,7 +535,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   @OnClick(R.id.play_button_overlay)
-  public void playButtonClick() {
+  public void playButtonOnClick() {
     this.delegate.projectViewHolderVideoStarted(this);
   }
 
@@ -526,7 +545,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   @OnClick(R.id.updates)
-  public void updatesClick() {
+  public void updatesOnClick() {
     this.delegate.projectViewHolderUpdatesClicked(this);
   }
 

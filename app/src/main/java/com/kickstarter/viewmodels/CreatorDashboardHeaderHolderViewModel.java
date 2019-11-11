@@ -10,12 +10,11 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 
 import androidx.annotation.NonNull;
@@ -28,11 +27,11 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface CreatorDashboardHeaderHolderViewModel {
 
   interface Inputs {
+    /** Call to configure the view model with ProjectDashboardData. */
+    void configureWith(ProjectDashboardData projectDashboardData);
+
     /** Call when the messages button is clicked. */
     void messagesButtonClicked();
-
-    /** Call to configure the view model with Project and Stats. */
-    void projectAndStats(Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope);
 
     /** Call when the project button is clicked. */
     void projectButtonClicked();
@@ -62,15 +61,17 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
     /** current project's name */
     Observable<String> projectNameTextViewText();
-
-    /** time remaining for latest project (no units) */
-    Observable<String> timeRemainingText();
-
     /** Emits when we should start the {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
     Observable<Pair<Project, RefTag>> startMessageThreadsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
+
+    /** Emits the time remaining for current project with no units. */
+    Observable<String> timeRemainingText();
+
+    /** Emits a boolean determining if the view project button should be gone. */
+    Observable<Boolean> viewProjectButtonIsGone();
   }
 
   final class ViewModel extends ActivityViewModel<CreatorDashboardHeaderViewHolder> implements Inputs, Outputs {
@@ -83,24 +84,33 @@ public interface CreatorDashboardHeaderHolderViewModel {
 
       final Observable<User> user = this.currentUser.observable();
 
+      final Observable<Boolean> singleProjectView = this.projectDashboardData
+        .map(ProjectDashboardData::isViewingSingleProject);
+
       this.otherProjectsButtonIsGone = user
         .map(User::memberProjectsCount)
-        .filter(ObjectUtils::isNotNull)
+        .map(count -> ObjectUtils.coalesce(count, 0))
         .map(count -> count <= 1)
+        .compose(combineLatestPair(singleProjectView))
+        .map(onlyOneProjectAndSingleProjectView -> onlyOneProjectAndSingleProjectView.first || onlyOneProjectAndSingleProjectView.second)
         .compose(bindToLifecycle());
 
-      this.currentProject = this.projectAndStats
-        .map(PairUtils::first);
+      this.currentProject = this.projectDashboardData
+        .map(ProjectDashboardData::getProject)
+        .compose(bindToLifecycle());
 
       this.messagesButtonIsGone = this.currentProject
         .compose(combineLatestPair(user))
-        .map(projectAndUser -> projectAndUser.first.creator().id() != projectAndUser.second.id());
+        .map(projectAndUser -> projectAndUser.first.creator().id() != projectAndUser.second.id())
+        .compose(bindToLifecycle());
 
       this.percentageFunded = this.currentProject
-        .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()));
+        .map(p -> NumberUtils.flooredPercentage(p.percentageFunded()))
+        .compose(bindToLifecycle());
 
       this.percentageFundedProgress = this.currentProject
-        .map(p -> ProgressBarUtils.progress(p.percentageFunded()));
+        .map(p -> ProgressBarUtils.progress(p.percentageFunded()))
+        .compose(bindToLifecycle());
 
       this.progressBarBackground = this.currentProject
         .map(p -> p.isLive() || p.isStarted() || p.isSubmitted() || p.isSuccessful())
@@ -117,25 +127,31 @@ public interface CreatorDashboardHeaderHolderViewModel {
         .distinctUntilChanged()
         .compose(bindToLifecycle());
 
-      this.timeRemainingText = this.currentProject
-        .map(ProjectUtils::deadlineCountdownValue)
-        .map(NumberUtils::format);
-
       this.startMessageThreadsActivity = this.currentProject
         .compose(takeWhen(this.messagesButtonClicked))
-        .map(p -> Pair.create(p, RefTag.dashboard()));
+        .map(p -> Pair.create(p, RefTag.dashboard()))
+        .compose(bindToLifecycle());
 
       this.startProjectActivity = this.currentProject
         .compose(takeWhen(this.projectButtonClicked))
-        .map(p -> Pair.create(p, RefTag.dashboard()));
+        .map(p -> Pair.create(p, RefTag.dashboard()))
+        .compose(bindToLifecycle());
+
+      this.timeRemainingText = this.currentProject
+        .map(ProjectUtils::deadlineCountdownValue)
+        .map(NumberUtils::format)
+        .compose(bindToLifecycle());
+
+      this.viewProjectButtonIsGone = singleProjectView
+        .compose(bindToLifecycle());
     }
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
     private final PublishSubject<Void> messagesButtonClicked = PublishSubject.create();
-    private final PublishSubject<Pair<Project, ProjectStatsEnvelope>> projectAndStats = PublishSubject.create();
     private final PublishSubject<Void> projectButtonClicked = PublishSubject.create();
+    private final PublishSubject<ProjectDashboardData> projectDashboardData = PublishSubject.create();
 
     private final Observable<Project> currentProject;
     private final Observable<Boolean> messagesButtonIsGone;
@@ -148,15 +164,16 @@ public interface CreatorDashboardHeaderHolderViewModel {
     private final Observable<Pair<Project, RefTag>> startMessageThreadsActivity;
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<String> timeRemainingText;
+    private final Observable<Boolean> viewProjectButtonIsGone;
 
+    @Override public void configureWith(final @NonNull ProjectDashboardData projectDashboardData) {
+      this.projectDashboardData.onNext(projectDashboardData);
+    }
     @Override public void messagesButtonClicked() {
       this.messagesButtonClicked.onNext(null);
     }
     @Override public void projectButtonClicked() {
       this.projectButtonClicked.onNext(null);
-    }
-    @Override public void projectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndProjectStatsEnvelope) {
-      this.projectAndStats.onNext(projectAndProjectStatsEnvelope);
     }
 
     @Override public @NonNull Observable<Project> currentProject() {
@@ -191,6 +208,9 @@ public interface CreatorDashboardHeaderHolderViewModel {
     }
     @Override public @NonNull Observable<String> timeRemainingText() {
       return this.timeRemainingText;
+    }
+    @Override public @NonNull Observable<Boolean> viewProjectButtonIsGone() {
+      return this.viewProjectButtonIsGone;
     }
   }
 }

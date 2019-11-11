@@ -57,6 +57,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> playButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> pledgedTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectActionButtonContainerIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Integer> projectDashboardButtonText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> projectDashboardContainerIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectDisclaimerGoalReachedDateTime = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, DateTime>> projectDisclaimerGoalNotReachedString = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectDisclaimerTextViewIsGone = new TestSubscriber<>();
@@ -103,6 +105,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.playButtonIsGone().subscribe(this.playButtonIsGone);
     this.vm.outputs.pledgedTextViewText().subscribe(this.pledgedTextViewText);
     this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone);
+    this.vm.outputs.projectDashboardButtonText().subscribe(this.projectDashboardButtonText);
+    this.vm.outputs.projectDashboardContainerIsGone().subscribe(this.projectDashboardContainerIsGone);
     this.vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe(this.projectDisclaimerGoalReachedDateTime);
     this.vm.outputs.projectDisclaimerGoalNotReachedString().subscribe(this.projectDisclaimerGoalNotReachedString);
     this.vm.outputs.projectDisclaimerTextViewIsGone().subscribe(this.projectDisclaimerTextViewIsGone);
@@ -286,6 +290,72 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment);
 
     this.projectActionButtonContainerIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testProjectDashboardButtonText_whenCurrentUserIsNotProjectCreator() {
+    setUpEnvironment(environment());
+
+    this.projectDashboardButtonText.assertNoValues();
+  }
+
+  @Test
+  public void testProjectDashboardButtonText_whenCurrentUserIsProjectCreator_projectIsLive() {
+    final User creator = UserFactory.creator();
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .creator(creator)
+      .build();
+    final Environment environment = environment()
+      .toBuilder()
+      .currentUser(new MockCurrentUser(creator))
+      .build();
+    setUpEnvironment(environment);
+    this.vm.inputs.configureWith(project);
+
+    this.projectDashboardButtonText.assertValue(R.string.View_progress);
+  }
+
+  @Test
+  public void testProjectDashboardButtonText_whenCurrentUserIsProjectCreator_projectIsNotLive() {
+    final User creator = UserFactory.creator();
+    final Project project = ProjectFactory.successfulProject()
+      .toBuilder()
+      .creator(creator)
+      .build();
+    final Environment environment = environment()
+      .toBuilder()
+      .currentUser(new MockCurrentUser(creator))
+      .build();
+    setUpEnvironment(environment);
+    this.vm.inputs.configureWith(project);
+
+    this.projectDashboardButtonText.assertValue(R.string.View_dashboard);
+  }
+
+  @Test
+  public void testProjectDashboardContainerIsGone_whenCurrentUserIsNotProjectCreator() {
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(ProjectFactory.project());
+
+    this.projectDashboardContainerIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testProjectDashboardContainerIsGone_whenCurrentUserIsProjectCreator() {
+    final User creator = UserFactory.creator();
+    final Project project = ProjectFactory.successfulProject()
+      .toBuilder()
+      .creator(creator)
+      .build();
+    final Environment environment = environment()
+      .toBuilder()
+      .currentUser(new MockCurrentUser(creator))
+      .build();
+    setUpEnvironment(environment);
+    this.vm.inputs.configureWith(project);
+
+    this.projectDashboardContainerIsGone.assertValue(false);
   }
 
   @Test

@@ -57,6 +57,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startCampaignWebViewActivity = TestSubscriber<Project>()
     private val startCommentsActivity = TestSubscriber<Project>()
     private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
+    private val startCreatorDashboardActivity = TestSubscriber<Project>()
     private val startLoginToutActivity = TestSubscriber<Void>()
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startMessagesActivity = TestSubscriber<Project>()
@@ -101,6 +102,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startCampaignWebViewActivity().subscribe(this.startCampaignWebViewActivity)
         this.vm.outputs.startCommentsActivity().subscribe(this.startCommentsActivity)
         this.vm.outputs.startCreatorBioWebViewActivity().subscribe(this.startCreatorBioWebViewActivity)
+        this.vm.outputs.startCreatorDashboardActivity().subscribe(this.startCreatorDashboardActivity)
         this.vm.outputs.startManagePledgeActivity().subscribe(this.startManagePledgeActivity)
         this.vm.outputs.startMessagesActivity().subscribe(this.startMessagesActivity)
         this.vm.outputs.startProjectUpdatesActivity().subscribe(this.startProjectUpdatesActivity)
@@ -598,6 +600,18 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
+    }
+
+    @Test
+    fun testStartCreatorDashboardActivity() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorDashboardButtonClicked()
+        this.startCreatorDashboardActivity.assertValues(project)
     }
 
     @Test

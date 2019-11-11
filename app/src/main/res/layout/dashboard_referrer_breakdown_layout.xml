@@ -17,7 +17,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_6"
-    android:layout_marginTop="@dimen/grid_7"
+    android:layout_marginTop="@dimen/grid_4"
     android:paddingEnd="@dimen/grid_2"
     android:paddingStart="@dimen/grid_2"
     android:text="@string/How_backers_found_your_project" />

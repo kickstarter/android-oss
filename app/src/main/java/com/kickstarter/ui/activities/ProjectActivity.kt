@@ -260,6 +260,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCreatorBioWebViewActivity(it) }
 
+        this.viewModel.outputs.startCreatorDashboardActivity()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.startCreatorDashboardActivity(it) }
+
         this.viewModel.outputs.startManagePledgeActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -663,6 +668,12 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val intent = Intent(this, CreatorBioActivity::class.java)
                 .putExtra(IntentKey.PROJECT, project)
                 .putExtra(IntentKey.URL, project.creatorBioUrl())
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun startCreatorDashboardActivity(project: Project) {
+        val intent = Intent(this, CreatorDashboardActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

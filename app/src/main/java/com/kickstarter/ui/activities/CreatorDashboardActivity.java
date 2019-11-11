@@ -64,40 +64,30 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
     ToolbarUtils.INSTANCE.fadeAndTranslateToolbarTitleOnExpand(this.appBarLayout, this.collapsedToolbarTitle);
 
+    this.viewModel.outputs.bottomSheetShouldExpand()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::bottomSheetShouldExpand);
+
     this.viewModel.outputs.progressBarIsVisible()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(visible -> ViewUtils.setGone(this.progressBar, !visible));
 
-    this.viewModel.outputs.projectAndStats()
+    this.viewModel.outputs.projectDashboardData()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(projectAndStats -> this.adapter.takeProjectAndStats(projectAndStats));
+      .subscribe(this.adapter::takeProjectDashboardData);
 
-    this.viewModel.outputs.projectAndStats()
+    this.viewModel.outputs.projectName()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pair -> this.projectNameTextView.setText(pair.first.name()));
-
-    this.viewModel.outputs.projectAndStats()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(pair -> this.collapsedToolbarTitle.setText(pair.first.name()));
+      .subscribe(this::setProjectNameTextViews);
 
     this.viewModel.outputs.projectsForBottomSheet()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::setProjectsForDropdown);
-
-    this.viewModel.outputs.projectAndStats()
-       .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> newProjectClicked());
-
-    this.viewModel.outputs.openBottomSheet()
-       .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> toggleBottomSheetClick());
 
     createAndSetBottomSheetCallback();
   }
@@ -105,7 +95,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
   @Override
   public void back() {
     if (this.bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-      hideBottomSheet();
+      this.viewModel.inputs.backClicked();
     } else {
       super.back();
     }
@@ -113,7 +103,7 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
 
   @OnClick(R.id.creator_dashboard_bottom_sheet_scrim)
   protected void bottomSheetScrimClicked() {
-    hideBottomSheet();
+    this.viewModel.inputs.scrimClicked();
   }
 
   @Override
@@ -122,6 +112,14 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.recyclerView.setAdapter(null);
     this.bottomSheetRecyclerView.setAdapter(null);
     this.bottomSheetBehavior.setBottomSheetCallback(null);
+  }
+
+  public void bottomSheetShouldExpand(final boolean expand) {
+    if(expand) {
+      showBottomSheet();
+    } else {
+      hideBottomSheet();
+    }
   }
 
   private void createAndSetBottomSheetCallback() {
@@ -141,20 +139,21 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
   }
 
-  private void setProjectsForDropdown(final @NonNull List<Project> projects) {
-    this.bottomSheetAdapter.takeProjects(projects);
-  }
-
-  private void newProjectClicked() {
-    hideBottomSheet();
-  }
-
   private void hideBottomSheet() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     this.bottomSheetScrim.setVisibility(View.GONE);
   }
 
-  public void toggleBottomSheetClick() {
+  private void setProjectNameTextViews(final @NonNull String projectName) {
+    this.projectNameTextView.setText(projectName);
+    this.collapsedToolbarTitle.setText(projectName);
+  }
+
+  private void setProjectsForDropdown(final @NonNull List<Project> projects) {
+    this.bottomSheetAdapter.takeProjects(projects);
+  }
+
+  public void showBottomSheet() {
     this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     this.bottomSheetScrim.setVisibility(View.VISIBLE);
   }

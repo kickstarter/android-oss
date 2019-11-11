@@ -7,6 +7,7 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.ui.viewholders.CreatorDashboardHeaderViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerBreakdownViewHolder;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsViewHolder;
@@ -62,28 +63,30 @@ public class CreatorDashboardAdapter extends KSAdapter {
     }
   }
 
-  public void takeProjectAndStats(final @NonNull Pair<Project, ProjectStatsEnvelope> projectAndStatsEnvelope) {
-    setSection(SECTION_FUNDING_VIEW, Collections.singletonList(projectAndStatsEnvelope));
+  public void takeProjectDashboardData(final @NonNull ProjectDashboardData projectDashboardData) {
+    setSection(SECTION_FUNDING_VIEW, Collections.singletonList(projectDashboardData));
 
     // add reward stats sections
+    final Project project = projectDashboardData.getProject();
+    final ProjectStatsEnvelope projectStatsEnvelope = projectDashboardData.getProjectStatsEnvelope();
     setSection(
       SECTION_REWARD_STATS_VIEW,
       Collections.singletonList(
-        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.rewardDistribution())
+        Pair.create(project, projectStatsEnvelope.rewardDistribution())
       )
     );
 
     setSection(
       SECTION_REFERRER_BREAKDOWN_LAYOUT,
       Collections.singletonList(
-        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second)
+        Pair.create(project, projectStatsEnvelope)
       )
     );
 
     setSection(
       SECTION_REFERRER_STATS_VIEW,
       Collections.singletonList(
-        Pair.create(projectAndStatsEnvelope.first, projectAndStatsEnvelope.second.referralDistribution())
+        Pair.create(project, projectStatsEnvelope.referralDistribution())
       )
     );
 

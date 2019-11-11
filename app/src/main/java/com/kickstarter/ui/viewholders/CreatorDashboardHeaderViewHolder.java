@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 
 import android.content.Intent;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -16,10 +15,10 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessageThreadsActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 import com.kickstarter.viewmodels.CreatorDashboardHeaderHolderViewModel;
 
 import androidx.annotation.NonNull;
@@ -45,6 +44,7 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_dashboard_project_selector) Button projectsButton;
   protected @Bind(R.id.creator_dashboard_time_remaining) TextView timeRemainingTextView;
   protected @Bind(R.id.creator_dashboard_time_remaining_text) TextView timeRemainingTextTextView;
+  protected @Bind(R.id.creator_view_project_button) RelativeLayout viewProjectButton;
 
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
@@ -121,6 +121,11 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
+
+    this.viewModel.outputs.viewProjectButtonIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.viewProjectButton));
   }
 
   @OnClick(R.id.creator_dashboard_project_selector)
@@ -139,9 +144,9 @@ public final class CreatorDashboardHeaderViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-    final Pair<Project, ProjectStatsEnvelope> projectAndProjectStats = requireNonNull((Pair<Project, ProjectStatsEnvelope>) data);
-    this.viewModel.inputs.projectAndStats(projectAndProjectStats);
+  public void bindData(final @Nullable Object data) {
+    final ProjectDashboardData projectDashboardData = requireNonNull((ProjectDashboardData) data);
+    this.viewModel.inputs.configureWith(projectDashboardData);
   }
 
   private void setPledgedOfGoalString(final @NonNull Project currentProject) {

@@ -268,7 +268,7 @@ public interface ProjectHolderViewModel {
         .map(enabledAndOverride -> Build.isExternal() ? enabledAndOverride.first : enabledAndOverride.second)
         .distinctUntilChanged();
 
-      final Observable<Boolean> currentUserIsCreator = this.project
+      final Observable<Boolean> userIsCreatorOfProject = this.project
         .map(Project::creator)
         .compose(combineLatestPair(this.currentUser.observable()))
         .map(creatorAndCurrentUser -> ObjectUtils.isNotNull(creatorAndCurrentUser.second) && creatorAndCurrentUser.first.id() == creatorAndCurrentUser.second.id());
@@ -276,11 +276,11 @@ public interface ProjectHolderViewModel {
       this.projectDashboardButtonText = this.project
         .map(Project::isLive)
         .map(live -> live ? R.string.View_progress : R.string.View_dashboard)
-        .compose(combineLatestPair(currentUserIsCreator))
+        .compose(combineLatestPair(userIsCreatorOfProject))
         .filter(buttonTextAndIsCreator -> buttonTextAndIsCreator.second)
         .map(buttonTextAndIsCreator -> buttonTextAndIsCreator.first);
 
-      this.projectDashboardContainerIsGone = currentUserIsCreator
+      this.projectDashboardContainerIsGone = userIsCreatorOfProject
         .map(BooleanUtils::negate);
 
       this.projectDisclaimerGoalReachedDateTime = this.project
@@ -300,7 +300,7 @@ public interface ProjectHolderViewModel {
 
       this.projectLaunchDateIsGone = this.project
         .map(Project::launchedAt)
-        .compose(combineLatestPair(currentUserIsCreator))
+        .compose(combineLatestPair(userIsCreatorOfProject))
         .map(launchDateAndIsCreator -> ObjectUtils.isNotNull(launchDateAndIsCreator.first) && BooleanUtils.isTrue(launchDateAndIsCreator.second))
         .map(BooleanUtils::negate);
 

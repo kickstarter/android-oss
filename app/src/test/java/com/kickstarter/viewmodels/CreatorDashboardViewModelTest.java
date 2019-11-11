@@ -84,7 +84,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.koalaTest.assertNoValues();
   }
 
-  public void testProjectAndStats_whenIntentDoesNotHaveProjectExtra() {
+  public void testProjectDashboardData_whenViewingAllProjects() {
     final List<Project> projects = Collections.singletonList(ProjectFactory.project());
 
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
@@ -104,7 +104,7 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 
-  public void testProjectAndStats_whenIntentHasProjectExtra() {
+  public void testProjectDashboardData_whenViewingSingleProjects() {
     final Project project = ProjectFactory.project();
 
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();

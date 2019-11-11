@@ -62,10 +62,10 @@ public interface CreatorDashboardViewModel {
       super(environment);
       this.client = environment.apiClient();
 
-      final Observable<Boolean> intentHasProjectExtra = intent()
+      final Observable<Boolean> isViewingSingleProject = intent()
         .map(intent -> intent.hasExtra(IntentKey.PROJECT));
 
-      final Observable<Notification<ProjectsEnvelope>> projectsNotification = intentHasProjectExtra
+      final Observable<Notification<ProjectsEnvelope>> projectsNotification = isViewingSingleProject
         .filter(BooleanUtils::isFalse)
         .switchMap(i -> this.client.fetchProjects(true)
           .materialize()
@@ -113,7 +113,7 @@ public interface CreatorDashboardViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.projectsForBottomSheet);
 
-      Observable.combineLatest(currentProject, projectStatsEnvelope, intentHasProjectExtra, ProjectDashboardData::new)
+      Observable.combineLatest(currentProject, projectStatsEnvelope, isViewingSingleProject, ProjectDashboardData::new)
         .compose(bindToLifecycle())
         .distinctUntilChanged()
         .subscribe(this.projectDashboardData);
@@ -142,9 +142,9 @@ public interface CreatorDashboardViewModel {
     }
 
     private final PublishSubject<Void> backClicked = PublishSubject.create();
-    private final PublishSubject<Void> scrimClicked = PublishSubject.create();
     private final PublishSubject<Project> projectSelectionInput = PublishSubject.create();
     private final PublishSubject<Void> projectsListButtonClicked = PublishSubject.create();
+    private final PublishSubject<Void> scrimClicked = PublishSubject.create();
 
     private final BehaviorSubject<Boolean> bottomSheetShouldExpand = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> progressBarIsVisible = BehaviorSubject.create();
@@ -159,11 +159,11 @@ public interface CreatorDashboardViewModel {
     @Override public void backClicked() {
       this.backClicked.onNext(null);
     }
-    @Override public void projectsListButtonClicked() {
-      this.projectsListButtonClicked.onNext(null);
-    }
     @Override public void projectSelectionInput(final @NonNull Project project) {
       this.projectSelectionInput.onNext(project);
+    }
+    @Override public void projectsListButtonClicked() {
+      this.projectsListButtonClicked.onNext(null);
     }
     @Override public void scrimClicked() {
       this.scrimClicked.onNext(null);
@@ -178,11 +178,11 @@ public interface CreatorDashboardViewModel {
     @Override public @NonNull Observable<ProjectDashboardData> projectDashboardData() {
       return this.projectDashboardData;
     }
-    @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
-      return this.projectsForBottomSheet;
-    }
     @Override public @NonNull Observable<String> projectName() {
       return this.projectName;
+    }
+    @Override public @NonNull Observable<List<Project>> projectsForBottomSheet() {
+      return this.projectsForBottomSheet;
     }
   }
 }

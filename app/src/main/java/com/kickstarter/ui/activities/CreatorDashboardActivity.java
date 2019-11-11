@@ -139,8 +139,9 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.bottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
   }
 
-  private void setProjectsForDropdown(final @NonNull List<Project> projects) {
-    this.bottomSheetAdapter.takeProjects(projects);
+  private void hideBottomSheet() {
+    this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    this.bottomSheetScrim.setVisibility(View.GONE);
   }
 
   private void setProjectNameTextViews(final @NonNull String projectName) {
@@ -148,9 +149,8 @@ public final class CreatorDashboardActivity extends BaseActivity<CreatorDashboar
     this.collapsedToolbarTitle.setText(projectName);
   }
 
-  private void hideBottomSheet() {
-    this.bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-    this.bottomSheetScrim.setVisibility(View.GONE);
+  private void setProjectsForDropdown(final @NonNull List<Project> projects) {
+    this.bottomSheetAdapter.takeProjects(projects);
   }
 
   public void showBottomSheet() {

@@ -67,7 +67,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
-    /** time remaining for latest project (no units) */
+    /** Emits the time remaining for current project with no units. */
     Observable<String> timeRemainingText();
 
     /** Emits a boolean determining if the view project button should be gone. */
@@ -85,7 +85,7 @@ public interface CreatorDashboardHeaderHolderViewModel {
       final Observable<User> user = this.currentUser.observable();
 
       final Observable<Boolean> singleProjectView = this.projectDashboardData
-        .map(ProjectDashboardData::getSingleProjectView);
+        .map(ProjectDashboardData::isViewingSingleProject);
 
       this.otherProjectsButtonIsGone = user
         .map(User::memberProjectsCount)

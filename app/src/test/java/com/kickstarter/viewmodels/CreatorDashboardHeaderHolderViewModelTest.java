@@ -35,10 +35,10 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   private final TestSubscriber<String> projectBackersCountText = new TestSubscriber<>();
   private final TestSubscriber<String> projectNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Integer> progressBarBackground = new TestSubscriber<>();
-  private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startMessageThreadsActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewProjectButtonIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> timeRemainingText = new TestSubscriber<>();
 
   protected void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new CreatorDashboardHeaderHolderViewModel.ViewModel(environment);
@@ -71,7 +71,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   }
 
   @Test
-  public void testMessagesButtonIsGone_whenCurrentUserIsCreator() {
+  public void testMessagesButtonIsGone_whenCurrentUserIsProjectCreator() {
     final User creator = UserFactory.creator();
     final CurrentUserType currentUser = new MockCurrentUser(creator);
     final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
@@ -155,7 +155,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_LiveProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(getDashboardDataForState(Project.STATE_LIVE));
+    this.vm.inputs.configureWith(getDashboardDataForProjectState(Project.STATE_LIVE));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -163,7 +163,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_SubmittedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(getDashboardDataForState(Project.STATE_SUBMITTED));
+    this.vm.inputs.configureWith(getDashboardDataForProjectState(Project.STATE_SUBMITTED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -171,7 +171,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_StartedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(getDashboardDataForState(Project.STATE_STARTED));
+    this.vm.inputs.configureWith(getDashboardDataForProjectState(Project.STATE_STARTED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -179,7 +179,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_SuccessfulProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(getDashboardDataForState(Project.STATE_SUCCESSFUL));
+    this.vm.inputs.configureWith(getDashboardDataForProjectState(Project.STATE_SUCCESSFUL));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_green_horizontal);
   }
 
@@ -187,7 +187,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_FailedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(getDashboardDataForState(Project.STATE_FAILED));
+    this.vm.inputs.configureWith(getDashboardDataForProjectState(Project.STATE_FAILED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
@@ -195,7 +195,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_CanceledProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(getDashboardDataForState(Project.STATE_CANCELED));
+    this.vm.inputs.configureWith(getDashboardDataForProjectState(Project.STATE_CANCELED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
@@ -203,7 +203,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   public void testProgressBarBackground_SuspendedProject() {
     setUpEnvironment(environment());
 
-    this.vm.inputs.configureWith(getDashboardDataForState(Project.STATE_SUSPENDED));
+    this.vm.inputs.configureWith(getDashboardDataForProjectState(Project.STATE_SUSPENDED));
     this.progressBarBackground.assertValue(R.drawable.progress_bar_grey_horizontal);
   }
 
@@ -259,7 +259,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
     this.viewProjectButtonIsGone.assertValue(false);
   }
 
-  private ProjectDashboardData getDashboardDataForState(final @Project.State String state) {
+  private ProjectDashboardData getDashboardDataForProjectState(final @Project.State String state) {
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
 
     final Project project = ProjectFactory.project().toBuilder().state(state).build();

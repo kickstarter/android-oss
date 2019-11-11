@@ -385,19 +385,8 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     @Test
     fun testPledgeStatusData_whenBackingIsCanceled() {
         val backedProject = backedProjectWithBackingStatus(Backing.STATUS_CANCELED)
-
-        setUpEnvironment(environment())
-
-        this.vm.inputs.project(backedProject)
-        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_collected_your_pledge_for_this_project,
-                "$20", "November 11, 2019"))
-    }
-
-    @Test
-    fun testPledgeStatusData_whenBackingIsCollected() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
                 .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
                 .build()
 
         setUpEnvironment(environment())
@@ -408,11 +397,29 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeStatusData_whenBackingIsCollected() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_collected_your_pledge_for_this_project,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
     fun testPledgeStatusData_whenBackingIsDropped() {
         val backedProject = backedProjectWithBackingStatus(Backing.STATUS_DROPPED)
                 .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
+
+        setUpEnvironment(environment())
 
         this.vm.inputs.project(backedProject)
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.Your_pledge_was_dropped_because_of_payment_errors,
@@ -422,6 +429,9 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     @Test
     fun testPledgeStatusData_whenBackingIsPledged() {
         val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PLEDGED)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .build()
 
         setUpEnvironment(environment())
 

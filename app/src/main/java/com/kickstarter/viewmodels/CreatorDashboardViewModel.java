@@ -149,8 +149,8 @@ public interface CreatorDashboardViewModel {
     private final BehaviorSubject<Boolean> bottomSheetShouldExpand = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> progressBarIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<ProjectDashboardData> projectDashboardData = BehaviorSubject.create();
-    private final BehaviorSubject<List<Project>> projectsForBottomSheet = BehaviorSubject.create();
     private final BehaviorSubject<String> projectName = BehaviorSubject.create();
+    private final BehaviorSubject<List<Project>> projectsForBottomSheet = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

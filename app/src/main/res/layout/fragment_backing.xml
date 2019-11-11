@@ -35,7 +35,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="center_vertical"
-          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginBottom="@dimen/grid_4"
           android:orientation="horizontal">
 
           <ImageView
@@ -76,6 +76,19 @@
           </LinearLayout>
         </LinearLayout>
 
+        <TextView
+          android:id="@+id/backer_pledge_status"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_4"
+          android:background="@color/ksr_grey_400"
+          android:gravity="center"
+          android:paddingStart="@dimen/grid_4"
+          android:paddingTop="@dimen/grid_2"
+          android:paddingEnd="@dimen/grid_4"
+          android:paddingBottom="@dimen/grid_2"
+          tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
 
         <include
           layout="@layout/fragment_pledge_section_summary_pledge"

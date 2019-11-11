@@ -11,6 +11,7 @@ import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.ui.data.PledgeStatusData
 import com.stripe.android.model.Card
 import org.joda.time.DateTime
 import org.junit.Test
@@ -29,6 +30,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private val paymentMethodIsGone = TestSubscriber.create<Boolean>()
     private val pledgeAmount = TestSubscriber.create<CharSequence>()
     private val pledgeDate = TestSubscriber.create<String>()
+    private val pledgeStatusData = TestSubscriber.create<PledgeStatusData>()
     private val pledgeSummaryIsGone = TestSubscriber.create<Boolean>()
     private val projectAndReward = TestSubscriber.create<Pair<Project, Reward>>()
     private val receivedCheckboxChecked = TestSubscriber.create<Boolean>()
@@ -51,6 +53,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm.outputs.paymentMethodIsGone().subscribe(this.paymentMethodIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.pledgeDate().subscribe(this.pledgeDate)
+        this.vm.outputs.pledgeStatusData().subscribe(this.pledgeStatusData)
         this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.projectAndReward().subscribe(this.projectAndReward)
         this.vm.outputs.receivedCheckboxChecked().subscribe(this.receivedCheckboxChecked)
@@ -350,6 +353,84 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeStatusData_whenProjectIsCanceled() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PLEDGED)
+                .toBuilder()
+                .state(Project.STATE_CANCELED)
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
+    fun testPledgeStatusData_whenProjectIsUnsuccessful() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PLEDGED)
+                .toBuilder()
+                .state(Project.STATE_FAILED)
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
+    fun testPledgeStatusData_whenBackingIsCanceled() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_CANCELED)
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_collected_your_pledge_for_this_project,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
+    fun testPledgeStatusData_whenBackingIsCollected() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.You_canceled_your_pledge_for_this_project,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
+    fun testPledgeStatusData_whenBackingIsDropped() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_DROPPED)
+                .toBuilder()
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.Your_pledge_was_dropped_because_of_payment_errors,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
+    fun testPledgeStatusData_whenBackingIsPledged() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PLEDGED)
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
     fun testPledgeSummaryIsGone_whenLocationId_isNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
@@ -580,6 +661,18 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.project(backedProject)
         this.totalAmount.assertValue("$10.50")
+    }
+
+    private fun backedProjectWithBackingStatus(@Backing.Status backingStatus: String): Project {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(20.0)
+                .status(backingStatus)
+                .build()
+        return ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
     }
 
 }

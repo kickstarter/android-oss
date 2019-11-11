@@ -246,6 +246,8 @@ Please tap to retry.</string>
   <string name="If_you_turn_following_off" formatted="false">If you turn following off, you won\'t be able to follow anyone and no one will be able to follow you. Your profile will be disconnected from all of your followers.</string>
   <string name="If_your_profile_is_private" formatted="false">If your profile is private, others can see your name and picture.</string>
   <string name="If_your_profile_is_public" formatted="false">If your profile is not private, others can also see the projects you\'ve backed, your location, bio and websites.</string>
+  <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">If your project reaches its funding goal, the backer will be charged on %{project_deadline}.</string>
+  <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">If your project reaches its funding goal, the backer will be charged %{total} on %{project_deadline}.</string>
   <string name="Increase_pledge" formatted="false">Increase pledge</string>
   <string name="Individual_Emails" formatted="false">Individual emails</string>
   <string name="Info" formatted="false">Info</string>
@@ -422,6 +424,7 @@ daring ideas.</string>
   <string name="Request_my_data" formatted="false">Request my data</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
+  <string name="Retry" formatted="false">Retry</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
@@ -508,6 +511,8 @@ catch your eye?</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Thank you for supporting this project.</string>
   <string name="Thanks_for_being_part_of_all_the_joy" formatted="false">Thanks for being part of all the joy, hard work, and hope that’s gone into it—and cheers to what’s ahead.</string>
   <string name="Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality" formatted="false">Thanks for bringing this project one step closer to becoming a reality.</string>
+  <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">The backer canceled their pledge for this project.</string>
+  <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">The creator canceled this project, so your payment method was never charged.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">The email associated with this Facebook account is already registered to another Kickstarter user.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">The live stream failed to connect</string>
   <string name="The_live_stream_was_interrupted" formatted="false">The live stream was interrupted</string>
@@ -520,6 +525,8 @@ catch your eye?</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">There was a problem with this payment.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">This allows you to see project goal and pledge amounts in your preferred currency.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">This Facebook account is already linked to another Kickstarter user.</string>
+  <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
+  <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">To access all your favorite categories, tap the explore dropdown at the top of the app.</string>
@@ -558,6 +565,10 @@ catch your eye?</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">Watch live</string>
+  <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
+  <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">We can’t process your pledge. Please update your payment method.</string>
+  <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">We collected the backer’s pledge for this project.</string>
+  <string name="We_collected_your_pledge_for_this_project" formatted="false">We collected your pledge for this project.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for “%{search_term}”.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">We couldn\'t process your pledge.</string>
   <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">We don’t allow cancelations that will cause a project to fall short of its goal within the last 24 hours.</string>
@@ -583,6 +594,8 @@ Please try again later.</string>
   <string name="Yes_turn_off" formatted="false">Yes, turn off</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>
+  <string name="You_canceled_this_project_so_the_backers_payment_method_was_never_charged" formatted="false">You canceled this project, so the backer’s payment method was never charged.</string>
+  <string name="You_canceled_your_pledge_for_this_project" formatted="false">You canceled your pledge for this project.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">You can’t use this credit card to back a project from %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">You have successfully backed &lt;b>%{project_name}&lt;/b>. This project is now one step closer to a reality, thanks to you. Spread the word!</string>
   <string name="You_launched_this_project_on_launch_date" formatted="false">You launched this project on %{launch_date}.</string>
@@ -600,6 +613,8 @@ Please try again later.</string>
   <string name="Your_pledge_amount" formatted="false">Your pledge amount</string>
   <string name="Your_pledge_was_canceled_or_the_creator_canceled" formatted="false">Your pledge was canceled or the creator canceled the project before its deadline.</string>
   <string name="Your_pledge_was_dropped" formatted="false">Your pledge was dropped.</string>
+  <string name="Your_pledge_was_dropped_because_of_payment_errors" formatted="false">Your pledge was dropped because of payment errors.</string>
+  <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">Your project didn’t reach its funding goal, so the backer’s payment method was never charged.</string>
   <string name="Your_reward" formatted="false">Your reward</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Your reward&lt;/b> estimated for delivery in %{delivery_date}</string>
   <string name="Your_shipping_destination" formatted="false">Your shipping destination</string>

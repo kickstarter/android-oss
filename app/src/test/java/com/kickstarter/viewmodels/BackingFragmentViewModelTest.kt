@@ -441,6 +441,20 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeStatusData_whenBackingIsPreAuth() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PREAUTH)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_re_processing_your_pledge_pull_to_refresh,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
     fun testPledgeSummaryIsGone_whenLocationId_isNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()

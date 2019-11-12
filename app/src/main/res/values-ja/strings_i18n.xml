@@ -558,7 +558,7 @@
   <string name="View_rewards" formatted="false">リワードを見る</string>
   <string name="View_your_pledge" formatted="false">プレッジをみる</string>
   <string name="View_your_reward" formatted="false">リワードをみる</string>
-  <string name="View_your_rewards" formatted="false">View your rewards</string>
+  <string name="View_your_rewards" formatted="false">リワードを見る</string>
   <string name="Watch_live" formatted="false">ライブをみる</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">We can’t process your pledge. Please update your payment method.</string>
@@ -567,6 +567,8 @@
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">「%{search_term}」に一致するものがありませんでした。</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">プレッジを処理できませんでした。</string>
   <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">キャンペーンの最後の24時間において、プレッジを取り消すことよってプロジェクトがファンディングゴールに到達できなくなる場合においては、そのようなプレッジの取り消しは許可されません。</string>
+  <string name="We_re_processing_this_pledge_pull_to_refresh" formatted="false">We\'re processing this pledge—pull to refresh.</string>
+  <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">We\'re processing your pledge—pull to refresh.</string>
   <string name="We_think_youll_like_these_too" formatted="false">その他おすすめプロジェクト</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">あなたのアクティビティをもとにおすすめの提供を行っています。オプトアウトするにはおすすめ機能をオフにしてください。</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">このアドレスにメールを送信できませんでした。メールアドレスが正確に入力されていることをご確認ください。</string>

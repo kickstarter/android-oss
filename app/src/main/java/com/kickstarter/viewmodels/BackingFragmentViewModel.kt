@@ -319,6 +319,7 @@ interface BackingFragmentViewModel {
                     Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
                     Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
                     Backing.STATUS_PLEDGED -> R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
+                    Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh
                     else -> null
                 }
             }

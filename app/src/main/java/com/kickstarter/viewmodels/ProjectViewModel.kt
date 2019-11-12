@@ -9,6 +9,7 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
@@ -777,7 +778,10 @@ interface ProjectViewModel {
             val count = projectAndFragmentStackCount.second
             return when {
                 !project.isBacking || IntegerUtils.isNonZero(count) -> null
-                project.isLive -> R.menu.manage_pledge_live
+                project.isLive -> when {
+                    project.backing()?.status() == Backing.STATUS_PREAUTH -> R.menu.manage_pledge_preauth
+                    else -> R.menu.manage_pledge_live
+                }
                 else -> R.menu.manage_pledge_ended
             }
         }

@@ -83,6 +83,9 @@ interface ProjectViewModel {
         /** Call when the user clicks the navigation icon of the pledge toolbar. */
         fun pledgeToolbarNavigationClicked()
 
+        /** Call when the user has triggered a manual refresh of the project. */
+        fun refreshProject()
+
         /** Call when the reload container is clicked.  */
         fun reloadProjectContainerClicked()
 
@@ -258,6 +261,7 @@ interface ProjectViewModel {
         private val pledgeSuccessfullyCreated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeToolbarNavigationClicked = PublishSubject.create<Void>()
+        private val refreshProject = PublishSubject.create<Void>()
         private val reloadProjectContainerClicked = PublishSubject.create<Void>()
         private val shareButtonClicked = PublishSubject.create<Void>()
         private val updatePaymentClicked = PublishSubject.create<Void>()
@@ -401,7 +405,8 @@ interface ProjectViewModel {
             val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled,
                     this.pledgeSuccessfullyCreated,
                     this.pledgeSuccessfullyUpdated,
-                    this.pledgePaymentSuccessfullyUpdated)
+                    this.pledgePaymentSuccessfullyUpdated,
+                    this.refreshProject)
 
             val refreshedProjectNotification = initialProject
                     .compose(takeWhen<Project, Void>(refreshProjectEvent))
@@ -895,6 +900,10 @@ interface ProjectViewModel {
 
         override fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder) {
             this.updatesTextViewClicked()
+        }
+
+        override fun refreshProject() {
+            this.refreshProject.onNext(null)
         }
 
         override fun reloadProjectContainerClicked() {

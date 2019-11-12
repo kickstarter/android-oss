@@ -50,7 +50,7 @@ import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
 class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate,
-        NewCardFragment.OnCardSavedListener, PledgeFragment.PledgeDelegate {
+        NewCardFragment.OnCardSavedListener, PledgeFragment.PledgeDelegate, BackingFragment.BackingDelegate {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
 
@@ -348,6 +348,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     override fun cardSaved(storedCard: StoredCard) {
         pledgeFragment()?.cardAdded(storedCard)
         supportFragmentManager.popBackStack()
+    }
+
+    override fun refreshProject() {
+        this.viewModel.inputs.refreshProject()
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {}

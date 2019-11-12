@@ -247,6 +247,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="If_your_profile_is_private" formatted="false">Si tu perfil es privado, otros usuarios podrán ver tu nombre e imagen.\n
 </string>
   <string name="If_your_profile_is_public" formatted="false">Si tu perfil no es privado, otros usuarios también podrán ver los proyectos que has patrocinado, tu ubicación, biografía y sitios web.</string>
+  <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">If your project reaches its funding goal, the backer will be charged on %{project_deadline}.</string>
+  <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">If your project reaches its funding goal, the backer will be charged %{total} on %{project_deadline}.</string>
   <string name="Increase_pledge" formatted="false">Incrementar contribución</string>
   <string name="Individual_Emails" formatted="false">Notificaciones por correo electrónico individuales</string>
   <string name="Info" formatted="false">Información</string>
@@ -420,6 +422,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Request_my_data" formatted="false">Solicitar mis datos</string>
   <string name="Request_my_personal_data" formatted="false">Solicitar mis datos personales</string>
   <string name="Resend_verification_email" formatted="false">Volver a enviar correo electrónico de verificación</string>
+  <string name="Retry" formatted="false">Volver a intentar</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_one" formatted="false">Cuestionario</string>
@@ -505,6 +508,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Gracias por apoyar este proyecto.</string>
   <string name="Thanks_for_being_part_of_all_the_joy" formatted="false">Gracias por ser parte de toda la alegría, el arduo trabajo y las expectativas que esto ha generado. Brindemos por lo que está por venir.</string>
   <string name="Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality" formatted="false">Gracias por llevar este proyecto un paso más cerca de convertirse en realidad.</string>
+  <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">The backer canceled their pledge for this project.</string>
+  <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">The creator canceled this project, so your payment method was never charged.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">Esta cuenta de correo electrónico ya está asociada a otro usuario de Kickstarter.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">No se pudo conectar la transmisión en directo</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Transmisión en vivo fue interrumpida</string>
@@ -517,6 +522,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">Ocurrió un error con el pago.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">Esto te permite ver la meta del proyecto y los montos de las contribuciones en la moneda de tu preferencia.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.</string>
+  <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
+  <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">Este proyecto sólo será financiado si se contribuye al menos un monto de %{amount} antes del %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Accede a tus categorías favoritas en el menú en la parte superior de la app.</string>
@@ -555,6 +562,10 @@ Haz clic para volver a intentarlo.</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
   <string name="View_your_rewards" formatted="false">Ver tus recompensas</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
+  <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
+  <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">We can’t process your pledge. Please update your payment method.</string>
+  <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">We collected the backer’s pledge for this project.</string>
+  <string name="We_collected_your_pledge_for_this_project" formatted="false">We collected your pledge for this project.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">No pudimos procesar tu contribución.</string>
   <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">No permitimos cancelaciones que ocasionen que un proyecto no alcance su meta en las últimas 24 horas.</string>
@@ -580,6 +591,8 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Yes_turn_off" formatted="false">Sí, desactivar</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
+  <string name="You_canceled_this_project_so_the_backers_payment_method_was_never_charged" formatted="false">You canceled this project, so the backer’s payment method was never charged.</string>
+  <string name="You_canceled_your_pledge_for_this_project" formatted="false">You canceled your pledge for this project.</string>
   <string name="You_cant_use_this_credit_card_to_back_a_project_from_project_country" formatted="false">No puedes usar esta tarjeta de crédito para patrocinar un proyecto de %{project_country}.</string>
   <string name="You_have_successfully_backed_project_html" formatted="false">Has patrocinado &lt;b>%{project_name}&lt;/b> con éxito. Gracias a ti, este proyecto está ahora un paso más cerca de hacerse realidad. ¡Corre la voz!</string>
   <string name="You_launched_this_project_on_launch_date" formatted="false">Publicaste el proyecto el: %{launch_date}.</string>
@@ -597,6 +610,8 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Your_pledge_amount" formatted="false">Monto de tu contribución:</string>
   <string name="Your_pledge_was_canceled_or_the_creator_canceled" formatted="false">El patrocinador canceló la contribución o el creador canceló el proyecto antes de que éste llegara al plazo estipulado.</string>
   <string name="Your_pledge_was_dropped" formatted="false">Tu Contribución fue descartada.</string>
+  <string name="Your_pledge_was_dropped_because_of_payment_errors" formatted="false">Your pledge was dropped because of payment errors.</string>
+  <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">Your project didn’t reach its funding goal, so the backer’s payment method was never charged.</string>
   <string name="Your_reward" formatted="false">Tu recompensa</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Tu recompensa&lt;/b> estimada para entregarse en %{delivery_date}</string>
   <string name="Your_shipping_destination" formatted="false">Tu destino de envío</string>

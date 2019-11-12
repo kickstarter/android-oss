@@ -13,6 +13,7 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
 import rx.Observable
@@ -66,6 +67,9 @@ interface BackingFragmentViewModel {
         /** Emits the date the backing was pledged on. */
         fun pledgeDate(): Observable<String>
 
+        /** Emits the string resource ID that best represents the pledge status and associated data. */
+        fun pledgeStatusData(): Observable<PledgeStatusData>
+
         /** Emits a boolean determining if the pledge summary should be visible. */
         fun pledgeSummaryIsGone(): Observable<Boolean>
 
@@ -110,6 +114,7 @@ interface BackingFragmentViewModel {
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeDate = BehaviorSubject.create<String>()
+        private val pledgeStatusData = BehaviorSubject.create<PledgeStatusData>()
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val projectAndReward = BehaviorSubject.create<Pair<Project, Reward>>()
         private val receivedCheckboxChecked = BehaviorSubject.create<Boolean>()
@@ -186,6 +191,12 @@ interface BackingFragmentViewModel {
                         this.pledgeSummaryIsGone.onNext(it)
                         this.shippingSummaryIsGone.onNext(it)
                     }
+
+            backedProject
+                    .map { pledgeStatusData(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeStatusData)
 
             backing
                     .map { it.shippingAmount() }
@@ -298,6 +309,25 @@ interface BackingFragmentViewModel {
             }
         }
 
+        private fun pledgeStatusData(project: Project) : PledgeStatusData {
+            val statusStringRes = when (project.state()) {
+                Project.STATE_CANCELED -> R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged
+                Project.STATE_FAILED -> R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged
+                else -> when (project.backing()?.status()) {
+                    Backing.STATUS_CANCELED -> R.string.You_canceled_your_pledge_for_this_project
+                    Backing.STATUS_COLLECTED -> R.string.We_collected_your_pledge_for_this_project
+                    Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
+                    Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
+                    Backing.STATUS_PLEDGED -> R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
+                    else -> null
+                }
+            }
+
+            val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
+            val pledgeTotal = project.backing()?.amount()?.let { this.ksCurrency.format(it, project) }
+            return PledgeStatusData(statusStringRes, pledgeTotal, projectDeadline)
+        }
+
         override fun pledgeSuccessfullyUpdated() {
             this.showUpdatePledgeSuccess.onNext(null)
         }
@@ -329,6 +359,8 @@ interface BackingFragmentViewModel {
         override fun pledgeAmount(): Observable<CharSequence> = this.pledgeAmount
 
         override fun pledgeDate(): Observable<String> = this.pledgeDate
+
+        override fun pledgeStatusData(): Observable<PledgeStatusData> = this.pledgeStatusData
 
         override fun pledgeSummaryIsGone(): Observable<Boolean> = this.pledgeSummaryIsGone
 

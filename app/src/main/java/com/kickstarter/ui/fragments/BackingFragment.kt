@@ -1,6 +1,7 @@
 package com.kickstarter.ui.fragments
 
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
@@ -86,6 +88,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { setPledgeDateText(it) }
+
+        this.viewModel.outputs.pledgeStatusData()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { setPledgeStatusText(it) }
 
         this.viewModel.outputs.pledgeSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -181,6 +188,26 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
 
     private fun setPledgeDateText(pledgeDate: String) {
         backing_date.text = this.viewModel.ksString.format(getString(R.string.As_of_pledge_date), "pledge_date", pledgeDate)
+    }
+
+    private fun setPledgeStatusText(pledgeStatusData: PledgeStatusData) {
+        val ksString = this.viewModel.ksString
+        val pledgeStatusText = pledgeStatusData.statusStringRes?.let {
+            when (pledgeStatusData.statusStringRes) {
+                R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline -> {
+                    ksString.format(getString(it),
+                            "total", pledgeStatusData.pledgeTotal,
+                            "project_deadline", pledgeStatusData.projectDeadline)
+                }
+                else -> getString(it)
+            }
+        }
+
+        val spannablePledgeStatus = SpannableString(pledgeStatusText)
+        pledgeStatusData.pledgeTotal?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
+        pledgeStatusData.projectDeadline?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
+
+        backer_pledge_status.text = spannablePledgeStatus
     }
 
 }

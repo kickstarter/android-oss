@@ -13,6 +13,7 @@ import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
@@ -1017,13 +1018,31 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testManagePledgeMenu_whenProjectBackedAndLive() {
+    fun testManagePledgeMenu_whenProjectBackedAndLive_backingIsPledged() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a backed project
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_live)
+    }
+
+    @Test
+    fun testManagePledgeMenu_whenProjectBackedAndLive_backingIsPreauth() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .status(Backing.STATUS_PREAUTH)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.managePledgeMenu.assertValue(R.menu.manage_pledge_preauth)
     }
 
     @Test

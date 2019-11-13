@@ -11,6 +11,7 @@ import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
+import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
@@ -30,6 +31,10 @@ import kotlinx.android.synthetic.main.reward_card_details.*
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
 class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
+
+    interface BackingDelegate {
+        fun refreshProject()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -73,6 +78,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { setCardLastFourText(it) }
+
+        this.viewModel.outputs.notifyDelegateToRefreshProject()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { (activity as BackingDelegate?)?.refreshProject() }
 
         this.viewModel.outputs.paymentMethodIsGone()
                 .compose(bindToLifecycle())
@@ -138,6 +148,10 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { total_summary_amount.text = it }
+
+        SwipeRefresher(
+                this, backing_swipe_refresh_layout, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
+        )
 
         RxView.clicks(mark_as_received_checkbox)
                 .compose(bindToLifecycle())

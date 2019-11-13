@@ -27,6 +27,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private val cardIssuer = TestSubscriber.create<Either<String, Int>>()
     private val cardLastFour = TestSubscriber.create<String>()
     private val cardLogo = TestSubscriber.create<Int>()
+    private val notifyDelegateToRefreshProject = TestSubscriber.create<Void>()
     private val paymentMethodIsGone = TestSubscriber.create<Boolean>()
     private val pledgeAmount = TestSubscriber.create<CharSequence>()
     private val pledgeDate = TestSubscriber.create<String>()
@@ -39,6 +40,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private val shippingLocation = TestSubscriber.create<String>()
     private val shippingSummaryIsGone = TestSubscriber.create<Boolean>()
     private val showUpdatePledgeSuccess = TestSubscriber.create<Void>()
+    private val swipeRefresherProgressIsVisible = TestSubscriber.create<Boolean>()
     private val totalAmount = TestSubscriber.create<CharSequence>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
@@ -50,6 +52,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm.outputs.cardIssuer().subscribe(this.cardIssuer)
         this.vm.outputs.cardLastFour().subscribe(this.cardLastFour)
         this.vm.outputs.cardLogo().subscribe(this.cardLogo)
+        this.vm.outputs.notifyDelegateToRefreshProject().subscribe(this.notifyDelegateToRefreshProject)
         this.vm.outputs.paymentMethodIsGone().subscribe(this.paymentMethodIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.pledgeDate().subscribe(this.pledgeDate)
@@ -62,6 +65,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm.outputs.shippingLocation().subscribe(this.shippingLocation)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
+        this.vm.outputs.swipeRefresherProgressIsVisible().subscribe(this.swipeRefresherProgressIsVisible)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
     }
 
@@ -314,6 +318,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.project(backedProject)
         this.cardIssuer.assertValue(Either.Left(Card.CardBrand.VISA))
+    }
+
+    @Test
+    fun testNotifyDelegateToRefreshProject() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.refreshProject()
+        this.notifyDelegateToRefreshProject.assertValueCount(1)
     }
 
     @Test
@@ -654,6 +666,21 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
         this.showUpdatePledgeSuccess.assertValueCount(1)
+    }
+
+    @Test
+    fun testSwipeRefresherProgressIsVisible() {
+        setUpEnvironment(environment())
+
+        //initial project is loaded
+        this.vm.inputs.project(ProjectFactory.backedProject())
+
+        this.vm.inputs.refreshProject()
+        this.swipeRefresherProgressIsVisible.assertValue(true)
+
+        //Project is refreshed
+        this.vm.inputs.project(ProjectFactory.backedProject())
+        this.swipeRefresherProgressIsVisible.assertValues(true, false)
     }
 
     @Test

@@ -1287,6 +1287,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValueCount(3)
     }
 
+    @Test
+    fun testProjectAndNativeCheckoutEnabled_whenRefreshProjectIsCalled() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+
+        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
+
+        this.vm.inputs.refreshProject()
+        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
+    }
+
     private fun apiClientWithErrorFetchingProject(): MockApiClient {
         return object : MockApiClient() {
             override fun fetchProject(project: Project): Observable<Project> {

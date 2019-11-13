@@ -34,6 +34,9 @@ interface BackingFragmentViewModel {
 
         /** Call when the mark as received checkbox is checked. */
         fun receivedCheckboxToggled(checked: Boolean)
+
+        /** Call when the swipe refresh layout is triggered. */
+        fun refreshProject()
     }
 
     interface Outputs {
@@ -57,6 +60,9 @@ interface BackingFragmentViewModel {
 
         /** Emits the card brand drawable to display. */
         fun cardLogo(): Observable<Int>
+
+        /** Emits when we should notify the [BackingFragment.BackingDelegate] to refresh the project. */
+        fun notifyDelegateToRefreshProject(): Observable<Void>
 
         /** Emits a boolean determining if the payment method section should be visible. */
         fun paymentMethodIsGone(): Observable<Boolean>
@@ -94,6 +100,9 @@ interface BackingFragmentViewModel {
         /** Emits when the backing has successfully been updated. */
         fun showUpdatePledgeSuccess(): Observable<Void>
 
+        /** Emits a boolean determining if the swipe refresher is visible. */
+        fun swipeRefresherProgressIsVisible(): Observable<Boolean>
+
         /** Emits the total amount pledged. */
         fun totalAmount(): Observable<CharSequence>
     }
@@ -103,6 +112,7 @@ interface BackingFragmentViewModel {
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val projectInput = PublishSubject.create<Project>()
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
+        private val refreshProject = PublishSubject.create<Void>()
 
         private val backerAvatar = BehaviorSubject.create<String>()
         private val backerName = BehaviorSubject.create<String>()
@@ -111,6 +121,7 @@ interface BackingFragmentViewModel {
         private val cardIssuer = BehaviorSubject.create<Either<String, Int>>()
         private val cardLastFour = BehaviorSubject.create<String>()
         private val cardLogo = BehaviorSubject.create<Int>()
+        private val notifyDelegateToRefreshProject = PublishSubject.create<Void>()
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeDate = BehaviorSubject.create<String>()
@@ -123,6 +134,7 @@ interface BackingFragmentViewModel {
         private val shippingLocation = BehaviorSubject.create<String>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
+        private val swipeRefresherProgressIsVisible = BehaviorSubject.create<Boolean>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
 
         private val apiClient = this.environment.apiClient()
@@ -289,6 +301,19 @@ interface BackingFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.receivedSectionIsGone)
+
+            this.refreshProject
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.notifyDelegateToRefreshProject.onNext(null)
+                        this.swipeRefresherProgressIsVisible.onNext(true)
+                    }
+
+            backedProject
+                    .skip(1)
+                    .map { false }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.swipeRefresherProgressIsVisible)
         }
 
         private fun cardIssuer(paymentSource: Backing.PaymentSource) : Either<String, Int> {
@@ -340,6 +365,10 @@ interface BackingFragmentViewModel {
             this.receivedCheckboxToggled.onNext(checked)
         }
 
+        override fun refreshProject() {
+            this.refreshProject.onNext(null)
+        }
+
         override fun backerAvatar(): Observable<String> = this.backerAvatar
 
         override fun backerName(): Observable<String> = this.backerName
@@ -353,6 +382,8 @@ interface BackingFragmentViewModel {
         override fun cardLastFour(): Observable<String> = this.cardLastFour
 
         override fun cardLogo(): Observable<Int> = this.cardLogo
+
+        override fun notifyDelegateToRefreshProject(): Observable<Void> = this.notifyDelegateToRefreshProject
 
         override fun paymentMethodIsGone(): Observable<Boolean> = this.paymentMethodIsGone
 
@@ -377,6 +408,8 @@ interface BackingFragmentViewModel {
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
         override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess
+
+        override fun swipeRefresherProgressIsVisible(): Observable<Boolean> = this.swipeRefresherProgressIsVisible
 
         override fun totalAmount(): Observable<CharSequence> = this.totalAmount
     }

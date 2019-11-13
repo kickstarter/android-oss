@@ -12,6 +12,8 @@
   tools:layout_marginTop="620dp"
   tools:showIn="@layout/activity_project">
 
+  <include layout="@layout/project_retry" />
+
   <FrameLayout
     android:id="@+id/pledge_container"
     android:layout_width="match_parent"
@@ -109,7 +111,5 @@
       android:text="@string/project_back_button"
       tools:visibility="visible" />
   </LinearLayout>
-
-  <include layout="@layout/project_retry" />
 
 </androidx.cardview.widget.CardView>

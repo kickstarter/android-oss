@@ -569,8 +569,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">No pudimos procesar tu contribución.</string>
   <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">No permitimos cancelaciones que ocasionen que un proyecto no alcance su meta en las últimas 24 horas.</string>
-  <string name="We_re_processing_this_pledge_pull_to_refresh" formatted="false">We\'re processing this pledge—pull to refresh.</string>
-  <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">We\'re processing your pledge—pull to refresh.</string>
+  <string name="We_re_processing_this_pledge_pull_to_refresh" formatted="false">Estamos procesando la contribución, desliza para actualizar.</string>
+  <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">Estamos procesando tu actualización, desliza para actualizar.</string>
   <string name="We_think_youll_like_these_too" formatted="false">¡Te van a encantar, también!</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Utilizamos tu actividad internamente para hacerte recomendaciones. Desactiva las recomendaciones si no quieres recibirlas.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">No pudimos enviar el correo electrónico a esta dirección. Asegúrate de que esté escrita correctamente.</string>

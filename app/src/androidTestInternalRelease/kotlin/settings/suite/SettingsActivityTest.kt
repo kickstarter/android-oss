@@ -1,9 +1,10 @@
-
+package settings.suite
 import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.filters.SmallTest
 import androidx.test.rule.ActivityTestRule
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
@@ -16,6 +17,7 @@ import org.junit.Test
 import utils.Events
 import utils.Matchers
 
+@SmallTest
 class SettingsActivityTest {
 
     private val events = Events()

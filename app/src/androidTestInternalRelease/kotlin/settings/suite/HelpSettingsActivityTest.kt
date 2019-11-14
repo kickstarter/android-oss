@@ -1,10 +1,10 @@
-
+package settings.suite
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.SmallTest
 import androidx.test.rule.ActivityTestRule
 import com.kickstarter.R
 import com.kickstarter.ui.activities.HelpSettingsActivity
@@ -15,11 +15,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import utils.Events
 
-
-@RunWith(AndroidJUnit4::class)
+@SmallTest
 class HelpSettingsActivityTest {
 
     private val events = Events()

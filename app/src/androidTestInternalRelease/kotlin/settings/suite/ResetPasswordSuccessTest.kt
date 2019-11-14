@@ -1,7 +1,6 @@
-
+package settings.suite
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.R
@@ -9,12 +8,9 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import utils.Events
 import utils.Matchers
 
-
-@RunWith(AndroidJUnit4::class)
 @SmallTest
 class ResetPasswordSuccessTest {
 

@@ -232,18 +232,19 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
 
-            val paymentSource = backing
+            backing
                     .map { it.paymentSource() }
-                    .filter { it != null }
-                    .ofType(Backing.PaymentSource::class.java)
-
-            paymentSource
-                    .map { CreditCardPaymentType.safeValueOf(it.paymentType()) }
+                    .map { CreditCardPaymentType.safeValueOf(it?.paymentType()) }
                     .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.paymentMethodIsGone)
+
+            val paymentSource = backing
+                    .map { it.paymentSource() }
+                    .filter { it != null }
+                    .ofType(Backing.PaymentSource::class.java)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 

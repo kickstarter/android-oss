@@ -67,7 +67,7 @@ fi
 
 if [ ! -e "app/signing.gradle" ]; then
   say "File \`app/signing.gradle\` does not exist, this will prevent you from creating release builds."
-  say "To fix this, copy the example keystore from \`app/signing.gradle.example\` to \`app/signing.gradle\` then fill out the file with the correct credentials. These can be found in passpack under the entry Android - Keystore.\n"
+  say "To fix this, copy the example keystore from \`app/signing.gradle.example\` to \`app/signing.gradle\` then fill out the file with the correct credentials. These can be found in 1Password under the entry Android Keystore.\n"
 fi
 
 say "Bootstrap complete!"

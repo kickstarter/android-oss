@@ -1,4 +1,4 @@
-// Details from Passpack entry `Android - Keystore`.
+// Details from 1Password entry `Android Keystore`.
 ext.signing = [
     storeFilePath : "kickstarter.keystore",
     storePassword : "",

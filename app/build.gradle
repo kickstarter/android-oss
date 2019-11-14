@@ -109,6 +109,12 @@ android {
             versionCode externalPrivateVersion
             versionName externalPublicVersion
         }
+        regression {
+            dimension "AUDIENCE"
+            applicationId "com.kickstarter.kickstarter"
+            versionCode externalPrivateVersion
+            versionName externalPublicVersion
+        }
     }
 
     compileOptions {

@@ -1,4 +1,4 @@
-package settings.suite
+package login.suite
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.SmallTest

@@ -141,6 +141,23 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPaymentMethodIsGone_whenNull() {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(null)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.project(backedProject)
+        this.paymentMethodIsGone.assertValue(true)
+    }
+
+    @Test
     fun testPaymentMethodIsGone_whenApplePay() {
         val paymentSource = PaymentSourceFactory.applePay()
         val backing = BackingFactory.backing()

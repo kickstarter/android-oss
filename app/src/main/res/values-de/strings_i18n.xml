@@ -568,8 +568,8 @@ Bitte antippen und erneut versuchen.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Es wurden keine Ergebnisse für die Suche "%{search_term}" gefunden.</string>
   <string name="We_couldnt_process_your_pledge" formatted="false">Dein Finanzierungsbeitrag konnte nicht bearbeitet werden.</string>
   <string name="We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours" formatted="false">Es ist nicht gestattet, innerhalb der letzten 24 Stunden vor Beendigung eines Projekts einen Finanzierungsbeitrag zurückzuziehen, wenn dadurch das Finanzierungsziel nicht mehr erreicht werden würde.</string>
-  <string name="We_re_processing_this_pledge_pull_to_refresh" formatted="false">We\'re processing this pledge—pull to refresh.</string>
-  <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">We\'re processing your pledge—pull to refresh.</string>
+  <string name="We_re_processing_this_pledge_pull_to_refresh" formatted="false">Der Finanzierungsbeitrag wird derzeit bearbeitet — zur Aktualisierung nach unten ziehen.</string>
+  <string name="We_re_processing_your_pledge_pull_to_refresh" formatted="false">Dein Finanzierungsbeitrag wird derzeit bearbeitet — zur Aktualisierung nach unten ziehen.</string>
   <string name="We_think_youll_like_these_too" formatted="false">Wir denken, diese Projekte könnten dir auch gefallen</string>
   <string name="We_use_your_activity_internally_to_make_recommendations_for_you" formatted="false">Deine Aktivitäten werden intern genutzt, um dir Empfehlungen zu unterbreiten. Um dies zu deaktivieren, wähle "Empfehlungen" einfach ab.</string>
   <string name="We_ve_been_unable_to_send_email" formatted="false">Wir konnten keine E-Mails an diese Adresse senden. Bitte prüfe, ob sie richtig eingegeben wurde.</string>

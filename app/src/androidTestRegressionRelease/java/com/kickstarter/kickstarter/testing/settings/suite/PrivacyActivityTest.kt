@@ -1,4 +1,4 @@
-package settings.suite
+package com.kickstarter.kickstarter.testing.settings.suite
 import android.content.Intent
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers

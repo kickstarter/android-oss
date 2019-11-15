@@ -1,6 +1,5 @@
-package infrastructure.suite
+package com.kickstarter.kickstarter.testing.login.suite
 
-import login.suite.ResetPasswordSuccessTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 

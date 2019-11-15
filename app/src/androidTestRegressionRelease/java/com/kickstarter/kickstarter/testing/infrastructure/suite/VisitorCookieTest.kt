@@ -1,4 +1,4 @@
-package infrastructure.suite
+package com.kickstarter.kickstarter.testing.infrastructure.suite
 import androidx.test.filters.SmallTest
 import androidx.test.rule.ActivityTestRule
 import com.google.firebase.iid.FirebaseInstanceId

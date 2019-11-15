@@ -1,4 +1,4 @@
-package settings.suite
+package com.kickstarter.kickstarter.testing.settings.suite
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.test.espresso.intent.Intents
@@ -7,6 +7,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.filters.SmallTest
 import androidx.test.rule.ActivityTestRule
 import com.kickstarter.R
+import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.ui.activities.HelpSettingsActivity
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
@@ -48,7 +49,7 @@ class HelpSettingsActivityTest {
         events.clickOnView(R.id.cookie_policy)
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData("https://www.kickstarter.com/cookies")))
+                IntentMatchers.hasData(Secrets.WebEndpoint.STAGING + "/cookies")))
     }
 
     @Test
@@ -56,7 +57,7 @@ class HelpSettingsActivityTest {
         events.clickOnView(R.id.help_center)
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData("https://www.kickstarter.com/help")))
+                IntentMatchers.hasData(Secrets.WebEndpoint.STAGING + "/help")))
     }
 
     @Test
@@ -64,7 +65,7 @@ class HelpSettingsActivityTest {
         events.clickOnView(R.id.privacy_policy)
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData("https://www.kickstarter.com/privacy")))
+                IntentMatchers.hasData(Secrets.WebEndpoint.STAGING + "/privacy")))
     }
 
     @Test
@@ -73,7 +74,7 @@ class HelpSettingsActivityTest {
 
         intended(allOf(
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData("https://www.kickstarter.com/terms-of-use")))
+                IntentMatchers.hasData(Secrets.WebEndpoint.STAGING + "/terms-of-use")))
     }
 
     @Test

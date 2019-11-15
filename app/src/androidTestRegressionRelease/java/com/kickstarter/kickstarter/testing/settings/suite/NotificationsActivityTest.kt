@@ -1,4 +1,4 @@
-package settings.suite
+package com.kickstarter.kickstarter.testing.settings.suite
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.SmallTest
 import com.kickstarter.R

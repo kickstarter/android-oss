@@ -168,10 +168,11 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   static ApolloClient provideApolloClient(final @NonNull Build build, final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
-    final @NonNull GraphQLInterceptor graphQLInterceptor, @NonNull @WebEndpoint final String webEndpoint) {
+    final @NonNull GraphQLInterceptor graphQLInterceptor, @NonNull @WebEndpoint final String webEndpoint, final @NonNull KSRequestInterceptor ksRequestInterceptor) {
 
     final OkHttpClient.Builder builder = new OkHttpClient.Builder()
-      .addInterceptor(graphQLInterceptor);
+      .addInterceptor(graphQLInterceptor)
+      .addInterceptor(ksRequestInterceptor);
 
     // Only log in debug mode to avoid leaking sensitive information.
     if (build.isDebug()) {

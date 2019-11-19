@@ -1,4 +1,4 @@
-package com.kickstarter.kickstarter.testing.infrastructure.suite
+package com.kickstarter.testing.infrastructure.suite
 
 import org.junit.runner.RunWith
 import org.junit.runners.Suite

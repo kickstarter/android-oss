@@ -1,4 +1,5 @@
-package com.kickstarter.kickstarter.testing.infrastructure.suite
+package com.kickstarter.testing.infrastructure.suite
+
 import androidx.test.filters.SmallTest
 import androidx.test.rule.ActivityTestRule
 import com.google.firebase.iid.FirebaseInstanceId
@@ -16,7 +17,8 @@ import java.net.URI
 class VisitorCookieTest {
 
     @Rule
-    var activityRule = ActivityTestRule(DiscoveryActivity::class.java)
+    @JvmField
+    val activityRule = ActivityTestRule(DiscoveryActivity::class.java)
 
     @Test
     fun testVisitorCookieHasBeenSet() {
@@ -40,7 +42,6 @@ class VisitorCookieTest {
     }
 
     companion object {
-
         private const val KEY_VIS = "vis"
     }
 }

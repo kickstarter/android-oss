@@ -1,4 +1,5 @@
-package utils
+package com.kickstarter.testing.utils
+
 import android.app.Activity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches

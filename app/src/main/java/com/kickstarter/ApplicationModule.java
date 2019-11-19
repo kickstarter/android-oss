@@ -57,13 +57,9 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.mock.services.MockApiClient;
-import com.kickstarter.mock.services.MockApolloClient;
-import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
-import com.kickstarter.services.KSApolloClient;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.KoalaService;
 import com.kickstarter.services.WebClient;
@@ -160,13 +156,6 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
-    return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
   static ApolloClient provideApolloClient(final @NonNull Build build, final @NonNull HttpLoggingInterceptor httpLoggingInterceptor,
     final @NonNull GraphQLInterceptor graphQLInterceptor, @NonNull @WebEndpoint final String webEndpoint) {
 
@@ -186,13 +175,6 @@ public final class ApplicationModule {
       .serverUrl(webEndpoint + "/graph")
       .okHttpClient(okHttpClient)
       .build();
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
-    return Secrets.IS_OSS ? new MockApolloClient() : new KSApolloClient(apolloClient);
   }
 
   @Provides

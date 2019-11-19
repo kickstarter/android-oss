@@ -1,15 +1,16 @@
-package com.kickstarter.kickstarter.testing.login.suite
+package com.kickstarter.testing.login.suite
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kickstarter.R
+import com.kickstarter.testing.utils.Events
+import com.kickstarter.testing.utils.Matchers
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
+import com.kickstarter.ui.data.LoginReason
 import org.junit.Rule
 import org.junit.Test
-import utils.Events
-import utils.Matchers
 
 @SmallTest
 class ResetPasswordSuccessTest {
@@ -23,9 +24,9 @@ class ResetPasswordSuccessTest {
         override fun getActivityIntent(): Intent {
             val targetContext = InstrumentationRegistry.getInstrumentation()
                     .targetContext
-            val result = Intent(targetContext, LoginActivity::class.java)
-            result.putExtra(IntentKey.EMAIL, "email@test.com")
-            return result
+            return Intent(targetContext, LoginActivity::class.java)
+                    .putExtra(IntentKey.EMAIL, "email@test.com")
+                    .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.kickstarter.kickstarter.testing.login.suite
+package com.kickstarter.testing.login.suite
 
 import org.junit.runner.RunWith
 import org.junit.runners.Suite

@@ -34,4 +34,18 @@ public final class ExternalApplicationModule {
   static InternalToolsType providesInternalToolsType() {
     return new NoopInternalTools();
   }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
+    return Secrets.IS_OSS ? new MockApiClient() : new ApiClient(apiService, gson);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static ApolloClientType provideApolloClientType(final @NonNull ApolloClient apolloClient) {
+    return Secrets.IS_OSS ? new MockApolloClient() : new KSApolloClient(apolloClient);
+  }
 }

@@ -41,6 +41,7 @@ android {
         applicationId "com.kickstarter"
         minSdkVersion 23
         targetSdkVersion 29
+        testApplicationId "com.kickstarter.kickstarter.regression.test"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "GIT_SHA", "\"${commitSha()}\""
@@ -111,7 +112,7 @@ android {
         }
         regression {
             dimension "AUDIENCE"
-            applicationId "com.kickstarter.kickstarter"
+            applicationId "com.kickstarter.kickstarter.regression"
             versionCode externalPrivateVersion
             versionName externalPublicVersion
         }
@@ -138,9 +139,8 @@ android {
     }
 
     sourceSets {
-        androidTest {
-            java.srcDir file('src/androidTest/java')
-            java.srcDir file('src/androidTest/kotlin')
+        regression {
+            androidTest.java.srcDirs = ['src/androidTestRegressionDebug/kotlin']
         }
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -241,8 +241,11 @@ dependencies {
     testImplementation "org.robolectric:shadows-multidex:4.3"
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
     androidTestImplementation "androidx.test:core:1.2.0"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+
+    def espresso = '3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:' + espresso
+    androidTestImplementation 'androidx.test.espresso:espresso-core:' + espresso
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:' + espresso
     androidTestImplementation "androidx.test.ext:junit:1.1.1"
     androidTestImplementation 'androidx.test:rules:1.2.0'
 }

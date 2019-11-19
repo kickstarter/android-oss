@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.preference.PreferenceManager;
 
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.FieldNamingPolicy;
@@ -48,6 +47,7 @@ import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
+import com.kickstarter.libs.qualifiers.GoRewardlessPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.NativeCheckoutPreference;
@@ -83,6 +83,7 @@ import java.net.CookieManager;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.CookieJar;
@@ -114,6 +115,7 @@ public final class ApplicationModule {
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
+    final @NonNull @GoRewardlessPreference BooleanPreferenceType goRewardlessPreference,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -139,6 +141,7 @@ public final class ApplicationModule {
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
       .currentUser(currentUser)
+      .goRewardlessPreference(goRewardlessPreference)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
@@ -378,6 +381,14 @@ public final class ApplicationModule {
   @NonNull
   static BooleanPreferenceType provideNativeCheckoutPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, SharedPreferenceKey.NATIVE_CHECKOUT);
+  }
+
+  @Provides
+  @Singleton
+  @GoRewardlessPreference
+  @NonNull
+  static BooleanPreferenceType provideGoRewardlessPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.GO_REWARDLESS);
   }
 
   @Provides

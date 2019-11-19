@@ -27,6 +27,7 @@ public abstract class Environment implements Parcelable {
   public abstract CookieManager cookieManager();
   public abstract CurrentConfigType currentConfig();
   public abstract CurrentUserType currentUser();
+  public abstract BooleanPreferenceType goRewardlessPreference();
   public abstract Gson gson();
   public abstract BooleanPreferenceType hasSeenAppRatingPreference();
   public abstract BooleanPreferenceType hasSeenGamesNewsletterPreference();
@@ -53,6 +54,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder cookieManager(CookieManager __);
     public abstract Builder currentConfig(CurrentConfigType __);
     public abstract Builder currentUser(CurrentUserType __);
+    public abstract Builder goRewardlessPreference(BooleanPreferenceType __);
     public abstract Builder gson(Gson __);
     public abstract Builder hasSeenAppRatingPreference(BooleanPreferenceType __);
     public abstract Builder hasSeenGamesNewsletterPreference(BooleanPreferenceType __);

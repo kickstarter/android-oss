@@ -46,6 +46,10 @@
         android:text="@string/Overrides"/>
 
       <include
+        android:id="@+id/go_rewardless"
+        layout="@layout/item_feature_flag_override"/>
+
+      <include
         android:id="@+id/native_checkout"
         layout="@layout/item_feature_flag_override"/>
     </LinearLayout>

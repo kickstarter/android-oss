@@ -412,14 +412,16 @@ interface ProjectViewModel {
             val refreshedProjectNotification = initialProject
                     .compose(takeWhen<Project, Void>(refreshProjectEvent))
                     .switchMap {
-                        this.client.fetchProject(it)
-                            .doOnSubscribe {
-                                this.retryProgressBarIsGone.onNext(false)
-                            }
-                            .doAfterTerminate {
-                                this.retryProgressBarIsGone.onNext(true)
-                            }
-                            .materialize()
+                        it.slug()?.let { slug ->
+                            this.client.fetchProject(slug)
+                                    .doOnSubscribe {
+                                        this.retryProgressBarIsGone.onNext(false)
+                                    }
+                                    .doAfterTerminate {
+                                        this.retryProgressBarIsGone.onNext(true)
+                                    }
+                                    .materialize()
+                        }
                     }
                     .share()
 

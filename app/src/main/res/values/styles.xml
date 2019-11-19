@@ -499,6 +499,14 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
+  <style name="Title2White" parent="TextWhite">
+    <item name="android:textSize">@dimen/title_2</item>
+  </style>
+
+  <style name="Title2WhiteMedium" parent="Title2White">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
   <style name="Title3" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_3</item>
   </style>

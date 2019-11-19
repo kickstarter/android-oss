@@ -25,11 +25,15 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
+import com.kickstarter.ui.viewholders.EditorialViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +81,9 @@ public interface DiscoveryFragmentViewModel {
 
     /** Emits a list of projects to display.*/
     Observable<List<Pair<Project, DiscoveryParams>>> projectList();
+
+    /**  */
+    Observable<Editorial> shouldShowEditorial();
 
     /** Emits a boolean that determines if the saved empty view should be shown. */
     Observable<Boolean> shouldShowEmptySavedView();
@@ -191,6 +198,13 @@ public interface DiscoveryFragmentViewModel {
           this.projectList.onNext(Collections.emptyList());
         });
 
+      this.currentUser.observable()
+        .compose(combineLatestPair(this.paramsFromActivity))
+        .map(this::isDefaultParams)
+        .map(isDefaultParams -> isDefaultParams ? Editorial.Companion.getGO_REWARDLESS() : null)
+        .compose(bindToLifecycle())
+        .subscribe(this.shouldShowEditorial);
+
       this.paramsFromActivity
         .compose(combineLatestPair(userIsLoggedIn))
         .map(pu -> isOnboardingVisible(pu.first, pu.second))
@@ -265,7 +279,9 @@ public interface DiscoveryFragmentViewModel {
     }
 
     private boolean isDefaultParams(final @NonNull Pair<User, DiscoveryParams> userAndParams) {
-      return userAndParams.second.toString().equals(DiscoveryParams.getDefaultParams(userAndParams.first).toString());
+      final DiscoveryParams discoveryParams = userAndParams.second;
+      final User user = userAndParams.first;
+      return discoveryParams.equals(DiscoveryParams.getDefaultParams(user));
     }
 
     private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
@@ -302,6 +318,7 @@ public interface DiscoveryFragmentViewModel {
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
     private final BehaviorSubject<Boolean> showProgress = BehaviorSubject.create();
+    private final BehaviorSubject<Editorial> shouldShowEditorial = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
@@ -372,6 +389,9 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Boolean> showLoginTout() {
       return this.showLoginTout;
     }
+    @Override public @NonNull Observable<Editorial> shouldShowEditorial() {
+      return this.shouldShowEditorial;
+    }
     @Override public @NonNull Observable<Boolean> shouldShowEmptySavedView() {
       return this.shouldShowEmptySavedView;
     }
@@ -389,6 +409,10 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public @NonNull Observable<Activity> startUpdateActivity() {
       return this.startUpdateActivity;
+    }
+    @Override
+    public void editorialViewHolderClicked(@NotNull EditorialViewHolder viewHolder, @NotNull String tag) {
+
     }
   }
 }

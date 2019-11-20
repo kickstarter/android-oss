@@ -12,8 +12,6 @@
   tools:layout_marginTop="620dp"
   tools:showIn="@layout/activity_project">
 
-  <include layout="@layout/project_retry" />
-
   <FrameLayout
     android:id="@+id/pledge_container"
     android:layout_width="match_parent"
@@ -67,6 +65,8 @@
     android:id="@+id/secondary_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
+
+  <include layout="@layout/project_retry" />
 
   <LinearLayout
     android:id="@+id/pledge_action_buttons"

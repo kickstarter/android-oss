@@ -28,6 +28,7 @@
     android:layout_below="@id/project_app_bar_layout"
     android:layout_marginTop="-6dp"
     android:indeterminate="true"
+    android:visibility="gone"
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
   <androidx.recyclerview.widget.RecyclerView

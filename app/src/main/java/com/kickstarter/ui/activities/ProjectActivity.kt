@@ -417,10 +417,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
         AnimatorSet().apply {
             playTogether(showRewardsFragmentAnimator, hideRewardsFragmentAnimator, pledgeContainerYAnimator)
-            duration = when {
-                animate -> animDuration
-                else -> 0L
-            }
+            duration = animDuration
 
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) {}
@@ -445,7 +442,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 override fun onAnimationStart(animation: Animator?) {
                     if (expand) {
                         pledge_container.visibility = View.VISIBLE
-                    } else {
+                    } else if (animate){
                         pledge_action_buttons.visibility = View.VISIBLE
                     }
                 }

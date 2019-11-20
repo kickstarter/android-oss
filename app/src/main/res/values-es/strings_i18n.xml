@@ -193,6 +193,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">Ordenar por proyectos con live streams futuros/pasados.</string>
   <string name="Find_Facebook_Friends" formatted="false">Encuentra amigos en Facebook</string>
   <string name="Find_and_follow_friends" formatted="false">Encontrar y seguir a amigos</string>
+  <string name="Find_projects_that_speak_to_you" formatted="false">Find projects that speak to you</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Aquí encuentras proyectos a tu gusto - ¡tu contribución ayudará a hacerlos realidad!</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Proyectos a tu gusto - en arte, diseño, cine, juegos, música y otras categorías. Una vez que hayas patrocinado un proyecto, verás todas las actividades pertinentes aquí.</string>
   <string name="First_created" formatted="false">Primer proyecto creado</string>
@@ -231,6 +232,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Recibe notificaciones cuando tus amigos patrocinan o publican un proyecto</string>
   <string name="Get_reminded_about_this_project" formatted="false">¿Deseas recibir recordatorios sobre este proyecto?</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
+  <string name="Going_rewardless_is_rewarding" formatted="false">Going “rewardless” is rewarding</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Listo. Se han guardado tus cambios.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
@@ -259,6 +261,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Es como la radio, pero sin malas noticias y, además, es un boletín informativo.</string>
   <string name="Its_our_birthday" formatted="false">¡Cumplimos años! Más de 160.000 proyectos creativos se han hecho realidad en Kickstarter durante la última década, gracias al apoyo de más de 16.000.000 de patrocinadores.</string>
   <string name="Join_our_secret_society" formatted="false">Únete a nuestra sociedad secreta.</string>
+  <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">Join us in supporting creative work for its own sake this holiday season.</string>
   <string name="Joining_the_live_stream" formatted="false">Abriendo conexión a Live Stream</string>
   <string name="Just_for_you" formatted="false">Sólo para ti.</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Mantente en contacto después de tu campaña y planifica tu próximo proyecto.</string>
@@ -550,6 +553,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Upcoming_live_streams" formatted="false">Live streams futuros</string>
   <string name="Upcoming_with_creator_name" formatted="false">Próximamente: Video de &lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Actualizar contribución</string>
+  <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Use the hashtag #backeditbecause to share what projects you\'re supporting and why they\'re important to you.</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Aquí puedes ver las recompensas recibidas.</string>
   <string name="Verification_email_sent" formatted="false">Te acabamos de enviar un correo electrónico de verificación. Haz clic en el enlace incluido y se verificará tu dirección.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video desactivado hasta se reestablezca la conexión de internet</string>

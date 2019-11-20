@@ -193,6 +193,7 @@ contributeurs</string>
   <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">Filtrage des projets ayant des diffusions en direct à venir et passées.</string>
   <string name="Find_Facebook_Friends" formatted="false">Retrouver mes amis Facebook</string>
   <string name="Find_and_follow_friends" formatted="false">Retrouver et suivre mes amis</string>
+  <string name="Find_projects_that_speak_to_you" formatted="false">Find projects that speak to you</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Découvrez de beaux projets et participez à la concrétisation d\'idées créatives.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Découvrez des projets que vous allez adorer : art, design, cinéma, jeux, musique et plus encore. L\'activité des projets que vous soutenez s\'affichera ici.</string>
   <string name="First_created" formatted="false">Premier projet créé</string>
@@ -231,6 +232,7 @@ contributeurs</string>
   <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Des notifications lorsque vous amis lancent et soutiennent des projets</string>
   <string name="Get_reminded_about_this_project" formatted="false">Envie de recevoir un rappel à propos de ce projet ?</string>
   <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
+  <string name="Going_rewardless_is_rewarding" formatted="false">Going “rewardless” is rewarding</string>
   <string name="Got_it" formatted="false">Super.</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">C\'est bon, vos modifications ont été enregistrées.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
@@ -258,6 +260,7 @@ contributeurs</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Un peu comme la radio, mais en mieux. Une lettre d\'information, quoi.</string>
   <string name="Its_our_birthday" formatted="false">C\'est notre anniversaire ! Au cours des dix dernières années, plus de 160 000 projets créatifs ont vu le jour sur Kickstarter grâce au soutien de plus de 16 000 000 contributeurs.</string>
   <string name="Join_our_secret_society" formatted="false">Notre société secrète n\'attend que vous.</string>
+  <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">Join us in supporting creative work for its own sake this holiday season.</string>
   <string name="Joining_the_live_stream" formatted="false">Connexion à la diffusion en direct en cours</string>
   <string name="Just_for_you" formatted="false">Rien que pour vous.</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Une façon de garder le contact après votre campagne et de prévoir votre prochain projet.</string>
@@ -550,6 +553,7 @@ n\'ont rien soutenu.</string>
   <string name="Upcoming_live_streams" formatted="false">Diffusions en direct à venir</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>
   <string name="Update_pledge" formatted="false">Modifier mon engagement</string>
+  <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Use the hashtag #backeditbecause to share what projects you\'re supporting and why they\'re important to you.</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Utilisez cette fonction pour garder une trace des récompenses que vous avez reçues.</string>
   <string name="Verification_email_sent" formatted="false">Nous venons de vous envoyer un e-mail de vérification. Cliquez sur le lien qu\'il contient pour vérifier votre adresse.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Vidéo désactivée en attente d\'une meilleure connexion Internet</string>

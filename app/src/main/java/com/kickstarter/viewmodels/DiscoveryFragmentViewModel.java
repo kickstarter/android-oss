@@ -3,11 +3,16 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
+import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -112,6 +117,8 @@ public interface DiscoveryFragmentViewModel {
   final class ViewModel extends FragmentViewModel<DiscoveryFragment> implements Inputs, Outputs {
     private final ApiClientType apiClient;
     private final CurrentUserType currentUser;
+    private final CurrentConfigType currentConfig;
+    private final BooleanPreferenceType goRewardlessPreference;
     private final IntPreferenceType activitySamplePreference;
 
     public ViewModel(final @NonNull Environment environment) {
@@ -119,7 +126,9 @@ public interface DiscoveryFragmentViewModel {
 
       this.apiClient = environment.apiClient();
       this.activitySamplePreference = environment.activitySamplePreference();
+      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
+      this.goRewardlessPreference = environment.goRewardlessPreference();
 
       final Observable<User> changedUser = this.currentUser.observable()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
@@ -198,10 +207,19 @@ public interface DiscoveryFragmentViewModel {
           this.projectList.onNext(Collections.emptyList());
         });
 
+      final Observable<Boolean> goRewardlessEnabled = this.currentConfig.observable()
+        .map(Config::features)
+        .map(features -> ObjectUtils.isNotNull(features) ? ObjectUtils.coalesce(features.get(FeatureKey.ANDROID_GO_REWARDLESS), false) : false)
+        .map(enabled -> Pair.create(enabled, this.goRewardlessPreference.get()))
+        .map(enabledAndOverride -> Build.isExternal() ? enabledAndOverride.first : enabledAndOverride.second)
+        .distinctUntilChanged();
+
       this.currentUser.observable()
         .compose(combineLatestPair(this.paramsFromActivity))
         .map(this::isDefaultParams)
-        .map(isDefaultParams -> isDefaultParams ? Editorial.Companion.getGO_REWARDLESS() : null)
+        .compose(combineLatestPair(goRewardlessEnabled))
+        .map(isDefaultParamsAndGoRewardlessEnabled -> BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.first) && BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.second))
+        .map(shouldShowEditorial -> shouldShowEditorial ? Editorial.Companion.getGO_REWARDLESS() : null)
         .compose(bindToLifecycle())
         .subscribe(this.shouldShowEditorial);
 

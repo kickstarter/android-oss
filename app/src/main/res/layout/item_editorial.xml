@@ -4,10 +4,9 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_margin="@dimen/grid_2"
-  android:background="@drawable/rect_white_rounded"
-  android:backgroundTint="@color/blue_darken_10"
-  android:orientation="vertical"
-  android:padding="@dimen/grid_3">
+  android:background="@drawable/rect_transparent_rounded"
+  android:backgroundTint="@color/trust_700"
+  android:orientation="vertical">
 
   <TextView
     android:id="@+id/editorial_title"
@@ -15,14 +14,26 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_2"
-    tools:text="Going rewardless is rewarding" />
+    android:paddingStart="@dimen/grid_3"
+    android:paddingTop="@dimen/grid_3"
+    android:paddingEnd="@dimen/grid_3"
+    tools:text="@string/Back_it_because_you_believe_in_it" />
 
   <TextView
     android:id="@+id/editorial_description"
     style="@style/BodyWhite"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_11"
-    tools:text="Find projects that speak to you" />
+    android:paddingStart="@dimen/grid_3"
+    android:paddingEnd="@dimen/grid_3"
+    android:paddingBottom="@dimen/grid_3"
+    tools:text="@string/Find_projects_that_speak_to_you" />
+
+  <ImageView
+    android:id="@+id/editorial_graphic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:importantForAccessibility="no"
+    android:scaleType="centerCrop" />
 
 </LinearLayout>

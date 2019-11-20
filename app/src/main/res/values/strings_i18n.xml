@@ -193,6 +193,7 @@ Please tap to retry.</string>
   <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">Filters by projects with upcoming and past live streams.</string>
   <string name="Find_Facebook_Friends" formatted="false">Find Facebook friends</string>
   <string name="Find_and_follow_friends" formatted="false">Find and follow friends</string>
+  <string name="Find_projects_that_speak_to_you" formatted="false">Find projects that speak to you</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Find projects you’ll love and help bring creative ideas to life.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.</string>
   <string name="First_created" formatted="false">First created</string>
@@ -231,6 +232,7 @@ Please tap to retry.</string>
   <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Get notified when your friends back and launch projects</string>
   <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
+  <string name="Going_rewardless_is_rewarding" formatted="false">Going “rewardless” is rewarding</string>
   <string name="Got_it" formatted="false">Got it</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Got it! Your changes have been saved.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
@@ -259,6 +261,7 @@ with friends.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
   <string name="Its_our_birthday" formatted="false">It\'s our birthday! More than 160,000 creative projects have come to life on Kickstarter over the past decade, with support from over 16,000,000 backers.</string>
   <string name="Join_our_secret_society" formatted="false">Join our secret society.</string>
+  <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">Join us in supporting creative work for its own sake this holiday season.</string>
   <string name="Joining_the_live_stream" formatted="false">Joining the live stream</string>
   <string name="Just_for_you" formatted="false">Just for you.</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Keep in touch after your campaign and plan your next project.</string>
@@ -553,6 +556,7 @@ catch your eye?</string>
   <string name="Upcoming_live_streams" formatted="false">Upcoming live streams</string>
   <string name="Upcoming_with_creator_name" formatted="false">Upcoming with&lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Update pledge</string>
+  <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Use the hashtag #backeditbecause to share what projects you\'re supporting and why they\'re important to you.</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Use this to keep track of which rewards you\'ve received.</string>
   <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Video disabled until the internet connection improves</string>

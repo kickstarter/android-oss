@@ -107,6 +107,9 @@ public interface DiscoveryFragmentViewModel {
 
     Observable<Boolean> showProgress();
 
+    /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.EditorialActivity}. */
+    Observable<Integer> startEditorialActivity();
+
     /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
@@ -323,6 +326,7 @@ public interface DiscoveryFragmentViewModel {
     private final PublishSubject<Activity> activityUpdateClick = PublishSubject.create();
     private final PublishSubject<Void> clearPage = PublishSubject.create();
     private final PublishSubject<Boolean> discoveryOnboardingLoginToutClick = PublishSubject.create();
+    private final PublishSubject<Integer> editorialClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
@@ -366,6 +370,9 @@ public interface DiscoveryFragmentViewModel {
     @Override public void activitySampleProjectViewHolderUpdateClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.activityUpdateClick.onNext(activity);
+    }
+    @Override public void editorialViewHolderClicked(final @NotNull EditorialViewHolder viewHolder, final int tagId) {
+      this.editorialClicked.onNext(tagId);
     }
     @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
       this.projectCardClicked.onNext(project);
@@ -427,10 +434,6 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public @NonNull Observable<Activity> startUpdateActivity() {
       return this.startUpdateActivity;
-    }
-    @Override
-    public void editorialViewHolderClicked(@NotNull EditorialViewHolder viewHolder, @NotNull String tag) {
-
     }
   }
 }

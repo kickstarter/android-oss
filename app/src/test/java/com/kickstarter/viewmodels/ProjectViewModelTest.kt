@@ -325,7 +325,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(intent)
 
         this.horizontalProgressBarIsGone.assertNoValues()
-        this.pledgeActionButtonContainerIsGone.assertValues(false)
+        this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.pledgeContainerIsGone.assertValue(false)
         this.prelaunchUrl.assertNoValues()
         this.projectActionButtonContainerIsGone.assertValue(true)
@@ -370,7 +370,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.reloadProjectContainerClicked()
 
         this.horizontalProgressBarIsGone.assertNoValues()
-        this.pledgeActionButtonContainerIsGone.assertValues(false)
+        this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.pledgeContainerIsGone.assertValue(false)
         this.prelaunchUrl.assertNoValues()
         this.projectActionButtonContainerIsGone.assertValue(true)

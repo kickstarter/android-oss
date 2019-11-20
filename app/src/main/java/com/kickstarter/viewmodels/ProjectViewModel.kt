@@ -355,9 +355,16 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.horizontalProgressBarIsGone)
 
+            val pledgeSheetExpanded = this.expandPledgeSheet
+                    .map { it.first }
+                    .startWith(false)
+
             progressBarIsGone
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
+                    .map { it.first }
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(pledgeSheetExpanded))
+                    .filter { BooleanUtils.isFalse(it.second) }
                     .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.retryProgressBarIsGone)
@@ -412,14 +419,16 @@ interface ProjectViewModel {
             val refreshedProjectNotification = initialProject
                     .compose(takeWhen<Project, Void>(refreshProjectEvent))
                     .switchMap {
-                        this.client.fetchProject(it)
-                            .doOnSubscribe {
-                                this.retryProgressBarIsGone.onNext(false)
-                            }
-                            .doAfterTerminate {
-                                this.retryProgressBarIsGone.onNext(true)
-                            }
-                            .materialize()
+                        it.slug()?.let { slug ->
+                            this.client.fetchProject(slug)
+                                    .doOnSubscribe {
+                                        progressBarIsGone.onNext(false)
+                                    }
+                                    .doAfterTerminate {
+                                        progressBarIsGone.onNext(true)
+                                    }
+                                    .materialize()
+                        }
                     }
                     .share()
 
@@ -540,12 +549,14 @@ interface ProjectViewModel {
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map { it.first }
 
-            val projectHasRewards = currentProjectWhenFeatureEnabled
+            val projectHasRewardsAndSheetCollapsed = currentProjectWhenFeatureEnabled
                     .map { it.hasRewards() }
                     .distinctUntilChanged()
-                    .takeUntil(this.expandPledgeSheet)
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(pledgeSheetExpanded))
+                    .filter { BooleanUtils.isFalse(it.second) }
+                    .map { it.first }
 
-            val rewardsLoaded = projectHasRewards
+            val rewardsLoaded = projectHasRewardsAndSheetCollapsed
                     .filter { BooleanUtils.isTrue(it) }
                     .map { true }
 
@@ -558,8 +569,10 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.reloadProjectContainerIsGone)
 
-            projectHasRewards
-                    .map { BooleanUtils.negate(it) }
+            projectHasRewardsAndSheetCollapsed
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.retryProgressBarIsGone))
+                    .map { BooleanUtils.negate(it.first && it.second) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonContainerIsGone)
 

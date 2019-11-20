@@ -134,7 +134,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.expandSortTabLayout.assertValues(true);
 
     // Toolbar params should be loaded with initial params.
-    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     // Select POPULAR sort.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
@@ -143,11 +143,11 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.expandSortTabLayout.assertValues(true, true);
 
     // Unchanged toolbar params should not emit.
-    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     // Select ALL PROJECTS filter from drawer.
     this.vm.inputs.topFilterViewHolderRowClick(null,
-      NavigationDrawerData.Section.Row.builder().params(DiscoveryParams.builder().build()).build()
+      NavigationDrawerData.Section.Row.builder().params(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()).build()
     );
 
     // Sort tab should be expanded.
@@ -157,7 +157,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Select ART category from drawer.
     this.vm.inputs.childFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder()
-        .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
+        .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build())
         .build()
     );
 
@@ -175,7 +175,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Sort tab and toolbar params should emit again with same params.
     this.rotatedExpandSortTabLayout.assertValues(true);
     this.rotatedUpdateToolbarWithParams.assertValues(
-      DiscoveryParams.builder().category(CategoryFactory.artCategory()).build()
+      DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build()
     );
   }
 

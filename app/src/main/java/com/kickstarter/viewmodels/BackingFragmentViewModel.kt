@@ -23,6 +23,7 @@ import type.CreditCardPaymentType
 import type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 interface BackingFragmentViewModel {
     interface Inputs {
@@ -310,8 +311,10 @@ interface BackingFragmentViewModel {
                         this.swipeRefresherProgressIsVisible.onNext(true)
                     }
 
-            backedProject
-                    .skip(1)
+            val refreshTimeout = this.notifyDelegateToRefreshProject
+                    .delay(10, TimeUnit.SECONDS)
+
+            Observable.merge(refreshTimeout, backedProject.skip(1))
                     .map { false }
                     .compose(bindToLifecycle())
                     .subscribe(this.swipeRefresherProgressIsVisible)

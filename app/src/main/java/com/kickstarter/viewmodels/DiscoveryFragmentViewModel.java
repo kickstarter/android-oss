@@ -36,9 +36,6 @@ import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
-import com.kickstarter.ui.viewholders.EditorialViewHolder;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -87,7 +84,7 @@ public interface DiscoveryFragmentViewModel {
     /** Emits a list of projects to display.*/
     Observable<List<Pair<Project, DiscoveryParams>>> projectList();
 
-    /**  */
+    /** Emits a boolean that determines if an editorial should be shown. */
     Observable<Editorial> shouldShowEditorial();
 
     /** Emits a boolean that determines if the saved empty view should be shown. */
@@ -107,8 +104,8 @@ public interface DiscoveryFragmentViewModel {
 
     Observable<Boolean> showProgress();
 
-    /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.EditorialActivity}. */
-    Observable<Integer> startEditorialActivity();
+    /** Emits an Editorial when we should start the {@link com.kickstarter.ui.activities.EditorialActivity}. */
+    Observable<Editorial> startEditorialActivity();
 
     /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -222,9 +219,13 @@ public interface DiscoveryFragmentViewModel {
         .map(this::isDefaultParams)
         .compose(combineLatestPair(goRewardlessEnabled))
         .map(isDefaultParamsAndGoRewardlessEnabled -> BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.first) && BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.second))
-        .map(shouldShowEditorial -> shouldShowEditorial ? Editorial.Companion.getGO_REWARDLESS() : null)
+        .map(shouldShow -> shouldShow ? Editorial.Companion.getGO_REWARDLESS() : null)
         .compose(bindToLifecycle())
         .subscribe(this.shouldShowEditorial);
+
+      this.editorialClicked
+        .compose(bindToLifecycle())
+        .subscribe(this.startEditorialActivity);
 
       this.paramsFromActivity
         .compose(combineLatestPair(userIsLoggedIn))
@@ -326,7 +327,7 @@ public interface DiscoveryFragmentViewModel {
     private final PublishSubject<Activity> activityUpdateClick = PublishSubject.create();
     private final PublishSubject<Void> clearPage = PublishSubject.create();
     private final PublishSubject<Boolean> discoveryOnboardingLoginToutClick = PublishSubject.create();
-    private final PublishSubject<Integer> editorialClicked = PublishSubject.create();
+    private final PublishSubject<Editorial> editorialClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
@@ -343,6 +344,7 @@ public interface DiscoveryFragmentViewModel {
     private final BehaviorSubject<Editorial> shouldShowEditorial = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
+    private final PublishSubject<Editorial> startEditorialActivity = PublishSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<Activity> startUpdateActivity;
     private final BehaviorSubject<Void> startHeartAnimation = BehaviorSubject.create();
@@ -371,8 +373,8 @@ public interface DiscoveryFragmentViewModel {
       final @NonNull Activity activity) {
       this.activityUpdateClick.onNext(activity);
     }
-    @Override public void editorialViewHolderClicked(final @NotNull EditorialViewHolder viewHolder, final int tagId) {
-      this.editorialClicked.onNext(tagId);
+    @Override public void editorialViewHolderClicked(final @NonNull Editorial editorial) {
+      this.editorialClicked.onNext(editorial);
     }
     @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
       this.projectCardClicked.onNext(project);
@@ -420,11 +422,14 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Boolean> shouldShowEmptySavedView() {
       return this.shouldShowEmptySavedView;
     }
+    @Override public @NonNull Observable<Boolean> showProgress() {
+      return this.showProgress;
+    }
     @Override public @NonNull Observable<Void> startHeartAnimation() {
       return this.startHeartAnimation;
     }
-    @Override public @NonNull Observable<Boolean> showProgress() {
-      return this.showProgress;
+    @Override public @NonNull Observable<Editorial> startEditorialActivity() {
+      return this.startEditorialActivity;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

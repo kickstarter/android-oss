@@ -1,39 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/editorial_root"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_margin="@dimen/grid_2"
-  android:background="@drawable/rect_transparent_rounded"
-  android:backgroundTint="@color/trust_700"
-  android:orientation="vertical">
+  android:layout_marginStart="@dimen/grid_2"
+  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginEnd="@dimen/grid_2"
+  app:cardCornerRadius="@dimen/editorial_radius"
+  tools:cardBackgroundColor="@color/trust_700">
 
-  <TextView
-    android:id="@+id/editorial_title"
-    style="@style/Title2WhiteMedium"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_2"
-    android:paddingStart="@dimen/grid_3"
-    android:paddingTop="@dimen/grid_3"
-    android:paddingEnd="@dimen/grid_3"
-    tools:text="@string/Back_it_because_you_believe_in_it" />
-
-  <TextView
-    android:id="@+id/editorial_description"
-    style="@style/BodyWhite"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingStart="@dimen/grid_3"
-    android:paddingEnd="@dimen/grid_3"
-    android:paddingBottom="@dimen/grid_3"
-    tools:text="@string/Find_projects_that_speak_to_you" />
-
-  <ImageView
-    android:id="@+id/editorial_graphic"
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:importantForAccessibility="no"
-    android:scaleType="centerCrop" />
+    android:orientation="vertical">
 
-</LinearLayout>
+    <TextView
+      android:id="@+id/editorial_title"
+      style="@style/Title2WhiteMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingTop="@dimen/grid_3"
+      android:paddingEnd="@dimen/grid_3"
+      tools:text="@string/Back_it_because_you_believe_in_it" />
+
+    <TextView
+      android:id="@+id/editorial_description"
+      style="@style/CalloutWhite"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingEnd="@dimen/grid_3"
+      android:paddingBottom="@dimen/grid_3"
+      tools:text="@string/Find_projects_that_speak_to_you" />
+
+    <com.kickstarter.ui.views.BottomCropImageView
+      android:id="@+id/editorial_graphic"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:importantForAccessibility="no"
+      android:scaleType="centerCrop"
+      tools:src="@drawable/go_rewardless_tout" />
+
+  </LinearLayout>
+
+</androidx.cardview.widget.CardView>

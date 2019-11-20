@@ -5,14 +5,18 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.preferences.MockIntPreference;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
+import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -24,6 +28,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.ui.data.Editorial;
 
 import org.junit.Test;
 
@@ -41,11 +46,13 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
   private final TestSubscriber<List<Pair<Project, DiscoveryParams>>> projects = new TestSubscriber<>();
+  private final TestSubscriber<Editorial> shouldShowEditorial = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shouldShowEmptySavedView = new TestSubscriber<>();
   private final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showProgress = new TestSubscriber<>();
+  private final TestSubscriber<Editorial> startEditorialActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> showProject = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
 
@@ -54,11 +61,13 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.activity().subscribe(this.activityTest);
     this.vm.outputs.projectList().map(ListUtils::nonEmpty).subscribe(this.hasProjects);
     this.vm.outputs.projectList().filter(ListUtils::nonEmpty).subscribe(this.projects);
+    this.vm.outputs.shouldShowEditorial().subscribe(this.shouldShowEditorial);
     this.vm.outputs.shouldShowEmptySavedView().subscribe(this.shouldShowEmptySavedView);
     this.vm.outputs.shouldShowOnboardingView().subscribe(this.shouldShowOnboardingViewTest);
     this.vm.outputs.showActivityFeed().subscribe(this.showActivityFeed);
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
     this.vm.outputs.showProgress().distinctUntilChanged().subscribe(this.showProgress);
+    this.vm.outputs.startEditorialActivity().subscribe(this.startEditorialActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.showProject);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
   }
@@ -151,6 +160,60 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Projects should emit again.
     this.projects.assertValueCount(4);
+  }
+
+  @Test
+  public void testShouldShowEditorial_whenGoRewardlessIsDisabled_defaultParams() {
+    setUpEnvironment(environmentWithGoRewardlessDisabled());
+
+    // Initial home all projects params.
+    setUpInitialHomeAllProjectsParams();
+
+    this.shouldShowEditorial.assertValue(null);
+  }
+
+  @Test
+  public void testShouldShowEditorial_whenGoRewardlessIsDisabled_otherParams() {
+    setUpEnvironment(environmentWithGoRewardlessDisabled());
+
+    // Art projects params.
+    this.vm.inputs.paramsFromActivity(
+      DiscoveryParams.builder()
+        .category(CategoryFactory.artCategory())
+        .sort(DiscoveryParams.Sort.HOME)
+        .build()
+    );
+
+    this.shouldShowEditorial.assertValue(null);
+  }
+
+  @Test
+  public void testShouldShowEditorial_whenGoRewardlessIsEnabled_defaultParams() {
+    final Environment environment = environmentWithGoRewardlessEnabled();
+
+    setUpEnvironment(environment);
+
+    // Initial home all projects params.
+    setUpInitialHomeAllProjectsParams();
+
+    this.shouldShowEditorial.assertValue(Editorial.Companion.getGO_REWARDLESS());
+  }
+
+  @Test
+  public void testShouldShowEditorial_whenGoRewardlessIsEnabled_otherParams() {
+    final Environment environment = environmentWithGoRewardlessEnabled();
+
+    setUpEnvironment(environment);
+
+    // Art projects params.
+    this.vm.inputs.paramsFromActivity(
+      DiscoveryParams.builder()
+        .category(CategoryFactory.artCategory())
+        .sort(DiscoveryParams.Sort.HOME)
+        .build()
+    );
+
+    this.shouldShowEditorial.assertValue(null);
   }
 
   @Test
@@ -298,6 +361,19 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testStartEditorialActivity() {
+    setUpEnvironment(environmentWithGoRewardlessEnabled());
+
+    // Load initial params and root categories from activity.
+    setUpInitialHomeAllProjectsParams();
+
+    // Click on editorial
+    this.vm.inputs.editorialViewHolderClicked(Editorial.Companion.getGO_REWARDLESS());
+
+    this.startEditorialActivity.assertValue(Editorial.Companion.getGO_REWARDLESS());
+  }
+
+  @Test
   public void testClickingInterfaceElements() {
     setUpEnvironment(environment());
 
@@ -328,6 +404,26 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.showProject.assertNoValues();
     this.vm.inputs.projectCardViewHolderClicked(ProjectFactory.project());
     this.showProject.assertValueCount(1);
+  }
+
+  private Environment environmentWithGoRewardlessDisabled() {
+    final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
+    mockCurrentConfig.config(ConfigFactory.config());
+    return environment()
+      .toBuilder()
+      .currentConfig(mockCurrentConfig)
+      .goRewardlessPreference(new MockBooleanPreference(false))
+      .build();
+  }
+
+  private Environment environmentWithGoRewardlessEnabled() {
+    final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
+    mockCurrentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_GO_REWARDLESS));
+    return environment()
+      .toBuilder()
+      .currentConfig(mockCurrentConfig)
+      .goRewardlessPreference(new MockBooleanPreference(true))
+      .build();
   }
 
   private void logUserIn(final @NonNull CurrentUserType currentUser) {

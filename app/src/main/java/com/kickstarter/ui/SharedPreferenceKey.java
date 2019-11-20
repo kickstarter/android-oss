@@ -5,6 +5,7 @@ public final class SharedPreferenceKey {
 
   public static final String ACCESS_TOKEN = "access_token";
   public static final String CONFIG = "config";
+  public static final String GO_REWARDLESS = "go_rewardless";
   public static final String HAS_SEEN_APP_RATING = "has_seen_app_rating";
   public static final String HAS_SEEN_GAMES_NEWSLETTER = "has_seen_games_newsletter";
   public static final String LAST_SEEN_ACTIVITY_ID = "last_seen_activity_id";

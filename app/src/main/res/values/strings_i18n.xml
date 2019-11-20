@@ -193,7 +193,7 @@ Please tap to retry.</string>
   <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">Filters by projects with upcoming and past live streams.</string>
   <string name="Find_Facebook_Friends" formatted="false">Find Facebook friends</string>
   <string name="Find_and_follow_friends" formatted="false">Find and follow friends</string>
-  <string name="Find_projects_that_speak_to_you" formatted="false">Find projects that speak to you</string>
+  <string name="Find_projects_that_speak_to_you" formatted="false">Find projects that speak to you ▶</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Find projects you’ll love and help bring creative ideas to life.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.</string>
   <string name="First_created" formatted="false">First created</string>
@@ -528,6 +528,7 @@ catch your eye?</string>
   <string name="There_was_a_problem_with_this_payment" formatted="false">There was a problem with this payment.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">This allows you to see project goal and pledge amounts in your preferred currency.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">This Facebook account is already linked to another Kickstarter user.</string>
+  <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">This holiday season, support a project for no reward, just because it speaks to you.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>

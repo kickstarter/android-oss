@@ -7,10 +7,12 @@ import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
+import com.kickstarter.ui.viewholders.EditorialViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -24,19 +26,24 @@ import androidx.annotation.Nullable;
 
 public final class DiscoveryAdapter extends KSAdapter {
   private static final int SECTION_ONBOARDING_VIEW = 0;
-  private static final int SECTION_ACTIVITY_SAMPLE_VIEW = 1;
-  private static final int SECTION_PROJECT_CARD_VIEW = 2;
+  private static final int SECTION_EDITORIAL_VIEW = 1;
+  private static final int SECTION_ACTIVITY_SAMPLE_VIEW = 2;
+  private static final int SECTION_PROJECT_CARD_VIEW = 3;
 
   private final Delegate delegate;
 
   public interface Delegate extends DiscoveryOnboardingViewHolder.Delegate,
-    ActivitySampleFriendFollowViewHolder.Delegate, ActivitySampleFriendBackingViewHolder.Delegate,
-    ActivitySampleProjectViewHolder.Delegate, ProjectCardViewHolder.Delegate {}
+    EditorialViewHolder.Delegate,
+    ActivitySampleFriendFollowViewHolder.Delegate,
+    ActivitySampleFriendBackingViewHolder.Delegate,
+    ActivitySampleProjectViewHolder.Delegate,
+    ProjectCardViewHolder.Delegate {}
 
   public DiscoveryAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
 
     insertSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
+    insertSection(SECTION_EDITORIAL_VIEW, Collections.emptyList());
     insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
     insertSection(SECTION_PROJECT_CARD_VIEW, Collections.emptyList());
   }
@@ -47,6 +54,16 @@ public final class DiscoveryAdapter extends KSAdapter {
     } else {
       setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.singletonList(activity));
     }
+    notifyDataSetChanged();
+  }
+
+  public void setShouldShowEditorial(final @Nullable Editorial editorial) {
+    if (editorial == null) {
+      setSection(SECTION_EDITORIAL_VIEW, Collections.emptyList());
+    } else {
+      setSection(SECTION_EDITORIAL_VIEW, Collections.singletonList(editorial));
+    }
+
     notifyDataSetChanged();
   }
 
@@ -69,6 +86,8 @@ public final class DiscoveryAdapter extends KSAdapter {
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == SECTION_ONBOARDING_VIEW) {
       return R.layout.discovery_onboarding_view;
+    } else if (sectionRow.section() == SECTION_EDITORIAL_VIEW) {
+      return R.layout.item_editorial;
     } else if (sectionRow.section() == SECTION_ACTIVITY_SAMPLE_VIEW) {
       if (objectFromSectionRow(sectionRow) instanceof Activity) {
         final Activity activity = (Activity) objectFromSectionRow(sectionRow);
@@ -91,6 +110,8 @@ public final class DiscoveryAdapter extends KSAdapter {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
         return new DiscoveryOnboardingViewHolder(view, this.delegate);
+      case R.layout.item_editorial:
+        return new EditorialViewHolder(view, this.delegate);
       case R.layout.project_card_view:
         return new ProjectCardViewHolder(view, this.delegate);
       case R.layout.activity_sample_friend_backing_view:

@@ -3,11 +3,16 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
+import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -25,6 +30,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
@@ -78,6 +84,9 @@ public interface DiscoveryFragmentViewModel {
     /** Emits a list of projects to display.*/
     Observable<List<Pair<Project, DiscoveryParams>>> projectList();
 
+    /** Emits a boolean that determines if an editorial should be shown. */
+    Observable<Editorial> shouldShowEditorial();
+
     /** Emits a boolean that determines if the saved empty view should be shown. */
     Observable<Boolean> shouldShowEmptySavedView();
 
@@ -95,6 +104,9 @@ public interface DiscoveryFragmentViewModel {
 
     Observable<Boolean> showProgress();
 
+    /** Emits an Editorial when we should start the {@link com.kickstarter.ui.activities.EditorialActivity}. */
+    Observable<Editorial> startEditorialActivity();
+
     /** Emits a Project and RefTag pair when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
 
@@ -105,6 +117,8 @@ public interface DiscoveryFragmentViewModel {
   final class ViewModel extends FragmentViewModel<DiscoveryFragment> implements Inputs, Outputs {
     private final ApiClientType apiClient;
     private final CurrentUserType currentUser;
+    private final CurrentConfigType currentConfig;
+    private final BooleanPreferenceType goRewardlessPreference;
     private final IntPreferenceType activitySamplePreference;
 
     public ViewModel(final @NonNull Environment environment) {
@@ -112,7 +126,9 @@ public interface DiscoveryFragmentViewModel {
 
       this.apiClient = environment.apiClient();
       this.activitySamplePreference = environment.activitySamplePreference();
+      this.currentConfig = environment.currentConfig();
       this.currentUser = environment.currentUser();
+      this.goRewardlessPreference = environment.goRewardlessPreference();
 
       final Observable<User> changedUser = this.currentUser.observable()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
@@ -191,6 +207,26 @@ public interface DiscoveryFragmentViewModel {
           this.projectList.onNext(Collections.emptyList());
         });
 
+      final Observable<Boolean> goRewardlessEnabled = this.currentConfig.observable()
+        .map(Config::features)
+        .map(features -> ObjectUtils.isNotNull(features) ? ObjectUtils.coalesce(features.get(FeatureKey.ANDROID_GO_REWARDLESS), false) : false)
+        .map(enabled -> Pair.create(enabled, this.goRewardlessPreference.get()))
+        .map(enabledAndOverride -> Build.isExternal() ? enabledAndOverride.first : enabledAndOverride.second)
+        .distinctUntilChanged();
+
+      this.currentUser.observable()
+        .compose(combineLatestPair(this.paramsFromActivity))
+        .map(this::isDefaultParams)
+        .compose(combineLatestPair(goRewardlessEnabled))
+        .map(isDefaultParamsAndGoRewardlessEnabled -> BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.first) && BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.second))
+        .map(shouldShow -> shouldShow ? Editorial.Companion.getGO_REWARDLESS() : null)
+        .compose(bindToLifecycle())
+        .subscribe(this.shouldShowEditorial);
+
+      this.editorialClicked
+        .compose(bindToLifecycle())
+        .subscribe(this.startEditorialActivity);
+
       this.paramsFromActivity
         .compose(combineLatestPair(userIsLoggedIn))
         .map(pu -> isOnboardingVisible(pu.first, pu.second))
@@ -265,7 +301,9 @@ public interface DiscoveryFragmentViewModel {
     }
 
     private boolean isDefaultParams(final @NonNull Pair<User, DiscoveryParams> userAndParams) {
-      return userAndParams.second.toString().equals(DiscoveryParams.getDefaultParams(userAndParams.first).toString());
+      final DiscoveryParams discoveryParams = userAndParams.second;
+      final User user = userAndParams.first;
+      return discoveryParams.equals(DiscoveryParams.getDefaultParams(user));
     }
 
     private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
@@ -289,6 +327,7 @@ public interface DiscoveryFragmentViewModel {
     private final PublishSubject<Activity> activityUpdateClick = PublishSubject.create();
     private final PublishSubject<Void> clearPage = PublishSubject.create();
     private final PublishSubject<Boolean> discoveryOnboardingLoginToutClick = PublishSubject.create();
+    private final PublishSubject<Editorial> editorialClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
@@ -302,8 +341,10 @@ public interface DiscoveryFragmentViewModel {
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
     private final BehaviorSubject<Boolean> showProgress = BehaviorSubject.create();
+    private final BehaviorSubject<Editorial> shouldShowEditorial = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
+    private final PublishSubject<Editorial> startEditorialActivity = PublishSubject.create();
     private final Observable<Pair<Project, RefTag>> startProjectActivity;
     private final Observable<Activity> startUpdateActivity;
     private final BehaviorSubject<Void> startHeartAnimation = BehaviorSubject.create();
@@ -331,6 +372,9 @@ public interface DiscoveryFragmentViewModel {
     @Override public void activitySampleProjectViewHolderUpdateClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
       final @NonNull Activity activity) {
       this.activityUpdateClick.onNext(activity);
+    }
+    @Override public void editorialViewHolderClicked(final @NonNull Editorial editorial) {
+      this.editorialClicked.onNext(editorial);
     }
     @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
       this.projectCardClicked.onNext(project);
@@ -372,14 +416,20 @@ public interface DiscoveryFragmentViewModel {
     @Override public @NonNull Observable<Boolean> showLoginTout() {
       return this.showLoginTout;
     }
+    @Override public @NonNull Observable<Editorial> shouldShowEditorial() {
+      return this.shouldShowEditorial;
+    }
     @Override public @NonNull Observable<Boolean> shouldShowEmptySavedView() {
       return this.shouldShowEmptySavedView;
+    }
+    @Override public @NonNull Observable<Boolean> showProgress() {
+      return this.showProgress;
     }
     @Override public @NonNull Observable<Void> startHeartAnimation() {
       return this.startHeartAnimation;
     }
-    @Override public @NonNull Observable<Boolean> showProgress() {
-      return this.showProgress;
+    @Override public @NonNull Observable<Editorial> startEditorialActivity() {
+      return this.startEditorialActivity;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
       return this.startProjectActivity;

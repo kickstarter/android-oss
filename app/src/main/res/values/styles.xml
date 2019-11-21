@@ -473,6 +473,11 @@
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 
+  <style name="CalloutWhite" parent="TextWhite">
+    <item name="android:textSize">@dimen/callout</item>
+    <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>
+  </style>
+
   <style name="Subheadline" parent="TextPrimary">
     <item name="android:textSize">@dimen/subheadline</item>
   </style>
@@ -496,6 +501,14 @@
 
   <style name="Title2Medium" parent="TextPrimary">
     <item name="android:textSize">@dimen/title_2</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
+  <style name="Title2White" parent="TextWhite">
+    <item name="android:textSize">@dimen/title_2</item>
+  </style>
+
+  <style name="Title2WhiteMedium" parent="Title2White">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
   </style>
 

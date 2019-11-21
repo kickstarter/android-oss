@@ -104,6 +104,10 @@
       android:parentActivityName=".ui.activities.DiscoveryActivity">
     </activity>
     <activity
+      android:name=".ui.activities.EditorialActivity"
+      android:parentActivityName=".ui.activities.DiscoveryActivity">
+    </activity>
+    <activity
       android:name=".ui.activities.WebViewActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/WebViewActivity">

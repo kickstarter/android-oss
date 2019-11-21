@@ -188,4 +188,9 @@
   <dimen name="autocomplete_drop_down_width">265dp</dimen>
   <dimen name="card_container_radius">@dimen/grid_5</dimen>
 
+
+
+  <!-- Native Checkout -->
+  <dimen name="editorial_radius">8dp</dimen>
+
 </resources>

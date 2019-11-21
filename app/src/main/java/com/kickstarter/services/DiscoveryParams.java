@@ -452,7 +452,9 @@ public abstract class DiscoveryParams implements Parcelable {
     if (user != null && isFalse(user.optedOutOfRecommendations())) {
       builder.recommended(true).backed(-1);
     }
-    return builder.build();
+    return builder
+      .sort(Sort.HOME)
+      .build();
   }
 
   /**

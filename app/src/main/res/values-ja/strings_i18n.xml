@@ -191,7 +191,7 @@
   <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">近日公開予定、または過去のライブ配信含むプロジェクトに絞る</string>
   <string name="Find_Facebook_Friends" formatted="false">Facebook の友達を見つける</string>
   <string name="Find_and_follow_friends" formatted="false">友達を見つけてフォロー</string>
-  <string name="Find_projects_that_speak_to_you" formatted="false">Find projects that speak to you</string>
+  <string name="Find_projects_that_speak_to_you" formatted="false">あなたの心に訴えかけるプロジェクトを見つけよう</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="First_created" formatted="false">1つめのプロジェクト</string>
@@ -230,7 +230,7 @@
   <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">友達がプロジェクトをバックしたりローンチしたりした際に通知を受け取りましょう。</string>
   <string name="Get_reminded_about_this_project" formatted="false">このプロジェクトについてリマインダーを希望しますか？</string>
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
-  <string name="Going_rewardless_is_rewarding" formatted="false">Going “rewardless” is rewarding</string>
+  <string name="Going_rewardless_is_rewarding" formatted="false">「リワードなし」でも、やりがいたっぷり</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">変更が保存されました。</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
@@ -258,7 +258,7 @@
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Its_our_birthday" formatted="false">Kickstarter の誕生日です！過去10年の間に、16万以上のクリエイティブなプロジェクトが、1600万人以上のバッカーの支援のもと、Kickstarter で実現化しました。</string>
   <string name="Join_our_secret_society" formatted="false">この秘密の世界にあなたも浸ってみませんか。</string>
-  <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">Join us in supporting creative work for its own sake this holiday season.</string>
+  <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">このホリデーシーズンは、ぜひリワードなしにクリエイティブなアイデア「そのもの」をサポートしませんか？</string>
   <string name="Joining_the_live_stream" formatted="false">ライブ配信に参加</string>
   <string name="Just_for_you" formatted="false">あなたのために。</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">キャンペーン終了後もニュースレターで最新情報をチェックし、次のプロジェクトに備えましょう。</string>
@@ -523,6 +523,7 @@
   <string name="There_was_a_problem_with_this_payment" formatted="false">支払いに問題があります。</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">これにより、プロジェクトのファンディングゴールとプレッジ金額をご希望の通貨で表示することができます。</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">このFacebookアカウントはすでに他のKickstarterユーザーとつながっています</string>
+  <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">This holiday season, support a project for no reward, just because it speaks to you.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">支払関連のエラーにより、このプレッジは取り消されました。</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">このプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">%{date} までに %{amount} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。</string>
@@ -551,7 +552,7 @@
   <string name="Upcoming_live_streams" formatted="false">ライブ配信が開始します</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b>が近日配信</string>
   <string name="Update_pledge" formatted="false">プレッジをアップデートする</string>
-  <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Use the hashtag #backeditbecause to share what projects you\'re supporting and why they\'re important to you.</string>
+  <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">ハッシュタグ #backeditbecause を使って、あなたがサポートするプロジェクトをシェアし、そのプロジェクトがなぜあなたにとって重要なのか、その理由を伝えましょう。 </string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">受け取ったリワードを確認するにはこちらをご利用ください。</string>
   <string name="Verification_email_sent" formatted="false">認証メールを送信しました。メール内のリンクをクリックすればメールアドレスが認証済みとなります。</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">インターネット通信状態が向上するまでビデオはご利用いいただけません。</string>

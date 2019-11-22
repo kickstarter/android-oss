@@ -9,7 +9,7 @@
   <color name="window_background">@color/white</color>
   <color name="status_bar">@color/ksr_grey_300</color>
 
-  <!-- Kickstarter colors. NB: we should be transitioning to using this color palette. -->
+  <!-- Legacy Kickstarter colors -->
   <color name="black">@android:color/black</color>
   <color name="ksr_apricot_500">#FFCBA9</color>
   <color name="ksr_apricot_600">#F0AE81</color>
@@ -32,9 +32,11 @@
   <color name="ksr_soft_black">#282828</color>
   <color name="ksr_teal_500">#05F2BA</color>
   <color name="ksr_text_green_700">@color/ksr_green_700</color>
-  <color name="trust_700">#0A007D</color>
   <color name="white">@android:color/white</color>
   <color name="transparent">@android:color/transparent</color>
+
+  <!-- KDS  -->
+  <color name="trust_700">#0A007D</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->

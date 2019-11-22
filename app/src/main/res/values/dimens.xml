@@ -132,6 +132,7 @@
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>
 
   <!-- Toolbars -->
+  <dimen name="ks_toolbar_height">56dp</dimen>
   <dimen name="ks_toolbar_elevation">@dimen/grid_1_half</dimen>
 
   <!-- Activity feed view -->

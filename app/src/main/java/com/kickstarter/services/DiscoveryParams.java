@@ -43,6 +43,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract @Nullable Boolean recommended();
   public abstract @Nullable Project similarTo();
   public abstract @Nullable State state();
+  public abstract @Nullable Integer tagId();
   public abstract @Nullable String term();
 
   public enum Sort {
@@ -222,6 +223,11 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.state(State.fromString(stateParam));
     }
 
+    final Integer tagId =  ObjectUtils.toInteger(uri.getQueryParameter("tag_id"));
+    if (tagId != null) {
+      builder = builder.tagId(tagId);
+    }
+
     final String term = uri.getQueryParameter("term");
     if (term != null) {
       builder = builder.term(term);
@@ -247,6 +253,7 @@ public abstract class DiscoveryParams implements Parcelable {
     public abstract Builder recommended(Boolean __);
     public abstract Builder similarTo(Project __);
     public abstract Builder state(State __);
+    public abstract Builder tagId(Integer __);
     public abstract Builder term(String __);
     public abstract DiscoveryParams build();
 
@@ -299,6 +306,9 @@ public abstract class DiscoveryParams implements Parcelable {
       }
       if (other.similarTo() != null) {
         retVal = retVal.similarTo(other.similarTo());
+      }
+      if (other.tagId() != null) {
+        retVal = retVal.term(other.term());
       }
       if (other.term() != null) {
         retVal = retVal.term(other.term());
@@ -386,6 +396,11 @@ public abstract class DiscoveryParams implements Parcelable {
           put("state", state.toString());
         }
 
+        final Integer tagId = tagId();
+        if (tagId != null) {
+          put("tad_id", tagId.toString());
+        }
+
         if (term() != null) {
           put("q", term());
         }
@@ -463,7 +478,8 @@ public abstract class DiscoveryParams implements Parcelable {
    */
   public boolean isAllProjects() {
     return isFalse(staffPicks()) && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
-      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
+      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended())
+      && (tagId() == null);
   }
 
   /**
@@ -472,7 +488,8 @@ public abstract class DiscoveryParams implements Parcelable {
    */
   public boolean isSavedProjects() {
     return isTrue(starred() != null && starred() == 1) && isFalse(staffPicks()) && (backed() == null || backed() != 1)
-      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
+      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended())
+      && (tagId() == null);
   }
 
   public boolean isCategorySet() {

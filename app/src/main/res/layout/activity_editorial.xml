@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <com.google.android.material.appbar.CollapsingToolbarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ks_toolbar_height"
+        android:orientation="vertical">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/trust_700"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/editorial_title"
+            style="@style/Title2WhiteMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_6"
+            android:layout_marginEnd="@dimen/grid_6"
+            android:layout_marginBottom="@dimen/grid_8"
+            android:gravity="center"
+            tools:text="@string/This_holiday_season_support_a_project_for_no_reward" />
+
+          <com.kickstarter.ui.views.BottomCropImageView
+            android:id="@+id/editorial_graphic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            android:transitionName="editorial"
+            tools:src="@drawable/go_rewardless_header" />
+
+        </LinearLayout>
+
+        <TextView
+          android:id="@+id/editorial_description"
+          style="@style/CalloutPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/grid_5"
+          android:layout_marginTop="@dimen/grid_4"
+          android:layout_marginEnd="@dimen/grid_5"
+          android:gravity="center"
+          android:textColor="@color/trust_700"
+          tools:text="@string/These_projects_could_use_your_support" />
+      </LinearLayout>
+
+      <com.kickstarter.ui.toolbars.KSToolbar
+        style="@style/Toolbar"
+        android:backgroundTint="@color/trust_700"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_collapseMode="pin">
+
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <com.kickstarter.ui.views.IconTextView
+            android:id="@+id/back_button"
+            style="@style/ToolbarIconBackButton"
+            android:drawableTint="@color/white" />
+
+        </RelativeLayout>
+
+      </com.kickstarter.ui.toolbars.KSToolbar>
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <fragment
+    android:id="@+id/fragment_discovery"
+    android:name="com.kickstarter.ui.fragments.DiscoveryFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

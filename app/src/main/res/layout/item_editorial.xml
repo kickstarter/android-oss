@@ -6,7 +6,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginStart="@dimen/grid_2"
-  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginTop="@dimen/grid_3"
   android:layout_marginEnd="@dimen/grid_2"
   app:cardCornerRadius="@dimen/editorial_radius"
   tools:cardBackgroundColor="@color/trust_700">
@@ -19,9 +19,9 @@
     <TextView
       android:id="@+id/editorial_title"
       style="@style/Title2WhiteMedium"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_2"
+      android:layout_marginBottom="@dimen/grid_1"
       android:paddingStart="@dimen/grid_3"
       android:paddingTop="@dimen/grid_3"
       android:paddingEnd="@dimen/grid_3"
@@ -30,7 +30,7 @@
     <TextView
       android:id="@+id/editorial_description"
       style="@style/CalloutWhite"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingStart="@dimen/grid_3"
       android:paddingEnd="@dimen/grid_3"
@@ -42,7 +42,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:importantForAccessibility="no"
-      android:scaleType="centerCrop"
+      android:transitionName="editorial"
       tools:src="@drawable/go_rewardless_tout" />
 
   </LinearLayout>

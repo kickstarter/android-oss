@@ -8,6 +8,7 @@
   android:layout_marginStart="@dimen/grid_2"
   android:layout_marginTop="@dimen/grid_3"
   android:layout_marginEnd="@dimen/grid_2"
+  android:focusable="true"
   app:cardCornerRadius="@dimen/editorial_radius"
   tools:cardBackgroundColor="@color/trust_700">
 
@@ -43,7 +44,7 @@
       android:layout_height="wrap_content"
       android:importantForAccessibility="no"
       android:transitionName="editorial"
-      tools:src="@drawable/go_rewardless_tout" />
+      tools:src="@drawable/go_rewardless_header" />
 
   </LinearLayout>
 

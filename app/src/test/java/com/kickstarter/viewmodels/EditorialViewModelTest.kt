@@ -83,6 +83,6 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     fun testTitle() {
         setUpEnvironment(environment(), Editorial.GO_REWARDLESS)
 
-        this.title.assertValue(R.string.Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season)
+        this.title.assertValue(R.string.This_holiday_season_support_a_project_for_no_reward)
     }
 }

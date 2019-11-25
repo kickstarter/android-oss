@@ -21,15 +21,20 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     private val description = TestSubscriber<Int>()
     private val discoveryParams = TestSubscriber<DiscoveryParams>()
     private val graphic = TestSubscriber<Int>()
+    private val refreshDiscoveryFragment = TestSubscriber<Void>()
+    private val retryContainerIsGone = TestSubscriber<Boolean>()
     private val rootCategories = TestSubscriber<List<Category>>()
     private val title = TestSubscriber<Int>()
 
+    @Suppress("SameParameterValue")
     private fun setUpEnvironment(environment: Environment, editorial: Editorial) {
         this.vm = EditorialViewModel.ViewModel(environment)
 
         this.vm.outputs.description().subscribe(this.description)
         this.vm.outputs.discoveryParams().subscribe(this.discoveryParams)
         this.vm.outputs.graphic().subscribe(this.graphic)
+        this.vm.outputs.refreshDiscoveryFragment().subscribe(this.refreshDiscoveryFragment)
+        this.vm.outputs.retryContainerIsGone().subscribe(this.retryContainerIsGone)
         this.vm.outputs.rootCategories().subscribe(this.rootCategories)
         this.vm.outputs.title().subscribe(this.title)
 
@@ -59,6 +64,41 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), Editorial.GO_REWARDLESS)
 
         this.graphic.assertValue(R.drawable.go_rewardless_header)
+    }
+
+    @Test
+    fun testRefreshDiscoveryFragment() {
+        setUpEnvironment(environment(), Editorial.GO_REWARDLESS)
+
+        this.vm.inputs.retryContainerClicked()
+
+        this.refreshDiscoveryFragment.assertValueCount(1)
+    }
+
+    @Test
+    fun testRetryContainerIsGone() {
+        var error = true
+        val environment = environment()
+                .toBuilder()
+                .apiClient(object: MockApiClient(){
+                    override fun fetchCategories(): Observable<MutableList<Category>?> {
+                        return when {
+                            error -> Observable.error<MutableList<Category>?>(Throwable("boop"))
+                            else -> {
+                               super.fetchCategories()
+                            }
+                        }
+                    }
+                })
+                .build()
+        setUpEnvironment(environment, Editorial.GO_REWARDLESS)
+
+        this.retryContainerIsGone.assertValues(false)
+
+        error = false
+        this.vm.inputs.retryContainerClicked()
+
+        this.retryContainerIsGone.assertValues(false, true, true)
     }
 
     @Test

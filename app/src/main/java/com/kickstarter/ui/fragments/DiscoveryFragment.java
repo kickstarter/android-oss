@@ -249,6 +249,10 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     transition(getActivity(), slideInFromRight());
   }
 
+  public void refresh() {
+    this.viewModel.inputs.refresh();
+  }
+
   public void takeCategories(final @NonNull List<Category> categories) {
     this.viewModel.inputs.rootCategories(categories);
   }

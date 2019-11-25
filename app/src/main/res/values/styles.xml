@@ -29,6 +29,8 @@
     <item name="toolbarStyle">@style/Toolbar</item>
     <item name="android:statusBarColor">@color/status_bar</item>
     <item name="android:windowContentTransitions">true</item>
+    <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+    <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
     <item name="android:windowLightStatusBar">true</item>
@@ -206,8 +208,8 @@
 
   <style name="ActivitySampleSeeAllButton" parent="BorderButton">
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_marginTop">@dimen/grid_3</item>
-    <item name="android:layout_marginBottom">@dimen/grid_4</item>
+    <item name="android:layout_marginTop">@dimen/grid_2</item>
+    <item name="android:layout_marginBottom">@dimen/grid_2</item>
     <item name="android:text">@string/discovery_activity_sample_button_see_all_activity</item>
   </style>
 
@@ -307,7 +309,7 @@
 
   <style name="ToolbarIcon">
     <item name="android:background">@drawable/click_indicator_light</item>
-    <item name="android:layout_height">56dp</item>
+    <item name="android:layout_height">@dimen/ks_toolbar_height</item>
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
@@ -331,6 +333,10 @@
   </style>
 
   <style name="ToolbarTitle" parent="ToolbarTitleBase" />
+
+  <style name="ToolbarTitleWhite" parent="ToolbarTitleBase">
+    <item name="android:textColor">@color/white</item>
+  </style>
 
   <style name="ToolbarVectorIcon">
     <item name="android:layout_height">56dp</item>
@@ -586,7 +592,7 @@
     <item name="cardElevation">@dimen/card_no_elevation</item>
     <item name="android:focusable">true</item>
     <item name="android:layout_marginBottom">@dimen/grid_1</item>
-    <item name="android:layout_marginTop">@dimen/grid_5</item>
+    <item name="android:layout_marginTop">@dimen/grid_3</item>
     <item name="android:layout_marginStart">@dimen/grid_2</item>
     <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>

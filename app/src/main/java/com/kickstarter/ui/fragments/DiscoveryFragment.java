@@ -1,6 +1,7 @@
 package com.kickstarter.ui.fragments;
 
 import android.animation.AnimatorSet;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,17 +26,21 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.ArgumentsKey;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
+import com.kickstarter.ui.activities.EditorialActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.UpdateActivity;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
+import com.kickstarter.ui.viewholders.EditorialViewHolder;
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -122,6 +127,11 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(__ -> startActivityFeedActivity());
 
+    this.viewModel.outputs.startEditorialActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startEditorialActivity);
+
     this.viewModel.outputs.startUpdateActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -176,6 +186,24 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     return this.recyclerView != null;
   }
 
+  private ImageView getEditorialImageView() {
+    final LinearLayoutManager layoutManager = (LinearLayoutManager) this.recyclerView.getLayoutManager();
+    final DiscoveryAdapter discoveryAdapter = (DiscoveryAdapter) this.recyclerView.getAdapter();
+
+    if (layoutManager != null && discoveryAdapter != null) {
+      for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager.findLastVisibleItemPosition(); i++) {
+        final View childView = layoutManager.getChildAt(i);
+        if (childView != null) {
+          final RecyclerView.ViewHolder viewHolder = this.recyclerView.getChildViewHolder(childView);
+          if (viewHolder instanceof EditorialViewHolder) {
+            return childView.findViewById(R.id.editorial_graphic);
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   private @NonNull AnimatorSet lazyHeartCrossFadeAnimation() {
     if (this.heartsAnimation == null) {
       this.heartsAnimation = AnimationUtils.INSTANCE.crossFadeAndReverse(this.heartOutline, this.heartFilled, 400L);
@@ -185,6 +213,17 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
 
   private void startActivityFeedActivity() {
     startActivity(new Intent(getActivity(), ActivityFeedActivity.class));
+  }
+
+  private void startEditorialActivity(final @NonNull Editorial editorial) {
+    final FragmentActivity activity = getActivity();
+    final ImageView editorialImageView = getEditorialImageView();
+    if (activity != null && editorialImageView != null) {
+      final Intent intent = new Intent(activity, EditorialActivity.class)
+        .putExtra(IntentKey.EDITORIAL, editorial);
+      final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, editorialImageView, "editorial");
+      startActivity(intent, options.toBundle());
+    }
   }
 
   private void startLoginToutActivity() {

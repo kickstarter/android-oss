@@ -71,6 +71,6 @@ class EditorialViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(Editorial.GO_REWARDLESS)
 
-        this.graphic.assertValue(R.drawable.go_rewardless_tout)
+        this.graphic.assertValue(R.drawable.go_rewardless_header)
     }
 }

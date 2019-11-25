@@ -219,7 +219,7 @@ public interface DiscoveryFragmentViewModel {
         .map(this::isDefaultParams)
         .compose(combineLatestPair(goRewardlessEnabled))
         .map(isDefaultParamsAndGoRewardlessEnabled -> BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.first) && BooleanUtils.isTrue(isDefaultParamsAndGoRewardlessEnabled.second))
-        .map(shouldShow -> shouldShow ? Editorial.Companion.getGO_REWARDLESS() : null)
+        .map(shouldShow -> shouldShow ? Editorial.GO_REWARDLESS : null)
         .compose(bindToLifecycle())
         .subscribe(this.shouldShowEditorial);
 

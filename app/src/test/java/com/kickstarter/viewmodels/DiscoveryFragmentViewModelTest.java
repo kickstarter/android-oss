@@ -196,7 +196,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     // Initial home all projects params.
     setUpInitialHomeAllProjectsParams();
 
-    this.shouldShowEditorial.assertValue(Editorial.Companion.getGO_REWARDLESS());
+    this.shouldShowEditorial.assertValue(Editorial.GO_REWARDLESS);
   }
 
   @Test
@@ -368,9 +368,9 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     setUpInitialHomeAllProjectsParams();
 
     // Click on editorial
-    this.vm.inputs.editorialViewHolderClicked(Editorial.Companion.getGO_REWARDLESS());
+    this.vm.inputs.editorialViewHolderClicked(Editorial.GO_REWARDLESS);
 
-    this.startEditorialActivity.assertValue(Editorial.Companion.getGO_REWARDLESS());
+    this.startEditorialActivity.assertValue(Editorial.GO_REWARDLESS);
   }
 
   @Test

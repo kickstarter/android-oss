@@ -32,11 +32,11 @@ interface EditorialViewModel {
         /** Emits the @DrawableRes of the graphic of the [Editorial]. */
         fun graphic(): Observable<Int>
 
-        /** Emits a [Boolean] determining if the retry container should be visible. */
-        fun retryContainerIsGone(): Observable<Boolean>
-
         /** Emits when we should refresh the [com.kickstarter.ui.fragments.DiscoveryFragment]. */
         fun refreshDiscoveryFragment(): Observable<Void>
+
+        /** Emits a [Boolean] determining if the retry container should be visible. */
+        fun retryContainerIsGone(): Observable<Boolean>
 
         /** Emits a list of root [Category]s. */
         fun rootCategories(): Observable<List<Category>>

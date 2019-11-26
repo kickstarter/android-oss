@@ -3,6 +3,8 @@ package com.kickstarter.libs;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.User;
 
+import org.json.JSONArray;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ public abstract class TrackingClientType {
     hashMap.put("device_format", deviceFormat());
     hashMap.put("device_orientation", deviceOrientation());
     hashMap.put("distinct_id", androidUUID());
+    hashMap.put("enabled_feature_flags", enabledFeatureFlags());
     hashMap.put("google_play_services", isGooglePlayServicesAvailable() ? "available" : "unavailable");
     hashMap.put("is_vo_on", isTalkBackOn());
     hashMap.put("koala_lib", "kickstarter_android");
@@ -56,6 +59,7 @@ public abstract class TrackingClientType {
   protected abstract String brand();
   protected abstract String deviceFormat();
   protected abstract String deviceOrientation();
+  protected abstract JSONArray enabledFeatureFlags();
   protected abstract boolean isGooglePlayServicesAvailable();
   protected abstract boolean isTalkBackOn();
   protected abstract User loggedInUser();

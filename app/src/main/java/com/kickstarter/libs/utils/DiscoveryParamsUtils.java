@@ -37,6 +37,11 @@ public final class DiscoveryParamsUtils {
       return RefTag.recommended();
     }
 
+    final Integer tagId = params.tagId();
+    if (tagId != null) {
+      return RefTag.collection(tagId);
+    }
+
     if (isNonZero(params.social())) {
       return RefTag.social();
     }

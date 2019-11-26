@@ -1,8 +1,10 @@
 package com.kickstarter.libs;
 
+import com.kickstarter.libs.utils.ConfigUtils;
 import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 
 import java.util.Map;
 
@@ -14,10 +16,11 @@ import rx.subjects.PublishSubject;
 public final class MockTrackingClient extends TrackingClientType {
   private static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis() / 1000;
   @Nullable private User loggedInUser;
+  @Nullable private Config config;
 
-
-  public MockTrackingClient(final @NonNull CurrentUserType currentUser) {
+  public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig) {
     currentUser.observable().subscribe(u -> this.loggedInUser = u);
+    currentConfig.observable().subscribe(c -> this.config = c);
   }
 
   public static class Event {
@@ -56,6 +59,11 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   protected String deviceOrientation() {
     return "portrait";
+  }
+
+  @Override
+  protected JSONArray enabledFeatureFlags() {
+    return ConfigUtils.INSTANCE.enabledFeatureFlags(this.config);
   }
 
   @Override

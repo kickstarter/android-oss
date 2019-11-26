@@ -227,6 +227,10 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startEditorialActivity);
 
+      this.editorialClicked
+        .compose(bindToLifecycle())
+        .subscribe(this.koala::trackEditorialCardClicked);
+
       this.paramsFromActivity
         .compose(combineLatestPair(userIsLoggedIn))
         .map(pu -> isOnboardingVisible(pu.first, pu.second))

@@ -382,8 +382,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, build));
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig) {
+    return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig));
   }
 
   @Provides

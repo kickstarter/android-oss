@@ -23,6 +23,7 @@ public final class KoalaEvent {
   public static final String DISCOVER_SEARCH_LEGACY = "Discover Search";
   public static final String DISCOVER_SEARCH_RESULTS_LEGACY = "Discover Search Results";
   public static final String DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY = "Discover Search Results Load More";
+  public static final String EDITORIAL_CARD_CLICKED = "Editorial Card Clicked";
   public static final String ERRORED_DELETE_PAYMENT_METHOD = "Errored Delete Payment Method";
   public static final String ERRORED_USER_LOGIN = "Errored User Login";
   public static final String ERRORED_USER_SIGNUP = "Errored User Signup";

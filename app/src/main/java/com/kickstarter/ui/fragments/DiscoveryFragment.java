@@ -191,7 +191,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     final DiscoveryAdapter discoveryAdapter = (DiscoveryAdapter) this.recyclerView.getAdapter();
 
     if (layoutManager != null && discoveryAdapter != null) {
-      for (int i = layoutManager.findFirstVisibleItemPosition(); i < layoutManager.findLastVisibleItemPosition(); i++) {
+      for (int i = layoutManager.findFirstVisibleItemPosition(); i <= layoutManager.findLastVisibleItemPosition(); i++) {
         final View childView = layoutManager.getChildAt(i);
         if (childView != null) {
           final RecyclerView.ViewHolder viewHolder = this.recyclerView.getChildViewHolder(childView);
@@ -247,6 +247,10 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .putExtra(IntentKey.UPDATE, activity.update());
     startActivity(intent);
     transition(getActivity(), slideInFromRight());
+  }
+
+  public void refresh() {
+    this.viewModel.inputs.refresh();
   }
 
   public void takeCategories(final @NonNull List<Category> categories) {

@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Category
@@ -10,11 +11,17 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.EditorialActivity
 import com.kickstarter.ui.data.Editorial
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface EditorialViewModel {
-    interface Inputs
+    interface Inputs {
+        /** Call when the user clicks the retry container. */
+        fun retryContainerClicked()
+    }
+
     interface Outputs {
         /** Emits the @StringRes ID of the description of the [Editorial]. */
         fun description(): Observable<Int>
@@ -25,6 +32,12 @@ interface EditorialViewModel {
         /** Emits the @DrawableRes of the graphic of the [Editorial]. */
         fun graphic(): Observable<Int>
 
+        /** Emits when we should refresh the [com.kickstarter.ui.fragments.DiscoveryFragment]. */
+        fun refreshDiscoveryFragment(): Observable<Void>
+
+        /** Emits a [Boolean] determining if the retry container should be visible. */
+        fun retryContainerIsGone(): Observable<Boolean>
+
         /** Emits a list of root [Category]s. */
         fun rootCategories(): Observable<List<Category>>
 
@@ -33,9 +46,13 @@ interface EditorialViewModel {
     }
 
     class ViewModel(val environment: Environment) : ActivityViewModel<EditorialActivity>(environment), Inputs, Outputs {
+        private val retryContainerClicked: PublishSubject<Void> = PublishSubject.create()
+
         private val description: BehaviorSubject<Int> = BehaviorSubject.create()
         private val discoveryParams: BehaviorSubject<DiscoveryParams> = BehaviorSubject.create()
         private val graphic: BehaviorSubject<Int> = BehaviorSubject.create()
+        private val refreshDiscoveryFragment: PublishSubject<Void> = PublishSubject.create()
+        private val retryContainerIsGone: BehaviorSubject<Boolean> = BehaviorSubject.create()
         private val rootCategories: BehaviorSubject<List<Category>> = BehaviorSubject.create()
         private val title: BehaviorSubject<Int> = BehaviorSubject.create()
 
@@ -50,9 +67,7 @@ interface EditorialViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .ofType(Editorial::class.java)
 
-            val categoriesNotification = this.apiClient.fetchCategories()
-                    .materialize()
-                    .share()
+            val categoriesNotification = Observable.merge(fetchCategories(), this.retryContainerClicked.switchMap { fetchCategories() })
 
             categoriesNotification
                     .compose(values())
@@ -60,6 +75,11 @@ interface EditorialViewModel {
                     .map { it.sorted() }
                     .compose(bindToLifecycle())
                     .subscribe { this.rootCategories.onNext(it) }
+
+            categoriesNotification
+                    .compose(errors())
+                    .compose(bindToLifecycle())
+                    .subscribe { this.retryContainerIsGone.onNext(false) }
 
             editorial
                     .map { it.tagId }
@@ -81,13 +101,30 @@ interface EditorialViewModel {
                     .map { it.description }
                     .compose(bindToLifecycle())
                     .subscribe(this.description)
+
+            this.retryContainerClicked
+                    .compose(bindToLifecycle())
+                    .subscribe(this.refreshDiscoveryFragment)
         }
+
+        private fun fetchCategories(): Observable<Notification<MutableList<Category>>>? {
+            return this.apiClient.fetchCategories()
+                    .doOnSubscribe { this.retryContainerIsGone.onNext(true) }
+                    .materialize()
+                    .share()
+        }
+
+        override fun retryContainerClicked() = this.retryContainerClicked.onNext(null)
 
         override fun description(): Observable<Int> = this.description
 
         override fun discoveryParams(): Observable<DiscoveryParams> = this.discoveryParams
 
         override fun graphic(): Observable<Int> = this.graphic
+
+        override fun refreshDiscoveryFragment(): Observable<Void> = this.refreshDiscoveryFragment
+
+        override fun retryContainerIsGone(): Observable<Boolean> = this.retryContainerIsGone
 
         override fun rootCategories(): Observable<List<Category>> = this.rootCategories
 

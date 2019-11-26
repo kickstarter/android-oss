@@ -3,7 +3,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:animateLayoutChanges="true">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -90,6 +91,15 @@
     android:name="com.kickstarter.ui.fragments.DiscoveryFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+    tools:layout="@layout/fragment_discovery" />
+
+  <include
+    android:id="@+id/editorial_retry_container"
+    layout="@layout/retry_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

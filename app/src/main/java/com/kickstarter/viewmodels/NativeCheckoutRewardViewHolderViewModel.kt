@@ -122,9 +122,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
         private val rewardClicked = PublishSubject.create<Int>()
 
-        private val background = BehaviorSubject.create<Int>()
         private val backersCount = BehaviorSubject.create<Int>()
         private val backersCountIsGone = BehaviorSubject.create<Boolean>()
+        private val background = BehaviorSubject.create<Int>()
         private val buttonCTA = BehaviorSubject.create<Int>()
         private val buttonIsEnabled = BehaviorSubject.create<Boolean>()
         private val buttonIsGone = BehaviorSubject.create<Boolean>()
@@ -171,7 +171,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .map { it.first?.id() == it.second.creator().id() }
 
             val goRewardlessEnabled = this.currentConfig.observable()
-                    .map { it.features()?.get(FeatureKey.ANDROID_GO_REWARDLESS)?: false}
+                    .map { it.features()?.get(FeatureKey.ANDROID_GO_REWARDLESS) ?: false }
                     .map { Pair.create<Boolean, Boolean>(it, this.goRewardlessPreference.get()) }
                     .map { if (Build.isExternal()) it.first else it.second }
                     .distinctUntilChanged()

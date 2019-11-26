@@ -41,7 +41,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.background()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_contents.setBackgroundResource(it) }
+                .subscribe { if (!this.inset) this.view.reward_contents.setBackgroundResource(it) }
 
         this.viewModel.outputs.conversionIsGone()
                 .compose(bindToLifecycle())

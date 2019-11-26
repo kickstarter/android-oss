@@ -1,12 +1,12 @@
 package com.kickstarter.services
 
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.ui.IntentKey
-import io.fabric.sdk.android.Fabric
 import okhttp3.ResponseBody
 import retrofit2.Response
 import rx.schedulers.Schedulers
@@ -49,6 +49,7 @@ class KoalaBackgroundService : JobService() {
             if (this.build.isDebug) {
                 Log.d(TAG, "Successfully tracked event: $eventName")
             }
+            Crashlytics.log(eventName)
         } else {
             logTrackingError(eventName)
         }
@@ -58,7 +59,7 @@ class KoalaBackgroundService : JobService() {
         if (this.build.isDebug) {
             Log.e(TAG, "Failed to track event: $eventName")
         }
-        Fabric.getLogger().e(TAG, "Failed to track event: $eventName")
+        Crashlytics.logException(Exception("Failed to track event: $eventName"))
     }
 
     companion object {

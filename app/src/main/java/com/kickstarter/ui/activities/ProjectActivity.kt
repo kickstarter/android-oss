@@ -774,7 +774,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun updateFragments(project: Project) {
         try {
-            safeLet(rewardsFragment(), backingFragment()) { rewardsFragment, backingFragment ->
+            val rewardsFragment = rewardsFragment()
+            val backingFragment = backingFragment()
+            if (rewardsFragment != null && backingFragment != null) {
                 when {
                     supportFragmentManager.backStackEntryCount == 0 -> when {
                         project.isBacking -> if (!rewardsFragment.isHidden) {
@@ -793,16 +795,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 }
                 renderProject(backingFragment, rewardsFragment, project)
             }
-        } catch (e :IllegalStateException) {
+        } catch (e: IllegalStateException) {
             Crashlytics.logException(e)
-        }
-    }
-
-    private fun <T1 : Any, T2 : Any> safeLet(p1: T1?, p2: T2?, block: (T1, T2) -> Unit) {
-        if (p1 != null && p2 != null) {
-            run {
-                block(p1, p2)
-            }
         }
     }
 

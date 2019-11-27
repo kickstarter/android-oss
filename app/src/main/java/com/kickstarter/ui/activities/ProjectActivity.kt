@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.crashlytics.android.Crashlytics
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.showSnackbar
@@ -390,6 +391,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         }
     }
 
+    private fun backingFragment() = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment?
+
     private fun clearFragmentBackStack(): Boolean {
         return supportFragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
@@ -519,14 +522,17 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun revealRewardsFragment() {
-        val rewardsFragment = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment
-        supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                .show(rewardsFragment)
-                .addToBackStack(RewardsFragment::class.java.simpleName)
-                .commit()
+        rewardsFragment()?.let {
+            supportFragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                    .show(it)
+                    .addToBackStack(RewardsFragment::class.java.simpleName)
+                    .commit()
+        }
     }
+
+    private fun rewardsFragment() = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?
 
     private fun rewardsSheetGuideline(): Int = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
 
@@ -657,8 +663,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun showUpdatePledgeSuccess() {
         clearFragmentBackStack()
-        val backingFragment = supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        backingFragment.pledgeSuccessfullyUpdated()
+        backingFragment()?.pledgeSuccessfullyUpdated()
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
@@ -768,27 +773,32 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun updateFragments(project: Project) {
-        val (rewardsFragment, backingFragment) = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment to
-                supportFragmentManager.findFragmentById(R.id.fragment_backing) as BackingFragment
-        when {
-            supportFragmentManager.backStackEntryCount == 0 -> when {
-                project.isBacking -> if (!rewardsFragment.isHidden) {
-                    supportFragmentManager.beginTransaction()
-                            .show(backingFragment)
-                            .hide(rewardsFragment)
-                            .commitNow()
+        try {
+            val rewardsFragment = rewardsFragment()
+            val backingFragment = backingFragment()
+            if (rewardsFragment != null && backingFragment != null) {
+                when {
+                    supportFragmentManager.backStackEntryCount == 0 -> when {
+                        project.isBacking -> if (!rewardsFragment.isHidden) {
+                            supportFragmentManager.beginTransaction()
+                                    .show(backingFragment)
+                                    .hide(rewardsFragment)
+                                    .commitNow()
+                        }
+                        else -> if (!backingFragment.isHidden) {
+                            supportFragmentManager.beginTransaction()
+                                    .show(rewardsFragment)
+                                    .hide(backingFragment)
+                                    .commitNow()
+                        }
+                    }
                 }
-                else -> if (!backingFragment.isHidden) {
-                    supportFragmentManager.beginTransaction()
-                            .show(rewardsFragment)
-                            .hide(backingFragment)
-                            .commitNow()
-                }
+                renderProject(backingFragment, rewardsFragment, project)
             }
+        } catch (e: IllegalStateException) {
+            Crashlytics.logException(e)
         }
-        renderProject(backingFragment, rewardsFragment, project)
     }
-
 
     private fun updateManagePledgeMenu(@MenuRes menu: Int?) {
         menu?.let {

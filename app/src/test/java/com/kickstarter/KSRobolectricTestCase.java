@@ -39,7 +39,8 @@ public abstract class KSRobolectricTestCase extends TestCase {
   public void setUp() throws Exception {
     super.setUp();
 
-    final MockTrackingClient testTrackingClient = new MockTrackingClient(new MockCurrentUser());
+    final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
+    final MockTrackingClient testTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig);
     this.koalaTest = new TestSubscriber<>();
     testTrackingClient.eventNames.subscribe(this.koalaTest);
     DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
@@ -47,7 +48,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
     this.environment = application().component().environment().toBuilder()
       .apiClient(new MockApiClient())
       .apolloClient(new MockApolloClient())
-      .currentConfig(new MockCurrentConfig())
+      .currentConfig(mockCurrentConfig)
       .webClient(new MockWebClient())
       .stripe(new Stripe(context(), Secrets.StripePublishableKey.STAGING))
       .koala(new Koala(testTrackingClient))

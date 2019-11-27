@@ -4,6 +4,7 @@ import com.kickstarter.libs.Config;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 
@@ -58,6 +59,12 @@ public final class ConfigFactory {
   public static @NonNull Config configWithFeatureEnabled(final @NonNull String featureKey) {
     return config().toBuilder()
       .features(Collections.singletonMap(featureKey, true))
+      .build();
+  }
+
+  public static @NonNull Config configWithFeaturesEnabled(final @NonNull Map<String, Boolean> features) {
+    return config().toBuilder()
+      .features(features)
       .build();
   }
 }

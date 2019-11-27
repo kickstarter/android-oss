@@ -53,7 +53,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showProgress = new TestSubscriber<>();
   private final TestSubscriber<Editorial> startEditorialActivity = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, RefTag>> showProject = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -68,7 +68,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
     this.vm.outputs.showProgress().distinctUntilChanged().subscribe(this.showProgress);
     this.vm.outputs.startEditorialActivity().subscribe(this.startEditorialActivity);
-    this.vm.outputs.startProjectActivity().subscribe(this.showProject);
+    this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
   }
 
@@ -371,6 +371,42 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.editorialViewHolderClicked(Editorial.GO_REWARDLESS);
 
     this.startEditorialActivity.assertValue(Editorial.GO_REWARDLESS);
+    this.koalaTest.assertValues("Discover List View", "Editorial Card Clicked");
+  }
+
+  @Test
+  public void testStartProjectActivity_whenViewingEditorial() {
+    setUpEnvironment(environment());
+
+    // Load editorial params and root categories from activity.
+    final DiscoveryParams editorialParams = DiscoveryParams.builder()
+      .tagId(Editorial.GO_REWARDLESS.getTagId())
+      .sort(DiscoveryParams.Sort.HOME)
+      .build();
+    this.vm.inputs.paramsFromActivity(editorialParams);
+    this.vm.inputs.rootCategories(CategoryFactory.rootCategories());
+
+    // Click on project
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.projectCardViewHolderClicked(project);
+
+    this.startProjectActivity.assertValue(Pair.create(project, RefTag.collection(518)));
+    this.koalaTest.assertValues("Discover List View");
+  }
+
+  @Test
+  public void testStartProjectActivity_whenViewingAllProjects() {
+    setUpEnvironment(environment());
+
+    // Load initial params and root categories from activity.
+    setUpInitialHomeAllProjectsParams();
+
+    // Click on project
+    final Project project = ProjectFactory.project();
+    this.vm.inputs.projectCardViewHolderClicked(project);
+
+    this.startProjectActivity.assertValue(Pair.create(project, RefTag.discovery()));
+    this.koalaTest.assertValues("Discover List View");
   }
 
   @Test
@@ -396,14 +432,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.showLoginTout.assertNoValues();
     this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
     this.showLoginTout.assertValue(true);
-
-    // Pass in params and sort to fetch projects.
-    this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
-
-    // Clicking on a project card should show project activity.
-    this.showProject.assertNoValues();
-    this.vm.inputs.projectCardViewHolderClicked(ProjectFactory.project());
-    this.showProject.assertValueCount(1);
   }
 
   private Environment environmentWithGoRewardlessDisabled() {

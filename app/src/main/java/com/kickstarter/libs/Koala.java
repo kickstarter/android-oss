@@ -7,6 +7,7 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
+import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
 
@@ -72,6 +73,14 @@ public final class Koala {
     this.client.track(KoalaEvent.TRIGGERED_REFRESH, new HashMap<String, Object>() {
       {
         put("type", "swipe");
+      }
+    });
+  }
+
+  public void trackEditorialCardClicked(final @NonNull Editorial editorial) {
+    this.client.track(KoalaEvent.EDITORIAL_CARD_CLICKED, new HashMap<String, Object>() {
+      {
+        put("ref_tag", RefTag.collection(editorial.getTagId()).tag());
       }
     });
   }

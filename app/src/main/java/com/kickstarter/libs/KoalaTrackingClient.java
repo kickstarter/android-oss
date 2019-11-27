@@ -7,12 +7,13 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityManager;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.util.Base64Utils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
+import com.kickstarter.libs.utils.ConfigUtils;
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.KoalaBackgroundService;
@@ -36,23 +37,27 @@ public final class KoalaTrackingClient extends TrackingClientType {
   private static final String TAG = KoalaTrackingClient.class.getSimpleName();
   @Inject CurrentUserType currentUser;
   @Inject Build build;
+  @Inject CurrentConfigType currentConfig;
   @Nullable private User loggedInUser;
+  @Nullable private Config config;
   private final @NonNull Context context;
-
-  // Cached values
-  private @Nullable Boolean isGooglePlayServicesAvailable;
 
   public KoalaTrackingClient(
     final @ApplicationContext @NonNull Context context,
     final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build) {
+    final @NonNull Build build,
+    final @NonNull CurrentConfigType currentConfig) {
 
     this.context = context;
     this.currentUser = currentUser;
     this.build = build;
+    this.currentConfig = currentConfig;
 
     // Cache the most recent logged in user for default Koala properties.
     this.currentUser.observable().subscribe(u -> this.loggedInUser = u);
+
+    // Cache the most recent config for default Koala properties.
+    this.currentConfig.observable().subscribe(c -> this.config = c);
   }
 
   @Override
@@ -107,7 +112,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
   /**
    * Derives the device's orientation (portrait/landscape) from the `context`.
    */
-  protected  @NonNull String deviceOrientation() {
+  protected @NonNull String deviceOrientation() {
     if (this.context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
       return "landscape";
     }
@@ -119,14 +124,16 @@ public final class KoalaTrackingClient extends TrackingClientType {
     return this.context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone";
   }
 
+  @Override
+  protected JSONArray enabledFeatureFlags() {
+    return ConfigUtils.INSTANCE.enabledFeatureFlags(this.config);
+  }
+
   /**
    * Derives the availability of google play services from the `context`.
    */
   protected boolean isGooglePlayServicesAvailable() {
-    if (this.isGooglePlayServicesAvailable == null) {
-      this.isGooglePlayServicesAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.context.getApplicationContext()) != ConnectionResult.SUCCESS;
-    }
-    return this.isGooglePlayServicesAvailable;
+    return GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS;
   }
 
   @Override

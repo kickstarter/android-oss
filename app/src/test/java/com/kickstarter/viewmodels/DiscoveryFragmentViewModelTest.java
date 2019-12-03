@@ -51,7 +51,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showActivityFeed = new TestSubscriber<>();
   private final TestSubscriber<Boolean> showLoginTout = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> showProgress = new TestSubscriber<>();
   private final TestSubscriber<Editorial> startEditorialActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
@@ -66,7 +65,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.shouldShowOnboardingView().subscribe(this.shouldShowOnboardingViewTest);
     this.vm.outputs.showActivityFeed().subscribe(this.showActivityFeed);
     this.vm.outputs.showLoginTout().subscribe(this.showLoginTout);
-    this.vm.outputs.showProgress().distinctUntilChanged().subscribe(this.showProgress);
     this.vm.outputs.startEditorialActivity().subscribe(this.startEditorialActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
@@ -334,30 +332,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     // Change params. Activity sampler should not be shown.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
     this.activityTest.assertValues(null, activity, null);
-  }
-
-  @Test
-  public void testShowProgress() {
-    setUpEnvironment(environment());
-
-    // Load initial params and root categories from activity.
-    setUpInitialHomeAllProjectsParams();
-
-    this.showProgress.assertValuesAndClear(true, false);
-
-    // Select a new category.
-    this.vm.inputs.paramsFromActivity(
-      DiscoveryParams.builder()
-        .category(CategoryFactory.artCategory())
-        .sort(DiscoveryParams.Sort.HOME)
-        .build()
-    );
-
-    this.showProgress.assertValuesAndClear(true, false);
-
-    //Page is refreshed and progress bar doesn't show
-    this.vm.inputs.refresh();
-    this.showProgress.assertNoValues();
   }
 
   @Test

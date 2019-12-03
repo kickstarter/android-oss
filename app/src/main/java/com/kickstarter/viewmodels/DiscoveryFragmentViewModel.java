@@ -47,6 +47,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -102,8 +103,6 @@ public interface DiscoveryFragmentViewModel {
     /** Emits when the heart animation should play. */
     Observable<Void> startHeartAnimation();
 
-    Observable<Boolean> showProgress();
-
     /** Emits an Editorial when we should start the {@link com.kickstarter.ui.activities.EditorialActivity}. */
     Observable<Editorial> startEditorialActivity();
 
@@ -147,10 +146,6 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
-      this.paramsFromActivity.distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.showProgress.onNext(true));
-
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
@@ -167,10 +162,10 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.isFetchingProjects);
 
-      paginator.isFetching()
-        .filter(BooleanUtils::isFalse)
+      this.projectList
+        .compose(ignoreValues())
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.showProgress.onNext(false));
+        .subscribe(__ -> this.isFetchingProjects.onNext(false));
 
       final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
         .map(p -> Pair.create(p, RefTag.activitySample()));
@@ -344,7 +339,6 @@ public interface DiscoveryFragmentViewModel {
     private final BehaviorSubject<List<Pair<Project, DiscoveryParams>>> projectList = BehaviorSubject.create();
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
-    private final BehaviorSubject<Boolean> showProgress = BehaviorSubject.create();
     private final BehaviorSubject<Editorial> shouldShowEditorial = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
@@ -425,9 +419,6 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public @NonNull Observable<Boolean> shouldShowEmptySavedView() {
       return this.shouldShowEmptySavedView;
-    }
-    @Override public @NonNull Observable<Boolean> showProgress() {
-      return this.showProgress;
     }
     @Override public @NonNull Observable<Void> startHeartAnimation() {
       return this.startHeartAnimation;

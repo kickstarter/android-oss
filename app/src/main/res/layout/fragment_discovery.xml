@@ -70,22 +70,4 @@
       android:text="@string/Tap_the_heart_on_a_project_to_get_notified" />
 
   </LinearLayout>
-
-  <LinearLayout
-    android:id="@+id/discovery_progress_bar"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:background="@color/white_alpha_60"
-    android:visibility="gone"
-    tools:visibility="visible">
-
-    <ProgressBar
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:gravity="center"/>
-
-  </LinearLayout>
 </FrameLayout>

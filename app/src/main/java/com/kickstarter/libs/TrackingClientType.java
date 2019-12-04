@@ -82,6 +82,6 @@ public abstract class TrackingClientType {
   protected abstract String manufacturer();
   protected abstract String model();
   protected abstract String OSVersion();
-  protected abstract Long time();
+  protected abstract long time();
   protected abstract String versionName();
 }

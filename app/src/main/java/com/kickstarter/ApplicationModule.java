@@ -30,6 +30,7 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
+import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.graphql.DateAdapter;
@@ -50,6 +51,10 @@ import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
 import com.kickstarter.libs.qualifiers.GoRewardlessPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
+import com.kickstarter.libs.qualifiers.KoalaTracker;
+import com.kickstarter.libs.qualifiers.LakeEndpoint;
+import com.kickstarter.libs.qualifiers.LakeRetrofit;
+import com.kickstarter.libs.qualifiers.LakeTracker;
 import com.kickstarter.libs.qualifiers.NativeCheckoutPreference;
 import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
@@ -62,6 +67,7 @@ import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.KoalaService;
+import com.kickstarter.services.LakeService;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
@@ -116,9 +122,10 @@ public final class ApplicationModule {
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
     final @NonNull InternalToolsType internalToolsType,
-    final @NonNull Koala koala,
+    final @NonNull @KoalaTracker Koala koala,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
+    final @NonNull @LakeTracker Koala lake,
     final @NonNull Logout logout,
     final @NonNull @NativeCheckoutPreference BooleanPreferenceType nativeCheckoutPreference,
     final @NonNull PlayServicesCapability playServicesCapability,
@@ -145,6 +152,7 @@ public final class ApplicationModule {
       .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
+      .lake(lake)
       .logout(logout)
       .nativeCheckoutPreference(nativeCheckoutPreference)
       .playServicesCapability(playServicesCapability)
@@ -225,6 +233,16 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
+  @LakeRetrofit
+  @NonNull
+  static Retrofit provideLakeRetrofit(@NonNull @LakeEndpoint final String lakeEndpoint,
+    final @NonNull Gson gson,
+    final @NonNull OkHttpClient okHttpClient) {
+    return createRetrofit(lakeEndpoint, gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
@@ -251,6 +269,13 @@ public final class ApplicationModule {
   @NonNull
   static KoalaService provideKoalaService(final @KoalaRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(KoalaService.class);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static LakeService provideLakeService(final @LakeRetrofit @NonNull Retrofit retrofit) {
+    return retrofit.create(LakeService.class);
   }
 
   @Provides
@@ -380,10 +405,19 @@ public final class ApplicationModule {
   }
 
   @Provides
+  @KoalaTracker
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
     final @NonNull Build build, final @NonNull CurrentConfigType currentConfig) {
     return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig));
+  }
+
+  @Provides
+  @LakeTracker
+  @Singleton
+  static Koala provideLake(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig) {
+    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig));
   }
 
   @Provides
@@ -474,6 +508,17 @@ public final class ApplicationModule {
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       Secrets.KoalaEndpoint.PRODUCTION :
       Secrets.KoalaEndpoint.STAGING;
+  }
+
+  @Provides
+  @Singleton
+  @LakeEndpoint
+  @NonNull
+  static String provideLakeEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
+    /* Only sending events to the staging endpoint until the properties have been finalized. */
+    return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
+      Secrets.LakeEndpoint.STAGING :
+      Secrets.LakeEndpoint.STAGING;
   }
 
   @Provides

@@ -109,6 +109,10 @@ public final class KoalaTrackingClient extends TrackingClientType {
     return android.os.Build.BRAND;
   }
 
+  @Override
+  protected boolean cleanPropertiesOnly() {
+    return false;
+  }
   /**
    * Derives the device's orientation (portrait/landscape) from the `context`.
    */

@@ -25,9 +25,11 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
   protected final Koala koala;
+  protected final Koala lake;
 
   public FragmentViewModel(final @NonNull Environment environment) {
     this.koala = environment.koala();
+    this.lake = environment.lake();
   }
 
   @CallSuper

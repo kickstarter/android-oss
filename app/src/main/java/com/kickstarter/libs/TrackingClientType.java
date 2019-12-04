@@ -17,6 +17,17 @@ public abstract class TrackingClientType {
     track(eventName, new HashMap<>());
   }
 
+  private @NonNull Map<String, Object> cleanProperties() {
+    final Map<String, Object> hashMap = new HashMap<>();
+
+    final boolean userIsLoggedIn = loggedInUser() != null;
+
+    hashMap.put("time", time());
+    hashMap.put("user_logged_in", userIsLoggedIn);
+
+    return hashMap;
+  }
+
   private @NonNull Map<String, Object> defaultProperties() {
     final Map<String, Object> hashMap = new HashMap<>();
 
@@ -51,12 +62,17 @@ public abstract class TrackingClientType {
 
   @NonNull Map<String, Object> combinedProperties(final @NonNull Map<String, Object> additionalProperties) {
     final Map<String, Object> combinedProperties = new HashMap<>(additionalProperties);
-    combinedProperties.putAll(defaultProperties());
+    if (cleanPropertiesOnly()) {
+      combinedProperties.putAll(cleanProperties());
+    } else {
+      combinedProperties.putAll(defaultProperties());
+    }
     return combinedProperties;
   }
 
   protected abstract String androidUUID();
   protected abstract String brand();
+  protected abstract boolean cleanPropertiesOnly();
   protected abstract String deviceFormat();
   protected abstract String deviceOrientation();
   protected abstract JSONArray enabledFeatureFlags();

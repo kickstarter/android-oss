@@ -99,7 +99,7 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected Long time() {
+  protected long time() {
     return DEFAULT_TIME;
   }
 

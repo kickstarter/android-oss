@@ -23,7 +23,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.services.interceptors.WebRequestInterceptor;
+import com.kickstarter.libs.utils.WebUtils;
 import com.kickstarter.viewmodels.VideoViewModel;
 import com.trello.rxlifecycle.ActivityEvent;
 
@@ -112,7 +112,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel.ViewModel> 
   }
 
   private MediaSource getMediaSource(final @NonNull String videoUrl) {
-    final DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory(WebRequestInterceptor.userAgent(this.build));
+    final DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory(WebUtils.INSTANCE.userAgent(this.build));
     final Uri videoUri = Uri.parse(videoUrl);
     final int fileType = Util.inferContentType(videoUri);
 

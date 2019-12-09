@@ -308,7 +308,7 @@ public abstract class DiscoveryParams implements Parcelable {
         retVal = retVal.similarTo(other.similarTo());
       }
       if (other.tagId() != null) {
-        retVal = retVal.term(other.term());
+        retVal = retVal.tagId(other.tagId());
       }
       if (other.term() != null) {
         retVal = retVal.term(other.term());
@@ -398,7 +398,7 @@ public abstract class DiscoveryParams implements Parcelable {
 
         final Integer tagId = tagId();
         if (tagId != null) {
-          put("tad_id", tagId.toString());
+          put("tag_id", tagId.toString());
         }
 
         if (term() != null) {

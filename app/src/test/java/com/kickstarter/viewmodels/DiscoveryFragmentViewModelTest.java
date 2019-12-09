@@ -410,7 +410,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
   private Environment environmentWithGoRewardlessDisabled() {
     final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
-    mockCurrentConfig.config(ConfigFactory.config());
+    mockCurrentConfig.config(ConfigFactory.config().toBuilder().features(null).build());
     return environment()
       .toBuilder()
       .currentConfig(mockCurrentConfig)

@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.InternalToolsType;
+import com.kickstarter.libs.utils.WebUtils;
 import com.kickstarter.services.KSUri;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public final class WebRequestInterceptor implements Interceptor {
     }
 
     final Request.Builder requestBuilder = initialRequest.newBuilder()
-      .header("User-Agent", userAgent(this.build));
+      .header("User-Agent", WebUtils.INSTANCE.userAgent(this.build));
 
     final String basicAuthorizationHeader = this.internalTools.basicAuthorizationHeader();
     if (this.currentUser.exists()) {
@@ -67,17 +68,4 @@ public final class WebRequestInterceptor implements Interceptor {
     final Uri initialRequestUri = Uri.parse(request.url().toString());
     return KSUri.isHivequeenUri(initialRequestUri, this.endpoint) || KSUri.isStagingUri(initialRequestUri, this.endpoint);
   }
-
-  public static @NonNull String userAgent(final @NonNull Build build) {
-    // TODO: Check whether device is mobile or tablet, append to user agent
-    return new StringBuilder()
-      .append("Kickstarter Android Mobile Variant/")
-      .append(build.variant())
-      .append(" Code/")
-      .append(build.versionCode())
-      .append(" Version/")
-      .append(build.versionName())
-      .toString();
-  }
 }
-

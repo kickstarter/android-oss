@@ -26,9 +26,11 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
 
   private final PublishSubject<Intent> intent = PublishSubject.create();
   protected final Koala koala;
+  protected final Koala lake;
 
   public ActivityViewModel(final @NonNull Environment environment) {
     this.koala = environment.koala();
+    this.lake = environment.lake();
   }
 
   /**

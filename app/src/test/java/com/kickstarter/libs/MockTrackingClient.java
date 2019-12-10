@@ -15,10 +15,12 @@ import rx.subjects.PublishSubject;
 
 public final class MockTrackingClient extends TrackingClientType {
   private static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis() / 1000;
+  private final boolean cleanPropertiesOnly;
   @Nullable private User loggedInUser;
   @Nullable private Config config;
 
-  public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig) {
+  public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final boolean cleanPropertiesOnly) {
+    this.cleanPropertiesOnly = cleanPropertiesOnly;
     currentUser.observable().subscribe(u -> this.loggedInUser = u);
     currentConfig.observable().subscribe(c -> this.config = c);
   }
@@ -49,6 +51,11 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   protected String brand() {
     return "Google";
+  }
+
+  @Override
+  protected boolean cleanPropertiesOnly() {
+    return this.cleanPropertiesOnly;
   }
 
   @Override
@@ -92,7 +99,7 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected Long time() {
+  protected long time() {
     return DEFAULT_TIME;
   }
 

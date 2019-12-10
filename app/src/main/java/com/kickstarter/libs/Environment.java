@@ -35,6 +35,7 @@ public abstract class Environment implements Parcelable {
   public abstract Koala koala();
   public abstract KSCurrency ksCurrency();
   public abstract KSString ksString();
+  public abstract Koala lake();
   public abstract Logout logout();
   public abstract BooleanPreferenceType nativeCheckoutPreference();
   public abstract PlayServicesCapability playServicesCapability();
@@ -62,6 +63,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder koala(Koala __);
     public abstract Builder ksCurrency(KSCurrency __);
     public abstract Builder ksString(KSString __);
+    public abstract Builder lake(Koala __);
     public abstract Builder logout(Logout __);
     public abstract Builder nativeCheckoutPreference(BooleanPreferenceType __);
     public abstract Builder playServicesCapability(PlayServicesCapability __);

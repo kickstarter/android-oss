@@ -32,6 +32,7 @@ import rx.observers.TestSubscriber;
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
   public TestSubscriber<String> koalaTest;
+  public TestSubscriber<String> lakeTest;
   private Environment environment;
 
   @Override
@@ -40,9 +41,12 @@ public abstract class KSRobolectricTestCase extends TestCase {
     super.setUp();
 
     final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
-    final MockTrackingClient testTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig);
+    final MockTrackingClient koalaTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, false);
+    final MockTrackingClient lakeTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, true);
     this.koalaTest = new TestSubscriber<>();
-    testTrackingClient.eventNames.subscribe(this.koalaTest);
+    this.lakeTest = new TestSubscriber<>();
+    koalaTrackingClient.eventNames.subscribe(this.koalaTest);
+    lakeTrackingClient.eventNames.subscribe(this.lakeTest);
     DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
 
     this.environment = application().component().environment().toBuilder()
@@ -51,7 +55,8 @@ public abstract class KSRobolectricTestCase extends TestCase {
       .currentConfig(mockCurrentConfig)
       .webClient(new MockWebClient())
       .stripe(new Stripe(context(), Secrets.StripePublishableKey.STAGING))
-      .koala(new Koala(testTrackingClient))
+      .koala(new Koala(koalaTrackingClient))
+      .lake(new Koala(lakeTrackingClient))
       .build();
   }
 

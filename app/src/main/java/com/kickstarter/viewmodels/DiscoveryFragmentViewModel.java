@@ -271,10 +271,16 @@ public interface DiscoveryFragmentViewModel {
         .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
         .compose(combineLatestPair(userIsLoggedIn))
         .compose(bindToLifecycle())
-        .subscribe(paramsAndLoggedIn -> this.koala.trackDiscovery(
-          paramsAndLoggedIn.first,
-          isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
-        ));
+        .subscribe(paramsAndLoggedIn -> {
+          this.koala.trackDiscovery(
+            paramsAndLoggedIn.first,
+            isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
+          );
+          this.lake.trackDiscovery(
+            paramsAndLoggedIn.first,
+            isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
+          );
+        });
 
       this.startUpdateActivity
         .map(Activity::project)

@@ -20,7 +20,6 @@ class LakeBackgroundService : JobService() {
     @Inject
     lateinit var build: Build
 
-
     override fun onCreate() {
         super.onCreate()
         (applicationContext as KSApplication).component().inject(this)

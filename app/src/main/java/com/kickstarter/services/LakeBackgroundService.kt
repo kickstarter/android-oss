@@ -64,7 +64,6 @@ class LakeBackgroundService : JobService() {
     }
 
     companion object {
-        const val BASE_JOB_NAME = "Lake-Background-Service"
         val TAG = LakeBackgroundService::class.java.simpleName +" \uD83D\uDCA7"
     }
 }

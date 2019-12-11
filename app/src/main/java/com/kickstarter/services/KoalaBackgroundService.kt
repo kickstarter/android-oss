@@ -63,7 +63,6 @@ class KoalaBackgroundService : JobService() {
     }
 
     companion object {
-        const val BASE_JOB_NAME = "Koala-Background-Service"
         val TAG = KoalaBackgroundService::class.java.simpleName +" \uD83D\uDC28"
     }
 }

@@ -2,7 +2,10 @@ package com.kickstarter.libs
 
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Bundle
+import android.util.Log
 import android.view.accessibility.AccessibilityManager
+import com.firebase.jobdispatcher.JobService
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.iid.FirebaseInstanceId
@@ -11,7 +14,11 @@ import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.ConfigUtils
 import com.kickstarter.models.User
+import com.kickstarter.services.firebase.dispatchJob
+import io.fabric.sdk.android.Fabric
 import org.json.JSONArray
+import org.json.JSONException
+import timber.log.Timber
 import javax.inject.Inject
 
 abstract class TrackingClient(@param:ApplicationContext private val context: Context,
@@ -31,6 +38,34 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         this.currentConfig.observable().subscribe { c -> this.config = c }
     }
 
+    final override fun track(eventName: String, additionalProperties: MutableMap<String, Any?>) {
+        try {
+            val trackingData = trackingData(eventName, combinedProperties(additionalProperties))
+            val bundle = Bundle()
+            bundle.putString(eventNameKey(), eventName)
+            bundle.putString(eventKey(), trackingData)
+
+            val uniqueJobName = backgroundServiceClass().simpleName + System.currentTimeMillis()
+            dispatchJob(this.context, backgroundServiceClass(), uniqueJobName, bundle)
+            if (this.build.isDebug) {
+                Log.d(tag(), "Queued event:$trackingData")
+            }
+        } catch (e: JSONException) {
+            if (this.build.isDebug) {
+                Timber.e("Failed to encode event: $eventName")
+            }
+            Fabric.getLogger().e(tag(), "Failed to encode event: $eventName")
+        }
+    }
+
+    abstract fun backgroundServiceClass() : Class<out JobService>
+    abstract fun eventKey(): String
+    abstract fun eventNameKey(): String
+    abstract fun tag(): String
+    @Throws(JSONException::class)
+    abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>): String
+
+    //Default property values
     override fun androidUUID(): String {
         return FirebaseInstanceId.getInstance().id
     }
@@ -38,8 +73,6 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     override fun brand(): String {
         return android.os.Build.BRAND
     }
-
-    override fun cleanPropertiesOnly(): Boolean = true
 
     /**
      * Derives the device's orientation (portrait/landscape) from the `context`.
@@ -93,5 +126,4 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     override fun versionName(): String {
         return BuildConfig.VERSION_NAME
     }
-
 }

@@ -70,9 +70,11 @@ public abstract class TrackingClientType {
     return combinedProperties;
   }
 
+  protected abstract boolean cleanPropertiesOnly();
+
+  //Default properties
   protected abstract String androidUUID();
   protected abstract String brand();
-  protected abstract boolean cleanPropertiesOnly();
   protected abstract String deviceFormat();
   protected abstract String deviceOrientation();
   protected abstract JSONArray enabledFeatureFlags();

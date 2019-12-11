@@ -4,6 +4,7 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
+import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.ui.IntentKey
@@ -27,12 +28,13 @@ class KoalaBackgroundService : JobService() {
     override fun onStartJob(job: JobParameters?): Boolean {
         val extras = job?.extras
         val eventName = extras?.get(IntentKey.KOALA_EVENT_NAME) as String
-        koala.track(extras.get(IntentKey.KOALA_EVENT) as String)
+        val trackingData = extras.get(IntentKey.KOALA_EVENT) as String
+        val encodedData = Base64Utils.encodeUrlSafe(trackingData.toByteArray())
+        koala.track(encodedData)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     logResponse(it, eventName)
                     jobFinished(job, !it.isSuccessful)
-
                 }, {
                     logTrackingError(eventName)
                     jobFinished(job, false)

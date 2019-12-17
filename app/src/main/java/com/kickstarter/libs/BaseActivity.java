@@ -15,6 +15,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
 import com.kickstarter.services.ConnectivityReceiver;
 import com.kickstarter.ui.data.ActivityResult;
+import com.qualtrics.digital.Qualtrics;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
@@ -95,6 +96,9 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     assignViewModel(savedInstanceState);
 
     this.viewModel.intent(getIntent());
+
+    Qualtrics.instance().properties.setString("activity", this.getClass().getSimpleName());
+    Qualtrics.instance().registerViewVisit(this.getClass().getSimpleName());
   }
 
   /**

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:alpha="0.12" android:color="@color/ksr_cobalt_500" android:state_pressed="true"/>
+  <item android:alpha="0.20" android:color="@color/ksr_cobalt_500" android:state_focused="true" android:state_hovered="true"/>
+  <item android:alpha="0.20" android:color="@color/ksr_cobalt_500" android:state_focused="true"/>
+  <item android:alpha="0.20" android:color="@color/ksr_cobalt_500" android:state_hovered="true"/>
+  <item android:alpha=".12" android:color="@color/ksr_cobalt_500"/>
+</selector>

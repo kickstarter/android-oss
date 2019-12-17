@@ -2,7 +2,9 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -14,6 +16,9 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.UrlUtils;
+import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.models.chrome.ChromeTabsHelperActivity;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
@@ -23,6 +28,8 @@ import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
+import com.qualtrics.digital.Qualtrics;
+import com.qualtrics.digital.QualtricsSurveyActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +46,7 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
@@ -59,6 +67,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   protected @Bind(R.id.discovery_tab_layout) SortTabLayout sortTabLayout;
   protected @Bind(R.id.discovery_view_pager) ViewPager sortViewPager;
   protected @Bind(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
+  protected @Bind(R.id.qualtrics_prompt) View qualtricsPrompt;
 
   protected @BindString(R.string.A_newer_build_is_available) String aNewerBuildIsAvailableString;
   protected @BindString(R.string.Upgrade_app) String upgradeAppString;
@@ -156,6 +165,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(__ -> this.startProfileActivity());
 
+    this.viewModel.outputs.qualtricsPromptIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.qualtricsPrompt));
+
+    this.viewModel.outputs.showQualtricsSurvey()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::showQualtricsSurvey);
+
     this.viewModel.outputs.showSettings()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -182,6 +201,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
 
+    Qualtrics.instance().evaluateTargetingLogic(targetingResult ->
+      this.viewModel.inputs.targetingResult(targetingResult));
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -194,6 +215,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
 
   public @NonNull DrawerLayout discoveryLayout() {
     return this.discoveryLayout;
+  }
+
+  @OnClick(R.id.qualtrics_confirm)
+  public void qualtricsConfirmClicked() {
+    this.viewModel.inputs.qualtricsConfirmClicked();
+  }
+
+  @OnClick(R.id.qualtrics_dismiss)
+  public void qualtricsDismissClicked() {
+    this.viewModel.inputs.qualtricsDismissClicked();
   }
 
   private void addTabSelectedListenerToTabLayout() {
@@ -253,6 +284,18 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     final Intent intent = new Intent(this, ProfileActivity.class);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void showQualtricsSurvey(final String surveyUrl) {
+    ChromeTabsHelperActivity.Companion.openCustomTab(this,
+      UrlUtils.INSTANCE.baseCustomTabsIntent(this),
+      Uri.parse(surveyUrl),
+      (activity, uri) -> {
+        final Intent surveyIntent = new Intent(this, QualtricsSurveyActivity.class);
+        surveyIntent.putExtra("targetURL", surveyUrl);
+        startActivity(surveyIntent);
+
+      });
   }
 
   private void startSettingsActivity() {

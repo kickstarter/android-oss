@@ -68,6 +68,38 @@ public class SurveyResponseViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testSubmitSuccessful_NullTag_ShowConfirmationDialog() {
+    final String surveyUrl = "https://kck.str/projects/param/heyo/surveys/123";
+
+    final SurveyResponse.Urls urlsEnvelope = SurveyResponse.Urls.builder()
+      .web(SurveyResponse.Urls.Web.builder().survey(surveyUrl).build())
+      .build();
+
+    final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse()
+      .toBuilder()
+      .urls(urlsEnvelope)
+      .build();
+
+    final Request projectSurveyRequest = new Request.Builder()
+      .url(surveyUrl)
+      .build();
+
+    final Request projectRequest = new Request.Builder()
+      .url("https://kck.str/projects/param/heyo")
+      .build();
+
+    setUpEnvironment(environment());
+    this.vm.intent(new Intent().putExtra(IntentKey.SURVEY_RESPONSE, surveyResponse));
+
+    // Survey loads. Successful submit redirects to project uri.
+    this.vm.inputs.projectSurveyUriRequest(projectSurveyRequest);
+    this.vm.inputs.projectUriRequest(projectRequest);
+
+    // Success confirmation dialog is shown.
+    this.showConfirmationDialog.assertValueCount(1);
+  }
+
+  @Test
   public void testWebViewUrl() {
     final SurveyResponse surveyResponse = SurveyResponseFactory.surveyResponse();
 

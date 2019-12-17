@@ -76,8 +76,8 @@ public interface SurveyResponseViewModel {
      * which indicates a redirect from a successful submit.
      */
     private boolean requestTagUrlIsSurveyUrl(final @NonNull Pair<Request, String> projectRequestAndSurveyUrl) {
-      return ((Request) projectRequestAndSurveyUrl.first.tag()).url().toString()
-        .equals(projectRequestAndSurveyUrl.second);
+      final Request tag = (Request) projectRequestAndSurveyUrl.first.tag();
+      return tag == null || tag.url().toString().equals(projectRequestAndSurveyUrl.second);
     }
 
     private final PublishSubject<Void> okButtonClicked = PublishSubject.create();

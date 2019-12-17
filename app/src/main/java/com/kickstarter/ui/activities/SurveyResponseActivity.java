@@ -58,7 +58,7 @@ public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel
 
   private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     this.viewModel.inputs.projectUriRequest(request);
-    return false;
+    return true;
   }
 
   private boolean handleProjectSurveyUriRequest(final @NonNull Request request, final @NonNull WebView webView) {

@@ -274,7 +274,10 @@ public interface DiscoveryViewModel {
       this.openDrawer
         .filter(BooleanUtils::isTrue)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackDiscoveryFilters());
+        .subscribe(__ -> {
+          this.koala.trackDiscoveryFilters();
+          this.lake.trackDiscoveryFilters();
+        });
 
       intent()
         .filter(IntentMapper::appBannerIsSet)

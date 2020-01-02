@@ -4,21 +4,21 @@ import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
-import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
 import com.kickstarter.ui.IntentKey
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
-class KoalaBackgroundService : JobService() {
+class LakeBackgroundService : JobService() {
     @Inject
-    lateinit var koala: KoalaService
+    lateinit var lakeService: LakeService
     @Inject
     lateinit var build: Build
-
 
     override fun onCreate() {
         super.onCreate()
@@ -27,10 +27,8 @@ class KoalaBackgroundService : JobService() {
 
     override fun onStartJob(job: JobParameters?): Boolean {
         val extras = job?.extras
-        val eventName = extras?.get(IntentKey.KOALA_EVENT_NAME) as String
-        val trackingData = extras.get(IntentKey.KOALA_EVENT) as String
-        val encodedData = Base64Utils.encodeUrlSafe(trackingData.toByteArray())
-        koala.track(encodedData)
+        val eventName = extras?.get(IntentKey.LAKE_EVENT_NAME) as String
+        lakeService.track(RequestBody.create(MediaType.parse("application/json"), extras.get(IntentKey.LAKE_EVENT) as String))
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     logResponse(it, eventName)
@@ -65,6 +63,6 @@ class KoalaBackgroundService : JobService() {
     }
 
     companion object {
-        val TAG = KoalaBackgroundService::class.java.simpleName +" \uD83D\uDC28"
+        val TAG = LakeBackgroundService::class.java.simpleName +" \uD83D\uDCA7"
     }
 }

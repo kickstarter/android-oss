@@ -13,14 +13,13 @@ import com.kickstarter.BuildConfig;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.Build;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.QualtricsIntercepts;
+import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
@@ -254,9 +253,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   private void setUpQualtrics(final @Nullable User user) {
     Qualtrics.instance().initialize(Secrets.Qualtrics.BRAND_ID,
       Secrets.Qualtrics.ZONE_ID,
-      Build.isInternal() || BuildConfig.DEBUG
-        ? QualtricsIntercepts.NATIVE_APP_FEEDBACK.getStaging()
-        : QualtricsIntercepts.NATIVE_APP_FEEDBACK.getProd(),
+      QualtricsIntercept.NATIVE_APP_FEEDBACK.id(BuildConfig.APPLICATION_ID),
       this,
       initializationResult -> {
         if (initializationResult.passed()) {

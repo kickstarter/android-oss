@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,12 +19,10 @@ import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.QualtricsIntercepts;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
-import com.kickstarter.models.chrome.ChromeTabsHelperActivity;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
@@ -315,15 +312,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   }
 
   private void showQualtricsSurvey(final String surveyUrl) {
-    ChromeTabsHelperActivity.Companion.openCustomTab(this,
-      UrlUtils.INSTANCE.baseCustomTabsIntent(this),
-      Uri.parse(surveyUrl),
-      (activity, uri) -> {
-        final Intent surveyIntent = new Intent(this, QualtricsSurveyActivity.class);
-        surveyIntent.putExtra("targetURL", surveyUrl);
-        startActivity(surveyIntent);
+    final Intent surveyIntent = new Intent(this, QualtricsSurveyActivity.class)
+      .putExtra("targetURL", surveyUrl);
 
-      });
+    startActivity(surveyIntent);
   }
 
   private void startSettingsActivity() {

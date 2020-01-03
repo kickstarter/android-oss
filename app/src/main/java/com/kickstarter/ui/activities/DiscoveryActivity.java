@@ -10,14 +10,21 @@ import android.widget.ImageButton;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
+import com.kickstarter.BuildConfig;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.models.QualtricsIntercepts;
+import com.kickstarter.models.QualtricsResult;
+import com.kickstarter.models.User;
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -34,6 +41,7 @@ import com.qualtrics.digital.QualtricsSurveyActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -99,6 +107,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     this.sortViewPager.setAdapter(this.pagerAdapter);
     this.sortTabLayout.setupWithViewPager(this.sortViewPager);
     addTabSelectedListenerToTabLayout();
+
+    this.viewModel.outputs.currentUser()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setUpQualtrics);
 
     this.viewModel.outputs.expandSortTabLayout()
       .compose(bindToLifecycle())
@@ -168,7 +181,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     this.viewModel.outputs.qualtricsPromptIsGone()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.qualtricsPrompt));
+      .subscribe(ViewUtils.setInvisible(this.qualtricsPrompt));
 
     this.viewModel.outputs.showQualtricsSurvey()
       .compose(bindToLifecycle())
@@ -200,9 +213,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
-
-    Qualtrics.instance().evaluateTargetingLogic(targetingResult ->
-      this.viewModel.inputs.targetingResult(targetingResult));
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -242,6 +252,24 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
         DiscoveryActivity.this.pagerAdapter.scrollToTop(tab.getPosition());
       }
     });
+  }
+
+  private void setUpQualtrics(final @Nullable User user) {
+    Qualtrics.instance().initialize(Secrets.Qualtrics.BRAND_ID,
+      Secrets.Qualtrics.ZONE_ID,
+      Build.isInternal() || BuildConfig.DEBUG
+        ? QualtricsIntercepts.NATIVE_APP_FEEDBACK.getStaging()
+        : QualtricsIntercepts.NATIVE_APP_FEEDBACK.getProd(),
+      this,
+      initializationResult -> {
+        if (initializationResult.passed()) {
+          Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
+          Qualtrics.instance().properties.setString("language", Locale.getDefault().getLanguage());
+          Qualtrics.instance().properties.setString("logged_in", Boolean.toString(ObjectUtils.isNotNull(user)));
+
+          Qualtrics.instance().evaluateTargetingLogic(targetingResult -> DiscoveryActivity.this.viewModel.inputs.qualtricsResult(new QualtricsResult(targetingResult)));
+        }
+      });
   }
 
   private void showMenuIconWithIndicator(final boolean withIndicator) {

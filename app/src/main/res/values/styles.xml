@@ -229,6 +229,8 @@
   </style>
 
   <style name="SmallButtonBase" parent="Button">
+    <item name="android:paddingLeft">@dimen/grid_7_half</item>
+    <item name="android:paddingRight">@dimen/grid_7_half</item>
     <item name="android:paddingTop">@dimen/grid_3_half</item>
     <item name="android:paddingBottom">@dimen/grid_3_half</item>
     <item name="cornerRadius">@dimen/grid_3_half</item>

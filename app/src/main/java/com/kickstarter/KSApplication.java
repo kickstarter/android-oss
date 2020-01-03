@@ -6,11 +6,9 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.Build;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
-import com.qualtrics.digital.Qualtrics;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -63,8 +61,6 @@ public class KSApplication extends MultiDexApplication {
 
     this.pushNotifications.initialize();
 
-    setUpQualtrics();
-
     final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
     registerActivityLifecycleCallbacks(appUtil);
     registerComponentCallbacks(appUtil);
@@ -76,12 +72,6 @@ public class KSApplication extends MultiDexApplication {
 
   public boolean isInUnitTests() {
     return false;
-  }
-
-  private void setUpQualtrics() {
-    final String interceptId = Build.isInternal() || BuildConfig.DEBUG ? Secrets.Qualtrics.Intercept.STAGING : Secrets.Qualtrics.Intercept.PRODUCTION;
-    Qualtrics.instance().initialize(Secrets.Qualtrics.BRAND_ID, Secrets.Qualtrics.ZONE_ID, interceptId, this);
-    Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
   }
 
   private void setVisitorCookie() {

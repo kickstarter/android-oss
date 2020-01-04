@@ -224,7 +224,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   }
 
   @Override
-  public void onNetworkConnectionChanged(boolean isConnected) {
+  public void onNetworkConnectionChanged(final boolean isConnected) {
     if (this.qualtricsPrompt.getVisibility() != View.VISIBLE) {
       super.onNetworkConnectionChanged(isConnected);
     }

@@ -228,6 +228,31 @@
     <item name="backgroundTint">@color/button_select</item>
   </style>
 
+  <style name="SmallButtonBase" parent="Button">
+    <item name="android:paddingLeft">@dimen/grid_7_half</item>
+    <item name="android:paddingRight">@dimen/grid_7_half</item>
+    <item name="android:paddingTop">@dimen/grid_3_half</item>
+    <item name="android:paddingBottom">@dimen/grid_3_half</item>
+    <item name="cornerRadius">@dimen/grid_3_half</item>
+  </style>
+
+  <style name="SmallButton" parent="SmallButtonBase"/>
+
+  <style name="SmallSecondaryButton" parent="SmallButton">
+    <item name="backgroundTint">@color/button_secondary</item>
+  </style>
+
+  <style name="TextButtonBase" parent="Widget.MaterialComponents.Button.TextButton">
+    <item name="cornerRadius">@dimen/grid_3_half</item>
+  </style>
+
+  <style name="TextButton" parent="TextButtonBase"/>
+
+  <style name="SecondaryTextButton" parent="TextButton">
+    <item name="android:textColor">@color/ksr_cobalt_500</item>
+    <item name="rippleColor">@color/ripple_secondary_text_button</item>
+  </style>
+
   <style name="KSSettingsMailIcon">
     <item name="android:src">@drawable/icon__mail</item>
     <item name="android:focusable">true</item>

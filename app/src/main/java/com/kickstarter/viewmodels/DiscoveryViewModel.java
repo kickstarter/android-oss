@@ -14,8 +14,10 @@ import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
@@ -44,6 +46,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface DiscoveryViewModel {
@@ -54,14 +57,29 @@ public interface DiscoveryViewModel {
 
     /** Call when you want to open or close the drawer. */
     void openDrawer(final boolean open);
+
+    /** Call when the users confirms they want to take the Qualtrics survey. */
+    void qualtricsConfirmClicked();
+
+    /** Call when the users dismisses the Qualtrics prompt. */
+    void qualtricsDismissClicked();
+
+    /** Call when you receive a {@link com.qualtrics.digital.TargetingResult} from Qualtrics. */
+    void qualtricsResult(final QualtricsResult qualtricsResult);
   }
 
   interface Outputs {
+    /** Emits the current user. */
+    Observable<User> currentUser();
+
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
     /** Emits a boolean that determines if the sort tab layout should be expanded/collapsed. */
     Observable<Boolean> expandSortTabLayout();
+
+    /** Emits a boolean that determines if the Qualtrics prompt should be visible. */
+    Observable<Boolean> qualtricsPromptIsGone();
 
     /** Emits when params change so that the tool bar can adjust accordingly. */
     Observable<DiscoveryParams> updateToolbarWithParams();
@@ -106,6 +124,9 @@ public interface DiscoveryViewModel {
     /** Start profile activity. */
     Observable<Void> showProfile();
 
+    /** Start the {@link com.qualtrics.digital.QualtricsSurveyActivity} with the survey url. */
+    Observable<String> showQualtricsSurvey();
+
     /** Start settings activity. */
     Observable<Void> showSettings();
   }
@@ -113,7 +134,7 @@ public interface DiscoveryViewModel {
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {
     private final ApiClientType apiClient;
     private final BuildCheck buildCheck;
-    private final CurrentUserType currentUser;
+    private final CurrentUserType currentUserType;
     private final CurrentConfigType currentConfigType;
     private final WebClientType webClient;
 
@@ -123,7 +144,7 @@ public interface DiscoveryViewModel {
       this.apiClient = environment.apiClient();
       this.buildCheck = environment.buildCheck();
       this.currentConfigType = environment.currentConfig();
-      this.currentUser = environment.currentUser();
+      this.currentUserType = environment.currentUser();
       this.webClient = environment.webClient();
 
       this.buildCheck.bind(this, this.webClient);
@@ -138,12 +159,18 @@ public interface DiscoveryViewModel {
       this.showProfile = this.profileClick;
       this.showSettings = this.settingsClick;
 
-      final Observable<User> currentUser = this.currentUser.observable();
+      final Observable<User> currentUser = this.currentUserType.observable();
 
       final Observable<User> changedUser = currentUser
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
 
-      changedUser.subscribe(updatedUser ->
+      changedUser
+        .compose(bindToLifecycle())
+        .subscribe(this.currentUser);
+
+      changedUser
+        .compose(bindToLifecycle())
+        .subscribe(updatedUser ->
         this.apiClient.config()
           .compose(Transformers.neverError())
           .subscribe(this.currentConfigType::config));
@@ -289,6 +316,33 @@ public interface DiscoveryViewModel {
         .map(BooleanUtils::negate)
         .distinctUntilChanged()
         .compose(bindToLifecycle());
+
+      this.qualtricsResult
+        .map(QualtricsResult::resultPassed)
+        .map(BooleanUtils::negate)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.qualtricsPromptIsGone);
+
+      Observable.merge(this.qualtricsConfirmClicked, this.qualtricsDismissClicked)
+        .map(__ -> true)
+        .compose(bindToLifecycle())
+        .subscribe(this.qualtricsPromptIsGone);
+
+      this.qualtricsResult
+        .filter(QualtricsResult::resultPassed)
+        .map(result -> {
+          result.recordImpression();
+          return result;
+        })
+        .compose(takePairWhen(this.qualtricsConfirmClicked))
+        .map(resultAndClick -> {
+          resultAndClick.first.recordClick();
+          return resultAndClick.first.surveyUrl();
+        })
+        .filter(StringUtils::isPresent)
+        .compose(bindToLifecycle())
+        .subscribe(this.showQualtricsSurvey);
     }
 
     private boolean userHasNoUnreadMessagesOrUnseenActivity(final @Nullable User user) {
@@ -313,13 +367,18 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
     private final PublishSubject<Void> profileClick = PublishSubject.create();
+    private final PublishSubject<Void> qualtricsConfirmClicked = PublishSubject.create();
+    private final PublishSubject<Void> qualtricsDismissClicked = PublishSubject.create();
+    private final PublishSubject<QualtricsResult> qualtricsResult = PublishSubject.create();
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
+    private final BehaviorSubject<User> currentUser = BehaviorSubject.create();
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
     private final BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> qualtricsPromptIsGone = BehaviorSubject.create();
     private final BehaviorSubject<Pair<List<Category>, Integer>> rootCategoriesAndPosition = BehaviorSubject.create();
     private final Observable<Void> showActivityFeed;
     private final Observable<InternalBuildEnvelope> showBuildCheckAlert;
@@ -330,6 +389,7 @@ public interface DiscoveryViewModel {
     private final Observable<Boolean> showMenuIconWithIndicator;
     private final Observable<Void> showMessages;
     private final Observable<Void> showProfile;
+    private final PublishSubject<String> showQualtricsSurvey = PublishSubject.create();
     private final Observable<Void> showSettings;
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
@@ -382,10 +442,22 @@ public interface DiscoveryViewModel {
     @Override public void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
       this.parentFilterRowClick.onNext(row);
     }
+    @Override public void qualtricsConfirmClicked() {
+      this.qualtricsConfirmClicked.onNext(null);
+    }
+    @Override public void qualtricsDismissClicked() {
+      this.qualtricsDismissClicked.onNext(null);
+    }
+    @Override public void qualtricsResult(final @NonNull QualtricsResult qualtricsResult) {
+      this.qualtricsResult.onNext(qualtricsResult);
+    }
     @Override public void topFilterViewHolderRowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
       this.topFilterRowClick.onNext(row);
     }
 
+    @Override public @NonNull Observable<User> currentUser() {
+      return this.currentUser;
+    }
     @Override public @NonNull Observable<List<Integer>> clearPages() {
       return this.clearPages;
     }
@@ -397,6 +469,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<NavigationDrawerData> navigationDrawerData() {
       return this.navigationDrawerData;
+    }
+    @Override public @NonNull Observable<Boolean> qualtricsPromptIsGone() {
+      return this.qualtricsPromptIsGone;
     }
     @Override public @NonNull Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
       return this.rootCategoriesAndPosition;
@@ -427,6 +502,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showProfile() {
       return this.showProfile;
+    }
+    @Override public @NonNull Observable<String> showQualtricsSurvey() {
+      return this.showQualtricsSurvey;
     }
     @Override public @NonNull Observable<Void> showSettings() {
       return this.showSettings;

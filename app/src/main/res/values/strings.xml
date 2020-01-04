@@ -62,4 +62,9 @@
 
   <string name="stripe_publishable_key">pk_live_zjuK52lEUYcvBhIXEUnOEJzk</string>
   <string name="stripe_version" tools:ignore="TypographyDashes">2015-08-07</string>
+
+  <!--  Qualtrics -->
+  <string name="Answer_a_few_quick_questions_to_help_us_build_a_better_Kickstarter">Answer a few quick questions to help us build a better Kickstarter.</string>
+  <string name="No_thanks">No thanks</string>
+  <string name="Let_s_go">Let\'s go</string>
 </resources>

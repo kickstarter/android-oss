@@ -209,6 +209,7 @@
       android:name=".ui.activities.ProjectUpdatesActivity"
       android:parentActivityName=".ui.activities.ProjectActivity">
     </activity>
+    <activity android:name="com.qualtrics.digital.QualtricsSurveyActivity"/>
     <activity
       android:name=".ui.activities.SearchActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"

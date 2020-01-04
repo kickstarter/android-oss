@@ -124,7 +124,7 @@ public interface DiscoveryViewModel {
     /** Start profile activity. */
     Observable<Void> showProfile();
 
-    /** Start a custom tab with the survey URL. */
+    /** Start the {@link com.qualtrics.digital.QualtricsSurveyActivity} with the survey url. */
     Observable<String> showQualtricsSurvey();
 
     /** Start settings activity. */

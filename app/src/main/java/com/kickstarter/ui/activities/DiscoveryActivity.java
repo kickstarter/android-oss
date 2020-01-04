@@ -223,6 +223,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     return this.discoveryLayout;
   }
 
+  @Override
+  public void onNetworkConnectionChanged(boolean isConnected) {
+    if (this.qualtricsPrompt.getVisibility() != View.VISIBLE) {
+      super.onNetworkConnectionChanged(isConnected);
+    }
+  }
+
   @OnClick(R.id.qualtrics_confirm)
   public void qualtricsConfirmClicked() {
     this.viewModel.inputs.qualtricsConfirmClicked();

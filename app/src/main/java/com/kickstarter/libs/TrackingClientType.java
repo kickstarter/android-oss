@@ -1,11 +1,13 @@
 package com.kickstarter.libs;
 
 import com.kickstarter.libs.utils.KoalaUtils;
+import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.User;
 
 import org.json.JSONArray;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
@@ -22,10 +24,27 @@ public abstract class TrackingClientType {
 
     final boolean userIsLoggedIn = loggedInUser() != null;
 
+    hashMap.put("android_uuid", androidUUID());
+    hashMap.put("app_build_number", buildNumber());
+    hashMap.put("app_release_version", versionName());
+    hashMap.put("client_type", "native");
+    hashMap.put("current_variants", currentVariants());
+    hashMap.put("device_distinct_id", androidUUID());
+    hashMap.put("device_format", deviceFormat());
+    hashMap.put("device_manufacturer", manufacturer());
+    hashMap.put("device_model", model());
+    hashMap.put("device_orientation", deviceOrientation());
+    hashMap.put("display_language", Locale.getDefault().getLanguage());
+    hashMap.put("enabled_features", enabledFeatureFlags());
+    hashMap.put("is_voiceover_running", isTalkBackOn());
+    hashMap.put("mp_lib", "kickstarter_android");
+    hashMap.put("os_version", String.format("Android %s", OSVersion()));
     hashMap.put("time", time());
+    hashMap.put("user_agent", userAgent());
     hashMap.put("user_logged_in", userIsLoggedIn);
+    hashMap.put("wifi_connection", wifiConnection());
 
-    return hashMap;
+    return MapUtils.prefixKeys(hashMap, "session_");
   }
 
   private @NonNull Map<String, Object> defaultProperties() {
@@ -75,6 +94,8 @@ public abstract class TrackingClientType {
   //Default properties
   protected abstract String androidUUID();
   protected abstract String brand();
+  protected abstract int buildNumber();
+  protected abstract JSONArray currentVariants();
   protected abstract String deviceFormat();
   protected abstract String deviceOrientation();
   protected abstract JSONArray enabledFeatureFlags();
@@ -85,5 +106,7 @@ public abstract class TrackingClientType {
   protected abstract String model();
   protected abstract String OSVersion();
   protected abstract long time();
+  protected abstract String userAgent();
   protected abstract String versionName();
+  protected abstract boolean wifiConnection();
 }

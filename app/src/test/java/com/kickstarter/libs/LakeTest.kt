@@ -24,7 +24,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         this.lakeTest.assertValue("App Open")
 
-        assertDefaultProperties(null)
+        assertSessionProperties(null)
     }
 
     @Test
@@ -39,12 +39,11 @@ class LakeTest : KSRobolectricTestCase() {
 
         this.lakeTest.assertValue("App Open")
 
-        assertDefaultProperties(user)
+        assertSessionProperties(user)
     }
 
-    private fun assertDefaultProperties(user: User?) {
+    private fun assertSessionProperties(user: User?) {
         val expectedProperties = propertiesTest.value
-        assertEquals("uuid", expectedProperties["session_android_uuid"])
         assertEquals(9999, expectedProperties["session_app_build_number"])
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
         assertEquals("native", expectedProperties["session_client_type"])

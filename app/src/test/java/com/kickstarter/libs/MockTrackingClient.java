@@ -50,11 +50,6 @@ public final class MockTrackingClient extends TrackingClientType {
 
   //Default property values
   @Override
-  protected String androidUUID() {
-    return "uuid";
-  }
-
-  @Override
   protected String brand() {
     return "Google";
   }
@@ -67,6 +62,11 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   protected JSONArray currentVariants() {
     return ConfigUtils.INSTANCE.currentVariants(this.config);
+  }
+
+  @Override
+  protected String deviceDistinctId() {
+    return "uuid";
   }
 
   @Override

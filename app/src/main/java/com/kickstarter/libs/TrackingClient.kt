@@ -69,10 +69,6 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>): String
 
     //Default property values
-    override fun androidUUID(): String {
-        return FirebaseInstanceId.getInstance().id
-    }
-
     override fun brand(): String {
         return android.os.Build.BRAND
     }
@@ -85,6 +81,14 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         return ConfigUtils.currentVariants(this.config)
     }
 
+    override fun deviceDistinctId(): String {
+        return FirebaseInstanceId.getInstance().id
+    }
+
+    override fun deviceFormat(): String {
+        return if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet" else "phone"
+    }
+
     /**
      * Derives the device's orientation (portrait/landscape) from the `context`.
      */
@@ -92,10 +96,6 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         return if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             "Landscape"
         } else "Portrait"
-    }
-
-    override fun deviceFormat(): String {
-        return if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet" else "phone"
     }
 
     override fun enabledFeatureFlags(): JSONArray? {

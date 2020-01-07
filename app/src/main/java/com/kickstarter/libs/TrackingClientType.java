@@ -32,12 +32,11 @@ public abstract class TrackingClientType {
   private @NonNull Map<String, Object> sessionProperties(final boolean userIsLoggedIn) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
-        put("android_uuid", androidUUID());
         put("app_build_number", buildNumber());
         put("app_release_version", versionName());
         put("client_type", "native");
         put("current_variants", currentVariants());
-        put("device_distinct_id", androidUUID());
+        put("device_distinct_id", deviceDistinctId());
         put("device_format", deviceFormat());
         put("device_manufacturer", manufacturer());
         put("device_model", model());
@@ -64,15 +63,14 @@ public abstract class TrackingClientType {
       hashMap.putAll(KoalaUtils.userProperties(loggedInUser()));
     }
 
-    hashMap.put("android_uuid", androidUUID());
     hashMap.put("app_version", versionName());
     hashMap.put("brand", brand());
     hashMap.put("client_platform", "android");
     hashMap.put("client_type", "native");
-    hashMap.put("device_fingerprint", androidUUID());
+    hashMap.put("device_fingerprint", deviceDistinctId());
     hashMap.put("device_format", deviceFormat());
     hashMap.put("device_orientation", deviceOrientation());
-    hashMap.put("distinct_id", androidUUID());
+    hashMap.put("distinct_id", deviceDistinctId());
     hashMap.put("enabled_feature_flags", enabledFeatureFlags());
     hashMap.put("google_play_services", isGooglePlayServicesAvailable() ? "available" : "unavailable");
     hashMap.put("is_vo_on", isTalkBackOn());
@@ -101,10 +99,10 @@ public abstract class TrackingClientType {
   protected abstract boolean cleanPropertiesOnly();
 
   //Default properties
-  protected abstract String androidUUID();
   protected abstract String brand();
   protected abstract int buildNumber();
   protected abstract JSONArray currentVariants();
+  protected abstract String deviceDistinctId();
   protected abstract String deviceFormat();
   protected abstract String deviceOrientation();
   protected abstract JSONArray enabledFeatureFlags();

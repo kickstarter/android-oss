@@ -233,7 +233,6 @@ class KoalaTest : KSRobolectricTestCase() {
 
     private fun assertDefaultProperties(user: User?) {
         val expectedProperties = propertiesTest.value
-        assertEquals("uuid", expectedProperties["android_uuid"])
         assertEquals("9.9.9", expectedProperties["app_version"])
         assertEquals("Google", expectedProperties["brand"])
         assertEquals("android", expectedProperties["client_platform"])

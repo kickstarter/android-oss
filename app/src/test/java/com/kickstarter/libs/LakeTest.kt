@@ -3,6 +3,7 @@ package com.kickstarter.libs
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
 import org.joda.time.DateTime
@@ -40,6 +41,14 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValue("App Open")
 
         assertDefaultProperties(user)
+        val expectedProperties = propertiesTest.value
+        assertEquals(15L, expectedProperties["user_uid"])
+        assertEquals(3, expectedProperties["user_backed_projects_count"])
+        assertEquals("NG", expectedProperties["user_country"])
+        assertEquals(false, expectedProperties["user_facebook_account"])
+        assertEquals(false, expectedProperties["user_is_admin"])
+        assertEquals(2, expectedProperties["user_launched_projects_count"])
+        assertEquals(10, expectedProperties["user_watched_projects_count"])
     }
 
     private fun assertDefaultProperties(user: User?) {
@@ -58,6 +67,7 @@ class LakeTest : KSRobolectricTestCase() {
                     .id(15)
                     .backedProjectsCount(3)
                     .createdProjectsCount(2)
+                    .location(LocationFactory.nigeria())
                     .starredProjectsCount(10)
                     .build()
 

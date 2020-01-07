@@ -44,8 +44,10 @@ class KoalaTest : KSRobolectricTestCase() {
         val expectedProperties = propertiesTest.value
         assertEquals(15L, expectedProperties["user_uid"])
         assertEquals(3, expectedProperties["user_backed_projects_count"])
-        assertEquals(2, expectedProperties["user_created_projects_count"])
-        assertEquals(10, expectedProperties["user_starred_projects_count"])
+        assertEquals(false, expectedProperties["user_facebook_account"])
+        assertEquals(false, expectedProperties["user_is_admin"])
+        assertEquals(2, expectedProperties["user_launched_projects_count"])
+        assertEquals(10, expectedProperties["user_watched_projects_count"])
     }
 
     @Test
@@ -274,7 +276,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals("recommended", expectedProperties["referrer_credit"])
         assertEquals(3L, expectedProperties["creator_uid"])
         assertEquals(17, expectedProperties["creator_backed_projects_count"])
-        assertEquals(5, expectedProperties["creator_created_projects_count"])
+        assertEquals(5, expectedProperties["creator_launched_projects_count"])
         assertEquals(2, expectedProperties["creator_starred_projects_count"])
     }
 
@@ -299,6 +301,7 @@ class KoalaTest : KSRobolectricTestCase() {
                     .id(15)
                     .backedProjectsCount(3)
                     .createdProjectsCount(2)
+                    .location(LocationFactory.nigeria())
                     .starredProjectsCount(10)
                     .build()
 

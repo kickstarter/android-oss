@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import com.kickstarter.libs.utils.ConfigUtils;
+import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
@@ -106,6 +107,13 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   protected User loggedInUser() {
     return this.loggedInUser;
+  }
+
+  @Override
+  protected String userCountry(final @NonNull User user) {
+    final Location location = user.location();
+    final String configCountry = this.config != null ? this.config.countryCode() : null;
+    return location != null ? location.country() : configCountry;
   }
 
   @Override

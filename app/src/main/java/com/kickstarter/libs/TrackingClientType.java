@@ -23,8 +23,7 @@ public abstract class TrackingClientType {
     final boolean userIsLoggedIn = loggedInUser() != null;
     if (userIsLoggedIn) {
       hashMap.putAll(KoalaUtils.userProperties(loggedInUser()));
-      hashMap.put("user_country", userCountry(loggedInUser()) );
-
+      hashMap.put("user_country", userCountry(loggedInUser()));
     }
 
     hashMap.put("time", time());

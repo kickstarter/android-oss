@@ -98,10 +98,11 @@ public final class KoalaUtils {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("backed_projects_count", user.backedProjectsCount());
-        put("created_projects_count", user.createdProjectsCount());
-        put("starred_projects_count", user.starredProjectsCount());
+        put("facebook_account", BooleanUtils.isTrue(user.facebookConnected()));
+        put("is_admin", BooleanUtils.isTrue(user.isAdmin()));
+        put("launched_projects_count", user.createdProjectsCount());
         put("uid", user.id());
-
+        put("watched_projects_count", user.starredProjectsCount());
       }
     };
 

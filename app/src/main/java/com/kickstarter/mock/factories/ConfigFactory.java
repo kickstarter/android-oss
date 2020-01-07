@@ -56,6 +56,18 @@ public final class ConfigFactory {
       .build();
   }
 
+  public static @NonNull Config configWithExperiment(final @NonNull String experiment, final @NonNull String variant) {
+    return config().toBuilder()
+      .abExperiments(Collections.singletonMap(experiment, variant))
+      .build();
+  }
+
+  public static @NonNull Config configWithExperiments(final @NonNull Map<String, String> abExperiments) {
+    return config().toBuilder()
+      .abExperiments(abExperiments)
+      .build();
+  }
+
   public static @NonNull Config configWithFeatureEnabled(final @NonNull String featureKey) {
     return config().toBuilder()
       .features(Collections.singletonMap(featureKey, true))

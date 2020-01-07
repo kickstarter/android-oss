@@ -2,6 +2,8 @@ package com.kickstarter.libs
 
 import android.content.Context
 import android.content.res.Configuration
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.view.accessibility.AccessibilityManager
@@ -13,6 +15,7 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.ConfigUtils
+import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.models.User
 import com.kickstarter.services.firebase.dispatchJob
 import io.fabric.sdk.android.Fabric
@@ -66,12 +69,24 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>): String
 
     //Default property values
-    override fun androidUUID(): String {
+    override fun brand(): String {
+        return android.os.Build.BRAND
+    }
+
+    override fun buildNumber(): Int {
+        return BuildConfig.VERSION_CODE
+    }
+
+    override fun currentVariants(): JSONArray? {
+        return ConfigUtils.currentVariants(this.config)
+    }
+
+    override fun deviceDistinctId(): String {
         return FirebaseInstanceId.getInstance().id
     }
 
-    override fun brand(): String {
-        return android.os.Build.BRAND
+    override fun deviceFormat(): String {
+        return if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet" else "phone"
     }
 
     /**
@@ -79,12 +94,8 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
      */
     override fun deviceOrientation(): String {
         return if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            "landscape"
-        } else "portrait"
-    }
-
-    override fun deviceFormat(): String {
-        return if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet" else "phone"
+            "Landscape"
+        } else "Portrait"
     }
 
     override fun enabledFeatureFlags(): JSONArray? {
@@ -123,11 +134,22 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         return this.loggedInUser
     }
 
+    override fun userAgent(): String {
+        return WebUtils.userAgent(this.build)
+    }
+
     override fun userCountry(user: User): String? {
         return user.location()?.country() ?: this.config?.countryCode()
     }
 
     override fun versionName(): String {
         return BuildConfig.VERSION_NAME
+    }
+
+    override fun wifiConnection(): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+        return cm?.activeNetwork?.let {
+            cm.getNetworkCapabilities(it)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+        } ?: false
     }
 }

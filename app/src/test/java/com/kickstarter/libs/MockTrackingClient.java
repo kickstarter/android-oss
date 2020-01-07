@@ -40,23 +40,34 @@ public final class MockTrackingClient extends TrackingClientType {
   public final @NonNull Observable<Map<String, Object>> eventProperties = this.events.map(e -> e.properties);
 
   @Override
+  protected boolean cleanPropertiesOnly() {
+    return this.cleanPropertiesOnly;
+  }
+
+  @Override
   public void track(final @NonNull String eventName, final @NonNull Map<String, Object> additionalProperties) {
     this.events.onNext(new Event(eventName, combinedProperties(additionalProperties)));
   }
 
-  @Override
-  protected String androidUUID() {
-    return "uuid";
-  }
-
+  //Default property values
   @Override
   protected String brand() {
     return "Google";
   }
 
   @Override
-  protected boolean cleanPropertiesOnly() {
-    return this.cleanPropertiesOnly;
+  protected int buildNumber() {
+    return 9999;
+  }
+
+  @Override
+  protected JSONArray currentVariants() {
+    return ConfigUtils.INSTANCE.currentVariants(this.config);
+  }
+
+  @Override
+  protected String deviceDistinctId() {
+    return "uuid";
   }
 
   @Override
@@ -66,7 +77,7 @@ public final class MockTrackingClient extends TrackingClientType {
 
   @Override
   protected String deviceOrientation() {
-    return "portrait";
+    return "Portrait";
   }
 
   @Override
@@ -110,6 +121,11 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
+  protected String userAgent() {
+    return "agent";
+  }
+
+  @Override
   protected String userCountry(final @NonNull User user) {
     final Location location = user.location();
     final String configCountry = this.config != null ? this.config.countryCode() : null;
@@ -119,5 +135,10 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   protected String versionName() {
     return "9.9.9";
+  }
+
+  @Override
+  protected boolean wifiConnection() {
+    return false;
   }
 }

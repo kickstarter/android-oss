@@ -6,7 +6,7 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
-import org.joda.time.DateTime
+import org.json.JSONArray
 import org.junit.Test
 import rx.subjects.BehaviorSubject
 
@@ -25,7 +25,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         this.lakeTest.assertValue("App Open")
 
-        assertDefaultProperties(null)
+        assertSessionProperties(null)
     }
 
     @Test
@@ -40,7 +40,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         this.lakeTest.assertValue("App Open")
 
-        assertDefaultProperties(user)
+        assertSessionProperties(user)
         val expectedProperties = propertiesTest.value
         assertEquals(15L, expectedProperties["user_uid"])
         assertEquals(3, expectedProperties["user_backed_projects_count"])
@@ -51,14 +51,33 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(10, expectedProperties["user_watched_projects_count"])
     }
 
-    private fun assertDefaultProperties(user: User?) {
+    private fun assertSessionProperties(user: User?) {
         val expectedProperties = propertiesTest.value
-        assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["time"])
-        assertEquals(user != null, expectedProperties["user_logged_in"])
+        assertEquals(9999, expectedProperties["session_app_build_number"])
+        assertEquals("9.9.9", expectedProperties["session_app_release_version"])
+        assertEquals("native", expectedProperties["session_client_type"])
+        assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
+        assertEquals("uuid", expectedProperties["session_device_distinct_id"])
+        assertEquals("phone", expectedProperties["session_device_format"])
+        assertEquals("Google", expectedProperties["session_device_manufacturer"])
+        assertEquals("Pixel 3", expectedProperties["session_device_model"])
+        assertEquals("Portrait", expectedProperties["session_device_orientation"])
+        assertEquals("en", expectedProperties["session_display_language"])
+        assertEquals(JSONArray().put("android_example_feature"), expectedProperties["session_enabled_features"])
+        assertEquals(false, expectedProperties["session_is_voiceover_running"])
+        assertEquals("kickstarter_android", expectedProperties["session_mp_lib"])
+        assertEquals("Android 9", expectedProperties["session_os_version"])
+        assertEquals("agent", expectedProperties["session_user_agent"])
+        assertEquals(user != null, expectedProperties["session_user_logged_in"])
+        assertEquals(false, expectedProperties["session_wifi_connection"])
     }
 
     private fun mockCurrentConfig() = MockCurrentConfig().apply {
-        config(ConfigFactory.configWithFeatureEnabled("android_example_feature"))
+        val config = ConfigFactory.configWithFeatureEnabled("android_example_feature")
+                .toBuilder()
+                .abExperiments(mapOf(Pair("android_example_experiment", "control")))
+                .build()
+        config(config)
     }
 
     private fun user() =

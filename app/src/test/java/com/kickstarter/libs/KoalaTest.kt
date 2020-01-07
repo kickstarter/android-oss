@@ -235,14 +235,13 @@ class KoalaTest : KSRobolectricTestCase() {
 
     private fun assertDefaultProperties(user: User?) {
         val expectedProperties = propertiesTest.value
-        assertEquals("uuid", expectedProperties["android_uuid"])
         assertEquals("9.9.9", expectedProperties["app_version"])
         assertEquals("Google", expectedProperties["brand"])
         assertEquals("android", expectedProperties["client_platform"])
         assertEquals("native", expectedProperties["client_type"])
         assertEquals("uuid", expectedProperties["device_fingerprint"])
         assertEquals("phone", expectedProperties["device_format"])
-        assertEquals("portrait", expectedProperties["device_orientation"])
+        assertEquals("Portrait", expectedProperties["device_orientation"])
         assertEquals("uuid", expectedProperties["distinct_id"])
         assertEquals(JSONArray().put("android_example_feature"), expectedProperties["enabled_feature_flags"])
         assertEquals("unavailable", expectedProperties["google_play_services"])

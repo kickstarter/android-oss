@@ -24,26 +24,37 @@ public abstract class TrackingClientType {
 
     final boolean userIsLoggedIn = loggedInUser() != null;
 
-    hashMap.put("android_uuid", androidUUID());
-    hashMap.put("app_build_number", buildNumber());
-    hashMap.put("app_release_version", versionName());
-    hashMap.put("client_type", "native");
-    hashMap.put("current_variants", currentVariants());
-    hashMap.put("device_distinct_id", androidUUID());
-    hashMap.put("device_format", deviceFormat());
-    hashMap.put("device_manufacturer", manufacturer());
-    hashMap.put("device_model", model());
-    hashMap.put("device_orientation", deviceOrientation());
-    hashMap.put("display_language", Locale.getDefault().getLanguage());
-    hashMap.put("enabled_features", enabledFeatureFlags());
-    hashMap.put("is_voiceover_running", isTalkBackOn());
-    hashMap.put("mp_lib", "kickstarter_android");
-    hashMap.put("os_version", String.format("Android %s", OSVersion()));
-    hashMap.put("user_agent", userAgent());
-    hashMap.put("user_logged_in", userIsLoggedIn);
-    hashMap.put("wifi_connection", wifiConnection());
+    hashMap.putAll(sessionProperties(userIsLoggedIn));
 
-    return MapUtils.prefixKeys(hashMap, "session_");
+    return hashMap;
+  }
+
+  private @NonNull Map<String, Object> sessionProperties(final boolean userIsLoggedIn) {
+    final Map<String, Object> properties = new HashMap<String, Object>() {
+      {
+        put("android_uuid", androidUUID());
+        put("app_build_number", buildNumber());
+        put("app_release_version", versionName());
+        put("client_type", "native");
+        put("current_variants", currentVariants());
+        put("device_distinct_id", androidUUID());
+        put("device_format", deviceFormat());
+        put("device_manufacturer", manufacturer());
+        put("device_model", model());
+        put("device_orientation", deviceOrientation());
+        put("display_language", Locale.getDefault().
+          getLanguage());
+        put("enabled_features", enabledFeatureFlags());
+        put("is_voiceover_running", isTalkBackOn());
+        put("mp_lib", "kickstarter_android");
+        put("os_version", String.format("Android %s", OSVersion()));
+        put("user_agent", userAgent());
+        put("user_logged_in", userIsLoggedIn);
+        put("wifi_connection", wifiConnection());
+      }
+    };
+
+    return MapUtils.prefixKeys(properties, "session_");
   }
 
   private @NonNull Map<String, Object> defaultProperties() {

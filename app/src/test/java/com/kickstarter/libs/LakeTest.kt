@@ -5,7 +5,6 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
-import org.joda.time.DateTime
 import org.json.JSONArray
 import org.junit.Test
 import rx.subjects.BehaviorSubject
@@ -60,7 +59,6 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["session_is_voiceover_running"])
         assertEquals("kickstarter_android", expectedProperties["session_mp_lib"])
         assertEquals("Android 9", expectedProperties["session_os_version"])
-        assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["session_time"])
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])

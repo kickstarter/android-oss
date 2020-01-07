@@ -39,7 +39,6 @@ public abstract class TrackingClientType {
     hashMap.put("is_voiceover_running", isTalkBackOn());
     hashMap.put("mp_lib", "kickstarter_android");
     hashMap.put("os_version", String.format("Android %s", OSVersion()));
-    hashMap.put("time", time());
     hashMap.put("user_agent", userAgent());
     hashMap.put("user_logged_in", userIsLoggedIn);
     hashMap.put("wifi_connection", wifiConnection());

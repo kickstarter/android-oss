@@ -5,8 +5,26 @@ import com.kickstarter.libs.FeatureKey
 import com.kickstarter.mock.factories.ConfigFactory
 import org.json.JSONArray
 import org.junit.Test
+import java.util.*
 
 class ConfigUtilsTest : KSRobolectricTestCase() {
+    @Test
+    fun testAbExperiments() {
+        assertEquals(null, ConfigUtils.currentVariants(ConfigFactory.config().toBuilder().abExperiments(null).build()))
+
+        assertEquals(JSONArray(), ConfigUtils.currentVariants(ConfigFactory.configWithExperiments(Collections.emptyMap())))
+
+        assertEquals(JSONArray().apply { put("pledge_button_copy[experiment]") },
+                ConfigUtils.currentVariants(ConfigFactory.configWithExperiment("pledge_button_copy", "experiment")))
+
+        assertEquals(JSONArray().apply {
+            put("add_new_card_vertical[control]")
+            put("pledge_button_copy[experiment]")
+        },
+                ConfigUtils.currentVariants(ConfigFactory.configWithExperiments(mapOf(Pair("pledge_button_copy", "experiment"),
+                        Pair("add_new_card_vertical", "control")))))
+    }
+
     @Test
     fun testEnabledFeatureFlags() {
         assertEquals(null, ConfigUtils.enabledFeatureFlags(ConfigFactory.config().toBuilder().features(null).build()))

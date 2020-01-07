@@ -277,7 +277,7 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(3L, expectedProperties["creator_uid"])
         assertEquals(17, expectedProperties["creator_backed_projects_count"])
         assertEquals(5, expectedProperties["creator_launched_projects_count"])
-        assertEquals(2, expectedProperties["creator_starred_projects_count"])
+        assertEquals(2, expectedProperties["creator_watched_projects_count"])
     }
 
     private fun project() =

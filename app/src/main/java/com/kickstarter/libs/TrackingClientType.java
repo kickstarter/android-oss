@@ -42,8 +42,7 @@ public abstract class TrackingClientType {
         put("device_manufacturer", manufacturer());
         put("device_model", model());
         put("device_orientation", deviceOrientation());
-        put("display_language", Locale.getDefault().
-          getLanguage());
+        put("display_language", Locale.getDefault().getLanguage());
         put("enabled_features", enabledFeatureFlags());
         put("is_voiceover_running", isTalkBackOn());
         put("mp_lib", "kickstarter_android");

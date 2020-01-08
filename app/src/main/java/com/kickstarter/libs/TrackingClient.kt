@@ -138,6 +138,10 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         return WebUtils.userAgent(this.build)
     }
 
+    override fun userCountry(user: User): String? {
+        return user.location()?.country() ?: this.config?.countryCode()
+    }
+
     override fun versionName(): String {
         return BuildConfig.VERSION_NAME
     }

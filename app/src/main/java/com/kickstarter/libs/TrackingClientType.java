@@ -23,6 +23,10 @@ public abstract class TrackingClientType {
     final Map<String, Object> hashMap = new HashMap<>();
 
     final boolean userIsLoggedIn = loggedInUser() != null;
+    if (userIsLoggedIn) {
+      hashMap.putAll(KoalaUtils.userProperties(loggedInUser()));
+      hashMap.put("user_country", userCountry(loggedInUser()));
+    }
 
     hashMap.putAll(sessionProperties(userIsLoggedIn));
 
@@ -114,6 +118,7 @@ public abstract class TrackingClientType {
   protected abstract String OSVersion();
   protected abstract long time();
   protected abstract String userAgent();
+  protected abstract String userCountry(User user);
   protected abstract String versionName();
   protected abstract boolean wifiConnection();
 }

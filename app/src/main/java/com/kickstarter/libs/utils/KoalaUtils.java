@@ -27,35 +27,36 @@ public final class KoalaUtils {
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
       {
         put("everything", BooleanUtils.isTrue(params.isAllProjects()));
+        put("pwl", BooleanUtils.isTrue(params.staffPicks()));
         put("recommended", BooleanUtils.isTrue(params.recommended()));
+        put("ref_tag", DiscoveryParamsUtils.refTag(params).tag());
+        put("search_term", params.term());
         put("social", BooleanUtils.isIntTrue(params.social()));
-        put("staff_picks", BooleanUtils.isTrue(params.staffPicks()));
-        put("starred", BooleanUtils.isIntTrue(params.starred()));
-        put("term", params.term());
-        put("sort", params.sort() != null ? String.valueOf(params.sort()) : "");
+        put("sort", params.sort() != null ? String.valueOf(params.sort()) : null);
+        put("tag", params.tagId());
+        put("watched", BooleanUtils.isIntTrue(params.starred()));
 
         final Category category = params.category();
         if (category != null) {
-          putAll(categoryProperties(category));
-        }
-
-        final Location location = params.location();
-        if (location != null) {
-          putAll(locationProperties(location));
+          if (category.isRoot()) {
+            putAll(categoryProperties(category));
+          } else {
+            putAll(categoryProperties(category.root()));
+            putAll(subcategoryProperties(category));
+          }
         }
       }
     });
 
-    final Map<String, Object> prefixedProperties = MapUtils.prefixKeys(properties, prefix);
-
-    prefixedProperties.put("page", params.page());
-    prefixedProperties.put("per_page", params.perPage());
-
-    return prefixedProperties;
+    return MapUtils.prefixKeys(properties, prefix);
   }
 
   public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category) {
     return categoryProperties(category, "category_");
+  }
+
+  public static @NonNull Map<String, Object> subcategoryProperties(final @NonNull Category category) {
+    return categoryProperties(category, "subcategory_");
   }
 
   public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category, final @NonNull String prefix) {

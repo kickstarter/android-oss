@@ -5,6 +5,7 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
+import com.kickstarter.services.DiscoveryParams
 import org.json.JSONArray
 import org.junit.Test
 import rx.subjects.BehaviorSubject
@@ -40,6 +41,104 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValue("App Open")
 
         assertSessionProperties(user)
+    }
+
+    @Test
+    fun testDiscoveryProperties_AllProjects() {
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.koalaTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val koala = Koala(client)
+
+        val params = DiscoveryParams
+                .builder()
+                .sort(DiscoveryParams.Sort.HOME)
+                .build()
+
+        koala.trackDiscovery(params, false)
+
+        assertSessionProperties(user)
+        val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["discover_category_id"])
+        assertNull(expectedProperties["discover_category_name"])
+        assertEquals(true, expectedProperties["discover_everything"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("discovery", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("home", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+    }
+
+    @Test
+    fun testDiscoveryProperties_NoCategory() {
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.koalaTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val koala = Koala(client)
+
+        val params = DiscoveryParams
+                .builder()
+                .sort(DiscoveryParams.Sort.POPULAR)
+                .staffPicks(true)
+                .build()
+
+        koala.trackDiscovery(params, false)
+
+        assertSessionProperties(user)
+        val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["discover_category_id"])
+        assertNull(expectedProperties["discover_category_name"])
+        assertEquals(false, expectedProperties["discover_everything"])
+        assertEquals(true, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("recommended_popular", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("popularity", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+    }
+
+    @Test
+    fun testDiscoveryProperties_Category() {
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.koalaTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val koala = Koala(client)
+
+        val params = DiscoveryParams
+                .builder()
+                .category(CategoryFactory.ceramicsCategory())
+                .sort(DiscoveryParams.Sort.NEWEST)
+                .build()
+
+        koala.trackDiscovery(params, false)
+
+        assertSessionProperties(user)
+        val expectedProperties = propertiesTest.value
+        assertEquals(1L, expectedProperties["discover_category_id"])
+        assertEquals("Art", expectedProperties["discover_category_name"])
+        assertEquals(false, expectedProperties["discover_everything"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("category_newest", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("newest", expectedProperties["discover_sort"])
+        assertEquals(287L, expectedProperties["discover_subcategory_id"])
+        assertEquals("Ceramics", expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
     }
 
     @Test

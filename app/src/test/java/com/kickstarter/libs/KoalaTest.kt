@@ -57,21 +57,28 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        val params = DiscoveryParams.builder().staffPicks(true).category(CategoryFactory.artCategory()).build()
+        val params = DiscoveryParams.builder()
+                .staffPicks(true)
+                .category(CategoryFactory.artCategory())
+                .build()
 
         koala.trackDiscovery(params, false)
 
         assertDefaultProperties(user)
         val expectedProperties = propertiesTest.value
         assertEquals(1L, expectedProperties["discover_category_id"])
-        assertEquals(false, expectedProperties["discover_recommended"])
-        assertEquals(false, expectedProperties["discover_social"])
-        assertEquals(true, expectedProperties["discover_staff_picks"])
-        assertEquals(false, expectedProperties["discover_starred"])
-        assertEquals(null, expectedProperties["discover_term"])
+        assertEquals("Art", expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
-        assertEquals(1, expectedProperties["page"])
-        assertEquals(15, expectedProperties["per_page"])
+        assertEquals(true, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("category", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals(null, expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
     }
 
     @Test
@@ -82,21 +89,27 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        val params = DiscoveryParams.builder().build()
+        val params = DiscoveryParams
+                .builder()
+                .build()
 
         koala.trackDiscovery(params, false)
 
         assertDefaultProperties(user)
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["discover_category_id"])
-        assertEquals(false, expectedProperties["discover_recommended"])
-        assertEquals(false, expectedProperties["discover_social"])
-        assertEquals(false, expectedProperties["discover_staff_picks"])
-        assertEquals(false, expectedProperties["discover_starred"])
-        assertEquals(null, expectedProperties["discover_term"])
+        assertNull(expectedProperties["discover_category_name"])
         assertEquals(true, expectedProperties["discover_everything"])
-        assertEquals(1, expectedProperties["page"])
-        assertEquals(15, expectedProperties["per_page"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("discovery", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals(null, expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
     }
 
     @Test
@@ -107,21 +120,29 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        val params = DiscoveryParams.builder().staffPicks(true).build()
+        val params = DiscoveryParams
+                .builder()
+                .sort(DiscoveryParams.Sort.POPULAR)
+                .staffPicks(true)
+                .build()
 
         koala.trackDiscovery(params, false)
 
         assertDefaultProperties(user)
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["discover_category_id"])
-        assertEquals(false, expectedProperties["discover_recommended"])
-        assertEquals(false, expectedProperties["discover_social"])
-        assertEquals(true, expectedProperties["discover_staff_picks"])
-        assertEquals(false, expectedProperties["discover_starred"])
-        assertEquals(null, expectedProperties["discover_term"])
+        assertNull(expectedProperties["discover_category_name"])
         assertEquals(false, expectedProperties["discover_everything"])
-        assertEquals(1, expectedProperties["page"])
-        assertEquals(15, expectedProperties["per_page"])
+        assertEquals(true, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("recommended_popular", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("popularity", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
     }
 
     @Test

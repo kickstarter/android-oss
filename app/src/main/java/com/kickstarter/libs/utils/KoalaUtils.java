@@ -1,7 +1,6 @@
 package com.kickstarter.libs.utils;
 
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
@@ -28,35 +27,36 @@ public final class KoalaUtils {
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
       {
         put("everything", BooleanUtils.isTrue(params.isAllProjects()));
+        put("pwl", BooleanUtils.isTrue(params.staffPicks()));
         put("recommended", BooleanUtils.isTrue(params.recommended()));
+        put("ref_tag", DiscoveryParamsUtils.refTag(params).tag());
+        put("search_term", params.term());
         put("social", BooleanUtils.isIntTrue(params.social()));
-        put("staff_picks", BooleanUtils.isTrue(params.staffPicks()));
-        put("starred", BooleanUtils.isIntTrue(params.starred()));
-        put("term", params.term());
-        put("sort", params.sort() != null ? String.valueOf(params.sort()) : "");
+        put("sort", params.sort() != null ? String.valueOf(params.sort()) : null);
+        put("tag", params.tagId());
+        put("watched", BooleanUtils.isIntTrue(params.starred()));
 
         final Category category = params.category();
         if (category != null) {
-          putAll(categoryProperties(category));
-        }
-
-        final Location location = params.location();
-        if (location != null) {
-          putAll(locationProperties(location));
+          if (category.isRoot()) {
+            putAll(categoryProperties(category));
+          } else {
+            putAll(categoryProperties(category.root()));
+            putAll(subcategoryProperties(category));
+          }
         }
       }
     });
 
-    final Map<String, Object> prefixedProperties = MapUtils.prefixKeys(properties, prefix);
-
-    prefixedProperties.put("page", params.page());
-    prefixedProperties.put("per_page", params.perPage());
-
-    return prefixedProperties;
+    return MapUtils.prefixKeys(properties, prefix);
   }
 
   public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category) {
     return categoryProperties(category, "category_");
+  }
+
+  public static @NonNull Map<String, Object> subcategoryProperties(final @NonNull Category category) {
+    return categoryProperties(category, "subcategory_");
   }
 
   public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category, final @NonNull String prefix) {
@@ -117,56 +117,45 @@ public final class KoalaUtils {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("backers_count", project.backersCount());
+        final Category category = project.category();
+        if (category != null) {
+          if (category.isRoot()) {
+            put("category", category.name());
+          } else {
+            put("category", category.parent().name());
+            put("subcategory", category.name());
+          }
+        }
         put("comments_count", project.commentsCount());
         put("country", project.country());
-        put("duration", Math.round(ProjectUtils.timeInSecondsOfDuration(project)));
+        put("creator_uid", project.creator().id());
         put("currency", project.currency());
+        put("current_pledge_amount", project.pledged());
+        put("current_pledge_amount_usd", project.pledged() * project.staticUsdRate());
+        put("deadline", project.deadline() != null ? project.deadline().getMillis() / 1000 : null);
+        put("duration", Math.round(ProjectUtils.timeInSecondsOfDuration(project)));
         put("goal", project.goal());
+        put("goal_usd", project.goal() * project.staticUsdRate());
         put("has_video", project.video() != null);
         put("hours_remaining", (int) Math.ceil(ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f));
+        put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2);
+        put("launched_at", project.launchedAt() != null ? project.launchedAt().getMillis() / 1000 : null);
+        put("location", project.location() != null ? project.location().name() : null);
         put("name", project.name());
         put("percent_raised", project.percentageFunded() / 100.0f);
         put("pid", project.id());
-        put("pledged", project.pledged());
+        put("prelaunch_activated", BooleanUtils.isTrue(project.prelaunchActivated()));
+        put("rewards_count", project.hasRewards() ? project.rewards().size() : null);
         put("state", project.state());
-        put("update_count", project.updatesCount());
-
-        final Category category = project.category();
-        if (category != null) {
-          put("category", category.name());
-          final Category parent = category.parent();
-          if (parent != null) {
-            put("parent_category", parent.name());
-          }
-        }
-
-        final Location location = project.location();
-        if (location != null) {
-          put("location", location.name());
-        }
+        put("static_usd_rate", project.staticUsdRate());
+        put("updates_count", project.updatesCount());
+        put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
+        put("user_is_backer", project.isBacking());
+        put("user_has_watched", project.isStarred());
       }
     };
 
-    final Map<String, Object> prefixedMap = MapUtils.prefixKeys(properties, prefix);
-
-    prefixedMap.putAll(userProperties(project.creator(), "creator_"));
-
-    if (loggedInUser != null) {
-      prefixedMap.put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
-      prefixedMap.put("user_is_backer", project.isBacking());
-      prefixedMap.put("user_has_starred", project.isStarred());
-
-      final Backing backing = project.backing();
-      if (backing != null) {
-        final Backing.PaymentSource paymentSource = backing.paymentSource();
-        if (paymentSource != null) {
-          prefixedMap.put("payment_method", paymentSource.paymentType());
-        }
-        prefixedMap.put("pledge_total", backing.amount());
-      }
-    }
-
-    return prefixedMap;
+    return MapUtils.prefixKeys(properties, prefix);
   }
 
   public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity, final @Nullable User loggedInUser) {

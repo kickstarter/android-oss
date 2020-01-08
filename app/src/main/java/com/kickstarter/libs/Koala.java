@@ -96,11 +96,11 @@ public final class Koala {
     final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
     if (intentRefTag != null) {
-      properties.put("ref_tag", intentRefTag.tag());
+      properties.put("session_ref_tag", intentRefTag.tag());
     }
 
     if (cookieRefTag != null) {
-      properties.put("referrer_credit", cookieRefTag.tag());
+      properties.put("session_referrer_credit", cookieRefTag.tag());
     }
 
     this.client.track(KoalaEvent.PROJECT_PAGE, properties);

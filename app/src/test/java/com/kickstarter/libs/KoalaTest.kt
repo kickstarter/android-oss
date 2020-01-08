@@ -3,6 +3,7 @@ package com.kickstarter.libs
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
+import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import org.joda.time.DateTime
@@ -156,7 +157,7 @@ class KoalaTest : KSRobolectricTestCase() {
         koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
 
         assertDefaultProperties(null)
-        assertProjectProperties()
+        assertProjectProperties(project)
         this.koalaTest.assertValues("Project Page")
     }
 
@@ -172,11 +173,11 @@ class KoalaTest : KSRobolectricTestCase() {
         koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
 
         assertDefaultProperties(user)
-        assertProjectProperties()
+        assertProjectProperties(project)
         val expectedProperties = propertiesTest.value
-        assertEquals(false, expectedProperties["user_is_project_creator"])
-        assertEquals(false, expectedProperties["user_is_backer"])
-        assertEquals(false, expectedProperties["user_has_starred"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.koalaTest.assertValues("Project Page")
     }
@@ -187,8 +188,10 @@ class KoalaTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .id(4)
                 .category(CategoryFactory.ceramicsCategory())
-                .location(LocationFactory.unitedStates())
+                .commentsCount(3)
                 .creator(creator())
+                .location(LocationFactory.unitedStates())
+                .updatesCount(5)
                 .build()
         val user = user()
         val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
@@ -199,13 +202,11 @@ class KoalaTest : KSRobolectricTestCase() {
         koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
 
         assertDefaultProperties(user)
-        assertProjectProperties()
+        assertProjectProperties(project)
         val expectedProperties = propertiesTest.value
-        assertEquals(false, expectedProperties["user_is_project_creator"])
-        assertEquals(true, expectedProperties["user_is_backer"])
-        assertEquals(false, expectedProperties["user_has_starred"])
-        assertEquals("CREDIT_CARD", expectedProperties["payment_method"])
-        assertEquals(10.0, expectedProperties["pledge_total"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(true, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.koalaTest.assertValues("Project Page")
     }
@@ -222,11 +223,11 @@ class KoalaTest : KSRobolectricTestCase() {
         koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
 
         assertDefaultProperties(creator)
-        assertProjectProperties()
+        assertProjectProperties(project)
         val expectedProperties = propertiesTest.value
-        assertEquals(true, expectedProperties["user_is_project_creator"])
-        assertEquals(false, expectedProperties["user_is_backer"])
-        assertEquals(false, expectedProperties["user_has_starred"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(true, expectedProperties["project_user_is_project_creator"])
 
         this.koalaTest.assertValues("Project Page")
     }
@@ -243,11 +244,11 @@ class KoalaTest : KSRobolectricTestCase() {
         koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
 
         assertDefaultProperties(user)
-        assertProjectProperties()
+        assertProjectProperties(project)
         val expectedProperties = propertiesTest.value
-        assertEquals(false, expectedProperties["user_is_project_creator"])
-        assertEquals(false, expectedProperties["user_is_backer"])
-        assertEquals(true, expectedProperties["user_has_starred"])
+        assertEquals(true, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.koalaTest.assertValues("Project Page")
     }
@@ -275,35 +276,46 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(user != null, expectedProperties["user_logged_in"])
     }
 
-    private fun assertProjectProperties() {
+    private fun assertProjectProperties(project: Project) {
         val expectedProperties = propertiesTest.value
         assertEquals(100, expectedProperties["project_backers_count"])
+        assertEquals("Ceramics", expectedProperties["project_subcategory"])
+        assertEquals("Art", expectedProperties["project_category"])
+        assertEquals(3, expectedProperties["project_comments_count"])
         assertEquals("US", expectedProperties["project_country"])
+        assertEquals(3L, expectedProperties["project_creator_uid"])
         assertEquals("USD", expectedProperties["project_currency"])
+        assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
+        assertEquals(50.0, expectedProperties["project_current_pledge_amount_usd"])
+        assertEquals(project.deadline()?.millis?.let { it / 1000 }, expectedProperties["project_deadline"])
         assertEquals(60 * 60 * 24 * 20, expectedProperties["project_duration"])
         assertEquals(100.0, expectedProperties["project_goal"])
+        assertEquals(100.0, expectedProperties["project_goal_usd"])
         assertEquals(true, expectedProperties["project_has_video"])
         assertEquals(10 * 24, expectedProperties["project_hours_remaining"])
+        assertEquals(true, expectedProperties["project_is_repeat_creator"])
+        assertEquals(project.launchedAt()?.millis?.let { it / 1000 }, expectedProperties["project_launched_at"])
         assertEquals("Brooklyn", expectedProperties["project_location"])
-        assertEquals(4L, expectedProperties["project_pid"])
-        assertEquals(50.0, expectedProperties["project_pledged"])
+        assertEquals("Some Name", expectedProperties["project_name"])
         assertEquals(.5f, expectedProperties["project_percent_raised"])
-        assertEquals("Ceramics", expectedProperties["project_category"])
-        assertEquals("Art", expectedProperties["project_parent_category"])
-        assertEquals("discovery", expectedProperties["ref_tag"])
-        assertEquals("recommended", expectedProperties["referrer_credit"])
-        assertEquals(3L, expectedProperties["creator_uid"])
-        assertEquals(17, expectedProperties["creator_backed_projects_count"])
-        assertEquals(5, expectedProperties["creator_created_projects_count"])
-        assertEquals(2, expectedProperties["creator_starred_projects_count"])
+        assertEquals(4L, expectedProperties["project_pid"])
+        assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
+        assertEquals(2, expectedProperties["project_rewards_count"])
+        assertEquals("live", expectedProperties["project_state"])
+        assertEquals(1.0f, expectedProperties["project_static_usd_rate"])
+        assertEquals(5, expectedProperties["project_updates_count"])
+        assertEquals("discovery", expectedProperties["session_ref_tag"])
+        assertEquals("recommended", expectedProperties["session_referrer_credit"])
     }
 
     private fun project() =
             ProjectFactory.project().toBuilder()
                     .id(4)
                     .category(CategoryFactory.ceramicsCategory())
-                    .location(LocationFactory.unitedStates())
                     .creator(creator())
+                    .commentsCount(3)
+                    .location(LocationFactory.unitedStates())
+                    .updatesCount(5)
                     .build()
 
     private fun creator() =

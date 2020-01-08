@@ -57,7 +57,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract @Nullable Boolean staffPick();
   public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
-  public abstract @Nullable Float staticUsdRate();
+  public abstract Float staticUsdRate();
   public abstract @Nullable Integer unreadMessagesCount();
   public abstract @Nullable Integer unseenActivityCount();
   public abstract @Nullable Integer updatesCount();

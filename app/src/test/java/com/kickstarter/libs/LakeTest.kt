@@ -55,16 +55,16 @@ class LakeTest : KSRobolectricTestCase() {
     fun testDiscoveryProperties_AllProjects() {
         val user = user()
         val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
-        client.eventNames.subscribe(this.koalaTest)
+        client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val koala = Koala(client)
+        val lake = Koala(client)
 
         val params = DiscoveryParams
                 .builder()
                 .sort(DiscoveryParams.Sort.HOME)
                 .build()
 
-        koala.trackDiscovery(params, false)
+        lake.trackDiscovery(params, false)
 
         assertSessionProperties(user)
         val expectedProperties = propertiesTest.value
@@ -87,9 +87,9 @@ class LakeTest : KSRobolectricTestCase() {
     fun testDiscoveryProperties_NoCategory() {
         val user = user()
         val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
-        client.eventNames.subscribe(this.koalaTest)
+        client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val koala = Koala(client)
+        val lake = Koala(client)
 
         val params = DiscoveryParams
                 .builder()
@@ -97,7 +97,7 @@ class LakeTest : KSRobolectricTestCase() {
                 .staffPicks(true)
                 .build()
 
-        koala.trackDiscovery(params, false)
+        lake.trackDiscovery(params, false)
 
         assertSessionProperties(user)
         val expectedProperties = propertiesTest.value
@@ -120,9 +120,9 @@ class LakeTest : KSRobolectricTestCase() {
     fun testDiscoveryProperties_Category() {
         val user = user()
         val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
-        client.eventNames.subscribe(this.koalaTest)
+        client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val koala = Koala(client)
+        val lake = Koala(client)
 
         val params = DiscoveryParams
                 .builder()
@@ -130,7 +130,7 @@ class LakeTest : KSRobolectricTestCase() {
                 .sort(DiscoveryParams.Sort.NEWEST)
                 .build()
 
-        koala.trackDiscovery(params, false)
+        lake.trackDiscovery(params, false)
 
         assertSessionProperties(user)
         val expectedProperties = propertiesTest.value
@@ -163,7 +163,9 @@ class LakeTest : KSRobolectricTestCase() {
         assertSessionProperties(null)
         assertProjectProperties(project)
         this.lakeTest.assertValues("Project Page")
-    }@Test
+    }
+
+    @Test
     fun testProjectProperties_LoggedInUser() {
         val project = project()
         val user = user()

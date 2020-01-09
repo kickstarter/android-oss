@@ -29,8 +29,19 @@ public abstract class TrackingClientType {
     }
 
     hashMap.putAll(sessionProperties(userIsLoggedIn));
+    hashMap.putAll(contextProperties());
 
     return hashMap;
+  }
+
+  private @NonNull Map<String, Object> contextProperties() {
+    final Map<String, Object> properties = new HashMap<String, Object>() {
+      {
+        put("timestamp", time());
+      }
+    };
+
+    return MapUtils.prefixKeys(properties, "context_");
   }
 
   private @NonNull Map<String, Object> sessionProperties(final boolean userIsLoggedIn) {

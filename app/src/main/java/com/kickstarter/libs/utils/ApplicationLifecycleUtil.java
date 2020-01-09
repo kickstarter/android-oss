@@ -51,7 +51,6 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   public void onActivityResumed(final @NonNull Activity activity) {
     if(this.isInBackground){
       this.koala.trackAppOpen();
-      this.lake.trackAppOpen();
 
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity.getApplication());
@@ -123,7 +122,6 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   public void onTrimMemory(final int i) {
     if(i == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
       this.koala.trackAppClose();
-      this.lake.trackAppClose();
       this.isInBackground = true;
     }
   }

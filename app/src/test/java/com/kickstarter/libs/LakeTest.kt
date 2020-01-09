@@ -6,6 +6,7 @@ import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
+import org.joda.time.DateTime
 import org.json.JSONArray
 import org.junit.Test
 import rx.subjects.BehaviorSubject
@@ -26,6 +27,7 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValue("App Open")
 
         assertSessionProperties(null)
+        assertContextProperties()
     }
 
     @Test
@@ -41,6 +43,8 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValue("App Open")
 
         assertSessionProperties(user)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertEquals(15L, expectedProperties["user_uid"])
         assertEquals(3, expectedProperties["user_backed_projects_count"])
@@ -67,6 +71,8 @@ class LakeTest : KSRobolectricTestCase() {
         lake.trackDiscovery(params, false)
 
         assertSessionProperties(user)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["discover_category_id"])
         assertNull(expectedProperties["discover_category_name"])
@@ -100,6 +106,8 @@ class LakeTest : KSRobolectricTestCase() {
         lake.trackDiscovery(params, false)
 
         assertSessionProperties(user)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["discover_category_id"])
         assertNull(expectedProperties["discover_category_name"])
@@ -133,6 +141,8 @@ class LakeTest : KSRobolectricTestCase() {
         lake.trackDiscovery(params, false)
 
         assertSessionProperties(user)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertEquals(1L, expectedProperties["discover_category_id"])
         assertEquals("Art", expectedProperties["discover_category_name"])
@@ -161,7 +171,9 @@ class LakeTest : KSRobolectricTestCase() {
         lake.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
 
         assertSessionProperties(null)
+        assertContextProperties()
         assertProjectProperties(project)
+
         this.lakeTest.assertValues("Project Page")
     }
 
@@ -178,6 +190,8 @@ class LakeTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertProjectProperties(project)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -207,6 +221,8 @@ class LakeTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertProjectProperties(project)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(true, expectedProperties["project_user_is_backer"])
@@ -228,6 +244,8 @@ class LakeTest : KSRobolectricTestCase() {
 
         assertSessionProperties(creator)
         assertProjectProperties(project)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -249,12 +267,19 @@ class LakeTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertProjectProperties(project)
+        assertContextProperties()
+
         val expectedProperties = propertiesTest.value
         assertEquals(true, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.lakeTest.assertValues("Project Page")
+    }
+
+    private fun assertContextProperties() {
+        val expectedProperties = propertiesTest.value
+        assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
     }
 
     private fun assertProjectProperties(project: Project) {

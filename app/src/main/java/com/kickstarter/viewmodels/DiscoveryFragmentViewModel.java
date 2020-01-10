@@ -276,10 +276,6 @@ public interface DiscoveryFragmentViewModel {
             paramsAndLoggedIn.first,
             isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
           );
-          this.lake.trackDiscovery(
-            paramsAndLoggedIn.first,
-            isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
-          );
         });
 
       this.paramsFromActivity

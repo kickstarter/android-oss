@@ -303,7 +303,6 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> {
           this.koala.trackDiscoveryFilters();
-          this.lake.trackDiscoveryFilters();
         });
 
       intent()

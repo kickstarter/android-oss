@@ -329,6 +329,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(JSONArray().put("android_example_feature"), expectedProperties["session_enabled_features"])
         assertEquals(false, expectedProperties["session_is_voiceover_running"])
         assertEquals("kickstarter_android", expectedProperties["session_mp_lib"])
+        assertEquals("Android", expectedProperties["session_os"])
         assertEquals("Android 9", expectedProperties["session_os_version"])
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_logged_in"])

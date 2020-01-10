@@ -278,6 +278,12 @@ public interface DiscoveryFragmentViewModel {
           );
         });
 
+      this.paramsFromActivity
+        .compose(combineLatestPair(paginator.loadingPage().distinctUntilChanged()))
+        .filter(paramsAndPage -> paramsAndPage.second == 1)
+        .compose(bindToLifecycle())
+        .subscribe(paramsAndLoggedIn -> this.lake.trackExplorePageViewed(paramsAndLoggedIn.first));
+
       this.startUpdateActivity
         .map(Activity::project)
         .filter(ObjectUtils::isNotNull)

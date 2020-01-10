@@ -68,7 +68,7 @@ class LakeTest : KSRobolectricTestCase() {
                 .sort(DiscoveryParams.Sort.HOME)
                 .build()
 
-        lake.trackDiscovery(params, false)
+        lake.trackExplorePageViewed(params)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -103,7 +103,7 @@ class LakeTest : KSRobolectricTestCase() {
                 .staffPicks(true)
                 .build()
 
-        lake.trackDiscovery(params, false)
+        lake.trackExplorePageViewed(params)
 
         assertSessionProperties(user)
         assertContextProperties()
@@ -138,7 +138,7 @@ class LakeTest : KSRobolectricTestCase() {
                 .sort(DiscoveryParams.Sort.NEWEST)
                 .build()
 
-        lake.trackDiscovery(params, false)
+        lake.trackExplorePageViewed(params)
 
         assertSessionProperties(user)
         assertContextProperties()

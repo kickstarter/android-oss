@@ -55,7 +55,7 @@ public final class ApplicationUtils {
     context.startActivity(intent);
   }
 
-  private static List<Intent> targetIntents(@NonNull Context context, Uri uri) {
+  private static List<Intent> targetIntents(final @NonNull Context context, final @NonNull Uri uri) {
     final Uri fakeUri = Uri.parse("http://www.kickstarter.com");
     final Intent browserIntent = new Intent(Intent.ACTION_VIEW, fakeUri);
 

@@ -8,20 +8,16 @@ import com.kickstarter.libs.KoalaEvent;
 
 import org.junit.Test;
 
-import java.util.List;
-
 import rx.observers.TestSubscriber;
 
 public class DeepLinkViewModelTest extends KSRobolectricTestCase {
   private DeepLinkViewModel.ViewModel vm;
-  private final TestSubscriber<Void> requestPackageManager = new TestSubscriber<>();
-  private final TestSubscriber<List<Intent>> startBrowser = new TestSubscriber<>();
+  private final TestSubscriber<String> startBrowser = new TestSubscriber<>();
   private final TestSubscriber<Void> startDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<Uri> startProjectActivity = new TestSubscriber<>();
 
   protected void setUpEnvironment() {
     this.vm = new DeepLinkViewModel.ViewModel(environment());
-    this.vm.outputs.requestPackageManager().subscribe(this.requestPackageManager);
     this.vm.outputs.startBrowser().subscribe(this.startBrowser);
     this.vm.outputs.startDiscoveryActivity().subscribe(this.startDiscoveryActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
@@ -33,10 +29,8 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
 
     final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap/comments";
     this.vm.intent(intentWithData(url));
-    this.vm.packageManager(application().getPackageManager());
 
-    this.requestPackageManager.assertValueCount(1);
-    this.startBrowser.assertValueCount(1);
+    this.startBrowser.assertValue(url);
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.koalaTest.assertNoValues();
@@ -48,10 +42,8 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
 
     final String url = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?token=beepboop";
     this.vm.intent(intentWithData(url));
-    this.vm.packageManager(application().getPackageManager());
 
-    this.requestPackageManager.assertValueCount(1);
-    this.startBrowser.assertValueCount(1);
+    this.startBrowser.assertValue(url);
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.koalaTest.assertNoValues();
@@ -66,7 +58,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
 
     this.startProjectActivity.assertValue(Uri.parse(url));
     this.startBrowser.assertNoValues();
-    this.requestPackageManager.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }
@@ -81,7 +72,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     final String expectedUrl = "https://www.kickstarter.com/projects/smithsonian/smithsonian-anthology-of-hip-hop-and-rap?ref=android_deep_link";
     this.startProjectActivity.assertValue(Uri.parse(expectedUrl));
     this.startBrowser.assertNoValues();
-    this.requestPackageManager.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }
@@ -95,7 +85,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
 
     this.startDiscoveryActivity.assertValueCount(1);
     this.startBrowser.assertNoValues();
-    this.requestPackageManager.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }

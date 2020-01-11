@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RefTag;
@@ -12,8 +11,6 @@ import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.DeepLinkViewModel;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,11 +22,6 @@ public final class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    
-    this.viewModel.outputs.requestPackageManager()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> inputPackageManager());
 
     this.viewModel.outputs.startBrowser()
       .compose(bindToLifecycle())
@@ -63,19 +55,8 @@ public final class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
     finish();
   }
 
-  private void startBrowser(final @NonNull List<Intent> targetIntents) {
-    if (!targetIntents.isEmpty()) {
-      /* We need to remove the first intent so it's not duplicated
-      when we add the EXTRA_INITIAL_INTENTS intents. */
-      final Intent chooserIntent = Intent.createChooser(targetIntents.remove(0), "");
-      chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS,
-        targetIntents.toArray(new Parcelable[targetIntents.size()]));
-      startActivity(chooserIntent);
-    }
+  private void startBrowser(final @NonNull String url) {
+    ApplicationUtils.openUrlExternally(this, url);
     finish();
-  }
-
-  private void inputPackageManager() {
-    this.viewModel.inputs.packageManager(getPackageManager());
   }
 }

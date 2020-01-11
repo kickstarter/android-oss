@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Pair;
 import android.webkit.WebView;
@@ -10,8 +11,8 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.RequestHandler;
@@ -62,6 +63,11 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
       )
     );
 
+    this.viewModel.outputs.openProjectExternally()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::openProjectExternally);
+
     this.viewModel.outputs.startCommentsActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -70,7 +76,7 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     this.viewModel.outputs.startProjectActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
+      .subscribe(uriAndRefTag -> this.startProjectActivity(uriAndRefTag.first, uriAndRefTag.second));
 
     this.viewModel.outputs.startShareIntent()
       .compose(bindToLifecycle())
@@ -109,6 +115,10 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     return true;
   }
 
+  private void openProjectExternally(final @NonNull String projectUrl) {
+    ApplicationUtils.openUrlExternally(this, projectUrl);
+  }
+
   private void setToolbarTitle(final @NonNull String updateSequence) {
     this.toolbar.setTitle(this.ksString.format(this.updateNumberString, "update_number", updateSequence));
   }
@@ -119,9 +129,9 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
+  private void startProjectActivity(final @NonNull Uri uri, final @NonNull RefTag refTag) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
+      .setData(uri)
       .putExtra(IntentKey.REF_TAG, refTag);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

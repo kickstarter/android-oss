@@ -283,7 +283,7 @@ interface ProjectViewModel {
         private val pledgeContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeToolbarNavigationIcon = BehaviorSubject.create<Int>()
         private val pledgeToolbarTitle = BehaviorSubject.create<Int>()
-        private val prelaunchUrl = PublishSubject.create<String>()
+        private val prelaunchUrl = BehaviorSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val projectAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<Project, Boolean>>()

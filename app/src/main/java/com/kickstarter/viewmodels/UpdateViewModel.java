@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.net.Uri;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -7,10 +8,12 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.UpdateActivity;
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
@@ -44,14 +47,17 @@ public interface UpdateViewModel {
   }
 
   interface Outputs {
+    /** Emits a project url to open externally. */
+    Observable<String> openProjectExternally();
+
     /** Emits when we should start the share intent to show the share sheet. */
     Observable<Pair<Update, String>> startShareIntent();
 
     /** Emits an update to start the comments activity with. */
     Observable<Update> startCommentsActivity();
 
-    /** Emits a project and a ref tag to start the project activity with. */
-    Observable<Pair<Project, RefTag>> startProjectActivity();
+    /** Emits a Uri and a ref tag to start the project activity with. */
+    Observable<Pair<Uri, RefTag>> startProjectActivity();
 
     /** Emits a string to display in the toolbar title. */
     Observable<String> updateSequence();
@@ -111,10 +117,23 @@ public interface UpdateViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.updateSequence::onNext);
 
-      project
-        .compose(takeWhen(this.goToProjectRequest))
+      this.goToProjectRequest
+        .map(request -> Uri.parse(request.url().uri().toString()))
+        .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> !KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .compose(bindToLifecycle())
-        .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.update())));
+        .subscribe(uri -> this.startProjectActivity.onNext(Pair.create(uri, RefTag.update())));
+
+      this.goToProjectRequest
+        .map(request -> Uri.parse(request.url().uri().toString()))
+        .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .map(Uri::toString)
+        .map(uriString -> UrlUtils.INSTANCE.refTag(uriString) == null
+          ? UrlUtils.INSTANCE.appendRefTag(uriString, RefTag.update().tag())
+          : uriString)
+        .compose(bindToLifecycle())
+        .subscribe(this.openProjectExternally::onNext);
 
       project
         .compose(takeWhen(this.externalLinkActivated))
@@ -141,9 +160,10 @@ public interface UpdateViewModel {
     private final PublishSubject<Request> goToUpdateRequest = PublishSubject.create();
     private final PublishSubject<Void> shareButtonClicked = PublishSubject.create();
 
+    private final PublishSubject<String> openProjectExternally = PublishSubject.create();
     private final PublishSubject<Pair<Update, String>> startShareIntent = PublishSubject.create();
     private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
-    private final PublishSubject<Pair<Project, RefTag>> startProjectActivity = PublishSubject.create();
+    private final PublishSubject<Pair<Uri, RefTag>> startProjectActivity = PublishSubject.create();
     private final BehaviorSubject<String> updateSequence = BehaviorSubject.create();
     private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
 
@@ -166,13 +186,16 @@ public interface UpdateViewModel {
       this.shareButtonClicked.onNext(null);
     }
 
+    @Override public @NonNull Observable<String> openProjectExternally() {
+      return this.openProjectExternally;
+    }
     @Override public Observable<Pair<Update, String>> startShareIntent() {
       return this.startShareIntent;
     }
     @Override public @NonNull Observable<Update> startCommentsActivity() {
       return this.startCommentsActivity;
     }
-    @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {
+    @Override public @NonNull Observable<Pair<Uri, RefTag>> startProjectActivity() {
       return this.startProjectActivity;
     }
     @Override public @NonNull Observable<String> updateSequence() {

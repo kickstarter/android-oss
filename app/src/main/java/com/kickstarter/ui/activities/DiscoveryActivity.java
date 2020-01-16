@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.R;
@@ -33,6 +34,8 @@ import com.kickstarter.ui.views.SortTabLayout;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.qualtrics.digital.Qualtrics;
 import com.qualtrics.digital.QualtricsSurveyActivity;
+
+import org.joda.time.Duration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,6 +207,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(this::showMenuIconWithIndicator);
 
+    this.viewModel.outputs.updateImpressionCount()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::updateImpressionCount);
+
     RxDrawerLayout.drawerOpen(this.discoveryLayout, GravityCompat.START)
       .skip(1)
       .compose(bindToLifecycle())
@@ -264,9 +272,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       this,
       initializationResult -> {
         if (initializationResult.passed()) {
+          Qualtrics.instance().properties.setString("distinct_id", FirebaseInstanceId.getInstance().getId());
           Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
           Qualtrics.instance().properties.setString("language", Locale.getDefault().getLanguage());
-          Qualtrics.instance().properties.setString("logged_in", Boolean.toString(ObjectUtils.isNotNull(user)));
+          final boolean userLoggedIn = ObjectUtils.isNotNull(user);
+          Qualtrics.instance().properties.setString("logged_in", Boolean.toString(userLoggedIn));
+          if (userLoggedIn) {
+            Qualtrics.instance().properties.setString("user_uid", Long.toString(user.id()));
+            Qualtrics.instance().properties.setNumber("hours_since_joined", Math.min(0L,
+              new Duration(null, user.joinDate()).getStandardSeconds() / 60.0 / 60.0));
+          }
 
           Qualtrics.instance().evaluateTargetingLogic(targetingResult -> DiscoveryActivity.this.viewModel.inputs.qualtricsResult(new QualtricsResult(targetingResult)));
         }
@@ -341,6 +356,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       })
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
+  }
+
+  private void updateImpressionCount(final @NonNull QualtricsIntercept qualtricsIntercept) {
+    final String key = qualtricsIntercept.impressionCountKey(BuildConfig.APPLICATION_ID);
+
+    final double initialCount = ObjectUtils.coalesce(Qualtrics.instance().properties.getNumber(key), 0.0);
+    Qualtrics.instance().properties.setNumber(key, initialCount + 1.0);
   }
 
 }

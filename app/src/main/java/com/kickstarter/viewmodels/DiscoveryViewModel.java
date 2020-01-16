@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -129,6 +130,9 @@ public interface DiscoveryViewModel {
 
     /** Start settings activity. */
     Observable<Void> showSettings();
+
+    /** Emits a {@link QualtricsIntercept} whose impression count property should be incremented. */
+    Observable<QualtricsIntercept> updateImpressionCount();
   }
 
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {
@@ -328,8 +332,16 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.qualtricsPromptIsGone);
 
-      this.qualtricsResult
+      final Observable<QualtricsResult> passedQualtricsResult = this.qualtricsResult
         .filter(QualtricsResult::resultPassed)
+        .distinctUntilChanged();
+
+      passedQualtricsResult
+        .map(__ -> QualtricsIntercept.NATIVE_APP_FEEDBACK)
+        .compose(bindToLifecycle())
+        .subscribe(this.updateImpressionCount);
+
+      passedQualtricsResult
         .map(result -> {
           result.recordImpression();
           return result;
@@ -390,6 +402,7 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showProfile;
     private final PublishSubject<String> showQualtricsSurvey = PublishSubject.create();
     private final Observable<Void> showSettings;
+    private final PublishSubject<QualtricsIntercept> updateImpressionCount = PublishSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
 
@@ -507,6 +520,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showSettings() {
       return this.showSettings;
+    }
+    @Override public @NonNull Observable<QualtricsIntercept> updateImpressionCount() {
+      return this.updateImpressionCount;
     }
     @Override public @NonNull Observable<DiscoveryParams> updateParamsForPage() {
       return this.updateParamsForPage;

@@ -7,6 +7,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.DateTime;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ public abstract class User implements Parcelable, Relay {
   public abstract long id();
   public abstract @Nullable Boolean inventNewsletter();
   public abstract @Nullable Boolean isAdmin();
+  public abstract @Nullable DateTime joinDate();
   public abstract @Nullable Location location();
   public abstract @Nullable Integer memberProjectsCount();
   public abstract @Nullable Boolean musicNewsletter();
@@ -72,6 +74,7 @@ public abstract class User implements Parcelable, Relay {
     public abstract Builder id(long __);
     public abstract Builder isAdmin(Boolean __);
     public abstract Builder inventNewsletter(Boolean __);
+    public abstract Builder joinDate(DateTime __);
     public abstract Builder location(Location __);
     public abstract Builder memberProjectsCount(Integer __);
     public abstract Builder musicNewsletter(Boolean __);

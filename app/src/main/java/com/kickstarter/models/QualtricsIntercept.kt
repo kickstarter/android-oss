@@ -9,4 +9,8 @@ enum class QualtricsIntercept(private val prodId: String, private val testId: St
             else -> testId
         }
     }
+
+    fun impressionCountKey(packageName: String): String {
+        return id(packageName) + "_impression_count"
+    }
 }

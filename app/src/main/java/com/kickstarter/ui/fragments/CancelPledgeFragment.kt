@@ -13,7 +13,7 @@ import com.kickstarter.extensions.snackbar
 import com.kickstarter.extensions.text
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
@@ -37,38 +37,38 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
 
         this.viewModel.outputs.pledgeAmountAndProjectName()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { setPromptText(it) }
 
         this.viewModel.outputs.showServerError()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { snackbar(cancel_pledge_root, getString(R.string.Something_went_wrong_please_try_again)).show() }
+                .compose(observeForUI())
+                .subscribe { cancel_pledge_root?.let { view -> snackbar(view, getString(R.string.Something_went_wrong_please_try_again)).show() } }
 
         this.viewModel.outputs.showCancelError()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { snackbar(cancel_pledge_root, it).show() }
+                .compose(observeForUI())
+                .subscribe { cancel_pledge_root?.let { view -> snackbar(view, it).show() } }
 
         this.viewModel.outputs.dismiss()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { dismiss() }
 
         this.viewModel.outputs.success()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { (context as CancelPledgeDelegate?)?.pledgeSuccessfullyCancelled() }
 
         this.viewModel.outputs.progressBarIsVisible()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(progress_bar, !it) }
+                .compose(observeForUI())
+                .subscribe { progress_bar?.let { view -> ViewUtils.setGone(view, !it) } }
 
         this.viewModel.outputs.cancelButtonIsVisible()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(yes_cancel_pledge_button, !it) }
+                .compose(observeForUI())
+                .subscribe { yes_cancel_pledge_button?.let { view -> ViewUtils.setGone(view, !it) } }
 
         yes_cancel_pledge_button.setOnClickListener {
             this.viewModel.inputs.confirmCancellationClicked(cancellation_note.text())
@@ -95,7 +95,7 @@ class CancelPledgeFragment : BaseFragment<CancelPledgeViewModel.ViewModel>() {
         ViewUtils.addBoldSpan(spannableString, amount)
         ViewUtils.addBoldSpan(spannableString, name)
 
-        cancel_prompt.text = spannableString
+        cancel_prompt?.text = spannableString
     }
 
     companion object {

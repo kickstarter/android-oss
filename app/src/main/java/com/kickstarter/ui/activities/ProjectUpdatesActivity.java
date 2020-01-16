@@ -77,6 +77,12 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       .subscribe(this.ksWebView::loadUrl);
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    this.ksWebView.setDelegate(null);
+  }
+
   private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     this.viewModel.inputs.goToCommentsRequest(request);
     return true;

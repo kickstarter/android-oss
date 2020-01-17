@@ -384,8 +384,8 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> qualtricsConfirmClicked = PublishSubject.create();
     private final PublishSubject<Void> qualtricsDismissClicked = PublishSubject.create();
     private final PublishSubject<QualtricsResult> qualtricsResult = PublishSubject.create();
-    private final PublishSubject<Integer> sortClicked = PublishSubject.create();
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
+    private final PublishSubject<Integer> sortClicked = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
     private final BehaviorSubject<User> currentUser = BehaviorSubject.create();

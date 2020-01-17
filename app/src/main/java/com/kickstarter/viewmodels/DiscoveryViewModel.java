@@ -8,6 +8,7 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
@@ -15,8 +16,10 @@ import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
@@ -46,7 +49,6 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface DiscoveryViewModel {
@@ -69,9 +71,6 @@ public interface DiscoveryViewModel {
   }
 
   interface Outputs {
-    /** Emits the current user. */
-    Observable<User> currentUser();
-
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
@@ -96,6 +95,9 @@ public interface DiscoveryViewModel {
 
     /** Emits a list of pages that should be cleared of all their content. */
     Observable<List<Integer>> clearPages();
+
+    /** Emits when we should set up {@link com.qualtrics.digital.Qualtrics} with first app session boolean. */
+    Observable<Boolean> setUpQualtrics();
 
     /** Emits when a newer build is available and an alert should be shown. */
     Observable<InternalBuildEnvelope> showBuildCheckAlert();
@@ -129,6 +131,9 @@ public interface DiscoveryViewModel {
 
     /** Start settings activity. */
     Observable<Void> showSettings();
+
+    /** Emits a {@link QualtricsIntercept} whose impression count property should be incremented. */
+    Observable<QualtricsIntercept> updateImpressionCount();
   }
 
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {
@@ -136,6 +141,7 @@ public interface DiscoveryViewModel {
     private final BuildCheck buildCheck;
     private final CurrentUserType currentUserType;
     private final CurrentConfigType currentConfigType;
+    private final BooleanPreferenceType firstSessionPreference;
     private final WebClientType webClient;
 
     public ViewModel(final @NonNull Environment environment) {
@@ -145,6 +151,7 @@ public interface DiscoveryViewModel {
       this.buildCheck = environment.buildCheck();
       this.currentConfigType = environment.currentConfig();
       this.currentUserType = environment.currentUser();
+      this.firstSessionPreference = environment.firstSessionPreference();
       this.webClient = environment.webClient();
 
       this.buildCheck.bind(this, this.webClient);
@@ -163,10 +170,6 @@ public interface DiscoveryViewModel {
 
       final Observable<User> changedUser = currentUser
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
-
-      changedUser
-        .compose(bindToLifecycle())
-        .subscribe(this.currentUser);
 
       changedUser
         .compose(bindToLifecycle())
@@ -321,6 +324,18 @@ public interface DiscoveryViewModel {
         .distinctUntilChanged()
         .compose(bindToLifecycle());
 
+      Observable.just(this.firstSessionPreference)
+        .map(pref -> {
+          if (pref.isSet()) {
+            pref.set(false);
+          } else {
+            pref.set(true);
+          }
+          return pref.get();
+        })
+        .compose(bindToLifecycle())
+        .subscribe(this.setUpQualtrics::onNext);
+
       this.qualtricsResult
         .map(QualtricsResult::resultPassed)
         .map(BooleanUtils::negate)
@@ -333,18 +348,39 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.qualtricsPromptIsGone);
 
-      this.qualtricsResult
+      final Observable<QualtricsResult> passedQualtricsResult = this.qualtricsResult
         .filter(QualtricsResult::resultPassed)
+        .distinctUntilChanged();
+
+      passedQualtricsResult
+        .map(__ -> QualtricsIntercept.NATIVE_APP_FEEDBACK)
+        .compose(bindToLifecycle())
+        .subscribe(this.updateImpressionCount);
+
+      passedQualtricsResult
         .map(result -> {
           result.recordImpression();
           return result;
         })
-        .compose(takePairWhen(this.qualtricsConfirmClicked))
-        .map(resultAndClick -> {
-          resultAndClick.first.recordClick();
-          return resultAndClick.first.surveyUrl();
+        .compose(combineLatestPair(currentUser))
+        .compose(takeWhen(this.qualtricsConfirmClicked))
+        .map(resultAndUser -> {
+          final QualtricsResult qualtricsResult = resultAndUser.first;
+          qualtricsResult.recordClick();
+          final User user = resultAndUser.second;
+          return Pair.create(qualtricsResult.surveyUrl(), user);
         })
-        .filter(StringUtils::isPresent)
+        .filter(surveyAndUser -> StringUtils.isPresent(surveyAndUser.first))
+        .map(surveyAndUser -> {
+          final String surveyUrl = surveyAndUser.first;
+          final User user = surveyAndUser.second;
+          final boolean userLoggedIn = user != null;
+          String url = UrlUtils.INSTANCE.appendQueryParameter(surveyUrl, "logged_in", Boolean.toString(userLoggedIn));
+          if (userLoggedIn) {
+            url = UrlUtils.INSTANCE.appendQueryParameter(url, "user_uid", Long.toString(user.id()));
+          }
+          return url;
+        })
         .compose(bindToLifecycle())
         .subscribe(this.showQualtricsSurvey);
     }
@@ -377,13 +413,13 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
-    private final BehaviorSubject<User> currentUser = BehaviorSubject.create();
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
     private final BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> qualtricsPromptIsGone = BehaviorSubject.create();
     private final BehaviorSubject<Pair<List<Category>, Integer>> rootCategoriesAndPosition = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> setUpQualtrics = BehaviorSubject.create();
     private final Observable<Void> showActivityFeed;
     private final Observable<InternalBuildEnvelope> showBuildCheckAlert;
     private final Observable<Void> showCreatorDashboard;
@@ -395,6 +431,7 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showProfile;
     private final PublishSubject<String> showQualtricsSurvey = PublishSubject.create();
     private final Observable<Void> showSettings;
+    private final PublishSubject<QualtricsIntercept> updateImpressionCount = PublishSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
 
@@ -459,9 +496,6 @@ public interface DiscoveryViewModel {
       this.topFilterRowClick.onNext(row);
     }
 
-    @Override public @NonNull Observable<User> currentUser() {
-      return this.currentUser;
-    }
     @Override public @NonNull Observable<List<Integer>> clearPages() {
       return this.clearPages;
     }
@@ -479,6 +513,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
       return this.rootCategoriesAndPosition;
+    }
+    @Override public @NonNull Observable<Boolean> setUpQualtrics() {
+      return this.setUpQualtrics;
     }
     @Override public @NonNull Observable<Void> showActivityFeed() {
       return this.showActivityFeed;
@@ -512,6 +549,9 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showSettings() {
       return this.showSettings;
+    }
+    @Override public @NonNull Observable<QualtricsIntercept> updateImpressionCount() {
+      return this.updateImpressionCount;
     }
     @Override public @NonNull Observable<DiscoveryParams> updateParamsForPage() {
       return this.updateParamsForPage;

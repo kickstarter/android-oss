@@ -47,6 +47,7 @@ import com.kickstarter.libs.qualifiers.ApiRetrofit;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
+import com.kickstarter.libs.qualifiers.FirstSessionPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
 import com.kickstarter.libs.qualifiers.GoRewardlessPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
@@ -117,6 +118,7 @@ public final class ApplicationModule {
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
+    final @NonNull @FirstSessionPreference BooleanPreferenceType firstSessionPreference,
     final @NonNull @GoRewardlessPreference BooleanPreferenceType goRewardlessPreference,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
@@ -144,6 +146,7 @@ public final class ApplicationModule {
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
       .currentUser(currentUser)
+      .firstSessionPreference(firstSessionPreference)
       .goRewardlessPreference(goRewardlessPreference)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
@@ -380,6 +383,14 @@ public final class ApplicationModule {
   @NonNull
   static BooleanPreferenceType provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, SharedPreferenceKey.HAS_SEEN_APP_RATING);
+  }
+
+  @Provides
+  @Singleton
+  @FirstSessionPreference
+  @NonNull
+  static BooleanPreferenceType provideFirstSessionPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.FIRST_SESSION);
   }
 
   @Provides

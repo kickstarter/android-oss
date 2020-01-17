@@ -21,7 +21,6 @@ import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
-import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
@@ -104,11 +103,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     this.sortTabLayout.setupWithViewPager(this.sortViewPager);
     addTabSelectedListenerToTabLayout();
 
-    this.viewModel.outputs.currentUser()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setUpQualtrics);
-
     this.viewModel.outputs.expandSortTabLayout()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -174,16 +168,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(__ -> this.startProfileActivity());
 
-    this.viewModel.outputs.qualtricsPromptIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setInvisible(this.qualtricsPrompt));
-
-    this.viewModel.outputs.showQualtricsSurvey()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::showQualtricsSurvey);
-
     this.viewModel.outputs.showSettings()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -203,6 +187,28 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::showMenuIconWithIndicator);
+
+    //region Qualtrics
+    this.viewModel.outputs.qualtricsPromptIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setInvisible(this.qualtricsPrompt));
+
+    this.viewModel.outputs.setUpQualtrics()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setUpQualtrics);
+
+    this.viewModel.outputs.showQualtricsSurvey()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::showQualtricsSurvey);
+
+    this.viewModel.outputs.updateImpressionCount()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::updateImpressionCount);
+    //endregion
 
     RxDrawerLayout.drawerOpen(this.discoveryLayout, GravityCompat.START)
       .skip(1)
@@ -257,16 +263,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     });
   }
 
-  private void setUpQualtrics(final @Nullable User user) {
+  private void setUpQualtrics(final boolean firstAppSession) {
     Qualtrics.instance().initialize(Secrets.Qualtrics.BRAND_ID,
       Secrets.Qualtrics.ZONE_ID,
       QualtricsIntercept.NATIVE_APP_FEEDBACK.id(BuildConfig.APPLICATION_ID),
       this,
       initializationResult -> {
         if (initializationResult.passed()) {
-          Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
-          Qualtrics.instance().properties.setString("language", Locale.getDefault().getLanguage());
-          Qualtrics.instance().properties.setString("logged_in", Boolean.toString(ObjectUtils.isNotNull(user)));
+          updateQualtricsProperties(firstAppSession);
 
           Qualtrics.instance().evaluateTargetingLogic(targetingResult -> DiscoveryActivity.this.viewModel.inputs.qualtricsResult(new QualtricsResult(targetingResult)));
         }
@@ -341,6 +345,19 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       })
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
+  }
+
+  private void updateImpressionCount(final @NonNull QualtricsIntercept qualtricsIntercept) {
+    final String key = qualtricsIntercept.impressionCountKey(BuildConfig.APPLICATION_ID);
+
+    final double initialCount = ObjectUtils.coalesce(Qualtrics.instance().properties.getNumber(key), 0.0);
+    Qualtrics.instance().properties.setNumber(key, initialCount + 1.0);
+  }
+
+  private void updateQualtricsProperties(final boolean firstAppSession) {
+    Qualtrics.instance().properties.setString("first_app_session", Boolean.toString(firstAppSession));
+    Qualtrics.instance().properties.setString("language", Locale.getDefault().getLanguage());
+    Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
   }
 
 }

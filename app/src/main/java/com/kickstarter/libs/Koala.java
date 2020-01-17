@@ -710,5 +710,9 @@ public final class Koala {
 
     this.client.track(LakeEvent.HAMBURGER_MENU_CLICKED, props);
   }
+
+  public void trackSearchButtonClicked() {
+    this.client.track(LakeEvent.SEARCH_BUTTON_CLICKED);
+  }
   //endregion
 }

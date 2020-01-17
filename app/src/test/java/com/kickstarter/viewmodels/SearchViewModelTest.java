@@ -108,6 +108,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.CLEARED_SEARCH_TERM);
+    this.lakeTest.assertValue("Search Button Clicked");
   }
 
   @Test
@@ -140,6 +141,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.LOADED_MORE_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY
     );
+    this.lakeTest.assertValue("Search Button Clicked");
   }
 
   @Test

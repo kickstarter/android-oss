@@ -250,7 +250,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     this.sortTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
       @Override
       public void onTabSelected(final TabLayout.Tab tab) {
-
+        DiscoveryActivity.this.viewModel.sortClicked(tab.getPosition());
       }
       @Override
       public void onTabUnselected(final TabLayout.Tab tab) {
@@ -259,6 +259,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       @Override
       public void onTabReselected(final TabLayout.Tab tab) {
         DiscoveryActivity.this.pagerAdapter.scrollToTop(tab.getPosition());
+        DiscoveryActivity.this.viewModel.sortClicked(tab.getPosition());
       }
     });
   }

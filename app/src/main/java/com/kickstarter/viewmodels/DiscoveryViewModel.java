@@ -68,6 +68,9 @@ public interface DiscoveryViewModel {
 
     /** Call when you receive a {@link com.qualtrics.digital.TargetingResult} from Qualtrics. */
     void qualtricsResult(final QualtricsResult qualtricsResult);
+
+    /** Call when the user selects a sort tab. */
+    void sortClicked(final int sortPosition);
   }
 
   interface Outputs {
@@ -204,13 +207,20 @@ public interface DiscoveryViewModel {
       final Observable<Integer> pagerSelectedPage = this.pagerSetPrimaryPage.distinctUntilChanged();
 
       // Combine params with the selected sort position.
-      Observable.combineLatest(
+      final Observable<DiscoveryParams> paramsWithLatestSort = Observable.combineLatest(
         params,
         pagerSelectedPage.map(DiscoveryUtils::sortFromPosition),
         (p, s) -> p.toBuilder().sort(s).build()
-      )
+      );
+
+      paramsWithLatestSort
         .compose(bindToLifecycle())
         .subscribe(this.updateParamsForPage);
+
+      paramsWithLatestSort
+        .compose(takeWhen(this.sortClicked))
+        .compose(bindToLifecycle())
+        .subscribe(this.lake::trackExploreSortClicked);
 
       final Observable<List<Category>> categories = this.apiClient.fetchCategories()
         .compose(neverError())
@@ -411,6 +421,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<Void> qualtricsDismissClicked = PublishSubject.create();
     private final PublishSubject<QualtricsResult> qualtricsResult = PublishSubject.create();
     private final PublishSubject<Void> settingsClick = PublishSubject.create();
+    private final PublishSubject<Integer> sortClicked = PublishSubject.create();
     private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
@@ -491,6 +502,9 @@ public interface DiscoveryViewModel {
     }
     @Override public void qualtricsResult(final @NonNull QualtricsResult qualtricsResult) {
       this.qualtricsResult.onNext(qualtricsResult);
+    }
+    @Override public void sortClicked(final @NonNull int position) {
+      this.sortClicked.onNext(position);
     }
     @Override public void topFilterViewHolderRowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
       this.topFilterRowClick.onNext(row);

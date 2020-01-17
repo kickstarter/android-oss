@@ -147,6 +147,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     // Select POPULAR sort.
+    this.vm.inputs.sortClicked(1);
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Sort tab should be expanded.
@@ -163,6 +164,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true);
     this.koalaTest.assertValues("Discover Modal Selected Filter");
+    this.lakeTest.assertValue("Explore Sort Clicked");
 
     // Select ART category from drawer.
     this.vm.inputs.childFilterViewHolderRowClick(null,

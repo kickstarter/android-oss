@@ -768,6 +768,12 @@ interface ProjectViewModel {
                                 data.refTagFromIntent,
                                 RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
                         )
+
+                        this.lake.trackProjectPageViewed(
+                                data.project,
+                                data.refTagFromIntent,
+                                RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
+                        )
                     }
 
             pushNotificationEnvelope

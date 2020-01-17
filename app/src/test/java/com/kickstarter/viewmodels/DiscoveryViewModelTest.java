@@ -548,18 +548,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
-    this.vm.qualtricsResult(new QualtricsResult() {
-      @Override
-      public boolean resultPassed() {
-        return true;
-      }
-
-      @NotNull
-      @Override
-      public String surveyUrl() {
-        return surveyUrl;
-      }
-    });
+    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
 
     this.vm.qualtricsConfirmClicked();
 
@@ -582,18 +571,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
-    this.vm.qualtricsResult(new QualtricsResult() {
-      @Override
-      public boolean resultPassed() {
-        return true;
-      }
-
-      @NotNull
-      @Override
-      public String surveyUrl() {
-        return surveyUrl;
-      }
-    });
+    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
 
     this.vm.qualtricsConfirmClicked();
 
@@ -607,18 +585,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
-    this.vm.qualtricsResult(new QualtricsResult() {
-      @Override
-      public boolean resultPassed() {
-        return true;
-      }
-
-      @NotNull
-      @Override
-      public String surveyUrl() {
-        return surveyUrl;
-      }
-    });
+    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
 
     this.vm.qualtricsDismissClicked();
 
@@ -632,18 +599,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.showQualtricsSurvey().subscribe(this.showQualtricsSurvey);
     final String surveyUrl = "http://www.survey.cool";
 
-    this.vm.qualtricsResult(new QualtricsResult() {
-      @Override
-      public boolean resultPassed() {
-        return true;
-      }
-
-      @NotNull
-      @Override
-      public String surveyUrl() {
-        return surveyUrl;
-      }
-    });
+    this.vm.qualtricsResult(qualtricsResult(surveyUrl, true));
 
     this.vm.qualtricsDismissClicked();
 

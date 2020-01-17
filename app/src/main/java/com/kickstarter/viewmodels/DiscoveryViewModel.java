@@ -279,6 +279,10 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackDiscoveryFilterSelected);
 
+      drawerParamsClicked
+        .compose(bindToLifecycle())
+        .subscribe(this.lake::trackExploreSortClicked);
+
       final List<Observable<Boolean>> drawerOpenObservables = Arrays.asList(
         this.openDrawer,
         this.childFilterRowClick.map(__ -> false),

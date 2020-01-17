@@ -147,7 +147,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.navigationDrawerDataEmitted.assertValueCount(2);
     this.drawerIsOpen.assertValues(true, false);
     this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter");
-    this.lakeTest.assertValues("Hamburger Menu Clicked");
+    this.lakeTest.assertValues("Hamburger Menu Clicked", "Explore Sort Clicked");
 
     // Open drawer and click a child filter.
     this.vm.inputs.openDrawer(true);
@@ -166,7 +166,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.drawerIsOpen.assertValues(true, false, true, false);
     this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter", "Discover Switch Modal",
       "Discover Modal Selected Filter");
-    this.lakeTest.assertValues("Hamburger Menu Clicked", "Hamburger Menu Clicked");
+    this.lakeTest.assertValues("Hamburger Menu Clicked", "Explore Sort Clicked", "Hamburger Menu Clicked", "Explore Sort Clicked");
   }
 
   @Test

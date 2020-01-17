@@ -298,12 +298,17 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.drawerIsOpen);
 
-      this.openDrawer
-        .filter(BooleanUtils::isTrue)
+      final Observable<Boolean> drawerOpened = this.openDrawer
+        .filter(BooleanUtils::isTrue);
+
+      drawerOpened
         .compose(bindToLifecycle())
-        .subscribe(__ -> {
-          this.koala.trackDiscoveryFilters();
-        });
+        .subscribe(__ -> this.koala.trackDiscoveryFilters());
+
+      params
+        .compose(takeWhen(drawerOpened))
+        .compose(bindToLifecycle())
+        .subscribe(this.lake::trackHamburgerMenuClicked);
 
       intent()
         .filter(IntentMapper::appBannerIsSet)

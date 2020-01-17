@@ -698,5 +698,11 @@ public final class Koala {
 
     this.client.track(LakeEvent.EXPLORE_PAGE_VIEWED, props);
   }
+
+  public void trackHamburgerMenuClicked(final @NonNull DiscoveryParams discoveryParams) {
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
+
+    this.client.track(LakeEvent.HAMBURGER_MENU_CLICKED, props);
+  }
   //endregion
 }

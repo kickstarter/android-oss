@@ -705,6 +705,12 @@ public final class Koala {
     this.client.track(LakeEvent.EXPLORE_SORT_CLICKED, props);
   }
 
+  public void trackFilterClicked(final @NonNull DiscoveryParams discoveryParams) {
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
+
+    this.client.track(LakeEvent.FILTER_CLICKED, props);
+  }
+
   public void trackHamburgerMenuClicked(final @NonNull DiscoveryParams discoveryParams) {
     final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
 

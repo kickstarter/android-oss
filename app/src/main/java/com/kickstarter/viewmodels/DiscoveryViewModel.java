@@ -208,13 +208,13 @@ public interface DiscoveryViewModel {
       final Observable<Integer> pagerSelectedPage = this.pagerSetPrimaryPage.distinctUntilChanged();
 
       // Combine params with the selected sort position.
-      final Observable<DiscoveryParams> paramsWithLatestSort = Observable.combineLatest(
+      final Observable<DiscoveryParams> paramsWithSort = Observable.combineLatest(
         params,
         pagerSelectedPage.map(DiscoveryUtils::sortFromPosition),
         (p, s) -> p.toBuilder().sort(s).build()
       );
 
-      paramsWithLatestSort
+      paramsWithSort
         .compose(bindToLifecycle())
         .subscribe(this.updateParamsForPage);
 
@@ -224,7 +224,7 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackExploreSortClicked);
 
-      paramsWithLatestSort
+      paramsWithSort
         .compose(takeWhen(drawerParamsClicked))
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackFilterClicked);
@@ -325,7 +325,7 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackDiscoveryFilters());
 
-      paramsWithLatestSort
+      paramsWithSort
         .compose(takeWhen(drawerOpened))
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackHamburgerMenuClicked);

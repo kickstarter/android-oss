@@ -160,11 +160,18 @@ public interface ActivityFeedViewModel {
         .subscribe(this.loggedInEmptyStateIsVisible);
 
       // Track viewing and paginating activity.
-      this.nextPage
+      final Observable<Integer> feedViewed = this.nextPage
         .compose(incrementalCount())
-        .startWith(0)
+        .startWith(0);
+
+      feedViewed
         .compose(this.bindToLifecycle())
         .subscribe(this.koala::trackActivityView);
+
+      feedViewed
+        .take(1)
+        .compose(this.bindToLifecycle())
+        .subscribe(__ -> this.lake.trackActivityFeedViewed());
 
       // Track tapping on any of the activity items.
       Observable.merge(

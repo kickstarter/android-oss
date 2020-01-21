@@ -693,6 +693,10 @@ public final class Koala {
   }
 
   //region Discover a Project
+  public void trackActivityFeedViewed() {
+    this.client.track(LakeEvent.ACTVITIY_FEED_VIEWED);
+  }
+
   public void trackExplorePageViewed(final @NonNull DiscoveryParams discoveryParams) {
     final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
 

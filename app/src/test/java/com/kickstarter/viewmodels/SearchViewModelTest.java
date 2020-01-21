@@ -63,16 +63,19 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.popularProjectsPresent.assertValues(true);
     this.searchProjectsPresent.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     // Searching shouldn't emit values immediately
     this.vm.inputs.search("hello");
     this.searchProjectsPresent.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     // Waiting a small amount time shouldn't emit values
     scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     // Waiting the rest of the time makes the search happen
     scheduler.advanceTimeBy(100, TimeUnit.MILLISECONDS);
@@ -81,6 +84,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
     );
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded");
 
     // Typing more search terms doesn't emit more values
     this.vm.inputs.search("hello world!");
@@ -89,6 +93,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
     );
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded");
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
@@ -98,6 +103,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
     );
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded", "Search Results Loaded");
 
     // Clearing search terms brings back popular projects.
     this.vm.inputs.search("");
@@ -108,7 +114,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.CLEARED_SEARCH_TERM);
-    this.lakeTest.assertValue("Search Button Clicked");
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded", "Search Results Loaded");
   }
 
   @Test
@@ -122,6 +128,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.searchProjectsPresent.assertNoValues();
     this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     this.vm.inputs.search("cats");
 
@@ -132,6 +139,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
     );
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded");
 
     this.vm.inputs.nextPage();
 
@@ -141,7 +149,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
       KoalaEvent.LOADED_MORE_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LOAD_MORE_LEGACY
     );
-    this.lakeTest.assertValue("Search Button Clicked");
+    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded");
   }
 
   @Test

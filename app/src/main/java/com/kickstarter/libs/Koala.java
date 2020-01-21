@@ -714,5 +714,17 @@ public final class Koala {
   public void trackSearchButtonClicked() {
     this.client.track(LakeEvent.SEARCH_BUTTON_CLICKED);
   }
+
+  public void trackSearchPageViewed(final @NonNull DiscoveryParams discoveryParams) {
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
+
+    this.client.track(LakeEvent.SEARCH_PAGE_VIEWED, props);
+  }
+
+  public void trackSearchResultsLoaded(final @NonNull DiscoveryParams discoveryParams) {
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
+
+    this.client.track(LakeEvent.SEARCH_RESULTS_LOADED, props);
+  }
   //endregion
 }

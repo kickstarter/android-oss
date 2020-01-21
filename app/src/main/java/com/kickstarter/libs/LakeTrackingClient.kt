@@ -50,7 +50,7 @@ class LakeTrackingClient(
         data.put("properties", propertiesJSON)
 
         val record = JSONObject()
-        record.put("partition-key", this.loggedInUser?.id() ?: deviceDistinctId())
+        record.put("partition-key", this.loggedInUser?.id()?.toString() ?: deviceDistinctId())
         record.put("data", data)
         return record.toString()
     }

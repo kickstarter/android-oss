@@ -711,6 +711,20 @@ public final class Koala {
     this.client.track(LakeEvent.HAMBURGER_MENU_CLICKED, props);
   }
 
+  public void trackProjectPageViewed(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    this.client.track(LakeEvent.PROJECT_PAGE_VIEWED, props);
+  }
+
   public void trackSearchButtonClicked() {
     this.client.track(LakeEvent.SEARCH_BUTTON_CLICKED);
   }

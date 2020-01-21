@@ -80,6 +80,12 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel.ViewM
       .subscribe(this.webView::loadUrl);
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    this.webView.setDelegate(null);
+  }
+
   private void popActivity() {
     super.back();
   }

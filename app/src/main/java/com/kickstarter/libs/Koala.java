@@ -724,5 +724,9 @@ public final class Koala {
 
     this.client.track(LakeEvent.PROJECT_PAGE_VIEWED, props);
   }
+
+  public void trackSearchButtonClicked() {
+    this.client.track(LakeEvent.SEARCH_BUTTON_CLICKED);
+  }
   //endregion
 }

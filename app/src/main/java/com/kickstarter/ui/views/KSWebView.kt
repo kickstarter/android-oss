@@ -88,6 +88,11 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
         internal_web_view.loadUrl("about:blank")
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        this.client.setDelegate(null)
+    }
+
     fun canGoBack(): Boolean {
         return internal_web_view.canGoBack()
     }

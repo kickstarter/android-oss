@@ -693,6 +693,10 @@ public final class Koala {
   }
 
   //region Discover a Project
+  public void trackActivityFeedViewed() {
+    this.client.track(LakeEvent.ACTVITIY_FEED_VIEWED);
+  }
+
   public void trackExplorePageViewed(final @NonNull DiscoveryParams discoveryParams) {
     final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
 
@@ -705,10 +709,30 @@ public final class Koala {
     this.client.track(LakeEvent.EXPLORE_SORT_CLICKED, props);
   }
 
+  public void trackFilterClicked(final @NonNull DiscoveryParams discoveryParams) {
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
+
+    this.client.track(LakeEvent.FILTER_CLICKED, props);
+  }
+
   public void trackHamburgerMenuClicked(final @NonNull DiscoveryParams discoveryParams) {
     final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
 
     this.client.track(LakeEvent.HAMBURGER_MENU_CLICKED, props);
+  }
+
+  public void trackProjectPageViewed(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    this.client.track(LakeEvent.PROJECT_PAGE_VIEWED, props);
   }
 
   public void trackSearchButtonClicked() {

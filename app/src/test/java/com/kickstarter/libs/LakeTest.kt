@@ -168,13 +168,13 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
 
         assertSessionProperties(null)
         assertContextProperties()
         assertProjectProperties(project)
 
-        this.lakeTest.assertValues("Project Page")
+        this.lakeTest.assertValues("Project Page Viewed")
     }
 
     @Test
@@ -186,7 +186,7 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -197,7 +197,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Project Page")
+        this.lakeTest.assertValues("Project Page Viewed")
     }
 
     @Test
@@ -217,7 +217,7 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -228,7 +228,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Project Page")
+        this.lakeTest.assertValues("Project Page Viewed")
     }
 
     @Test
@@ -240,7 +240,7 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
 
         assertSessionProperties(creator)
         assertProjectProperties(project)
@@ -251,7 +251,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(true, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Project Page")
+        this.lakeTest.assertValues("Project Page Viewed")
     }
 
     @Test
@@ -263,7 +263,7 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -274,7 +274,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Project Page")
+        this.lakeTest.assertValues("Project Page Viewed")
     }
 
     private fun assertContextProperties() {

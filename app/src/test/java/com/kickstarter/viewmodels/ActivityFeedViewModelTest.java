@@ -66,6 +66,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.nextPage();
     this.activityList.assertValueCount(1);
     this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_LOAD_MORE);
+    this.lakeTest.assertValue("Activity Feed Viewed");
   }
 
   @Test
@@ -103,6 +104,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
       KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.VIEWED_UPDATE
     );
+    this.lakeTest.assertValue("Activity Feed Viewed");
   }
 
   @Test

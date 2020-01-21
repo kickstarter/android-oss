@@ -15,6 +15,7 @@
     android:layout_margin="@dimen/grid_2"
     android:visibility="invisible"
     app:cardCornerRadius="@dimen/grid_1"
+    app:cardBackgroundColor="@color/ksr_grey_300"
     tools:showIn="@layout/discovery_layout"
     tools:visibility="visible">
 

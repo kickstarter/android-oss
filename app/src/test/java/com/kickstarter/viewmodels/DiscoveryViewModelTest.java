@@ -87,10 +87,14 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
+    // Initial HOME page selected.
+    this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
+
     // Drawer data should emit. Drawer should be closed.
     this.navigationDrawerDataEmitted.assertValueCount(1);
     this.drawerIsOpen.assertNoValues();
     this.koalaTest.assertNoValues();
+    this.lakeTest.assertNoValues();
 
     // Open drawer and click the top PWL filter.
     this.vm.inputs.openDrawer(true);
@@ -104,7 +108,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.navigationDrawerDataEmitted.assertValueCount(2);
     this.drawerIsOpen.assertValues(true, false);
     this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter");
-    this.lakeTest.assertValues("Hamburger Menu Clicked");
+    this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked");
 
     // Open drawer and click a child filter.
     this.vm.inputs.openDrawer(true);
@@ -123,7 +127,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.drawerIsOpen.assertValues(true, false, true, false);
     this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter", "Discover Switch Modal",
       "Discover Modal Selected Filter");
-    this.lakeTest.assertValues("Hamburger Menu Clicked", "Hamburger Menu Clicked");
+    this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked", "Hamburger Menu Clicked", "Filter Clicked");
   }
 
   @Test
@@ -150,6 +154,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.sortClicked(1);
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
+    this.lakeTest.assertValue("Explore Sort Clicked");
+
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true);
 
@@ -164,7 +170,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true);
     this.koalaTest.assertValues("Discover Modal Selected Filter");
-    this.lakeTest.assertValue("Explore Sort Clicked");
+    this.lakeTest.assertValues("Explore Sort Clicked", "Filter Clicked");
 
     // Select ART category from drawer.
     this.vm.inputs.childFilterViewHolderRowClick(null,
@@ -176,6 +182,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true, true);
     this.koalaTest.assertValues("Discover Modal Selected Filter", "Discover Modal Selected Filter");
+    this.lakeTest.assertValues("Explore Sort Clicked", "Filter Clicked", "Filter Clicked");
 
     // Simulate rotating the device and hitting initial inputs again.
     this.vm.outputs.updateToolbarWithParams().subscribe(this.rotatedUpdateToolbarWithParams);

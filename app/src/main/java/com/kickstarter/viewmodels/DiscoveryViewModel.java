@@ -49,6 +49,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface DiscoveryViewModel {
@@ -207,20 +208,26 @@ public interface DiscoveryViewModel {
       final Observable<Integer> pagerSelectedPage = this.pagerSetPrimaryPage.distinctUntilChanged();
 
       // Combine params with the selected sort position.
-      final Observable<DiscoveryParams> paramsWithLatestSort = Observable.combineLatest(
+      final Observable<DiscoveryParams> paramsWithSort = Observable.combineLatest(
         params,
         pagerSelectedPage.map(DiscoveryUtils::sortFromPosition),
         (p, s) -> p.toBuilder().sort(s).build()
       );
 
-      paramsWithLatestSort
+      paramsWithSort
         .compose(bindToLifecycle())
         .subscribe(this.updateParamsForPage);
 
-      paramsWithLatestSort
-        .compose(takeWhen(this.sortClicked))
+      params
+        .compose(takePairWhen(this.sortClicked.map(DiscoveryUtils::sortFromPosition)))
+        .map(paramsAndSort -> paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackExploreSortClicked);
+
+      paramsWithSort
+        .compose(takeWhen(drawerParamsClicked))
+        .compose(bindToLifecycle())
+        .subscribe(this.lake::trackFilterClicked);
 
       final Observable<List<Category>> categories = this.apiClient.fetchCategories()
         .compose(neverError())
@@ -318,7 +325,7 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackDiscoveryFilters());
 
-      params
+      paramsWithSort
         .compose(takeWhen(drawerOpened))
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackHamburgerMenuClicked);

@@ -130,6 +130,7 @@ public interface SearchViewModel {
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
 
       this.koala.trackSearchView();
+      this.lake.trackSearchButtonClicked();
     }
 
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;

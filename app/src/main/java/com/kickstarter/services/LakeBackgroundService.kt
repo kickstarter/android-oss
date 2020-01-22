@@ -19,6 +19,8 @@ class LakeBackgroundService : JobService() {
     lateinit var lakeService: LakeService
     @Inject
     lateinit var build: Build
+    @Inject
+    lateinit var clientId: String
 
     override fun onCreate() {
         super.onCreate()
@@ -28,7 +30,8 @@ class LakeBackgroundService : JobService() {
     override fun onStartJob(job: JobParameters?): Boolean {
         val extras = job?.extras
         val eventName = extras?.get(IntentKey.LAKE_EVENT_NAME) as String
-        lakeService.track(RequestBody.create(MediaType.parse("application/json"), extras.get(IntentKey.LAKE_EVENT) as String))
+        val body = RequestBody.create(MediaType.parse("application/json"), extras.get(IntentKey.LAKE_EVENT) as String)
+        lakeService.track(body, this.clientId)
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     logResponse(it, eventName)

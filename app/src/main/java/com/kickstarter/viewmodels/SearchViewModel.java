@@ -6,6 +6,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
@@ -129,8 +130,16 @@ public interface SearchViewModel {
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
 
+      params
+        .compose(takePairWhen(pageCount))
+        .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
+        .map(paramsAndPageCount -> paramsAndPageCount.first)
+        .compose(bindToLifecycle())
+        .subscribe(this.lake::trackSearchResultsLoaded);
+
       this.koala.trackSearchView();
       this.lake.trackSearchButtonClicked();
+      this.lake.trackSearchPageViewed(defaultParams);
     }
 
     private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;

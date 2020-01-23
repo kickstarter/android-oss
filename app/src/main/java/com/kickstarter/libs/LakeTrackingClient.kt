@@ -9,7 +9,6 @@ import com.kickstarter.services.LakeBackgroundService
 import com.kickstarter.ui.IntentKey
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 class LakeTrackingClient(
         @param:ApplicationContext private val context: Context,
@@ -51,7 +50,7 @@ class LakeTrackingClient(
         data.put("properties", propertiesJSON)
 
         val record = JSONObject()
-        record.put("partition-key", UUID.randomUUID().toString())
+        record.put("partition-key", this.loggedInUser?.id()?.toString() ?: deviceDistinctId())
         record.put("data", data)
         return record.toString()
     }

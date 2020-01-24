@@ -97,12 +97,7 @@ public final class KoalaUtils {
   public static @NonNull Map<String, Object> userProperties(final @NonNull User user, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
-        put("backed_projects_count", user.backedProjectsCount());
-        put("facebook_account", BooleanUtils.isTrue(user.facebookConnected()));
-        put("is_admin", BooleanUtils.isTrue(user.isAdmin()));
-        put("launched_projects_count", user.createdProjectsCount());
         put("uid", user.id());
-        put("watched_projects_count", user.starredProjectsCount());
       }
     };
 

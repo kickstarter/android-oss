@@ -53,7 +53,7 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), Editorial.GO_REWARDLESS)
 
         val expectedParams = DiscoveryParams.builder()
-                .sort(DiscoveryParams.Sort.HOME)
+                .sort(DiscoveryParams.Sort.MAGIC)
                 .tagId(Editorial.GO_REWARDLESS.tagId)
                 .build()
         this.discoveryParams.assertValue(expectedParams)

@@ -65,7 +65,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         val params = DiscoveryParams
                 .builder()
-                .sort(DiscoveryParams.Sort.HOME)
+                .sort(DiscoveryParams.Sort.MAGIC)
                 .build()
 
         lake.trackExplorePageViewed(params)

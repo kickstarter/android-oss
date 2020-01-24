@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_2"
-        android:text="@string/Answer_a_few_quick_questions_to_help_us_build_a_better_Kickstarter"
+        android:text="@string/Take_our_survey_to_help_us_make_a_better_app_for_you"
         app:layout_constraintBottom_toTopOf="@id/qualtrics_button_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"

@@ -332,7 +332,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals("Android", expectedProperties["session_os"])
         assertEquals("Android 9", expectedProperties["session_os_version"])
         assertEquals("agent", expectedProperties["session_user_agent"])
-        assertEquals(user != null, expectedProperties["session_user_logged_in"])
+        assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
     }
 

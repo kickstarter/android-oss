@@ -82,7 +82,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals("discovery", expectedProperties["discover_ref_tag"])
         assertEquals(null, expectedProperties["discover_search_term"])
         assertEquals(false, expectedProperties["discover_social"])
-        assertEquals("home", expectedProperties["discover_sort"])
+        assertEquals("magic", expectedProperties["discover_sort"])
         assertNull(expectedProperties["discover_subcategory_id"])
         assertNull(expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])

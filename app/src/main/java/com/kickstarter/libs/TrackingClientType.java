@@ -63,7 +63,7 @@ public abstract class TrackingClientType {
         put("os", "Android");
         put("os_version", String.format("Android %s", OSVersion()));
         put("user_agent", userAgent());
-        put("user_logged_in", userIsLoggedIn);
+        put("user_is_logged_in", userIsLoggedIn);
         put("wifi_connection", wifiConnection());
       }
     };

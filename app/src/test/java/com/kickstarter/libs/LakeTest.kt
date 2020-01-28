@@ -47,12 +47,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertEquals(15L, expectedProperties["user_uid"])
-        assertEquals(3, expectedProperties["user_backed_projects_count"])
         assertEquals("NG", expectedProperties["user_country"])
-        assertEquals(false, expectedProperties["user_facebook_account"])
-        assertEquals(false, expectedProperties["user_is_admin"])
-        assertEquals(2, expectedProperties["user_launched_projects_count"])
-        assertEquals(10, expectedProperties["user_watched_projects_count"])
     }
 
     @Test

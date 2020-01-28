@@ -315,7 +315,7 @@ public interface DiscoveryFragmentViewModel {
 
     private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
       final DiscoveryParams.Sort sort = params.sort();
-      final boolean isSortHome = DiscoveryParams.Sort.HOME.equals(sort);
+      final boolean isSortHome = DiscoveryParams.Sort.MAGIC.equals(sort);
       return isTrue(params.isAllProjects()) && isSortHome && !isLoggedIn;
     }
 

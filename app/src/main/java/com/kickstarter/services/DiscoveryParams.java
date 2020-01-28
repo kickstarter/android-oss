@@ -47,12 +47,12 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract @Nullable String term();
 
   public enum Sort {
-    HOME, POPULAR, NEWEST, ENDING_SOON;
+    MAGIC, POPULAR, NEWEST, ENDING_SOON;
     @Override
     public @NonNull String toString() {
       switch (this) {
-        case HOME:
-          return "home";
+        case MAGIC:
+          return "magic";
         case POPULAR:
           return "popularity";
         case NEWEST:
@@ -65,8 +65,8 @@ public abstract class DiscoveryParams implements Parcelable {
 
     public static @Nullable Sort fromString(final @NonNull String string) {
       switch (string) {
-        case "home":
-          return HOME;
+        case "magic":
+          return MAGIC;
         case "popularity":
           return POPULAR;
         case "newest":
@@ -74,12 +74,12 @@ public abstract class DiscoveryParams implements Parcelable {
         case "end_date":
           return ENDING_SOON;
       }
-      return HOME;
+      return MAGIC;
     }
 
     public @NonNull String refTagSuffix() {
       switch (this) {
-        case HOME:
+        case MAGIC:
           return "";
         case POPULAR:
           return "_popular";
@@ -417,7 +417,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * featured project for the category comes back.
    */
   public boolean shouldIncludeFeatured() {
-    return category() != null && category().parent() == null && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
+    return category() != null && category().parent() == null && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
   }
 
   @Override
@@ -468,7 +468,7 @@ public abstract class DiscoveryParams implements Parcelable {
       builder.recommended(true).backed(-1);
     }
     return builder
-      .sort(Sort.HOME)
+      .sort(Sort.MAGIC)
       .build();
   }
 

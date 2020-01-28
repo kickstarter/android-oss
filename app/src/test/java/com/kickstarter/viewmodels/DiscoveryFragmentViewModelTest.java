@@ -71,7 +71,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   private void setUpInitialHomeAllProjectsParams() {
-    this.vm.inputs.paramsFromActivity(DiscoveryParams.getDefaultParams(null).toBuilder().sort(DiscoveryParams.Sort.HOME).build());
+    this.vm.inputs.paramsFromActivity(DiscoveryParams.getDefaultParams(null).toBuilder().sort(DiscoveryParams.Sort.MAGIC).build());
     this.vm.inputs.rootCategories(CategoryFactory.rootCategories());
   }
 
@@ -110,7 +110,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.paramsFromActivity(
       DiscoveryParams.builder()
         .category(CategoryFactory.artCategory())
-        .sort(DiscoveryParams.Sort.HOME)
+        .sort(DiscoveryParams.Sort.MAGIC)
         .build()
     );
 
@@ -184,7 +184,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.paramsFromActivity(
       DiscoveryParams.builder()
         .category(CategoryFactory.artCategory())
-        .sort(DiscoveryParams.Sort.HOME)
+        .sort(DiscoveryParams.Sort.MAGIC)
         .build()
     );
 
@@ -213,7 +213,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.paramsFromActivity(
       DiscoveryParams.builder()
         .category(CategoryFactory.artCategory())
-        .sort(DiscoveryParams.Sort.HOME)
+        .sort(DiscoveryParams.Sort.MAGIC)
         .build()
     );
 
@@ -362,7 +362,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     // Load editorial params and root categories from activity.
     final DiscoveryParams editorialParams = DiscoveryParams.builder()
       .tagId(Editorial.GO_REWARDLESS.getTagId())
-      .sort(DiscoveryParams.Sort.HOME)
+      .sort(DiscoveryParams.Sort.MAGIC)
       .build();
     this.vm.inputs.paramsFromActivity(editorialParams);
     this.vm.inputs.rootCategories(CategoryFactory.rootCategories());

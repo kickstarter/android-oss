@@ -83,7 +83,7 @@ interface EditorialViewModel {
 
             editorial
                     .map { it.tagId }
-                    .map { DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).tagId(it).build() }
+                    .map { DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).tagId(it).build() }
                     .compose(bindToLifecycle())
                     .subscribe(this.discoveryParams)
 

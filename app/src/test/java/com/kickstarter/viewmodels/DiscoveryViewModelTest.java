@@ -87,7 +87,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
-    // Initial HOME page selected.
+    // Initial MAGIC page selected.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Drawer data should emit. Drawer should be closed.
@@ -141,14 +141,14 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
-    // Initial HOME page selected.
+    // Initial MAGIC page selected.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true);
 
     // Toolbar params should be loaded with initial params.
-    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build());
 
     // Select POPULAR sort.
     this.vm.inputs.sortClicked(1);
@@ -160,7 +160,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.expandSortTabLayout.assertValues(true, true);
 
     // Unchanged toolbar params should not emit.
-    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    this.updateToolbarWithParams.assertValues(DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build());
 
     // Select ALL PROJECTS filter from drawer.
     this.vm.inputs.topFilterViewHolderRowClick(null,
@@ -251,12 +251,12 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
-    // Initial HOME page selected.
+    // Initial MAGIC page selected.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Initial params should emit. Page should not be updated yet.
     this.updateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
     );
     this.updatePage.assertValues(0);
 
@@ -265,7 +265,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Params and page should update with new POPULAR sort values.
     this.updateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build(),
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build()
     );
     this.updatePage.assertValues(0, 1);
@@ -279,22 +279,22 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Params should update with new category; page should remain the same.
     this.updateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build(),
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build()
     );
     this.updatePage.assertValues(0, 1, 1);
     this.koalaTest.assertValues("Discover Modal Selected Filter");
 
-    // Select HOME sort position.
+    // Select MAGIC sort position.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
-    // Params and page should update with new HOME sort value.
+    // Params and page should update with new MAGIC sort value.
     this.updateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build(),
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build(),
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).category(CategoryFactory.artCategory()).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).category(CategoryFactory.artCategory()).build()
     );
     this.updatePage.assertValues(0, 1, 1, 0);
 
@@ -304,7 +304,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Should emit again with same params.
     this.rotatedUpdateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).category(CategoryFactory.artCategory()).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).category(CategoryFactory.artCategory()).build()
     );
     this.rotatedUpdatePage.assertValues(0);
   }
@@ -314,7 +314,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     setUpDefaultParamsTest(null);
 
     this.updateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
     );
   }
 
@@ -323,7 +323,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     setUpDefaultParamsTest(UserFactory.user());
 
     this.updateParams.assertValues(
-      DiscoveryParams.builder().recommended(true).backed(-1).sort(DiscoveryParams.Sort.HOME).build()
+      DiscoveryParams.builder().recommended(true).backed(-1).sort(DiscoveryParams.Sort.MAGIC).build()
     );
   }
 
@@ -332,7 +332,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     setUpDefaultParamsTest(UserFactory.noRecommendations());
 
     this.updateParams.assertValues(
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).build()
     );
   }
 
@@ -459,10 +459,10 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Start initial activity.
     this.vm.intent(new Intent(Intent.ACTION_MAIN));
 
-    // Initial HOME page selected.
+    // Initial MAGIC page selected.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
-    // Root categories should emit for the initial HOME sort this.position.
+    // Root categories should emit for the initial MAGIC sort this.position.
     this.rootCategories.assertValueCount(1);
     this.position.assertValues(0);
 
@@ -663,7 +663,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     this.vm.intent(intent);
 
-    // Initial HOME page selected.
+    // Initial MAGIC page selected.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
   }
 }

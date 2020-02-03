@@ -7,8 +7,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.apollographql.apollo.ApolloClient;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +26,7 @@ import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
@@ -32,6 +35,7 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
@@ -77,6 +81,7 @@ import com.kickstarter.services.interceptors.GraphQLInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
+import com.optimizely.ab.android.sdk.OptimizelyManager;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
@@ -130,6 +135,7 @@ public final class ApplicationModule {
     final @NonNull @LakeTracker Koala lake,
     final @NonNull Logout logout,
     final @NonNull @NativeCheckoutPreference BooleanPreferenceType nativeCheckoutPreference,
+    final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
@@ -158,6 +164,7 @@ public final class ApplicationModule {
       .lake(lake)
       .logout(logout)
       .nativeCheckoutPreference(nativeCheckoutPreference)
+      .optimizely(optimizely)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
@@ -626,5 +633,34 @@ public final class ApplicationModule {
       ? Secrets.StripePublishableKey.PRODUCTION
       : Secrets.StripePublishableKey.STAGING;
     return new Stripe(context, stripePublishableKey);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  ExperimentsClientType provideOptimizely(final @ApplicationContext @NonNull Context context, final @NonNull ApiEndpoint apiEndpoint, final @NonNull Build build) {
+    final String optimizelyKey;
+    if (apiEndpoint == ApiEndpoint.PRODUCTION) {
+      optimizelyKey = Secrets.Optimizely.PRODUCTION;
+    } else if (apiEndpoint == ApiEndpoint.STAGING) {
+      optimizelyKey = Secrets.Optimizely.STAGING;
+    } else {
+      optimizelyKey = Secrets.Optimizely.DEVELOPMENT;
+    }
+
+    final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
+      .withSDKKey(optimizelyKey)
+      .build(context);
+
+    optimizelyManager.initialize(context, null, optimizely -> {
+      if (!optimizely.isValid()) {
+        Crashlytics.logException(new Throwable("Optimizely failed to initialize."));
+      } else {
+        if (build.isDebug()) {
+          Log.d(ApplicationModule.class.getSimpleName(), "🔮 Optimizely successfully initialized.");
+        }
+      }
+    });
+    return new OptimizelyExperimentsClient(optimizelyManager);
   }
 }

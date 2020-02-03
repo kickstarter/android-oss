@@ -4,6 +4,7 @@
   <string name="A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency" formatted="false">Un proyecto financiado con éxito cobrará tu contribución en su moneda nativa. Los importes mostrados son aproximados.</string>
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">Un resumen semanal de los mejores y más brillantes proyectos de Kickstarter, seleccionados por nuestro equipo.</string>
   <string name="About_reward_amount" formatted="false">Aprox. %{reward_amount}</string>
+  <string name="Accessibility_statement" formatted="false">Declaración de accesibilidad</string>
   <string name="Account" formatted="false">Cuenta</string>
   <string name="Add" formatted="false">Añadir</string>
   <string name="Add_attachments" formatted="false">Agregar anexos …</string>
@@ -358,6 +359,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Password_visibility" formatted="false">Visibilidad de la contraseña</string>
   <string name="Passwords_matching_message" formatted="false">Las nuevas contraseñas deben coincidir.</string>
   <string name="Past_live_stream" formatted="false">Live Stream pasado</string>
+  <string name="Payment_failure" formatted="false">Error de pago</string>
   <string name="Payment_method" formatted="false">Método de pago</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Cargo efectuado a método de pago indicado.</string>
   <string name="Payment_methods" formatted="false">Métodos de pago</string>
@@ -458,6 +460,8 @@ Haz clic para volver a intentarlo.</string>
   <string name="Say_something_kind" formatted="false">Di algo amable...</string>
   <string name="Security_code" formatted="false">Código de seguridad</string>
   <string name="See_all_category_name_projects" formatted="false">Ver todos los proyectos de %{category_name}</string>
+  <string name="See_rewards" formatted="false">Ver recompensas</string>
+  <string name="See_the_rewards" formatted="false">Ver las recompensas</string>
   <string name="Select" formatted="false">Seleccionar</string>
   <string name="Select_an_option" formatted="false">Seleccionar una opción</string>
   <string name="Select_another_project" formatted="false">Selecciona otro proyecto</string>
@@ -500,6 +504,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Subscribe" formatted="false">Suscribir</string>
   <string name="Subscribed" formatted="false">Suscripción activa</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Activa subscripción a futuros Live-Streams.</string>
+  <string name="Support_the_project_for_no_reward" formatted="false">Apoya el proyecto sin recompensa, simplemente porque te resulta interesante.</string>
   <string name="Survey" formatted="false">Cuestionario</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Haz clic en el icono de corazón de un proyecto para recibir una notificación 48 horas antes de que finalice.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Haz clic en el corazón en la página de cada proyecto para guardarlo. Te recordaremos 48 horas antes de que finalice el proyecto.</string>
@@ -564,12 +569,15 @@ Haz clic para volver a intentarlo.</string>
   <string name="View_progress" formatted="false">Ver progreso</string>
   <string name="View_project" formatted="false">Ver proyecto</string>
   <string name="View_rewards" formatted="false">Ver recompensas</string>
+  <string name="View_the_rewards" formatted="false">Ver las recompensas</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
   <string name="View_your_rewards" formatted="false">Ver tus recompensas</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">No podemos procesar esta contribución por un problema con el método de pago del patrocinador.</string>
+  <string name="We_cant_process_your_pledge" formatted="false">No podemos procesar tu contribución.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">No podemos procesar la contribución. Por favor actualiza tu método de pago.</string>
+  <string name="We_cant_process_your_pledge_for" formatted="false">No podemos procesar tu contribución para:</string>
   <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">Hemos recolectado la contribución del patrocinador a este proyecto.</string>
   <string name="We_collected_your_pledge_for_this_project" formatted="false">Hemos recolectado tu contribución a este proyecto.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>

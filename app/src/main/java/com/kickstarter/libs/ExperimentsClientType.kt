@@ -12,6 +12,6 @@ interface ExperimentsClientType {
 
     fun androidBuildVersion(): String
     fun track(eventKey: String, user: User?, refTag: RefTag?)
-    fun userId(user: User?) : String
+    fun userId() : String
     fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant?
 }

@@ -12,21 +12,20 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
     }
 
     override fun track(eventKey: String, user: User?, refTag: RefTag?) {
-        optimizelyClient().track(eventKey, userId(user), attributes(user, refTag))
+        optimizelyClient().track(eventKey, userId(), attributes(user, refTag))
     }
 
     override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
         val variationString: String? = if (user?.isAdmin == true) {
             optimizelyClient().getVariation(experiment.key, user.id().toString(), attributes(user, refTag))
         } else {
-            optimizelyClient().activate(experiment.key, userId(user), attributes(user, refTag))
+            optimizelyClient().activate(experiment.key, userId(), attributes(user, refTag))
         }?.key
 
         return OptimizelyExperiment.Variant.safeValueOf(variationString)
     }
 
-    override fun userId(user: User?): String = user?.id()?.toString()
-            ?: FirebaseInstanceId.getInstance().id
+    override fun userId(): String = FirebaseInstanceId.getInstance().id
 
     private fun optimizelyClient(): OptimizelyClient = this.optimizelyManager.optimizely
 }

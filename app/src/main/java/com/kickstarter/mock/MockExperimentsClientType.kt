@@ -17,7 +17,7 @@ open class MockExperimentsClientType : ExperimentsClientType {
         this.experimentEvents.onNext(ExperimentsEvent(eventKey, attributes(user, refTag)))
     }
 
-    override fun userId(user: User?): String = user?.id()?.toString()?: "0"
+    override fun userId(): String = "device-id"
 
     override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant = OptimizelyExperiment.Variant.CONTROL
 

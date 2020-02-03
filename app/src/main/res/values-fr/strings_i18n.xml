@@ -4,6 +4,7 @@
   <string name="A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency" formatted="false">Si ce projet est intégralement financé, votre engagement sera débité dans la devise du projet. Les montants affichés ici sont approximatifs.</string>
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">Un tour d\'horizon hebdomadaire des meilleurs projets Kickstarter, triés sur le volet par nos soins.</string>
   <string name="About_reward_amount" formatted="false">Environ %{reward_amount}</string>
+  <string name="Accessibility_statement" formatted="false">Déclaration d\'accessibilité</string>
   <string name="Account" formatted="false">Votre compte</string>
   <string name="Add" formatted="false">Ajouter</string>
   <string name="Add_attachments" formatted="false">Ajouter des pièces jointes...</string>
@@ -358,6 +359,7 @@ n\'ont rien soutenu.</string>
   <string name="Password_visibility" formatted="false">Visibilité du mot de passe</string>
   <string name="Passwords_matching_message" formatted="false">Le nouveau mot de passe doit être identique.</string>
   <string name="Past_live_stream" formatted="false">Diffusion en direct passée</string>
+  <string name="Payment_failure" formatted="false">Échec du paiement</string>
   <string name="Payment_method" formatted="false">Moyen de paiement </string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Le moyen de paiement a bien été débité.</string>
   <string name="Payment_methods" formatted="false">Moyens de paiement </string>
@@ -458,6 +460,8 @@ n\'ont rien soutenu.</string>
   <string name="Say_something_kind" formatted="false">Un petit mot sympa...</string>
   <string name="Security_code" formatted="false">Code de sécurité</string>
   <string name="See_all_category_name_projects" formatted="false">Tous les projets de la catégorie %{category_name}</string>
+  <string name="See_rewards" formatted="false">Afficher les récompenses</string>
+  <string name="See_the_rewards" formatted="false">Afficher les récompenses</string>
   <string name="Select" formatted="false">Sélectionner</string>
   <string name="Select_an_option" formatted="false">Sélectionner une option</string>
   <string name="Select_another_project" formatted="false">Sélectionner un autre projet</string>
@@ -500,6 +504,7 @@ n\'ont rien soutenu.</string>
   <string name="Subscribe" formatted="false">S\'abonner</string>
   <string name="Subscribed" formatted="false">Abonné </string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Abonnement aux diffusions en direct à venir.</string>
+  <string name="Support_the_project_for_no_reward" formatted="false">Soutenez un projet simplement parce qu\'il vous parle, sans choisir de récompense.</string>
   <string name="Survey" formatted="false">Questionnaire</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme de cœur située à côté du projet pour recevoir une notification 48 avant la fin de la campagne.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Cliquez sur le cœur qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
@@ -564,12 +569,15 @@ n\'ont rien soutenu.</string>
   <string name="View_progress" formatted="false">Voir les progrès</string>
   <string name="View_project" formatted="false">Afficher le projet</string>
   <string name="View_rewards" formatted="false">Afficher les récompenses</string>
+  <string name="View_the_rewards" formatted="false">Voir les récompenses</string>
   <string name="View_your_pledge" formatted="false">Afficher mon engagement</string>
   <string name="View_your_reward" formatted="false">Afficher ma récompense</string>
   <string name="View_your_rewards" formatted="false">Afficher mes récompenses</string>
   <string name="Watch_live" formatted="false">Regarder en direct</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">Impossible de traiter cet engagement en raison d\'un problème survenu au niveau du moyen de paiement du contributeur.</string>
+  <string name="We_cant_process_your_pledge" formatted="false">Impossible de traiter votre engagement.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">Impossible de traiter votre engagement. Veuillez mettre à jour votre moyen de paiement.</string>
+  <string name="We_cant_process_your_pledge_for" formatted="false">Impossible de traiter votre engagement pour :</string>
   <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">L\'engagement de ce contributeur a été débité.</string>
   <string name="We_collected_your_pledge_for_this_project" formatted="false">Votre engagement a été débité.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">Pas de résultats pour « %{search_term} ».</string>

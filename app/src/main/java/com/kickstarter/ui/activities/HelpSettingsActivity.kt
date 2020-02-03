@@ -49,6 +49,10 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
                     .subscribe(this::composeContactEmail)
         }
 
+        accessibility_statement.setOnClickListener {
+            startChromeTab(buildWebEndpointUrl(ACCESSIBILITY), Intent(this, HelpActivity.AccessibilityStatement::class.java))
+        }
+
         cookie_policy.setOnClickListener {
             startChromeTab(buildWebEndpointUrl(COOKIES), Intent(this, HelpActivity.CookiePolicy::class.java))
         }

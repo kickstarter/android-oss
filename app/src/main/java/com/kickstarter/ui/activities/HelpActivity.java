@@ -95,6 +95,9 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
       case HELP_TYPE_COOKIE_POLICY:
         builder.appendEncodedPath(COOKIES);
         break;
+      case HELP_TYPE_ACCESSIBILITY:
+        builder.appendEncodedPath(ACCESSIBILITY);
+        break;
     }
     return builder.toString();
   }

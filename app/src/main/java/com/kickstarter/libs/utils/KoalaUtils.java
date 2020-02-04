@@ -118,7 +118,7 @@ public final class KoalaUtils {
             put("category", category.name());
           } else {
             final Category parent = category.parent();
-            put("category", parent != null ? parent.name() : null);
+            put("category", parent != null ? parent.name() : category.parentName());
             put("subcategory", category.name());
           }
         }

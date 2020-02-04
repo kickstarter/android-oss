@@ -72,6 +72,11 @@
               android:id="@+id/cookie_policy"
               style="@style/SettingsSingleRow"
               android:text="@string/profile_settings_about_cookie" />
+
+            <TextView
+              android:id="@+id/accessibility_statement"
+              style="@style/SettingsSingleRow"
+              android:text="@string/Accessibility_statement" />
           </LinearLayout>
 
         </LinearLayout>

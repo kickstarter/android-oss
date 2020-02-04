@@ -4,6 +4,7 @@
   <string name="A_successfully_funded_project_will_collect_your_pledge_in_its_native_currency" formatted="false">A successfully funded project will collect your pledge in its native currency. The amounts shown are approximate.</string>
   <string name="A_weekly_roundup_of_the_best_and_brightest" formatted="false">A weekly roundup of the best and brightest projects on Kickstarter, handpicked by our team.</string>
   <string name="About_reward_amount" formatted="false">About %{reward_amount}</string>
+  <string name="Accessibility_statement" formatted="false">Accessibility Statement</string>
   <string name="Account" formatted="false">Account</string>
   <string name="Add" formatted="false">Add</string>
   <string name="Add_attachments" formatted="false">Add attachments…</string>
@@ -359,6 +360,7 @@ from friends yet.</string>
   <string name="Password_visibility" formatted="false">Password visibility</string>
   <string name="Passwords_matching_message" formatted="false">New passwords must match.</string>
   <string name="Past_live_stream" formatted="false">Past live stream</string>
+  <string name="Payment_failure" formatted="false">Payment failure</string>
   <string name="Payment_method" formatted="false">Payment method</string>
   <string name="Payment_method_was_successfully_charged" formatted="false">Payment method was successfully charged.</string>
   <string name="Payment_methods" formatted="false">Payment methods</string>
@@ -460,6 +462,8 @@ daring ideas.</string>
   <string name="Say_something_kind" formatted="false">Say something kind...</string>
   <string name="Security_code" formatted="false">Security code</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
+  <string name="See_rewards" formatted="false">See rewards</string>
+  <string name="See_the_rewards" formatted="false">See the rewards</string>
   <string name="Select" formatted="false">Select</string>
   <string name="Select_an_option" formatted="false">Select an option</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
@@ -503,6 +507,7 @@ catch your eye?</string>
   <string name="Subscribe" formatted="false">Subscribe</string>
   <string name="Subscribed" formatted="false">Subscribed</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
+  <string name="Support_the_project_for_no_reward" formatted="false">Support the project for no reward, just because it speaks to you.</string>
   <string name="Survey" formatted="false">Survey</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tap the heart icon on a project to get notified 48 hours before it ends.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
@@ -567,12 +572,15 @@ catch your eye?</string>
   <string name="View_progress" formatted="false">View progress</string>
   <string name="View_project" formatted="false">View project</string>
   <string name="View_rewards" formatted="false">View rewards</string>
+  <string name="View_the_rewards" formatted="false">View the rewards</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="View_your_rewards" formatted="false">View your rewards</string>
   <string name="Watch_live" formatted="false">Watch live</string>
   <string name="We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method" formatted="false">We can’t process this pledge because of a problem with the backer’s payment method.</string>
+  <string name="We_cant_process_your_pledge" formatted="false">We can\'t process your pledge.</string>
   <string name="We_cant_process_your_pledge_Please_update_your_payment_method" formatted="false">We can’t process your pledge. Please update your payment method.</string>
+  <string name="We_cant_process_your_pledge_for" formatted="false">We can\'t process your pledge for:</string>
   <string name="We_collected_the_backers_pledge_for_this_project" formatted="false">We collected the backer’s pledge for this project.</string>
   <string name="We_collected_your_pledge_for_this_project" formatted="false">We collected your pledge for this project.</string>
   <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for “%{search_term}”.</string>

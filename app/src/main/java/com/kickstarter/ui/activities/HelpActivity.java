@@ -24,12 +24,14 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
   public static final int HELP_TYPE_COOKIE_POLICY = 3;
+  public static final int HELP_TYPE_ACCESSIBILITY = 4;
   public static final String TERMS_OF_USE = "terms-of-use";
   public static final String PRIVACY = "privacy";
   public static final String HELLO = "hello";
   public static final String COOKIES = "cookies";
+  public static final String ACCESSIBILITY = "accessibility";
 
-  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY})
+  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY, HELP_TYPE_ACCESSIBILITY})
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
@@ -61,6 +63,12 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
     }
   }
 
+  public static class AccessibilityStatement extends HelpActivity {
+    public AccessibilityStatement() {
+      helpType(HELP_TYPE_ACCESSIBILITY);
+    }
+  }
+
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -86,6 +94,9 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
         break;
       case HELP_TYPE_COOKIE_POLICY:
         builder.appendEncodedPath(COOKIES);
+        break;
+      case HELP_TYPE_ACCESSIBILITY:
+        builder.appendEncodedPath(ACCESSIBILITY);
         break;
     }
     return builder.toString();

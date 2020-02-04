@@ -16,6 +16,7 @@ public abstract class Category implements Parcelable, Comparable<Category> {
   public abstract String name();
   public abstract @Nullable Category parent();
   public abstract @Nullable Long parentId();
+  public abstract @Nullable String parentName();
   public abstract int position();
   public abstract @Nullable Integer projectsCount();
   public abstract String slug();
@@ -27,6 +28,7 @@ public abstract class Category implements Parcelable, Comparable<Category> {
     public abstract Builder name(String __);
     public abstract Builder parent(Category __);
     public abstract Builder parentId(Long __);
+    public abstract Builder parentName(String __);
     public abstract Builder position(int __);
     public abstract Builder projectsCount(Integer __);
     public abstract Builder slug(String __);

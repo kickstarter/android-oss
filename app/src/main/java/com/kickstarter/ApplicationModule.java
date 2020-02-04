@@ -528,7 +528,7 @@ public final class ApplicationModule {
   static String provideLakeEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
     /* Only sending events to the staging endpoint until the properties have been finalized. */
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
-      Secrets.LakeEndpoint.STAGING :
+      Secrets.LakeEndpoint.PRODUCTION :
       Secrets.LakeEndpoint.STAGING;
   }
 

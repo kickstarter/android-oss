@@ -290,6 +290,12 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .subscribe { this.koala.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
 
             this.projectAndReward
+                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
+                    .compose<Pair<Pair<Project, Reward>, Int>>(combineLatestPair(this.rewardClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.lake.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
+
+            this.projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
                     .map { BackingUtils.isBacked(it.first, it.second) }
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(goRewardlessEnabled))

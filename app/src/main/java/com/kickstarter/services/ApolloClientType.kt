@@ -17,7 +17,7 @@ import type.CurrencyCode
 interface ApolloClientType {
     fun cancelBacking(backing: Backing, note: String): Observable<Any>
 
-    fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing>
+    fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
 
     fun clearUnseenActivity(): Observable<Int>
 
@@ -33,7 +33,7 @@ interface ApolloClientType {
 
     fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data>
 
-    fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing>
+    fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout>
 
     fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data>
 

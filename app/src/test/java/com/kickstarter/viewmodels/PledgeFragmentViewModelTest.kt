@@ -1357,7 +1357,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .cookieManager(cookieManager)
                 .sharedPreferences(sharedPreferences)
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                         //Assert that stored cookie is passed in
                         TestCase.assertEquals(createBackingData.refTag, RefTag.discovery())
                         return super.createBacking(createBackingData)
@@ -1506,7 +1506,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.error(Exception("womp"))
                     }
                 })
@@ -1542,8 +1542,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -1572,8 +1572,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -1602,8 +1602,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -1665,7 +1665,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.error(Exception("womp"))
                     }
                 })
@@ -1697,7 +1697,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.error(Exception("womp"))
                     }
                 })
@@ -1717,7 +1717,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.error(Exception("womp"))
                     }
                 })
@@ -1736,7 +1736,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.error(Exception("womp"))
                     }
                 })
@@ -1863,8 +1863,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -1904,8 +1904,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -1945,8 +1945,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -2105,7 +2105,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
                         return Observable.error(Throwable("error"))
                     }
                 })
@@ -2131,8 +2131,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -2162,8 +2162,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()
@@ -2194,8 +2194,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
-                        return Observable.just(CheckoutBackingFactory.requiresAction(true))
+                    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
+                        return Observable.just(CheckoutFactory.requiresAction(true))
                     }
                 })
                 .build()

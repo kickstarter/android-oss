@@ -61,7 +61,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout.Backing> {
+    override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
         return Observable.defer {
             val createBackingMutation = CreateBackingMutation.builder()
                     .projectId(encodeRelayId(createBackingData.project))
@@ -73,7 +73,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .refParam(createBackingData.refTag?.tag())
                     .build()
 
-            val ps = PublishSubject.create<Checkout.Backing>()
+            val ps = PublishSubject.create<Checkout>()
 
             this.service.mutate(createBackingMutation)
                     .enqueue(object : ApolloCall.Callback<CreateBackingMutation.Data>() {
@@ -92,7 +92,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
                                     .build()
 
-                            ps.onNext(backing)
+                            ps.onNext(Checkout.builder()
+                                    .id(decodeRelayId(checkoutPayload?.id()))
+                                    .backing(backing)
+                                    .build())
                             ps.onCompleted()
                         }
                     })
@@ -291,7 +294,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout.Backing> {
+    override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
         return Observable.defer {
             val updateBackingMutation = UpdateBackingMutation.builder()
                     .backingId(encodeRelayId(updateBackingData.backing))
@@ -301,7 +304,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .paymentSourceId(updateBackingData.paymentSourceId)
                     .build()
 
-            val ps = PublishSubject.create<Checkout.Backing>()
+            val ps = PublishSubject.create<Checkout>()
             service.mutate(updateBackingMutation)
                     .enqueue(object : ApolloCall.Callback<UpdateBackingMutation.Data>() {
                         override fun onFailure(exception: ApolloException) {
@@ -319,7 +322,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
                                     .build()
 
-                            ps.onNext(backing)
+                            ps.onNext(Checkout.builder()
+                                    .id(decodeRelayId(checkoutPayload?.id()))
+                                    .backing(backing)
+                                    .build())
                             ps.onCompleted()
                         }
                     })

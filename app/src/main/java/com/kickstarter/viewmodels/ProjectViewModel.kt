@@ -708,6 +708,44 @@ interface ProjectViewModel {
                     .subscribe(this.heartDrawableId)
 
             //Tracking
+            val refTagsAndProject = Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) }
+                    .filter { it.project.hasRewards() }
+                    .take(1)
+
+            refTagsAndProject
+                    .compose(bindToLifecycle())
+                    .subscribe { data ->
+                        // If a cookie hasn't been set for this ref+project then do so.
+                        if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
+                            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, this.cookieManager, this.sharedPreferences)
+                        }
+
+                        this.koala.trackProjectShow(
+                                data.project,
+                                data.refTagFromIntent,
+                                RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
+                        )
+
+                        this.lake.trackProjectPageViewed(
+                                data.project,
+                                data.refTagFromIntent,
+                                RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
+                        )
+                    }
+
+            this.pledgeActionButtonText
+                    .filter { it == R.string.Back_this_project }
+                    .compose<Pair<Int, RefTagsAndProject>>(combineLatestPair(refTagsAndProject))
+                    .compose<Pair<Int, RefTagsAndProject>>(takeWhen(this.nativeProjectActionButtonClicked))
+                    .map { it.second }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.lake.trackProjectPagePledgeButtonClicked(it.project,
+                                it.refTagFromIntent,
+                                RefTagUtils.storedCookieRefTagForProject(it.project, this.cookieManager, this.sharedPreferences))
+                    }
+
             this.pledgeActionButtonText
                     .map { eventName(it) }
                     .compose<Pair<String, Project>>(combineLatestPair(currentProjectWhenFeatureEnabled))
@@ -751,30 +789,6 @@ interface ProjectViewModel {
                     .mergeWith(savedProjectOnLoginSuccess)
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectStar(it) }
-
-            Observable.combineLatest<RefTag, RefTag, Project, RefTagsAndProject>(refTag, cookieRefTag, currentProject)
-            { refTagFromIntent, refTagFromCookie, project -> RefTagsAndProject(refTagFromIntent, refTagFromCookie, project) }
-                    .filter { it.project.hasRewards() }
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe { data ->
-                        // If a cookie hasn't been set for this ref+project then do so.
-                        if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
-                            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, this.cookieManager, this.sharedPreferences)
-                        }
-
-                        this.koala.trackProjectShow(
-                                data.project,
-                                data.refTagFromIntent,
-                                RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
-                        )
-
-                        this.lake.trackProjectPageViewed(
-                                data.project,
-                                data.refTagFromIntent,
-                                RefTagUtils.storedCookieRefTagForProject(data.project, this.cookieManager, this.sharedPreferences)
-                        )
-                    }
 
             pushNotificationEnvelope
                     .take(1)

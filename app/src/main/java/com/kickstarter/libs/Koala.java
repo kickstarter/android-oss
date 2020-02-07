@@ -3,6 +3,7 @@ package com.kickstarter.libs;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
@@ -749,6 +750,23 @@ public final class Koala {
     final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
 
     this.client.track(LakeEvent.SEARCH_RESULTS_LOADED, props);
+  }
+  //endregion
+
+  //region Back a project
+  public void trackSelectRewardButtonClicked(final @NonNull Reward reward, final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+    props.putAll(KoalaUtils.pledgeProperties(reward));
+
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    this.client.track(LakeEvent.SELECT_REWARD_BUTTON_CLICKED, props);
   }
   //endregion
 }

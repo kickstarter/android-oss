@@ -4,6 +4,7 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
@@ -98,6 +99,26 @@ public final class KoalaUtils {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("uid", user.id());
+      }
+    };
+
+    return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  public static @NonNull Map<String, Object> pledgeProperties(final @NonNull Reward reward) {
+    return pledgeProperties(reward, "pledge_backer_reward_");
+  }
+
+  public static @NonNull Map<String, Object> pledgeProperties(final @NonNull Reward reward, final @NonNull String prefix) {
+    final Map<String, Object> properties = new HashMap<String, Object>() {
+      {
+        put("has_items", RewardUtils.isItemized(reward));
+        put("id", reward.id());
+        put("is_limited_time", RewardUtils.isTimeLimited(reward));
+        put("is_limited_quantity", reward.limit() != null);
+        put("minimum", reward.minimum());
+        put("shipping_enabled", RewardUtils.isShippable(reward));
+        put("shipping_preference", RewardUtils.shippingPreference(reward));
       }
     };
 

@@ -19,6 +19,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectTracking
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -63,9 +64,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
-    private val startThanksActivity = TestSubscriber<Project>()
+    private val startThanksActivity = TestSubscriber<ProjectTracking>()
     private val startVideoActivity = TestSubscriber<Project>()
-    private val updateFragments = TestSubscriber<Project>()
+    private val updateFragments = TestSubscriber<ProjectTracking>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
@@ -195,7 +196,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValue(true)
         this.reloadProgressBarIsGone.assertValues(false, true)
-        this.updateFragments.assertValue(refreshedProject)
+        this.updateFragments.assertValue(ProjectTrackingFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -248,7 +249,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
-        this.updateFragments.assertValue(refreshedProject)
+        this.updateFragments.assertValue(ProjectTrackingFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -337,7 +338,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectActionButtonContainerIsGone.assertValue(true)
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(project, true))
         this.reloadProgressBarIsGone.assertValues(false, true)
-        this.updateFragments.assertValue(project)
+        this.updateFragments.assertValue(ProjectTrackingFactory.project(project))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -384,7 +385,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(refreshedProject, true))
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
-        this.updateFragments.assertValue(refreshedProject)
+        this.updateFragments.assertValue(ProjectTrackingFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -1251,7 +1252,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.updatePledgeClicked()
 
-        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PLEDGE))
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .reward(reward)
+                .projectTracking(ProjectTrackingFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_PLEDGE))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -1275,7 +1279,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.updatePaymentClicked()
 
-        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PAYMENT))
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .reward(reward)
+                .projectTracking(ProjectTrackingFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_PAYMENT))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
     }

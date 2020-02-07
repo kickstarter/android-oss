@@ -96,7 +96,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward? = RewardFactory.rewardWithShipping(),
-                                 project: Project? = ProjectFactory.project(),
+                                 project: Project = ProjectFactory.project(),
                                  pledgeReason: PledgeReason? = PledgeReason.PLEDGE) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
@@ -160,9 +160,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val screenLocation = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD) ScreenLocation(0f, 0f, 0f, 0f) else null
         bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, screenLocation)
 
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT, project?.toBuilder()
-                ?.deadline(DateTime.parse("2020-10-23T18:13:09Z"))
-                ?.build())
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT_TRACKING, ProjectTrackingFactory.project(project.toBuilder()
+                .deadline(DateTime.parse("2020-10-23T18:13:09Z"))
+                .build()))
         bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
         this.vm.arguments(bundle)

@@ -18,10 +18,7 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.CardState
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ScreenLocation
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.stripe.android.StripeIntentResult
 import rx.Observable
@@ -358,9 +355,12 @@ interface PledgeFragmentViewModel {
             val screenLocation = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation? }
 
-            val project = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project? }
-                    .ofType(Project::class.java)
+            val projectTracking = arguments
+                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT_TRACKING) as ProjectTracking? }
+                    .ofType(ProjectTracking::class.java)
+
+            val project = projectTracking
+                    .map { it.project() }
 
             val pledgeReason = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -382,7 +382,13 @@ interface PledgeFragmentViewModel {
                     .ofType(Backing::class.java)
 
             // Mini reward card
-            Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
+            Observable.combineLatest(screenLocation, reward, projectTracking) { s, r, p ->
+                PledgeData.builder()
+                        .screenLocation(s)
+                        .reward(r)
+                        .projectTracking(p)
+                        .build()
+            }
                     .compose(bindToLifecycle())
                     .subscribe(this.startRewardShrinkAnimation)
 

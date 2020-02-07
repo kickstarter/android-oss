@@ -14,6 +14,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.data.PledgeStatusData
+import com.kickstarter.ui.data.ProjectTracking
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
 import rx.Observable
@@ -31,7 +32,7 @@ interface BackingFragmentViewModel {
         fun pledgeSuccessfullyUpdated()
 
         /** Configure with current project.  */
-        fun project(project: Project)
+        fun project(projectTracking: ProjectTracking)
 
         /** Call when the mark as received checkbox is checked. */
         fun receivedCheckboxToggled(checked: Boolean)
@@ -81,7 +82,7 @@ interface BackingFragmentViewModel {
         fun pledgeSummaryIsGone(): Observable<Boolean>
 
         /** Emits the project and currently backed reward. */
-        fun projectAndReward(): Observable<Pair<Project, Reward>>
+        fun projectAndReward(): Observable<Pair<ProjectTracking, Reward>>
 
         /** Emits a boolean that determines if received checkbox should be checked. */
         fun receivedCheckboxChecked(): Observable<Boolean>
@@ -111,7 +112,7 @@ interface BackingFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
 
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
-        private val projectInput = PublishSubject.create<Project>()
+        private val projectInput = PublishSubject.create<ProjectTracking>()
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
         private val refreshProject = PublishSubject.create<Void>()
 
@@ -128,7 +129,7 @@ interface BackingFragmentViewModel {
         private val pledgeDate = BehaviorSubject.create<String>()
         private val pledgeStatusData = BehaviorSubject.create<PledgeStatusData>()
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
-        private val projectAndReward = BehaviorSubject.create<Pair<Project, Reward>>()
+        private val projectAndReward = BehaviorSubject.create<Pair<ProjectTracking, Reward>>()
         private val receivedCheckboxChecked = BehaviorSubject.create<Boolean>()
         private val receivedSectionIsGone = BehaviorSubject.create<Boolean>()
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
@@ -153,6 +154,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.showUpdatePledgeSuccess)
 
             val backedProject = this.projectInput
+                    .map { it.project() }
                     .filter { it.isBacking }
 
             val backing = backedProject
@@ -171,8 +173,9 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backerAvatar)
 
-            backedProject
-                    .map { project -> project.rewards()?.firstOrNull { BackingUtils.isBacked(project, it) }?.let { Pair(project, it) } }
+            this.projectInput
+                    .filter { it.project().isBacking }
+                    .map { projectTracking -> projectTracking.project().rewards()?.firstOrNull { BackingUtils.isBacked(projectTracking.project(), it) }?.let { Pair(projectTracking, it) } }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectAndReward)
 
@@ -362,8 +365,8 @@ interface BackingFragmentViewModel {
             this.showUpdatePledgeSuccess.onNext(null)
         }
 
-        override fun project(project: Project) {
-            this.projectInput.onNext(project)
+        override fun project(projectTracking: ProjectTracking) {
+            this.projectInput.onNext(projectTracking)
         }
 
         override fun receivedCheckboxToggled(checked: Boolean) {
@@ -400,7 +403,7 @@ interface BackingFragmentViewModel {
 
         override fun pledgeSummaryIsGone(): Observable<Boolean> = this.pledgeSummaryIsGone
 
-        override fun projectAndReward(): Observable<Pair<Project, Reward>> = this.projectAndReward
+        override fun projectAndReward(): Observable<Pair<ProjectTracking, Reward>> = this.projectAndReward
 
         override fun receivedCheckboxChecked(): Observable<Boolean> = this.receivedCheckboxChecked
 

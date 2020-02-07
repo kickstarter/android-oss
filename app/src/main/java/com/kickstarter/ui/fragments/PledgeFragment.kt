@@ -48,10 +48,7 @@ import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
-import com.kickstarter.ui.data.CardState
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ScreenLocation
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
@@ -666,7 +663,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     //Reward card animation helper methods
     private fun revealPledgeSection(pledgeData: PledgeData) {
-        pledgeData.rewardScreenLocation?.let {
+        pledgeData.screenLocation()?.let {
             setInitialViewStates(pledgeData)
             startPledgeAnimatorSet(true)
         }
@@ -813,7 +810,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 }
             }
 
-    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward, project: Project) {
+    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward, projectTracking: ProjectTracking) {
         val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
         rewardParams.leftMargin = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
@@ -824,7 +821,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         reward_snapshot.pivotY = 0f
 
         val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_to_copy, null)
-        rewardViewHolder.bindData(Pair(project, reward))
+        rewardViewHolder.bindData(Pair(projectTracking, reward))
 
         reward_to_copy.post {
             pledge_root.visibility = View.VISIBLE
@@ -843,7 +840,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setInitialViewStates(pledgeData: PledgeData) {
-        pledgeData.rewardScreenLocation?.let { positionRewardSnapshot(it, pledgeData.reward, pledgeData.project) }
+        pledgeData.screenLocation()?.let { positionRewardSnapshot(it, pledgeData.reward(), pledgeData.projectTracking()) }
         pledge_details.y = pledge_root.height.toFloat()
     }
 
@@ -852,9 +849,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         fun newInstance(pledgeData: PledgeData, pledgeReason: PledgeReason): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
-            argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward)
-            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT, pledgeData.project)
-            argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.rewardScreenLocation)
+            argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward())
+            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT_TRACKING, pledgeData.projectTracking())
+            argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.screenLocation())
             argument.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
             fragment.arguments = argument
             return fragment

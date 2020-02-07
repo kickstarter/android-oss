@@ -1,8 +1,29 @@
 package com.kickstarter.ui.data
 
-import com.kickstarter.models.Project
+import android.os.Parcelable
+import auto.parcel.AutoParcel
 import com.kickstarter.models.Reward
 
-data class PledgeData(val rewardScreenLocation: ScreenLocation?, val reward: Reward, val project: Project) {
-    constructor(reward: Reward, project: Project) : this(null, reward, project)
+@AutoParcel
+abstract class PledgeData : Parcelable {
+    abstract fun reward(): Reward
+    abstract fun screenLocation(): ScreenLocation?
+    abstract fun projectTracking(): ProjectTracking
+
+    @AutoParcel.Builder
+    abstract class Builder {
+        abstract fun reward(reward: Reward): Builder
+        abstract fun screenLocation(screenLocation: ScreenLocation?): Builder
+        abstract fun projectTracking(projectTracking: ProjectTracking): Builder
+        abstract fun build(): PledgeData
+    }
+
+    abstract fun toBuilder(): Builder
+
+    companion object {
+
+        fun builder(): Builder {
+            return AutoParcel_PledgeData.Builder()
+        }
+    }
 }

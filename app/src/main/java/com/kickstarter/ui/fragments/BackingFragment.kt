@@ -19,6 +19,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
+import com.kickstarter.ui.data.ProjectTracking
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
@@ -158,15 +159,15 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(mark_as_received_checkbox.isChecked) }
     }
 
-    fun takeProject(project: Project) {
-        this.viewModel.inputs.project(project)
+    fun takeProject(projectTracking: ProjectTracking) {
+        this.viewModel.inputs.project(projectTracking)
     }
 
     fun pledgeSuccessfullyUpdated() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 
-    private fun bindDataToRewardViewHolder(projectAndReward: Pair<Project, Reward>) {
+    private fun bindDataToRewardViewHolder(projectAndReward: Pair<ProjectTracking, Reward>) {
         val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_container, delegate = null, inset = true)
         val project = projectAndReward.first
         val reward = projectAndReward.second

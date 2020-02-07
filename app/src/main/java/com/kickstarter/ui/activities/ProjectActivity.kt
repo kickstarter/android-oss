@@ -40,6 +40,7 @@ import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectTracking
 import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.CardInputWidget
@@ -495,9 +496,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         project_recycler_view.setPadding(0, 0, 0, if (nativeCheckoutEnabled) rewardsSheetGuideline() else 0)
     }
 
-    private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, project: Project) {
-        rewardsFragment.takeProject(project)
-        backingFragment.takeProject(project)
+    private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectTracking: ProjectTracking) {
+        rewardsFragment.takeProject(projectTracking)
+        backingFragment.takeProject(projectTracking)
     }
 
     private fun revealRewardsFragment() {
@@ -601,11 +602,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
-    private fun showCreatePledgeSuccess(project: Project) {
+    private fun showCreatePledgeSuccess(projectTracking: ProjectTracking) {
         if (clearFragmentBackStack()) {
-            updateFragments(project)
+            updateFragments(projectTracking)
             startActivity(Intent(this, ThanksActivity::class.java)
-                    .putExtra(IntentKey.PROJECT, project)
+                    .putExtra(IntentKey.PROJECT, projectTracking.project())
                     .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true))
         }
     }
@@ -751,14 +752,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         pledge_action_button.layoutParams = buttonParams
     }
 
-    private fun updateFragments(project: Project) {
+    private fun updateFragments(projectTracking: ProjectTracking) {
         try {
             val rewardsFragment = rewardsFragment()
             val backingFragment = backingFragment()
             if (rewardsFragment != null && backingFragment != null) {
                 when {
                     supportFragmentManager.backStackEntryCount == 0 -> when {
-                        project.isBacking -> if (!rewardsFragment.isHidden) {
+                        projectTracking.project().isBacking -> if (!rewardsFragment.isHidden) {
                             supportFragmentManager.beginTransaction()
                                     .show(backingFragment)
                                     .hide(rewardsFragment)
@@ -772,7 +773,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                         }
                     }
                 }
-                renderProject(backingFragment, rewardsFragment, project)
+                renderProject(backingFragment, rewardsFragment, projectTracking)
             }
         } catch (e: IllegalStateException) {
             Crashlytics.logException(e)

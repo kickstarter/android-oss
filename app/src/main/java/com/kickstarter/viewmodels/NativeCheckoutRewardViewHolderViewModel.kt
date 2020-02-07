@@ -13,6 +13,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.User
+import com.kickstarter.ui.data.ProjectTracking
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import org.joda.time.DateTime
 import rx.Observable
@@ -24,7 +25,7 @@ import kotlin.math.roundToInt
 interface NativeCheckoutRewardViewHolderViewModel {
     interface Inputs {
         /** Call with a reward and project when data is bound to the view.  */
-        fun projectAndReward(project: Project, reward: Reward)
+        fun projectAndReward(projectTracking: ProjectTracking, reward: Reward)
 
         /** Call when the user clicks on a reward. */
         fun rewardClicked(position: Int)
@@ -119,7 +120,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val goRewardlessPreference: BooleanPreferenceType = environment.goRewardlessPreference()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
-        private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
+        private val projectTrackingAndReward = PublishSubject.create<Pair<ProjectTracking, Reward>>()
         private val rewardClicked = PublishSubject.create<Int>()
 
         private val backersCount = BehaviorSubject.create<Int>()
@@ -155,16 +156,19 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         init {
 
-            this.projectAndReward
+            val reward = this.projectTrackingAndReward
+                    .map { it.second }
+
+            val project = this.projectTrackingAndReward
+                    .map { it.first.project() }
+            
+            val projectAndReward = this.projectTrackingAndReward
+                    .map { Pair(it.first.project(), it.second) }
+
+            projectAndReward
                     .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.minimumAmountTitle)
-
-            val reward = this.projectAndReward
-                    .map { it.second }
-
-            val project = this.projectAndReward
-                    .map { it.first }
 
             val userCreatedProject = this.currentUser.observable()
                     .compose<Pair<User?, Project>>(combineLatestPair(project))
@@ -184,31 +188,31 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.background)
 
-            this.projectAndReward
+            projectAndReward
                     .compose<Pair<Pair<Project, Reward>, Boolean>>(combineLatestPair(userCreatedProject))
                     .map { buttonIsGone(it.first.first, it.first.second, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonIsGone)
 
-            this.projectAndReward
+            projectAndReward
                     .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonCTA)
 
-            this.projectAndReward
+            projectAndReward
                     .map { it.first }
                     .map { it.currency() == it.currentCurrency() }
                     .compose(bindToLifecycle())
                     .subscribe(this.conversionIsGone)
 
-            this.projectAndReward
+            projectAndReward
                     .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true) }
                     .compose(bindToLifecycle())
                     .subscribe(this.conversion)
 
-            this.projectAndReward
+            projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
                     .map { BackingUtils.isBacked(it.first, it.second) }
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(goRewardlessEnabled))
@@ -228,19 +232,19 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.descriptionForReward)
 
-            this.projectAndReward
+            projectAndReward
                     .map { RewardUtils.isReward(it.second) && it.second.description().isNullOrEmpty() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.descriptionIsGone)
 
-            this.projectAndReward
+            projectAndReward
                     .map { isSelectable(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonIsEnabled)
 
-            this.projectAndReward
+            projectAndReward
                     .map { it.first.isLive && RewardUtils.isLimited(it.second) }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
@@ -271,31 +275,31 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.reward)
 
-            this.projectAndReward
+            projectAndReward
                     .map { expirationDateIsGone(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.endDateSectionIsGone)
 
-            this.projectAndReward
+            projectAndReward
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 
-            this.projectAndReward
+            projectAndReward
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Pair<Project, Reward>, Int>>(combineLatestPair(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
 
-            this.projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
-                    .compose<Pair<Pair<Project, Reward>, Int>>(combineLatestPair(this.rewardClicked))
+            this.projectTrackingAndReward
+                    .filter { it.first.project().isLive && !it.first.project().isBacking }
+                    .compose<Pair<ProjectTracking, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
+                    .subscribe { this.lake.trackSelectRewardButtonClicked(it.second, it.first.project(), it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
 
-            this.projectAndReward
+            projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
                     .map { BackingUtils.isBacked(it.first, it.second) }
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(goRewardlessEnabled))
@@ -328,7 +332,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummary)
 
-            this.projectAndReward
+            projectAndReward
                     .map { it.first.isLive && RewardUtils.isShippable(it.second) }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
@@ -392,8 +396,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
             return RewardUtils.isAvailable(project, reward)
         }
 
-        override fun projectAndReward(@NonNull project: Project, @NonNull reward: Reward) {
-            this.projectAndReward.onNext(Pair.create(project, reward))
+        override fun projectAndReward(@NonNull projectTracking: ProjectTracking, @NonNull reward: Reward) {
+            this.projectTrackingAndReward.onNext(Pair.create(projectTracking, reward))
         }
 
         override fun rewardClicked(position: Int) {

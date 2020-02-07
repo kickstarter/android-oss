@@ -10,6 +10,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectTracking
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.RewardsFragment
 import rx.Observable
@@ -19,7 +20,7 @@ import rx.subjects.PublishSubject
 class RewardsFragmentViewModel {
     interface Inputs {
         /** Configure with current project.  */
-        fun project(project: Project)
+        fun project(projectTracking: ProjectTracking)
 
         /** Call when a reward is clicked with its current screen location to snapshot.  */
         fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
@@ -30,7 +31,7 @@ class RewardsFragmentViewModel {
         fun backedRewardPosition(): Observable<Int>
 
         /** Emits the current project. */
-        fun project(): Observable<Project>
+        fun project(): Observable<ProjectTracking>
 
         /** Emits the count of the current project's rewards. */
         fun rewardsCount(): Observable<Int>
@@ -41,11 +42,11 @@ class RewardsFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
 
-        private val projectInput = PublishSubject.create<Project>()
+        private val projectTrackingInput = PublishSubject.create<ProjectTracking>()
         private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
-        private val project = BehaviorSubject.create<Project>()
+        private val project = BehaviorSubject.create<ProjectTracking>()
         private val rewardsCount = BehaviorSubject.create<Int>()
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
 
@@ -53,24 +54,27 @@ class RewardsFragmentViewModel {
         val outputs: Outputs = this
 
         init {
-            this.projectInput
+
+            this.projectTrackingInput
                     .compose(bindToLifecycle())
                     .subscribe(this.project)
 
-            this.projectInput
+            val project = this.projectTrackingInput
+                    .map { it.project() }
+            project
                     .filter { it.isBacking }
                     .map { indexOfBackedReward(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backedRewardPosition)
 
-            this.projectInput
-                    .compose<Pair<Project, Pair<ScreenLocation, Reward>>>(Transformers.takePairWhen(this.rewardClicked))
-                    .map { Pair(PledgeData(it.second.first, it.second.second, it.first), if (it.first.isBacking) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE) }
+            this.projectTrackingInput
+                    .compose<Pair<ProjectTracking, Pair<ScreenLocation, Reward>>>(Transformers.takePairWhen(this.rewardClicked))
+                    .map { Pair(pledgeData(it.second.first, it.second.second, it.first), if (it.first.project().isBacking) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 
-            this.projectInput
+            project
                     .map { it.rewards()?.size?: 0 }
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsCount)
@@ -88,8 +92,16 @@ class RewardsFragmentViewModel {
             return 0
         }
 
-        override fun project(project: Project) {
-            this.projectInput.onNext(project)
+        private fun pledgeData(screenLocation: ScreenLocation, reward: Reward, projectTracking: ProjectTracking): PledgeData {
+            return PledgeData.builder()
+                    .screenLocation(screenLocation)
+                    .reward(reward)
+                    .projectTracking(projectTracking)
+                    .build()
+        }
+
+        override fun project(projectTracking: ProjectTracking) {
+            this.projectTrackingInput.onNext(projectTracking)
         }
 
         override fun rewardClicked(screenLocation: ScreenLocation, reward: Reward) {
@@ -100,7 +112,7 @@ class RewardsFragmentViewModel {
         override fun backedRewardPosition(): Observable<Int> = this.backedRewardPosition
 
         @NonNull
-        override fun project(): Observable<Project> = this.project
+        override fun project(): Observable<ProjectTracking> = this.project
 
         @NonNull
         override fun rewardsCount(): Observable<Int> = this.rewardsCount

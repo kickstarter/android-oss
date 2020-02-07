@@ -8,7 +8,7 @@ class ProjectTrackingFactory private constructor() {
     companion object {
         fun project(project: Project): ProjectTracking {
             return ProjectTracking.builder()
-                    .project(ProjectFactory.project())
+                    .project(project)
                     .refTagFromCookie(RefTag.discovery())
                     .refTagFromIntent(RefTag.discovery())
                     .build()

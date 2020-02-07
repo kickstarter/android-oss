@@ -313,6 +313,7 @@ class LakeTest : KSRobolectricTestCase() {
         val expectedProperties = propertiesTest.value
         assertEquals(9999, expectedProperties["session_app_build_number"])
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
+        assertEquals("android", expectedProperties["session_client_platform"])
         assertEquals("native", expectedProperties["session_client_type"])
         assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
@@ -325,7 +326,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["session_is_voiceover_running"])
         assertEquals("kickstarter_android", expectedProperties["session_mp_lib"])
         assertEquals("Android", expectedProperties["session_os"])
-        assertEquals("Android 9", expectedProperties["session_os_version"])
+        assertEquals("9", expectedProperties["session_os_version"])
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])

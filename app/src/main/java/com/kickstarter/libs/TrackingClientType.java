@@ -61,7 +61,7 @@ public abstract class TrackingClientType {
         put("is_voiceover_running", isTalkBackOn());
         put("mp_lib", "kickstarter_android");
         put("os", "Android");
-        put("os_version", String.format("Android %s", OSVersion()));
+        put("os_version", OSVersion());
         put("user_agent", userAgent());
         put("user_is_logged_in", userIsLoggedIn);
         put("wifi_connection", wifiConnection());

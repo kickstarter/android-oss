@@ -49,6 +49,7 @@ public abstract class TrackingClientType {
       {
         put("app_build_number", buildNumber());
         put("app_release_version", versionName());
+        put("client_platform", "android");
         put("client_type", "native");
         put("current_variants", currentVariants());
         put("device_distinct_id", deviceDistinctId());

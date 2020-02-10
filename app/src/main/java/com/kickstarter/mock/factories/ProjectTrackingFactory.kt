@@ -9,8 +9,14 @@ class ProjectTrackingFactory private constructor() {
         fun project(project: Project): ProjectTracking {
             return ProjectTracking.builder()
                     .project(project)
-                    .refTagFromCookie(RefTag.discovery())
-                    .refTagFromIntent(RefTag.discovery())
+                    .build()
+        }
+
+        fun project(project: Project, intentRefTag: RefTag?, cookieRefTag: RefTag?): ProjectTracking {
+            return ProjectTracking.builder()
+                    .project(project)
+                    .refTagFromCookie(intentRefTag)
+                    .refTagFromIntent(cookieRefTag)
                     .build()
         }
     }

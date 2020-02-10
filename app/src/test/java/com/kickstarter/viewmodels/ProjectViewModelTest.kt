@@ -1289,36 +1289,48 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val initialBackedProject = ProjectFactory.backedProject()
+        val refreshedProject = ProjectFactory.backedProject()
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+                .build()
+        setUpEnvironment(environment)
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
-        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true))
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updateFragments.assertValueCount(2)
+        this.updateFragments.assertValue(ProjectTrackingFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgePaymentSuccessfullyUpdated()
-        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true), Pair(refreshedProject, true))
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValueCount(3)
+        this.updateFragments.assertValues(ProjectTrackingFactory.project(initialBackedProject), ProjectTrackingFactory.project(refreshedProject))
     }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val initialBackedProject = ProjectFactory.backedProject()
+        val refreshedProject = ProjectFactory.backedProject()
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+                .build()
+        setUpEnvironment(environment)
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
-        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true))
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updateFragments.assertValueCount(2)
+        this.updateFragments.assertValue(ProjectTrackingFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
-        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true), Pair(refreshedProject, true))
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValueCount(3)
+        this.updateFragments.assertValues(ProjectTrackingFactory.project(initialBackedProject), ProjectTrackingFactory.project(refreshedProject))
     }
 
     @Test
@@ -1360,6 +1372,14 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApiClient {
         return object : MockApiClient() {
             override fun fetchProject(project: Project): Observable<Project> {
+                return Observable.just(refreshedProject)
+            }
+        }
+    }
+
+    private fun apiClientWithSuccessFetchingProjectFromSlug(refreshedProject: Project): MockApiClient {
+        return object : MockApiClient() {
+            override fun fetchProject(slug: String): Observable<Project> {
                 return Observable.just(refreshedProject)
             }
         }

@@ -355,11 +355,11 @@ interface PledgeFragmentViewModel {
             val screenLocation = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation? }
 
-            val projectTracking = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT_TRACKING) as ProjectTracking? }
-                    .ofType(ProjectTracking::class.java)
+            val projectData = arguments
+                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT_DATA) as ProjectData? }
+                    .ofType(ProjectData::class.java)
 
-            val project = projectTracking
+            val project = projectData
                     .map { it.project() }
 
             val pledgeReason = arguments
@@ -382,13 +382,7 @@ interface PledgeFragmentViewModel {
                     .ofType(Backing::class.java)
 
             // Mini reward card
-            Observable.combineLatest(screenLocation, reward, projectTracking) { s, r, p ->
-                PledgeData.builder()
-                        .screenLocation(s)
-                        .reward(r)
-                        .projectTracking(p)
-                        .build()
-            }
+            Observable.combineLatest(screenLocation, reward, projectData) { s, r, p -> PledgeData.with(p, r, s) }
                     .compose(bindToLifecycle())
                     .subscribe(this.startRewardShrinkAnimation)
 

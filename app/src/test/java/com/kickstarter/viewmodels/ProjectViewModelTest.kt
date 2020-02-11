@@ -19,7 +19,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectTracking
+import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -64,9 +64,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
-    private val startThanksActivity = TestSubscriber<ProjectTracking>()
+    private val startThanksActivity = TestSubscriber<ProjectData>()
     private val startVideoActivity = TestSubscriber<Project>()
-    private val updateFragments = TestSubscriber<ProjectTracking>()
+    private val updateFragments = TestSubscriber<ProjectData>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
@@ -1254,7 +1254,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
                 .reward(reward)
-                .projectTracking(ProjectTrackingFactory.project(backedProject))
+                .projectData(ProjectTrackingFactory.project(backedProject))
                 .build(), PledgeReason.UPDATE_PLEDGE))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
@@ -1281,7 +1281,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
                 .reward(reward)
-                .projectTracking(ProjectTrackingFactory.project(backedProject))
+                .projectData(ProjectTrackingFactory.project(backedProject))
                 .build(), PledgeReason.UPDATE_PAYMENT))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")

@@ -3,7 +3,7 @@ package com.kickstarter.ui.adapters
 import android.util.Pair
 import android.view.View
 import com.kickstarter.R
-import com.kickstarter.ui.data.ProjectTracking
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
@@ -24,14 +24,14 @@ class NativeCheckoutRewardsAdapter(private val delegate: Delegate) : KSAdapter()
         }
     }
 
-    fun populateRewards(projectTracking: ProjectTracking) {
+    fun populateRewards(projectData: ProjectData) {
         sections().clear()
 
-        val rewards = projectTracking.project().rewards()
+        val rewards = projectData.project().rewards()
 
         if (rewards != null) {
             addSection(Observable.from(rewards)
-                    .map { reward -> Pair.create(projectTracking, reward) }
+                    .map { reward -> Pair.create(projectData, reward) }
                     .toList().toBlocking().single()
             )
             notifyDataSetChanged()

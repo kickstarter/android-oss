@@ -160,7 +160,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val screenLocation = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD) ScreenLocation(0f, 0f, 0f, 0f) else null
         bundle.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, screenLocation)
 
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT_TRACKING, ProjectTrackingFactory.project(project.toBuilder()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PROJECT_DATA, ProjectTrackingFactory.project(project.toBuilder()
                 .deadline(DateTime.parse("2020-10-23T18:13:09Z"))
                 .build()))
         bundle.putParcelable(ArgumentsKey.PLEDGE_REWARD, reward)

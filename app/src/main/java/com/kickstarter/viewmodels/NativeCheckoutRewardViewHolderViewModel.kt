@@ -13,7 +13,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.User
-import com.kickstarter.ui.data.ProjectTracking
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import org.joda.time.DateTime
 import rx.Observable
@@ -25,7 +25,7 @@ import kotlin.math.roundToInt
 interface NativeCheckoutRewardViewHolderViewModel {
     interface Inputs {
         /** Call with a reward and project when data is bound to the view.  */
-        fun projectAndReward(projectTracking: ProjectTracking, reward: Reward)
+        fun configureWith(projectData: ProjectData, reward: Reward)
 
         /** Call when the user clicks on a reward. */
         fun rewardClicked(position: Int)
@@ -120,7 +120,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val goRewardlessPreference: BooleanPreferenceType = environment.goRewardlessPreference()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
-        private val projectTrackingAndReward = PublishSubject.create<Pair<ProjectTracking, Reward>>()
+        private val projectTrackingAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
         private val rewardClicked = PublishSubject.create<Int>()
 
         private val backersCount = BehaviorSubject.create<Int>()
@@ -295,7 +295,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
             this.projectTrackingAndReward
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
-                    .compose<Pair<ProjectTracking, Reward>>(takeWhen(this.rewardClicked))
+                    .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackSelectRewardButtonClicked(it.second, it.first.project(), it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
 
@@ -396,8 +396,8 @@ interface NativeCheckoutRewardViewHolderViewModel {
             return RewardUtils.isAvailable(project, reward)
         }
 
-        override fun projectAndReward(@NonNull projectTracking: ProjectTracking, @NonNull reward: Reward) {
-            this.projectTrackingAndReward.onNext(Pair.create(projectTracking, reward))
+        override fun configureWith(@NonNull projectData: ProjectData, @NonNull reward: Reward) {
+            this.projectTrackingAndReward.onNext(Pair.create(projectData, reward))
         }
 
         override fun rewardClicked(position: Int) {

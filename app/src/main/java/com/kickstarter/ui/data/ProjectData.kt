@@ -12,7 +12,7 @@ import com.kickstarter.models.Project
  */
 
 @AutoParcel
-abstract class ProjectTracking : Parcelable {
+abstract class ProjectData : Parcelable {
     abstract fun refTagFromIntent(): RefTag?
     abstract fun refTagFromCookie(): RefTag?
     abstract fun project(): Project
@@ -22,7 +22,7 @@ abstract class ProjectTracking : Parcelable {
         abstract fun refTagFromIntent(intentRefTag: RefTag?): Builder
         abstract fun refTagFromCookie(cookieRefTag: RefTag?): Builder
         abstract fun project(project: Project): Builder
-        abstract fun build(): ProjectTracking
+        abstract fun build(): ProjectData
     }
 
     abstract fun toBuilder(): Builder
@@ -30,7 +30,7 @@ abstract class ProjectTracking : Parcelable {
     companion object {
 
         fun builder(): Builder {
-            return AutoParcel_ProjectTracking.Builder()
+            return AutoParcel_ProjectData.Builder()
         }
     }
 }

@@ -16,7 +16,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.NativeCheckoutRewardsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectTracking
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.RewardsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
@@ -86,8 +86,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         this.viewModel.inputs.rewardClicked(screenLocation, reward)
     }
 
-    fun takeProject(projectTracking: ProjectTracking) {
-        this.viewModel.inputs.project(projectTracking)
+    fun takeProject(projectData: ProjectData) {
+        this.viewModel.inputs.project(projectData)
     }
 
     private fun addItemDecorator() {

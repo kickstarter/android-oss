@@ -810,7 +810,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 }
             }
 
-    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward, projectTracking: ProjectTracking) {
+    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward, projectData: ProjectData) {
         val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
         rewardParams.leftMargin = location.x.toInt()
         rewardParams.topMargin = location.y.toInt()
@@ -821,7 +821,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         reward_snapshot.pivotY = 0f
 
         val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_to_copy, null)
-        rewardViewHolder.bindData(Pair(projectTracking, reward))
+        rewardViewHolder.bindData(Pair(projectData, reward))
 
         reward_to_copy.post {
             pledge_root.visibility = View.VISIBLE
@@ -840,7 +840,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setInitialViewStates(pledgeData: PledgeData) {
-        pledgeData.screenLocation()?.let { positionRewardSnapshot(it, pledgeData.reward(), pledgeData.projectTracking()) }
+        pledgeData.screenLocation()?.let { positionRewardSnapshot(it, pledgeData.reward(), pledgeData.projectData()) }
         pledge_details.y = pledge_root.height.toFloat()
     }
 
@@ -850,7 +850,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             val fragment = PledgeFragment()
             val argument = Bundle()
             argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward())
-            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT_TRACKING, pledgeData.projectTracking())
+            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT_DATA, pledgeData.projectData())
             argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.screenLocation())
             argument.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
             fragment.arguments = argument

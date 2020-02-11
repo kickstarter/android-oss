@@ -18,8 +18,9 @@ import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectTracking
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
@@ -227,13 +228,13 @@ interface ProjectViewModel {
         fun startProjectUpdatesActivity(): Observable<Project>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
-        fun startThanksActivity(): Observable<ProjectTracking>
+        fun startThanksActivity(): Observable<ProjectData>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
 
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
-        fun updateFragments(): Observable<ProjectTracking>
+        fun updateFragments(): Observable<ProjectData>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -309,10 +310,10 @@ interface ProjectViewModel {
         private val startManagePledgeActivity = PublishSubject.create<Project>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Project>()
-        private val startThanksActivity = PublishSubject.create<ProjectTracking>()
+        private val startThanksActivity = PublishSubject.create<ProjectData>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
-        private val updateFragments = BehaviorSubject.create<ProjectTracking>()
+        private val updateFragments = BehaviorSubject.create<ProjectData>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -577,8 +578,8 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonContainerIsGone)
 
-            val projectTracking = Observable.combineLatest<RefTag, RefTag, Project, ProjectTracking>(refTag, cookieRefTag, currentProjectWhenFeatureEnabled)
-            { refTagFromIntent, refTagFromCookie, project -> projectTracking(refTagFromIntent, refTagFromCookie, project) }
+            val projectTracking = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProjectWhenFeatureEnabled)
+            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
 
             projectTracking
                     .filter { it.project().hasRewards() }
@@ -614,18 +615,17 @@ interface ProjectViewModel {
                     .subscribe(this.startMessagesActivity)
 
             val projectTrackingAndBackedReward = projectTracking
-                    .map { pT -> Pair(pT, pT.project().rewards()?.firstOrNull { BackingUtils.isBacked(pT.project(), it) }) }
-                    .map { projectTrackingAndReward -> projectTrackingAndReward.second?.let { Pair(projectTrackingAndReward.first, it) } }
+                    .map { pT -> BackingUtils.backedReward(pT.project())?.let { Pair(pT, it) } }
 
             projectTrackingAndBackedReward
-                    .compose(takeWhen<Pair<ProjectTracking, Reward>, Void>(this.updatePaymentClicked))
-                    .map { Pair(pledgeData(it.second,  it.first), PledgeReason.UPDATE_PAYMENT) }
+                    .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
+                    .map { Pair(pledgeData(it.second,  it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 
             projectTrackingAndBackedReward
-                    .compose(takeWhen<Pair<ProjectTracking, Reward>, Void>(this.updatePledgeClicked))
-                    .map { Pair(pledgeData(it.second,  it.first), PledgeReason.UPDATE_PLEDGE) }
+                    .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePledgeClicked))
+                    .map { Pair(pledgeData(it.second,  it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 
@@ -683,7 +683,7 @@ interface ProjectViewModel {
                     .subscribe(this.showCancelPledgeSuccess)
 
             projectTracking
-                    .compose<ProjectTracking>(takeWhen(this.pledgeSuccessfullyCreated))
+                    .compose<ProjectData>(takeWhen(this.pledgeSuccessfullyCreated))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
 
@@ -756,8 +756,8 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectStar(it) }
 
-            Observable.combineLatest<RefTag, RefTag, Project, ProjectTracking>(refTag, cookieRefTag, currentProject)
-            { refTagFromIntent, refTagFromCookie, project -> projectTracking(refTagFromIntent, refTagFromCookie, project) }
+            Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
                     .filter { it.project().hasRewards() }
                     .take(1)
                     .compose(bindToLifecycle())
@@ -814,16 +814,12 @@ interface ProjectViewModel {
             }
         }
 
-        private fun pledgeData(reward: Reward, projectTracking: ProjectTracking): PledgeData {
-            return PledgeData
-                    .builder()
-                    .reward(reward)
-                    .projectTracking(projectTracking)
-                    .build()
+        private fun pledgeData(reward: Reward, projectData: ProjectData, pledgeFlowContext: PledgeFlowContext): PledgeData {
+            return PledgeData.with(pledgeFlowContext, projectData, reward)
         }
 
-        private fun projectTracking(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectTracking {
-            return ProjectTracking
+        private fun projectData(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectData {
+            return ProjectData
                     .builder()
                     .refTagFromIntent(refTagFromIntent)
                     .refTagFromCookie(refTagFromCookie)
@@ -1083,7 +1079,7 @@ interface ProjectViewModel {
         override fun startMessagesActivity(): Observable<Project> = this.startMessagesActivity
 
         @NonNull
-        override fun startThanksActivity(): Observable<ProjectTracking> = this.startThanksActivity
+        override fun startThanksActivity(): Observable<ProjectData> = this.startThanksActivity
 
         @NonNull
         override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity
@@ -1092,7 +1088,7 @@ interface ProjectViewModel {
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity
 
         @NonNull
-        override fun updateFragments(): Observable<ProjectTracking> = this.updateFragments
+        override fun updateFragments(): Observable<ProjectData> = this.updateFragments
 
         private fun backingDetails(project: Project): String {
             return project.backing()?.let { backing ->

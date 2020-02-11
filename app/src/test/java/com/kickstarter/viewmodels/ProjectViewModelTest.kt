@@ -18,6 +18,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
@@ -1253,6 +1254,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.updatePledgeClicked()
 
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(backedProject))
                 .build(), PledgeReason.UPDATE_PLEDGE))
@@ -1280,6 +1282,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.updatePaymentClicked()
 
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(backedProject))
                 .build(), PledgeReason.UPDATE_PAYMENT))

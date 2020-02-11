@@ -5,14 +5,11 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.BackingFactory
-import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.data.ScreenLocation
+import com.kickstarter.ui.data.*
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -82,6 +79,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.inputs.rewardClicked(screenLocation, reward)
         this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
                 .screenLocation(screenLocation)
+                .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(project))
                 .build(), PledgeReason.PLEDGE))
@@ -99,6 +97,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.inputs.rewardClicked(screenLocation, reward)
         this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
                 .screenLocation(screenLocation)
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(project))
                 .build(), PledgeReason.UPDATE_REWARD))

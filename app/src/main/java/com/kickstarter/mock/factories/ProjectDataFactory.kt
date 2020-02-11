@@ -15,8 +15,8 @@ class ProjectDataFactory private constructor() {
         fun project(project: Project, intentRefTag: RefTag?, cookieRefTag: RefTag?): ProjectData {
             return ProjectData.builder()
                     .project(project)
-                    .refTagFromCookie(intentRefTag)
-                    .refTagFromIntent(cookieRefTag)
+                    .refTagFromIntent(intentRefTag)
+                    .refTagFromCookie(cookieRefTag)
                     .build()
         }
     }

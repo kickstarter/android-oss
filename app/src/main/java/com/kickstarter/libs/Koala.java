@@ -3,7 +3,6 @@ package com.kickstarter.libs;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.Reward;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
@@ -11,6 +10,7 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
+import com.kickstarter.ui.data.PledgeData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -754,17 +754,21 @@ public final class Koala {
   //endregion
 
   //region Back a project
-  public void trackSelectRewardButtonClicked(final @NonNull Reward reward, final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
-    props.putAll(KoalaUtils.pledgeProperties(reward));
+  public void trackSelectRewardButtonClicked(final @NonNull PledgeData pledgeData) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(pledgeData.projectData().project(), this.client.loggedInUser());
+    props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
 
+    final RefTag intentRefTag = pledgeData.projectData().refTagFromIntent();
     if (intentRefTag != null) {
       props.put("session_ref_tag", intentRefTag.tag());
     }
 
+    final RefTag cookieRefTag = pledgeData.projectData().refTagFromCookie();
     if (cookieRefTag != null) {
       props.put("session_referrer_credit", cookieRefTag.tag());
     }
+
+    props.put("context_pledge_flow", pledgeData.pledgeFlowContext().getTrackingString());
 
     this.client.track(LakeEvent.SELECT_REWARD_BUTTON_CLICKED, props);
   }

@@ -497,8 +497,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
-        rewardsFragment.takeProject(projectData)
-        backingFragment.takeProject(projectData)
+        rewardsFragment.configureWith(projectData)
+        backingFragment.configureWith(projectData)
     }
 
     private fun revealRewardsFragment() {

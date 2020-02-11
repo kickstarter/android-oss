@@ -158,7 +158,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(mark_as_received_checkbox.isChecked) }
     }
 
-    fun takeProject(projectData: ProjectData) {
+    fun configureWith(projectData: ProjectData) {
         this.viewModel.inputs.configureWith(projectData)
     }
 

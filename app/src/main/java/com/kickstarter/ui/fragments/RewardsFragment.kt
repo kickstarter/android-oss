@@ -86,8 +86,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         this.viewModel.inputs.rewardClicked(screenLocation, reward)
     }
 
-    fun takeProject(projectData: ProjectData) {
-        this.viewModel.inputs.project(projectData)
+    fun configureWith(projectData: ProjectData) {
+        this.viewModel.inputs.configureWith(projectData)
     }
 
     private fun addItemDecorator() {

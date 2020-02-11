@@ -79,19 +79,8 @@ class RewardsFragmentViewModel {
         }
 
         private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward, screenLocation: ScreenLocation): Pair<PledgeData, PledgeReason> {
-            val pledgeReason: PledgeReason
-            val pledgeFlowContext: PledgeFlowContext
-            when {
-                projectData.project().isBacking -> {
-                    pledgeFlowContext = PledgeFlowContext.CHANGE_REWARD
-                    pledgeReason = PledgeReason.UPDATE_REWARD
-                }
-                else -> {
-                    pledgeFlowContext = PledgeFlowContext.NEW_PLEDGE
-                    pledgeReason = PledgeReason.PLEDGE
-                }
-            }
-            val pledgeData = PledgeData.with(pledgeFlowContext, projectData, reward, screenLocation)
+            val pledgeReason = if (projectData.project().isBacking) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE
+            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward, screenLocation)
             return Pair(pledgeData, pledgeReason)
         }
 

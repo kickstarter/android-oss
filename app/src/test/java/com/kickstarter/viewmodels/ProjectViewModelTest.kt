@@ -196,7 +196,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValue(true)
         this.reloadProgressBarIsGone.assertValues(false, true)
-        this.updateFragments.assertValue(ProjectTrackingFactory.project(refreshedProject))
+        this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -249,7 +249,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
-        this.updateFragments.assertValue(ProjectTrackingFactory.project(refreshedProject))
+        this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -338,7 +338,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectActionButtonContainerIsGone.assertValue(true)
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(project, true))
         this.reloadProgressBarIsGone.assertValues(false, true)
-        this.updateFragments.assertValue(ProjectTrackingFactory.project(project))
+        this.updateFragments.assertValue(ProjectDataFactory.project(project))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -385,7 +385,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(refreshedProject, true))
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
-        this.updateFragments.assertValue(ProjectTrackingFactory.project(refreshedProject))
+        this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -1254,7 +1254,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
                 .reward(reward)
-                .projectData(ProjectTrackingFactory.project(backedProject))
+                .projectData(ProjectDataFactory.project(backedProject))
                 .build(), PledgeReason.UPDATE_PLEDGE))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
@@ -1281,7 +1281,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
                 .reward(reward)
-                .projectData(ProjectTrackingFactory.project(backedProject))
+                .projectData(ProjectDataFactory.project(backedProject))
                 .build(), PledgeReason.UPDATE_PAYMENT))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
@@ -1302,12 +1302,12 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true))
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updateFragments.assertValue(ProjectTrackingFactory.project(initialBackedProject))
+        this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgePaymentSuccessfullyUpdated()
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true), Pair(refreshedProject, true))
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValues(ProjectTrackingFactory.project(initialBackedProject), ProjectTrackingFactory.project(refreshedProject))
+        this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject), ProjectDataFactory.project(refreshedProject))
     }
 
     @Test
@@ -1325,12 +1325,12 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true))
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updateFragments.assertValue(ProjectTrackingFactory.project(initialBackedProject))
+        this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true), Pair(refreshedProject, true))
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValues(ProjectTrackingFactory.project(initialBackedProject), ProjectTrackingFactory.project(refreshedProject))
+        this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject), ProjectDataFactory.project(refreshedProject))
     }
 
     @Test

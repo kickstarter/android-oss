@@ -13,6 +13,8 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
 import com.kickstarter.models.User
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import org.joda.time.DateTime
@@ -296,8 +298,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
             this.projectTrackingAndReward
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
+                    .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackSelectRewardButtonClicked(it.second, it.first.project(), it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
+                    .subscribe { this.lake.trackSelectRewardButtonClicked(it) }
 
             projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }

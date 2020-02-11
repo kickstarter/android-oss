@@ -125,7 +125,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.startRewardExpandAnimation()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { hidePledgeSection() }
+                .subscribe { hidePledgeSection(it) }
 
         this.viewModel.outputs.snapshotIsGone()
                 .compose(bindToLifecycle())
@@ -665,16 +665,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun revealPledgeSection(pledgeData: PledgeData) {
         pledgeData.screenLocation()?.let {
             setInitialViewStates(pledgeData)
-            startPledgeAnimatorSet(true)
+            startPledgeAnimatorSet(true, it)
         }
     }
 
-    private fun hidePledgeSection() {
+    private fun hidePledgeSection(screenLocation: ScreenLocation) {
         this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
-        startPledgeAnimatorSet(false)
+        startPledgeAnimatorSet(false, screenLocation)
     }
 
-    private fun startPledgeAnimatorSet(reveal: Boolean) {
+    private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
         val initMarginX: Float
         val initMarginY: Float
         val finalMarginX: Float
@@ -686,7 +686,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val initY: Float
         val finalY: Float
 
-        val location = arguments?.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation
         val margin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin).toFloat()
         val miniRewardWidth = max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
         val miniRewardHeight = getMiniRewardHeight(miniRewardWidth, location)
@@ -849,9 +848,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         fun newInstance(pledgeData: PledgeData, pledgeReason: PledgeReason): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()
-            argument.putParcelable(ArgumentsKey.PLEDGE_REWARD, pledgeData.reward())
-            argument.putParcelable(ArgumentsKey.PLEDGE_PROJECT_DATA, pledgeData.projectData())
-            argument.putSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION, pledgeData.screenLocation())
+            argument.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, pledgeData)
             argument.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
             fragment.arguments = argument
             return fragment

@@ -18,7 +18,10 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.CardState
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.stripe.android.StripeIntentResult
 import rx.Observable
@@ -168,7 +171,7 @@ interface PledgeFragmentViewModel {
         fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>>
 
         /** Emits when we should reverse the reward card animation. */
-        fun startRewardExpandAnimation(): Observable<Void>
+        fun startRewardExpandAnimation(): Observable<ScreenLocation>
 
         /** Emits when the reward card shrink animation should start. */
         fun startRewardShrinkAnimation(): Observable<PledgeData>
@@ -319,7 +322,7 @@ interface PledgeFragmentViewModel {
         private val snapshotIsGone = BehaviorSubject.create<Boolean>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
-        private val startRewardExpandAnimation = BehaviorSubject.create<Void>()
+        private val startRewardExpandAnimation = BehaviorSubject.create<ScreenLocation>()
         private val startRewardShrinkAnimation = BehaviorSubject.create<PledgeData>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val totalAndDeadline = BehaviorSubject.create<Pair<String, String>>()
@@ -348,16 +351,18 @@ interface PledgeFragmentViewModel {
             val arguments = arguments()
                     .compose<Bundle>(takeWhen(this.onGlobalLayout))
 
-            val reward = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward? }
-                    .ofType(Reward::class.java)
+            val pledgeData = arguments
+                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
+                    .ofType(PledgeData::class.java)
 
-            val screenLocation = arguments
-                    .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation? }
+            val reward = pledgeData
+                    .map { it.reward() }
 
-            val projectData = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT_DATA) as ProjectData? }
-                    .ofType(ProjectData::class.java)
+            val screenLocation = pledgeData
+                    .map { it.screenLocation() }
+
+            val projectData = pledgeData
+                    .map { it.projectData() }
 
             val project = projectData
                     .map { it.project() }
@@ -382,11 +387,12 @@ interface PledgeFragmentViewModel {
                     .ofType(Backing::class.java)
 
             // Mini reward card
-            Observable.combineLatest(screenLocation, reward, projectData) { s, r, p -> PledgeData.with(p, r, s) }
+            pledgeData
                     .compose(bindToLifecycle())
                     .subscribe(this.startRewardShrinkAnimation)
 
-            Observable.merge(this.backPressed, this.miniRewardClicked)
+            screenLocation
+                    .compose<ScreenLocation>(takeWhen(Observable.merge(this.backPressed, this.miniRewardClicked)))
                     .compose(bindToLifecycle())
                     .subscribe(this.startRewardExpandAnimation)
 
@@ -1194,7 +1200,7 @@ interface PledgeFragmentViewModel {
         override fun startChromeTab(): Observable<String> = this.startChromeTab
 
         @NonNull
-        override fun startRewardExpandAnimation(): Observable<Void> = this.startRewardExpandAnimation
+        override fun startRewardExpandAnimation(): Observable<ScreenLocation> = this.startRewardExpandAnimation
 
         @NonNull
         override fun startRewardShrinkAnimation(): Observable<PledgeData> = this.startRewardShrinkAnimation

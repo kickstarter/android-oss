@@ -6,7 +6,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.ProjectTrackingFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.ui.data.PledgeData
@@ -37,7 +37,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(project))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
         this.backedRewardPosition.assertNoValues()
 
         val reward = RewardFactory.reward()
@@ -49,14 +49,14 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
                         .build())
                 .rewards(listOf(RewardFactory.noReward(), reward))
                 .build()
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.backedRewardPosition.assertValue(1)
 
         val backedSuccessfulProject = backedProject
                 .toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedSuccessfulProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject))
         this.backedRewardPosition.assertValue(1)
     }
 
@@ -65,7 +65,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        val projectTracking = ProjectTrackingFactory.project(project)
+        val projectTracking = ProjectDataFactory.project(project)
         this.vm.inputs.configureWith(projectTracking)
         this.project.assertValue(projectTracking)
     }
@@ -75,7 +75,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(project))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
         val screenLocation = ScreenLocation(0f, 0f, 0f, 0f)
         val reward = RewardFactory.reward()
@@ -83,7 +83,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
                 .screenLocation(screenLocation)
                 .reward(reward)
-                .projectData(ProjectTrackingFactory.project(project))
+                .projectData(ProjectDataFactory.project(project))
                 .build(), PledgeReason.PLEDGE))
     }
 
@@ -92,7 +92,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         val project = ProjectFactory.backedProject()
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(project))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
         val screenLocation = ScreenLocation(0f, 0f, 0f, 0f)
         val reward = RewardFactory.reward()
@@ -100,7 +100,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
                 .screenLocation(screenLocation)
                 .reward(reward)
-                .projectData(ProjectTrackingFactory.project(project))
+                .projectData(ProjectDataFactory.project(project))
                 .build(), PledgeReason.UPDATE_REWARD))
     }
 
@@ -112,7 +112,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(project))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
         this.rewardsCount.assertValue(2)
     }

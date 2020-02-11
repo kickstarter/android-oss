@@ -82,7 +82,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(ProjectFactory.backedProject()))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
         this.backerAvatar.assertValue("www.avatars.com/medium.jpg")
     }
 
@@ -98,7 +98,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment)
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(ProjectFactory.backedProject()))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
         this.backerName.assertValue("Nathan Squid")
     }
 
@@ -115,7 +115,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.backerNumber.assertValue("15")
     }
 
@@ -137,7 +137,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardExpiration.assertValue("08/2019")
     }
 
@@ -154,7 +154,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(true)
     }
 
@@ -172,7 +172,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(false)
     }
 
@@ -190,7 +190,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(false)
     }
 
@@ -208,7 +208,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(false)
     }
 
@@ -226,7 +226,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(true)
     }
 
@@ -244,7 +244,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardLogo.assertValue(R.drawable.apple_pay_mark)
     }
 
@@ -262,7 +262,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardLogo.assertValue(R.drawable.google_pay_mark)
     }
 
@@ -280,7 +280,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardLogo.assertValue(R.drawable.visa_md)
     }
 
@@ -298,7 +298,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardIssuer.assertValue(Either.Right(R.string.apple_pay_content_description))
     }
 
@@ -316,7 +316,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardIssuer.assertValue(Either.Right(R.string.googlepay_button_content_description))
     }
 
@@ -334,7 +334,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardIssuer.assertValue(Either.Left(Card.CardBrand.VISA))
     }
 
@@ -360,7 +360,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeAmount.assertValue("$40")
     }
 
@@ -378,7 +378,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeDate.assertValue("August 28, 2019")
     }
 
@@ -392,7 +392,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged,
                 "$20", "November 11, 2019"))
     }
@@ -407,7 +407,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged,
                 "$20", "November 11, 2019"))
     }
@@ -421,7 +421,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.You_canceled_your_pledge_for_this_project,
                 "$20", "November 11, 2019"))
     }
@@ -436,7 +436,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_collected_your_pledge_for_this_project,
                 "$20", "November 11, 2019"))
     }
@@ -451,7 +451,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.Your_pledge_was_dropped_because_of_payment_errors,
                 "$20", "November 11, 2019"))
     }
@@ -465,7 +465,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline,
                 "$20", "November 11, 2019"))
     }
@@ -479,7 +479,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_re_processing_your_pledge_pull_to_refresh,
                 "$20", "November 11, 2019"))
     }
@@ -497,7 +497,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeSummaryIsGone.assertValue(true)
     }
 
@@ -514,7 +514,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeSummaryIsGone.assertValue(false)
     }
 
@@ -533,7 +533,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        val projectTracking = ProjectTrackingFactory.project(backedProject)
+        val projectTracking = ProjectDataFactory.project(backedProject)
         this.vm.inputs.configureWith(projectTracking)
         this.projectDataAndReward.assertValue(Pair(projectTracking, reward))
     }
@@ -551,7 +551,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedCheckboxChecked.assertValue(true)
     }
 
@@ -568,7 +568,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedCheckboxChecked.assertValue(false)
     }
 
@@ -585,7 +585,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedSectionIsGone.assertValue(true)
     }
 
@@ -603,7 +603,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedSectionIsGone.assertValue(false)
     }
 
@@ -621,7 +621,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedSectionIsGone.assertValue(true)
     }
 
@@ -638,7 +638,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingAmount.assertValue("$3")
     }
 
@@ -655,7 +655,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingLocation.assertValue("Nigeria")
     }
 
@@ -672,7 +672,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingSummaryIsGone.assertValue(true)
     }
 
@@ -689,7 +689,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingSummaryIsGone.assertValue(false)
     }
 
@@ -706,13 +706,13 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         //initial project is loaded
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(ProjectFactory.backedProject()))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.vm.inputs.refreshProject()
         this.swipeRefresherProgressIsVisible.assertValue(true)
 
         //Project is refreshed
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(ProjectFactory.backedProject()))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
         this.swipeRefresherProgressIsVisible.assertValues(true, false)
     }
 
@@ -729,7 +729,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectTrackingFactory.project(backedProject))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.totalAmount.assertValue("$10.50")
     }
 

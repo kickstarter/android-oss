@@ -6,6 +6,8 @@ import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
 import org.json.JSONArray
 import org.junit.Test
@@ -281,7 +283,9 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackSelectRewardButtonClicked(reward(), project, RefTag.discovery(), RefTag.recommended())
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        lake.trackSelectRewardButtonClicked(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -289,6 +293,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertPledgeProperties()
 
         val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])

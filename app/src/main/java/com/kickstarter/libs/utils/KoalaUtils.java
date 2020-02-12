@@ -118,7 +118,7 @@ public final class KoalaUtils {
         put("is_limited_quantity", reward.limit() != null);
         put("minimum", reward.minimum());
         put("shipping_enabled", RewardUtils.isShippable(reward));
-        put("shipping_preference", RewardUtils.shippingPreference(reward));
+        put("shipping_preference", reward.shippingPreference());
       }
     };
 

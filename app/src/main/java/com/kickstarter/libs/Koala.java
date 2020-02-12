@@ -11,6 +11,7 @@ import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.PledgeData;
+import com.kickstarter.ui.data.ProjectData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -755,15 +756,16 @@ public final class Koala {
 
   //region Back a project
   public void trackSelectRewardButtonClicked(final @NonNull PledgeData pledgeData) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(pledgeData.projectData().project(), this.client.loggedInUser());
+    final ProjectData projectData = pledgeData.projectData();
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
     props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
 
-    final RefTag intentRefTag = pledgeData.projectData().refTagFromIntent();
+    final RefTag intentRefTag = projectData.refTagFromIntent();
     if (intentRefTag != null) {
       props.put("session_ref_tag", intentRefTag.tag());
     }
 
-    final RefTag cookieRefTag = pledgeData.projectData().refTagFromCookie();
+    final RefTag cookieRefTag = projectData.refTagFromCookie();
     if (cookieRefTag != null) {
       props.put("session_referrer_credit", cookieRefTag.tag());
     }

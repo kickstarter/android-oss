@@ -578,10 +578,10 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonContainerIsGone)
 
-            val projectTracking = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProjectWhenFeatureEnabled)
+            val projectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProjectWhenFeatureEnabled)
             { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
 
-            projectTracking
+            projectData
                     .filter { it.project().hasRewards() }
                     .compose(bindToLifecycle())
                     .subscribe(this.updateFragments)
@@ -614,16 +614,16 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startMessagesActivity)
 
-            val projectTrackingAndBackedReward = projectTracking
-                    .map { pT -> BackingUtils.backedReward(pT.project())?.let { Pair(pT, it) } }
+            val projectDataAndBackedReward = projectData
+                    .map { pD -> BackingUtils.backedReward(pD.project())?.let { Pair(pD, it) } }
 
-            projectTrackingAndBackedReward
+            projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
                     .map { Pair(pledgeData(it.second,  it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 
-            projectTrackingAndBackedReward
+            projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePledgeClicked))
                     .map { Pair(pledgeData(it.second,  it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
                     .compose(bindToLifecycle())
@@ -682,7 +682,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeSuccess)
 
-            projectTracking
+            projectData
                     .compose<ProjectData>(takeWhen(this.pledgeSuccessfullyCreated))
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)

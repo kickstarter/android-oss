@@ -125,24 +125,6 @@ public final class RewardUtils {
     return context.getString(R.string.discovery_baseball_card_deadline_units_days);
   }
 
-  public static String shippingPreference(final @NonNull Reward reward) {
-    final String shippingType = reward.shippingType();
-
-    if (!RewardUtils.isShippable(reward) || shippingType == null) {
-      return "none";
-    }
-
-    switch (shippingType) {
-      case Reward.SHIPPING_TYPE_ANYWHERE:
-        return "unrestricted";
-      case Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS:
-      case Reward.SHIPPING_TYPE_SINGLE_LOCATION:
-        return "restricted";
-      default:
-        return "none";
-    }
-  }
-
   /**
    * Returns a Pair representing a reward's shipping summary
    * where the first value is a StringRes Integer to be used as the shipping summary

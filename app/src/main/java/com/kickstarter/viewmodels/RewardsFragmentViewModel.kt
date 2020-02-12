@@ -27,8 +27,8 @@ class RewardsFragmentViewModel {
         /**  Emits the position of the backed reward. */
         fun backedRewardPosition(): Observable<Int>
 
-        /** Emits the current project. */
-        fun project(): Observable<ProjectData>
+        /** Emits the current [ProjectData]. */
+        fun projectData(): Observable<ProjectData>
 
         /** Emits the count of the current project's rewards. */
         fun rewardsCount(): Observable<Int>
@@ -43,7 +43,7 @@ class RewardsFragmentViewModel {
         private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
-        private val project = BehaviorSubject.create<ProjectData>()
+        private val projectData = BehaviorSubject.create<ProjectData>()
         private val rewardsCount = BehaviorSubject.create<Int>()
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
 
@@ -54,7 +54,7 @@ class RewardsFragmentViewModel {
 
             this.projectTrackingInput
                     .compose(bindToLifecycle())
-                    .subscribe(this.project)
+                    .subscribe(this.projectData)
 
             val project = this.projectTrackingInput
                     .map { it.project() }
@@ -108,7 +108,7 @@ class RewardsFragmentViewModel {
         override fun backedRewardPosition(): Observable<Int> = this.backedRewardPosition
 
         @NonNull
-        override fun project(): Observable<ProjectData> = this.project
+        override fun projectData(): Observable<ProjectData> = this.projectData
 
         @NonNull
         override fun rewardsCount(): Observable<Int> = this.rewardsCount

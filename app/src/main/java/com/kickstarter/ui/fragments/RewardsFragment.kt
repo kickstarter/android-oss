@@ -35,7 +35,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        this.viewModel.outputs.project()
+        this.viewModel.outputs.projectData()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { rewardsAdapter.populateRewards(it) }

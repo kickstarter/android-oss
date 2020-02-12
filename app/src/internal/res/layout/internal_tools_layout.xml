@@ -24,7 +24,7 @@
       android:clipToPadding="false"
       android:orientation="vertical"
       android:paddingStart="@dimen/activity_horizontal_margin"
-      android:paddingTop="@dimen/activity_vertical_margin"
+      android:paddingTop="@dimen/grid_1"
       android:paddingEnd="@dimen/activity_horizontal_margin"
       android:paddingBottom="@dimen/activity_vertical_margin">
 
@@ -81,6 +81,18 @@
             android:id="@+id/commit_sha"
             style="@style/InternalToolsValue"
             tools:text="aaaaaaaa" />
+        </TableRow>
+
+        <TableRow style="@style/InternalToolsRow">
+
+          <TextView
+            style="@style/InternalToolsKey"
+            android:text="@string/Device_ID" />
+
+          <TextView
+            android:id="@+id/device_id"
+            style="@style/InternalToolsValue"
+            tools:text="abc123" />
         </TableRow>
 
         <TableRow style="@style/InternalToolsRow">

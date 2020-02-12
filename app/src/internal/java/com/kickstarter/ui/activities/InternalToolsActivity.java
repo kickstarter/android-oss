@@ -10,6 +10,7 @@ import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -47,6 +48,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Bind(R.id.api_endpoint) TextView apiEndpoint;
   @Bind(R.id.build_date) TextView buildDate;
   @Bind(R.id.commit_sha) TextView commitSha;
+  @Bind(R.id.device_id) TextView deviceID;
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
   @Bind(R.id.version_name) TextView versionName;
@@ -155,6 +157,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     this.apiEndpoint.setText(this.apiEndpointPreference.get());
     this.buildDate.setText(this.build.buildDate().toString(DateTimeFormat.forPattern("MMM dd, yyyy h:mm:ss aa zzz")));
     this.commitSha.setText(this.build.sha());
+    this.deviceID.setText(FirebaseInstanceId.getInstance().getId());
     this.variant.setText(this.build.variant());
     this.versionCode.setText(this.build.versionCode().toString());
     this.versionName.setText(this.build.versionName());

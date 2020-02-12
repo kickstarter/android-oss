@@ -15,6 +15,7 @@
   <string name="Change_endpoint">Change API endpoint</string>
   <string name="Custom">Custom</string>
   <string name="Development_settings">Development Settings</string>
+  <string name="Device_ID">Device ID</string>
   <string name="debug_push_notifications_register_device">Register device</string>
   <string name="debug_push_notifications_device_registration">Device registration</string>
   <string name="debug_push_notifications_friend_backing">Friend backing</string>

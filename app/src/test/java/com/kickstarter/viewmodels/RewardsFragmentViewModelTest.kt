@@ -17,14 +17,14 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
     private lateinit var vm: RewardsFragmentViewModel.ViewModel
     private val backedRewardPosition = TestSubscriber.create<Int>()
-    private val project = TestSubscriber.create<ProjectData>()
+    private val projectData = TestSubscriber.create<ProjectData>()
     private val rewardsCount = TestSubscriber.create<Int>()
     private val showPledgeFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardsFragmentViewModel.ViewModel(environment)
         this.vm.outputs.backedRewardPosition().subscribe(this.backedRewardPosition)
-        this.vm.outputs.project().subscribe(this.project)
+        this.vm.outputs.projectData().subscribe(this.projectData)
         this.vm.outputs.rewardsCount().subscribe(this.rewardsCount)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
     }
@@ -58,13 +58,13 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProject() {
+    fun testProjectData() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
         val projectTracking = ProjectDataFactory.project(project)
         this.vm.inputs.configureWith(projectTracking)
-        this.project.assertValue(projectTracking)
+        this.projectData.assertValue(projectTracking)
     }
 
     @Test

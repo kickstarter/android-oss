@@ -16144,7 +16144,7 @@
   "ab_experiments": {
     "react_backer_rewards_public_release": "exempt",
     "new_project_header": "experimental",
-    "featured_reward": "control",
+    "featured_reward": "pinned_image_text_border",
     "native_checkout_v1": "exempt",
     "description_guided_prompts": "control"
   },

@@ -6,6 +6,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
@@ -242,6 +243,7 @@ interface ProjectViewModel {
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val nativeCheckoutPreference: BooleanPreferenceType = environment.nativeCheckoutPreference()
+        private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
@@ -645,8 +647,13 @@ interface ProjectViewModel {
             val currentProjectAndUser = currentProjectWhenFeatureEnabled
                     .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
 
-            currentProjectAndUser
-                    .map { ProjectViewUtils.pledgeActionButtonText(it.first, it.second) }
+            Observable.combineLatest(currentProjectAndUser, refTag)
+            { projectAndUser, ref ->
+                ProjectViewUtils.pledgeActionButtonText(
+                        projectAndUser.first,
+                        projectAndUser.second,
+                        this.optimizely.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, projectAndUser.second, ref))
+            }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonText)
@@ -791,6 +798,8 @@ interface ProjectViewModel {
         private fun eventName(projectActionButtonStringRes: Int) : String {
             return when (projectActionButtonStringRes) {
                 R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+                R.string.View_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+                R.string.See_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
                 R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
                 R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
                 else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED

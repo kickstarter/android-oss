@@ -9,6 +9,7 @@ import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.MockTrackingClient;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.mock.MockCurrentConfig;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.mock.services.MockWebClient;
@@ -31,6 +32,7 @@ import rx.observers.TestSubscriber;
 @Config(shadows = ShadowAndroidXMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
+  public TestSubscriber<String> experimentsTest;
   public TestSubscriber<String> koalaTest;
   public TestSubscriber<String> lakeTest;
   private Environment environment;
@@ -39,14 +41,12 @@ public abstract class KSRobolectricTestCase extends TestCase {
   @Before
   public void setUp() throws Exception {
     super.setUp();
-
     final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
-    final MockTrackingClient koalaTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, false);
-    final MockTrackingClient lakeTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, true);
-    this.koalaTest = new TestSubscriber<>();
-    this.lakeTest = new TestSubscriber<>();
-    koalaTrackingClient.eventNames.subscribe(this.koalaTest);
-    lakeTrackingClient.eventNames.subscribe(this.lakeTest);
+
+    final MockExperimentsClientType experimentsClientType = experimentsClient();
+    final MockTrackingClient koalaTrackingClient = koalaTrackingClient(mockCurrentConfig);
+    final MockTrackingClient lakeTrackingClient = lakeTrackingClient(mockCurrentConfig);
+
     DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
 
     this.environment = application().component().environment().toBuilder()
@@ -57,6 +57,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
       .stripe(new Stripe(context(), Secrets.StripePublishableKey.STAGING))
       .koala(new Koala(koalaTrackingClient))
       .lake(new Koala(lakeTrackingClient))
+      .optimizely(experimentsClientType)
       .build();
   }
 
@@ -86,5 +87,26 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
   protected @NonNull KSString ksString() {
     return new KSString(application().getPackageName(), application().getResources());
+  }
+
+  private MockExperimentsClientType experimentsClient() {
+    this.experimentsTest = new TestSubscriber<>();
+    final MockExperimentsClientType experimentsClientType = new MockExperimentsClientType();
+    experimentsClientType.getEventKeys().subscribe(this.experimentsTest);
+    return experimentsClientType;
+  }
+
+  private MockTrackingClient koalaTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig) {
+    final MockTrackingClient koalaTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, false);
+    this.koalaTest = new TestSubscriber<>();
+    koalaTrackingClient.eventNames.subscribe(this.koalaTest);
+    return koalaTrackingClient;
+  }
+
+  private MockTrackingClient lakeTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig) {
+    final MockTrackingClient lakeTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, true);
+    this.lakeTest = new TestSubscriber<>();
+    lakeTrackingClient.eventNames.subscribe(this.lakeTest);
+    return lakeTrackingClient;
   }
 }

@@ -26,14 +26,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_4">
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginStart="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_4"
-          android:layout_marginEnd="@dimen/grid_3"
           android:orientation="vertical">
 
           <LinearLayout
@@ -163,8 +163,6 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_gravity="center_vertical"
-          android:layout_marginStart="@dimen/grid_3"
-          android:layout_marginEnd="@dimen/grid_3"
           android:orientation="vertical"
           android:paddingBottom="@dimen/grid_2">
 

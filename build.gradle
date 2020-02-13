@@ -22,6 +22,9 @@ allprojects {
         maven {
             url "https://s3-us-west-2.amazonaws.com/si-mobile-sdks/android/"
         }
+        maven {
+            url 'http://dl.bintray.com/optimizely/optimizely'
+        }
     }
 }
 

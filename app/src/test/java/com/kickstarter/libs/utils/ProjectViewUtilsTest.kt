@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -42,6 +43,10 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
     fun testPledgeActionButtonText() {
         assertEquals(R.string.Back_this_project, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.project(), UserFactory.user()))
         assertEquals(R.string.Back_this_project, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.project(), null))
+        assertEquals(R.string.Back_this_project, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.project(), null, null))
+        assertEquals(R.string.Back_this_project, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.project(), null, OptimizelyExperiment.Variant.CONTROL))
+        assertEquals(R.string.See_the_rewards, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.project(), null, OptimizelyExperiment.Variant.VARIANT_1))
+        assertEquals(R.string.View_the_rewards, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.project(), null, OptimizelyExperiment.Variant.VARIANT_2))
 
         assertEquals(R.string.Manage, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.backedProject(), UserFactory.user()))
         assertEquals(R.string.Manage, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.backedProject(), null))

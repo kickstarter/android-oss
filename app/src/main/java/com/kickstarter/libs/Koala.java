@@ -755,6 +755,20 @@ public final class Koala {
   //endregion
 
   //region Back a project
+  public void trackProjectPagePledgeButtonClicked(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
+
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    this.client.track(LakeEvent.PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, props);
+  }
+
   public void trackSelectRewardButtonClicked(final @NonNull PledgeData pledgeData) {
     final ProjectData projectData = pledgeData.projectData();
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());

@@ -6,6 +6,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.*
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
@@ -244,6 +245,7 @@ interface ProjectViewModel {
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val nativeCheckoutPreference: BooleanPreferenceType = environment.nativeCheckoutPreference()
+        private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
@@ -649,8 +651,13 @@ interface ProjectViewModel {
             val currentProjectAndUser = currentProjectWhenFeatureEnabled
                     .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
 
-            currentProjectAndUser
-                    .map { ProjectViewUtils.pledgeActionButtonText(it.first, it.second) }
+            Observable.combineLatest(currentProjectAndUser, refTag)
+            { projectAndUser, ref ->
+                ProjectViewUtils.pledgeActionButtonText(
+                        projectAndUser.first,
+                        projectAndUser.second,
+                        this.optimizely.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, projectAndUser.second, ref))
+            }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonText)
@@ -712,6 +719,42 @@ interface ProjectViewModel {
                     .subscribe(this.heartDrawableId)
 
             //Tracking
+            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
+                    .filter { it.project().hasRewards() }
+                    .take(1)
+
+            currentProjectData
+                    .compose(bindToLifecycle())
+                    .subscribe { data ->
+                        // If a cookie hasn't been set for this ref+project then do so.
+                        if (data.refTagFromCookie() == null) {
+                            data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), this.cookieManager, this.sharedPreferences) }
+                        }
+
+                        this.koala.trackProjectShow(
+                                data.project(),
+                                data.refTagFromIntent(),
+                                RefTagUtils.storedCookieRefTagForProject(data.project(), this.cookieManager, this.sharedPreferences)
+                        )
+
+                        this.lake.trackProjectPageViewed(
+                                data.project(),
+                                data.refTagFromIntent(),
+                                RefTagUtils.storedCookieRefTagForProject(data.project(), this.cookieManager, this.sharedPreferences)
+                        )
+                    }
+
+            currentProjectData
+                    .compose<ProjectData>(takeWhen(this.nativeProjectActionButtonClicked))
+                    .filter { it.project().isLive && !it.project().isBacking }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.lake.trackProjectPagePledgeButtonClicked(it.project(),
+                                it.refTagFromIntent,
+                                RefTagUtils.storedCookieRefTagForProject(it.project, this.cookieManager, this.sharedPreferences))
+                    }
+
             this.pledgeActionButtonText
                     .map { eventName(it) }
                     .compose<Pair<String, Project>>(combineLatestPair(currentProjectWhenFeatureEnabled))
@@ -755,31 +798,6 @@ interface ProjectViewModel {
                     .mergeWith(savedProjectOnLoginSuccess)
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectStar(it) }
-
-            Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
-            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
-                    .filter { it.project().hasRewards() }
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe { data ->
-                        // If a cookie hasn't been set for this ref+project then do so.
-                        if (data.refTagFromCookie() == null) {
-                            data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), this.cookieManager, this.sharedPreferences) }
-                        }
-
-                        this.koala.trackProjectShow(
-                                data.project(),
-                                data.refTagFromIntent(),
-                                RefTagUtils.storedCookieRefTagForProject(data.project(), this.cookieManager, this.sharedPreferences)
-                        )
-
-                        this.lake.trackProjectPageViewed(
-                                data.project(),
-                                data.refTagFromIntent(),
-                                RefTagUtils.storedCookieRefTagForProject(data.project(), this.cookieManager, this.sharedPreferences)
-                        )
-                    }
-
             pushNotificationEnvelope
                     .take(1)
                     .compose(bindToLifecycle())
@@ -795,6 +813,8 @@ interface ProjectViewModel {
         private fun eventName(projectActionButtonStringRes: Int) : String {
             return when (projectActionButtonStringRes) {
                 R.string.Back_this_project -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+                R.string.View_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
+                R.string.See_the_rewards -> KoalaEvent.BACK_THIS_PROJECT_BUTTON_CLICKED
                 R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
                 R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
                 else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED

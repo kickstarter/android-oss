@@ -5,12 +5,11 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FeatureKey
-import com.kickstarter.libs.KoalaEvent
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.*
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.preferences.MockBooleanPreference
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Backing
@@ -710,6 +709,48 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLiveAndNotBacked_control() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
+        this.pledgeActionButtonText.assertValue(R.string.Back_this_project)
+    }
+
+    @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLiveAndNotBacked_variant1() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
+                .optimizely(object: MockExperimentsClientType() {
+                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
+                        return OptimizelyExperiment.Variant.VARIANT_1
+                    }
+                })
+                .build())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
+        this.pledgeActionButtonText.assertValue(R.string.See_the_rewards)
+    }
+
+    @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLiveAndNotBacked_variant2() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
+                .optimizely(object: MockExperimentsClientType() {
+                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
+                        return OptimizelyExperiment.Variant.VARIANT_2
+                    }
+                })
+                .build())
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_live)
+        this.pledgeActionButtonText.assertValue(R.string.View_the_rewards)
+    }
+
+    @Test
     fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenProjectIsEndedAndBacked() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         val backedSuccessfulProject = ProjectFactory.backedProject()
@@ -838,7 +879,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValues(Pair(true, true), Pair(false, true))
         this.goBack.assertNoValues()
         this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
-        this.lakeTest.assertValue("Project Page Viewed")
+        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
     }
 
     @Test
@@ -850,7 +891,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
-        this.lakeTest.assertValue("Project Page Viewed")
+        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
     }
 
     @Test

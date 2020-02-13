@@ -171,7 +171,7 @@ interface PledgeFragmentViewModel {
         fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>>
 
         /** Emits when we should reverse the reward card animation. */
-        fun startRewardExpandAnimation(): Observable<Void>
+        fun startRewardExpandAnimation(): Observable<ScreenLocation>
 
         /** Emits when the reward card shrink animation should start. */
         fun startRewardShrinkAnimation(): Observable<PledgeData>
@@ -322,7 +322,7 @@ interface PledgeFragmentViewModel {
         private val snapshotIsGone = BehaviorSubject.create<Boolean>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
-        private val startRewardExpandAnimation = BehaviorSubject.create<Void>()
+        private val startRewardExpandAnimation = BehaviorSubject.create<ScreenLocation>()
         private val startRewardShrinkAnimation = BehaviorSubject.create<PledgeData>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val totalAndDeadline = BehaviorSubject.create<Pair<String, String>>()
@@ -351,16 +351,21 @@ interface PledgeFragmentViewModel {
             val arguments = arguments()
                     .compose<Bundle>(takeWhen(this.onGlobalLayout))
 
-            val reward = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_REWARD) as Reward? }
-                    .ofType(Reward::class.java)
+            val pledgeData = arguments
+                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
+                    .ofType(PledgeData::class.java)
 
-            val screenLocation = arguments
-                    .map { it.getSerializable(ArgumentsKey.PLEDGE_SCREEN_LOCATION) as ScreenLocation? }
+            val reward = pledgeData
+                    .map { it.reward() }
 
-            val project = arguments
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PROJECT) as Project? }
-                    .ofType(Project::class.java)
+            val screenLocation = pledgeData
+                    .map { it.screenLocation() }
+
+            val projectData = pledgeData
+                    .map { it.projectData() }
+
+            val project = projectData
+                    .map { it.project() }
 
             val pledgeReason = arguments
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -382,11 +387,12 @@ interface PledgeFragmentViewModel {
                     .ofType(Backing::class.java)
 
             // Mini reward card
-            Observable.combineLatest(screenLocation, reward, project, ::PledgeData)
+            pledgeData
                     .compose(bindToLifecycle())
                     .subscribe(this.startRewardShrinkAnimation)
 
-            Observable.merge(this.backPressed, this.miniRewardClicked)
+            screenLocation
+                    .compose<ScreenLocation>(takeWhen(Observable.merge(this.backPressed, this.miniRewardClicked)))
                     .compose(bindToLifecycle())
                     .subscribe(this.startRewardExpandAnimation)
 
@@ -1196,7 +1202,7 @@ interface PledgeFragmentViewModel {
         override fun startChromeTab(): Observable<String> = this.startChromeTab
 
         @NonNull
-        override fun startRewardExpandAnimation(): Observable<Void> = this.startRewardExpandAnimation
+        override fun startRewardExpandAnimation(): Observable<ScreenLocation> = this.startRewardExpandAnimation
 
         @NonNull
         override fun startRewardShrinkAnimation(): Observable<PledgeData> = this.startRewardShrinkAnimation

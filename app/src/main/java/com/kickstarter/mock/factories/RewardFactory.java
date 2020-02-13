@@ -21,6 +21,7 @@ public final class RewardFactory {
       .description(description)
       .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
       .minimum(20.0f)
+      .shippingPreference("unrestricted")
       .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
       .title("Digital Bundle")
       .build();
@@ -101,6 +102,7 @@ public final class RewardFactory {
 
   public static @NonNull Reward rewardWithShipping() {
     return reward().toBuilder()
+      .shippingPreference("unrestricted")
       .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
       .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
       .build();

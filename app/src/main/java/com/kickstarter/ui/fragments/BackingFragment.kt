@@ -16,9 +16,9 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
@@ -109,7 +109,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { ViewUtils.setGone(pledge_summary, it) }
 
-        this.viewModel.outputs.projectAndReward()
+        this.viewModel.outputs.projectDataAndReward()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { bindDataToRewardViewHolder(it) }
@@ -158,15 +158,15 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(mark_as_received_checkbox.isChecked) }
     }
 
-    fun takeProject(project: Project) {
-        this.viewModel.inputs.project(project)
+    fun configureWith(projectData: ProjectData) {
+        this.viewModel.inputs.configureWith(projectData)
     }
 
     fun pledgeSuccessfullyUpdated() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }
 
-    private fun bindDataToRewardViewHolder(projectAndReward: Pair<Project, Reward>) {
+    private fun bindDataToRewardViewHolder(projectAndReward: Pair<ProjectData, Reward>) {
         val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_container, delegate = null, inset = true)
         val project = projectAndReward.first
         val reward = projectAndReward.second

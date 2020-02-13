@@ -5,6 +5,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class BackingUtils {
   private BackingUtils() {}
@@ -29,5 +30,17 @@ public final class BackingUtils {
       return false;
     }
     return RewardUtils.isShippable(reward);
+  }
+
+  public static @Nullable Reward backedReward(final @NonNull Project project) {
+    if (project.hasRewards()) {
+      for (final Reward reward : project.rewards()) {
+        if (isBacked(project, reward)) {
+          return reward;
+        }
+      }
+    }
+
+    return null;
   }
 }

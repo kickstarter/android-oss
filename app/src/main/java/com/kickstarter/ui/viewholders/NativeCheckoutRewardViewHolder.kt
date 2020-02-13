@@ -17,6 +17,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardItemsAdapter
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.NativeCheckoutRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
@@ -179,11 +180,11 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
 
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
-        val projectAndReward = requireNonNull(data as Pair<Project, Reward>)
-        val project = requireNonNull(projectAndReward.first, Project::class.java)
+        val projectAndReward = requireNonNull(data as Pair<ProjectData, Reward>)
+        val projectTracking = requireNonNull(projectAndReward.first, ProjectData::class.java)
         val reward = requireNonNull(projectAndReward.second, Reward::class.java)
 
-        this.viewModel.inputs.projectAndReward(project, reward)
+        this.viewModel.inputs.configureWith(projectTracking, reward)
     }
 
     private fun formattedExpirationString(@NonNull reward: Reward): String {

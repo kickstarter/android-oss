@@ -12,11 +12,11 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.RewardDecoration
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.NativeCheckoutRewardsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.RewardsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
@@ -35,7 +35,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        this.viewModel.outputs.project()
+        this.viewModel.outputs.projectData()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { rewardsAdapter.populateRewards(it) }
@@ -86,8 +86,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         this.viewModel.inputs.rewardClicked(screenLocation, reward)
     }
 
-    fun takeProject(project: Project) {
-        this.viewModel.inputs.project(project)
+    fun configureWith(projectData: ProjectData) {
+        this.viewModel.inputs.configureWith(projectData)
     }
 
     private fun addItemDecorator() {

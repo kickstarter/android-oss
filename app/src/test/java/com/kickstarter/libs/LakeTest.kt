@@ -6,6 +6,8 @@ import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
 import org.json.JSONArray
 import org.junit.Test
@@ -272,9 +274,47 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValues("Project Page Viewed")
     }
 
+    @Test
+    fun testPledgeProperties() {
+        val project = project()
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        lake.trackSelectRewardButtonClicked(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Select Reward Button Clicked")
+    }
+
     private fun assertContextProperties() {
         val expectedProperties = propertiesTest.value
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
+    }
+
+    private fun assertPledgeProperties() {
+        val expectedProperties = propertiesTest.value
+        assertEquals(false, expectedProperties["pledge_backer_reward_has_items"])
+        assertEquals(2L, expectedProperties["pledge_backer_reward_id"])
+        assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_time"])
+        assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_quantity"])
+        assertEquals(10.0, expectedProperties["pledge_backer_reward_minimum"])
+        assertEquals(true, expectedProperties["pledge_backer_reward_shipping_enabled"])
+        assertEquals("unrestricted", expectedProperties["pledge_backer_reward_shipping_preference"])
     }
 
     private fun assertProjectProperties(project: Project) {
@@ -355,6 +395,12 @@ class LakeTest : KSRobolectricTestCase() {
                     .commentsCount(3)
                     .location(LocationFactory.unitedStates())
                     .updatesCount(5)
+                    .build()
+
+    private fun reward() =
+            RewardFactory.rewardWithShipping().toBuilder()
+                    .id(2)
+                    .minimum(10.0)
                     .build()
 
     private fun user() =

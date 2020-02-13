@@ -29,6 +29,7 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable DateTime estimatedDeliveryOn();
   public abstract @Nullable Integer remaining();
   public abstract @Nullable List<RewardsItem> rewardsItems();
+  public abstract @Nullable String shippingPreference();
   public abstract @Nullable SingleLocation shippingSingleLocation();
   public abstract @Nullable @ShippingType String shippingType();
   public abstract @Nullable String title();
@@ -45,6 +46,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder estimatedDeliveryOn(DateTime __);
     public abstract Builder remaining(Integer __);
     public abstract Builder rewardsItems(List<RewardsItem> __);
+    public abstract Builder shippingPreference(String __);
     public abstract Builder shippingSingleLocation(SingleLocation __);
     public abstract Builder shippingType(@ShippingType String __);
     public abstract Builder title(String __);

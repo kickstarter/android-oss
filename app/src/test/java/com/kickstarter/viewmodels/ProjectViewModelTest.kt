@@ -17,7 +17,9 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -62,9 +64,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
-    private val startThanksActivity = TestSubscriber<Project>()
+    private val startThanksActivity = TestSubscriber<ProjectData>()
     private val startVideoActivity = TestSubscriber<Project>()
-    private val updateFragments = TestSubscriber<Project>()
+    private val updateFragments = TestSubscriber<ProjectData>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
@@ -194,7 +196,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialProject, true), Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValue(true)
         this.reloadProgressBarIsGone.assertValues(false, true)
-        this.updateFragments.assertValue(refreshedProject)
+        this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -247,7 +249,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 Pair(refreshedProject, true))
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
-        this.updateFragments.assertValue(refreshedProject)
+        this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -336,7 +338,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectActionButtonContainerIsGone.assertValue(true)
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(project, true))
         this.reloadProgressBarIsGone.assertValues(false, true)
-        this.updateFragments.assertValue(project)
+        this.updateFragments.assertValue(ProjectDataFactory.project(project))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -383,7 +385,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.projectAndNativeCheckoutEnabled.assertValue(Pair(refreshedProject, true))
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
-        this.updateFragments.assertValue(refreshedProject)
+        this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
         this.koalaTest.assertValue(KoalaEvent.PROJECT_PAGE)
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -1292,7 +1294,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.updatePledgeClicked()
 
-        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PLEDGE))
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
+                .reward(reward)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_PLEDGE))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
     }
@@ -1316,43 +1322,59 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.updatePaymentClicked()
 
-        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData(reward, backedProject), PledgeReason.UPDATE_PAYMENT))
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
+                .reward(reward)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_PAYMENT))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
     }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val initialBackedProject = ProjectFactory.backedProject()
+        val refreshedProject = ProjectFactory.backedProject()
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+                .build()
+        setUpEnvironment(environment)
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
-        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true))
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updateFragments.assertValueCount(2)
+        this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgePaymentSuccessfullyUpdated()
-        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true), Pair(refreshedProject, true))
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValueCount(3)
+        this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject), ProjectDataFactory.project(refreshedProject))
     }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPledge() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val initialBackedProject = ProjectFactory.backedProject()
+        val refreshedProject = ProjectFactory.backedProject()
+        val environment = environmentWithNativeCheckoutEnabled()
+                .toBuilder()
+                .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+                .build()
+        setUpEnvironment(environment)
 
         // Start the view model with a backed project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialBackedProject))
 
-        this.projectAndNativeCheckoutEnabled.assertValueCount(2)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true))
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updateFragments.assertValueCount(2)
+        this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
-        this.projectAndNativeCheckoutEnabled.assertValueCount(3)
+        this.projectAndNativeCheckoutEnabled.assertValues(Pair(initialBackedProject, true), Pair(initialBackedProject, true), Pair(refreshedProject, true))
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValueCount(3)
+        this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject), ProjectDataFactory.project(refreshedProject))
     }
 
     @Test
@@ -1394,6 +1416,14 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private fun apiClientWithSuccessFetchingProject(refreshedProject: Project): MockApiClient {
         return object : MockApiClient() {
             override fun fetchProject(project: Project): Observable<Project> {
+                return Observable.just(refreshedProject)
+            }
+        }
+    }
+
+    private fun apiClientWithSuccessFetchingProjectFromSlug(refreshedProject: Project): MockApiClient {
+        return object : MockApiClient() {
+            override fun fetchProject(slug: String): Observable<Project> {
                 return Observable.just(refreshedProject)
             }
         }

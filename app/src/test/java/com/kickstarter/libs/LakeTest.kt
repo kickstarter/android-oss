@@ -301,6 +301,33 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValues("Select Reward Button Clicked")
     }
 
+    @Test
+    fun testCheckoutProperties() {
+        val project = project()
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        lake.trackSelectRewardButtonClicked(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Pledge Submit Button Clickedd")
+    }
+
     private fun assertContextProperties() {
         val expectedProperties = propertiesTest.value
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])

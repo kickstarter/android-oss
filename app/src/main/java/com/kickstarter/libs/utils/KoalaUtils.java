@@ -1,5 +1,6 @@
 package com.kickstarter.libs.utils;
 
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -8,6 +9,9 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.data.CheckoutData;
+import com.kickstarter.ui.data.PledgeData;
+import com.kickstarter.ui.data.ProjectData;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +22,47 @@ import androidx.annotation.Nullable;
 
 public final class KoalaUtils {
   private KoalaUtils() {}
+
+  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull Reward reward) {
+    return checkoutProperties(checkoutData, reward, "checkout_");
+  }
+
+  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull Reward reward, final @NonNull String prefix) {
+    final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
+      {
+        put("id", checkoutData.id());
+        put("payment_type", checkoutData.paymentType());
+        put("revenue_in_usd_cents", checkoutData.revenueInUSDCents());
+        put("reward_estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
+        put("reward_id", reward.id());
+        put("reward_title", reward.title());
+        put("shipping_amount", checkoutData.shippingAmount());
+
+      }
+    });
+
+    return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  public static @NonNull Map<String, Object> checkoutDataProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData, final @Nullable User loggedInUser) {
+    final ProjectData projectData = pledgeData.projectData();
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), loggedInUser);
+    props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
+    props.putAll(KoalaUtils.checkoutProperties(checkoutData, pledgeData.reward()));
+
+    final RefTag intentRefTag = projectData.refTagFromIntent();
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    final RefTag cookieRefTag = projectData.refTagFromCookie();
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    props.put("context_pledge_flow", pledgeData.pledgeFlowContext().getTrackingString());
+    return props;
+  }
 
   public static @NonNull Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params) {
     return discoveryParamsProperties(params, "discover_");

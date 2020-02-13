@@ -16,5 +16,6 @@ const val SEARCH_RESULTS_LOADED = "Search Results Loaded"
 // endregion
 
 // region Back a Project
+const val PLEDGE_SUBMIT_BUTTON_CLICKED = "Pledge Submit Button Clicked"
 const val SELECT_REWARD_BUTTON_CLICKED = "Select Reward Button Clicked"
 // endregion

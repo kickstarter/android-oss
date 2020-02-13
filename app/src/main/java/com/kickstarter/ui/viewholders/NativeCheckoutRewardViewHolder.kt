@@ -4,7 +4,6 @@ import android.content.Intent
 import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
@@ -41,7 +40,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.background()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { if (!this.inset) this.view.reward_contents.setBackgroundResource(it) }
+                .subscribe { this.view.reward_contents.setBackgroundResource(it) }
 
         this.viewModel.outputs.conversionIsGone()
                 .compose(bindToLifecycle())
@@ -161,7 +160,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.backersCountIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_backers_count, this.inset || it) }
+                .subscribe { ViewUtils.setGone(this.view.reward_backers_count, it) }
 
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
@@ -171,15 +170,11 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.estimatedDeliveryIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_estimated_delivery_section, this.inset || it) }
+                .subscribe { ViewUtils.setGone(this.view.reward_estimated_delivery_section, it) }
 
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
-
-        when {
-            BooleanUtils.isTrue(this.inset) -> this.view.reward_card.setCardBackgroundColor(ContextCompat.getColor(context(), R.color.transparent))
-        }
     }
 
     override fun bindData(data: Any?) {

@@ -755,6 +755,26 @@ public final class Koala {
   //endregion
 
   //region Back a project
+  public void trackCheckoutPaymentPageViewed(final @NonNull PledgeData pledgeData) {
+    final ProjectData projectData = pledgeData.projectData();
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
+    props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
+
+    final RefTag intentRefTag = projectData.refTagFromIntent();
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    final RefTag cookieRefTag = projectData.refTagFromCookie();
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    props.put("context_pledge_flow", pledgeData.pledgeFlowContext().getTrackingString());
+
+    this.client.track(LakeEvent.CHECKOUT_PAYMENT_PAGE_VIEWED, props);
+  }
+
   public void trackProjectPagePledgeButtonClicked(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 

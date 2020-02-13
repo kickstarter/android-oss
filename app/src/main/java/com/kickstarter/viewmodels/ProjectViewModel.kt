@@ -751,8 +751,8 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.lake.trackProjectPagePledgeButtonClicked(it.project(),
-                                it.refTagFromIntent,
-                                RefTagUtils.storedCookieRefTagForProject(it.project, this.cookieManager, this.sharedPreferences))
+                                it.refTagFromIntent(),
+                                RefTagUtils.storedCookieRefTagForProject(it.project(), this.cookieManager, this.sharedPreferences))
                     }
 
             this.pledgeActionButtonText
@@ -798,6 +798,7 @@ interface ProjectViewModel {
                     .mergeWith(savedProjectOnLoginSuccess)
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackProjectStar(it) }
+
             pushNotificationEnvelope
                     .take(1)
                     .compose(bindToLifecycle())

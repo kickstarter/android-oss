@@ -5,10 +5,12 @@ import auto.parcel.AutoParcel
 
 @AutoParcel
 abstract class Checkout : Parcelable {
+    abstract fun id(): Long?
     abstract fun backing(): Backing
 
     @AutoParcel.Builder
     abstract class Builder {
+        abstract fun id(id: Long?): Builder
         abstract fun backing(backing: Backing): Builder
         abstract fun build(): Checkout
     }

@@ -891,11 +891,12 @@ interface PledgeFragmentViewModel {
                     }
                     .share()
 
-            val createOrUpdateSuccess = Observable.merge(createBackingNotification, updateBackingNotification)
+            val successfulBacking = Observable.merge(createBackingNotification, updateBackingNotification)
                     .compose(values())
+                    .map { it.backing() }
                     .filter { BooleanUtils.isFalse(it.requiresAction()) }
 
-            val successAndPledgeReason = Observable.merge(createOrUpdateSuccess,
+            val successAndPledgeReason = Observable.merge(successfulBacking,
                     this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED })
                     .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
 
@@ -919,6 +920,7 @@ interface PledgeFragmentViewModel {
 
             Observable.merge(createBackingNotification, updateBackingNotification)
                     .compose(values())
+                    .map { it.backing() }
                     .filter { BooleanUtils.isTrue(it.requiresAction()) }
                     .map { it.clientSecret() }
                     .compose(bindToLifecycle())

@@ -39,7 +39,7 @@ class RewardsFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
 
-        private val projectTrackingInput = PublishSubject.create<ProjectData>()
+        private val projectDataInput = PublishSubject.create<ProjectData>()
         private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
@@ -52,11 +52,11 @@ class RewardsFragmentViewModel {
 
         init {
 
-            this.projectTrackingInput
+            this.projectDataInput
                     .compose(bindToLifecycle())
                     .subscribe(this.projectData)
 
-            val project = this.projectTrackingInput
+            val project = this.projectDataInput
                     .map { it.project() }
 
             project
@@ -66,7 +66,7 @@ class RewardsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backedRewardPosition)
 
-            this.projectTrackingInput
+            this.projectDataInput
                     .compose<Pair<ProjectData, Pair<ScreenLocation, Reward>>>(Transformers.takePairWhen(this.rewardClicked))
                     .map { pledgeDataAndPledgeReason(it.first, it.second.second, it.second.first) }
                     .compose(bindToLifecycle())
@@ -97,7 +97,7 @@ class RewardsFragmentViewModel {
         }
 
         override fun configureWith(projectData: ProjectData) {
-            this.projectTrackingInput.onNext(projectData)
+            this.projectDataInput.onNext(projectData)
         }
 
         override fun rewardClicked(screenLocation: ScreenLocation, reward: Reward) {

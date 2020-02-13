@@ -519,7 +519,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectAndReward() {
+    fun testProjectDataAndReward() {
         val reward = RewardFactory.reward()
         val backing = BackingFactory.backing()
                 .toBuilder()
@@ -533,9 +533,9 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         setUpEnvironment(environment())
 
-        val projectTracking = ProjectDataFactory.project(backedProject)
-        this.vm.inputs.configureWith(projectTracking)
-        this.projectDataAndReward.assertValue(Pair(projectTracking, reward))
+        val projectData = ProjectDataFactory.project(backedProject)
+        this.vm.inputs.configureWith(projectData)
+        this.projectDataAndReward.assertValue(Pair(projectData, reward))
     }
 
     @Test

@@ -62,9 +62,9 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
-        val projectTracking = ProjectDataFactory.project(project)
-        this.vm.inputs.configureWith(projectTracking)
-        this.projectData.assertValue(projectTracking)
+        val projectData = ProjectDataFactory.project(project)
+        this.vm.inputs.configureWith(projectData)
+        this.projectData.assertValue(projectData)
     }
 
     @Test

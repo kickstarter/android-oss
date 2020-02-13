@@ -112,7 +112,7 @@ interface BackingFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
 
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
-        private val projectInput = PublishSubject.create<ProjectData>()
+        private val projectDataInput = PublishSubject.create<ProjectData>()
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
         private val refreshProject = PublishSubject.create<Void>()
 
@@ -129,7 +129,7 @@ interface BackingFragmentViewModel {
         private val pledgeDate = BehaviorSubject.create<String>()
         private val pledgeStatusData = BehaviorSubject.create<PledgeStatusData>()
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
-        private val projectAndReward = BehaviorSubject.create<Pair<ProjectData, Reward>>()
+        private val projectDataAndReward = BehaviorSubject.create<Pair<ProjectData, Reward>>()
         private val receivedCheckboxChecked = BehaviorSubject.create<Boolean>()
         private val receivedSectionIsGone = BehaviorSubject.create<Boolean>()
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
@@ -153,7 +153,7 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledgeSuccess)
 
-            val backedProject = this.projectInput
+            val backedProject = this.projectDataInput
                     .map { it.project() }
                     .filter { it.isBacking }
 
@@ -173,11 +173,11 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backerAvatar)
 
-            this.projectInput
+            this.projectDataInput
                     .filter { it.project().isBacking }
-                    .map { projectTracking -> BackingUtils.backedReward(projectTracking.project())?.let { Pair(projectTracking, it) } }
+                    .map { projectData -> BackingUtils.backedReward(projectData.project())?.let { Pair(projectData, it) } }
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectAndReward)
+                    .subscribe(this.projectDataAndReward)
 
             backing
                     .map { NumberUtils.format(it.sequence().toFloat()) }
@@ -362,7 +362,7 @@ interface BackingFragmentViewModel {
         }
 
         override fun configureWith(projectData: ProjectData) {
-            this.projectInput.onNext(projectData)
+            this.projectDataInput.onNext(projectData)
         }
 
         override fun pledgeSuccessfullyUpdated() {
@@ -403,7 +403,7 @@ interface BackingFragmentViewModel {
 
         override fun pledgeSummaryIsGone(): Observable<Boolean> = this.pledgeSummaryIsGone
 
-        override fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>> = this.projectAndReward
+        override fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>> = this.projectDataAndReward
 
         override fun receivedCheckboxChecked(): Observable<Boolean> = this.receivedCheckboxChecked
 

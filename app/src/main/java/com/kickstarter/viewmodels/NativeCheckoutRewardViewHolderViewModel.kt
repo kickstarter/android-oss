@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 
 interface NativeCheckoutRewardViewHolderViewModel {
     interface Inputs {
-        /** Call with a reward and project when data is bound to the view.  */
+        /** Configure with the current [ProjectData] and [Reward]. */
         fun configureWith(projectData: ProjectData, reward: Reward)
 
         /** Call when the user clicks on a reward. */
@@ -122,7 +122,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         private val goRewardlessPreference: BooleanPreferenceType = environment.goRewardlessPreference()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
-        private val projectTrackingAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
+        private val projectDataAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
         private val rewardClicked = PublishSubject.create<Int>()
 
         private val backersCount = BehaviorSubject.create<Int>()
@@ -158,13 +158,13 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         init {
 
-            val reward = this.projectTrackingAndReward
+            val reward = this.projectDataAndReward
                     .map { it.second }
 
-            val project = this.projectTrackingAndReward
+            val project = this.projectDataAndReward
                     .map { it.first.project() }
             
-            val projectAndReward = this.projectTrackingAndReward
+            val projectAndReward = this.projectDataAndReward
                     .map { Pair(it.first.project(), it.second) }
 
             projectAndReward
@@ -295,7 +295,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
 
-            this.projectTrackingAndReward
+            this.projectDataAndReward
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
                     .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
@@ -400,7 +400,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         }
 
         override fun configureWith(@NonNull projectData: ProjectData, @NonNull reward: Reward) {
-            this.projectTrackingAndReward.onNext(Pair.create(projectData, reward))
+            this.projectDataAndReward.onNext(Pair.create(projectData, reward))
         }
 
         override fun rewardClicked(position: Int) {

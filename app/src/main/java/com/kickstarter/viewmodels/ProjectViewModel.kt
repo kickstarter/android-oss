@@ -619,13 +619,13 @@ interface ProjectViewModel {
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
-                    .map { Pair(pledgeData(it.second,  it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
+                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePledgeClicked))
-                    .map { Pair(pledgeData(it.second,  it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
+                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 

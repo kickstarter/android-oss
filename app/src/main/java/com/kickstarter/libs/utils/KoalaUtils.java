@@ -1,5 +1,8 @@
 package com.kickstarter.libs.utils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
@@ -16,9 +19,6 @@ import com.kickstarter.ui.data.ProjectData;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class KoalaUtils {
   private KoalaUtils() {}
@@ -40,7 +40,6 @@ public final class KoalaUtils {
         put("reward_id", reward.id());
         put("reward_title", reward.title());
         put("shipping_amount", checkoutData.shippingAmount());
-
       }
     });
 

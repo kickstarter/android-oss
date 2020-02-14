@@ -1,8 +1,5 @@
 package com.kickstarter.libs.utils;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
@@ -19,6 +16,9 @@ import com.kickstarter.ui.data.ProjectData;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class KoalaUtils {
   private KoalaUtils() {}
@@ -48,22 +48,9 @@ public final class KoalaUtils {
   }
 
   public static @NonNull Map<String, Object> checkoutDataProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData, final @Nullable User loggedInUser) {
-    final ProjectData projectData = pledgeData.projectData();
-    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), loggedInUser);
-    props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
+    final Map<String, Object> props = KoalaUtils.pledgeDataProperties(pledgeData, loggedInUser);
     props.putAll(KoalaUtils.checkoutProperties(checkoutData, pledgeData));
 
-    final RefTag intentRefTag = projectData.refTagFromIntent();
-    if (intentRefTag != null) {
-      props.put("session_ref_tag", intentRefTag.tag());
-    }
-
-    final RefTag cookieRefTag = projectData.refTagFromCookie();
-    if (cookieRefTag != null) {
-      props.put("session_referrer_credit", cookieRefTag.tag());
-    }
-
-    props.put("context_pledge_flow", pledgeData.pledgeFlowContext().getTrackingString());
     return props;
   }
 
@@ -151,6 +138,25 @@ public final class KoalaUtils {
     };
 
     return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  public static @NonNull Map<String, Object> pledgeDataProperties(final @NonNull PledgeData pledgeData, final @Nullable User loggedInUser) {
+    final ProjectData projectData = pledgeData.projectData();
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), loggedInUser);
+    props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
+
+    final RefTag intentRefTag = projectData.refTagFromIntent();
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    final RefTag cookieRefTag = projectData.refTagFromCookie();
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    props.put("context_pledge_flow", pledgeData.pledgeFlowContext().getTrackingString());
+    return props;
   }
 
   public static @NonNull Map<String, Object> pledgeProperties(final @NonNull Reward reward) {

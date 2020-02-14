@@ -1008,6 +1008,12 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackUpdatePaymentMethodButtonClicked(it) }
 
+            pledgeData
+                    .take(1)
+                    .filter { it.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.lake.trackCheckoutPaymentPageViewed(it) }
+
             Observable.combineLatest<Double, Double, CheckoutData>(shippingAmount, total)
             { s, t -> checkoutData(s, t) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))

@@ -1,8 +1,5 @@
 package com.kickstarter.ui.fragments
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
@@ -17,13 +14,9 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
@@ -39,7 +32,6 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
@@ -48,9 +40,10 @@ import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.CardState
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
-import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
@@ -62,8 +55,6 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
-import kotlin.math.max
-import kotlin.math.min
 
 @RequiresFragmentViewModel(PledgeFragmentViewModel.ViewModel::class)
 class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), RewardCardAdapter.Delegate, ShippingRulesAdapter.Delegate {
@@ -73,9 +64,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         fun pledgeSuccessfullyCreated()
         fun pledgeSuccessfullyUpdated()
     }
-
-    private val defaultAnimationDuration = 200L
-    private var animDuration = defaultAnimationDuration
 
     private lateinit var adapter: ShippingRulesAdapter
 
@@ -87,25 +75,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val viewTreeObserver = pledge_root.viewTreeObserver
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    this@PledgeFragment.viewModel.inputs.onGlobalLayout()
-                    pledge_root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
-        }
-
         setUpCardsAdapter()
         setUpShippingAdapter()
 
         pledge_amount.onChange { this.viewModel.inputs.pledgeInput(it) }
-
-        this.animDuration = when (savedInstanceState) {
-            null -> this.defaultAnimationDuration
-            else -> 0L
-        }
 
         this.viewModel.outputs.additionalPledgeAmount()
                 .compose(bindToLifecycle())
@@ -116,21 +89,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
-
-        this.viewModel.outputs.startRewardShrinkAnimation()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { revealPledgeSection(it) }
-
-        this.viewModel.outputs.startRewardExpandAnimation()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { hidePledgeSection(it) }
-
-        this.viewModel.outputs.snapshotIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { configureUIBySnapshotVisibility(it) }
 
         this.viewModel.outputs.pledgeSectionIsGone()
                 .compose(bindToLifecycle())
@@ -463,10 +421,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.newCardButtonClicked()
     }
 
-    fun backPressed() {
-        this.viewModel.inputs.backPressed()
-    }
-
     fun cardAdded(storedCard: StoredCard) {
         this.viewModel.inputs.cardSaved(storedCard)
     }
@@ -487,13 +441,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     override fun selectCardButtonClicked(position: Int) {
         this.viewModel.inputs.selectCardButtonClicked(position)
-    }
-
-    private fun configureUIBySnapshotVisibility(gone: Boolean) {
-        val visibility = if (gone) View.GONE else View.VISIBLE
-        setVisibility(visibility, reward_snapshot, reward_to_copy, expand_icon_container)
-        ViewUtils.setInvisible(pledge_root, !gone)
-        pledge_background.alpha = if (gone) 1f else 0f
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
@@ -580,14 +527,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         }
     }
 
-    private fun setVisibility(visibility: Int, vararg views: View) {
-        context?.let {
-            for (view in views) {
-                view.visibility = visibility
-            }
-        }
-    }
-
     private fun setClickableHtml(string: String, textView: TextView) {
         val spannableBuilder = SpannableStringBuilder(ViewUtils.html(string))
         // https://stackoverflow.com/a/19989677
@@ -659,188 +598,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             cards_recycler.scrollToPosition(position)
             freezeLinearLayoutManager.setFrozen(true)
         }
-    }
-
-    //Reward card animation helper methods
-    private fun revealPledgeSection(pledgeData: PledgeData) {
-        pledgeData.screenLocation()?.let {
-            setInitialViewStates(pledgeData)
-            startPledgeAnimatorSet(true, it)
-        }
-    }
-
-    private fun hidePledgeSection(screenLocation: ScreenLocation) {
-        this@PledgeFragment.animDuration = this@PledgeFragment.defaultAnimationDuration
-        startPledgeAnimatorSet(false, screenLocation)
-    }
-
-    private fun startPledgeAnimatorSet(reveal: Boolean, location: ScreenLocation) {
-        val initMarginX: Float
-        val initMarginY: Float
-        val finalMarginX: Float
-        val finalMarginY: Float
-        val initHeight: Float
-        val initWidth: Float
-        val finalHeight: Float
-        val finalWidth: Float
-        val initY: Float
-        val finalY: Float
-
-        val margin = this.resources.getDimensionPixelSize(R.dimen.activity_vertical_margin).toFloat()
-        val miniRewardWidth = max(pledge_root.width / 3, this.resources.getDimensionPixelSize(R.dimen.mini_reward_width)).toFloat()
-        val miniRewardHeight = getMiniRewardHeight(miniRewardWidth, location)
-
-        if (reveal) {
-            initMarginX = location.x
-            initMarginY = location.y
-            finalMarginX = margin
-            finalMarginY = margin
-            initWidth = location.width
-            initHeight = location.height
-            finalWidth = miniRewardWidth
-            finalHeight = miniRewardHeight
-            initY = pledge_root.height.toFloat()
-            finalY = 0f
-            setDeliveryParams(miniRewardWidth, margin)
-        } else {
-            initMarginX = margin
-            initMarginY = margin
-            finalMarginX = location.x
-            finalMarginY = location.y
-            initWidth = miniRewardWidth
-            initHeight = miniRewardHeight
-            finalWidth = location.width
-            finalHeight = location.height
-            initY = 0f
-            finalY = pledge_root.height.toFloat()
-        }
-
-        val (startMargin, topMargin) = margin.let {
-            getMarginLeftAnimator(initMarginX, finalMarginX) to
-                    getMarginTopAnimator(initMarginY, finalMarginY)
-        }
-
-        val (width, height) = location.let {
-            getWidthAnimator(initWidth, finalWidth) to
-                    getHeightAnimator(initHeight, finalHeight)
-        }
-
-        val detailsY = getYAnimator(initY, finalY)
-
-        if (reveal) {
-            val expandRewardClickListener = View.OnClickListener { v ->
-                if (!width.isRunning) {
-                    v?.setOnClickListener(null)
-                    this.viewModel.inputs.miniRewardClicked()
-                }
-            }
-            reward_snapshot.setOnClickListener(expandRewardClickListener)
-            expand_icon_container.setOnClickListener(expandRewardClickListener)
-        } else {
-            width.addUpdateListener {
-                if (it.animatedFraction == 1f) {
-                    this@PledgeFragment.fragmentManager?.popBackStack()
-                }
-            }
-        }
-
-        AnimatorSet().apply {
-            playTogether(width, height, startMargin, topMargin, detailsY)
-            this.interpolator = FastOutSlowInInterpolator()
-            this.duration = animDuration
-            start()
-        }
-
-    }
-
-    private fun getHeightAnimator(initialValue: Float, finalValue: Float) =
-            ValueAnimator.ofFloat(initialValue, finalValue).apply {
-                addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
-                    val newHeight = it.animatedValue as Float
-                    newParams?.height = newHeight.toInt()
-                    reward_snapshot?.layoutParams = newParams
-                }
-            }
-
-    private fun getMarginLeftAnimator(initialValue: Float, finalValue: Float) =
-            ValueAnimator.ofFloat(initialValue, finalValue).apply {
-                addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
-                    val newMargin = it.animatedValue as Float
-                    newParams?.leftMargin = newMargin.toInt()
-                    reward_snapshot?.layoutParams = newParams
-                }
-            }
-
-    private fun getMarginTopAnimator(initialValue: Float, finalValue: Float): ValueAnimator =
-            ValueAnimator.ofFloat(initialValue, finalValue).apply {
-                addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
-                    val newMargin = it.animatedValue as Float
-                    newParams?.topMargin = newMargin.toInt()
-                    reward_snapshot?.layoutParams = newParams
-                }
-            }
-
-    private fun getMiniRewardHeight(miniRewardWidth: Float, location: ScreenLocation): Float {
-        val scale = miniRewardWidth / location.width
-        val scaledHeight = (location.height * scale).toInt()
-        return min(resources.getDimensionPixelSize(R.dimen.mini_reward_height), scaledHeight).toFloat()
-    }
-
-    private fun getWidthAnimator(initialValue: Float, finalValue: Float) =
-            ValueAnimator.ofFloat(initialValue, finalValue).apply {
-                addUpdateListener {
-                    val newParams = reward_snapshot?.layoutParams as CoordinatorLayout.LayoutParams?
-                    val newWidth = it.animatedValue as Float
-                    newParams?.width = newWidth.toInt()
-                    reward_snapshot?.layoutParams = newParams
-                    expand_icon_container?.alpha = if (finalValue < initialValue) animatedFraction else 1 - animatedFraction
-                }
-            }
-
-    private fun getYAnimator(initialValue: Float, finalValue: Float) =
-            ObjectAnimator.ofFloat(pledge_details, View.Y, initialValue, finalValue).apply {
-                addUpdateListener {
-                    val animatedFraction = it.animatedFraction
-                    pledge_details?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
-                    pledge_background?.alpha = if (finalValue == 0f) animatedFraction else 1 - animatedFraction
-                }
-            }
-
-    private fun positionRewardSnapshot(location: ScreenLocation, reward: Reward, projectData: ProjectData) {
-        val rewardParams = reward_snapshot.layoutParams as CoordinatorLayout.LayoutParams
-        rewardParams.leftMargin = location.x.toInt()
-        rewardParams.topMargin = location.y.toInt()
-        rewardParams.height = location.height.toInt()
-        rewardParams.width = location.width.toInt()
-        reward_snapshot.layoutParams = rewardParams
-        reward_snapshot.pivotX = 0f
-        reward_snapshot.pivotY = 0f
-
-        val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_to_copy, null)
-        rewardViewHolder.bindData(Pair(projectData, reward))
-
-        reward_to_copy.post {
-            pledge_root.visibility = View.VISIBLE
-            val bitmap = ViewUtils.getBitmap(reward_to_copy, location.width.toInt(), location.height.toInt())
-            reward_snapshot.setImageBitmap(bitmap)
-            reward_snapshot.requestFocus()
-            reward_to_copy.visibility = View.GONE
-        }
-    }
-
-    private fun setDeliveryParams(miniRewardWidth: Float, margin: Float) {
-        val deliveryParams = (delivery.layoutParams as LinearLayout.LayoutParams).apply {
-            marginStart = (miniRewardWidth + margin).toInt()
-        }
-        delivery.layoutParams = deliveryParams
-    }
-
-    private fun setInitialViewStates(pledgeData: PledgeData) {
-        pledgeData.screenLocation()?.let { positionRewardSnapshot(it, pledgeData.reward(), pledgeData.projectData()) }
-        pledge_details.y = pledge_root.height.toFloat()
     }
 
     companion object {

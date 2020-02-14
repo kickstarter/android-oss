@@ -21,7 +21,10 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.CardState
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
 import com.stripe.android.StripeIntentResult
 import junit.framework.TestCase
 import org.joda.time.DateTime
@@ -81,8 +84,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val snapshotIsGone = TestSubscriber<Boolean>()
     private val startChromeTab = TestSubscriber<String>()
     private val startLoginToutActivity = TestSubscriber<Void>()
-    private val startRewardExpandAnimation = TestSubscriber<ScreenLocation>()
-    private val startRewardShrinkAnimation = TestSubscriber<PledgeData>()
     private val totalAmount = TestSubscriber<CharSequence>()
     private val totalAndDeadline = TestSubscriber<Pair<String, String>>()
     private val totalAndDeadlineIsVisible = TestSubscriber<Void>()
@@ -140,11 +141,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showUpdatePaymentSuccess().subscribe(this.showUpdatePaymentSuccess)
         this.vm.outputs.showUpdatePledgeError().subscribe(this.showUpdatePledgeError)
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
-        this.vm.outputs.snapshotIsGone().subscribe(this.snapshotIsGone)
         this.vm.outputs.startChromeTab().subscribe(this.startChromeTab)
         this.vm.outputs.startLoginToutActivity().subscribe(this.startLoginToutActivity)
-        this.vm.outputs.startRewardExpandAnimation().subscribe(this.startRewardExpandAnimation)
-        this.vm.outputs.startRewardShrinkAnimation().subscribe(this.startRewardShrinkAnimation)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
         this.vm.outputs.totalAndDeadline().subscribe(this.totalAndDeadline)
         this.vm.outputs.totalAndDeadlineIsVisible().subscribe(this.totalAndDeadlineIsVisible)
@@ -153,18 +151,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.updatePledgeButtonIsGone().subscribe(this.updatePledgeButtonIsGone)
         this.vm.outputs.updatePledgeProgressIsGone().subscribe(this.updatePledgeProgressIsGone)
 
-        val screenLocation = if (pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD) ScreenLocation(0f, 0f, 0f, 0f) else null
         val projectData = ProjectDataFactory.project(project.toBuilder()
                 .deadline(DateTime.parse("2020-10-23T18:13:09Z"))
                 .build())
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward, screenLocation))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
         this.vm.arguments(bundle)
-
-        this.vm.inputs.onGlobalLayout()
-        this.startRewardShrinkAnimation.assertValueCount(1)
     }
 
     @Test
@@ -2011,24 +2005,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.continueButtonClicked()
 
         this.startLoginToutActivity.assertValueCount(1)
-    }
-
-    @Test
-    fun testStartRewardExpandAnimation_whenBackPressed() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.backPressed()
-
-        this.startRewardExpandAnimation.assertValueCount(1)
-    }
-
-    @Test
-    fun testStartRewardExpandAnimation_whenMiniRewardClicked() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.miniRewardClicked()
-
-        this.startRewardExpandAnimation.assertValueCount(1)
     }
 
     @Test

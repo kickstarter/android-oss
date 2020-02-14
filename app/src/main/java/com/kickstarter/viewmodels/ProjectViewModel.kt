@@ -201,7 +201,7 @@ interface ProjectViewModel {
         /** Emits when we should start the [BackingActivity].  */
         fun startBackingActivity(): Observable<Pair<Project, User>>
 
-        /** Emits when we should start the campaign [com.kickstarter.ui.activities.WebViewActivity].  */
+        /** Emits when we should start the campaign [com.kickstarter.ui.activities.CampaignDetailsActivity].  */
         fun startCampaignWebViewActivity(): Observable<Project>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.CheckoutActivity].  */

@@ -61,7 +61,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
     private val projectStarConfirmationString = R.string.project_star_confirmation
-    private val campaignString = R.string.project_subpages_menu_buttons_campaign
 
     private val animDuration = 200L
 
@@ -647,7 +646,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
-        startWebViewActivity(getString(this.campaignString), project.descriptionUrl())
+        val intent = Intent(this, CampaignDetailsActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startCreatorBioWebViewActivity(project: Project) {
@@ -700,13 +701,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .setType("text/plain")
                 .putExtra(Intent.EXTRA_TEXT, "$shareMessage $url")
         startActivity(Intent.createChooser(intent, getString(this.projectShareLabelString)))
-    }
-
-    private fun startWebViewActivity(toolbarTitle: String, url: String) {
-        val intent = Intent(this, WebViewActivity::class.java)
-                .putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle)
-                .putExtra(IntentKey.URL, url)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startLoginToutActivity() {

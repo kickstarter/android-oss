@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
@@ -26,6 +27,7 @@ import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.Either
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -49,9 +51,9 @@ import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
@@ -192,7 +194,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.rewardTitle()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { reward_title.text = it.left()?.let { stringRes -> getString(stringRes) }?: it.right() }
+                .subscribe { setRewardTitle(it) }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
@@ -509,6 +511,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val ksString = this.viewModel.environment.ksString()
         textView.contentDescription = ksString.format(getString(R.string.plus_shipping_cost), "shipping_cost", localizedAmount.toString())
         textView.text = localizedAmount
+    }
+
+    private fun setRewardTitle(stringResOrTitle: Either<Int, String>) {
+        @StringRes val stringRes = stringResOrTitle.left()
+        val title = stringResOrTitle.right()
+        reward_title.text = stringRes?.let { getString(it) }?: title
     }
 
     private fun setTextColor(colorResId: Int, vararg textViews: TextView) {

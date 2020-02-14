@@ -23,7 +23,7 @@
             android:importantForAccessibility="yes"
             android:orientation="vertical">
 
-            <include layout="@layout/fragment_pledge_section_delivery" />
+            <include layout="@layout/fragment_pledge_section_reward_summary" />
 
             <LinearLayout
                 android:layout_width="match_parent"

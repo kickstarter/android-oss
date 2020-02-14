@@ -49,7 +49,7 @@ import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_delivery.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*

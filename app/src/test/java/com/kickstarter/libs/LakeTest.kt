@@ -301,6 +301,44 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValues("Select Reward Button Clicked")
     }
 
+    @Test
+    fun testCheckoutProperties() {
+        val project = project()
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        lake.trackPledgeSubmitButtonClicked(CheckoutDataFactory.checkoutData(20.0, 30.0),
+                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+        assertCheckoutProperties()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Pledge Submit Button Clicked")
+    }
+
+    private fun assertCheckoutProperties() {
+        val expectedProperties = propertiesTest.value
+        assertEquals(30.0, expectedProperties["checkout_amount"])
+        assertNull(expectedProperties["id"])
+        assertEquals("CREDIT_CARD", expectedProperties["checkout_payment_type"])
+        assertEquals(3000L, expectedProperties["checkout_revenue_in_usd_cents"])
+        assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
+    }
+
     private fun assertContextProperties() {
         val expectedProperties = propertiesTest.value
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
@@ -308,6 +346,7 @@ class LakeTest : KSRobolectricTestCase() {
 
     private fun assertPledgeProperties() {
         val expectedProperties = propertiesTest.value
+        assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["pledge_backer_reward_estimated_delivery_on"])
         assertEquals(false, expectedProperties["pledge_backer_reward_has_items"])
         assertEquals(2L, expectedProperties["pledge_backer_reward_id"])
         assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_time"])
@@ -315,6 +354,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(10.0, expectedProperties["pledge_backer_reward_minimum"])
         assertEquals(true, expectedProperties["pledge_backer_reward_shipping_enabled"])
         assertEquals("unrestricted", expectedProperties["pledge_backer_reward_shipping_preference"])
+        assertEquals("Digital Bundle", expectedProperties["pledge_backer_reward_title"])
     }
 
     private fun assertProjectProperties(project: Project) {

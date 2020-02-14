@@ -7,6 +7,7 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
+import com.kickstarter.ui.data.CheckoutData;
 import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
@@ -758,6 +759,12 @@ public final class Koala {
     final Map<String, Object> props = KoalaUtils.pledgeDataProperties(pledgeData, this.client.loggedInUser());
 
     this.client.track(LakeEvent.CHECKOUT_PAYMENT_PAGE_VIEWED, props);
+  }
+
+  public void trackPledgeSubmitButtonClicked(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData) {
+    final Map<String, Object> props = KoalaUtils.checkoutDataProperties(checkoutData, pledgeData, this.client.loggedInUser());
+
+    this.client.track(LakeEvent.PLEDGE_SUBMIT_BUTTON_CLICKED, props);
   }
 
   public void trackProjectPagePledgeButtonClicked(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {

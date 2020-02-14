@@ -722,9 +722,9 @@ interface ProjectViewModel {
             val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
             { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
                     .filter { it.project().hasRewards() }
-                    .take(1)
 
             currentProjectData
+                    .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { data ->
                         // If a cookie hasn't been set for this ref+project then do so.

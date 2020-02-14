@@ -1,5 +1,8 @@
 package com.kickstarter.libs.utils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
@@ -9,6 +12,7 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.data.CheckoutData;
 import com.kickstarter.ui.data.PledgeData;
 import com.kickstarter.ui.data.ProjectData;
 
@@ -16,11 +20,35 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 public final class KoalaUtils {
   private KoalaUtils() {}
+
+  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData) {
+    return checkoutProperties(checkoutData, pledgeData, "checkout_");
+  }
+
+  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData, final @NonNull String prefix) {
+    final Reward reward = pledgeData.reward();
+    final Project project = pledgeData.projectData().project();
+    final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
+      {
+        put("amount", checkoutData.amount());
+        put("id", checkoutData.id());
+        put("payment_type", checkoutData.paymentType().rawValue());
+        put("revenue_in_usd_cents", Math.round(checkoutData.amount() * project.staticUsdRate() * 100));
+        put("shipping_amount", checkoutData.shippingAmount());
+      }
+    });
+
+    return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  public static @NonNull Map<String, Object> checkoutDataProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData, final @Nullable User loggedInUser) {
+    final Map<String, Object> props = KoalaUtils.pledgeDataProperties(pledgeData, loggedInUser);
+    props.putAll(KoalaUtils.checkoutProperties(checkoutData, pledgeData));
+
+    return props;
+  }
 
   public static @NonNull Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params) {
     return discoveryParamsProperties(params, "discover_");
@@ -134,6 +162,7 @@ public final class KoalaUtils {
   public static @NonNull Map<String, Object> pledgeProperties(final @NonNull Reward reward, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
+        put("estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
         put("has_items", RewardUtils.isItemized(reward));
         put("id", reward.id());
         put("is_limited_time", RewardUtils.isTimeLimited(reward));
@@ -141,6 +170,7 @@ public final class KoalaUtils {
         put("minimum", reward.minimum());
         put("shipping_enabled", RewardUtils.isShippable(reward));
         put("shipping_preference", reward.shippingPreference());
+        put("title", reward.title());
       }
     };
 

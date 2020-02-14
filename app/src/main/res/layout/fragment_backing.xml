@@ -156,7 +156,7 @@
           layout="@layout/item_reward"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          tools:visibility="gone" />
+          android:layout_marginBottom="@dimen/grid_4"/>
 
         <LinearLayout
           android:id="@+id/received_section"

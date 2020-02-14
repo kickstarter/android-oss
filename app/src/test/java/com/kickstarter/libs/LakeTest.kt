@@ -312,12 +312,14 @@ class LakeTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        lake.trackSelectRewardButtonClicked(PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+        lake.trackPledgeSubmitButtonClicked(CheckoutDataFactory.checkoutData(20.0, 30.0),
+                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
 
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
         assertPledgeProperties()
+        assertCheckoutProperties()
 
         val expectedProperties = propertiesTest.value
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
@@ -325,7 +327,19 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Pledge Submit Button Clickedd")
+        this.lakeTest.assertValues("Pledge Submit Button Clicked")
+    }
+
+    private fun assertCheckoutProperties() {
+        val expectedProperties = propertiesTest.value
+        assertEquals(30.0, expectedProperties["checkout_amount"])
+        assertNull(expectedProperties["id"])
+        assertEquals("CREDIT_CARD", expectedProperties["checkout_payment_type"])
+        assertEquals(3000L, expectedProperties["checkout_revenue_in_usd_cents"])
+        assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["checkout_reward_estimated_delivery_on"])
+        assertEquals(2L, expectedProperties["checkout_reward_id"])
+        assertEquals("Digital Bundle", expectedProperties["checkout_reward_title"])
+        assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
     }
 
     private fun assertContextProperties() {

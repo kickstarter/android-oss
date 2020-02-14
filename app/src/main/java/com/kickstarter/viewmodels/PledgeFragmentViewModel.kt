@@ -18,15 +18,13 @@ import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.CardState
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ScreenLocation
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.fragments.PledgeFragment
 import com.stripe.android.StripeIntentResult
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import type.CreditCardPaymentType
 import java.math.RoundingMode
 import java.net.CookieManager
 import kotlin.math.max
@@ -1009,10 +1007,26 @@ interface PledgeFragmentViewModel {
                     .compose<Project>(takeWhen(updatePaymentClick))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackUpdatePaymentMethodButtonClicked(it) }
+
+            Observable.combineLatest<Double, Double, CheckoutData>(shippingAmount, total)
+            { s, t -> checkoutData(s, t) }
+                    .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
+                    .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                    .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.lake.trackPledgeSubmitButtonClicked(it.first, it.second) }
         }
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {
             return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })
+        }
+
+        private fun checkoutData(shippingAmount: Double, total: Double): CheckoutData {
+            return CheckoutData.builder()
+                    .amount(total)
+                    .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                    .shippingAmount(shippingAmount)
+                    .build()
         }
 
         private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {

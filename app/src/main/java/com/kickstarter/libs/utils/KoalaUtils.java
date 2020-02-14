@@ -1,5 +1,8 @@
 package com.kickstarter.libs.utils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
@@ -17,22 +20,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 public final class KoalaUtils {
   private KoalaUtils() {}
 
-  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull Reward reward) {
-    return checkoutProperties(checkoutData, reward, "checkout_");
+  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData) {
+    return checkoutProperties(checkoutData, pledgeData, "checkout_");
   }
 
-  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull Reward reward, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData, final @NonNull String prefix) {
+    final Reward reward = pledgeData.reward();
+    final Project project = pledgeData.projectData().project();
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
       {
+        put("amount", checkoutData.amount());
         put("id", checkoutData.id());
-        put("payment_type", checkoutData.paymentType());
-        put("revenue_in_usd_cents", checkoutData.revenueInUSDCents());
+        put("payment_type", checkoutData.paymentType().rawValue());
+        put("revenue_in_usd_cents", Math.round(checkoutData.amount() * project.staticUsdRate() * 100));
         put("reward_estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
         put("reward_id", reward.id());
         put("reward_title", reward.title());
@@ -48,7 +51,7 @@ public final class KoalaUtils {
     final ProjectData projectData = pledgeData.projectData();
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), loggedInUser);
     props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
-    props.putAll(KoalaUtils.checkoutProperties(checkoutData, pledgeData.reward()));
+    props.putAll(KoalaUtils.checkoutProperties(checkoutData, pledgeData));
 
     final RefTag intentRefTag = projectData.refTagFromIntent();
     if (intentRefTag != null) {

@@ -1,5 +1,6 @@
 package com.kickstarter.libs.utils;
 
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -8,6 +9,8 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.data.PledgeData;
+import com.kickstarter.ui.data.ProjectData;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -103,6 +106,25 @@ public final class KoalaUtils {
     };
 
     return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  public static @NonNull Map<String, Object> pledgeDataProperties(final @NonNull PledgeData pledgeData, final @Nullable User loggedInUser) {
+    final ProjectData projectData = pledgeData.projectData();
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), loggedInUser);
+    props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
+
+    final RefTag intentRefTag = projectData.refTagFromIntent();
+    if (intentRefTag != null) {
+      props.put("session_ref_tag", intentRefTag.tag());
+    }
+
+    final RefTag cookieRefTag = projectData.refTagFromCookie();
+    if (cookieRefTag != null) {
+      props.put("session_referrer_credit", cookieRefTag.tag());
+    }
+
+    props.put("context_pledge_flow", pledgeData.pledgeFlowContext().getTrackingString());
+    return props;
   }
 
   public static @NonNull Map<String, Object> pledgeProperties(final @NonNull Reward reward) {

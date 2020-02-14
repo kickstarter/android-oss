@@ -289,6 +289,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -313,6 +314,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -341,6 +343,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -365,6 +368,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -416,6 +420,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertNoValues()
     }
 
     @Test
@@ -451,6 +456,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertNoValues()
     }
 
     @Test
@@ -502,6 +508,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertNoValues()
     }
 
     @Test
@@ -537,6 +544,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertNoValues()
     }
 
     @Test
@@ -567,6 +575,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertNoValues()
     }
 
     @Test
@@ -593,6 +602,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertNoValues()
     }
 
     @Test
@@ -1370,6 +1380,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked("t3st")
 
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -1485,6 +1496,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.showNewCardFragment.assertValue(project)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Add New Card Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -1495,6 +1507,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.newCardButtonClicked()
         this.showNewCardFragment.assertValue(backedProject)
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertNoValues()
     }
 
     @Test
@@ -2051,6 +2064,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -2070,6 +2084,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -2093,6 +2108,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -2119,6 +2135,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertValueCount(1)
         this.showSCAFlow.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
 
     @Test
@@ -2145,6 +2162,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
@@ -2176,6 +2194,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
@@ -2208,6 +2227,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValue("Checkout Payment Page Viewed")
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("yikes"))
 

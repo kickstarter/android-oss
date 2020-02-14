@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.MockSharedPreferences
-import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.*
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.StringUtils
@@ -65,6 +62,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val pledgeSummaryIsGone = TestSubscriber<Boolean>()
     private val pledgeTextColor = TestSubscriber<Int>()
     private val projectCurrencySymbol = TestSubscriber<String>()
+    private val rewardTitle = TestSubscriber<Either<Int, String>>()
     private val selectedShippingRule = TestSubscriber<ShippingRule>()
     private val shippingAmount = TestSubscriber<CharSequence>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
@@ -124,6 +122,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.pledgeTextColor().subscribe(this.pledgeTextColor)
         this.vm.outputs.projectCurrencySymbol().map { StringUtils.trim(it.first.toString()) }.subscribe(this.projectCurrencySymbol)
+        this.vm.outputs.rewardTitle().subscribe(this.rewardTitle)
         this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
         this.vm.outputs.shippingRulesAndProject().subscribe(this.shippingRuleAndProject)
@@ -1364,6 +1363,72 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
+    }
+
+    @Test
+    fun testRewardTitle_forRewardWithTitle() {
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .title("Coolest reward")
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(20.0)
+                .shippingAmount(0f)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
+
+        this.rewardTitle.assertValue(Either.Right("Coolest reward"))
+    }
+
+    @Test
+    fun testRewardTitle_forRewardWithNullTitle() {
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .title(null)
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(20.0)
+                .shippingAmount(0f)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
+
+        this.rewardTitle.assertValue(Either.Left(R.string.Pledge_without_a_reward))
+    }
+
+    @Test
+    fun testRewardTitle_forNoReward() {
+        val reward = RewardFactory.noReward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(20.0)
+                .shippingAmount(0f)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
+
+        this.rewardTitle.assertValue(Either.Left(R.string.Pledge_without_a_reward))
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
@@ -187,6 +188,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
+
+        this.viewModel.outputs.rewardTitle()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { reward_title.text = it.left()?.let { stringRes -> getString(stringRes) }?: it.right() }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
@@ -559,6 +565,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setHtmlStrings(baseUrl: String) {
         val termsOfUseUrl = UrlUtils.appendPath(baseUrl, HelpActivity.TERMS_OF_USE)
         val cookiePolicyUrl = UrlUtils.appendPath(baseUrl, HelpActivity.COOKIES)
@@ -573,11 +580,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         setClickableHtml(agreementWithUrls, pledge_agreement)
 
         val trustUrl = UrlUtils.appendPath(baseUrl, "trust")
+        val accountabilityLink = "<a href=$trustUrl>"+ getString(R.string.Learn_more_about_accountability)+"</a>"
+        val accountabilityWithUrl = "${getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life)} $accountabilityLink"
 
-        val kickstarterIsNotAStore = getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability)
-        val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)
-
-        setClickableHtml(accountabilityWithUrls, accountability)
+        setClickableHtml(accountabilityWithUrl, accountability)
     }
 
     private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {

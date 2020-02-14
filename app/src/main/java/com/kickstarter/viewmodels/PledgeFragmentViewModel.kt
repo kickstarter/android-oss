@@ -6,6 +6,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
+import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
@@ -163,6 +164,9 @@ interface PledgeFragmentViewModel {
         /** Emits the currency symbol string of the project. */
         fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>>
 
+        /** Emits the title of the current reward. */
+        fun rewardTitle(): Observable<Either<Int, String>>
+
         /** Emits the currently selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
 
@@ -250,7 +254,6 @@ interface PledgeFragmentViewModel {
         private val linkClicked = PublishSubject.create<String>()
         private val miniRewardClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
-        private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<String>()
         private val pledgeInput = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
@@ -286,6 +289,7 @@ interface PledgeFragmentViewModel {
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeTextColor = BehaviorSubject.create<Int>()
         private val projectCurrencySymbol = BehaviorSubject.create<Pair<SpannableString, Boolean>>()
+        private val rewardTitle = BehaviorSubject.create<Either<Int, String>>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
@@ -360,7 +364,19 @@ interface PledgeFragmentViewModel {
                     .map { it.first.backing() }
                     .ofType(Backing::class.java)
 
-            // Estimated delivery section
+            // Reward summary section
+            reward
+                    .map<Either<Int, String>> {
+                        when {
+                            RewardUtils.isNoReward(it) -> Either.Left(R.string.Pledge_without_a_reward)
+                            else -> it.title()?.let { title -> Either.Right<Int, String>(title) }
+                                    ?: Either.Left(R.string.Pledge_without_a_reward)
+                        }
+                    }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardTitle)
+
             reward
                     .map { it.estimatedDeliveryOn() }
                     .filter { ObjectUtils.isNotNull(it) }
@@ -1108,6 +1124,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>> = this.projectCurrencySymbol
+
+        @NonNull
+        override fun rewardTitle(): Observable<Either<Int, String>> = this.rewardTitle
 
         @NonNull
         override fun selectedShippingRule(): Observable<ShippingRule> = this.selectedShippingRule

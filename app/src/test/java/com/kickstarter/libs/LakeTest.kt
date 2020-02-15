@@ -342,7 +342,7 @@ class LakeTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        lake.trackPledgeSubmitButtonClicked(CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
+        lake.trackThanksPageViewed(CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
                 PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
 
         assertSessionProperties(user)

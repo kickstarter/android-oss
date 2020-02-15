@@ -3,10 +3,14 @@ package com.kickstarter.ui.adapters;
 import android.util.Pair;
 import android.view.View;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.RewardUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
@@ -14,8 +18,6 @@ import com.kickstarter.ui.viewholders.RewardViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 import rx.Observable;
 
 public final class ProjectAdapter extends KSAdapter {
@@ -38,10 +40,11 @@ public final class ProjectAdapter extends KSAdapter {
   /**
    * Populate adapter data when we know we're working with a Project object.
    */
-  public void takeProject(final @NonNull Project project, final @NonNull Boolean nativeCheckoutEnabled) {
+  public void takeProject(final @NonNull ProjectData projectData, final @NonNull Boolean nativeCheckoutEnabled) {
     sections().clear();
-    sections().add(Collections.singletonList(project));
+    sections().add(Collections.singletonList(projectData));
 
+    final Project project = projectData.project();
     final List<Reward> rewards = project.rewards();
     if (rewards != null && !nativeCheckoutEnabled) {
       addSection(Observable.from(rewards)

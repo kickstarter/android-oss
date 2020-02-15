@@ -2,6 +2,8 @@ package com.kickstarter.viewmodels;
 
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.Config;
@@ -17,6 +19,7 @@ import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.LocationFactory;
+import com.kickstarter.mock.factories.ProjectDataFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.factories.VideoFactory;
@@ -33,7 +36,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
@@ -137,7 +139,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testCreatorDataEmits() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.avatarPhotoUrl.assertValues(project.creator().avatar().medium());
     this.creatorNameTextViewText.assertValues(project.creator().name());
@@ -151,7 +153,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.backingViewGroupIsGone.assertValues(false);
     this.featuredViewGroupIsGone.assertValues(true);
@@ -167,7 +169,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.backingViewGroupIsGone.assertValues(false);
     this.featuredTextViewRootCategory.assertNoValues();
@@ -186,7 +188,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertValues(category.root().name());
@@ -202,7 +204,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertNoValues();
@@ -219,7 +221,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.playButtonIsGone.assertValues(true);
   }
 
@@ -231,7 +233,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.playButtonIsGone.assertValues(false);
   }
 
@@ -244,7 +246,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment());
 
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.percentageFundedProgress.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
     this.percentageFundedProgressBarIsGone.assertValues(false);
   }
@@ -258,7 +260,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment());
 
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.percentageFundedProgressBarIsGone.assertValues(true);
   }
 
@@ -311,7 +313,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .currentUser(new MockCurrentUser(creator))
       .build();
     setUpEnvironment(environment);
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectDashboardButtonText.assertValue(R.string.View_progress);
   }
@@ -328,7 +330,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .currentUser(new MockCurrentUser(creator))
       .build();
     setUpEnvironment(environment);
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectDashboardButtonText.assertValue(R.string.View_dashboard);
   }
@@ -336,7 +338,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testProjectDashboardContainerIsGone_whenCurrentUserIsNotProjectCreator() {
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectFactory.project());
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.projectDashboardContainerIsGone.assertValue(true);
   }
@@ -353,7 +355,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .currentUser(new MockCurrentUser(creator))
       .build();
     setUpEnvironment(environment);
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectDashboardContainerIsGone.assertValue(false);
   }
@@ -372,7 +374,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .updatesCount(10)
       .build();
 
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.blurbTextViewText.assertValues(project.blurb());
     this.categoryTextViewText.assertValues(category.name());
@@ -396,7 +398,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectDisclaimerGoalReachedDateTime.assertValueCount(1);
     this.projectDisclaimerTextViewIsGone.assertValues(false);
@@ -413,7 +415,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectDisclaimerGoalNotReachedString.assertValueCount(1);
     this.projectDisclaimerTextViewIsGone.assertValues(false);
@@ -423,7 +425,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectDisclaimer_NoDisclaimer() {
     final Project project = ProjectFactory.successfulProject();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     // Disclaimer is not shown for completed projects.
     this.projectDisclaimerTextViewIsGone.assertValues(true);
@@ -436,7 +438,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .launchedAt(null)
       .build();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDate.assertNoValues();
   }
@@ -448,7 +450,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .launchedAt(DateTime.parse("2019-11-05T14:21:42Z"))
       .build();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDate.assertValue("November 5, 2019");
   }
@@ -465,7 +467,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .currentUser(new MockCurrentUser(creator))
       .build();
     setUpEnvironment(environment);
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDateIsGone.assertValue(false);
   }
@@ -474,7 +476,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectLaunchDateIsGone_whenCurrentUserIsNotProjectCreator() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDateIsGone.assertValue(true);
   }
@@ -486,7 +488,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .launchedAt(null)
       .build();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDateIsGone.assertValue(true);
   }
@@ -501,7 +503,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     // On click listener should be set for view with > 2 friends.
     this.setProjectSocialClickListener.assertValueCount(1);
@@ -523,7 +525,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectSocialImageViewIsGone.assertValues(true);
     this.projectSocialImageViewUrl.assertNoValues();
@@ -541,7 +543,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectSocialImageViewIsGone.assertValues(true);
     this.projectSocialImageViewUrl.assertNoValues();
@@ -561,7 +563,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     // On click listener should be not set for view with < 2 friends.
     this.setProjectSocialClickListener.assertNoValues();
@@ -580,7 +582,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -595,7 +597,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertNoValues();
     this.projectStateViewGroupIsGone.assertValues(true);
@@ -613,7 +615,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.green_alpha_50);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -628,7 +630,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -646,7 +648,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
 
     setUpEnvironment(environment());
-    this.vm.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -657,7 +659,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectStatsEmit() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.backersCountTextViewText.assertValues(NumberUtils.format(project.backersCount()));
     this.deadlineCountdownTextViewText.assertValues(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
@@ -673,7 +675,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     // Set the current config for a US user. KSCurrency needs this config for conversions.
     setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     // USD conversion shown for non US project.
     this.conversionPledgedAndGoalText.assertValueCount(1);
@@ -692,7 +694,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     currentConfig.config(config);
 
     setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
-    this.vm.inputs.configureWith(project);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     // USD conversion not shown for US project.
     this.conversionTextViewIsGone.assertValue(true);

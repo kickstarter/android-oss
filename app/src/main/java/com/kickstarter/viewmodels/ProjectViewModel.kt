@@ -160,7 +160,7 @@ interface ProjectViewModel {
 
         /** Emits a project and whether the native checkout feature is enabled. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api. */
-        fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>>
+        fun projectDataAndNativeCheckoutEnabled(): Observable<Pair<ProjectData, Boolean>>
 
         /** Emits a boolean that determines if the reload project container should be visible. */
         fun reloadProjectContainerIsGone(): Observable<Boolean>
@@ -290,7 +290,7 @@ interface ProjectViewModel {
         private val prelaunchUrl = BehaviorSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
-        private val projectAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<Project, Boolean>>()
+        private val projectDataAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<ProjectData, Boolean>>()
         private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
@@ -461,10 +461,13 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showSavedPrompt)
 
-            currentProject
-                    .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
+            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
+
+            currentProjectData
+                    .compose<Pair<ProjectData, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectAndNativeCheckoutEnabled)
+                    .subscribe(this.projectDataAndNativeCheckoutEnabled)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -719,11 +722,10 @@ interface ProjectViewModel {
                     .subscribe(this.heartDrawableId)
 
             //Tracking
-            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
-            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
+            val currentFullProjectData = currentProjectData
                     .filter { it.project().hasRewards() }
 
-            currentProjectData
+            currentFullProjectData
                     .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { data ->
@@ -745,7 +747,7 @@ interface ProjectViewModel {
                         )
                     }
 
-            currentProjectData
+            currentFullProjectData
                     .compose<ProjectData>(takeWhen(this.nativeProjectActionButtonClicked))
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
@@ -1034,7 +1036,7 @@ interface ProjectViewModel {
         override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
 
         @NonNull
-        override fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>> = this.projectAndNativeCheckoutEnabled
+        override fun projectDataAndNativeCheckoutEnabled(): Observable<Pair<ProjectData, Boolean>> = this.projectDataAndNativeCheckoutEnabled
 
         @NonNull
         override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone

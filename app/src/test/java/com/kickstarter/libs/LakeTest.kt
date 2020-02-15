@@ -358,7 +358,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Thanks Page Viewed")
     }
 
     private fun assertCheckoutProperties() {

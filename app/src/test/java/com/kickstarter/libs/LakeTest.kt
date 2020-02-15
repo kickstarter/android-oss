@@ -322,6 +322,37 @@ class LakeTest : KSRobolectricTestCase() {
         assertCheckoutProperties()
 
         val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["checkout_id"])
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Pledge Submit Button Clicked")
+    }
+
+    @Test
+    fun testSuccessfulCheckoutProperties() {
+        val project = project()
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        lake.trackPledgeSubmitButtonClicked(CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
+                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+        assertCheckoutProperties()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(3L, expectedProperties["checkout_id"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -333,7 +364,6 @@ class LakeTest : KSRobolectricTestCase() {
     private fun assertCheckoutProperties() {
         val expectedProperties = propertiesTest.value
         assertEquals(30.0, expectedProperties["checkout_amount"])
-        assertNull(expectedProperties["id"])
         assertEquals("CREDIT_CARD", expectedProperties["checkout_payment_type"])
         assertEquals(3000L, expectedProperties["checkout_revenue_in_usd_cents"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount"])

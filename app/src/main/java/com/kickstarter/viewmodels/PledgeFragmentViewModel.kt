@@ -205,7 +205,7 @@ interface PledgeFragmentViewModel {
         fun showPledgeError(): Observable<Void>
 
         /** Emits when the creating backing mutation was successful. */
-        fun showPledgeSuccess(): Observable<Void>
+        fun showPledgeSuccess(): Observable<Pair<CheckoutData, PledgeData>>
 
         /** Emits when we should show the SCA flow with the client secret. */
         fun showSCAFlow(): Observable<String>
@@ -311,7 +311,7 @@ interface PledgeFragmentViewModel {
         private val showNewCardFragment = PublishSubject.create<Project>()
         private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = PublishSubject.create<Void>()
-        private val showPledgeSuccess = PublishSubject.create<Void>()
+        private val showPledgeSuccess = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val showSCAFlow = PublishSubject.create<String>()
         private val showUpdatePaymentError = PublishSubject.create<Void>()
         private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
@@ -895,18 +895,26 @@ interface PledgeFragmentViewModel {
                     }
                     .share()
 
-            val successfulBacking = Observable.merge(createBackingNotification, updateBackingNotification)
+            val checkoutResult = Observable.merge(createBackingNotification, updateBackingNotification)
                     .compose(values())
+
+            val successfulSCACheckout = checkoutResult
+                    .compose<Checkout>(takeWhen(this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED }))
+
+            val successfulCheckout = checkoutResult
+                    .filter { BooleanUtils.isFalse(it.backing().requiresAction()) }
+
+            val successfulBacking = successfulCheckout
                     .map { it.backing() }
-                    .filter { BooleanUtils.isFalse(it.requiresAction()) }
 
             val successAndPledgeReason = Observable.merge(successfulBacking,
                     this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED })
                     .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
 
-            successAndPledgeReason
-                    .filter { it.second == PledgeReason.PLEDGE }
-                    .compose(ignoreValues())
+            Observable.combineLatest<Double, Double, Checkout, CheckoutData>(shippingAmount, total, Observable.merge(successfulCheckout, successfulSCACheckout))
+            { s, t, c -> checkoutData(s, t, c) }
+                    .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
+                    .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeSuccess)
 
@@ -1015,7 +1023,7 @@ interface PledgeFragmentViewModel {
                     .subscribe { this.lake.trackCheckoutPaymentPageViewed(it) }
 
             Observable.combineLatest<Double, Double, CheckoutData>(shippingAmount, total)
-            { s, t -> checkoutData(s, t) }
+            { s, t -> checkoutData(s, t, null) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
                     .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
@@ -1027,9 +1035,10 @@ interface PledgeFragmentViewModel {
             return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })
         }
 
-        private fun checkoutData(shippingAmount: Double, total: Double): CheckoutData {
+        private fun checkoutData(shippingAmount: Double, total: Double, checkout: Checkout?): CheckoutData {
             return CheckoutData.builder()
                     .amount(total)
+                    .id(checkout?.id())
                     .paymentType(CreditCardPaymentType.CREDIT_CARD)
                     .shippingAmount(shippingAmount)
                     .build()
@@ -1198,7 +1207,7 @@ interface PledgeFragmentViewModel {
         override fun showPledgeError(): Observable<Void> = this.showPledgeError
 
         @NonNull
-        override fun showPledgeSuccess(): Observable<Void> = this.showPledgeSuccess
+        override fun showPledgeSuccess(): Observable<Pair<CheckoutData, PledgeData>> = this.showPledgeSuccess
 
         @NonNull
         override fun showSCAFlow(): Observable<String> = this.showSCAFlow

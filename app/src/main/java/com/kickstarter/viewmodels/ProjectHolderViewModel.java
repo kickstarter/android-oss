@@ -224,9 +224,7 @@ public interface ProjectHolderViewModel {
       this.blurbTextViewText = project.map(Project::blurb);
 
       this.projectData
-              .filter(pD -> !pD.project().isBacking() && pD.project().isLive())
               .compose(combineLatestPair(this.currentUser.observable()))
-              .take(1)
               .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
               .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
               .compose(bindToLifecycle())

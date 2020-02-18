@@ -11,11 +11,13 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.mock.MockCurrentConfig;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.LocationFactory;
@@ -44,6 +46,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> backersCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> backingViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> blurbTextViewText = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> blurbVariantIsVisible = new TestSubscriber<>();
   private final TestSubscriber<String> categoryTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> commentsCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, String>> conversionPledgedAndGoalText = new TestSubscriber<>();
@@ -92,6 +95,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.backersCountTextViewText().subscribe(this.backersCountTextViewText);
     this.vm.outputs.backingViewGroupIsGone().subscribe(this.backingViewGroupIsGone);
     this.vm.outputs.blurbTextViewText().subscribe(this.blurbTextViewText);
+    this.vm.outputs.blurbVariantIsVisible().subscribe(this.blurbVariantIsVisible);
     this.vm.outputs.categoryTextViewText().subscribe(this.categoryTextViewText);
     this.vm.outputs.commentsCountTextViewText().subscribe(this.commentsCountTextViewText);
     this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.conversionPledgedAndGoalText);
@@ -133,6 +137,41 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
+  }
+
+  @Test
+  public void testBlurbVariantIsVisible_whenControl() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    this.blurbVariantIsVisible.assertValue(false);
+  }
+
+  @Test
+  public void testBlurbVariantIsVisible_whenVariant1() {
+    final Project project = ProjectFactory.project();
+    final Environment environment = environment()
+            .toBuilder()
+            .optimizely(new MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
+            .build();
+    setUpEnvironment(environment);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    this.blurbVariantIsVisible.assertValue(true);
+  }
+
+  @Test
+  public void testBlurbVariantIsVisible_whenVariant2() {
+    final Project project = ProjectFactory.project();
+    final Environment environment = environment()
+            .toBuilder()
+            .optimizely(new MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
+            .build();
+    setUpEnvironment(environment);
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    this.blurbVariantIsVisible.assertValue(true);
   }
 
   @Test

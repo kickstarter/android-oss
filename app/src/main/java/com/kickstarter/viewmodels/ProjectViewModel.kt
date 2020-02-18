@@ -18,10 +18,7 @@ import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
@@ -79,7 +76,7 @@ interface ProjectViewModel {
         fun pledgeSuccessfullyCancelled()
 
         /** Call when the pledge has been successfully created.  */
-        fun pledgeSuccessfullyCreated()
+        fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>)
 
         /** Call when the pledge has been successfully updated. */
         fun pledgeSuccessfullyUpdated()
@@ -229,7 +226,7 @@ interface ProjectViewModel {
         fun startProjectUpdatesActivity(): Observable<Project>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
-        fun startThanksActivity(): Observable<ProjectData>
+        fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
@@ -263,7 +260,7 @@ interface ProjectViewModel {
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
-        private val pledgeSuccessfullyCreated = PublishSubject.create<Void>()
+        private val pledgeSuccessfullyCreated = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeToolbarNavigationClicked = PublishSubject.create<Void>()
         private val refreshProject = PublishSubject.create<Void>()
@@ -312,7 +309,7 @@ interface ProjectViewModel {
         private val startManagePledgeActivity = PublishSubject.create<Project>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Project>()
-        private val startThanksActivity = PublishSubject.create<ProjectData>()
+        private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
@@ -415,7 +412,7 @@ interface ProjectViewModel {
                     .share()
 
             val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled,
-                    this.pledgeSuccessfullyCreated,
+                    this.pledgeSuccessfullyCreated.compose(ignoreValues()),
                     this.pledgeSuccessfullyUpdated,
                     this.pledgePaymentSuccessfullyUpdated,
                     this.refreshProject)
@@ -689,8 +686,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeSuccess)
 
-            projectData
-                    .compose<ProjectData>(takeWhen(this.pledgeSuccessfullyCreated))
+            this.pledgeSuccessfullyCreated
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
 
@@ -908,8 +904,8 @@ interface ProjectViewModel {
             this.pledgeSuccessfullyCancelled.onNext(null)
         }
 
-        override fun pledgeSuccessfullyCreated() {
-            this.pledgeSuccessfullyCreated.onNext(null)
+        override fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>) {
+            this.pledgeSuccessfullyCreated.onNext(checkoutDataAndPledgeData)
         }
 
         override fun pledgeSuccessfullyUpdated() {
@@ -1100,7 +1096,7 @@ interface ProjectViewModel {
         override fun startMessagesActivity(): Observable<Project> = this.startMessagesActivity
 
         @NonNull
-        override fun startThanksActivity(): Observable<ProjectData> = this.startThanksActivity
+        override fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>> = this.startThanksActivity
 
         @NonNull
         override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity

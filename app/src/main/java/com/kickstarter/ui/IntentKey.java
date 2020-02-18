@@ -9,6 +9,7 @@ public final class IntentKey {
    */
   public static final String BACKER = "com.kickstarter.kickstarter.intent_backer";
   public static final String BACKING = "com.kickstarter.kickstarter.intent_backing";
+  public static final String CHECKOUT_DATA = "com.kickstarter.kickstarter.intent_checkout_data";
   public static final String DISCOVERY_PARAMS = "com.kickstarter.kickstarter.intent_discovery_params";
   public static final String EDITORIAL = "com.kickstarter.kickstarter.intent_editorial";
   public static final String EMAIL = "com.kickstarter.kickstarter.intent_email";
@@ -26,6 +27,7 @@ public final class IntentKey {
   public static final String MESSAGE_THREAD = "com.kickstarter.kickstarter.intent_message_thread";
   public static final String NATIVE_CHECKOUT_ENABLED = "com.kickstarter.kickstarter.intent_native_checkout_enabled";
   public static final String PASSWORD = "com.kickstarter.kickstarter.intent_password";
+  public static final String PLEDGE_DATA = "com.kickstarter.kickstarter.intent_pledge_data";
   public static final String PROJECT = "com.kickstarter.kickstarter.intent_project";
   public static final String PROJECT_PARAM = "com.kickstarter.kickstarter.intent_project_param";
   public static final String REF_TAG = "com.kickstarter.kickstarter.ref_tag";

@@ -16,10 +16,7 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -64,7 +61,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val startManagePledgeActivity = TestSubscriber<Project>()
     private val startMessagesActivity = TestSubscriber<Project>()
     private val startProjectUpdatesActivity = TestSubscriber<Project>()
-    private val startThanksActivity = TestSubscriber<ProjectData>()
+    private val startThanksActivity = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val startVideoActivity = TestSubscriber<Project>()
     private val updateFragments = TestSubscriber<ProjectData>()
 
@@ -1382,13 +1379,16 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
 
         // Start the view model with a unbacked project
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+        val project = ProjectFactory.project()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.projectAndNativeCheckoutEnabled.assertValueCount(2)
 
-        this.vm.inputs.pledgeSuccessfullyCreated()
+        val checkoutData = CheckoutDataFactory.checkoutData(3L, 20.0, 30.0)
+        val pledgeData = PledgeData.with(PledgeFlowContext.NEW_PLEDGE, ProjectDataFactory.project(project), RewardFactory.reward())
+        this.vm.inputs.pledgeSuccessfullyCreated(Pair(checkoutData, pledgeData))
         this.expandPledgeSheet.assertValue(Pair(false, false))
-        this.startThanksActivity.assertValueCount(1)
+        this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
         this.projectAndNativeCheckoutEnabled.assertValueCount(3)
     }
 

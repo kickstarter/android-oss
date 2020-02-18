@@ -650,8 +650,8 @@ public final class ApplicationModule {
 
     final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
       .withSDKKey(optimizelyKey)
-      .withEventDispatchInterval(60L * 10L)
       .withDatafileDownloadInterval(60L * 10L)
+      .withEventDispatchInterval(60L)
       .build(context);
 
     optimizelyManager.initialize(context, null, optimizely -> {

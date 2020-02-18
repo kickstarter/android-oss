@@ -19,4 +19,5 @@ const val CHECKOUT_PAYMENT_PAGE_VIEWED = "Checkout Payment Page Viewed"
 const val PLEDGE_SUBMIT_BUTTON_CLICKED = "Pledge Submit Button Clicked"
 const val PROJECT_PAGE_PLEDGE_BUTTON_CLICKED = "Project Page Pledge Button Clicked"
 const val SELECT_REWARD_BUTTON_CLICKED = "Select Reward Button Clicked"
+const val THANKS_PAGE_VIEWED = "Thanks Page Viewed"
 // endregion

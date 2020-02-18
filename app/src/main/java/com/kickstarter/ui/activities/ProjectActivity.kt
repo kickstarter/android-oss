@@ -37,10 +37,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
-import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.CardInputWidget
@@ -338,8 +335,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
     }
 
-    override fun pledgeSuccessfullyCreated() {
-        this.viewModel.inputs.pledgeSuccessfullyCreated()
+    override fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>) {
+        this.viewModel.inputs.pledgeSuccessfullyCreated(checkoutDataAndPledgeData)
     }
 
     override fun pledgeSuccessfullyUpdated() {
@@ -601,11 +598,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
-    private fun showCreatePledgeSuccess(projectData: ProjectData) {
+    private fun showCreatePledgeSuccess(checkoutDatandProjectData: Pair<CheckoutData, PledgeData>) {
+        val checkoutData = checkoutDatandProjectData.first
+        val pledgeData = checkoutDatandProjectData.second
+        val projectData = pledgeData.projectData()
         if (clearFragmentBackStack()) {
             updateFragments(projectData)
             startActivity(Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, projectData.project())
+                    .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
                     .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true))
         }
     }

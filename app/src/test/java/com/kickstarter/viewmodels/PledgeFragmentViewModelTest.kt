@@ -72,7 +72,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val showNewCardFragment = TestSubscriber<Project>()
     private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
-    private val showPledgeSuccess = TestSubscriber<Void>()
+    private val showPledgeSuccess = TestSubscriber<Pair<CheckoutData, PledgeData>>()
     private val showSCAFlow = TestSubscriber<String>()
     private val showUpdatePaymentError = TestSubscriber<Void>()
     private val showUpdatePaymentSuccess = TestSubscriber<Void>()

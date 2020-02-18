@@ -12,5 +12,12 @@ class CheckoutDataFactory private constructor() {
                     .shippingAmount(shippingAmount)
                     .build()
         }
+
+        fun checkoutData(id: Long, shippingAmount: Double, totalAmount: Double): CheckoutData {
+            return checkoutData(shippingAmount, totalAmount)
+                    .toBuilder()
+                    .id(id)
+                    .build()
+        }
     }
 }

@@ -70,7 +70,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     interface PledgeDelegate {
         fun pledgePaymentSuccessfullyUpdated()
-        fun pledgeSuccessfullyCreated()
+        fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>)
         fun pledgeSuccessfullyUpdated()
     }
 
@@ -335,7 +335,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeSuccess()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated() }
+                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(it) }
 
         this.viewModel.outputs.showSCAFlow()
                 .compose(bindToLifecycle())

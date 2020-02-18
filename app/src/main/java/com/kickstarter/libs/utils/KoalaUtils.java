@@ -28,7 +28,6 @@ public final class KoalaUtils {
   }
 
   public static @NonNull Map<String, Object> checkoutProperties(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData, final @NonNull String prefix) {
-    final Reward reward = pledgeData.reward();
     final Project project = pledgeData.projectData().project();
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
       {

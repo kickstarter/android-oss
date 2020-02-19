@@ -38,7 +38,7 @@ public final class ProjectAdapter extends KSAdapter {
   }
 
   /**
-   * Populate adapter data when we know we're working with a Project object.
+   * Populate adapter data when we know we're working with a ProjectData object.
    */
   public void takeProject(final @NonNull ProjectData projectData, final @NonNull Boolean nativeCheckoutEnabled) {
     sections().clear();

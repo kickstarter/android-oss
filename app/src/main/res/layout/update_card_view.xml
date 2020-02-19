@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/update_container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_margin="@dimen/grid_3"
+  android:foreground="@drawable/click_indicator_light"
+  android:orientation="vertical"
+  android:padding="@dimen/grid_3">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/click_indicator_light"
+    android:orientation="vertical"
+    android:padding="@dimen/grid_3">
+
+
+    <TextView
+      android:id="@+id/update_sequence"
+      style="@style/Caption1Secondary"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAllCaps="true"
+      tools:text="Update #3" />
+
+    <TextView
+      android:id="@+id/update_title"
+      style="@style/Headline"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      tools:text="Big news!" />
+
+    <include layout="@layout/horizontal_line_1dp_view" />
+
+    <TextView
+      android:id="@+id/update_date"
+      style="@style/Caption1Secondary"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      tools:text="February 19, 2020" />
+
+    <TextView
+      android:id="@+id/update_blurb"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:lines="3" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:focusable="true"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_1"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_chat_bubble" />
+
+      <TextView
+        android:id="@+id/update_comments_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:gravity="center_vertical"
+        tools:text="0" />
+
+      <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_1"
+        android:importantForAccessibility="no"
+        android:src="@drawable/icon__heart" />
+
+      <TextView
+        android:id="@+id/update_likes_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        tools:text="0" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+</androidx.cardview.widget.CardView>

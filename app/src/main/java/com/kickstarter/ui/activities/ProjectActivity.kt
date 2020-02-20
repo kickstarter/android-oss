@@ -647,10 +647,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         backingFragment()?.pledgeSuccessfullyUpdated()
     }
 
-    private fun startCampaignWebViewActivity(project: Project) {
+    private fun startCampaignWebViewActivity(projectData: ProjectData) {
         val intent = Intent(this, CampaignDetailsActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+                .putExtra(IntentKey.PROJECT_DATA, projectData)
+        startActivityForResult(intent, ActivityRequestCodes.SHOW_REWARDS)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startCreatorBioWebViewActivity(project: Project) {

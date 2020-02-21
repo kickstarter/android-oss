@@ -199,7 +199,7 @@ interface ProjectViewModel {
         fun startBackingActivity(): Observable<Pair<Project, User>>
 
         /** Emits when we should start the campaign [com.kickstarter.ui.activities.CampaignDetailsActivity].  */
-        fun startCampaignWebViewActivity(): Observable<Project>
+        fun startCampaignWebViewActivity(): Observable<ProjectData>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.CheckoutActivity].  */
         fun startCheckoutActivity(): Observable<Project>
@@ -300,7 +300,7 @@ interface ProjectViewModel {
         private val showSavedPrompt = PublishSubject.create<Void>()
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
-        private val startCampaignWebViewActivity = PublishSubject.create<Project>()
+        private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
         private val startCheckoutActivity = PublishSubject.create<Project>()
         private val startCommentsActivity = PublishSubject.create<Project>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
@@ -355,6 +355,12 @@ interface ProjectViewModel {
                     .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.horizontalProgressBarIsGone)
+
+            activityResult()
+                    .filter { it.isOk }
+                    .filter { it.isRequestCode(ActivityRequestCodes.SHOW_REWARDS) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
 
             val pledgeSheetExpanded = this.expandPledgeSheet
                     .map { it.first }
@@ -472,8 +478,8 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showShareSheet)
 
-            currentProject
-                    .compose<Project>(takeWhen(this.blurbTextViewClicked))
+            currentProjectData
+                    .compose<ProjectData>(takeWhen(this.blurbTextViewClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCampaignWebViewActivity)
 
@@ -1074,7 +1080,7 @@ interface ProjectViewModel {
         override fun startBackingActivity(): Observable<Pair<Project, User>> = this.startBackingActivity
 
         @NonNull
-        override fun startCampaignWebViewActivity(): Observable<Project> = this.startCampaignWebViewActivity
+        override fun startCampaignWebViewActivity(): Observable<ProjectData> = this.startCampaignWebViewActivity
 
         @NonNull
         override fun startCheckoutActivity(): Observable<Project> = this.startCheckoutActivity

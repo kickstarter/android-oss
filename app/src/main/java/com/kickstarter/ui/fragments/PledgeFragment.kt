@@ -1,5 +1,6 @@
 package com.kickstarter.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
@@ -16,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
@@ -25,6 +27,7 @@ import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.Either
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -40,18 +43,15 @@ import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
-import com.kickstarter.ui.data.CardState
-import com.kickstarter.ui.data.CheckoutData
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_delivery.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
@@ -188,6 +188,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
+
+        this.viewModel.outputs.rewardTitle()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { setRewardTitle(it) }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
@@ -506,6 +511,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         textView.text = localizedAmount
     }
 
+    private fun setRewardTitle(stringResOrTitle: Either<Int, String>) {
+        @StringRes val stringRes = stringResOrTitle.left()
+        val title = stringResOrTitle.right()
+        reward_title.text = stringRes?.let { getString(it) }?: title
+    }
+
     private fun setTextColor(colorResId: Int, vararg textViews: TextView) {
         context?.let {
             val color = ContextCompat.getColor(it, colorResId)
@@ -560,6 +571,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setHtmlStrings(baseUrl: String) {
         val termsOfUseUrl = UrlUtils.appendPath(baseUrl, HelpActivity.TERMS_OF_USE)
         val cookiePolicyUrl = UrlUtils.appendPath(baseUrl, HelpActivity.COOKIES)
@@ -574,11 +586,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         setClickableHtml(agreementWithUrls, pledge_agreement)
 
         val trustUrl = UrlUtils.appendPath(baseUrl, "trust")
+        val accountabilityLink = "<a href=$trustUrl>"+ getString(R.string.Learn_more_about_accountability)+"</a>"
+        val accountabilityWithUrl = "${getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life)} $accountabilityLink"
 
-        val kickstarterIsNotAStore = getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability)
-        val accountabilityWithUrls = ksString.format(kickstarterIsNotAStore, "trust_link", trustUrl)
-
-        setClickableHtml(accountabilityWithUrls, accountability)
+        setClickableHtml(accountabilityWithUrl, accountability)
     }
 
     private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {

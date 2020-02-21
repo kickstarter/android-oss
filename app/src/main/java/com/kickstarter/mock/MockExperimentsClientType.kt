@@ -7,7 +7,7 @@ import com.kickstarter.models.User
 import rx.Observable
 import rx.subjects.PublishSubject
 
-open class MockExperimentsClientType : ExperimentsClientType {
+open class MockExperimentsClientType(private val variant: OptimizelyExperiment.Variant = OptimizelyExperiment.Variant.CONTROL) : ExperimentsClientType {
     class ExperimentsEvent internal constructor(internal val eventKey: String, internal val attributes: MutableMap<String, *>)
 
     private val experimentEvents : PublishSubject<ExperimentsEvent> = PublishSubject.create()
@@ -19,7 +19,7 @@ open class MockExperimentsClientType : ExperimentsClientType {
 
     override fun userId(): String = "device-id"
 
-    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant = OptimizelyExperiment.Variant.CONTROL
+    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant = this.variant
 
     override fun androidBuildVersion(): String = "9"
 }

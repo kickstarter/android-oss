@@ -178,6 +178,36 @@
       </LinearLayout>
 
       <LinearLayout
+        android:id="@+id/blurb_view_variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/click_indicator_light_masked"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:ignore="InconsistentLayout">
+
+        <TextView
+          android:id="@+id/blurb_variant"
+          style="@style/CalloutWhite"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:maxLines="3"
+          tools:ignore="InconsistentLayout"
+          tools:text="Description about this project." />
+
+        <Button
+          android:id="@+id/read_more"
+          style="@style/TertiaryButton"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_3"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:text="@string/Read_more_about_the_campaign" />
+
+      </LinearLayout>
+
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_4"

@@ -609,7 +609,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.blurbVariantClicked()
-        this.startCampaignWebViewActivity.assertValues(project)
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.experimentsTest.assertValue("Campaign Details Button Clicked")
     }
 
@@ -622,7 +622,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.blurbVariantClicked()
-        this.startCampaignWebViewActivity.assertValues(project)
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.experimentsTest.assertNoValues()
     }
 
@@ -635,7 +635,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.blurbVariantClicked()
-        this.startCampaignWebViewActivity.assertValues(project)
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.experimentsTest.assertNoValues()
     }
 

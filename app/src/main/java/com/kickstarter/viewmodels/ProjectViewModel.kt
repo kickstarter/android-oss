@@ -478,9 +478,6 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showShareSheet)
 
-            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
-            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
-
             currentProjectData
                     .compose<ProjectData>(takeWhen(this.blurbTextViewClicked))
                     .compose(bindToLifecycle())

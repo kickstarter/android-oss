@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.util.Pair
@@ -53,7 +54,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledge = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showUpdatePledgeSuccess = TestSubscriber<Void>()
     private val startBackingActivity = TestSubscriber<Pair<Project, User>>()
-    private val startCampaignWebViewActivity = TestSubscriber<Project>()
+    private val startCampaignWebViewActivity = TestSubscriber<ProjectData>()
     private val startCommentsActivity = TestSubscriber<Project>()
     private val startCreatorBioWebViewActivity = TestSubscriber<Project>()
     private val startCreatorDashboardActivity = TestSubscriber<Project>()
@@ -596,7 +597,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
 
         this.vm.inputs.blurbTextViewClicked()
-        this.startCampaignWebViewActivity.assertValues(project)
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
     }
 
     @Test
@@ -960,6 +961,30 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "View Your Pledge Button Clicked")
+        this.lakeTest.assertValue("Project Page Viewed")
+    }
+
+    @Test
+    fun testExpandPledgeSheet_whenComingBackFromProjectPage_OKResult() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SHOW_REWARDS, Activity.RESULT_OK, null))
+
+        this.expandPledgeSheet.assertValue(Pair(true, true))
+        this.koalaTest.assertValues("Project Page")
+        this.lakeTest.assertValue("Project Page Viewed")
+    }
+
+    @Test
+    fun testExpandPledgeSheet_whenComingBackFromProjectPage_CanceledResult() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
+
+        this.vm.activityResult(ActivityResult.create(ActivityRequestCodes.SHOW_REWARDS, Activity.RESULT_CANCELED, null))
+
+        this.expandPledgeSheet.assertNoValues()
+        this.koalaTest.assertValue("Project Page")
         this.lakeTest.assertValue("Project Page Viewed")
     }
 

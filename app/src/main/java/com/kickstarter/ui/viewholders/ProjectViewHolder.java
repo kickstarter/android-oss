@@ -15,10 +15,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
 import com.google.android.material.button.MaterialButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -38,6 +34,9 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;
@@ -134,6 +133,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   public interface Delegate {
     void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);
     void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderBlurbVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
     void projectViewHolderDashboardClicked(ProjectViewHolder viewHolder);
@@ -533,6 +533,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick({R.id.blurb_view, R.id.campaign, R.id.read_more})
   public void blurbOnClick() {
     this.delegate.projectViewHolderBlurbClicked(this);
+  }
+
+  @OnClick({R.id.read_more})
+  public void blurbVariantOnClick() {
+    this.delegate.projectViewHolderBlurbVariantClicked(this);
   }
 
   @OnClick(R.id.comments)

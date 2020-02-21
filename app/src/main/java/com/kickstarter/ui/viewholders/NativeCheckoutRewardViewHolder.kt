@@ -18,14 +18,13 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.NativeCheckoutRewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
 class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(view) {
 
     interface Delegate {
-        fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
+        fun rewardClicked(reward: Reward)
     }
 
     private val ksString = environment().ksString()
@@ -146,7 +145,7 @@ class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Deleg
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.delegate?.rewardClicked(ViewUtils.getScreenLocation(this.itemView), it.second) }
+                .subscribe { this.delegate?.rewardClicked(it.second) }
 
         this.viewModel.outputs.buttonIsGone()
                 .compose(bindToLifecycle())

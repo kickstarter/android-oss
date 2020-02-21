@@ -34,7 +34,6 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.*
@@ -456,8 +455,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val pledgeSheetIsExpanded = pledge_container_root.y == 0f
 
         when {
-            pledgeFragmentShouldAnimateOut() -> pledgeFragment()?.backPressed()
-            supportFragmentManager.backStackEntryCount > 0 && pledgeSheetIsExpanded -> supportFragmentManager.popBackStack()
+            supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
             pledgeSheetIsExpanded -> this.viewModel.inputs.pledgeToolbarNavigationClicked()
             else -> super.back()
         }
@@ -470,19 +468,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun pledgeFragment() = supportFragmentManager
             .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
-
-    private fun pledgeFragmentShouldAnimateOut(): Boolean {
-        val backStackEntryCount = supportFragmentManager.backStackEntryCount
-        val backStackIsNotEmpty = backStackEntryCount > 0
-        val topOfStackIndex = backStackEntryCount.minus(1)
-        val pledgeReason = when {
-            backStackIsNotEmpty && supportFragmentManager.getBackStackEntryAt(topOfStackIndex).name == PledgeFragment::class.java.simpleName -> {
-                pledgeFragment()?.arguments?.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON)
-            }
-            else -> null
-        }
-        return pledgeReason == PledgeReason.PLEDGE || pledgeReason == PledgeReason.UPDATE_REWARD
-    }
 
     private fun renderProject(projectDataAndNativeCheckoutEnabled: Pair<ProjectData, Boolean>) {
         val projectData = projectDataAndNativeCheckoutEnabled.first

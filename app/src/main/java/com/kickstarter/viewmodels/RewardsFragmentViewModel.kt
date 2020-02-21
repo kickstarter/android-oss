@@ -8,7 +8,10 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.RewardsFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -19,8 +22,8 @@ class RewardsFragmentViewModel {
         /** Configure with current [ProjectData]. */
         fun configureWith(projectData: ProjectData)
 
-        /** Call when a reward is clicked with its current screen location to snapshot.  */
-        fun rewardClicked(screenLocation: ScreenLocation, reward: Reward)
+        /** Call when a reward is clicked.  */
+        fun rewardClicked(reward: Reward)
     }
 
     interface Outputs {
@@ -40,7 +43,7 @@ class RewardsFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
 
         private val projectDataInput = PublishSubject.create<ProjectData>()
-        private val rewardClicked = PublishSubject.create<Pair<ScreenLocation, Reward>>()
+        private val rewardClicked = PublishSubject.create<Reward>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
         private val projectData = BehaviorSubject.create<ProjectData>()
@@ -67,8 +70,8 @@ class RewardsFragmentViewModel {
                     .subscribe(this.backedRewardPosition)
 
             this.projectDataInput
-                    .compose<Pair<ProjectData, Pair<ScreenLocation, Reward>>>(Transformers.takePairWhen(this.rewardClicked))
-                    .map { pledgeDataAndPledgeReason(it.first, it.second.second, it.second.first) }
+                    .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
+                    .map { pledgeDataAndPledgeReason(it.first, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 
@@ -78,9 +81,9 @@ class RewardsFragmentViewModel {
                     .subscribe(this.rewardsCount)
         }
 
-        private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward, screenLocation: ScreenLocation): Pair<PledgeData, PledgeReason> {
+        private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
             val pledgeReason = if (projectData.project().isBacking) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE
-            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward, screenLocation)
+            val pledgeData = PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward)
             return Pair(pledgeData, pledgeReason)
         }
 
@@ -100,8 +103,8 @@ class RewardsFragmentViewModel {
             this.projectDataInput.onNext(projectData)
         }
 
-        override fun rewardClicked(screenLocation: ScreenLocation, reward: Reward) {
-            this.rewardClicked.onNext(Pair.create(screenLocation, reward))
+        override fun rewardClicked(reward: Reward) {
+            this.rewardClicked.onNext(reward)
         }
 
         @NonNull

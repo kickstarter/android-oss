@@ -23,14 +23,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
-import com.kickstarter.ui.data.ScreenLocation;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.ConfirmDialog;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import rx.functions.Action1;
 
 public final class ViewUtils {
@@ -53,10 +53,6 @@ public final class ViewUtils {
 
   public static float getScreenDensity(final @NonNull Context context) {
     return context.getResources().getDisplayMetrics().density;
-  }
-
-  public static ScreenLocation getScreenLocation(final  @NonNull View view) {
-    return new ScreenLocation(view.getLeft(), view.getTop(), view.getHeight(), view.getWidth());
   }
 
   public static int getScreenHeightDp(final @NonNull Context context) {

@@ -7,10 +7,9 @@
   android:layout_height="wrap_content"
   android:layout_marginBottom="@dimen/grid_4"
   android:layout_marginTop="@dimen/activity_vertical_margin"
-  android:minHeight="@dimen/mini_reward_height"
   android:orientation="vertical"
   android:paddingEnd="@dimen/activity_horizontal_margin"
-  android:paddingStart="@dimen/grid_4"
+  android:paddingStart="@dimen/activity_horizontal_margin"
   tools:showIn="@layout/fragment_pledge">
 
   <LinearLayout

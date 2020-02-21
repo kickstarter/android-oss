@@ -17,7 +17,6 @@ import com.kickstarter.ui.adapters.NativeCheckoutRewardsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.data.ScreenLocation
 import com.kickstarter.viewmodels.RewardsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_rewards.*
 
@@ -82,8 +81,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         rewards_recycler?.adapter = null
     }
 
-    override fun rewardClicked(screenLocation: ScreenLocation, reward: Reward) {
-        this.viewModel.inputs.rewardClicked(screenLocation, reward)
+    override fun rewardClicked(reward: Reward) {
+        this.viewModel.inputs.rewardClicked(reward)
     }
 
     fun configureWith(projectData: ProjectData) {
@@ -105,6 +104,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Nati
         if (this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
             val pledgeFragment = PledgeFragment.newInstance(pledgeData, pledgeReason)
             this.fragmentManager?.beginTransaction()
+                    ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                     ?.add(R.id.fragment_container,
                             pledgeFragment,
                             PledgeFragment::class.java.simpleName)

@@ -41,6 +41,7 @@ import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
+import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration

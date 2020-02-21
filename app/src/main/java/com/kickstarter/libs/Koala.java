@@ -1,5 +1,8 @@
 package com.kickstarter.libs;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -7,6 +10,7 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
+import com.kickstarter.ui.data.CheckoutData;
 import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
@@ -14,9 +18,6 @@ import com.kickstarter.ui.data.PledgeData;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;
@@ -760,6 +761,12 @@ public final class Koala {
     this.client.track(LakeEvent.CHECKOUT_PAYMENT_PAGE_VIEWED, props);
   }
 
+  public void trackPledgeSubmitButtonClicked(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData) {
+    final Map<String, Object> props = KoalaUtils.checkoutDataProperties(checkoutData, pledgeData, this.client.loggedInUser());
+
+    this.client.track(LakeEvent.PLEDGE_SUBMIT_BUTTON_CLICKED, props);
+  }
+
   public void trackProjectPagePledgeButtonClicked(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
@@ -778,6 +785,12 @@ public final class Koala {
     final Map<String, Object> props = KoalaUtils.pledgeDataProperties(pledgeData, this.client.loggedInUser());
 
     this.client.track(LakeEvent.SELECT_REWARD_BUTTON_CLICKED, props);
+  }
+
+  public void trackThanksPageViewed(final @NonNull CheckoutData checkoutData, final @NonNull PledgeData pledgeData) {
+    final Map<String, Object> props = KoalaUtils.checkoutDataProperties(checkoutData, pledgeData, this.client.loggedInUser());
+
+    this.client.track(LakeEvent.THANKS_PAGE_VIEWED, props);
   }
   //endregion
 }

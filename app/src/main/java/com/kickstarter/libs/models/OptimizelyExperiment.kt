@@ -2,7 +2,8 @@ package com.kickstarter.libs.models
 
 class OptimizelyExperiment {
     enum class Key(val key: String) {
-        PLEDGE_CTA_COPY("pledge_cta_copy")
+        PLEDGE_CTA_COPY("pledge_cta_copy"),
+        CAMPAIGN_DETAILS("native_project_page_campaign_details")
     }
 
     enum class Variant(val rawValue: String?) {

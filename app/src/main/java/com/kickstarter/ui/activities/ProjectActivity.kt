@@ -36,10 +36,7 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
-import com.kickstarter.ui.data.LoginReason
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.CardInputWidget
@@ -60,7 +57,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
     private val projectStarConfirmationString = R.string.project_star_confirmation
-    private val campaignString = R.string.project_subpages_menu_buttons_campaign
 
     private val animDuration = 200L
 
@@ -171,7 +167,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.setGone(project_action_buttons, if (ViewUtils.isLandscape(this)) true else it) }
 
-        this.viewModel.outputs.projectAndNativeCheckoutEnabled()
+        this.viewModel.outputs.projectDataAndNativeCheckoutEnabled()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { renderProject(it) }
@@ -338,8 +334,8 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.inputs.pledgeSuccessfullyCancelled()
     }
 
-    override fun pledgeSuccessfullyCreated() {
-        this.viewModel.inputs.pledgeSuccessfullyCreated()
+    override fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>) {
+        this.viewModel.inputs.pledgeSuccessfullyCreated(checkoutDataAndPledgeData)
     }
 
     override fun pledgeSuccessfullyUpdated() {
@@ -473,11 +469,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun pledgeFragment() = supportFragmentManager
             .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
 
-    private fun renderProject(projectAndNativeCheckoutEnabled: Pair<Project, Boolean>) {
-        val project = projectAndNativeCheckoutEnabled.first
-        val nativeCheckoutEnabled = projectAndNativeCheckoutEnabled.second
-        this.adapter.takeProject(project, nativeCheckoutEnabled)
-        ProjectViewUtils.setActionButton(project, this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
+    private fun renderProject(projectDataAndNativeCheckoutEnabled: Pair<ProjectData, Boolean>) {
+        val projectData = projectDataAndNativeCheckoutEnabled.first
+        val nativeCheckoutEnabled = projectDataAndNativeCheckoutEnabled.second
+        this.adapter.takeProject(projectData, nativeCheckoutEnabled)
+        ProjectViewUtils.setActionButton(projectData.project(), this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
         project_recycler_view.setPadding(0, 0, 0, if (nativeCheckoutEnabled) rewardsSheetGuideline() else 0)
     }
 
@@ -587,11 +583,16 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         showSnackbar(snackbar_anchor, getString(R.string.Youve_canceled_your_pledge))
     }
 
-    private fun showCreatePledgeSuccess(projectData: ProjectData) {
+    private fun showCreatePledgeSuccess(checkoutDatandProjectData: Pair<CheckoutData, PledgeData>) {
+        val checkoutData = checkoutDatandProjectData.first
+        val pledgeData = checkoutDatandProjectData.second
+        val projectData = pledgeData.projectData()
         if (clearFragmentBackStack()) {
             updateFragments(projectData)
             startActivity(Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, projectData.project())
+                    .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
+                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
                     .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true))
         }
     }
@@ -632,7 +633,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun startCampaignWebViewActivity(project: Project) {
-        startWebViewActivity(getString(this.campaignString), project.descriptionUrl())
+        val intent = Intent(this, CampaignDetailsActivity::class.java)
+                .putExtra(IntentKey.PROJECT, project)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startCreatorBioWebViewActivity(project: Project) {
@@ -685,13 +688,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .setType("text/plain")
                 .putExtra(Intent.EXTRA_TEXT, "$shareMessage $url")
         startActivity(Intent.createChooser(intent, getString(this.projectShareLabelString)))
-    }
-
-    private fun startWebViewActivity(toolbarTitle: String, url: String) {
-        val intent = Intent(this, WebViewActivity::class.java)
-                .putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle)
-                .putExtra(IntentKey.URL, url)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startLoginToutActivity() {

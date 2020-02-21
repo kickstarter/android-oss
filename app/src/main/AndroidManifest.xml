@@ -39,6 +39,10 @@
       android:theme="@style/ActivityFeedActivity">
     </activity>
     <activity
+      android:name=".ui.activities.CampaignDetailsActivity"
+      android:parentActivityName=".ui.activities.ProjectActivity">
+    </activity>
+    <activity
       android:name=".ui.activities.ChangeEmailActivity"
       android:theme="@style/SettingsActivity" />
     <activity

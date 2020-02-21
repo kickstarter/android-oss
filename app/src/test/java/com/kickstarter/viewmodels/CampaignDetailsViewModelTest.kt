@@ -34,7 +34,7 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testGoBackToProject() {
+    fun testGoBackToProject_whenPledgeActionButtonClicked() {
         setUpEnvironment(environment(), ProjectDataFactory.project(ProjectFactory.project()))
 
         this.vm.inputs.pledgeActionButtonClicked()
@@ -45,7 +45,6 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     fun testPledgeContainerIsVisible_whenProjectIsLiveNotBacked_control() {
         setUpEnvironment(environment(), ProjectDataFactory.project(ProjectFactory.project()))
 
-        this.vm.inputs.pledgeActionButtonClicked()
         this.pledgeContainerIsVisible.assertValue(false)
     }
 
@@ -61,7 +60,6 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, ProjectDataFactory.project(ProjectFactory.project()))
 
-        this.vm.inputs.pledgeActionButtonClicked()
         this.pledgeContainerIsVisible.assertValue(false)
     }
 
@@ -77,7 +75,6 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, ProjectDataFactory.project(ProjectFactory.project()))
 
-        this.vm.inputs.pledgeActionButtonClicked()
         this.pledgeContainerIsVisible.assertValue(true)
     }
 
@@ -85,16 +82,14 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     fun testPledgeContainerIsVisible_whenProjectIsNotLive() {
         setUpEnvironment(environment(), ProjectDataFactory.project(ProjectFactory.successfulProject()))
 
-        this.vm.inputs.pledgeActionButtonClicked()
-        this.pledgeContainerIsVisible.assertNoValues()
+        this.pledgeContainerIsVisible.assertValue(false)
     }
 
     @Test
     fun testPledgeContainerIsVisible_whenProjectIsBacked() {
         setUpEnvironment(environment(), ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        this.vm.inputs.pledgeActionButtonClicked()
-        this.pledgeContainerIsVisible.assertNoValues()
+        this.pledgeContainerIsVisible.assertValue(false)
     }
 
     @Test

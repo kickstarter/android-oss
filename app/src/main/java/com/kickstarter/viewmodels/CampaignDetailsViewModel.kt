@@ -58,6 +58,12 @@ interface CampaignDetailsViewModel {
                     .subscribe(this.pledgeContainerIsVisible)
 
             projectData
+                    .filter { !it.project().isLive || it.project().isBacking }
+                    .map { false }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeContainerIsVisible)
+
+            projectData
                     .map { it.project() }
                     .map { it.descriptionUrl() }
                     .compose(bindToLifecycle())

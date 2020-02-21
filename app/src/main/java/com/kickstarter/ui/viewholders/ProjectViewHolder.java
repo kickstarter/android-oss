@@ -535,7 +535,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderBlurbClicked(this);
   }
 
-  @OnClick({R.id.read_more})
+  @OnClick(R.id.read_more)
   public void blurbVariantOnClick() {
     this.delegate.projectViewHolderBlurbVariantClicked(this);
   }

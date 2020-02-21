@@ -2,6 +2,8 @@ package com.kickstarter.viewmodels;
 
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -21,12 +23,13 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ThanksActivity;
 import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.ui.adapters.data.ThanksData;
+import com.kickstarter.ui.data.CheckoutData;
+import com.kickstarter.ui.data.PledgeData;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -189,6 +192,20 @@ public interface ThanksViewModel {
       this.signedUpToGamesNewsletter
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackNewsletterToggle(true));
+
+      final Observable<CheckoutData> checkoutData = intent()
+              .map(i -> i.getParcelableExtra(IntentKey.CHECKOUT_DATA))
+              .ofType(CheckoutData.class)
+              .take(1);
+
+      final Observable<PledgeData> pledgeData = intent()
+              .map(i -> i.getParcelableExtra(IntentKey.PLEDGE_DATA))
+              .ofType(PledgeData.class)
+              .take(1);
+
+      Observable.combineLatest(checkoutData, pledgeData, Pair::create)
+              .compose(bindToLifecycle())
+              .subscribe(checkoutDataPledgeData -> this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second));
     }
 
     /**

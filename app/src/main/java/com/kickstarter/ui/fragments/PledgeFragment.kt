@@ -43,9 +43,7 @@ import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
-import com.kickstarter.ui.data.CardState
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
@@ -64,7 +62,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     interface PledgeDelegate {
         fun pledgePaymentSuccessfullyUpdated()
-        fun pledgeSuccessfullyCreated()
+        fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>)
         fun pledgeSuccessfullyUpdated()
     }
 
@@ -301,7 +299,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeSuccess()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated() }
+                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(it) }
 
         this.viewModel.outputs.showSCAFlow()
                 .compose(bindToLifecycle())

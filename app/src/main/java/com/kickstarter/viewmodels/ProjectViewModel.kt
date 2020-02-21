@@ -18,10 +18,7 @@ import com.kickstarter.services.ApiClientType
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
-import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.PledgeFlowContext
-import com.kickstarter.ui.data.PledgeReason
-import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.*
 import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
@@ -79,7 +76,7 @@ interface ProjectViewModel {
         fun pledgeSuccessfullyCancelled()
 
         /** Call when the pledge has been successfully created.  */
-        fun pledgeSuccessfullyCreated()
+        fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>)
 
         /** Call when the pledge has been successfully updated. */
         fun pledgeSuccessfullyUpdated()
@@ -160,7 +157,7 @@ interface ProjectViewModel {
 
         /** Emits a project and whether the native checkout feature is enabled. If the view model is created with a full project
          * model, this observable will emit that project immediately, and then again when it has updated from the api. */
-        fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>>
+        fun projectDataAndNativeCheckoutEnabled(): Observable<Pair<ProjectData, Boolean>>
 
         /** Emits a boolean that determines if the reload project container should be visible. */
         fun reloadProjectContainerIsGone(): Observable<Boolean>
@@ -201,7 +198,7 @@ interface ProjectViewModel {
         /** Emits when we should start the [BackingActivity].  */
         fun startBackingActivity(): Observable<Pair<Project, User>>
 
-        /** Emits when we should start the campaign [com.kickstarter.ui.activities.WebViewActivity].  */
+        /** Emits when we should start the campaign [com.kickstarter.ui.activities.CampaignDetailsActivity].  */
         fun startCampaignWebViewActivity(): Observable<Project>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.CheckoutActivity].  */
@@ -229,7 +226,7 @@ interface ProjectViewModel {
         fun startProjectUpdatesActivity(): Observable<Project>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
-        fun startThanksActivity(): Observable<ProjectData>
+        fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
 
         /** Emits when we should start the [com.kickstarter.ui.activities.VideoActivity].  */
         fun startVideoActivity(): Observable<Project>
@@ -263,7 +260,7 @@ interface ProjectViewModel {
         private val playVideoButtonClicked = PublishSubject.create<Void>()
         private val pledgePaymentSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
-        private val pledgeSuccessfullyCreated = PublishSubject.create<Void>()
+        private val pledgeSuccessfullyCreated = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val pledgeSuccessfullyUpdated = PublishSubject.create<Void>()
         private val pledgeToolbarNavigationClicked = PublishSubject.create<Void>()
         private val refreshProject = PublishSubject.create<Void>()
@@ -290,7 +287,7 @@ interface ProjectViewModel {
         private val prelaunchUrl = BehaviorSubject.create<String>()
         private val projectActionButtonContainerIsGone = BehaviorSubject.create<Boolean>()
         private val horizontalProgressBarIsGone = BehaviorSubject.create<Boolean>()
-        private val projectAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<Project, Boolean>>()
+        private val projectDataAndNativeCheckoutEnabled = BehaviorSubject.create<Pair<ProjectData, Boolean>>()
         private val retryProgressBarIsGone = BehaviorSubject.create<Boolean>()
         private val reloadProjectContainerIsGone = BehaviorSubject.create<Boolean>()
         private val revealRewardsFragment = PublishSubject.create<Void>()
@@ -312,7 +309,7 @@ interface ProjectViewModel {
         private val startManagePledgeActivity = PublishSubject.create<Project>()
         private val startMessagesActivity = PublishSubject.create<Project>()
         private val startProjectUpdatesActivity = PublishSubject.create<Project>()
-        private val startThanksActivity = PublishSubject.create<ProjectData>()
+        private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val startBackingActivity = PublishSubject.create<Pair<Project, User>>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
@@ -415,7 +412,7 @@ interface ProjectViewModel {
                     .share()
 
             val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled,
-                    this.pledgeSuccessfullyCreated,
+                    this.pledgeSuccessfullyCreated.compose(ignoreValues()),
                     this.pledgeSuccessfullyUpdated,
                     this.pledgePaymentSuccessfullyUpdated,
                     this.refreshProject)
@@ -461,10 +458,13 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showSavedPrompt)
 
-            currentProject
-                    .compose<Pair<Project, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
+            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
+            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
+
+            currentProjectData
+                    .compose<Pair<ProjectData, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .compose(bindToLifecycle())
-                    .subscribe(this.projectAndNativeCheckoutEnabled)
+                    .subscribe(this.projectDataAndNativeCheckoutEnabled)
 
             currentProject
                     .compose<Project>(takeWhen(this.shareButtonClicked))
@@ -689,8 +689,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showCancelPledgeSuccess)
 
-            projectData
-                    .compose<ProjectData>(takeWhen(this.pledgeSuccessfullyCreated))
+            this.pledgeSuccessfullyCreated
                     .compose(bindToLifecycle())
                     .subscribe(this.startThanksActivity)
 
@@ -719,12 +718,11 @@ interface ProjectViewModel {
                     .subscribe(this.heartDrawableId)
 
             //Tracking
-            val currentProjectData = Observable.combineLatest<RefTag, RefTag, Project, ProjectData>(refTag, cookieRefTag, currentProject)
-            { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
+            val currentFullProjectData = currentProjectData
                     .filter { it.project().hasRewards() }
-                    .take(1)
 
-            currentProjectData
+            currentFullProjectData
+                    .take(1)
                     .compose(bindToLifecycle())
                     .subscribe { data ->
                         // If a cookie hasn't been set for this ref+project then do so.
@@ -745,7 +743,7 @@ interface ProjectViewModel {
                         )
                     }
 
-            currentProjectData
+            currentFullProjectData
                     .compose<ProjectData>(takeWhen(this.nativeProjectActionButtonClicked))
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
@@ -908,8 +906,8 @@ interface ProjectViewModel {
             this.pledgeSuccessfullyCancelled.onNext(null)
         }
 
-        override fun pledgeSuccessfullyCreated() {
-            this.pledgeSuccessfullyCreated.onNext(null)
+        override fun pledgeSuccessfullyCreated(checkoutDataAndPledgeData: Pair<CheckoutData, PledgeData>) {
+            this.pledgeSuccessfullyCreated.onNext(checkoutDataAndPledgeData)
         }
 
         override fun pledgeSuccessfullyUpdated() {
@@ -1034,7 +1032,7 @@ interface ProjectViewModel {
         override fun projectActionButtonContainerIsGone(): Observable<Boolean> = this.projectActionButtonContainerIsGone
 
         @NonNull
-        override fun projectAndNativeCheckoutEnabled(): Observable<Pair<Project, Boolean>> = this.projectAndNativeCheckoutEnabled
+        override fun projectDataAndNativeCheckoutEnabled(): Observable<Pair<ProjectData, Boolean>> = this.projectDataAndNativeCheckoutEnabled
 
         @NonNull
         override fun reloadProjectContainerIsGone(): Observable<Boolean> = this.reloadProjectContainerIsGone
@@ -1100,7 +1098,7 @@ interface ProjectViewModel {
         override fun startMessagesActivity(): Observable<Project> = this.startMessagesActivity
 
         @NonNull
-        override fun startThanksActivity(): Observable<ProjectData> = this.startThanksActivity
+        override fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>> = this.startThanksActivity
 
         @NonNull
         override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity

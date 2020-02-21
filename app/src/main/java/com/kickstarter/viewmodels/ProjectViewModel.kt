@@ -36,6 +36,9 @@ interface ProjectViewModel {
         /** Call when the blurb view is clicked.  */
         fun blurbTextViewClicked()
 
+        /** Call when the blurb variant view is clicked.  */
+        fun blurbVariantClicked()
+
         /** Call when the cancel pledge option is clicked.  */
         fun cancelPledgeClicked()
 
@@ -247,6 +250,7 @@ interface ProjectViewModel {
 
         private val backProjectButtonClicked = PublishSubject.create<Void>()
         private val blurbTextViewClicked = PublishSubject.create<Void>()
+        private val blurbVariantClicked = PublishSubject.create<Void>()
         private val cancelPledgeClicked = PublishSubject.create<Void>()
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
@@ -478,8 +482,10 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showShareSheet)
 
+            val blurbClicked = Observable.merge(this.blurbTextViewClicked, this.blurbVariantClicked)
+
             currentProjectData
-                    .compose<ProjectData>(takeWhen(this.blurbTextViewClicked))
+                    .compose<ProjectData>(takeWhen(blurbClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCampaignWebViewActivity)
 
@@ -813,6 +819,13 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
 
+            currentFullProjectData
+                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+                    .compose<Pair<ProjectData, User?>>(takeWhen(this.blurbVariantClicked))
+                    .filter { it.first.project().isLive && !it.first.project().isBacking }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, it.second, it.first.refTagFromIntent()) }
+
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {
@@ -858,6 +871,10 @@ interface ProjectViewModel {
 
         override fun blurbTextViewClicked() {
             this.blurbTextViewClicked.onNext(null)
+        }
+
+        override fun blurbVariantClicked() {
+            this.blurbVariantClicked.onNext(null)
         }
 
         override fun cancelPledgeClicked() {
@@ -930,6 +947,10 @@ interface ProjectViewModel {
 
         override fun projectViewHolderBlurbClicked(viewHolder: ProjectViewHolder) {
             this.blurbTextViewClicked()
+        }
+
+        override fun projectViewHolderBlurbVariantClicked(viewHolder: ProjectViewHolder) {
+            this.blurbVariantClicked()
         }
 
         override fun projectViewHolderCommentsClicked(viewHolder: ProjectViewHolder) {

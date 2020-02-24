@@ -826,13 +826,13 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, it.second, it.first.refTagFromIntent()) }
 
-            val isBackThisProjectCTA = this.pledgeActionButtonText
+            val shouldTrackCTAClickedEvent = this.pledgeActionButtonText
                     .map { isPledgeCTA(it) }
                     .compose<Boolean>(takeWhen(this.nativeProjectActionButtonClicked))
 
             currentFullProjectData
                     .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
-                    .compose<Pair<Pair<ProjectData, User?>, Boolean>>(combineLatestPair(isBackThisProjectCTA))
+                    .compose<Pair<Pair<ProjectData, User?>, Boolean>>(combineLatestPair(shouldTrackCTAClickedEvent))
                     .filter { it.second }
                     .map { it.first }
                     .compose(bindToLifecycle())

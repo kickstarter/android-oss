@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels;
 
+import android.content.Intent;
+
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
@@ -7,6 +9,8 @@ import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.LoginReason;
 
 import org.junit.Test;
 
@@ -22,7 +26,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> startSignupActivity = new TestSubscriber<>();
   private final TestSubscriber<User> currentUser = new TestSubscriber<>();
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
+  private void setUpEnvironment(final @NonNull Environment environment, final @NonNull LoginReason loginReason) {
     this.vm = new LoginToutViewModel.ViewModel(environment);
 
     this.vm.outputs.finishWithSuccessfulResult().subscribe(this.finishWithSuccessfulResult);
@@ -30,26 +34,30 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startSignupActivity().subscribe(this.startSignupActivity);
     this.vm.outputs.startLoginActivity().subscribe(this.startLoginActivity);
     environment.currentUser().observable().subscribe(this.currentUser);
+
+    this.vm.intent(new Intent().putExtra(IntentKey.LOGIN_REASON, loginReason));
   }
 
   @Test
   public void testLoginButtonClicked() {
-    setUpEnvironment(environment());
+    setUpEnvironment(environment(), LoginReason.DEFAULT);
 
     this.startLoginActivity.assertNoValues();
 
     this.vm.inputs.loginClick();
     this.startLoginActivity.assertValueCount(1);
+    this.lakeTest.assertValue("Log In or Sign Up Page Viewed");
   }
 
   @Test
   public void testSignupButtonClicked() {
-    setUpEnvironment(environment());
+    setUpEnvironment(environment(), LoginReason.DEFAULT);
 
     this.startSignupActivity.assertNoValues();
 
     this.vm.inputs.signupClick();
     this.startSignupActivity.assertValueCount(1);
+    this.lakeTest.assertValue("Log In or Sign Up Page Viewed");
   }
 
   @Test
@@ -59,12 +67,13 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .currentUser(currentUser)
       .build();
-    setUpEnvironment(environment);
+    setUpEnvironment(environment, LoginReason.DEFAULT);
 
     this.currentUser.assertValuesAndClear(null);
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertValueCount(1);
     this.finishWithSuccessfulResult.assertValueCount(1);
+    this.lakeTest.assertValue("Log In or Sign Up Page Viewed");
   }
 
   @Test
@@ -81,11 +90,12 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
       })
       .build();
 
-    setUpEnvironment(environment);
+    setUpEnvironment(environment, LoginReason.DEFAULT);
 
     this.currentUser.assertValuesAndClear(null);
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertNoValues();
     this.finishWithSuccessfulResult.assertNoValues();
+    this.lakeTest.assertValue("Log In or Sign Up Page Viewed");
   }
 }

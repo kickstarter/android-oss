@@ -341,6 +341,17 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testShowLoginTout() {
+    setUpEnvironment(environment());
+
+    // Clicking login on onboarding view should show login tout.
+    this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
+
+    this.showLoginTout.assertValue(true);
+    this.lakeTest.assertValue("Log In or Signup Button Clicked");
+  }
+
+  @Test
   public void testStartEditorialActivity() {
     setUpEnvironment(environmentWithGoRewardlessEnabled());
 
@@ -410,11 +421,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
     this.startUpdateActivity.assertValueCount(1);
     this.koalaTest.assertValues(KoalaEvent.VIEWED_UPDATE);
-
-    // Clicking login on onboarding view should show login tout.
-    this.showLoginTout.assertNoValues();
-    this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
-    this.showLoginTout.assertValue(true);
   }
 
   private Environment environmentWithGoRewardlessDisabled() {

@@ -296,7 +296,7 @@ public interface DiscoveryFragmentViewModel {
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
-        .subscribe(v -> this.lake.trackDiscoveryRefreshTriggered());
+        .subscribe(v -> this.lake.trackLogInSignUpButtonClicked());
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

@@ -293,6 +293,10 @@ public interface DiscoveryFragmentViewModel {
       this.refresh
         .compose(bindToLifecycle())
         .subscribe(v -> this.koala.trackDiscoveryRefreshTriggered());
+
+      this.discoveryOnboardingLoginToutClick
+        .compose(bindToLifecycle())
+        .subscribe(v -> this.lake.trackLogInSignUpButtonClicked());
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

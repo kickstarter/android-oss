@@ -915,6 +915,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.goBack.assertNoValues()
         this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
         this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.experimentsTest.assertValues("Project Page Pledge Button Clicked")
     }
 
     @Test
@@ -927,6 +928,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
         this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.experimentsTest.assertValues("Project Page Pledge Button Clicked")
     }
 
     @Test
@@ -938,6 +940,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked")
+        this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -950,6 +954,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "View Rewards Button Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -962,6 +967,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "View Your Pledge Button Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -974,6 +980,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page")
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -986,6 +993,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertNoValues()
         this.koalaTest.assertValue("Project Page")
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test

@@ -142,6 +142,11 @@ public interface LoginToutViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackLoginRegisterTout);
 
+      this.loginReason
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.lake.trackLogInSignUpPageViewed());
+
       this.loginError
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackLoginError());

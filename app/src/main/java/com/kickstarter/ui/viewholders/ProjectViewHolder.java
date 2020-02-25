@@ -530,7 +530,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderBackProjectClicked(this);
   }
 
-  @OnClick({R.id.blurb_view, R.id.campaign, R.id.read_more})
+  @OnClick({R.id.blurb_view, R.id.campaign})
   public void blurbOnClick() {
     this.delegate.projectViewHolderBlurbClicked(this);
   }

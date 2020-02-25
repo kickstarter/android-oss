@@ -24,6 +24,7 @@ import com.kickstarter.ui.data.LoginReason;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import rx.Notification;
 import rx.Observable;
@@ -32,13 +33,14 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.errors;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface LoginToutViewModel {
 
   interface Inputs {
     /** Call when the Login to Facebook button is clicked. */
-    void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions);
+    void facebookLoginClick(final @Nullable LoginToutActivity activity, final @NonNull List<String> facebookPermissions);
 
     /** Call when the login button is clicked. */
     void loginClick();
@@ -149,6 +151,11 @@ public interface LoginToutViewModel {
         .mergeWith(showFacebookAuthorizationErrorDialog())
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackFacebookLoginError());
+
+      this.facebookLoginClick
+        .compose(ignoreValues())
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.lake.trackFacebookLogInSignUpButtonClicked());
     }
 
     private void clearFacebookSession(final @NonNull FacebookException e) {
@@ -185,6 +192,7 @@ public interface LoginToutViewModel {
 
     @VisibleForTesting
     final PublishSubject<String> facebookAccessToken = PublishSubject.create();
+    final PublishSubject<List<String>> facebookLoginClick = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
     @VisibleForTesting
     final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
@@ -200,8 +208,11 @@ public interface LoginToutViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
-      LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
+    @Override public void facebookLoginClick(final @Nullable LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
+      this.facebookLoginClick.onNext(facebookPermissions);
+      if (activity != null) {
+        LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
+      }
     }
     @Override public void loginClick() {
       this.loginClick.onNext(null);

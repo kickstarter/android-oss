@@ -21,3 +21,7 @@ const val PROJECT_PAGE_PLEDGE_BUTTON_CLICKED = "Project Page Pledge Button Click
 const val SELECT_REWARD_BUTTON_CLICKED = "Select Reward Button Clicked"
 const val THANKS_PAGE_VIEWED = "Thanks Page Viewed"
 // endregion
+
+// region Log In or Signup
+const val FACEBOOK_LOG_IN_OR_SIGNUP_BUTTON_CLICKED = "Facebook Log In or Signup Button Clicked"
+// endregion

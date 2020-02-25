@@ -10,6 +10,8 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -62,9 +64,11 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment);
 
     this.currentUser.assertValuesAndClear(null);
+    this.vm.inputs.facebookLoginClick(null, Arrays.asList("public_profile", "user_friends", "email"));
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertValueCount(1);
     this.finishWithSuccessfulResult.assertValueCount(1);
+    this.lakeTest.assertValue("Facebook Log In or Signup Button Clicked");
   }
 
   @Test
@@ -84,8 +88,10 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment);
 
     this.currentUser.assertValuesAndClear(null);
+    this.vm.inputs.facebookLoginClick(null, Arrays.asList("public_profile", "user_friends", "email"));
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertNoValues();
     this.finishWithSuccessfulResult.assertNoValues();
+    this.lakeTest.assertValue("Facebook Log In or Signup Button Clicked");
   }
 }

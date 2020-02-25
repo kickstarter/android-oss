@@ -1,8 +1,5 @@
 package com.kickstarter.libs;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -18,6 +15,9 @@ import com.kickstarter.ui.data.PledgeData;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;
@@ -791,6 +791,12 @@ public final class Koala {
     final Map<String, Object> props = KoalaUtils.checkoutDataProperties(checkoutData, pledgeData, this.client.loggedInUser());
 
     this.client.track(LakeEvent.THANKS_PAGE_VIEWED, props);
+  }
+  //endregion
+
+  //region Log In or Signup
+  public void trackFacebookLogInSignUpButtonClicked() {
+    this.client.track(LakeEvent.FACEBOOK_LOG_IN_OR_SIGNUP_BUTTON_CLICKED);
   }
   //endregion
 }

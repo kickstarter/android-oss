@@ -722,5 +722,9 @@ public final class Koala {
   public void trackLogInSignUpPageViewed() {
     this.client.track(LakeEvent.LOG_IN_OR_SIGN_UP_PAGE_VIEWED);
   }
+
+  public void trackSignUpButtonClicked() {
+    this.client.track(LakeEvent.SIGN_UP_BUTTON_CLICKED);
+  }
   //endregion
 }

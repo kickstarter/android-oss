@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.UpdateViewHolder
@@ -47,9 +48,9 @@ interface UpdateViewHolderViewModel {
 
         private val backersOnlyContainerIsVisible = BehaviorSubject.create<Boolean>()
         private val blurb = BehaviorSubject.create<String>()
-        private val commentsCount = BehaviorSubject.create<Int>()
+        private val commentsCount = BehaviorSubject.create<Int?>()
         private val date = BehaviorSubject.create<DateTime>()
-        private val likesCount = BehaviorSubject.create<Int>()
+        private val likesCount = BehaviorSubject.create<Int?>()
         private val sequence = BehaviorSubject.create<Int>()
         private val title = BehaviorSubject.create<String>()
         private val viewUpdate = PublishSubject.create<Update>()
@@ -66,7 +67,12 @@ interface UpdateViewHolderViewModel {
                     .map { it.first }
 
             update
-                    .map { if(it.visible()it.body() }
+                    .map { BooleanUtils.negate(it.isPublic ?: false) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backersOnlyContainerIsVisible)
+
+            update
+                    .map { it.truncatedBody() }
                     .compose(bindToLifecycle())
                     .subscribe(this.blurb)
 

@@ -5,6 +5,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
+  android:background="@color/ksr_grey_300"
   tools:showIn="@layout/comments_layout"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">

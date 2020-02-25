@@ -24,4 +24,5 @@ const val THANKS_PAGE_VIEWED = "Thanks Page Viewed"
 
 // region Log In or Signup
 const val LOG_IN_OR_SIGNUP_BUTTON_CLICKED = "Log In or Signup Button Clicked"
+const val LOG_IN_OR_SIGN_UP_PAGE_VIEWED = "Log In or Sign Up Page Viewed"
 // endregion

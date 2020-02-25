@@ -26,6 +26,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         test.assertValues(false, true)
 
         koalaTest.assertValueCount(1)
+        this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 
     @Test
@@ -47,6 +48,7 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         test.assertValueCount(1)
 
         koalaTest.assertValues("Forgot Password View", "Forgot Password Requested")
+        this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 
     @Test
@@ -74,5 +76,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         errorTest.assertValue("bad request")
 
         koalaTest.assertValues("Forgot Password View", "Forgot Password Errored")
+        this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 }

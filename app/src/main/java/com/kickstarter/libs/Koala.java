@@ -715,6 +715,10 @@ public final class Koala {
   //endregion
 
   //region Log In or Signup
+  public void trackForgotPasswordPageViewed() {
+    this.client.track(LakeEvent.FORGOT_PASSWORD_PAGE_VIEWED);
+  }
+
   public void trackLogInSignUpButtonClicked() {
     this.client.track(LakeEvent.LOG_IN_OR_SIGNUP_BUTTON_CLICKED);
   }

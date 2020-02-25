@@ -140,15 +140,7 @@ public final class KoalaUtils {
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), loggedInUser);
     props.putAll(KoalaUtils.pledgeProperties(pledgeData.reward()));
 
-    final RefTag intentRefTag = projectData.refTagFromIntent();
-    if (intentRefTag != null) {
-      props.put("session_ref_tag", intentRefTag.tag());
-    }
-
-    final RefTag cookieRefTag = projectData.refTagFromCookie();
-    if (cookieRefTag != null) {
-      props.put("session_referrer_credit", cookieRefTag.tag());
-    }
+    props.putAll(refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
 
     props.put("context_pledge_flow", pledgeData.pledgeFlowContext().getTrackingString());
     return props;
@@ -224,6 +216,20 @@ public final class KoalaUtils {
     };
 
     return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  public static @NonNull Map<String, Object> refTagProperties(final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
+    return new HashMap<String, Object>() {
+      {
+        if (intentRefTag != null) {
+          put("session_ref_tag", intentRefTag.tag());
+        }
+
+        if (cookieRefTag != null) {
+          put("session_referrer_credit", cookieRefTag.tag());
+        }
+      }
+    };
   }
 
   public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity, final @Nullable User loggedInUser) {

@@ -60,6 +60,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     formSubmittingTest.assertValues(true, false);
     signupSuccessTest.assertValueCount(1);
     koalaTest.assertValues("User Signup", "Signup Newsletter Toggle", "Login", "New User");
+    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
   }
 
   @Test
@@ -98,6 +99,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     signupSuccessTest.assertValueCount(0);
     signupErrorTest.assertValueCount(1);
     koalaTest.assertValues("User Signup", "Signup Newsletter Toggle", "Errored User Signup");
+    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
   }
 
   @Test
@@ -134,5 +136,6 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     signupSuccessTest.assertValueCount(0);
     signupErrorTest.assertValueCount(1);
     koalaTest.assertValues("User Signup", "Signup Newsletter Toggle", "Errored User Signup");
+    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
   }
 }

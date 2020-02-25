@@ -1,8 +1,5 @@
 package com.kickstarter.libs;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -18,6 +15,9 @@ import com.kickstarter.ui.data.PledgeData;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;
@@ -94,16 +94,9 @@ public final class Koala {
    * @param cookieRefTag (nullable) The ref tag extracted from the cookie store upon viewing the project.
    */
   public void trackProjectShow(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
-
     final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
 
-    if (intentRefTag != null) {
-      properties.put("session_ref_tag", intentRefTag.tag());
-    }
-
-    if (cookieRefTag != null) {
-      properties.put("session_referrer_credit", cookieRefTag.tag());
-    }
+    properties.putAll(KoalaUtils.refTagProperties(intentRefTag, cookieRefTag));
 
     this.client.track(KoalaEvent.PROJECT_PAGE, properties);
   }
@@ -320,10 +313,6 @@ public final class Koala {
     this.client.track(KoalaEvent.FACEBOOK_CONFIRM);
   }
 
-  public void trackFacebookLoginSuccess() {
-    this.client.track("Facebook Login");
-  }
-
   public void trackFacebookLoginError() {
     this.client.track("Errored Facebook Login");
   }
@@ -433,23 +422,8 @@ public final class Koala {
   }
 
   // CHECKOUT
-  public void trackCheckoutNext() { // rewards webview and top nav
-    this.client.track("Checkout Next");
-  }
-  public void trackCheckoutCancel() {
-    this.client.track("Checkout Cancel");
-  }
-
-  public void trackCheckoutLoadFailed() {
-    // TODO: set up error props
-  }
-
   public void trackCheckoutShowShareSheet() {
     this.client.track("Checkout Show Share Sheet");
-  }
-
-  public void trackCheckoutCancelShareSheet() {
-    this.client.track("Checkout Cancel Share Sheet");
   }
 
   public void trackCheckoutShowFacebookShareView() {
@@ -466,10 +440,6 @@ public final class Koala {
         put("share_type", "twitter");
       }
     });
-  }
-
-  public void trackCheckoutShareFinished() {
-    this.client.track("Checkout Share Finished");
   }
 
   public void trackCheckoutFinishJumpToDiscovery() {
@@ -537,42 +507,6 @@ public final class Koala {
     this.client.track(KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY);
 
     this.client.track(KoalaEvent.SHOWED_SHARE_SHEET, props);
-  }
-
-  public void trackCancelProjectShareSheet() {
-    this.client.track("Project Cancel Share Sheet");
-  }
-
-  public void trackShowProjectFacebookShareView() {
-    this.client.track("Project Show Share", new HashMap<String, Object>() {
-      {
-        put("share_type", "facebook");
-      }
-    });
-  }
-
-  public void trackShowProjectTwitterShareView() {
-    this.client.track("Project Show Share", new HashMap<String, Object>() {
-      {
-        put("share_type", "twitter");
-      }
-    });
-  }
-
-  public void trackProjectFacebookShare() {
-    this.client.track("Project Share", new HashMap<String, Object>() {
-      {
-        put("share_type", "facebook");
-      }
-    });
-  }
-
-  public void trackProjectTwitterShare() {
-    this.client.track("Project Share", new HashMap<String, Object>() {
-      {
-        put("share_type", "twitter");
-      }
-    });
   }
 
   // MESSAGES
@@ -725,14 +659,7 @@ public final class Koala {
 
   public void trackProjectPageViewed(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
-
-    if (intentRefTag != null) {
-      props.put("session_ref_tag", intentRefTag.tag());
-    }
-
-    if (cookieRefTag != null) {
-      props.put("session_referrer_credit", cookieRefTag.tag());
-    }
+    props.putAll(KoalaUtils.refTagProperties(intentRefTag, cookieRefTag));
 
     this.client.track(LakeEvent.PROJECT_PAGE_VIEWED, props);
   }
@@ -769,14 +696,7 @@ public final class Koala {
 
   public void trackProjectPagePledgeButtonClicked(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
-
-    if (intentRefTag != null) {
-      props.put("session_ref_tag", intentRefTag.tag());
-    }
-
-    if (cookieRefTag != null) {
-      props.put("session_referrer_credit", cookieRefTag.tag());
-    }
+    props.putAll(KoalaUtils.refTagProperties(intentRefTag, cookieRefTag));
 
     this.client.track(LakeEvent.PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, props);
   }
@@ -795,6 +715,10 @@ public final class Koala {
   //endregion
 
   //region Log In or Signup
+  public void trackLogInSignUpButtonClicked() {
+    this.client.track(LakeEvent.LOG_IN_OR_SIGNUP_BUTTON_CLICKED);
+  }
+
   public void trackLogInSignUpPageViewed() {
     this.client.track(LakeEvent.LOG_IN_OR_SIGN_UP_PAGE_VIEWED);
   }

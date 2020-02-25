@@ -46,7 +46,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.loginClick();
     this.startLoginActivity.assertValueCount(1);
-    this.lakeTest.assertValue("Log In or Sign Up Page Viewed");
+    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Log In Button Clicked");
   }
 
   @Test

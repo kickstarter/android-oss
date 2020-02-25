@@ -154,6 +154,10 @@ public interface LoginToutViewModel {
         .mergeWith(showFacebookAuthorizationErrorDialog())
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackFacebookLoginError());
+
+      this.loginClick
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.lake.trackLogInButtonClicked());
     }
 
     private void clearFacebookSession(final @NonNull FacebookException e) {

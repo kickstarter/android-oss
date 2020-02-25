@@ -30,7 +30,7 @@ class UpdateViewHolder(private val view: View, val delegate: Delegate?) : KSView
         this.viewModel.outputs.blurb()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.update_blurb.setText(ViewUtils.html(it)) }
+                .subscribe { this.view.update_blurb.text = ViewUtils.html(it) }
 
         this.viewModel.outputs.commentsCount()
                 .compose(bindToLifecycle())

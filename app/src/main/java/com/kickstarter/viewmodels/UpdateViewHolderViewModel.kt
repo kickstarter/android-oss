@@ -23,7 +23,7 @@ interface UpdateViewHolderViewModel {
     }
 
     interface Outputs {
-        fun backersOnlyContainerIsVisible(): Observable<String>
+        fun backersOnlyContainerIsVisible(): Observable<Boolean>
 
         fun blurb(): Observable<String>
 
@@ -66,7 +66,7 @@ interface UpdateViewHolderViewModel {
                     .map { it.first }
 
             update
-                    .map { it.body() }
+                    .map { if(it.visible()it.body() }
                     .compose(bindToLifecycle())
                     .subscribe(this.blurb)
 
@@ -100,6 +100,11 @@ interface UpdateViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.viewUpdate)
 
+            update
+                    .compose<Update>(takeWhen(this.updateClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.viewUpdate)
+
         }
 
         override fun configureWith(project: Project, update: Update) {
@@ -110,13 +115,15 @@ interface UpdateViewHolderViewModel {
             this.updateClicked.onNext(null)
         }
 
+        override fun backersOnlyContainerIsVisible(): Observable<Boolean> = this.backersOnlyContainerIsVisible
+
         override fun blurb(): Observable<String> = this.blurb
 
-        override fun commentsCount(): Observable<Int> = this.commentsCount
+        override fun commentsCount(): Observable<Int?> = this.commentsCount
 
         override fun date(): Observable<DateTime> = this.date
 
-        override fun likesCount(): Observable<Int> = this.likesCount
+        override fun likesCount(): Observable<Int?> = this.likesCount
 
         override fun sequence(): Observable<Int> = this.sequence
 

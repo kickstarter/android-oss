@@ -21,15 +21,14 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface ProjectUpdatesViewModel {
 
   interface Inputs {
-    /** Call when a project update uri request has been made. */
-    void goToUpdate(Update update);
+    /** Call when an Update is clicked. */
+    void updateClicked(Update update);
 
     /** Invoke when pagination should happen.*/
     void nextPage();
@@ -42,11 +41,11 @@ public interface ProjectUpdatesViewModel {
     /** Emits a boolean indicating whether updates are being fetched from the API. */
     Observable<Boolean> isFetchingUpdates();
 
-    /** Emits the current project and its updates. */
-    Observable<Pair<Project, List<Update>>> projectAndUpdates();
-
     /** Emits a project and an update to start the update activity with. */
     Observable<Pair<Project, Update>> startUpdateActivity();
+
+    /** Emits the current project's updates. */
+    Observable<List<Update>> updates();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements Inputs, Outputs {
@@ -79,10 +78,11 @@ public interface ProjectUpdatesViewModel {
           .concater(ListUtils::concatDistinct)
           .build();
 
-      project
-        .compose(combineLatestPair(paginator.paginatedData().share()))
+      paginator
+        .paginatedData()
+        .share()
         .compose(bindToLifecycle())
-        .subscribe(this.projectAndUpdates);
+        .subscribe(this.updates);
 
       paginator
         .isFetching()
@@ -90,12 +90,12 @@ public interface ProjectUpdatesViewModel {
         .subscribe(this.isFetchingUpdates);
 
       project
-        .compose(takePairWhen(this.goToUpdate))
+        .compose(takePairWhen(this.updateClicked))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
 
       project
-        .compose(takeWhen(this.goToUpdate))
+        .compose(takeWhen(this.updateClicked))
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.UPDATES));
 
@@ -105,35 +105,35 @@ public interface ProjectUpdatesViewModel {
         .subscribe(this.koala::trackViewedUpdates);
     }
 
-    private final PublishSubject<Update> goToUpdate = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
+    private final PublishSubject<Update> updateClicked = PublishSubject.create();
 
     private final BehaviorSubject<Boolean> isFetchingUpdates = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, List<Update>>> projectAndUpdates = BehaviorSubject.create();
+    private final BehaviorSubject<List<Update>> updates = BehaviorSubject.create();
     private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void goToUpdate(final @NonNull Update update) {
-      this.goToUpdate.onNext(update);
-    }
     @Override public void nextPage() {
       this.nextPage.onNext(null);
     }
     @Override public void refresh() {
       this.refresh.onNext(null);
     }
+    @Override public void updateClicked(final @NonNull Update update) {
+      this.updateClicked.onNext(update);
+    }
 
     @Override public @NonNull Observable<Boolean> isFetchingUpdates() {
       return this.isFetchingUpdates;
     }
-    @Override public @NonNull Observable<Pair<Project, List<Update>>> projectAndUpdates() {
-      return this.projectAndUpdates;
-    }
     @Override public @NonNull Observable<Pair<Project, Update>> startUpdateActivity() {
       return this.startUpdateActivity;
+    }
+    @Override public @NonNull Observable<List<Update>> updates() {
+      return this.updates;
     }
   }
 }

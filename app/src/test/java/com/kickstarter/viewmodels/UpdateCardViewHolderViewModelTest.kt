@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.models.Update
 import org.joda.time.DateTime
 import org.junit.Test
@@ -39,8 +40,22 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testBackersOnlyContainerIsVisible() {
+    fun testBackersOnlyContainerIsVisible_whenUpdateIsPublic() {
         setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(UpdateFactory.update())
+
+        this.backersOnlyContainerIsVisible.assertValue(false)
+    }
+
+
+    @Test
+    fun testBackersOnlyContainerIsVisible_whenUpdateIsNotPublic() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(UpdateFactory.update())
+
+        this.backersOnlyContainerIsVisible.assertValue(true)
     }
 
     @Test

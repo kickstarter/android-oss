@@ -4,12 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
@@ -24,6 +18,11 @@ import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -65,7 +64,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       .compose(observeForUI())
       .subscribe(pu -> this.startUpdateActivity(pu.first, pu.second));
 
-    this.viewModel.outputs.projectAndUpdates()
+    this.viewModel.outputs.updates()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this.adapter::takeData);
@@ -81,7 +80,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
 
   @Override
   public void updateClicked(final @NotNull Update update) {
-    this.viewModel.inputs.goToUpdate(update);
+    this.viewModel.inputs.updateClicked(update);
   }
 
   private void startUpdateActivity(final @NonNull Project project, final @NonNull Update update) {

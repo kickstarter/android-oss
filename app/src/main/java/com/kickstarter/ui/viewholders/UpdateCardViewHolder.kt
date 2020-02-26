@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders
 
-import android.util.Pair
 import android.view.View
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
@@ -9,7 +8,6 @@ import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.viewmodels.UpdateCardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_update_card.view.*
@@ -98,11 +96,9 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
 
     override fun bindData(data: Any?) {
         @Suppress("UNCHECKED_CAST")
-        val projectAndUpdate = requireNonNull(data as Pair<Project, Update>)
-        val project = requireNonNull(projectAndUpdate.first, Project::class.java)
-        val update = requireNonNull(projectAndUpdate.second, Update::class.java)
+        val update = requireNonNull(data as Update)
 
-        this.viewModel.inputs.configureWith(project, update)
+        this.viewModel.inputs.configureWith(update)
     }
 
 }

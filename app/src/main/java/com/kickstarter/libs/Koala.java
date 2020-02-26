@@ -715,12 +715,28 @@ public final class Koala {
   //endregion
 
   //region Log In or Signup
+  public void trackFacebookLogInSignUpButtonClicked() {
+    this.client.track(LakeEvent.FACEBOOK_LOG_IN_OR_SIGNUP_BUTTON_CLICKED);
+  }
+
+  public void trackLogInButtonClicked() {
+    this.client.track(LakeEvent.LOG_IN_BUTTON_CLICKED);
+  }
+
   public void trackLogInSignUpButtonClicked() {
     this.client.track(LakeEvent.LOG_IN_OR_SIGNUP_BUTTON_CLICKED);
   }
 
   public void trackLogInSignUpPageViewed() {
     this.client.track(LakeEvent.LOG_IN_OR_SIGN_UP_PAGE_VIEWED);
+  }
+
+  public void trackLogInSubmitButtonClicked() {
+    this.client.track(LakeEvent.LOG_IN_SUBMIT_BUTTON_CLICKED);
+  }
+
+  public void trackSignUpButtonClicked() {
+    this.client.track(LakeEvent.SIGN_UP_BUTTON_CLICKED);
   }
 
   public void trackSignUpSubmitButtonClicked() {

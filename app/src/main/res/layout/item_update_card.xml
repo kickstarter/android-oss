@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/update_container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginStart="@dimen/grid_3"
+  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginEnd="@dimen/grid_3"
+  android:layout_marginBottom="@dimen/grid_2"
+  android:foreground="@drawable/click_indicator_light"
+  android:orientation="vertical"
+  app:cardCornerRadius="@dimen/grid_1">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/click_indicator_light"
+    android:padding="@dimen/grid_3">
+
+    <TextView
+      android:id="@+id/update_sequence"
+      style="@style/FootnoteSecondaryMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Update #3" />
+
+    <TextView
+      android:id="@+id/update_date"
+      style="@style/FootnoteSecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+      android:layout_toEndOf="@id/update_sequence"
+      android:gravity="end"
+      tools:text="February 19, 2020" />
+
+    <TextView
+      android:id="@+id/update_backers_only"
+      style="@style/Headline"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/update_sequence"
+      android:layout_marginTop="@dimen/grid_10"
+      android:layout_marginBottom="@dimen/grid_10"
+      android:gravity="center"
+      android:text="@string/This_post_is_for_backers_only"
+      android:visibility="gone" />
+
+    <LinearLayout
+      android:id="@+id/update_details"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/update_sequence"
+      android:orientation="vertical"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/update_sequence"
+      tools:visibility="visible">
+
+      <TextView
+        android:id="@+id/update_title"
+        style="@style/Headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1_half"
+        app:layout_constraintBottom_toTopOf="@id/update_blurb"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Big news!" />
+
+      <TextView
+        android:id="@+id/update_blurb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:ellipsize="end"
+        android:maxLines="4"
+        app:layout_constraintBottom_toTopOf="@id/update_comments_likes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/update_title"
+        tools:text="This is some placeholder copy that is only visible when previewing the layout." />
+
+      <LinearLayout
+        android:id="@+id/update_comments_likes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/update_blurb">
+
+        <LinearLayout
+          android:id="@+id/update_comments_container"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_3"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <ImageView
+            android:layout_width="@dimen/grid_5_half"
+            android:layout_height="@dimen/grid_5_half"
+            android:layout_marginEnd="@dimen/grid_1_half"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_chat_bubble"
+            android:tint="@color/celebrate_500" />
+
+          <TextView
+            android:id="@+id/update_comments_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_1"
+            android:textColor="@color/celebrate_500"
+            tools:text="0" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/update_likes_container"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_3"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+          <ImageView
+            android:layout_width="@dimen/grid_5_half"
+            android:layout_height="@dimen/grid_5_half"
+            android:layout_marginEnd="@dimen/grid_1_half"
+            android:importantForAccessibility="no"
+            android:src="@drawable/icon__heart"
+            android:tint="@color/celebrate_500" />
+
+          <TextView
+            android:id="@+id/update_likes_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/celebrate_500"
+            tools:text="0" />
+
+        </LinearLayout>
+      </LinearLayout>
+    </LinearLayout>
+  </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -4,6 +4,8 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 
+import androidx.annotation.NonNull;
+
 public final class UpdateFactory {
   private UpdateFactory() {}
 
@@ -20,10 +22,18 @@ public final class UpdateFactory {
     return Update.builder()
       .body("Update body")
       .id(1234)
+      .isPublic(true)
       .projectId(5678)
       .sequence(11111)
       .title("First update")
       .urls(Update.Urls.builder().web(web).build())
+      .build();
+  }
+
+  public static @NonNull Update backersOnlyUpdate() {
+    return update()
+      .toBuilder()
+      .isPublic(false)
       .build();
   }
 }

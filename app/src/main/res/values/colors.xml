@@ -37,6 +37,7 @@
 
   <!-- KDS  -->
   <color name="trust_700">#0A007D</color>
+  <color name="celebrate_500">#F97B62</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->

@@ -27,6 +27,7 @@
   <string name="All_Theater_Projects" formatted="false">All Theater Projects</string>
   <string name="All_category_name_Projects" formatted="false">All %{category_name} Projects</string>
   <string name="All_gone" formatted="false">All gone</string>
+  <string name="All_or_nothing" formatted="false">All-or-nothing</string>
   <string name="Almost_there" formatted="false">Almost there!</string>
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
@@ -59,6 +60,7 @@ backers</string>
 backers</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 backers</string>
+  <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">Backers have signed up to help Kickstarter creators bring their ideas to life.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Become a backer to leave a comment.</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Big Kickstarter news and events near you, delivered just a few times a year.</string>
   <string name="Biography" formatted="false">Biography</string>
@@ -145,6 +147,7 @@ Please tap to retry.</string>
   <string name="Description" formatted="false">Description</string>
   <string name="Developer" formatted="false">Developer</string>
   <string name="Discover_arts_news" formatted="false">Discover innovative projects and ideas, handpicked twice a month by Kickstarter\'s Design &amp; Tech team.</string>
+  <string name="Discover_creative_projects" formatted="false">Discover creative projects</string>
   <string name="Discover_more_projects" formatted="false">Discover more projects.</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Discover the future of Design and Tech.</string>
   <string name="Dismiss" formatted="false">Dismiss</string>
@@ -169,6 +172,7 @@ Please tap to retry.</string>
   <string name="Expired_date_at_time" formatted="false">Expired %{date} at %{time}</string>
   <string name="Expires_date_at_time" formatted="false">Expires %{date} at %{time}</string>
   <string name="Explore" formatted="false">Explore</string>
+  <string name="Explore_and_support_the_latest_creative_ideas" formatted="false">Explore and support the latest creative ideas created by our vast global community.</string>
   <string name="Explore_creative_projects" formatted="false">Explore creative projects</string>
   <string name="Explore_projects" formatted="false">Explore projects</string>
   <string name="Explore_projects_we_love" formatted="false">Explore projects we love</string>
@@ -232,11 +236,13 @@ Please tap to retry.</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Get notified about this creator’s live streams</string>
   <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Get notified when your friends back and launch projects</string>
   <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
+  <string name="Get_started" formatted="false">Get started</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
   <string name="Going_rewardless_is_rewarding" formatted="false">Going “rewardless” is rewarding</string>
   <string name="Got_it" formatted="false">Got it</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Got it! Your changes have been saved.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
+  <string name="Guide_creators_to_success" formatted="false">Guide creators to success</string>
   <string name="Happening_newsletter" formatted="false">Sign up to receive a mix of new projects, compelling stories, and visual inspiration, delivered once (and sometimes twice) a week.</string>
   <string name="Help" formatted="false">Help</string>
   <string name="Help_center" formatted="false">Help Center</string>
@@ -261,6 +267,7 @@ Please tap to retry.</string>
 with friends.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
   <string name="Its_our_birthday" formatted="false">It\'s our birthday! More than 160,000 creative projects have come to life on Kickstarter over the past decade, with support from over 16,000,000 backers.</string>
+  <string name="Join_a_fruitful_community" formatted="false">Join a fruitful community</string>
   <string name="Join_our_secret_society" formatted="false">Join our secret society.</string>
   <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">Join us in supporting creative work for its own sake this holiday season.</string>
   <string name="Joining_the_live_stream" formatted="false">Joining the live stream</string>
@@ -310,6 +317,7 @@ with friends.</string>
   <string name="Message_creator" formatted="false">Message creator</string>
   <string name="Message_user_name" formatted="false">Message %{user_name}…</string>
   <string name="Messages" formatted="false">Messages</string>
+  <string name="Million_plus" formatted="false">%{total_amount} million+</string>
   <string name="More_than_number_of_items_items" formatted="false">More than %{number_of_items} items</string>
   <string name="Name" formatted="false">Name</string>
   <string name="Never" formatted="false">Never</string>
@@ -503,10 +511,13 @@ catch your eye?</string>
   <string name="Status" formatted="false">Status</string>
   <string name="Stay_up_to_date" formatted="false">Stay up to date?</string>
   <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
+  <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Stay updated on the projects you\'ve backed and learn about how these creative works are produced.</string>
   <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
   <string name="Subscribe" formatted="false">Subscribe</string>
   <string name="Subscribed" formatted="false">Subscribed</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
+  <string name="Successful_projects_have_been_created_on_kickstarter" formatted="false">Successful projects have been created on Kickstarter.</string>
+  <string name="Support_creative_independence" formatted="false">Support creative independence</string>
   <string name="Support_the_project_for_no_reward" formatted="false">Support the project for no reward, just because it speaks to you.</string>
   <string name="Survey" formatted="false">Survey</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tap the heart icon on a project to get notified 48 hours before it ends.</string>
@@ -536,6 +547,7 @@ catch your eye?</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">This Facebook account is already linked to another Kickstarter user.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">This holiday season, support a project for no reward, just because it speaks to you.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
+  <string name="This_post_is_for_backers_only" formatted="false">This post is for backers only</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
@@ -548,7 +560,11 @@ catch your eye?</string>
   <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
   <string name="Total" formatted="false">Total</string>
   <string name="Total_amount" formatted="false">Total amount</string>
+  <string name="Total_amount_backers_have_pledged_to_projects" formatted="false">Total amount (USD) backers have pledged to projects.</string>
+  <string name="Total_amount_billion_plus" formatted="false">%{total_amount} billion+</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
+  <string name="Total_plus" formatted="false">%{total}+</string>
+  <string name="Track_your_backings" formatted="false">Track your backings</string>
   <string name="Twice_a_day_summary" formatted="false">Twice a day summary</string>
   <string name="Unable_to_request" formatted="false">Unable to request data.</string>
   <string name="Unfollow_friend_name" formatted="false">Unfollow %{friend_name}</string>
@@ -619,6 +635,7 @@ Please try again later.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>You pledged&lt;/b> on %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">You pledged without a reward</string>
   <string name="You_saved_this_project" formatted="false">You saved this project.</string>
+  <string name="You_wont_be_charged_for_backing_a_project" formatted="false">You won\'t be charged for backing a project unless it reaches its funding goal.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">You\'ll receive an email at %{email} when your download is ready.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Your chat message wasn\'t sent successfully.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Your friends haven’t backed any projects yet, but once they do, you’ll see them listed here.</string>
@@ -1228,6 +1245,12 @@ Please try again later.</string>
   <string name="invalid_api_client_alert_message" formatted="false">You seem to be using a really old version of the app. Please upgrade from the App Store to continue using.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Please Upgrade</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Upgrade</string>
+  <string name="likes_count_likes_few" formatted="false">%{likes_count} likes</string>
+  <string name="likes_count_likes_many" formatted="false">%{likes_count} likes</string>
+  <string name="likes_count_likes_one" formatted="false">%{likes_count} like</string>
+  <string name="likes_count_likes_other" formatted="false">%{likes_count} likes</string>
+  <string name="likes_count_likes_two" formatted="false">%{likes_count} likes</string>
+  <string name="likes_count_likes_zero" formatted="false">%{likes_count} likes</string>
   <string name="location_name_only" formatted="false">%{location_name} only</string>
   <string name="login_buttons_forgot_password" formatted="false">Forgot your password?</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>

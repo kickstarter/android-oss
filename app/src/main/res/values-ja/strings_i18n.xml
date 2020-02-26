@@ -27,6 +27,7 @@
   <string name="All_Theater_Projects" formatted="false">全ての演劇プロジェクト</string>
   <string name="All_category_name_Projects" formatted="false">%{category_name} の全プロジェクト</string>
   <string name="All_gone" formatted="false">終了</string>
+  <string name="All_or_nothing" formatted="false">All-or-nothing 方式</string>
   <string name="Almost_there" formatted="false">もう少しです!</string>
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
@@ -57,6 +58,7 @@
   <string name="Backers_count_separator_backers_two" formatted="false">%{backers_count}\n
 バッカー</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count} バッカー</string>
+  <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">Backers have signed up to help Kickstarter creators bring their ideas to life.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">コメントを残すためにバッカーになる。</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Kickstarter に関するビッグニュースやお近くのイベントについて、年に数回お届け。</string>
   <string name="Biography" formatted="false">自己紹介</string>
@@ -143,6 +145,7 @@
   <string name="Description" formatted="false">説明</string>
   <string name="Developer" formatted="false">開発者</string>
   <string name="Discover_arts_news" formatted="false">Kickstarter の「デザイン＆テクノロジー」チーム選りすぐりの革新的なプロジェクトを毎月2回お届けします。</string>
+  <string name="Discover_creative_projects" formatted="false">Discover creative projects</string>
   <string name="Discover_more_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">デザインとテクノロジーの未来を覗いてみよう。</string>
   <string name="Dismiss" formatted="false">破棄</string>
@@ -167,6 +170,7 @@
   <string name="Expired_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
   <string name="Expires_date_at_time" formatted="false">有効期限: %{date} %{time}</string>
   <string name="Explore" formatted="false">さがす</string>
+  <string name="Explore_and_support_the_latest_creative_ideas" formatted="false">Explore and support the latest creative ideas created by our vast global community.</string>
   <string name="Explore_creative_projects" formatted="false">クリエイティブなプロジェクトをさがす</string>
   <string name="Explore_projects" formatted="false">プロジェクトをさがす</string>
   <string name="Explore_projects_we_love" formatted="false">Projects We Love を見る</string>
@@ -230,11 +234,13 @@
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">このクリエイターのライブ配信通知を受け取る</string>
   <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">友達がプロジェクトをバックしたりローンチしたりした際に通知を受け取りましょう。</string>
   <string name="Get_reminded_about_this_project" formatted="false">このプロジェクトについてリマインダーを希望しますか？</string>
+  <string name="Get_started" formatted="false">はじめよう</string>
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
   <string name="Going_rewardless_is_rewarding" formatted="false">「リワードなし」でも、やりがいたっぷり</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">変更が保存されました。</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
+  <string name="Guide_creators_to_success" formatted="false">Guide creators to success</string>
   <string name="Happening_newsletter" formatted="false">新しいプロジェクトや、感動的なストーリー、視覚的なインスピレーションなどが週に1回 (時には2回) 届くニュースレターにサインアップしましょう。</string>
   <string name="Help" formatted="false">ヘルプ</string>
   <string name="Help_center" formatted="false">ヘルプセンター</string>
@@ -258,6 +264,7 @@
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Its_our_birthday" formatted="false">Kickstarter の誕生日です！過去10年の間に、16万以上のクリエイティブなプロジェクトが、1600万人以上のバッカーの支援のもと、Kickstarter で実現化しました。</string>
+  <string name="Join_a_fruitful_community" formatted="false">活気あるコミュニティに参加しましょう</string>
   <string name="Join_our_secret_society" formatted="false">この秘密の世界にあなたも浸ってみませんか。</string>
   <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">このホリデーシーズンは、ぜひリワードなしにクリエイティブなアイデア「そのもの」をサポートしませんか？</string>
   <string name="Joining_the_live_stream" formatted="false">ライブ配信に参加</string>
@@ -307,6 +314,7 @@
   <string name="Message_creator" formatted="false">クリエーターにメッセージする</string>
   <string name="Message_user_name" formatted="false">%{user_name} にメッセージ</string>
   <string name="Messages" formatted="false">メッセージ</string>
+  <string name="Million_plus" formatted="false">%{total_amount},000,000 以上</string>
   <string name="More_than_number_of_items_items" formatted="false">%{number_of_items} 件以上のアイテム</string>
   <string name="Name" formatted="false">名前</string>
   <string name="Never" formatted="false">通知を受けない</string>
@@ -498,10 +506,13 @@
   <string name="Status" formatted="false">ステータス</string>
   <string name="Stay_up_to_date" formatted="false">最新情報を常に把握したい？</string>
   <string name="Stay_up_to_date_newsletter" formatted="false">Kickstarter チームお気に入りのプロジェクトや、当社が選んだ注目ニュースやイベントについての最新情報を受信しましょう。</string>
+  <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Stay updated on the projects you\'ve backed and learn about how these creative works are produced.</string>
   <string name="Stay_updated_on_this_project" formatted="false">このプロジェクトの最新情報を受け取りたい？</string>
   <string name="Subscribe" formatted="false">購読する</string>
   <string name="Subscribed" formatted="false">購読済</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">ライブ配信を購読</string>
+  <string name="Successful_projects_have_been_created_on_kickstarter" formatted="false">Successful projects have been created on Kickstarter.</string>
+  <string name="Support_creative_independence" formatted="false">Support creative independence</string>
   <string name="Support_the_project_for_no_reward" formatted="false">リワード無しでも「支援したい！」と思わせてくれるような、あなたの心に訴えかけるプロジェクトをサポートしてみませんか？</string>
   <string name="Survey" formatted="false">サーベイ</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">終了48時間前に知らせるにはハートのアイコンをタップ！</string>
@@ -531,6 +542,7 @@
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">このFacebookアカウントはすでに他のKickstarterユーザーとつながっています</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">このホリデーシーズンはぜひ、リワード無しでもあなたの心に訴えかけるようなプロジェクトをサポートしてください。</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">支払関連のエラーにより、このプレッジは取り消されました。</string>
+  <string name="This_post_is_for_backers_only" formatted="false">この投稿はバッカー向けです</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">このプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">%{date} までに %{amount} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。</string>
   <string name="Time_left_left" formatted="false">あと%{time_left}</string>
@@ -543,7 +555,11 @@
   <string name="Top_ten_rewards" formatted="false">リワードのトップ10</string>
   <string name="Total" formatted="false">合計</string>
   <string name="Total_amount" formatted="false">合計金額</string>
+  <string name="Total_amount_backers_have_pledged_to_projects" formatted="false">Total amount (USD) backers have pledged to projects.</string>
+  <string name="Total_amount_billion_plus" formatted="false">%{total_amount} 十億+</string>
   <string name="Total_pledged" formatted="false">プレッジ総計</string>
+  <string name="Total_plus" formatted="false">%{total}以上</string>
+  <string name="Track_your_backings" formatted="false">Track your backings</string>
   <string name="Twice_a_day_summary" formatted="false">1日2回の概要</string>
   <string name="Unable_to_request" formatted="false">データをリクエストできません。</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} のフォロー解除</string>
@@ -614,6 +630,7 @@
   <string name="You_pledged_on_date" formatted="false">%{pledge_date} に&lt;b>プレッジ&lt;/b></string>
   <string name="You_pledged_without_a_reward" formatted="false">リワードなしでプレッジしました</string>
   <string name="You_saved_this_project" formatted="false">保存済みです</string>
+  <string name="You_wont_be_charged_for_backing_a_project" formatted="false">プロジェクトをバックした場合、プロジェクトがファンディングゴールに到達しない限り、課金されることはありません。</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">ダウンロードの準備が整い次第、%{email} にメールが届きます。</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">メッセージの送信に失敗。</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">バックした友達はまだいませんが、今後こちらに表示されます。</string>
@@ -1224,6 +1241,12 @@
   <string name="invalid_api_client_alert_message" formatted="false">引き続き利用するにはApp Storeからアプリのバージョンを更新してください。</string>
   <string name="invalid_api_client_alert_title" formatted="false">アップグレードしてください</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">アップグレード</string>
+  <string name="likes_count_likes_few" formatted="false">いいね！%{likes_count}件</string>
+  <string name="likes_count_likes_many" formatted="false">いいね！%{likes_count}件</string>
+  <string name="likes_count_likes_one" formatted="false">いいね！%{likes_count}件</string>
+  <string name="likes_count_likes_other" formatted="false">いいね！%{likes_count}件</string>
+  <string name="likes_count_likes_two" formatted="false">いいね！%{likes_count}件</string>
+  <string name="likes_count_likes_zero" formatted="false">いいね！%{likes_count}件</string>
   <string name="location_name_only" formatted="false">%{location_name} のみ</string>
   <string name="login_buttons_forgot_password" formatted="false">パスワードを忘れましたか？</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>パスワードを忘れましたか？&lt;/u></string>

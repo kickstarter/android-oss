@@ -118,6 +118,7 @@ public interface TwoFactorViewModel {
         .subscribe(__ -> this.koala.trackLoginError());
 
       this.koala.trackTwoFactorAuthView();
+      this.lake.trackTwoFactorConfirmationViewed();
     }
 
     private void success(final @NonNull AccessTokenEnvelope envelope) {

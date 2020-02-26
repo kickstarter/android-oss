@@ -31,4 +31,5 @@ const val LOG_IN_OR_SIGN_UP_PAGE_VIEWED = "Log In or Sign Up Page Viewed"
 const val LOG_IN_SUBMIT_BUTTON_CLICKED = "Log In Submit Button Clicked"
 const val SIGN_UP_BUTTON_CLICKED = "Sign Up Button Clicked"
 const val SIGN_UP_SUBMIT_BUTTON_CLICKED = "Sign Up Submit Button Clicked"
+const val TWO_FACTOR_CONFIRMATION_VIEWED = "Two-Factor Confirmation Viewed"
 // endregion

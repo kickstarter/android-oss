@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UpdateFactory
 import com.kickstarter.models.Update
 import org.joda.time.DateTime
@@ -43,19 +44,27 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testBackersOnlyContainerIsVisible_whenUpdateIsPublic() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(UpdateFactory.update())
+        this.vm.inputs.configureWith(ProjectFactory.project(), UpdateFactory.update())
 
         this.backersOnlyContainerIsVisible.assertValue(false)
     }
 
-
     @Test
-    fun testBackersOnlyContainerIsVisible_whenUpdateIsNotPublic() {
+    fun testBackersOnlyContainerIsVisible_whenUpdateIsNotPublicAndProjectIsNotBacked() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(UpdateFactory.backersOnlyUpdate())
+        this.vm.inputs.configureWith(ProjectFactory.project(), UpdateFactory.backersOnlyUpdate())
 
         this.backersOnlyContainerIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun testBackersOnlyContainerIsVisible_whenUpdateIsNotPublicAndProjectIsBacked() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectFactory.backedProject(), UpdateFactory.backersOnlyUpdate())
+
+        this.backersOnlyContainerIsVisible.assertValue(false)
     }
 
     @Test
@@ -66,7 +75,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .body("Here are some details.")
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.blurb.assertValue("Here are some details.")
     }
@@ -79,7 +88,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .commentsCount(33)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCount.assertValue(33)
     }
@@ -92,7 +101,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .commentsCount(null)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCountIsGone.assertValue(true)
     }
@@ -105,7 +114,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .commentsCount(0)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCountIsGone.assertValue(true)
     }
@@ -118,7 +127,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .commentsCount(33)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCountIsGone.assertValue(false)
     }
@@ -132,7 +141,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .publishedAt(timestamp)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.publishDate.assertValue(timestamp)
     }
@@ -145,7 +154,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .likesCount(22)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCount.assertValue(22)
     }
@@ -158,7 +167,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .likesCount(null)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCountIsGone.assertValue(true)
     }
@@ -171,7 +180,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .likesCount(0)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCountIsGone.assertValue(true)
     }
@@ -184,7 +193,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .likesCount(33)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCountIsGone.assertValue(false)
     }
@@ -197,7 +206,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .sequence(3)
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.sequence.assertValue(3)
     }
@@ -210,7 +219,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .title("Wow, big news!")
                 .build()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.title.assertValue("Wow, big news!")
     }
@@ -220,7 +229,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-        this.vm.inputs.configureWith(update)
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.vm.inputs.updateClicked()
         this.viewUpdate.assertValue(update)

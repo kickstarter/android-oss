@@ -80,14 +80,6 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
                 .subscribe { this.viewModel.inputs.updateClicked() }
     }
 
-<<<<<<< HEAD
-=======
-    private fun setUpdatePublicUI(backersOnly: Boolean) {
-        ViewUtils.setGone(this.view.update_backers_only, !backersOnly)
-        ViewUtils.setGone(this.view.update_details, backersOnly)
-    }
-
->>>>>>> NT-947
     private fun setCommentsCount(commentsCount: Int) {
         this.view.update_comments_count.text = commentsCount.toString()
         this.view.update_comments_count.contentDescription = this.ksString.format("comments_count_comments",

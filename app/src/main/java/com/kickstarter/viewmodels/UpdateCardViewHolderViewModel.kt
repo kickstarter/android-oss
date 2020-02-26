@@ -1,11 +1,13 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.IntegerUtils
+import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.UpdateCardViewHolder
 import org.joda.time.DateTime
@@ -15,8 +17,8 @@ import rx.subjects.PublishSubject
 
 interface UpdateCardViewHolderViewModel {
     interface Inputs {
-        /** Configure with the current [Update]. */
-        fun configureWith(update:Update)
+        /** Configure with the current [Project] and [Update]. */
+        fun configureWith(project: Project, update:Update)
 
         /** Call when the user clicks on an [Update]. */
         fun updateClicked()
@@ -56,7 +58,7 @@ interface UpdateCardViewHolderViewModel {
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<UpdateCardViewHolder>(environment), Inputs, Outputs {
 
-        private val update = PublishSubject.create<Update>()
+        private val projectAndUpdate = PublishSubject.create<Pair<Project, Update>>()
         private val updateClicked = PublishSubject.create<Void>()
 
         private val backersOnlyContainerIsVisible = BehaviorSubject.create<Boolean>()
@@ -75,64 +77,72 @@ interface UpdateCardViewHolderViewModel {
 
         init {
 
-            this.update
-                    .map { BooleanUtils.negate(it.isPublic ?: false) }
+            val update = this.projectAndUpdate
+                    .map { it.second }
+
+            this.projectAndUpdate
+                    .map {
+                        when {
+                            it.first.isBacking -> false
+                            else -> BooleanUtils.negate(it.second.isPublic ?: false)
+                        }
+                    }
                     .compose(bindToLifecycle())
                     .subscribe(this.backersOnlyContainerIsVisible)
 
-            this.update
+            update
                     .map { it.truncatedBody() }
                     .compose(bindToLifecycle())
                     .subscribe(this.blurb)
 
-            this.update
+            update
                     .map { it.commentsCount() }
                     .filter { it != null }
                     .compose(bindToLifecycle())
                     .subscribe(this.commentsCount)
 
-            this.update
+            update
                     .map { it.commentsCount() }
                     .map { IntegerUtils.isNullOrZero(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.commentsCountIsGone)
 
-            this.update
+            update
                     .map { it.likesCount() }
                     .filter { it != null }
                     .compose(bindToLifecycle())
                     .subscribe(this.likesCount)
 
-            this.update
+            update
                     .map { it.likesCount() }
                     .map { IntegerUtils.isNullOrZero(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.likesCountIsGone)
 
-            this.update
+            update
                     .map { it.publishedAt() }
                     .compose(bindToLifecycle())
                     .subscribe(this.publishDate)
 
-            this.update
+            update
                     .map { it.sequence() }
                     .compose(bindToLifecycle())
                     .subscribe(this.sequence)
 
-            this.update
+            update
                     .map { it.title() }
                     .compose(bindToLifecycle())
                     .subscribe(this.title)
 
-            this.update
+            update
                     .compose<Update>(takeWhen(this.updateClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.viewUpdate)
 
         }
 
-        override fun configureWith(update: Update) {
-            this.update.onNext(update)
+        override fun configureWith(project: Project, update: Update) {
+            this.projectAndUpdate.onNext(Pair.create(project, update))
         }
 
         override fun updateClicked() {

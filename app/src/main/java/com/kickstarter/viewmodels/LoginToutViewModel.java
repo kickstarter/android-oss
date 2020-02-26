@@ -165,6 +165,10 @@ public interface LoginToutViewModel {
       this.loginClick
         .compose(bindToLifecycle())
         .subscribe(__ -> this.lake.trackLogInButtonClicked());
+
+      this.signupClick
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.lake.trackSignUpButtonClicked());
     }
 
     private void clearFacebookSession(final @NonNull FacebookException e) {

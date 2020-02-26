@@ -21,6 +21,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
@@ -41,11 +42,11 @@ public interface ProjectUpdatesViewModel {
     /** Emits a boolean indicating whether updates are being fetched from the API. */
     Observable<Boolean> isFetchingUpdates();
 
+    /** Emits the current project and its updates. */
+    Observable<Pair<Project, List<Update>>> projectAndUpdates();
+
     /** Emits a project and an update to start the update activity with. */
     Observable<Pair<Project, Update>> startUpdateActivity();
-
-    /** Emits the current project's updates. */
-    Observable<List<Update>> updates();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements Inputs, Outputs {
@@ -78,11 +79,10 @@ public interface ProjectUpdatesViewModel {
           .concater(ListUtils::concatDistinct)
           .build();
 
-      paginator
-        .paginatedData()
-        .share()
+      project
+        .compose(combineLatestPair(paginator.paginatedData().share()))
         .compose(bindToLifecycle())
-        .subscribe(this.updates);
+        .subscribe(this.projectAndUpdates);
 
       paginator
         .isFetching()
@@ -110,7 +110,7 @@ public interface ProjectUpdatesViewModel {
     private final PublishSubject<Update> updateClicked = PublishSubject.create();
 
     private final BehaviorSubject<Boolean> isFetchingUpdates = BehaviorSubject.create();
-    private final BehaviorSubject<List<Update>> updates = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Project, List<Update>>> projectAndUpdates = BehaviorSubject.create();
     private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
 
     public final Inputs inputs = this;
@@ -129,11 +129,11 @@ public interface ProjectUpdatesViewModel {
     @Override public @NonNull Observable<Boolean> isFetchingUpdates() {
       return this.isFetchingUpdates;
     }
+    @Override public @NonNull Observable<Pair<Project, List<Update>>> projectAndUpdates() {
+      return this.projectAndUpdates;
+    }
     @Override public @NonNull Observable<Pair<Project, Update>> startUpdateActivity() {
       return this.startUpdateActivity;
-    }
-    @Override public @NonNull Observable<List<Update>> updates() {
-      return this.updates;
     }
   }
 }

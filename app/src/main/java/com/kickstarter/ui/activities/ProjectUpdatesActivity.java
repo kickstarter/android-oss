@@ -16,8 +16,6 @@ import com.kickstarter.ui.adapters.UpdatesAdapter;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
 
-import org.jetbrains.annotations.NotNull;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,7 +62,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       .compose(observeForUI())
       .subscribe(pu -> this.startUpdateActivity(pu.first, pu.second));
 
-    this.viewModel.outputs.updates()
+    this.viewModel.outputs.projectAndUpdates()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this.adapter::takeData);
@@ -79,7 +77,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   @Override
-  public void updateClicked(final @NotNull Update update) {
+  public void updateClicked(final @NonNull Update update) {
     this.viewModel.inputs.updateClicked(update);
   }
 

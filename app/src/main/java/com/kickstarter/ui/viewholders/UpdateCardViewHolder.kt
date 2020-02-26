@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders
 
+import android.util.Pair
 import android.view.View
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R

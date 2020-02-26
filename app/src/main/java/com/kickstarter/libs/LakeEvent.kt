@@ -24,6 +24,7 @@ const val THANKS_PAGE_VIEWED = "Thanks Page Viewed"
 
 // region Log In or Signup
 const val FACEBOOK_LOG_IN_OR_SIGNUP_BUTTON_CLICKED = "Facebook Log In or Signup Button Clicked"
+const val FORGOT_PASSWORD_PAGE_VIEWED = "Forgot Password Page Viewed"
 const val LOG_IN_BUTTON_CLICKED = "Log In Button Clicked"
 const val LOG_IN_OR_SIGNUP_BUTTON_CLICKED = "Log In or Signup Button Clicked"
 const val LOG_IN_OR_SIGN_UP_PAGE_VIEWED = "Log In or Sign Up Page Viewed"

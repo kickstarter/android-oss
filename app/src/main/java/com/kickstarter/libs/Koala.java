@@ -719,6 +719,10 @@ public final class Koala {
     this.client.track(LakeEvent.FACEBOOK_LOG_IN_OR_SIGNUP_BUTTON_CLICKED);
   }
 
+  public void trackForgotPasswordPageViewed() {
+    this.client.track(LakeEvent.FORGOT_PASSWORD_PAGE_VIEWED);
+  }
+
   public void trackLogInButtonClicked() {
     this.client.track(LakeEvent.LOG_IN_BUTTON_CLICKED);
   }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
+import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.viewmodels.ProjectHolderViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -61,7 +63,9 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
   protected @Bind(R.id.back_project_button) @Nullable MaterialButton backProjectButton;
   protected @Bind(R.id.blurb_view) ViewGroup blurbViewGroup;
+  protected @Bind(R.id.blurb_view_variant) ViewGroup blurbVariantViewGroup;
   protected @Bind(R.id.blurb) TextView blurbTextView;
+  protected @Bind(R.id.blurb_variant) TextView blurbVariantTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
   protected @Bind(R.id.usd_conversion_text_view) TextView conversionTextView;
@@ -129,6 +133,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   public interface Delegate {
     void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);
     void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderBlurbVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
     void projectViewHolderDashboardClicked(ProjectViewHolder viewHolder);
@@ -169,7 +174,12 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.blurbTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(blurb -> this.blurbTextView.setText(Html.fromHtml(TextUtils.htmlEncode(blurb))));
+      .subscribe(this::setBlurbTextViews);
+
+    this.viewModel.outputs.blurbVariantIsVisible()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setBlurbVariantVisibility);
 
     this.viewModel.outputs.categoryTextViewText()
       .compose(bindToLifecycle())
@@ -391,8 +401,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
     @SuppressWarnings("unchecked")
-    final Project project = requireNonNull((Project) data);
-    this.viewModel.inputs.configureWith(project);
+    final ProjectData projectData = requireNonNull((ProjectData) data);
+    this.viewModel.inputs.configureWith(projectData);
   }
 
   private void setConvertedCurrencyView(final @NonNull Pair<String, String> pledgedAndGoal) {
@@ -433,6 +443,17 @@ public final class ProjectViewHolder extends KSViewHolder {
     if (this.projectActionButtonsContainer != null) {
       ViewUtils.setGone(this.projectActionButtonsContainer, gone);
     }
+  }
+
+  private void setBlurbTextViews(final String blurb) {
+    final Spanned blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb));
+    this.blurbTextView.setText(blurbHtml);
+    this.blurbVariantTextView.setText(blurbHtml);
+  }
+
+  private void setBlurbVariantVisibility(final boolean blurbVariantVisible) {
+    ViewUtils.setGone(this.blurbViewGroup, blurbVariantVisible);
+    ViewUtils.setGone(this.blurbVariantViewGroup, !blurbVariantVisible);
   }
 
   private void setProjectDisclaimerGoalReachedString(final @NonNull DateTime deadline) {
@@ -512,6 +533,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick({R.id.blurb_view, R.id.campaign})
   public void blurbOnClick() {
     this.delegate.projectViewHolderBlurbClicked(this);
+  }
+
+  @OnClick(R.id.read_more)
+  public void blurbVariantOnClick() {
+    this.delegate.projectViewHolderBlurbVariantClicked(this);
   }
 
   @OnClick(R.id.comments)

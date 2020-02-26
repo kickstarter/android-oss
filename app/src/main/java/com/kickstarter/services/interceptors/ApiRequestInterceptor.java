@@ -2,6 +2,7 @@ package com.kickstarter.services.interceptors;
 
 import android.net.Uri;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.services.KSUri;
 
@@ -36,7 +37,8 @@ public final class ApiRequestInterceptor implements Interceptor {
     }
 
     return initialRequest.newBuilder()
-      .header("Accept", "application/json")
+      .addHeader("Accept", "application/json")
+      .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().getId())
       .url(url(initialRequest.url()))
       .build();
   }

@@ -1,12 +1,12 @@
 package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
-import android.os.Bundle
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
+import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
@@ -34,9 +34,6 @@ interface PledgeFragmentViewModel {
         /** Call when a card has been inserted into the stored cards list. */
         fun addedCardPosition(position: Int)
 
-        /** Call when user clicks the back button. */
-        fun backPressed()
-
         /** Call when a card has successfully saved. */
         fun cardSaved(storedCard: StoredCard)
 
@@ -60,9 +57,6 @@ interface PledgeFragmentViewModel {
 
         /** Call when the new card button is clicked. */
         fun newCardButtonClicked()
-
-        /** Call when the view has been laid out. */
-        fun onGlobalLayout()
 
         /** Call when the user updates the pledge amount. */
         fun pledgeInput(amount: String)
@@ -168,11 +162,8 @@ interface PledgeFragmentViewModel {
         /** Emits the currency symbol string of the project. */
         fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>>
 
-        /** Emits when we should reverse the reward card animation. */
-        fun startRewardExpandAnimation(): Observable<ScreenLocation>
-
-        /** Emits when the reward card shrink animation should start. */
-        fun startRewardShrinkAnimation(): Observable<PledgeData>
+        /** Emits the title of the current reward. */
+        fun rewardTitle(): Observable<Either<Int, String>>
 
         /** Emits the currently selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
@@ -222,9 +213,6 @@ interface PledgeFragmentViewModel {
         /** Emits when the update pledge call was successful. */
         fun showUpdatePledgeSuccess(): Observable<Void>
 
-        /** Emits a boolean determining if the reward snapshot should be hidden. */
-        fun snapshotIsGone(): Observable<Boolean>
-
         /** Emits when we should start a Chrome tab. */
         fun startChromeTab(): Observable<String>
 
@@ -256,7 +244,6 @@ interface PledgeFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
 
         private val addedCardPosition = PublishSubject.create<Int>()
-        private val backPressed = PublishSubject.create<Void>()
         private val cardSaved = PublishSubject.create<StoredCard>()
         private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
@@ -265,7 +252,6 @@ interface PledgeFragmentViewModel {
         private val linkClicked = PublishSubject.create<String>()
         private val miniRewardClicked = PublishSubject.create<Void>()
         private val newCardButtonClicked = PublishSubject.create<Void>()
-        private val onGlobalLayout = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<String>()
         private val pledgeInput = PublishSubject.create<String>()
         private val selectCardButtonClicked = PublishSubject.create<Int>()
@@ -301,6 +287,7 @@ interface PledgeFragmentViewModel {
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeTextColor = BehaviorSubject.create<Int>()
         private val projectCurrencySymbol = BehaviorSubject.create<Pair<SpannableString, Boolean>>()
+        private val rewardTitle = BehaviorSubject.create<Either<Int, String>>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
@@ -317,11 +304,8 @@ interface PledgeFragmentViewModel {
         private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
         private val showUpdatePledgeError = PublishSubject.create<Void>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
-        private val snapshotIsGone = BehaviorSubject.create<Boolean>()
         private val startChromeTab = PublishSubject.create<String>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
-        private val startRewardExpandAnimation = BehaviorSubject.create<ScreenLocation>()
-        private val startRewardShrinkAnimation = BehaviorSubject.create<PledgeData>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val totalAndDeadline = BehaviorSubject.create<Pair<String, String>>()
         private val totalAndDeadlineIsVisible = BehaviorSubject.create<Void>()
@@ -346,18 +330,12 @@ interface PledgeFragmentViewModel {
             val userIsLoggedIn = this.currentUser.isLoggedIn
                     .distinctUntilChanged()
 
-            val arguments = arguments()
-                    .compose<Bundle>(takeWhen(this.onGlobalLayout))
-
-            val pledgeData = arguments
+            val pledgeData = arguments()
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
                     .ofType(PledgeData::class.java)
 
             val reward = pledgeData
                     .map { it.reward() }
-
-            val screenLocation = pledgeData
-                    .map { it.screenLocation() }
 
             val projectData = pledgeData
                     .map { it.projectData() }
@@ -365,7 +343,7 @@ interface PledgeFragmentViewModel {
             val project = projectData
                     .map { it.project() }
 
-            val pledgeReason = arguments
+            val pledgeReason = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
 
             val updatingPayment = pledgeReason
@@ -384,21 +362,19 @@ interface PledgeFragmentViewModel {
                     .map { it.first.backing() }
                     .ofType(Backing::class.java)
 
-            // Mini reward card
-            pledgeData
+            // Reward summary section
+            reward
+                    .map<Either<Int, String>> {
+                        when {
+                            RewardUtils.isNoReward(it) -> Either.Left(R.string.Pledge_without_a_reward)
+                            else -> it.title()?.let { title -> Either.Right<Int, String>(title) }
+                                    ?: Either.Left(R.string.Pledge_without_a_reward)
+                        }
+                    }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.startRewardShrinkAnimation)
+                    .subscribe(this.rewardTitle)
 
-            screenLocation
-                    .compose<ScreenLocation>(takeWhen(Observable.merge(this.backPressed, this.miniRewardClicked)))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startRewardExpandAnimation)
-
-            updatingPaymentOrUpdatingPledge
-                    .compose(bindToLifecycle())
-                    .subscribe(this.snapshotIsGone)
-
-            // Estimated delivery section
             reward
                     .map { it.estimatedDeliveryOn() }
                     .filter { ObjectUtils.isNotNull(it) }
@@ -1061,8 +1037,6 @@ interface PledgeFragmentViewModel {
 
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 
-        override fun backPressed() = this.backPressed.onNext(null)
-
         override fun cardSaved(storedCard: StoredCard) = this.cardSaved.onNext(storedCard)
 
         override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
@@ -1078,8 +1052,6 @@ interface PledgeFragmentViewModel {
         override fun miniRewardClicked() = this.miniRewardClicked.onNext(null)
 
         override fun newCardButtonClicked() = this.newCardButtonClicked.onNext(null)
-
-        override fun onGlobalLayout() = this.onGlobalLayout.onNext(null)
 
         override fun pledgeInput(amount: String) = this.pledgeInput.onNext(amount)
 
@@ -1177,6 +1149,9 @@ interface PledgeFragmentViewModel {
         override fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>> = this.projectCurrencySymbol
 
         @NonNull
+        override fun rewardTitle(): Observable<Either<Int, String>> = this.rewardTitle
+
+        @NonNull
         override fun selectedShippingRule(): Observable<ShippingRule> = this.selectedShippingRule
 
         @NonNull
@@ -1225,16 +1200,7 @@ interface PledgeFragmentViewModel {
         override fun showUpdatePledgeSuccess(): Observable<Void> = this.showUpdatePledgeSuccess
 
         @NonNull
-        override fun snapshotIsGone(): Observable<Boolean> = this.snapshotIsGone
-
-        @NonNull
         override fun startChromeTab(): Observable<String> = this.startChromeTab
-
-        @NonNull
-        override fun startRewardExpandAnimation(): Observable<ScreenLocation> = this.startRewardExpandAnimation
-
-        @NonNull
-        override fun startRewardShrinkAnimation(): Observable<PledgeData> = this.startRewardShrinkAnimation
 
         @NonNull
         override fun startLoginToutActivity(): Observable<Void> = this.startLoginToutActivity

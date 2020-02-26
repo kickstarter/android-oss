@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
@@ -42,5 +41,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+  <androidx.cardview.widget.CardView
+    android:id="@+id/campaign_details_pledge_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="-30dp"
+    android:minHeight="130dp"
+    android:visibility="gone"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/card_container_radius"
+    app:cardElevation="@dimen/grid_2"
+    tools:showIn="@layout/activity_project"
+    tools:visibility="visible">
+
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/campaign_details_pledge_action_button"
+      style="@style/PledgeActionButton"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/activity_horizontal_margin"
+      android:layout_marginEnd="@dimen/activity_horizontal_margin"
+      android:text="@string/project_back_button" />
+  </androidx.cardview.widget.CardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

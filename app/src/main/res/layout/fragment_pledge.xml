@@ -1,185 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-
-  <FrameLayout
-    android:id="@+id/pledge_background"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pledge_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:alpha="0"
-    android:background="@color/ksr_grey_300"
-    tools:alpha="1" />
+    android:layout_height="match_parent">
 
-  <androidx.core.widget.NestedScrollView
-    android:id="@+id/pledge_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:overScrollMode="never"
-    android:paddingTop="?android:attr/actionBarSize"
-    android:scrollbars="none"
-    android:visibility="invisible"
-    tools:visibility="visible">
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-      android:id="@+id/pledge_content"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical">
-
-      <include
-        android:id="@+id/reward_to_copy"
-        android:importantForAccessibility="noHideDescendants"
-        layout="@layout/item_reward"
-        tools:visibility="gone" />
-
-      <com.kickstarter.ui.views.BottomCropImageView
-        android:id="@+id/reward_snapshot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:accessibilityTraversalBefore="@id/pledge_details"
-        android:contentDescription="@string/View_rewards"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:importantForAccessibility="yes"
-        tools:background="@color/white"
-        tools:layout_height="@dimen/mini_reward_height"
-        tools:layout_width="@dimen/mini_reward_width" />
-
-      <FrameLayout
-        android:id="@+id/expand_icon_container"
-        android:layout_width="@dimen/grid_8"
-        android:layout_height="@dimen/grid_8"
-        android:alpha="0"
-        android:elevation="@dimen/mini_reward_elevation"
-        android:importantForAccessibility="no"
-        app:layout_anchor="@id/reward_snapshot"
-        app:layout_anchorGravity="end"
-        tools:alpha="1">
-
-        <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="@dimen/grid_1"
-          android:layout_marginTop="@dimen/grid_2"
-          android:importantForAccessibility="no"
-          android:src="@drawable/ic_expand" />
-      </FrameLayout>
-
-      <LinearLayout
-        android:id="@+id/pledge_details"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/pledge_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:importantForAccessibility="yes"
-        android:orientation="vertical">
-
-        <include layout="@layout/fragment_pledge_section_delivery" />
+        android:layout_height="match_parent"
+        android:background="@color/ksr_grey_300"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:paddingTop="?android:attr/actionBarSize"
+        android:scrollbars="none">
 
         <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:clipChildren="false"
-          android:clipToPadding="false"
-          android:orientation="vertical"
-          android:paddingStart="@dimen/activity_vertical_margin"
-          android:paddingEnd="@dimen/activity_vertical_margin">
-
-          <include
-            android:id="@+id/divider_delivery"
-            layout="@layout/horizontal_line_1dp_view" />
-
-          <include layout="@layout/fragment_pledge_section_pledge_amount" />
-
-          <include layout="@layout/fragment_pledge_section_shipping" />
-
-          <include layout="@layout/fragment_pledge_section_summary_pledge" />
-
-          <include layout="@layout/fragment_pledge_section_summary_shipping" />
-
-          <include
-            android:id="@+id/divider_total"
-            layout="@layout/horizontal_line_1dp_view" />
-
-          <include
-            layout="@layout/fragment_pledge_section_total"
-            tools:visibility="gone" />
-
-          <FrameLayout
+            android:id="@+id/pledge_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_3"
-            android:animateLayoutChanges="true">
+            android:importantForAccessibility="yes"
+            android:orientation="vertical">
 
-            <TextView
-              android:id="@+id/deadline_warning"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline"
-              android:visibility="invisible" />
+            <include layout="@layout/fragment_pledge_section_reward_summary" />
 
-          </FrameLayout>
-
-          <Button
-            android:id="@+id/continue_to_tout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/grid_3"
-            android:text="@string/Continue"
-            android:visibility="gone"
-            tools:visibility="gone" />
-
-          <FrameLayout
-            android:id="@+id/update_pledge_button_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.button.MaterialButton
-              android:id="@+id/update_pledge_button"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/grid_4"
-              android:enabled="false"
-              android:text="@string/Update_pledge"
-              tools:visibility="visible" />
-
-            <FrameLayout
-              android:id="@+id/update_pledge_button_progress"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/grid_4"
-              android:visibility="gone">
-
-              <Button
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stateListAnimator="@null" />
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/activity_vertical_margin"
+                android:paddingEnd="@dimen/activity_vertical_margin">
 
-              <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/white"
-                android:indeterminateTintMode="src_in" />
+                <include
+                    android:id="@+id/divider_delivery"
+                    layout="@layout/horizontal_line_1dp_view" />
 
-            </FrameLayout>
-          </FrameLayout>
+                <include layout="@layout/fragment_pledge_section_pledge_amount" />
+
+                <include layout="@layout/fragment_pledge_section_shipping" />
+
+                <include layout="@layout/fragment_pledge_section_summary_pledge" />
+
+                <include layout="@layout/fragment_pledge_section_summary_shipping" />
+
+                <include
+                    android:id="@+id/divider_total"
+                    layout="@layout/horizontal_line_1dp_view" />
+
+                <include
+                    layout="@layout/fragment_pledge_section_total"
+                    tools:visibility="gone" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/grid_3"
+                    android:animateLayoutChanges="true">
+
+                    <TextView
+                        android:id="@+id/deadline_warning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline"
+                        android:visibility="invisible" />
+
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/continue_to_tout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/grid_3"
+                    android:text="@string/Continue"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <FrameLayout
+                    android:id="@+id/update_pledge_button_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/update_pledge_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_4"
+                        android:enabled="false"
+                        android:text="@string/Update_pledge"
+                        tools:visibility="visible" />
+
+                    <FrameLayout
+                        android:id="@+id/update_pledge_button_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_4"
+                        android:visibility="gone">
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:stateListAnimator="@null" />
+
+                        <ProgressBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:indeterminateTint="@color/white"
+                            android:indeterminateTintMode="src_in" />
+
+                    </FrameLayout>
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <include layout="@layout/fragment_pledge_section_payment" />
 
         </LinearLayout>
 
-        <include layout="@layout/fragment_pledge_section_payment" />
-
-      </LinearLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-  </androidx.core.widget.NestedScrollView>
-
-</FrameLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

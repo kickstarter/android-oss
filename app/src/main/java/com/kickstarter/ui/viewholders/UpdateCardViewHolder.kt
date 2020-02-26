@@ -45,11 +45,6 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.update_comments_container, it) }
 
-        this.viewModel.outputs.date()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.update_date.text = DateTimeUtils.longDate(it) }
-
         this.viewModel.outputs.likesCount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -59,6 +54,11 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.update_likes_container, it) }
+
+        this.viewModel.outputs.publishDate()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.update_date.text = DateTimeUtils.longDate(it) }
 
         this.viewModel.outputs.sequence()
                 .compose(bindToLifecycle())

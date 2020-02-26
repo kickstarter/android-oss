@@ -35,14 +35,14 @@ interface UpdateCardViewHolderViewModel {
         /** Emits a boolean determining if the comments count container should be visible. */
         fun commentsCountIsGone(): Observable<Boolean>
 
-        /** Emits the timestamp of the [Update]. */
-        fun date(): Observable<DateTime>
-
         /** Emits the number of likes of the [Update]. */
         fun likesCount(): Observable<Int>
 
         /** Emits a boolean determining if the likes count container should be visible. */
         fun likesCountIsGone(): Observable<Boolean>
+
+        /** Emits the publish timestamp of the [Update]. */
+        fun publishDate(): Observable<DateTime>
 
         /** Emits the sequence of the [Update]. */
         fun sequence(): Observable<Int>
@@ -63,9 +63,9 @@ interface UpdateCardViewHolderViewModel {
         private val blurb = BehaviorSubject.create<String>()
         private val commentsCount = BehaviorSubject.create<Int>()
         private val commentsCountIsGone = BehaviorSubject.create<Boolean>()
-        private val date = BehaviorSubject.create<DateTime>()
         private val likesCount = BehaviorSubject.create<Int>()
         private val likesCountIsGone = BehaviorSubject.create<Boolean>()
+        private val publishDate = BehaviorSubject.create<DateTime>()
         private val sequence = BehaviorSubject.create<Int>()
         private val title = BehaviorSubject.create<String>()
         private val viewUpdate = PublishSubject.create<Update>()
@@ -98,11 +98,6 @@ interface UpdateCardViewHolderViewModel {
                     .subscribe(this.commentsCountIsGone)
 
             this.update
-                    .map { it.publishedAt() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.date)
-
-            this.update
                     .map { it.likesCount() }
                     .filter { it != null }
                     .compose(bindToLifecycle())
@@ -113,6 +108,11 @@ interface UpdateCardViewHolderViewModel {
                     .map { IntegerUtils.isNullOrZero(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.likesCountIsGone)
+
+            this.update
+                    .map { it.publishedAt() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.publishDate)
 
             this.update
                     .map { it.sequence() }
@@ -147,11 +147,11 @@ interface UpdateCardViewHolderViewModel {
 
         override fun commentsCountIsGone(): Observable<Boolean> = this.commentsCountIsGone
 
-        override fun date(): Observable<DateTime> = this.date
-
         override fun likesCount(): Observable<Int> = this.likesCount
 
         override fun likesCountIsGone(): Observable<Boolean> = this.likesCountIsGone
+
+        override fun publishDate(): Observable<DateTime> = this.publishDate
 
         override fun sequence(): Observable<Int> = this.sequence
 

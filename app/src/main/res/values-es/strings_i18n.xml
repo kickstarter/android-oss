@@ -27,6 +27,7 @@
   <string name="All_Theater_Projects" formatted="false">Todos los proyectos de la categoría Teatro</string>
   <string name="All_category_name_Projects" formatted="false">Todos los proyectos de la categoría %{category_name}</string>
   <string name="All_gone" formatted="false">¡Recompensas agotadas!</string>
+  <string name="All_or_nothing" formatted="false">Todo o nada</string>
   <string name="Almost_there" formatted="false">Cerca de la meta!</string>
   <string name="Amount_previous_amount" formatted="false">Monto actual: %{amount}, monto previo: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Monto: %{amount}, %{reward}</string>
@@ -59,6 +60,7 @@ patrocinadores</string>
 patrocinadores</string>
   <string name="Backers_count_separator_backers_zero" formatted="false">%{backers_count}\n
 patrocinadores</string>
+  <string name="Backers_have_signed_up_to_help_kickstarter_creators_bring_their_ideas_to_life" formatted="false">Patrocinadores se han registrado para ayudar a los creadores de Kickstarter a hacer realidad sus ideas.</string>
   <string name="Become_a_backer_to_leave_a_comment" formatted="false">Conviértete en patrocinador y deja un comentario.</string>
   <string name="Big_Kickstarter_news_and_events_near_you" formatted="false">Unas cuantas veces al año: Noticias sobresalientes de Kickstarter y eventos cerca de ti.</string>
   <string name="Biography" formatted="false">Biografía</string>
@@ -145,6 +147,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Description" formatted="false">Descripción</string>
   <string name="Developer" formatted="false">Desarrollador</string>
   <string name="Discover_arts_news" formatted="false">Descubre proyectos e ideas innovadores, seleccionados exclusivamente para ti dos veces al mes por el equipo de Diseño &amp; Tecnología de Kickstarter.</string>
+  <string name="Discover_creative_projects" formatted="false">Descubre proyectos creativos</string>
   <string name="Discover_more_projects" formatted="false">Descubre más proyectos.</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Descubre el futuro del diseño y la tecnología.</string>
   <string name="Dismiss" formatted="false">Descartar</string>
@@ -169,6 +172,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Expired_date_at_time" formatted="false">Venció el %{date} a la(s) %{time}</string>
   <string name="Expires_date_at_time" formatted="false">Vence el %{date} a la(s) %{time}</string>
   <string name="Explore" formatted="false">Explora</string>
+  <string name="Explore_and_support_the_latest_creative_ideas" formatted="false">Explora y apoya las más recientes ideas creativas de nuestra vasta comunidad global.</string>
   <string name="Explore_creative_projects" formatted="false">Explora proyectos creativos</string>
   <string name="Explore_projects" formatted="false">Explora proyectos</string>
   <string name="Explore_projects_we_love" formatted="false">Explorar Nuestros favoritos</string>
@@ -232,11 +236,13 @@ Haz clic para volver a intentarlo.</string>
   <string name="Get_notified_about_this_creators_live_streams" formatted="false">Recibe notificaciones sobre los Live Streams de este creador</string>
   <string name="Get_notified_when_your_friends_back_and_launch_projects" formatted="false">Recibe notificaciones cuando tus amigos patrocinan o publican un proyecto</string>
   <string name="Get_reminded_about_this_project" formatted="false">¿Deseas recibir recordatorios sobre este proyecto?</string>
+  <string name="Get_started" formatted="false">¡Manos a la obra!</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
   <string name="Going_rewardless_is_rewarding" formatted="false">Que no haya recompensa es gratificante</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Listo. Se han guardado tus cambios.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
+  <string name="Guide_creators_to_success" formatted="false">Conduce a los creadores al éxito</string>
   <string name="Happening_newsletter" formatted="false">Suscríbete para recibir una combinación de nuevos proyectos, historias persuasivas e inspiración visual, que se entregan una vez (y algunas veces dos veces) por semana.</string>
   <string name="Help" formatted="false">Ayuda</string>
   <string name="Help_center" formatted="false">Centro de ayuda</string>
@@ -261,6 +267,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Its_better_with_friends" formatted="false">Todo en la vida es mejor con amigos ...</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Es como la radio, pero sin malas noticias y, además, es un boletín informativo.</string>
   <string name="Its_our_birthday" formatted="false">¡Cumplimos años! Más de 160.000 proyectos creativos se han hecho realidad en Kickstarter durante la última década, gracias al apoyo de más de 16.000.000 de patrocinadores.</string>
+  <string name="Join_a_fruitful_community" formatted="false">Únete a una comunidad fructífera</string>
   <string name="Join_our_secret_society" formatted="false">Únete a nuestra sociedad secreta.</string>
   <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">En esta temporada navideña, apoya con nosotros el trabajo creativo sin esperar nada a cambio.</string>
   <string name="Joining_the_live_stream" formatted="false">Abriendo conexión a Live Stream</string>
@@ -310,6 +317,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="Message_user_name" formatted="false">Mensaje a %{user_name}…</string>
   <string name="Messages" formatted="false">Mensajes</string>
+  <string name="Million_plus" formatted="false">Más de %{total_amount} millones</string>
   <string name="More_than_number_of_items_items" formatted="false">Más de %{number_of_items} notificaciones</string>
   <string name="Name" formatted="false">Nombre</string>
   <string name="Never" formatted="false">Nunca</string>
@@ -500,10 +508,13 @@ Haz clic para volver a intentarlo.</string>
   <string name="Status" formatted="false">Estado:</string>
   <string name="Stay_up_to_date" formatted="false">¿Deseas mantenerte actualizado?</string>
   <string name="Stay_up_to_date_newsletter" formatted="false">Mantente al día sobre nuestros proyectos favoritos, noticias y eventos que tenemos en la mira.</string>
+  <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Mantente al tanto de los proyectos que has patrocinado y conoce cómo se producen estos trabajos creativos.</string>
   <string name="Stay_updated_on_this_project" formatted="false">¿Deseas mantenerte actualizado sobre este proyecto?</string>
   <string name="Subscribe" formatted="false">Suscribir</string>
   <string name="Subscribed" formatted="false">Suscripción activa</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Activa subscripción a futuros Live-Streams.</string>
+  <string name="Successful_projects_have_been_created_on_kickstarter" formatted="false">Proyectos exitosos se han creado en Kickstarter.</string>
+  <string name="Support_creative_independence" formatted="false">Apoya la independencia creativa</string>
   <string name="Support_the_project_for_no_reward" formatted="false">Apoya el proyecto sin recompensa, simplemente porque te resulta interesante.</string>
   <string name="Survey" formatted="false">Cuestionario</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Haz clic en el icono de corazón de un proyecto para recibir una notificación 48 horas antes de que finalice.</string>
@@ -533,6 +544,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.</string>
   <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">Esta temporada de fiestas, apoya un proyecto sin recompensa, simplemente porque te resulta interesante.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">Esta contribución no pudo ser cobrada por un error en el método de pago.</string>
+  <string name="This_post_is_for_backers_only" formatted="false">Esta publicación es únicamente para patrocinadores</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">Este proyecto no alcanzó su meta de financiamiento, así que no se realizó ningún cargo a tu método de pago.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">Este proyecto sólo será financiado si se contribuye al menos un monto de %{amount} antes del %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
@@ -545,7 +557,11 @@ Haz clic para volver a intentarlo.</string>
   <string name="Top_ten_rewards" formatted="false">Las 10 mejores recompensas</string>
   <string name="Total" formatted="false">Total</string>
   <string name="Total_amount" formatted="false">Monto total</string>
+  <string name="Total_amount_backers_have_pledged_to_projects" formatted="false">El monto total (USD) que los patrocinadores han contribuido a proyectos.</string>
+  <string name="Total_amount_billion_plus" formatted="false">%{total_amount} mil millones+</string>
   <string name="Total_pledged" formatted="false">Contribuciones en total</string>
+  <string name="Total_plus" formatted="false">Más de %{total}</string>
+  <string name="Track_your_backings" formatted="false">Sigue los proyectos que has patrocinado</string>
   <string name="Twice_a_day_summary" formatted="false">Resumen dos veces al día</string>
   <string name="Unable_to_request" formatted="false">No se pueden solicitar datos.</string>
   <string name="Unfollow_friend_name" formatted="false">Dejar de seguir a %{friend_name}</string>
@@ -616,6 +632,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="You_pledged_on_date" formatted="false">&lt;b>Contribuiste&lt;/b> el %{pledge_date}</string>
   <string name="You_pledged_without_a_reward" formatted="false">Contribuiste sin recompensa</string>
   <string name="You_saved_this_project" formatted="false">Uno de tus proyectos guardados.</string>
+  <string name="You_wont_be_charged_for_backing_a_project" formatted="false">No se te cobrará por patrocinar un proyecto a menos que alcance su meta de financiamiento.</string>
   <string name="Youll_receive_an_email_at_email_when_your_download_is_ready" formatted="false">Recibirás un correo electrónico en %{email} cuando la descarga esté lista.</string>
   <string name="Your_chat_message_wasnt_sent_successfully" formatted="false">Tu mensaje no fue enviado.</string>
   <string name="Your_friends_havent_backed_any_projects_yet" formatted="false">Tus amigos todavía no han hecho contribuciones, pero en cuanto lo hagan, se verán reflejadas aquí.</string>
@@ -1225,6 +1242,12 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="invalid_api_client_alert_message" formatted="false">Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Por favor actualizar</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Actualizar</string>
+  <string name="likes_count_likes_few" formatted="false">A %{likes_count} persoanas les gusta</string>
+  <string name="likes_count_likes_many" formatted="false">A %{likes_count} persoanas les gusta</string>
+  <string name="likes_count_likes_one" formatted="false">A %{likes_count} persona le gusta</string>
+  <string name="likes_count_likes_other" formatted="false">A %{likes_count} persoanas les gusta</string>
+  <string name="likes_count_likes_two" formatted="false">A %{likes_count} persoanas les gusta</string>
+  <string name="likes_count_likes_zero" formatted="false">A %{likes_count} personas les gusta</string>
   <string name="location_name_only" formatted="false">Sólo %{location_name}</string>
   <string name="login_buttons_forgot_password" formatted="false">¿Olvidaste tu contraseña?</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>¿Olvidaste la contraseña?&lt;/u></string>

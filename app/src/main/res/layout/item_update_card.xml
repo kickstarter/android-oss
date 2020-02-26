@@ -68,23 +68,16 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/update_title"
+      tools:text="Test"
       tools:background="@color/ksr_grey_200" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      app:layout_constraintGuide_begin="@dimen/grid_3"
-      app:layout_constraintTop_toBottomOf="@id/update_blurb"
-      android:orientation="horizontal"/>
 
     <LinearLayout
       android:id="@+id/update_comments_container"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:gravity="center_vertical"
       android:orientation="horizontal"
       app:layout_constraintHorizontal_bias="0"
-      android:visibility="gone"
       app:layout_constraintHorizontal_chainStyle="packed"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -111,14 +104,14 @@
 
     <LinearLayout
       android:id="@+id/update_likes_container"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:gravity="center_vertical"
       android:orientation="horizontal"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@id/update_comments_container"
-      app:layout_constraintTop_toTopOf="@id/update_comments_container">
+      app:layout_constraintTop_toBottomOf="@id/update_blurb">
 
       <ImageView
         android:layout_width="@dimen/grid_5_half"

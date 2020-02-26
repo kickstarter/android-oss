@@ -99,6 +99,7 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
     private fun setUpdatePublicUI(backersOnly: Boolean) {
         ViewUtils.setGone(this.view.update_backers_only, !backersOnly)
         ViewUtils.setGone(this.view.update_details, backersOnly)
+        this.view.update_container.isClickable = !backersOnly
     }
 
     override fun bindData(data: Any?) {

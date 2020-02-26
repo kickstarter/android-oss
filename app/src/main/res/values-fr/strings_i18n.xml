@@ -542,6 +542,7 @@ n\'ont rien soutenu.</string>
   <string name="These_projects_could_use_your_support" formatted="false">Ces créateurs ont besoin de vous.</string>
   <string name="This_allows_you_to_see_project_goal_and_pledge_amounts_in_your_preferred_currency" formatted="false">L\'objectif du projet et les montants des engagements s\'afficheront ainsi dans la devise de votre choix.</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Ce compte Facebook est déjà relié à un autre utilisateur Kickstarter.</string>
+  <string name="This_holiday_season_support_a_project_for_no_reward" formatted="false">Pour les fêtes, soutenez un projet simplement parce qu\'il vous parle, sans choisir de récompense.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">Cet engagement a été annulé en raison d\'un échec de règlement.</string>
   <string name="This_post_is_for_backers_only" formatted="false">Cette publication est réservée aux contributeurs.</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">L\'objectif de financement de ce projet n\'a pas été atteint, donc votre moyen de paiement n\'a pas été débité.</string>

@@ -731,6 +731,10 @@ public final class Koala {
     this.client.track(LakeEvent.LOG_IN_OR_SIGN_UP_PAGE_VIEWED);
   }
 
+  public void trackLogInSubmitButtonClicked() {
+    this.client.track(LakeEvent.LOG_IN_SUBMIT_BUTTON_CLICKED);
+  }
+
   public void trackSignUpButtonClicked() {
     this.client.track(LakeEvent.SIGN_UP_BUTTON_CLICKED);
   }

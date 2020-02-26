@@ -72,6 +72,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.genericLoginError.assertValueCount(1)
+        this.lakeTest.assertValue("Log In Submit Button Clicked")
     }
 
     @Test
@@ -91,6 +92,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.invalidLoginError.assertValueCount(1)
+        this.lakeTest.assertValue("Log In Submit Button Clicked")
     }
 
     @Test
@@ -110,6 +112,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.tfaChallenge.assertValueCount(1)
+        this.lakeTest.assertValue("Log In Submit Button Clicked")
     }
 
     @Test
@@ -206,5 +209,6 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Login")
+        this.lakeTest.assertValue("Log In Submit Button Clicked")
     }
 }

@@ -80,11 +80,6 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
                 .subscribe { this.viewModel.inputs.updateClicked() }
     }
 
-    private fun setUpdatePublicUI(backersOnly: Boolean) {
-        ViewUtils.setGone(this.view.update_backers_only, !backersOnly)
-        ViewUtils.setGone(this.view.update_details, backersOnly)
-    }
-
     private fun setCommentsCount(commentsCount: Int) {
         this.view.update_comments_count.text = commentsCount.toString()
         this.view.update_comments_count.contentDescription = this.ksString.format("comments_count_comments",
@@ -99,6 +94,12 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
                 likesCount,
                 "likes_count",
                 NumberUtils.format(likesCount))
+    }
+
+    private fun setUpdatePublicUI(backersOnly: Boolean) {
+        ViewUtils.setGone(this.view.update_backers_only, !backersOnly)
+        ViewUtils.setGone(this.view.update_details, backersOnly)
+        this.view.update_container.isClickable = !backersOnly
     }
 
     override fun bindData(data: Any?) {

@@ -61,71 +61,74 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginBottom="@dimen/grid_3"
       android:ellipsize="end"
       android:lines="4"
-      app:layout_constraintBottom_toTopOf="@id/update_comments_container"
+      app:layout_constraintBottom_toTopOf="@id/update_comments_likes"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/update_title"
-      tools:text="Test"
-      tools:background="@color/ksr_grey_200" />
+      tools:background="@color/ksr_grey_200"
+      tools:text="Test" />
 
     <LinearLayout
-      android:id="@+id/update_comments_container"
-      android:layout_width="0dp"
+      android:id="@+id/update_comments_likes"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical"
-      android:orientation="horizontal"
-      app:layout_constraintHorizontal_bias="0"
-      app:layout_constraintHorizontal_chainStyle="packed"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintEnd_toStartOf="@id/update_likes_container"
-      app:layout_constraintTop_toBottomOf="@id/update_blurb">
-
-      <ImageView
-        android:layout_width="@dimen/grid_5_half"
-        android:layout_height="@dimen/grid_5_half"
-        android:layout_marginEnd="@dimen/grid_1_half"
-        android:importantForAccessibility="no"
-        android:src="@drawable/ic_chat_bubble"
-        android:tint="@color/ksr_red_400" />
-
-      <TextView
-        android:id="@+id/update_comments_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/grid_1"
-        android:textColor="@color/ksr_red_400"
-        tools:text="0" />
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:id="@+id/update_likes_container"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:gravity="center_vertical"
       android:orientation="horizontal"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@id/update_comments_container"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/update_blurb">
 
-      <ImageView
-        android:layout_width="@dimen/grid_5_half"
-        android:layout_height="@dimen/grid_5_half"
-        android:layout_marginEnd="@dimen/grid_1_half"
-        android:importantForAccessibility="no"
-        android:src="@drawable/icon__heart" />
-
-      <TextView
-        android:id="@+id/update_likes_count"
+      <LinearLayout
+        android:id="@+id/update_comments_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/ksr_red_400"
-        tools:text="0" />
+        android:layout_marginTop="@dimen/grid_3"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+          android:layout_width="@dimen/grid_5_half"
+          android:layout_height="@dimen/grid_5_half"
+          android:layout_marginEnd="@dimen/grid_1_half"
+          android:importantForAccessibility="no"
+          android:src="@drawable/ic_chat_bubble"
+          android:tint="@color/ksr_red_400" />
+
+        <TextView
+          android:id="@+id/update_comments_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/grid_1"
+          android:textColor="@color/ksr_red_400"
+          tools:text="0" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/update_likes_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+          android:layout_width="@dimen/grid_5_half"
+          android:layout_height="@dimen/grid_5_half"
+          android:layout_marginEnd="@dimen/grid_1_half"
+          android:importantForAccessibility="no"
+          android:src="@drawable/icon__heart" />
+
+        <TextView
+          android:id="@+id/update_likes_count"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/ksr_red_400"
+          tools:text="0" />
+
+      </LinearLayout>
 
     </LinearLayout>
 

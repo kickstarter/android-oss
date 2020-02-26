@@ -20,11 +20,12 @@ interface UpdateCardViewHolderViewModel {
         /** Configure with the current [Project] and [Update]. */
         fun configureWith(project: Project, update:Update)
 
-        /** Call when the user clicks on an update. */
+        /** Call when the user clicks on an [Update]. */
         fun updateClicked()
     }
 
     interface Outputs {
+        /** Emits a boolean determining if the backers only container should be visible. */
         fun backersOnlyContainerIsVisible(): Observable<Boolean>
 
         fun blurb(): Observable<String>

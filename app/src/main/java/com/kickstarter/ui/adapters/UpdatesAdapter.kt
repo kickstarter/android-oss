@@ -8,17 +8,17 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
-import com.kickstarter.ui.viewholders.UpdateViewHolder
+import com.kickstarter.ui.viewholders.UpdateCardViewHolder
 import rx.Observable
 
 class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
 
-    interface Delegate : UpdateViewHolder.Delegate
+    interface Delegate : UpdateCardViewHolder.Delegate
 
     @LayoutRes
     override fun layout(sectionRow: SectionRow): Int {
         return if (sectionRow.section() == 0) {
-            R.layout.update_card_view
+            R.layout.item_update_card
         } else {
             R.layout.empty_view
         }
@@ -38,8 +38,8 @@ class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
     }
 
     override fun viewHolder(@LayoutRes layout: Int, view: View): KSViewHolder {
-        return if (layout == R.layout.update_card_view) {
-            UpdateViewHolder(view, this.delegate)
+        return if (layout == R.layout.item_update_card) {
+            UpdateCardViewHolder(view, this.delegate)
         } else {
             EmptyViewHolder(view)
         }

@@ -28,7 +28,7 @@
       android:background="@color/ksr_grey_300"
       android:clipToPadding="false"
       android:paddingTop="@dimen/grid_1"
-      tools:listitem="@layout/update_card_view" />
+      tools:listitem="@layout/item_update_card" />
 
   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

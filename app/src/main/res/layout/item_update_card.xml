@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/update_container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginStart="@dimen/grid_3"
+  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginEnd="@dimen/grid_3"
+  android:layout_marginBottom="@dimen/grid_2"
+  android:foreground="@drawable/click_indicator_light"
+  android:orientation="vertical"
+  app:cardCornerRadius="@dimen/grid_1">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/click_indicator_light"
+    android:orientation="vertical"
+    android:padding="@dimen/grid_3">
+
+    <TextView
+      android:id="@+id/update_sequence"
+      style="@style/FootnoteSecondaryMedium"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toTopOf="@id/update_title"
+      app:layout_constraintEnd_toStartOf="@id/update_date"
+      app:layout_constraintHorizontal_bias="0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="Update #3" />
+
+    <TextView
+      android:id="@+id/update_date"
+      style="@style/FootnoteSecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="@id/update_sequence"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/update_sequence"
+      app:layout_constraintTop_toTopOf="@id/update_sequence"
+      tools:text="February 19, 2020" />
+
+    <TextView
+      android:id="@+id/update_title"
+      style="@style/Headline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_1_half"
+      app:layout_constraintBottom_toTopOf="@id/update_blurb"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/update_sequence"
+      tools:text="Big news!" />
+
+    <TextView
+      android:id="@+id/update_blurb"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_3"
+      android:ellipsize="end"
+      android:lines="4"
+      app:layout_constraintBottom_toTopOf="@id/update_comments_container"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/update_title"
+      tools:background="@color/ksr_grey_200" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintGuide_begin="@dimen/grid_3"
+      app:layout_constraintTop_toBottomOf="@id/update_blurb"
+      android:orientation="horizontal"/>
+
+    <LinearLayout
+      android:id="@+id/update_comments_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      app:layout_constraintHorizontal_bias="0"
+      android:visibility="gone"
+      app:layout_constraintHorizontal_chainStyle="packed"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/update_likes_container"
+      app:layout_constraintTop_toBottomOf="@id/update_blurb">
+
+      <ImageView
+        android:layout_width="@dimen/grid_5_half"
+        android:layout_height="@dimen/grid_5_half"
+        android:layout_marginEnd="@dimen/grid_1_half"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_chat_bubble"
+        android:tint="@color/ksr_red_400" />
+
+      <TextView
+        android:id="@+id/update_comments_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_1"
+        android:textColor="@color/ksr_red_400"
+        tools:text="0" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/update_likes_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/update_comments_container"
+      app:layout_constraintTop_toTopOf="@id/update_comments_container">
+
+      <ImageView
+        android:layout_width="@dimen/grid_5_half"
+        android:layout_height="@dimen/grid_5_half"
+        android:layout_marginEnd="@dimen/grid_1_half"
+        android:importantForAccessibility="no"
+        android:src="@drawable/icon__heart" />
+
+      <TextView
+        android:id="@+id/update_likes_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ksr_red_400"
+        tools:text="0" />
+
+    </LinearLayout>
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

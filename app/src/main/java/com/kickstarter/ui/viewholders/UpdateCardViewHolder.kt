@@ -8,19 +8,20 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
-import com.kickstarter.viewmodels.UpdateViewHolderViewModel
-import kotlinx.android.synthetic.main.update_card_view.view.*
+import com.kickstarter.viewmodels.UpdateCardViewHolderViewModel
+import kotlinx.android.synthetic.main.item_update_card.view.*
 
-class UpdateViewHolder(private val view: View, val delegate: Delegate?) : KSViewHolder(view) {
+class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KSViewHolder(view) {
 
     interface Delegate {
         fun updateClicked(update: Update)
     }
 
     private val ksString = environment().ksString()
-    private var viewModel = UpdateViewHolderViewModel.ViewModel(environment())
+    private var viewModel = UpdateCardViewHolderViewModel.ViewModel(environment())
 
     private val updateSequenceTemplate = context().getString(R.string.activity_project_update_update_count)
 
@@ -41,6 +42,11 @@ class UpdateViewHolder(private val view: View, val delegate: Delegate?) : KSView
                 .compose(observeForUI())
                 .subscribe { setCommentsCount(it) }
 
+        this.viewModel.outputs.commentsCountIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.update_comments_container, it) }
+
         this.viewModel.outputs.date()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -50,6 +56,11 @@ class UpdateViewHolder(private val view: View, val delegate: Delegate?) : KSView
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setLikesCount(it) }
+
+        this.viewModel.outputs.likesCountIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.update_likes_container, it) }
 
         this.viewModel.outputs.sequence()
                 .compose(bindToLifecycle())
@@ -71,26 +82,18 @@ class UpdateViewHolder(private val view: View, val delegate: Delegate?) : KSView
                 .subscribe { this.viewModel.inputs.updateClicked() }
     }
 
-    private fun setCommentsCount(commentsCount: Int?) {
-        commentsCount?.let {
-            this.view.update_comments_count.text = it.toString()
-            this.view.update_comments_count.contentDescription = this.ksString.format("comments_count_comments", it,
-                    "comments_count", NumberUtils.format(it))
-        }?: run {
-            this.view.update_comments_count.text = null
-            this.view.update_comments_count.contentDescription = null
-        }
+    private fun setCommentsCount(commentsCount: Int) {
+        this.view.update_comments_count.text = commentsCount.toString()
+        this.view.update_comments_count.contentDescription = this.ksString.format("comments_count_comments",
+                commentsCount,
+                "comments_count",
+                NumberUtils.format(commentsCount))
     }
 
-    private fun setLikesCount(commentsCount: Int?) {
-        commentsCount?.let {
-            this.view.update_likes_count.text = it.toString()
-            //todo add content description
-            this.view.update_likes_count.contentDescription = it.toString()
-        }?: run {
-            this.view.update_likes_count.text = null
-            this.view.update_likes_count.contentDescription = null
-        }
+    private fun setLikesCount(likesCount: Int) {
+        this.view.update_likes_count.text = likesCount.toString()
+        //todo add proper content description
+        this.view.update_comments_count.contentDescription = likesCount.toString()
     }
 
     override fun bindData(data: Any?) {

@@ -80,6 +80,7 @@
         android:layout_marginTop="@dimen/grid_3"
         android:ellipsize="end"
         android:maxLines="4"
+        android:importantForAccessibility="no"
         app:layout_constraintBottom_toTopOf="@id/update_comments_likes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

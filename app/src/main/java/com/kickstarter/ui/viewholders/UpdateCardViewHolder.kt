@@ -91,7 +91,7 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
 
     private fun setLikesCount(likesCount: Int) {
         this.view.update_likes_count.text = likesCount.toString()
-        this.view.update_comments_count.contentDescription = this.ksString.format("likes_count_likes",
+        this.view.update_likes_count.contentDescription = this.ksString.format("likes_count_likes",
                 likesCount,
                 "likes_count",
                 NumberUtils.format(likesCount))

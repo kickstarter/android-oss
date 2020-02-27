@@ -733,36 +733,32 @@ interface ProjectViewModel {
             val currentFullProjectData = currentProjectData
                     .filter { it.project().hasRewards() }
 
-            currentFullProjectData
+            val fullProjectDataAndPledgeFlowContext = currentFullProjectData
+                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+                    .map { Pair(it.first, pledgeFlowContext(it.first.project(), it.second)) }
+
+            fullProjectDataAndPledgeFlowContext
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe { data ->
+                    .subscribe { projectDataAndPledgeFlowContext ->
+                        val data = projectDataAndPledgeFlowContext.first
+                        val pledgeFlowContext = projectDataAndPledgeFlowContext.second
                         // If a cookie hasn't been set for this ref+project then do so.
                         if (data.refTagFromCookie() == null) {
                             data.refTagFromIntent()?.let { RefTagUtils.storeCookie(it, data.project(), this.cookieManager, this.sharedPreferences) }
                         }
 
-                        this.koala.trackProjectShow(
-                                data.project(),
-                                data.refTagFromIntent(),
-                                RefTagUtils.storedCookieRefTagForProject(data.project(), this.cookieManager, this.sharedPreferences)
-                        )
+                        val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
 
-                        this.lake.trackProjectPageViewed(
-                                data.project(),
-                                data.refTagFromIntent(),
-                                RefTagUtils.storedCookieRefTagForProject(data.project(), this.cookieManager, this.sharedPreferences)
-                        )
+                        this.koala.trackProjectShow(dataWithStoredCookieRefTag)
+                        this.lake.trackProjectPageViewed(dataWithStoredCookieRefTag, pledgeFlowContext)
                     }
 
-            currentFullProjectData
-                    .compose<ProjectData>(takeWhen(this.nativeProjectActionButtonClicked))
-                    .filter { it.project().isLive && !it.project().isBacking }
+            fullProjectDataAndPledgeFlowContext
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.lake.trackProjectPagePledgeButtonClicked(it.project(),
-                                it.refTagFromIntent(),
-                                RefTagUtils.storedCookieRefTagForProject(it.project(), this.cookieManager, this.sharedPreferences))
+                        val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(it.first)
+                        this.lake.trackProjectPagePledgeButtonClicked(dataWithStoredCookieRefTag, it.second)
                     }
 
             this.pledgeActionButtonText
@@ -878,12 +874,27 @@ interface ProjectViewModel {
             return PledgeData.with(pledgeFlowContext, projectData, reward)
         }
 
+        private fun pledgeFlowContext(project: Project, currentUser: User?): PledgeFlowContext? {
+            return when {
+                ProjectUtils.userIsCreator(project, currentUser) -> null
+                project.isLive && !project.isBacking -> PledgeFlowContext.NEW_PLEDGE
+                else -> null
+            }
+        }
+
         private fun projectData(refTagFromIntent: RefTag?, refTagFromCookie: RefTag?, project: Project): ProjectData {
             return ProjectData
                     .builder()
                     .refTagFromIntent(refTagFromIntent)
                     .refTagFromCookie(refTagFromCookie)
                     .project(project)
+                    .build()
+        }
+
+        private fun storeCurrentCookieRefTag(data: ProjectData): ProjectData {
+            return data
+                    .toBuilder()
+                    .refTagFromCookie(RefTagUtils.storedCookieRefTagForProject(data.project(), cookieManager, sharedPreferences))
                     .build()
         }
 

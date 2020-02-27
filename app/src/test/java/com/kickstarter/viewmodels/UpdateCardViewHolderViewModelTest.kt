@@ -9,7 +9,6 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-
 class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: UpdateCardViewHolderViewModel.ViewModel
@@ -23,7 +22,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val publishDate = TestSubscriber.create<DateTime>()
     private val sequence = TestSubscriber.create<Int>()
     private val title = TestSubscriber.create<String>()
-    private val viewUpdate = TestSubscriber.create<Update>()
+    private val showUpdateDetails = TestSubscriber.create<Update>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = UpdateCardViewHolderViewModel.ViewModel(environment)
@@ -36,8 +35,8 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.likesCountIsGone().subscribe(this.likesCountIsGone)
         this.vm.outputs.publishDate().subscribe(this.publishDate)
         this.vm.outputs.sequence().subscribe(this.sequence)
+        this.vm.outputs.showUpdateDetails().subscribe(this.showUpdateDetails)
         this.vm.outputs.title().subscribe(this.title)
-        this.vm.outputs.viewUpdate().subscribe(this.viewUpdate)
     }
 
     @Test
@@ -133,20 +132,6 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDate() {
-        setUpEnvironment(environment())
-
-        val timestamp = DateTime.parse("2020-02-26T17:41:07+00:00")
-        val update = UpdateFactory.update()
-                .toBuilder()
-                .publishedAt(timestamp)
-                .build()
-        this.vm.inputs.configureWith(ProjectFactory.project(), update)
-
-        this.publishDate.assertValue(timestamp)
-    }
-
-    @Test
     fun testLikesCount() {
         setUpEnvironment(environment())
 
@@ -199,6 +184,20 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPublishDate() {
+        setUpEnvironment(environment())
+
+        val timestamp = DateTime.parse("2020-02-26T17:41:07+00:00")
+        val update = UpdateFactory.update()
+                .toBuilder()
+                .publishedAt(timestamp)
+                .build()
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
+
+        this.publishDate.assertValue(timestamp)
+    }
+
+    @Test
     fun testSequence() {
         setUpEnvironment(environment())
 
@@ -212,6 +211,17 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShowUpdateDetails() {
+        setUpEnvironment(environment())
+
+        val update = UpdateFactory.update()
+        this.vm.inputs.configureWith(ProjectFactory.project(), update)
+
+        this.vm.inputs.updateClicked()
+        this.showUpdateDetails.assertValue(update)
+    }
+
+    @Test
     fun testTitle() {
         setUpEnvironment(environment())
 
@@ -222,17 +232,6 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.title.assertValue("Wow, big news!")
-    }
-
-    @Test
-    fun testViewUpdate() {
-        setUpEnvironment(environment())
-
-        val update = UpdateFactory.update()
-        this.vm.inputs.configureWith(ProjectFactory.project(), update)
-
-        this.vm.inputs.updateClicked()
-        this.viewUpdate.assertValue(update)
     }
 
 }

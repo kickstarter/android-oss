@@ -49,11 +49,11 @@ interface UpdateCardViewHolderViewModel {
         /** Emits the sequence of the [Update]. */
         fun sequence(): Observable<Int>
 
+        /** Emits when the [UpdateCardViewHolder.Delegate] should start the [com.kickstarter.ui.activities.UpdateActivity]. */
+        fun showUpdateDetails(): Observable<Update>
+
         /** Emits the title of the [Update]. */
         fun title(): Observable<String>
-
-        /** Emits when we should start the [com.kickstarter.ui.activities.UpdateActivity]. */
-        fun viewUpdate(): Observable<Update>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<UpdateCardViewHolder>(environment), Inputs, Outputs {
@@ -69,8 +69,8 @@ interface UpdateCardViewHolderViewModel {
         private val likesCountIsGone = BehaviorSubject.create<Boolean>()
         private val publishDate = BehaviorSubject.create<DateTime>()
         private val sequence = BehaviorSubject.create<Int>()
+        private val showUpdateDetails = PublishSubject.create<Update>()
         private val title = BehaviorSubject.create<String>()
-        private val viewUpdate = PublishSubject.create<Update>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -137,7 +137,7 @@ interface UpdateCardViewHolderViewModel {
             update
                     .compose<Update>(takeWhen(this.updateClicked))
                     .compose(bindToLifecycle())
-                    .subscribe(this.viewUpdate)
+                    .subscribe(this.showUpdateDetails)
 
         }
 
@@ -165,9 +165,9 @@ interface UpdateCardViewHolderViewModel {
 
         override fun sequence(): Observable<Int> = this.sequence
 
-        override fun title(): Observable<String> = this.title
+        override fun showUpdateDetails(): Observable<Update> = this.showUpdateDetails
 
-        override fun viewUpdate(): Observable<Update> = this.viewUpdate
+        override fun title(): Observable<String> = this.title
 
     }
 }

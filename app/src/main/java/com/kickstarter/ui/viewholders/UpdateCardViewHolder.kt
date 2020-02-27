@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.item_update_card.view.*
 class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KSViewHolder(view) {
 
     interface Delegate {
-        fun updateClicked(update: Update)
+        fun updateCardClicked(update: Update)
     }
 
     private val ksString = environment().ksString()
@@ -30,7 +30,7 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
         this.viewModel.outputs.backersOnlyContainerIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setUpdatePublicUI(it) }
+                .subscribe { setBackersOnlyVisibility(it) }
 
         this.viewModel.outputs.blurb()
                 .compose(bindToLifecycle())
@@ -67,15 +67,15 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
                 .compose(observeForUI())
                 .subscribe { this.view.update_sequence.text = this.ksString.format(updateSequenceTemplate, "update_count", it.toString()) }
 
+        this.viewModel.outputs.showUpdateDetails()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { delegate?.updateCardClicked(it) }
+
         this.viewModel.outputs.title()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.view.update_title.text = it }
-
-        this.viewModel.outputs.viewUpdate()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { delegate?.updateClicked(it) }
 
         RxView.clicks(this.view.update_container)
                 .compose(bindToLifecycle())
@@ -98,10 +98,10 @@ class UpdateCardViewHolder(private val view: View, val delegate: Delegate?) : KS
                 NumberUtils.format(likesCount))
     }
 
-    private fun setUpdatePublicUI(backersOnly: Boolean) {
-        ViewUtils.setGone(this.view.update_backers_only, !backersOnly)
-        ViewUtils.setGone(this.view.update_details, backersOnly)
-        this.view.update_container.isClickable = !backersOnly
+    private fun setBackersOnlyVisibility(show: Boolean) {
+        ViewUtils.setGone(this.view.update_backers_only, !show)
+        ViewUtils.setGone(this.view.update_details, show)
+        this.view.update_container.isClickable = !show
     }
 
     override fun bindData(data: Any?) {

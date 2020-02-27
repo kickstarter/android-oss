@@ -18,7 +18,7 @@ import rx.subjects.PublishSubject
 interface UpdateCardViewHolderViewModel {
     interface Inputs {
         /** Configure with the current [Project] and [Update]. */
-        fun configureWith(project: Project, update:Update)
+        fun configureWith(project: Project, update: Update)
 
         /** Call when the user clicks on an [Update]. */
         fun updateClicked()

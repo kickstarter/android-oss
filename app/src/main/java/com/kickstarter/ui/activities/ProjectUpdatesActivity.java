@@ -77,7 +77,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   @Override
-  public void updateClicked(final @NonNull Update update) {
+  public void updateCardClicked(final @NonNull Update update) {
     this.viewModel.inputs.updateClicked(update);
   }
 

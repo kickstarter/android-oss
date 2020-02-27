@@ -18,6 +18,7 @@ public abstract class Update implements Parcelable {
   public abstract @Nullable Integer commentsCount();
   public abstract @Nullable Boolean hasLiked();
   public abstract long id();
+  public abstract @Nullable Boolean isPublic();
   public abstract @Nullable Integer likesCount();
   public abstract long projectId();
   public abstract @Nullable DateTime publishedAt();
@@ -34,6 +35,7 @@ public abstract class Update implements Parcelable {
     public abstract Builder commentsCount(Integer __);
     public abstract Builder hasLiked(Boolean __);
     public abstract Builder id(long __);
+    public abstract Builder isPublic(Boolean __);
     public abstract Builder likesCount(Integer __);
     public abstract Builder projectId(long __);
     public abstract Builder publishedAt(DateTime __);

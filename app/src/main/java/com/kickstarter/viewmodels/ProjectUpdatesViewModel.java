@@ -28,14 +28,14 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface ProjectUpdatesViewModel {
 
   interface Inputs {
-    /** Call when an Update is clicked. */
-    void updateClicked(Update update);
-
-    /** Invoke when pagination should happen.*/
+    /** Call when pagination should happen.*/
     void nextPage();
 
-    /** Invoke when the feed should be refreshed. */
+    /** Call when the feed should be refreshed. */
     void refresh();
+
+    /** Call when an Update is clicked. */
+    void updateClicked(Update update);
   }
 
   interface Outputs {

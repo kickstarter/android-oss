@@ -6,6 +6,7 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.Arrays;
 
@@ -39,7 +40,7 @@ public final class ProjectFactory {
       .category(CategoryFactory.category())
       .creator(UserFactory.creator())
       .country("US")
-      .createdAt(DateTime.now())
+      .createdAt(DateTime.now(DateTimeZone.UTC))
       .currency("USD")
       .currencySymbol("$")
       .currentCurrency("USD")
@@ -59,8 +60,8 @@ public final class ProjectFactory {
       .updatedAt(DateTime.now())
       .urls(Project.Urls.builder().web(web).build())
       .video(VideoFactory.video())
-      .launchedAt(new DateTime().minusDays(10))
-      .deadline(new DateTime().plusDays(10))
+      .launchedAt(new DateTime(DateTimeZone.UTC).minusDays(10))
+      .deadline(new DateTime(DateTimeZone.UTC).plusDays(10))
       .build();
   }
 

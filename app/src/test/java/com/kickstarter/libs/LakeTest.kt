@@ -8,7 +8,6 @@ import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
-import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.json.JSONArray
 import org.junit.Test
@@ -158,7 +157,7 @@ class LakeTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectProperties() {
+    fun testProjectProperties_loggedOutUser() {
         val project = project()
 
         val client = MockTrackingClient(MockCurrentUser(), mockCurrentConfig(), true)
@@ -171,6 +170,12 @@ class LakeTest : KSRobolectricTestCase() {
         assertSessionProperties(null)
         assertContextProperties()
         assertProjectProperties(project)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.lakeTest.assertValues("Project Page Viewed")
     }
@@ -191,6 +196,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertContextProperties()
 
         val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -222,6 +228,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertContextProperties()
 
         val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -245,7 +252,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertContextProperties()
 
         val expectedProperties = this.propertiesTest.value
-        TestCase.assertNull(expectedProperties["project_user_has_watched"])
+        assertNull(expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(true, expectedProperties["project_user_is_project_creator"])
@@ -269,6 +276,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertContextProperties()
 
         val expectedProperties = this.propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(true, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])

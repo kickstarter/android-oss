@@ -755,11 +755,10 @@ interface ProjectViewModel {
                     }
 
             fullProjectDataAndPledgeFlowContext
+                    .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
+                    .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(it.first)
-                        this.lake.trackProjectPagePledgeButtonClicked(dataWithStoredCookieRefTag, it.second)
-                    }
+                    .subscribe { this.lake.trackProjectPagePledgeButtonClicked(storeCurrentCookieRefTag(it.first), it.second) }
 
             this.pledgeActionButtonText
                     .map { eventName(it) }

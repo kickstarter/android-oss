@@ -3,49 +3,50 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectUpdatesActivity;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
-import okhttp3.Request;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface ProjectUpdatesViewModel {
 
   interface Inputs {
-    /** Call when an external link has been activated. */
-    void externalLinkActivated();
+    /** Call when pagination should happen.*/
+    void nextPage();
 
-    /** Call when a project update comments uri request has been made. */
-    void goToCommentsRequest(Request request);
+    /** Call when the feed should be refreshed. */
+    void refresh();
 
-    /** Call when a project update uri request has been made. */
-    void goToUpdateRequest(Request request);
-
-    /** Call when a project updates uri request has been made. */
-    void goToUpdatesRequest(Request request);
+    /** Call when an Update is clicked. */
+    void updateClicked(Update update);
   }
 
   interface Outputs {
-    /** Emits an update to start the comments activity with. */
-    Observable<Update> startCommentsActivity();
+    /** Emits a boolean indicating whether updates are being fetched from the API. */
+    Observable<Boolean> isFetchingUpdates();
+
+    /** Emits the current project and its updates. */
+    Observable<Pair<Project, List<Update>>> projectAndUpdates();
 
     /** Emits a project and an update to start the update activity with. */
     Observable<Pair<Project, Update>> startUpdateActivity();
-
-    /** Emits a url to load in the web view. */
-    Observable<String> webViewUrl();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements Inputs, Outputs {
@@ -61,40 +62,40 @@ public interface ProjectUpdatesViewModel {
         .ofType(Project.class)
         .take(1);
 
-      final Observable<String> initialUpdatesIndexUrl = project
-        .map(Project::updatesUrl);
+      final Observable<Project> startOverWith = Observable.merge(
+        project,
+        project.compose(takeWhen(this.refresh))
+      );
 
-      final Observable<String> anotherIndexUrl = this.goToUpdatesRequest
-        .map(request -> request.url().toString());
-
-      Observable.merge(initialUpdatesIndexUrl, anotherIndexUrl)
-        .distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(this.webViewUrl::onNext);
-
-      this.goToCommentsRequest
-        .map(this::projectUpdateParams)
-        .switchMap(this::fetchUpdate)
-        .compose(bindToLifecycle())
-        .subscribe(this.startCommentsActivity::onNext);
-
-      final Observable<Update> goToUpdateRequest = this.goToUpdateRequest
-        .map(this::projectUpdateParams)
-        .switchMap(this::fetchUpdate)
-        .share();
+      final ApiPaginator<Update, UpdatesEnvelope, Project> paginator =
+        ApiPaginator.<Update, UpdatesEnvelope, Project>builder()
+          .nextPage(this.nextPage)
+          .startOverWith(startOverWith)
+          .envelopeToListOfData(UpdatesEnvelope::updates)
+          .envelopeToMoreUrl(env -> env.urls().api().moreUpdates())
+          .loadWithParams(this.client::fetchUpdates)
+          .loadWithPaginationPath(this.client::fetchUpdates)
+          .clearWhenStartingOver(false)
+          .concater(ListUtils::concatDistinct)
+          .build();
 
       project
-        .compose(takePairWhen(goToUpdateRequest))
+        .compose(combineLatestPair(paginator.paginatedData().share()))
+        .compose(bindToLifecycle())
+        .subscribe(this.projectAndUpdates);
+
+      paginator
+        .isFetching()
+        .compose(bindToLifecycle())
+        .subscribe(this.isFetchingUpdates);
+
+      project
+        .compose(takePairWhen(this.updateClicked))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
 
       project
-        .compose(takeWhen(this.externalLinkActivated))
-        .compose(bindToLifecycle())
-        .subscribe(p -> this.koala.trackOpenedExternalLink(p, KoalaContext.ExternalLink.PROJECT_UPDATES));
-
-      project
-        .compose(takeWhen(goToUpdateRequest))
+        .compose(takeWhen(this.updateClicked))
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.UPDATES));
 
@@ -104,59 +105,35 @@ public interface ProjectUpdatesViewModel {
         .subscribe(this.koala::trackViewedUpdates);
     }
 
-    private @NonNull Observable<Update> fetchUpdate(final @NonNull Pair<String, String> projectAndUpdateParams) {
-      return this.client
-        .fetchUpdate(projectAndUpdateParams.first, projectAndUpdateParams.second)
-        .compose(neverError());
-    }
+    private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Void> refresh = PublishSubject.create();
+    private final PublishSubject<Update> updateClicked = PublishSubject.create();
 
-    /**
-     * Parses a request for project and update params.
-     *
-     * @param request   Comments or update request.
-     * @return          Pair of project param string and update param string.
-     */
-    private @NonNull Pair<String, String> projectUpdateParams(final @NonNull Request request) {
-      // todo: build a Navigation helper for better param extraction
-      final String projectParam = request.url().encodedPathSegments().get(2);
-      final String updateParam = request.url().encodedPathSegments().get(4);
-      return Pair.create(projectParam, updateParam);
-    }
-
-    private final PublishSubject<Request> externalLinkActivated = PublishSubject.create();
-    private final PublishSubject<Request> goToCommentsRequest = PublishSubject.create();
-    private final PublishSubject<Request> goToUpdateRequest = PublishSubject.create();
-    private final PublishSubject<Request> goToUpdatesRequest = PublishSubject.create();
-
-    private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
+    private final BehaviorSubject<Boolean> isFetchingUpdates = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Project, List<Update>>> projectAndUpdates = BehaviorSubject.create();
     private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
-    private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void externalLinkActivated() {
-      this.externalLinkActivated.onNext(null);
+    @Override public void nextPage() {
+      this.nextPage.onNext(null);
     }
-    @Override public void goToCommentsRequest(final @NonNull Request request) {
-      this.goToCommentsRequest.onNext(request);
+    @Override public void refresh() {
+      this.refresh.onNext(null);
     }
-    @Override public void goToUpdateRequest(final @NonNull Request request) {
-      this.goToUpdateRequest.onNext(request);
-    }
-    @Override
-    public void goToUpdatesRequest(final @NonNull Request request) {
-      this.goToUpdatesRequest.onNext(request);
+    @Override public void updateClicked(final @NonNull Update update) {
+      this.updateClicked.onNext(update);
     }
 
-    @Override public @NonNull Observable<Update> startCommentsActivity() {
-      return this.startCommentsActivity;
+    @Override public @NonNull Observable<Boolean> isFetchingUpdates() {
+      return this.isFetchingUpdates;
+    }
+    @Override public @NonNull Observable<Pair<Project, List<Update>>> projectAndUpdates() {
+      return this.projectAndUpdates;
     }
     @Override public @NonNull Observable<Pair<Project, Update>> startUpdateActivity() {
       return this.startUpdateActivity;
-    }
-    @Override public @NonNull Observable<String> webViewUrl() {
-      return this.webViewUrl;
     }
   }
 }

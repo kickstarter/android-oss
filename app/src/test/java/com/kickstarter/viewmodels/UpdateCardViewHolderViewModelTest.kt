@@ -21,8 +21,8 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val likesCountIsGone = TestSubscriber.create<Boolean>()
     private val publishDate = TestSubscriber.create<DateTime>()
     private val sequence = TestSubscriber.create<Int>()
-    private val title = TestSubscriber.create<String>()
     private val showUpdateDetails = TestSubscriber.create<Update>()
+    private val title = TestSubscriber.create<String>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = UpdateCardViewHolderViewModel.ViewModel(environment)

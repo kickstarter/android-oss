@@ -519,7 +519,7 @@
 
   <style name="Headline" parent="TextPrimary">
     <item name="android:textSize">@dimen/headline</item>
-    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="HeadlineNormal" parent="TextPrimary">

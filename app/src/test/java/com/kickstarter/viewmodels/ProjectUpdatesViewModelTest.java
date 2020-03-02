@@ -4,103 +4,110 @@ import android.content.Intent;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.mock.factories.ProjectFactory;
-import com.kickstarter.libs.KoalaEvent;
+import com.kickstarter.mock.factories.UpdateFactory;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
+import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
-import okhttp3.Request;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
-public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
+public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
+  private ProjectUpdatesViewModel.ViewModel vm;
+  private final TestSubscriber<Boolean> isFetchingUpdates = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, List<Update>>> projectAndUpdates = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Project, Update>> startUpdateActivity = new TestSubscriber<>();
 
-  @Test
-  public void testProjectUpdatesViewModel_ExternalLinkActivated() {
-    final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
-    final Project project = ProjectFactory.project();
+  private void setUpEnvironment(final @NonNull Environment env, final @NonNull Project project) {
+    this.vm = new ProjectUpdatesViewModel.ViewModel(env);
+    this.vm.outputs.isFetchingUpdates().subscribe(this.isFetchingUpdates);
+    this.vm.outputs.projectAndUpdates().subscribe(this.projectAndUpdates);
+    this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
 
-    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
-    vm.outputs.webViewUrl().subscribe(webViewUrl);
-
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    // Initial updates index url is loaded.
-    webViewUrl.assertValueCount(1);
-
-    // Activate an external link.
-    vm.inputs.externalLinkActivated();
-
-    // External url is not loaded in our web view.
-    webViewUrl.assertValueCount(1);
-    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATES, KoalaEvent.OPENED_EXTERNAL_LINK);
+    // Configure the view model with a project intent.
+    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
   }
 
   @Test
-  public void testProjectUpdatesViewModel_LoadsWebViewUrl() {
-    final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
-    final Project project = ProjectFactory.project();
+  public void testIsFetchingUpdates() {
+    setUpEnvironment(environment(), ProjectFactory.project());
 
-    final String anotherIndexUrl = "https://kck.str/projects/param/param/posts?page=another";
-
-    final Request anotherIndexRequest = new Request.Builder()
-      .url(anotherIndexUrl)
-      .build();
-
-    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
-    vm.outputs.webViewUrl().subscribe(webViewUrl);
-
-    // Start the intent with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    // Initial project updates index emits.
-    webViewUrl.assertValues(project.updatesUrl());
-    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATES);
-
-    // Make a request for another update index.
-    vm.inputs.goToUpdatesRequest(anotherIndexRequest);
-
-    // New updates index url emits. Event is not tracked again.
-    webViewUrl.assertValues(project.updatesUrl(), anotherIndexUrl);
-    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATES);
+    this.isFetchingUpdates.assertValues(true, false);
+    this.koalaTest.assertValue("Viewed Updates");
   }
 
   @Test
-  public void testProjectUpdatesViewModel_StartCommentsActivity() {
-    final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
+  public void testProjectAndUpdates() {
+    final List<Update> updates = Arrays.asList(
+      UpdateFactory.update(),
+      UpdateFactory.update()
+    );
+
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment().toBuilder().apiClient(new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
+        return Observable.just(
+          UpdatesEnvelope
+            .builder()
+            .updates(updates)
+            .urls(urlsEnvelope())
+            .build()
+        );
+      }
+    }).build(), project);
 
-    final Request commentsRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/param/posts/id/comments")
-      .build();
-
-    final TestSubscriber<Update> startCommentsActivity = new TestSubscriber<>();
-    vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
-
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    vm.inputs.goToCommentsRequest(commentsRequest);
-
-    startCommentsActivity.assertValueCount(1);
+    this.projectAndUpdates.assertValues(Pair.create(project, updates));
+    this.koalaTest.assertValue("Viewed Updates");
   }
 
   @Test
-  public void testProjectUpdatesViewModel_StartUpdateActivity() {
-    final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
+  public void testStartUpdateActivity() {
+    final Update update = UpdateFactory.update();
+    final List<Update> updates = Collections.singletonList(update);
+
     final Project project = ProjectFactory.project();
+    setUpEnvironment(environment().toBuilder().apiClient(new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
+        return Observable.just(
+          UpdatesEnvelope
+            .builder()
+            .updates(updates)
+            .urls(urlsEnvelope())
+            .build()
+        );
+      }
+    }).build(), project);
 
-    final Request updateRequest = new Request.Builder()
-      .url("https://kck.str/projects/param/param/posts/id")
+    this.vm.inputs.updateClicked(update);
+
+    this.startUpdateActivity.assertValues(Pair.create(project, update));
+    this.koalaTest.assertValues("Viewed Updates", "Viewed Update");
+  }
+
+  private UpdatesEnvelope.UrlsEnvelope urlsEnvelope() {
+    return UpdatesEnvelope.UrlsEnvelope
+      .builder()
+      .api(
+        UpdatesEnvelope.UrlsEnvelope.ApiEnvelope
+          .builder()
+          .moreUpdates("http://more.updates.please")
+          .build()
+      )
       .build();
-
-    final TestSubscriber<Pair<Project, Update>> startUpdateActivity = new TestSubscriber<>();
-    vm.outputs.startUpdateActivity().subscribe(startUpdateActivity);
-
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    vm.inputs.goToUpdateRequest(updateRequest);
-
-    startUpdateActivity.assertValueCount(1);
-    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATES, KoalaEvent.VIEWED_UPDATE);
   }
 }

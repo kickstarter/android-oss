@@ -1,5 +1,8 @@
 package com.kickstarter.services;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
@@ -23,13 +26,12 @@ import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
+import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import rx.Observable;
 
 public interface ApiClientType {
@@ -88,6 +90,10 @@ public interface ApiClientType {
   @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam);
 
   @NonNull Observable<Update> fetchUpdate(final @NonNull Update update);
+
+  @NonNull Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project);
+
+  @NonNull Observable<UpdatesEnvelope> fetchUpdates(final @NonNull String paginationPath);
 
   @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken);
 

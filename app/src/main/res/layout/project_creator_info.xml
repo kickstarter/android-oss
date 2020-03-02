@@ -1,123 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical">
 
   <LinearLayout
-    android:paddingStart="@dimen/project_padding_x"
-    android:paddingEnd="@dimen/project_padding_x"
-    android:orientation="vertical"
     android:id="@+id/creator_links"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:divider="@color/ksr_grey_500"
-    android:dividerHeight="1dp" >
+    android:divider="@drawable/divider_grey_500_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/project_padding_x"
+    android:paddingEnd="@dimen/project_padding_x"
+    android:showDividers="middle">
 
     <RelativeLayout
       android:id="@+id/campaign"
-      android:focusable="true"
-      android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_7" >
+      android:layout_height="wrap_content"
+      android:background="@drawable/click_indicator_light_masked"
+      android:focusable="true"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingBottom="@dimen/grid_2">
 
       <TextView
-        android:layout_toStartOf="@+id/campaign_button"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/campaign_button"
+        android:text="@string/project_menu_buttons_campaign"
         android:textColor="@color/ksr_soft_black"
-        android:textSize="@dimen/body"
-        android:text="@string/project_menu_buttons_campaign" />
+        android:textSize="@dimen/body" />
 
-      <com.kickstarter.ui.views.IconButton
+      <ImageView
         android:id="@+id/campaign_button"
-        android:textSize="@dimen/chevron_right_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/chevron_right_icon"
-        android:textColor="@color/ksr_soft_black"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:importantForAccessibility="no"
+        android:src="@drawable/chevron_right"
+        android:tint="@color/ksr_soft_black" />
 
     </RelativeLayout>
-
-    <include
-      layout="@layout/horizontal_line_1dp_view"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_1"
-      android:layout_marginBottom="@dimen/grid_1"/>
 
     <RelativeLayout
       android:id="@+id/updates"
-      android:background="@drawable/click_indicator_light_masked"
-      android:focusable="true"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_7" >
+      android:layout_height="wrap_content"
+      android:foreground="?android:attr/selectableItemBackground"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingBottom="@dimen/grid_2">
 
       <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/updates_count"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/updates_count"
+        android:text="@string/project_menu_buttons_updates"
         android:textColor="@color/ksr_soft_black"
-        android:textSize="@dimen/body"
-        android:text="@string/project_menu_buttons_updates" />
+        android:textSize="@dimen/body" />
 
       <TextView
         android:id="@+id/updates_count"
-        android:background="@drawable/text_view_rect_background"
-        android:gravity="center"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/body"
-        android:textColor="@color/ksr_soft_black"
-        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="45"/>
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/text_view_rect_background"
+        android:textColor="@color/ksr_soft_black"
+        android:textSize="@dimen/body"
+        tools:text="45" />
 
     </RelativeLayout>
 
-    <include
-      layout="@layout/horizontal_line_1dp_view"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"/>
-
     <RelativeLayout
       android:id="@+id/comments"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
       android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_7" >
+      android:paddingTop="@dimen/grid_2"
+      android:paddingBottom="@dimen/grid_2">
 
       <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/comments_count"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/comments_count"
+        android:text="@string/project_menu_buttons_comments"
         android:textColor="@color/ksr_soft_black"
-        android:textSize="@dimen/body"
-        android:text="@string/project_menu_buttons_comments" />
+        android:textSize="@dimen/body" />
 
       <TextView
         android:id="@+id/comments_count"
-        android:background="@drawable/text_view_rect_background"
-        android:gravity="center"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/body"
-        android:textColor="@color/ksr_soft_black"
-        android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="1,000"/>
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/text_view_rect_background"
+        android:textColor="@color/ksr_soft_black"
+        android:textSize="@dimen/body"
+        tools:text="1,000" />
 
     </RelativeLayout>
 
@@ -126,19 +114,19 @@
   <TextView
     android:id="@+id/project_disclaimer_text_view"
     style="@style/Caption1Secondary"
-    android:textColor="@color/ksr_dark_grey_500"
-    android:paddingStart="@dimen/project_padding_x"
-    android:paddingEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="true"
-    android:paddingTop="@dimen/grid_4" />
+    android:paddingStart="@dimen/project_padding_x"
+    android:paddingTop="@dimen/grid_4"
+    android:paddingEnd="@dimen/project_padding_x"
+    android:textColor="@color/ksr_dark_grey_500" />
 
   <View
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:layout_marginBottom="@dimen/grid_4"
     android:layout_marginTop="@dimen/grid_5"
+    android:layout_marginBottom="@dimen/grid_4"
     android:background="@color/ksr_dark_grey_500" />
 
 </LinearLayout>

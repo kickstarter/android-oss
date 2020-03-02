@@ -98,6 +98,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.view_pledge_button) @Nullable MaterialButton viewPledgeButton;
+  protected @Bind(R.id.updates) ViewGroup updatesContainer;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
@@ -381,6 +382,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startProjectSocialActivity);
+
+    this.viewModel.outputs.updatesContainerIsEnabled()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.updatesContainer::setEnabled);
 
     this.viewModel.outputs.updatesCountTextViewText()
       .compose(bindToLifecycle())

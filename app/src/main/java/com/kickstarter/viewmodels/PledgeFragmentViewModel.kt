@@ -366,9 +366,9 @@ interface PledgeFragmentViewModel {
             reward
                     .map<Either<Int, String>> {
                         when {
-                            RewardUtils.isNoReward(it) -> Either.Left(R.string.Pledge_without_a_reward)
+                            RewardUtils.isNoReward(it) -> Either.Left(R.string.Back_it_because_you_believe_in_it)
                             else -> it.title()?.let { title -> Either.Right<Int, String>(title) }
-                                    ?: Either.Left(R.string.Pledge_without_a_reward)
+                                    ?: Either.Left(R.string.Back_it_because_you_believe_in_it)
                         }
                     }
                     .distinctUntilChanged()

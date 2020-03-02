@@ -4,8 +4,10 @@ import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.libs.*
-import com.kickstarter.libs.preferences.BooleanPreferenceType
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
@@ -39,9 +41,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         /** Emits a boolean determining if the backers count should be shown. */
         fun backersCountIsGone(): Observable<Boolean>
-
-        /**  Emits the drawable resource ID of the reward contents. */
-        fun background(): Observable<Int>
 
         /**  Emits the string resource ID to set on the pledge button. */
         fun buttonCTA(): Observable<Int>
@@ -117,9 +116,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<NativeCheckoutRewardViewHolder>(environment), Inputs, Outputs {
-        private val currentConfig: CurrentConfigType = environment.currentConfig()
         private val currentUser: CurrentUserType = environment.currentUser()
-        private val goRewardlessPreference: BooleanPreferenceType = environment.goRewardlessPreference()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 
         private val projectDataAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
@@ -127,7 +124,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         private val backersCount = BehaviorSubject.create<Int>()
         private val backersCountIsGone = BehaviorSubject.create<Boolean>()
-        private val background = BehaviorSubject.create<Int>()
         private val buttonCTA = BehaviorSubject.create<Int>()
         private val buttonIsEnabled = BehaviorSubject.create<Boolean>()
         private val buttonIsGone = BehaviorSubject.create<Boolean>()
@@ -176,20 +172,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
                     .compose<Pair<User?, Project>>(combineLatestPair(project))
                     .map { it.first?.id() == it.second.creator().id() }
 
-            val goRewardlessEnabled = this.currentConfig.observable()
-                    .map { it.features()?.get(FeatureKey.ANDROID_GO_REWARDLESS) ?: false }
-                    .map { Pair.create<Boolean, Boolean>(it, this.goRewardlessPreference.get()) }
-                    .map { if (Build.isExternal()) it.first else it.second }
-                    .distinctUntilChanged()
-
-            reward
-                    .map { RewardUtils.isNoReward(it) }
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(goRewardlessEnabled))
-                    .map { if (it.first && it.second) R.drawable.bg_go_rewardless else 0 }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.background)
-
             projectAndReward
                     .compose<Pair<Pair<Project, Reward>, Boolean>>(combineLatestPair(userCreatedProject))
                     .map { buttonIsGone(it.first.first, it.first.second, it.second) }
@@ -217,11 +199,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
             projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
                     .map { BackingUtils.isBacked(it.first, it.second) }
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(goRewardlessEnabled))
                     .map {
                         when {
-                            it.first -> R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality
-                            it.second -> R.string.This_holiday_season_support_a_project_for_no_reward
+                            it -> R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality
                             else -> R.string.Back_it_because_you_believe_in_it
                         }
                     }
@@ -305,11 +285,9 @@ interface NativeCheckoutRewardViewHolderViewModel {
             projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
                     .map { BackingUtils.isBacked(it.first, it.second) }
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(goRewardlessEnabled))
                     .map {
                         when {
-                            it.first -> R.string.You_pledged_without_a_reward
-                            it.second -> R.string.Back_it_because_you_believe_in_it
+                            it -> R.string.You_pledged_without_a_reward
                             else -> R.string.Pledge_without_a_reward
                         }
                     }
@@ -412,9 +390,6 @@ interface NativeCheckoutRewardViewHolderViewModel {
 
         @NonNull
         override fun backersCountIsGone(): Observable<Boolean> = this.backersCountIsGone
-
-        @NonNull
-        override fun background(): Observable<Int> = this.background
 
         @NonNull
         override fun buttonCTA(): Observable<Int> = this.buttonCTA

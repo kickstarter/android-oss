@@ -1405,7 +1405,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
 
-        this.rewardTitle.assertValue(Either.Left(R.string.Pledge_without_a_reward))
+        this.rewardTitle.assertValue(Either.Left(R.string.Back_it_because_you_believe_in_it))
     }
 
     @Test
@@ -1425,7 +1425,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
 
-        this.rewardTitle.assertValue(Either.Left(R.string.Pledge_without_a_reward))
+        this.rewardTitle.assertValue(Either.Left(R.string.Back_it_because_you_believe_in_it))
     }
 
     @Test

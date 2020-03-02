@@ -19,8 +19,8 @@
       android:id="@+id/campaign"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
+      android:foreground="@drawable/click_indicator_light_masked"
       android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2">
 
@@ -50,6 +50,7 @@
       android:id="@+id/updates"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:focusable="true"
       android:foreground="?android:attr/selectableItemBackground"
       android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2">
@@ -81,8 +82,8 @@
       android:id="@+id/comments"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
+      android:foreground="?android:attr/selectableItemBackground"
       android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2">
 

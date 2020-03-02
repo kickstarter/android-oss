@@ -3,6 +3,7 @@
   android:id="@+id/search_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:background="@color/ksr_grey_300"
   android:orientation="vertical"
   tools:context=".ui.activities.ProjectUpdatesActivity">
 
@@ -16,6 +17,14 @@
 
   </com.google.android.material.appbar.AppBarLayout>
 
+  <ProgressBar
+    android:id="@+id/updates_progress_bar"
+    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="-6dp"
+    android:indeterminate="true" />
+
   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     android:id="@+id/updates_swipe_refresh_layout"
     android:layout_width="match_parent"
@@ -25,7 +34,6 @@
       android:id="@+id/updates_recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/ksr_grey_300"
       android:clipToPadding="false"
       android:paddingTop="@dimen/grid_1"
       tools:listitem="@layout/item_update_card" />

@@ -6,6 +6,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -39,6 +40,9 @@ public interface ProjectUpdatesViewModel {
   }
 
   interface Outputs {
+    /** Emits a boolean indicating whether the horizontal ProgressBar is visible. */
+    Observable<Boolean> horizontalProgressBarIsGone();
+
     /** Emits a boolean indicating whether updates are being fetched from the API. */
     Observable<Boolean> isFetchingUpdates();
 
@@ -86,6 +90,14 @@ public interface ProjectUpdatesViewModel {
 
       paginator
         .isFetching()
+        .distinctUntilChanged()
+        .take(2)
+        .map(BooleanUtils::negate)
+        .compose(bindToLifecycle())
+        .subscribe(this.horizontalProgressBarIsGone);
+
+      paginator
+        .isFetching()
         .compose(bindToLifecycle())
         .subscribe(this.isFetchingUpdates);
 
@@ -109,6 +121,7 @@ public interface ProjectUpdatesViewModel {
     private final PublishSubject<Void> refresh = PublishSubject.create();
     private final PublishSubject<Update> updateClicked = PublishSubject.create();
 
+    private final BehaviorSubject<Boolean> horizontalProgressBarIsGone = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> isFetchingUpdates = BehaviorSubject.create();
     private final BehaviorSubject<Pair<Project, List<Update>>> projectAndUpdates = BehaviorSubject.create();
     private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
@@ -126,6 +139,9 @@ public interface ProjectUpdatesViewModel {
       this.updateClicked.onNext(update);
     }
 
+    @Override public @NonNull Observable<Boolean> horizontalProgressBarIsGone() {
+      return this.horizontalProgressBarIsGone;
+    }
     @Override public @NonNull Observable<Boolean> isFetchingUpdates() {
       return this.isFetchingUpdates;
     }

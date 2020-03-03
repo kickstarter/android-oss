@@ -1,8 +1,5 @@
 package com.kickstarter.libs;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -15,9 +12,14 @@ import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.PledgeData;
+import com.kickstarter.ui.data.PledgeFlowContext;
+import com.kickstarter.ui.data.ProjectData;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;
@@ -90,13 +92,12 @@ public final class Koala {
   /**
    * Tracks a project show event.
    *
-   * @param intentRefTag (nullable) The ref tag present in the activity upon displaying the project.
-   * @param cookieRefTag (nullable) The ref tag extracted from the cookie store upon viewing the project.
+   * @param projectData The Intent RefTag is the (nullable) RefTag present in the activity upon displaying the project.
+   * The Cookie RefTag is the (nullable) RefTag extracted from the cookie store upon viewing the project.
    */
-  public void trackProjectShow(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
-    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
-
-    properties.putAll(KoalaUtils.refTagProperties(intentRefTag, cookieRefTag));
+  public void trackProjectShow(final @NonNull ProjectData projectData) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
+    properties.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
 
     this.client.track(KoalaEvent.PROJECT_PAGE, properties);
   }
@@ -657,9 +658,12 @@ public final class Koala {
     this.client.track(LakeEvent.HAMBURGER_MENU_CLICKED, props);
   }
 
-  public void trackProjectPageViewed(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
-    props.putAll(KoalaUtils.refTagProperties(intentRefTag, cookieRefTag));
+  public void trackProjectPageViewed(final @NonNull ProjectData projectData, final @Nullable PledgeFlowContext pledgeFlowContext) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
+    props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
+    if (pledgeFlowContext != null) {
+      props.put("context_pledge_flow", pledgeFlowContext.getTrackingString());
+    }
 
     this.client.track(LakeEvent.PROJECT_PAGE_VIEWED, props);
   }
@@ -694,9 +698,12 @@ public final class Koala {
     this.client.track(LakeEvent.PLEDGE_SUBMIT_BUTTON_CLICKED, props);
   }
 
-  public void trackProjectPagePledgeButtonClicked(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
-    props.putAll(KoalaUtils.refTagProperties(intentRefTag, cookieRefTag));
+  public void trackProjectPagePledgeButtonClicked(final @NonNull ProjectData projectData, final @Nullable PledgeFlowContext pledgeFlowContext) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
+    props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
+    if (pledgeFlowContext != null) {
+      props.put("context_pledge_flow", pledgeFlowContext.getTrackingString());
+    }
 
     this.client.track(LakeEvent.PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, props);
   }

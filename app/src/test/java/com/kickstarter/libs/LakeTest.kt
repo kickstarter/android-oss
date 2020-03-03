@@ -157,7 +157,7 @@ class LakeTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testProjectProperties() {
+    fun testProjectProperties_loggedOutUser() {
         val project = project()
 
         val client = MockTrackingClient(MockCurrentUser(), mockCurrentConfig(), true)
@@ -165,11 +165,17 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 
         assertSessionProperties(null)
         assertContextProperties()
         assertProjectProperties(project)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.lakeTest.assertValues("Project Page Viewed")
     }
@@ -183,13 +189,14 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
 
         val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -214,13 +221,14 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
 
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
 
         val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
@@ -237,13 +245,14 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
 
         assertSessionProperties(creator)
         assertProjectProperties(project)
         assertContextProperties()
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
+        assertNull(expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(true, expectedProperties["project_user_is_project_creator"])
@@ -260,18 +269,44 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectPageViewed(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+
+        val expectedProperties = this.propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(true, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Project Page Viewed")
+    }
+
+    @Test
+    fun testProjectProperties_LoggedInUser_NotBacked() {
+        val project = project()
+        val user = user()
+        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+        lake.trackProjectPagePledgeButtonClicked(projectData, PledgeFlowContext.NEW_PLEDGE)
 
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
 
         val expectedProperties = propertiesTest.value
-        assertEquals(true, expectedProperties["project_user_has_watched"])
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Project Page Viewed")
+        this.lakeTest.assertValues("Project Page Pledge Button Clicked")
     }
 
     @Test
@@ -321,7 +356,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertPledgeProperties()
         assertCheckoutProperties()
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
         assertNull(expectedProperties["checkout_id"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
@@ -351,7 +386,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertPledgeProperties()
         assertCheckoutProperties()
 
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
         assertEquals(3L, expectedProperties["checkout_id"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
@@ -362,7 +397,7 @@ class LakeTest : KSRobolectricTestCase() {
     }
 
     private fun assertCheckoutProperties() {
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
         assertEquals(30.0, expectedProperties["checkout_amount"])
         assertEquals("CREDIT_CARD", expectedProperties["checkout_payment_type"])
         assertEquals(3000L, expectedProperties["checkout_revenue_in_usd_cents"])
@@ -370,12 +405,12 @@ class LakeTest : KSRobolectricTestCase() {
     }
 
     private fun assertContextProperties() {
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
     }
 
     private fun assertPledgeProperties() {
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
         assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["pledge_backer_reward_estimated_delivery_on"])
         assertEquals(false, expectedProperties["pledge_backer_reward_has_items"])
         assertEquals(2L, expectedProperties["pledge_backer_reward_id"])
@@ -388,7 +423,7 @@ class LakeTest : KSRobolectricTestCase() {
     }
 
     private fun assertProjectProperties(project: Project) {
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
         assertEquals(100, expectedProperties["project_backers_count"])
         assertEquals("Ceramics", expectedProperties["project_subcategory"])
         assertEquals("Art", expectedProperties["project_category"])
@@ -420,7 +455,7 @@ class LakeTest : KSRobolectricTestCase() {
     }
 
     private fun assertSessionProperties(user: User?) {
-        val expectedProperties = propertiesTest.value
+        val expectedProperties = this.propertiesTest.value
         assertEquals(9999, expectedProperties["session_app_build_number"])
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
         assertEquals("android", expectedProperties["session_client_platform"])

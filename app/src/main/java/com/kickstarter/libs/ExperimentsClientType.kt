@@ -6,8 +6,8 @@ import com.kickstarter.models.User
 
 interface ExperimentsClientType {
 
-    fun ExperimentsClientType.attributes(user: User?, refTag: RefTag?): MutableMap<String, *> {
-        return ExperimentUtils.attributes(user, refTag, androidBuildVersion())
+    fun ExperimentsClientType.attributes(user: User?, refTag: RefTag?, apiEndpoint: ApiEndpoint): MutableMap<String, *> {
+        return ExperimentUtils.attributes(user, refTag, androidBuildVersion(), apiEndpoint)
     }
 
     fun androidBuildVersion(): String

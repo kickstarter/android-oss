@@ -192,7 +192,7 @@
   <!-- Native Checkout -->
   <dimen name="editorial_radius">8dp</dimen>
 
-<!--  Progress Bars -->
+  <!--  Progress Bars -->
   <dimen name="indeterminate_horizontal_progress_bar_margin_top">-6dp</dimen>
   <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
   <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>

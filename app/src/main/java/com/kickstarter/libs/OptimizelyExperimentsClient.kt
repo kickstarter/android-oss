@@ -6,20 +6,20 @@ import com.kickstarter.models.User
 import com.optimizely.ab.android.sdk.OptimizelyClient
 import com.optimizely.ab.android.sdk.OptimizelyManager
 
-class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManager) : ExperimentsClientType {
+class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManager, private val apiEndpoint: ApiEndpoint) : ExperimentsClientType {
     override fun androidBuildVersion(): String {
         return android.os.Build.VERSION.RELEASE
     }
 
     override fun track(eventKey: String, user: User?, refTag: RefTag?) {
-        optimizelyClient().track(eventKey, userId(), attributes(user, refTag))
+        optimizelyClient().track(eventKey, userId(), attributes(user, refTag, this.apiEndpoint))
     }
 
     override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
         val variationString: String? = if (user?.isAdmin == true) {
-            optimizelyClient().getVariation(experiment.key, user.id().toString(), attributes(user, refTag))
+            optimizelyClient().getVariation(experiment.key, user.id().toString(), attributes(user, refTag, this.apiEndpoint))
         } else {
-            optimizelyClient().activate(experiment.key, userId(), attributes(user, refTag))
+            optimizelyClient().activate(experiment.key, userId(), attributes(user, refTag, this.apiEndpoint))
         }?.key
 
         return OptimizelyExperiment.Variant.safeValueOf(variationString)

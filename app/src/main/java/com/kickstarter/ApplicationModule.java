@@ -9,9 +9,6 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
-
 import com.apollographql.apollo.ApolloClient;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.FieldNamingPolicy;
@@ -93,6 +90,8 @@ import java.net.CookieManager;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.CookieJar;
@@ -663,6 +662,6 @@ public final class ApplicationModule {
         }
       }
     });
-    return new OptimizelyExperimentsClient(optimizelyManager);
+    return new OptimizelyExperimentsClient(optimizelyManager, apiEndpoint);
   }
 }

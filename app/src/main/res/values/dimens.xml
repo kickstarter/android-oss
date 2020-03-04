@@ -68,6 +68,7 @@
   <dimen name="project_card_margin_top">@dimen/grid_4</dimen>
   <dimen name="project_card_margin_bottom">@dimen/grid_1</dimen>
   <dimen name="profile_card_height">178dp</dimen>
+  <dimen name="editorial_radius">8dp</dimen>
 
   <!-- Discovery drawer -->
   <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
@@ -188,10 +189,5 @@
   <dimen name="plus_sign_width">9dp</dimen>
   <dimen name="autocomplete_drop_down_width">265dp</dimen>
   <dimen name="card_container_radius">@dimen/grid_5</dimen>
-
-
-
-  <!-- Native Checkout -->
-  <dimen name="editorial_radius">8dp</dimen>
 
 </resources>

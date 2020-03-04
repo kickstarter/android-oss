@@ -2,8 +2,6 @@ package com.kickstarter.viewmodels;
 
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Build;
@@ -35,6 +33,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -188,6 +187,9 @@ public interface ProjectHolderViewModel {
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectSocialActivity}. */
     Observable<Project> startProjectSocialActivity();
+
+    /** Emits a boolean determining if the updates container should be enabled. */
+    Observable<Boolean> updatesContainerIsEnabled();
 
     /** Emits the updates count for display. */
     Observable<String> updatesCountTextViewText();
@@ -376,6 +378,12 @@ public interface ProjectHolderViewModel {
 
       this.startProjectSocialActivity = project.compose(takeWhen(this.projectSocialViewGroupClicked));
 
+      project
+        .map(Project::hasUpdates)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.updatesContainerIsClickable);
+
       this.updatesCountTextViewText = project
         .map(Project::updatesCount)
         .filter(ObjectUtils::isNotNull)
@@ -430,6 +438,7 @@ public interface ProjectHolderViewModel {
     private final Observable<DateTime> setUnsuccessfulProjectStateView;
     private final Observable<Project> startProjectSocialActivity;
     private final Observable<Boolean> shouldSetDefaultStatsMargins;
+    private final BehaviorSubject<Boolean> updatesContainerIsClickable = BehaviorSubject.create();
     private final Observable<String> updatesCountTextViewText;
 
     public final Inputs inputs = this;
@@ -576,6 +585,9 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> shouldSetDefaultStatsMargins() {
       return this.shouldSetDefaultStatsMargins;
+    }
+    @Override public @NonNull Observable<Boolean> updatesContainerIsEnabled() {
+      return this.updatesContainerIsClickable;
     }
     @Override public @NonNull Observable<String> updatesCountTextViewText() {
       return this.updatesCountTextViewText;

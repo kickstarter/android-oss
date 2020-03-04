@@ -96,8 +96,6 @@
   <dimen name="settings_icon_fixed_width">@dimen/grid_8</dimen>
   <dimen name="button_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
-  <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
-  <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>
   <dimen name="project_action_button_height">@dimen/grid_8</dimen>
 
   <!-- Photos -->
@@ -189,5 +187,10 @@
   <dimen name="plus_sign_width">9dp</dimen>
   <dimen name="autocomplete_drop_down_width">265dp</dimen>
   <dimen name="card_container_radius">@dimen/grid_5</dimen>
+
+  <!--  Progress Bars -->
+  <dimen name="indeterminate_horizontal_progress_bar_margin_top">-6dp</dimen>
+  <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
+  <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>
 
 </resources>

@@ -5,10 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FeatureKey
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.preferences.MockBooleanPreference
-import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -22,7 +19,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: NativeCheckoutRewardViewHolderViewModel.ViewModel
     private val backersCount = TestSubscriber.create<Int>()
     private val backersCountIsGone = TestSubscriber.create<Boolean>()
-    private val background = TestSubscriber.create<Int>()
     private val buttonCTA = TestSubscriber.create<Int>()
     private val buttonIsEnabled = TestSubscriber<Boolean>()
     private val buttonIsGone = TestSubscriber.create<Boolean>()
@@ -52,7 +48,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment)
         this.vm.outputs.backersCount().subscribe(this.backersCount)
         this.vm.outputs.backersCountIsGone().subscribe(this.backersCountIsGone)
-        this.vm.outputs.background().subscribe(this.background)
         this.vm.outputs.buttonCTA().subscribe(this.buttonCTA)
         this.vm.outputs.buttonIsEnabled().subscribe(this.buttonIsEnabled)
         this.vm.outputs.buttonIsGone().subscribe(this.buttonIsGone)
@@ -115,42 +110,6 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.backersCount.assertNoValues()
         this.backersCountIsGone.assertValue(true)
-    }
-
-    @Test
-    fun testBackground_whenReward_goRewardlessDisabled() {
-        setUpEnvironment(environmentWithGoRewardlessDisabled())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward())
-
-        this.background.assertValue(0)
-    }
-
-    @Test
-    fun testBackground_whenReward_goRewardlessEnabled() {
-        setUpEnvironment(environmentWithGoRewardlessEnabled())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward())
-
-        this.background.assertValue(0)
-    }
-
-    @Test
-    fun testBackground_whenNoReward_goRewardlessDisabled() {
-        setUpEnvironment(environmentWithGoRewardlessDisabled())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
-
-        this.background.assertValue(0)
-    }
-
-    @Test
-    fun testBackground_whenNoReward_goRewardlessEnabled() {
-        setUpEnvironment(environmentWithGoRewardlessEnabled())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
-
-        this.background.assertValue(R.drawable.bg_go_rewardless)
     }
 
     @Test
@@ -399,8 +358,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDescriptionOutputs_whenReward_hasDescription_goRewardlessDisabled() {
-        setUpEnvironment(environmentWithGoRewardlessDisabled())
+    fun testDescriptionOutputs_whenReward_hasDescription() {
+        setUpEnvironment(environment())
 
         //Reward with description
         val reward = RewardFactory.reward()
@@ -411,20 +370,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDescriptionOutputs_whenReward_hasDescription_goRewardlessEnabled() {
-        setUpEnvironment(environmentWithGoRewardlessEnabled())
-
-        //Reward with description
-        val reward = RewardFactory.reward()
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
-        this.descriptionForNoReward.assertNoValues()
-        this.descriptionForReward.assertValue(reward.description())
-        this.descriptionIsGone.assertValue(false)
-    }
-
-    @Test
-    fun testDescriptionOutputs_whenNoReward_goRewardlessDisabled() {
-        setUpEnvironment(environmentWithGoRewardlessDisabled())
+    fun testDescriptionOutputs_whenNoReward() {
+        setUpEnvironment(environment())
 
         //No reward
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
@@ -434,38 +381,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDescriptionOutputs_whenNoReward_goRewardlessEnabled() {
-        setUpEnvironment(environmentWithGoRewardlessEnabled())
-
-        //No reward
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
-        this.descriptionForNoReward.assertValue(R.string.This_holiday_season_support_a_project_for_no_reward)
-        this.descriptionForReward.assertNoValues()
-        this.descriptionIsGone.assertValue(false)
-    }
-
-    @Test
-    fun testDescriptionOutputs_whenBackedNoReward_goRewardlessDisabled() {
-        setUpEnvironment(environmentWithGoRewardlessDisabled())
-
-        val noRewardBacking = BackingFactory.backing()
-                .toBuilder()
-                .reward(RewardFactory.noReward())
-                .rewardId(null)
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(noRewardBacking)
-                .build()
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
-        this.descriptionForNoReward.assertValue(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
-        this.descriptionForReward.assertNoValues()
-        this.descriptionIsGone.assertValue(false)
-    }
-
-    @Test
-    fun testDescriptionOutputs_whenBackedNoReward_goRewardlessEnabled() {
-        setUpEnvironment(environmentWithGoRewardlessEnabled())
+    fun testDescriptionOutputs_whenBackedNoReward() {
+        setUpEnvironment(environment())
 
         val noRewardBacking = BackingFactory.backing()
                 .toBuilder()
@@ -832,8 +749,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testTitleOutputs_whenNoReward_goRewardlessDisabled() {
-        setUpEnvironment(environmentWithGoRewardlessDisabled())
+    fun testTitleOutputs_whenNoReward() {
+        setUpEnvironment(environment())
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
         this.titleIsGone.assertValues(false)
@@ -842,18 +759,8 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testTitleOutputs_whenNoReward_goRewardlessEnabled() {
-        setUpEnvironment(environmentWithGoRewardlessEnabled())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
-        this.titleIsGone.assertValue(false)
-        this.titleForReward.assertNoValues()
-        this.titleForNoReward.assertValuesAndClear(R.string.Back_it_because_you_believe_in_it)
-    }
-
-    @Test
     fun testTitleOutputs_whenNoReward_backed() {
-        setUpEnvironment(environmentWithGoRewardlessDisabled())
+        setUpEnvironment(environment())
 
         val noRewardBacking = BackingFactory.backing()
                 .toBuilder()
@@ -868,25 +775,5 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.titleIsGone.assertValue(false)
         this.titleForReward.assertNoValues()
         this.titleForNoReward.assertValue(R.string.You_pledged_without_a_reward)
-    }
-
-    private fun environmentWithGoRewardlessDisabled(): Environment {
-        val mockCurrentConfig = MockCurrentConfig()
-        mockCurrentConfig.config(ConfigFactory.config())
-        return environment()
-                .toBuilder()
-                .currentConfig(mockCurrentConfig)
-                .goRewardlessPreference(MockBooleanPreference(false))
-                .build()
-    }
-
-    private fun environmentWithGoRewardlessEnabled(): Environment {
-        val mockCurrentConfig = MockCurrentConfig()
-        mockCurrentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_GO_REWARDLESS))
-        return environment()
-                .toBuilder()
-                .currentConfig(mockCurrentConfig)
-                .goRewardlessPreference(MockBooleanPreference(true))
-                .build()
     }
 }

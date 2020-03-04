@@ -53,7 +53,6 @@ import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.FirstSessionPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
-import com.kickstarter.libs.qualifiers.GoRewardlessPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.KoalaTracker;
@@ -124,7 +123,6 @@ public final class ApplicationModule {
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
     final @NonNull @FirstSessionPreference BooleanPreferenceType firstSessionPreference,
-    final @NonNull @GoRewardlessPreference BooleanPreferenceType goRewardlessPreference,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -153,7 +151,6 @@ public final class ApplicationModule {
       .currentConfig(currentConfig)
       .currentUser(currentUser)
       .firstSessionPreference(firstSessionPreference)
-      .goRewardlessPreference(goRewardlessPreference)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
@@ -406,14 +403,6 @@ public final class ApplicationModule {
   @NonNull
   static BooleanPreferenceType provideNativeCheckoutPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, SharedPreferenceKey.NATIVE_CHECKOUT);
-  }
-
-  @Provides
-  @Singleton
-  @GoRewardlessPreference
-  @NonNull
-  static BooleanPreferenceType provideGoRewardlessPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.GO_REWARDLESS);
   }
 
   @Provides

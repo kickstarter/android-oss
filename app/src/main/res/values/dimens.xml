@@ -95,8 +95,6 @@
   <dimen name="settings_icon_fixed_width">@dimen/grid_8</dimen>
   <dimen name="button_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
-  <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
-  <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>
   <dimen name="project_action_button_height">@dimen/grid_8</dimen>
 
   <!-- Photos -->
@@ -193,5 +191,10 @@
 
   <!-- Native Checkout -->
   <dimen name="editorial_radius">8dp</dimen>
+
+  <!--  Progress Bars -->
+  <dimen name="indeterminate_horizontal_progress_bar_margin_top">-6dp</dimen>
+  <dimen name="progress_bar_min_height">@dimen/grid_1_half</dimen>
+  <dimen name="progress_bar_height">@dimen/grid_1_half</dimen>
 
 </resources>

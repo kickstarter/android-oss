@@ -26,7 +26,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/project_app_bar_layout"
-    android:layout_marginTop="-6dp"
+    android:layout_marginTop="@dimen/indeterminate_horizontal_progress_bar_margin_top"
     android:indeterminate="true"
     android:visibility="gone"
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />

@@ -3,12 +3,14 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
+import android.widget.ProgressBar;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.ui.IntentKey;
@@ -35,6 +37,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
 
+  protected @Bind(R.id.updates_progress_bar) ProgressBar updatesProgressBar;
   protected @Bind(R.id.updates_toolbar) KSToolbar updatesToolbar;
   protected @Bind(R.id.updates_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   protected @Bind(R.id.updates_recycler_view) RecyclerView recyclerView;
@@ -56,6 +59,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
             this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingUpdates
     );
     this.updatesToolbar.setTitle(this.updatesTitleString);
+
+    this.viewModel.outputs.horizontalProgressBarIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.updatesProgressBar));
 
     this.viewModel.outputs.startUpdateActivity()
       .compose(bindToLifecycle())

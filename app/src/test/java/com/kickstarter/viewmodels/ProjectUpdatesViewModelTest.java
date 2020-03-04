@@ -25,18 +25,28 @@ import rx.observers.TestSubscriber;
 
 public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
   private ProjectUpdatesViewModel.ViewModel vm;
+  private final TestSubscriber<Boolean> horizontalProgressBarIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> isFetchingUpdates = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, List<Update>>> projectAndUpdates = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, Update>> startUpdateActivity = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment env, final @NonNull Project project) {
     this.vm = new ProjectUpdatesViewModel.ViewModel(env);
+    this.vm.outputs.horizontalProgressBarIsGone().subscribe(this.horizontalProgressBarIsGone);
     this.vm.outputs.isFetchingUpdates().subscribe(this.isFetchingUpdates);
     this.vm.outputs.projectAndUpdates().subscribe(this.projectAndUpdates);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
 
     // Configure the view model with a project intent.
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+  }
+
+  @Test
+  public void testHorizontalProgressBarIsGone() {
+    setUpEnvironment(environment(), ProjectFactory.project());
+
+    this.horizontalProgressBarIsGone.assertValues(false, true);
+    this.koalaTest.assertValue("Viewed Updates");
   }
 
   @Test

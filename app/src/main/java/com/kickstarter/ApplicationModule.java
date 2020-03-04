@@ -9,9 +9,6 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
-
 import com.apollographql.apollo.ApolloClient;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.FieldNamingPolicy;
@@ -56,7 +53,6 @@ import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.FirstSessionPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
-import com.kickstarter.libs.qualifiers.GoRewardlessPreference;
 import com.kickstarter.libs.qualifiers.KoalaEndpoint;
 import com.kickstarter.libs.qualifiers.KoalaRetrofit;
 import com.kickstarter.libs.qualifiers.KoalaTracker;
@@ -93,6 +89,8 @@ import java.net.CookieManager;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.CookieJar;
@@ -125,7 +123,6 @@ public final class ApplicationModule {
     final @NonNull CurrentConfigType currentConfig,
     final @NonNull CurrentUserType currentUser,
     final @NonNull @FirstSessionPreference BooleanPreferenceType firstSessionPreference,
-    final @NonNull @GoRewardlessPreference BooleanPreferenceType goRewardlessPreference,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
@@ -154,7 +151,6 @@ public final class ApplicationModule {
       .currentConfig(currentConfig)
       .currentUser(currentUser)
       .firstSessionPreference(firstSessionPreference)
-      .goRewardlessPreference(goRewardlessPreference)
       .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
@@ -411,14 +407,6 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @GoRewardlessPreference
-  @NonNull
-  static BooleanPreferenceType provideGoRewardlessPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.GO_REWARDLESS);
-  }
-
-  @Provides
-  @Singleton
   Application provideApplication() {
     return this.application;
   }
@@ -663,6 +651,6 @@ public final class ApplicationModule {
         }
       }
     });
-    return new OptimizelyExperimentsClient(optimizelyManager);
+    return new OptimizelyExperimentsClient(optimizelyManager, apiEndpoint);
   }
 }

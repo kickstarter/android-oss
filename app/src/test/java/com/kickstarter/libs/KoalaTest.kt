@@ -151,7 +151,7 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        koala.trackProjectShow(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
         assertDefaultProperties(null)
         assertProjectProperties(project)
@@ -167,7 +167,7 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        koala.trackProjectShow(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
         assertDefaultProperties(user)
         assertProjectProperties(project)
@@ -196,7 +196,7 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        koala.trackProjectShow(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
         assertDefaultProperties(user)
         assertProjectProperties(project)
@@ -217,7 +217,7 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        koala.trackProjectShow(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
         assertDefaultProperties(creator)
         assertProjectProperties(project)
@@ -238,7 +238,7 @@ class KoalaTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
 
-        koala.trackProjectShow(project, RefTag.discovery(), RefTag.recommended())
+        koala.trackProjectShow(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()))
 
         assertDefaultProperties(user)
         assertProjectProperties(project)

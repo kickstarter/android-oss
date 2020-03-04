@@ -5,18 +5,14 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.preferences.MockIntPreference;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
-import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -167,18 +163,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShouldShowEditorial_whenGoRewardlessIsDisabled_defaultParams() {
-    setUpEnvironment(environmentWithGoRewardlessDisabled());
-
-    // Initial home all projects params.
-    setUpInitialHomeAllProjectsParams();
-
-    this.shouldShowEditorial.assertValue(null);
-  }
-
-  @Test
-  public void testShouldShowEditorial_whenGoRewardlessIsDisabled_otherParams() {
-    setUpEnvironment(environmentWithGoRewardlessDisabled());
+  public void testShouldShowEditorial_otherParams() {
+    setUpEnvironment(environment());
 
     // Art projects params.
     this.vm.inputs.paramsFromActivity(
@@ -188,36 +174,17 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    this.shouldShowEditorial.assertValue(null);
+    this.shouldShowEditorial.assertNoValues();
   }
 
   @Test
-  public void testShouldShowEditorial_whenGoRewardlessIsEnabled_defaultParams() {
-    final Environment environment = environmentWithGoRewardlessEnabled();
-
-    setUpEnvironment(environment);
+  public void testShouldShowEditorial_defaultParams() {
+    setUpEnvironment(environment());
 
     // Initial home all projects params.
     setUpInitialHomeAllProjectsParams();
 
-    this.shouldShowEditorial.assertValue(Editorial.GO_REWARDLESS);
-  }
-
-  @Test
-  public void testShouldShowEditorial_whenGoRewardlessIsEnabled_otherParams() {
-    final Environment environment = environmentWithGoRewardlessEnabled();
-
-    setUpEnvironment(environment);
-
-    // Art projects params.
-    this.vm.inputs.paramsFromActivity(
-      DiscoveryParams.builder()
-        .category(CategoryFactory.artCategory())
-        .sort(DiscoveryParams.Sort.MAGIC)
-        .build()
-    );
-
-    this.shouldShowEditorial.assertValue(null);
+    this.shouldShowEditorial.assertNoValues();
   }
 
   @Test
@@ -342,7 +309,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testStartEditorialActivity() {
-    setUpEnvironment(environmentWithGoRewardlessEnabled());
+    setUpEnvironment(environment());
 
     // Load initial params and root categories from activity.
     setUpInitialHomeAllProjectsParams();
@@ -415,26 +382,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.showLoginTout.assertNoValues();
     this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
     this.showLoginTout.assertValue(true);
-  }
-
-  private Environment environmentWithGoRewardlessDisabled() {
-    final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
-    mockCurrentConfig.config(ConfigFactory.config());
-    return environment()
-      .toBuilder()
-      .currentConfig(mockCurrentConfig)
-      .goRewardlessPreference(new MockBooleanPreference(false))
-      .build();
-  }
-
-  private Environment environmentWithGoRewardlessEnabled() {
-    final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
-    mockCurrentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_GO_REWARDLESS));
-    return environment()
-      .toBuilder()
-      .currentConfig(mockCurrentConfig)
-      .goRewardlessPreference(new MockBooleanPreference(true))
-      .build();
   }
 
   private void logUserIn(final @NonNull CurrentUserType currentUser) {

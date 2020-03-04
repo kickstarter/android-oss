@@ -2,8 +2,6 @@ package com.kickstarter.viewmodels;
 
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.Config;
@@ -38,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
@@ -87,6 +86,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> setSuspendedProjectStateView = new TestSubscriber<>();
   private final TestSubscriber<DateTime> setUnsuccessfulProjectStateView = new TestSubscriber<>();
   private final TestSubscriber<Project> startProjectSocialActivity = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> updatesContainerIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> updatesCountTextViewText = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
@@ -136,6 +136,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setSuspendedProjectStateView().subscribe(this.setSuspendedProjectStateView);
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
+    this.vm.outputs.updatesContainerIsEnabled().subscribe(this.updatesContainerIsEnabled);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
   }
 
@@ -737,5 +738,39 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion not shown for US project.
     this.conversionTextViewIsGone.assertValue(true);
+  }
+
+  @Test
+  public void testUpdatesContainerIsEnabled_whenUpdatesCountIsNull() {
+    setUpEnvironment(environment());
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(ProjectFactory.project()));
+
+    this.updatesContainerIsEnabled.assertValue(false);
+  }
+
+  @Test
+  public void testUpdatesContainerIsEnabled_whenUpdatesCountIsZero() {
+    setUpEnvironment(environment());
+
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .updatesCount(0)
+      .build();
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    this.updatesContainerIsEnabled.assertValue(false);
+  }
+
+  @Test
+  public void testUpdatesContainerIsEnabled_whenUpdatesCountIsNonZero() {
+    setUpEnvironment(environment());
+
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .updatesCount(3)
+      .build();
+    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    this.updatesContainerIsEnabled.assertValue(true);
   }
 }

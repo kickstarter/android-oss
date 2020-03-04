@@ -3,10 +3,6 @@ package com.kickstarter.models;
 import android.net.Uri;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringDef;
-
 import com.kickstarter.libs.Permission;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -20,6 +16,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
 import auto.parcel.AutoParcel;
 
 @AutoGson
@@ -235,6 +234,10 @@ public abstract class Project implements Parcelable, Relay {
 
   public boolean hasRewards() {
     return rewards() != null;
+  }
+
+  public boolean hasUpdates() {
+    return !IntegerUtils.isNullOrZero(updatesCount());
   }
 
   public boolean hasVideo() {

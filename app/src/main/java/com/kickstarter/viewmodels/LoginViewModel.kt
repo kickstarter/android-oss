@@ -185,6 +185,10 @@ interface LoginViewModel {
             this.tfaChallenge = this.loginError
                     .filter { it.isTfaRequiredError }
                     .map { null }
+
+            this.logInButtonClicked
+                    .compose(bindToLifecycle())
+                    .subscribe { this.lake.trackLogInSubmitButtonClicked() }
         }
 
         private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()

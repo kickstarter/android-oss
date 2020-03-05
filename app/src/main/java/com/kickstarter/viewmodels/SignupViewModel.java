@@ -111,6 +111,10 @@ public interface SignupViewModel {
         });
 
       this.koala.trackRegisterFormView();
+
+      this.signupClick
+        .compose(bindToLifecycle())
+        .subscribe(__ -> this.lake.trackSignUpSubmitButtonClicked());
     }
 
     private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {

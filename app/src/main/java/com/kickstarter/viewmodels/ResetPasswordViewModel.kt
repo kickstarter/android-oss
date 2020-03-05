@@ -84,6 +84,7 @@ interface ResetPasswordViewModel {
                     .subscribe { this.koala.trackResetPasswordSuccess() }
 
             this.koala.trackResetPasswordFormView()
+            this.lake.trackForgotPasswordPageViewed()
         }
 
         private fun success() {

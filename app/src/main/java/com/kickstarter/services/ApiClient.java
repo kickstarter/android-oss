@@ -1,5 +1,8 @@
 package com.kickstarter.services;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.rx.operators.ApiErrorOperator;
@@ -41,14 +44,13 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
+import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import retrofit2.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -309,6 +311,22 @@ public final class ApiClient implements ApiClientType {
 
     return fetchUpdate(projectParam, updateParam)
       .startWith(update);
+  }
+
+  @Override
+  public @NonNull Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
+    return this.service
+            .updates(project.param())
+            .lift(apiErrorOperator())
+            .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<UpdatesEnvelope> fetchUpdates(final @NonNull String paginationPath) {
+    return this.service
+            .paginatedUpdates(paginationPath)
+            .lift(apiErrorOperator())
+            .subscribeOn(Schedulers.io());
   }
 
   @Override

@@ -2,6 +2,9 @@ package com.kickstarter.mock.services;
 
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.Config;
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
@@ -41,6 +44,7 @@ import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
+import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 import com.kickstarter.ui.data.Mailbox;
 import com.kickstarter.ui.data.MessageSubject;
 
@@ -50,8 +54,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -219,6 +221,37 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Update> fetchUpdate(final @NonNull Update update) {
+    return Observable.empty();
+  }
+
+  @Override
+  public @NonNull Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
+    return Observable.just(
+      UpdatesEnvelope
+        .builder()
+        .updates(
+          Arrays.asList(
+            UpdateFactory.update(),
+            UpdateFactory.update()
+          )
+        )
+        .urls(
+          UpdatesEnvelope.UrlsEnvelope
+            .builder()
+            .api(
+              UpdatesEnvelope.UrlsEnvelope.ApiEnvelope
+                .builder()
+                .moreUpdates("http://more.updates.please")
+                .build()
+            )
+            .build()
+        )
+        .build()
+    );
+  }
+
+  @Override
+  public @NonNull Observable<UpdatesEnvelope> fetchUpdates(final @NonNull String paginationPath) {
     return Observable.empty();
   }
 

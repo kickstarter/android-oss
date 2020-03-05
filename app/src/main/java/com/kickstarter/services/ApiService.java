@@ -1,5 +1,8 @@
 package com.kickstarter.services;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
@@ -35,12 +38,11 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
+import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -191,6 +193,12 @@ public interface ApiService {
 
   @GET("/v1/projects/{project_id}/updates/{update_id}/comments")
   Observable<Response<CommentsEnvelope>> updateComments(@Path("project_id") long projectId, @Path("update_id") long updateId);
+
+  @GET("/v1/projects/{project_param}/updates")
+  Observable<Response<UpdatesEnvelope>> updates(@Path("project_param") String projectParam);
+
+  @GET
+  Observable<Response<UpdatesEnvelope>> paginatedUpdates(@Url String paginationUrl);
 
   @PUT("/v1/users/self/notifications/{id}")
   Observable<Response<ProjectNotification>> updateProjectNotifications(@Path("id") long projectNotificationId,

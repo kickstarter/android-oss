@@ -23,6 +23,8 @@ interface ApolloClientType {
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>
 
+    fun creatorDetails(slug: String): Observable<CreatorDetails>
+
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
 
     fun getStoredCards(): Observable<List<StoredCard>>

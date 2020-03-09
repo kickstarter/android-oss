@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -21,8 +20,7 @@
       android:layout_gravity="bottom"
       android:layout_marginStart="@dimen/grid_1">
 
-      <include
-        layout="@layout/project_metadata_view" />
+      <include layout="@layout/project_metadata_view" />
     </FrameLayout>
 
   </FrameLayout>
@@ -31,9 +29,9 @@
     android:id="@+id/project_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/project_padding_x"
     android:layout_marginStart="@dimen/project_padding_x"
     android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/project_padding_x"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -42,63 +40,136 @@
       style="@style/Title2Medium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:focusable="true"
       android:paddingBottom="@dimen/grid_1_half"
       tools:ignore="InconsistentLayout"
-      android:focusable="true"
       tools:text="Project name" />
 
-    <LinearLayout
-      android:id="@+id/creator_info"
+    <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@drawable/click_indicator_light_masked"
-      android:focusable="true"
-      android:gravity="center_vertical"
-      android:orientation="horizontal"
-      android:paddingBottom="@dimen/grid_3"
-      android:paddingTop="@dimen/grid_2"
-      tools:ignore="InconsistentLayout">
-
-      <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="@dimen/project_avatar_width"
-        android:layout_height="@dimen/project_avatar_height"
-        android:layout_marginEnd="@dimen/grid_3_half"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        tools:background="@color/ksr_green_700" />
+      android:layout_height="wrap_content">
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/creator_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:background="@drawable/click_indicator_light_masked"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_3"
+        tools:ignore="InconsistentLayout">
 
-        <TextView
-          style="@style/FootnotePrimary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/project_menu_created_by" />
+        <ImageView
+          android:id="@+id/avatar"
+          android:layout_width="@dimen/project_avatar_width"
+          android:layout_height="@dimen/project_avatar_height"
+          android:layout_marginEnd="@dimen/grid_3_half"
+          android:importantForAccessibility="no"
+          android:scaleType="centerCrop"
+          tools:src="@drawable/circle_grey_300" />
 
-        <TextView
-          android:id="@+id/creator_name"
-          style="@style/SubheadlineMedium"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:maxLines="1"
-          tools:text="Creator Name" />
+          android:layout_weight="1"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/FootnotePrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/project_menu_created_by" />
+
+          <TextView
+            android:id="@+id/creator_name"
+            style="@style/SubheadlineMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Creator Name" />
+        </LinearLayout>
+
       </LinearLayout>
 
-    </LinearLayout>
+      <LinearLayout
+        android:id="@+id/creator_info_variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/click_indicator_light_masked"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_3"
+        tools:ignore="InconsistentLayout">
+
+        <FrameLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/grid_3_half">
+
+          <ImageView
+            android:id="@+id/avatar_variant"
+            android:layout_width="@dimen/project_avatar_width"
+            android:layout_height="@dimen/project_avatar_height"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/avatar_stroke" />
+
+          <ImageView
+            android:layout_width="@dimen/project_avatar_check_width"
+            android:layout_height="@dimen/project_avatar_check_width"
+            android:layout_gravity="end|bottom"
+            android:background="@drawable/circle_blue"
+            android:importantForAccessibility="no"
+            android:src="@drawable/icon__check"
+            android:tint="@color/white" />
+        </FrameLayout>
+
+        <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/creator_name_variant"
+            style="@style/FootnoteWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Creator Name" />
+
+          <TextView
+            android:id="@+id/creator_details"
+            style="@style/FootnoteWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="3 created • 2 launched" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <include
+        layout="@layout/loading_placeholder_creator_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_3" />
+
+    </FrameLayout>
 
     <LinearLayout
       android:id="@+id/blurb_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/click_indicator_light_masked"
-      android:orientation="vertical"
       android:focusable="true"
+      android:orientation="vertical"
       tools:ignore="InconsistentLayout">
 
       <TextView
@@ -113,8 +184,8 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_3"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -140,8 +211,8 @@
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:visibility="gone"
-      tools:visibility="visible"
-      tools:ignore="InconsistentLayout">
+      tools:ignore="InconsistentLayout"
+      tools:visibility="visible">
 
       <TextView
         android:id="@+id/blurb_variant"
@@ -166,8 +237,8 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical"
       android:focusable="true"
+      android:gravity="center_vertical"
       android:orientation="horizontal">
 
       <com.kickstarter.ui.views.IconTextView
@@ -184,8 +255,8 @@
         style="@style/Caption1Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/grid_5"
         android:paddingStart="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_5"
         android:textColor="@color/ksr_dark_grey_500"
         tools:ignore="InconsistentLayout"
         tools:text="Category name" />
@@ -206,8 +277,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingEnd="@dimen/grid_1_half"
         android:paddingStart="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_1_half"
         android:textColor="@color/ksr_dark_grey_500"
         tools:ignore="InconsistentLayout"
         tools:text="Location" />
@@ -229,16 +300,16 @@
       android:id="@+id/project_state_view_group"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_2"
       android:layout_marginTop="@dimen/grid_4"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:focusable="true"
       android:gravity="center_vertical"
       android:orientation="vertical"
-      android:paddingBottom="@dimen/grid_2"
-      android:paddingEnd="@dimen/grid_4"
       android:paddingStart="@dimen/grid_4"
       android:paddingTop="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_4"
+      android:paddingBottom="@dimen/grid_2"
       android:visibility="gone"
-      android:focusable="true"
       tools:visibility="visible">
 
       <TextView
@@ -261,8 +332,8 @@
       android:id="@+id/project_stats_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_5"
       android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_5"
       android:orientation="vertical">
 
       <include layout="@layout/project_stats_view" />
@@ -284,19 +355,19 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_4"
+      android:focusable="true"
       android:gravity="center_vertical"
       android:orientation="horizontal"
-      android:paddingBottom="@dimen/grid_1"
       android:paddingTop="@dimen/grid_1"
-      android:focusable="true"
+      android:paddingBottom="@dimen/grid_1"
       android:visibility="gone">
 
       <ImageView
         android:id="@+id/project_social_image"
         android:layout_width="@dimen/project_social_photo_height"
         android:layout_height="@dimen/project_social_photo_height"
-        android:visibility="gone"
-        android:importantForAccessibility="no" />
+        android:importantForAccessibility="no"
+        android:visibility="gone" />
 
       <TextView
         android:id="@+id/project_social_text"

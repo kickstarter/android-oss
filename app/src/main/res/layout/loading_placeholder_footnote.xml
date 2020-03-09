@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    style="@style/FootnotePrimary"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxLines="1" />
+
+  <ImageView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:importantForAccessibility="no"
+    android:src="@drawable/rect_grey_500_loading" />
+
+</FrameLayout>

@@ -82,6 +82,7 @@ patrocinadores</string>
   <string name="Change_payment_method" formatted="false">Cambiar método de pago</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Vuelve más tarde para obtener una actualización sobre tu progreso de exportación.</string>
+  <string name="Check_out_these_handpicked_projects" formatted="false">Echa un vistazo a estos proyectos seleccionados exclusivamente para ti.</string>
   <string name="Check_your_payment_details" formatted="false">Revisa tu información de pago</string>
   <string name="Choose_another_reward" formatted="false">Elegir otra recompensa</string>
   <string name="Chooses_location_for_shipping" formatted="false">Destino determinado: %{location}.</string>
@@ -476,6 +477,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Select_this_instead" formatted="false">Seleccionar esto</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
+  <string name="Select_up_to_five" formatted="false">Selecciona hasta cinco de las opciones que aparecen a continuación.</string>
   <string name="Selected" formatted="false">Seleccionada</string>
   <string name="Selected_reward" formatted="false">Recompensa seleccionada</string>
   <string name="Send" formatted="false">Enviar</string>
@@ -510,6 +512,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Stay_up_to_date_newsletter" formatted="false">Mantente al día sobre nuestros proyectos favoritos, noticias y eventos que tenemos en la mira.</string>
   <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Mantente al tanto de los proyectos que has patrocinado y conoce cómo se producen estos trabajos creativos.</string>
   <string name="Stay_updated_on_this_project" formatted="false">¿Deseas mantenerte actualizado sobre este proyecto?</string>
+  <string name="Step_number" formatted="false">Paso %{current_step} de %{total_steps}</string>
   <string name="Subscribe" formatted="false">Suscribir</string>
   <string name="Subscribed" formatted="false">Suscripción activa</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Activa subscripción a futuros Live-Streams.</string>
@@ -615,6 +618,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Te recordaremos 48 horas antes de que finalice este proyecto y recibirás un recordatorio sobre todos los proyectos que guardes de aquí en adelante. Para ver todo lo que has guardado, visita tu perfil.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Cuando el seguimiento está activado, puedes seguir la actividad de los demás y otros pueden seguir tu actividad. Desactiva el seguimiento para eliminar esta información definitivamente.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
+  <string name="Which_categories_interest_you" formatted="false">¿Qué categorías te interesan?</string>
   <string name="Write_a_bio" formatted="false">Escribe una biografía breve mediante una oración o dos.</string>
   <string name="Yes_cancel_it" formatted="false">Sí, cancelar</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Sí, cancelar mi contribución</string>
@@ -1242,11 +1246,11 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="invalid_api_client_alert_message" formatted="false">Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Por favor actualizar</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Actualizar</string>
-  <string name="likes_count_likes_few" formatted="false">A %{likes_count} persoanas les gusta</string>
-  <string name="likes_count_likes_many" formatted="false">A %{likes_count} persoanas les gusta</string>
+  <string name="likes_count_likes_few" formatted="false">A %{likes_count} personas les gusta</string>
+  <string name="likes_count_likes_many" formatted="false">A %{likes_count} personas les gusta</string>
   <string name="likes_count_likes_one" formatted="false">A %{likes_count} persona le gusta</string>
-  <string name="likes_count_likes_other" formatted="false">A %{likes_count} persoanas les gusta</string>
-  <string name="likes_count_likes_two" formatted="false">A %{likes_count} persoanas les gusta</string>
+  <string name="likes_count_likes_other" formatted="false">A %{likes_count} personas les gusta</string>
+  <string name="likes_count_likes_two" formatted="false">A %{likes_count} personas les gusta</string>
   <string name="likes_count_likes_zero" formatted="false">A %{likes_count} personas les gusta</string>
   <string name="location_name_only" formatted="false">Sólo %{location_name}</string>
   <string name="login_buttons_forgot_password" formatted="false">¿Olvidaste tu contraseña?</string>
@@ -1561,6 +1565,7 @@ guardados</string>
 guardados</string>
   <string name="projects_count_newline_saved_two" formatted="false">2\nguardados</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\nguardados</string>
+  <string name="projects_launched_count_created_projects_backed_count_backed" formatted="false">%{projects_launched_count} created • %{projects_backed_count} backed</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Cerrar</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">Ver</string>
   <string name="remaining_count_left_of_limit_count" formatted="false">%{remaining_count} restante de %{limit_count}</string>

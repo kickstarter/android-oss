@@ -82,6 +82,7 @@ backers</string>
   <string name="Change_payment_method" formatted="false">Change payment method</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Check back later for an update on your export progress.</string>
+  <string name="Check_out_these_handpicked_projects" formatted="false">Check out these handpicked projects just for you.</string>
   <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
   <string name="Choose_another_reward" formatted="false">Choose another reward</string>
   <string name="Chooses_location_for_shipping" formatted="false">Chooses %{location} for shipping.</string>
@@ -478,6 +479,7 @@ daring ideas.</string>
   <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
+  <string name="Select_up_to_five" formatted="false">Select up to five from the options below.</string>
   <string name="Selected" formatted="false">Selected</string>
   <string name="Selected_reward" formatted="false">Selected reward</string>
   <string name="Send" formatted="false">Send</string>
@@ -513,6 +515,7 @@ catch your eye?</string>
   <string name="Stay_up_to_date_newsletter" formatted="false">Stay up to date with our favorite projects, and any news and events that are on our radar.</string>
   <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Stay updated on the projects you\'ve backed and learn about how these creative works are produced.</string>
   <string name="Stay_updated_on_this_project" formatted="false">Stay updated on this project?</string>
+  <string name="Step_number" formatted="false">Step %{current_step} of %{total_steps}</string>
   <string name="Subscribe" formatted="false">Subscribe</string>
   <string name="Subscribed" formatted="false">Subscribed</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
@@ -618,6 +621,7 @@ Please try again later.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
+  <string name="Which_categories_interest_you" formatted="false">Which categories interest you?</string>
   <string name="Write_a_bio" formatted="false">Write a short bio. Just a sentence or two is great.</string>
   <string name="Yes_cancel_it" formatted="false">Yes, cancel it</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Yes, cancel my pledge</string>
@@ -1566,6 +1570,7 @@ saved</string>
 saved</string>
   <string name="projects_count_newline_saved_two" formatted="false">2\nsaved</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\nsaved</string>
+  <string name="projects_launched_count_created_projects_backed_count_backed" formatted="false">%{projects_launched_count} created • %{projects_backed_count} backed</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Close</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">View</string>
   <string name="remaining_count_left_of_limit_count" formatted="false">%{remaining_count} left of %{limit_count}</string>

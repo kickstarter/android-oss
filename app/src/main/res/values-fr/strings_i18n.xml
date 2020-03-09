@@ -82,6 +82,7 @@ contributeurs</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Repassez plus tard pour suivre la préparation de votre exportation.</string>
+  <string name="Check_out_these_handpicked_projects" formatted="false">Voici quelques projets sélectionnés rien que pour vous.</string>
   <string name="Check_your_payment_details" formatted="false">Vérifiez vos coordonnées bancaires</string>
   <string name="Choose_another_reward" formatted="false">Choisir une autre récompense</string>
   <string name="Chooses_location_for_shipping" formatted="false">Sélectionne %{location} pour la livraison.</string>
@@ -147,7 +148,7 @@ contributeurs</string>
   <string name="Description" formatted="false">Description</string>
   <string name="Developer" formatted="false">Développeur</string>
   <string name="Discover_arts_news" formatted="false">Des idées et des projets innovants à découvrir, soigneusement sélectionnés deux fois par mois par l\'équipe Design et technologie de Kickstarter.</string>
-  <string name="Discover_creative_projects" formatted="false">Découvrez des projets créatifs</string>
+  <string name="Discover_creative_projects" formatted="false">Des projets créatifs à découvrir</string>
   <string name="Discover_more_projects" formatted="false">Découvrez plus de projets.</string>
   <string name="Discover_the_future_of_Design_and_Tech" formatted="false">Tout sur l\'avenir du design et de la technologie.</string>
   <string name="Dismiss" formatted="false">Ignorer</string>
@@ -476,6 +477,7 @@ n\'ont rien soutenu.</string>
   <string name="Select_this_instead" formatted="false">Sélectionner</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
   <string name="Select_this_reward_instead" formatted="false">Choisir cette récompense</string>
+  <string name="Select_up_to_five" formatted="false">Sélectionnez cinq catégories parmi les propositions ci-dessous.</string>
   <string name="Selected" formatted="false">Sélectionné</string>
   <string name="Selected_reward" formatted="false">Récompense sélectionnée</string>
   <string name="Send" formatted="false">Envoyer</string>
@@ -510,6 +512,7 @@ n\'ont rien soutenu.</string>
   <string name="Stay_up_to_date_newsletter" formatted="false">Nos projets préférés, les dernières nouvelles et les événements qui ont retenu notre attention.</string>
   <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Suivez les projets créatifs auxquels vous avez contribué pour tout savoir sur la phase de production.</string>
   <string name="Stay_updated_on_this_project" formatted="false">Envie de suivre ce projet ?</string>
+  <string name="Step_number" formatted="false">Étape %{current_step} de%{total_steps}</string>
   <string name="Subscribe" formatted="false">S\'abonner</string>
   <string name="Subscribed" formatted="false">Abonné </string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Abonnement aux diffusions en direct à venir.</string>
@@ -558,10 +561,10 @@ n\'ont rien soutenu.</string>
   <string name="Total" formatted="false">Total</string>
   <string name="Total_amount" formatted="false">Montant total</string>
   <string name="Total_amount_backers_have_pledged_to_projects" formatted="false">Le montant total (en USD) engagé par les contributeurs.</string>
-  <string name="Total_amount_billion_plus" formatted="false">%{total_amount} billion+</string>
+  <string name="Total_amount_billion_plus" formatted="false">Plus de 4 milliards de dollars</string>
   <string name="Total_pledged" formatted="false">Total engagé</string>
   <string name="Total_plus" formatted="false">Plus de %{total}</string>
-  <string name="Track_your_backings" formatted="false">Track your backings</string>
+  <string name="Track_your_backings" formatted="false">Suivi de vos engagements</string>
   <string name="Twice_a_day_summary" formatted="false">Deux fois par jour</string>
   <string name="Unable_to_request" formatted="false">Demande de données impossible.</string>
   <string name="Unfollow_friend_name" formatted="false">Ne plus suivre %{friend_name}</string>
@@ -615,6 +618,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Nous vous enverrons un rappel 48 heures avant la fin de cette campagne. Vous recevrez aussi des rappels pour tous les projets que vous avez enregistré. Ceux-ci sont tous accessibles depuis votre profil.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Lorsque les fonctionnalités de suivi sont activées, vous pouvez vous abonner aux activités des autres, qui pourront à leur tour s\'abonner aux vôtres. Pour supprimer définitivement ces données, il vous suffit de désactiver les fonctionnalités de suivi.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.</string>
+  <string name="Which_categories_interest_you" formatted="false">Quelles sont les catégories qui vous intéressent ?</string>
   <string name="Write_a_bio" formatted="false">Une petite biographie d\'une phrase ou deux.</string>
   <string name="Yes_cancel_it" formatted="false">Oui, annuler</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Oui, annuler mon engagement</string>
@@ -1561,6 +1565,7 @@ projets enregistrés</string>
 projets enregistrés</string>
   <string name="projects_count_newline_saved_two" formatted="false">2\nprojets enregistrés</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\nprojets enregistrés</string>
+  <string name="projects_launched_count_created_projects_backed_count_backed" formatted="false">%{projects_launched_count} projets créés • %{projects_backed_count} projets soutenus</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Fermer</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">Afficher</string>
   <string name="remaining_count_left_of_limit_count" formatted="false">%{remaining_count} sur %{limit_count}</string>

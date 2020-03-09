@@ -80,6 +80,9 @@ public interface ProjectHolderViewModel {
     /** Emits when the usd conversion view should be gone. */
     Observable<Boolean> conversionTextViewIsGone();
 
+    /** Emits a boolean determining if the variant creator details should be visible. */
+    Observable<Boolean> creatorDetailsVariantIsVisible();
+
     /** Emits the project creator's name for display. */
     Observable<String> creatorNameTextViewText();
 
@@ -225,12 +228,14 @@ public interface ProjectHolderViewModel {
 
       this.blurbTextViewText = project.map(Project::blurb);
 
-      this.projectData
-              .compose(combineLatestPair(this.currentUser.observable()))
-              .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
-              .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
-              .compose(bindToLifecycle())
-              .subscribe(this.blurbVariantIsVisible::onNext);
+      final Observable<Pair<ProjectData, User>> projectDataAndCurrentUser = this.projectData
+        .compose(combineLatestPair(this.currentUser.observable()));
+
+      projectDataAndCurrentUser
+        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
+        .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
+        .compose(bindToLifecycle())
+        .subscribe(this.blurbVariantIsVisible::onNext);
 
       this.categoryTextViewText = project.map(Project::category).filter(ObjectUtils::isNotNull).map(Category::name);
 
@@ -249,6 +254,12 @@ public interface ProjectHolderViewModel {
           final String goal = this.ksCurrency.format(p.goal(), p);
           return Pair.create(pledged, goal);
         });
+
+      projectDataAndCurrentUser
+        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
+        .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
+        .compose(bindToLifecycle())
+        .subscribe(this.creatorDetailsVariantIsVisible::onNext);
 
       this.creatorNameTextViewText = project.map(p -> p.creator().name());
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
@@ -402,6 +413,7 @@ public interface ProjectHolderViewModel {
     private final Observable<String> commentsCountTextViewText;
     private final Observable<Pair<String, String>> conversionPledgedAndGoalText;
     private final Observable<Boolean> conversionTextViewIsGone;
+    private final BehaviorSubject<Boolean> creatorDetailsVariantIsVisible = BehaviorSubject.create();
     private final Observable<String> creatorNameTextViewText;
     private final Observable<String> deadlineCountdownTextViewText;
     private final Observable<String> featuredTextViewRootCategory;
@@ -477,10 +489,12 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Pair<String, String>> conversionPledgedAndGoalText() {
       return this.conversionPledgedAndGoalText;
     }
+    @Override public @NonNull Observable<Boolean> creatorDetailsVariantIsVisible() {
+      return this.creatorDetailsVariantIsVisible;
+    }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
     }
-
     @Override public @NonNull Observable<String> deadlineCountdownTextViewText() {
       return this.deadlineCountdownTextViewText;
     }

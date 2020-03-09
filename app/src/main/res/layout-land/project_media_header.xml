@@ -72,6 +72,7 @@
       android:id="@+id/creator_info"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      tools:visibility="gone"
       android:layout_below="@id/name_creator_view"
       android:background="@drawable/click_indicator_light_masked"
       android:focusable="true"
@@ -112,6 +113,67 @@
           android:maxLines="1"
           android:textColor="@color/white"
           tools:text="Creator Name" />
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/creator_info_variant"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/name_creator_view"
+      android:background="@drawable/click_indicator_light_masked"
+      android:focusable="true"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      android:paddingBottom="@dimen/grid_2"
+      android:paddingTop="@dimen/grid_3"
+      tools:ignore="InconsistentLayout"
+      android:baselineAligned="false">
+
+      <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="@dimen/grid_3_half"
+        android:layout_height="wrap_content">
+
+        <ImageView
+          android:id="@+id/avatar_variant"
+          android:layout_width="@dimen/project_avatar_width"
+          android:layout_height="@dimen/project_avatar_height"
+          android:scaleType="centerCrop"
+          tools:src="@drawable/avatar_stroke"
+          tools:ignore="ContentDescription" />
+
+        <ImageView
+          android:layout_width="@dimen/project_avatar_check_width"
+          android:layout_height="@dimen/project_avatar_check_width"
+          android:background="@drawable/circle_blue"
+          android:importantForAccessibility="no"
+          android:layout_gravity="end|bottom"
+          android:src="@drawable/icon__check"
+          android:tint="@color/white" />
+      </FrameLayout>
+
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+          android:id="@+id/creator_name_variant"
+          style="@style/FootnoteWhite"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:maxLines="1"
+          tools:text="Creator Name" />
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/FootnoteWhite"
+          tools:text="@string/Created_projects_projects_count"/>
       </LinearLayout>
 
     </LinearLayout>

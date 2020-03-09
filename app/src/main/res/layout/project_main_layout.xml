@@ -59,6 +59,7 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_3"
+        android:visibility="gone"
         tools:ignore="InconsistentLayout">
 
         <ImageView
@@ -104,7 +105,9 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_3"
-        tools:ignore="InconsistentLayout">
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout"
+        android:baselineAligned="false">
 
         <FrameLayout
           android:layout_width="wrap_content"
@@ -137,7 +140,7 @@
 
           <TextView
             android:id="@+id/creator_name_variant"
-            style="@style/FootnoteWhite"
+            style="@style/FootnotePrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -146,9 +149,10 @@
 
           <TextView
             android:id="@+id/creator_details"
-            style="@style/FootnoteWhite"
+            style="@style/FootnotePrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/ksr_cobalt_500"
             tools:text="3 created • 2 launched" />
         </LinearLayout>
 

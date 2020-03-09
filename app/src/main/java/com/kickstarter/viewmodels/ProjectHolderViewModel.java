@@ -232,7 +232,7 @@ public interface ProjectHolderViewModel {
         .compose(combineLatestPair(this.currentUser.observable()));
 
       projectDataAndCurrentUser
-        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
+        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
         .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
         .compose(bindToLifecycle())
         .subscribe(this.blurbVariantIsVisible::onNext);
@@ -256,7 +256,7 @@ public interface ProjectHolderViewModel {
         });
 
       projectDataAndCurrentUser
-        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
+        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
         .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
         .compose(bindToLifecycle())
         .subscribe(this.creatorDetailsVariantIsVisible::onNext);

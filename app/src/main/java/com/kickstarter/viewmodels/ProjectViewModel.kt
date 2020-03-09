@@ -51,6 +51,9 @@ interface ProjectViewModel {
         /** Call when the creator dashboard button is clicked.  */
         fun creatorDashboardButtonClicked()
 
+        /** Call when the creator info variant is clicked.  */
+        fun creatorInfoVariantClicked()
+
         /** Call when the creator name is clicked.  */
         fun creatorNameTextViewClicked()
 
@@ -255,6 +258,7 @@ interface ProjectViewModel {
         private val commentsTextViewClicked = PublishSubject.create<Void>()
         private val contactCreatorClicked = PublishSubject.create<Void>()
         private val creatorDashboardButtonClicked = PublishSubject.create<Void>()
+        private val creatorInfoVariantClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
@@ -493,6 +497,11 @@ interface ProjectViewModel {
                     .compose<Project>(takeWhen(this.backProjectButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCheckoutActivity)
+
+            currentProject
+                    .compose<Project>(takeWhen(this.creatorInfoVariantClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.startCreatorBioWebViewActivity)
 
             currentProject
                     .compose<Project>(takeWhen(this.creatorNameTextViewClicked))
@@ -925,6 +934,10 @@ interface ProjectViewModel {
             this.creatorDashboardButtonClicked.onNext(null)
         }
 
+        override fun creatorInfoVariantClicked() {
+            this.creatorInfoVariantClicked.onNext(null)
+        }
+
         override fun creatorNameTextViewClicked() {
             this.creatorNameTextViewClicked.onNext(null)
         }
@@ -991,6 +1004,10 @@ interface ProjectViewModel {
 
         override fun projectViewHolderCreatorClicked(viewHolder: ProjectViewHolder) {
             this.creatorNameTextViewClicked()
+        }
+
+        override fun projectViewHolderCreatorInfoVariantClicked(viewHolder: ProjectViewHolder) {
+            this.creatorInfoVariantClicked()
         }
 
         override fun projectViewHolderDashboardClicked(viewHolder: ProjectViewHolder) {

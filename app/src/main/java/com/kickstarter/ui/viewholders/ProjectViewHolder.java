@@ -59,6 +59,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   private final KSString ksString;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
+  protected @Bind(R.id.avatar_variant) ImageView avatarVariantImageView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
   protected @Bind(R.id.back_project_button) @Nullable MaterialButton backProjectButton;
@@ -69,7 +70,9 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
   protected @Bind(R.id.usd_conversion_text_view) TextView conversionTextView;
+  protected @Bind(R.id.creator_info_loading_container) ViewGroup creatorInfoLoadingContainer;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
+  protected @Bind(R.id.creator_name_variant) TextView creatorNameVariantTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.featured) TextView featuredTextView;
@@ -137,6 +140,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     void projectViewHolderBlurbVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderCreatorInfoVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderDashboardClicked(ProjectViewHolder viewHolder);
     void projectViewHolderManagePledgeClicked(ProjectViewHolder viewHolder);
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
@@ -155,12 +159,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.avatarPhotoUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(url ->
-        Picasso.with(context())
-          .load(url)
-          .transform(new CircleTransformation())
-          .into(this.avatarImageView)
-      );
+      .subscribe(this::setAvatar);
 
     this.viewModel.outputs.backersCountTextViewText()
       .compose(bindToLifecycle())
@@ -196,6 +195,11 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.creatorNameTextView::setText);
+
+    this.viewModel.outputs.creatorNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.creatorNameVariantTextView::setText);
 
     this.viewModel.outputs.deadlineCountdownTextViewText()
       .compose(bindToLifecycle())
@@ -411,6 +415,18 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(projectData);
   }
 
+  private void setAvatar(final @NonNull String url) {
+    Picasso.with(context())
+      .load(url)
+      .transform(new CircleTransformation())
+      .into(this.avatarImageView);
+
+    Picasso.with(context())
+      .load(url)
+      .transform(new CircleTransformation())
+      .into(this.avatarVariantImageView);
+  }
+
   private void setConvertedCurrencyView(final @NonNull Pair<String, String> pledgedAndGoal) {
     this.conversionTextView.setText(
       this.ksString.format(
@@ -554,6 +570,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick(R.id.creator_info)
   public void creatorNameOnClick() {
     this.delegate.projectViewHolderCreatorClicked(this);
+  }
+
+  @OnClick(R.id.creator_info_variant)
+  public void creatorInfoVariantOnClick() {
+    this.delegate.projectViewHolderCreatorInfoVariantClicked(this);
   }
 
   @OnClick(R.id.project_dashboard_button)

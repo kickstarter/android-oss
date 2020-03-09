@@ -1,0 +1,10 @@
+query ProjectCreatorDetails($slug: String!) {
+  project(slug: $slug) {
+    creator {
+      backingsCount
+      launchedProjects {
+        totalCount
+      }
+    }
+  }
+}

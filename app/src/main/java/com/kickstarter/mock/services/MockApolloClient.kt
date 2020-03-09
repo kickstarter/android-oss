@@ -8,6 +8,7 @@ import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.mock.factories.CheckoutFactory
+import com.kickstarter.mock.factories.CreatorDetailsFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
@@ -35,6 +36,10 @@ open class MockApolloClient : ApolloClientType {
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
         return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
                 CreatePasswordMutation.User("", "sample@ksr.com", true))))
+    }
+
+    override fun creatorDetails(slug: String): Observable<CreatorDetails> {
+        return Observable.just(CreatorDetailsFactory.creatorDetails())
     }
 
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {

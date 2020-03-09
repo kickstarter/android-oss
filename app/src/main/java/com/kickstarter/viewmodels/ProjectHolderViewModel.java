@@ -22,10 +22,12 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.CreatorDetails;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
@@ -34,6 +36,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -41,6 +44,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface ProjectHolderViewModel {
 
@@ -71,7 +75,7 @@ public interface ProjectHolderViewModel {
     /** Emits the project category for display. */
     Observable<String> categoryTextViewText();
 
-    /** Emits teh comments count for display. */
+    /** Emits the comments count for display. */
     Observable<String> commentsCountTextViewText();
 
     /** Emits the usd conversion text for display. */
@@ -79,6 +83,12 @@ public interface ProjectHolderViewModel {
 
     /** Emits when the usd conversion view should be gone. */
     Observable<Boolean> conversionTextViewIsGone();
+
+    /** Emits the count of the project creator's backed projects. */
+    Observable<Integer> creatorBackedProjectsCount();
+
+    /** Emits the count of the project creator's launched projects. */
+    Observable<Integer> creatorLaunchedProjectsCount();
 
     /** Emits the project creator's name for display. */
     Observable<String> creatorNameTextViewText();
@@ -196,6 +206,7 @@ public interface ProjectHolderViewModel {
   }
 
   final class ViewModel extends ActivityViewModel<ProjectViewHolder> implements Inputs, Outputs {
+    private final ApolloClientType apolloClient;
     private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
     private final BooleanPreferenceType nativeCheckoutPreference;
@@ -205,6 +216,7 @@ public interface ProjectHolderViewModel {
       super(environment);
 
       final CurrentConfigType currentConfig = environment.currentConfig();
+      this.apolloClient = environment.apolloClient();
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
       this.nativeCheckoutPreference = environment.nativeCheckoutPreference();
@@ -251,6 +263,27 @@ public interface ProjectHolderViewModel {
         });
 
       this.creatorNameTextViewText = project.map(p -> p.creator().name());
+
+      final Observable<Notification<CreatorDetails>> creatorDetailsNotification = project
+        .take(1)
+        .distinctUntilChanged()
+        .map(Project::slug)
+        .switchMap(slug -> this.apolloClient.creatorDetails(slug).materialize())
+        .share();
+
+      final Observable<CreatorDetails> creatorDetails = creatorDetailsNotification
+        .compose(values());
+
+      creatorDetails
+        .map(CreatorDetails::backingsCount)
+        .compose(bindToLifecycle())
+        .subscribe(this.creatorBackedProjectsCount::onNext);
+
+      creatorDetails
+        .map(CreatorDetails::launchedProjectsCount)
+        .compose(bindToLifecycle())
+        .subscribe(this.creatorLaunchedProjectsCount::onNext);
+
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
 
       this.featuredViewGroupIsGone = projectMetadata
@@ -402,6 +435,8 @@ public interface ProjectHolderViewModel {
     private final Observable<String> commentsCountTextViewText;
     private final Observable<Pair<String, String>> conversionPledgedAndGoalText;
     private final Observable<Boolean> conversionTextViewIsGone;
+    private final BehaviorSubject<Integer> creatorBackedProjectsCount = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> creatorLaunchedProjectsCount = BehaviorSubject.create();
     private final Observable<String> creatorNameTextViewText;
     private final Observable<String> deadlineCountdownTextViewText;
     private final Observable<String> featuredTextViewRootCategory;
@@ -477,10 +512,15 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Pair<String, String>> conversionPledgedAndGoalText() {
       return this.conversionPledgedAndGoalText;
     }
+    @Override public @NonNull Observable<Integer> creatorBackedProjectsCount() {
+      return this.creatorBackedProjectsCount;
+    }
+    @Override public @NonNull Observable<Integer> creatorLaunchedProjectsCount() {
+      return this.creatorLaunchedProjectsCount;
+    }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;
     }
-
     @Override public @NonNull Observable<String> deadlineCountdownTextViewText() {
       return this.deadlineCountdownTextViewText;
     }

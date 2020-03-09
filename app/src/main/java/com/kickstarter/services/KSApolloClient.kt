@@ -5,6 +5,7 @@ import ClearUserUnseenActivityMutation
 import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
+import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
 import SendMessageMutation
@@ -151,6 +152,34 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun creatorDetails(slug: String): Observable<CreatorDetails> {
+        return Observable.defer {
+            val ps = PublishSubject.create<CreatorDetails>()
+            service.query(ProjectCreatorDetailsQuery.builder()
+                    .slug(slug)
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<ProjectCreatorDetailsQuery.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<ProjectCreatorDetailsQuery.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            }
+
+                            response.data()?.project()?.creator()?.let {
+                                ps.onNext(CreatorDetails.builder()
+                                        .backingsCount(it.backingsCount())
+                                        .launchedProjectsCount(it.launchedProjects()?.totalCount() ?: 1)
+                                        .build())
+                                ps.onCompleted()
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
 
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return Observable.defer {

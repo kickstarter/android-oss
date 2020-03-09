@@ -50,6 +50,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> commentsCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, String>> conversionPledgedAndGoalText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> conversionTextViewIsGone = new TestSubscriber<>();
+  private final TestSubscriber<Integer> creatorBackedProjectsCount = new TestSubscriber<>();
+  private final TestSubscriber<Integer> creatorLaunchedProjectsCount = new TestSubscriber<>();
   private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> featuredTextViewRootCategory = new TestSubscriber<>();
@@ -100,6 +102,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.commentsCountTextViewText().subscribe(this.commentsCountTextViewText);
     this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.conversionPledgedAndGoalText);
     this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone);
+    this.vm.outputs.creatorBackedProjectsCount().subscribe(this.creatorBackedProjectsCount);
+    this.vm.outputs.creatorLaunchedProjectsCount().subscribe(this.creatorLaunchedProjectsCount);
     this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
     this.vm.outputs.deadlineCountdownTextViewText().subscribe(this.deadlineCountdownTextViewText);
     this.vm.outputs.featuredTextViewRootCategory().subscribe(this.featuredTextViewRootCategory);
@@ -182,6 +186,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
 
     this.avatarPhotoUrl.assertValues(project.creator().avatar().medium());
+    this.creatorBackedProjectsCount.assertValue(3);
+    this.creatorLaunchedProjectsCount.assertValue(2);
     this.creatorNameTextViewText.assertValues(project.creator().name());
   }
 

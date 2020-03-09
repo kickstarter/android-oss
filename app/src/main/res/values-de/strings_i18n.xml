@@ -82,6 +82,7 @@ Unterstützer</string>
   <string name="Change_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Der Fortschritt des Exports wird in Kürze verfügbar sein- schau später noch einmal vorbei.</string>
+  <string name="Check_out_these_handpicked_projects" formatted="false">Sieh dir dieses speziell für dich ausgesuchten Projekte an.</string>
   <string name="Check_your_payment_details" formatted="false">Überprüfe die Daten deiner Zahlungsweise</string>
   <string name="Choose_another_reward" formatted="false">Andere Belohnung auswählen</string>
   <string name="Chooses_location_for_shipping" formatted="false">Legt %{location} als Versandort fest.</string>
@@ -475,6 +476,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Select_this_instead" formatted="false">Stattdessen diese auswählen</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
+  <string name="Select_up_to_five" formatted="false">Wähle bis zu fünf aus den unten stehenden Optionen aus.</string>
   <string name="Selected" formatted="false">Ausgewählt</string>
   <string name="Selected_reward" formatted="false">Gewählte Belohnung</string>
   <string name="Send" formatted="false">Senden</string>
@@ -507,8 +509,9 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Status" formatted="false">Status:</string>
   <string name="Stay_up_to_date" formatted="false">Möchtest du auf dem Laufenden bleiben?</string>
   <string name="Stay_up_to_date_newsletter" formatted="false">Wir halten dich auf dem Laufenden über unsere Team-Favoriten, Neuigkeiten und Events, die wir gerade auf dem Schirm haben.</string>
-  <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Stay updated on the projects you\'ve backed and learn about how these creative works are produced.</string>
+  <string name="Stay_updated_on_the_projects_youve_backed_and_learn_about_how_these_creative_works_are_produced" formatted="false">Bleib immer informiert über die Projekte, die du unterstützt hast, und erfahre mehr zu ihrer Entstehung.</string>
   <string name="Stay_updated_on_this_project" formatted="false">Möchtest du bei diesem Projekt auf dem Laufenden bleiben?</string>
+  <string name="Step_number" formatted="false">Schritt %{current_step} von %{total_steps}</string>
   <string name="Subscribe" formatted="false">Abonnieren</string>
   <string name="Subscribed" formatted="false">Abo aktiviert</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Zukünftige Live-Streams abonnieren.</string>
@@ -560,7 +563,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Total_amount_billion_plus" formatted="false">%{total_amount} Milliarden+</string>
   <string name="Total_pledged" formatted="false">Anzahl der Beiträge insgesamt</string>
   <string name="Total_plus" formatted="false">Über %{total}</string>
-  <string name="Track_your_backings" formatted="false">Track your backings</string>
+  <string name="Track_your_backings" formatted="false">Folge deinen unterstützten Projekten</string>
   <string name="Twice_a_day_summary" formatted="false">Übersicht (zweimal täglich)</string>
   <string name="Unable_to_request" formatted="false">Daten konnten nicht angefordert werden.</string>
   <string name="Unfollow_friend_name" formatted="false">%{friend_name} nicht mehr folgen</string>
@@ -614,6 +617,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail</string>
+  <string name="Which_categories_interest_you" formatted="false">Welche Kategorien interessieren dich?</string>
   <string name="Write_a_bio" formatted="false">Schreibe eine kurze Biografie, ein oder zwei Sätze genügen.</string>
   <string name="Yes_cancel_it" formatted="false">Ja, abbrechen</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Ja, ich möchte meinen Beitrag zurückziehen</string>
@@ -1559,6 +1563,7 @@ gespeichert</string>
 gespeichert</string>
   <string name="projects_count_newline_saved_two" formatted="false">2\ngespeichert</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\ngespeichert</string>
+  <string name="projects_launched_count_created_projects_backed_count_backed" formatted="false">%{projects_launched_count} erstellt• %{projects_backed_count} unterstützt</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Schließen</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">Anzeigen</string>
   <string name="remaining_count_left_of_limit_count" formatted="false">%{remaining_count} übrig von %{limit_count}</string>

@@ -8,7 +8,6 @@ class CreatorDetailsFactory private constructor() {
             return CreatorDetails.builder()
                     .backingsCount(3)
                     .launchedProjectsCount(2)
-                    .name("Creator Name")
                     .build()
         }
     }

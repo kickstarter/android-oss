@@ -172,7 +172,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                 ps.onNext(CreatorDetails.builder()
                                         .backingsCount(it.backingsCount())
                                         .launchedProjectsCount(it.launchedProjects()?.totalCount() ?: 0)
-                                        .name(it.name())
                                         .build())
                                 ps.onCompleted()
                             }

@@ -7,13 +7,11 @@ import auto.parcel.AutoParcel
 abstract class CreatorDetails : Parcelable {
     abstract fun backingsCount(): Int
     abstract fun launchedProjectsCount(): Int
-    abstract fun name(): String
 
     @AutoParcel.Builder
     abstract class Builder {
-        abstract fun backingsCount(id: Int): Builder
-        abstract fun launchedProjectsCount(id: Int): Builder
-        abstract fun name(name: String): Builder
+        abstract fun backingsCount(backingsCount: Int): Builder
+        abstract fun launchedProjectsCount(launchedProjectsCount: Int): Builder
         abstract fun build(): CreatorDetails
     }
 

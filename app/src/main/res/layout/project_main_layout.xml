@@ -100,6 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/click_indicator_light_masked"
+        android:baselineAligned="false"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -107,30 +108,9 @@
         android:paddingBottom="@dimen/grid_3"
         android:visibility="gone"
         tools:ignore="InconsistentLayout"
-        android:baselineAligned="false">
+        tools:visibility="visible">
 
-        <FrameLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="@dimen/grid_3_half">
-
-          <ImageView
-            android:id="@+id/avatar_variant"
-            android:layout_width="@dimen/project_avatar_width"
-            android:layout_height="@dimen/project_avatar_height"
-            android:scaleType="centerCrop"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/avatar_stroke" />
-
-          <ImageView
-            android:layout_width="@dimen/project_avatar_check_width"
-            android:layout_height="@dimen/project_avatar_check_width"
-            android:layout_gravity="end|bottom"
-            android:background="@drawable/circle_blue"
-            android:importantForAccessibility="no"
-            android:src="@drawable/icon__check"
-            android:tint="@color/white" />
-        </FrameLayout>
+        <include layout="@layout/creator_avatar_verified" />
 
         <LinearLayout
           android:layout_width="0dp"
@@ -140,7 +120,7 @@
 
           <TextView
             android:id="@+id/creator_name_variant"
-            style="@style/FootnotePrimary"
+            style="@style/FootnotePrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -149,7 +129,7 @@
 
           <TextView
             android:id="@+id/creator_details"
-            style="@style/FootnotePrimary"
+            style="@style/FootnotePrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/ksr_cobalt_500"
@@ -163,7 +143,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginBottom="@dimen/grid_3" />
+        android:layout_marginBottom="@dimen/grid_3"
+        tools:visibility="gone" />
 
     </FrameLayout>
 

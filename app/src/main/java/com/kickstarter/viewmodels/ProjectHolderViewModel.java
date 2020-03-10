@@ -42,6 +42,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.errors;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
@@ -84,14 +85,14 @@ public interface ProjectHolderViewModel {
     /** Emits when the usd conversion view should be gone. */
     Observable<Boolean> conversionTextViewIsGone();
 
-    /** Emits the count of the project creator's backed projects. */
-    Observable<Integer> creatorBackedProjectsCount();
+    /** Emits the count of the project creator's backed and launched projects. */
+    Observable<Pair<Integer, Integer>> creatorBackedAndLaunchedProjectsCount();
+
+    /** Emits a boolean determining if the creator details loading container should be visible. */
+    Observable<Boolean> creatorDetailsLoadingContainerIsVisible();
 
     /** Emits a boolean determining if the variant creator details should be visible. */
     Observable<Boolean> creatorDetailsVariantIsVisible();
-
-    /** Emits the count of the project creator's launched projects. */
-    Observable<Integer> creatorLaunchedProjectsCount();
 
     /** Emits the project creator's name for display. */
     Observable<String> creatorNameTextViewText();
@@ -267,33 +268,38 @@ public interface ProjectHolderViewModel {
           return Pair.create(pledged, goal);
         });
 
-      projectDataAndCurrentUser
-        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
-        .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
-        .compose(bindToLifecycle())
-        .subscribe(this.creatorDetailsVariantIsVisible::onNext);
-
       this.creatorNameTextViewText = project.map(p -> p.creator().name());
 
       final Observable<Notification<CreatorDetails>> creatorDetailsNotification = project
         .take(1)
         .distinctUntilChanged()
         .map(Project::slug)
-        .switchMap(slug -> this.apolloClient.creatorDetails(slug).materialize())
+        .switchMap(slug -> this.apolloClient.creatorDetails(slug)
+          .doOnSubscribe(() ->this.creatorDetailsLoadingContainerIsVisible.onNext(true))
+          .doAfterTerminate(() -> this.creatorDetailsLoadingContainerIsVisible.onNext(false))
+          .materialize())
         .share();
+
+      creatorDetailsNotification
+        .compose(errors())
+        .map(__ -> false)
+        .compose(bindToLifecycle())
+        .subscribe(this.creatorDetailsVariantIsVisible::onNext);
 
       final Observable<CreatorDetails> creatorDetails = creatorDetailsNotification
         .compose(values());
 
       creatorDetails
-        .map(CreatorDetails::backingsCount)
+        .map(details -> Pair.create(details.backingsCount(), details.launchedProjectsCount()))
         .compose(bindToLifecycle())
-        .subscribe(this.creatorBackedProjectsCount::onNext);
+        .subscribe(this.creatorBackedAndLaunchedProjectsCount::onNext);
 
-      creatorDetails
-        .map(CreatorDetails::launchedProjectsCount)
+      projectDataAndCurrentUser
+        .compose(takeWhen(creatorDetails))
+        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
+        .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
         .compose(bindToLifecycle())
-        .subscribe(this.creatorLaunchedProjectsCount::onNext);
+        .subscribe(this.creatorDetailsVariantIsVisible::onNext);
 
       this.deadlineCountdownTextViewText = project.map(ProjectUtils::deadlineCountdownValue).map(NumberUtils::format);
 
@@ -446,9 +452,9 @@ public interface ProjectHolderViewModel {
     private final Observable<String> commentsCountTextViewText;
     private final Observable<Pair<String, String>> conversionPledgedAndGoalText;
     private final Observable<Boolean> conversionTextViewIsGone;
-    private final BehaviorSubject<Integer> creatorBackedProjectsCount = BehaviorSubject.create();
+    private final BehaviorSubject<Pair<Integer, Integer>> creatorBackedAndLaunchedProjectsCount = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> creatorDetailsLoadingContainerIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> creatorDetailsVariantIsVisible = BehaviorSubject.create();
-    private final BehaviorSubject<Integer> creatorLaunchedProjectsCount = BehaviorSubject.create();
     private final Observable<String> creatorNameTextViewText;
     private final Observable<String> deadlineCountdownTextViewText;
     private final Observable<String> featuredTextViewRootCategory;
@@ -524,14 +530,14 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Pair<String, String>> conversionPledgedAndGoalText() {
       return this.conversionPledgedAndGoalText;
     }
-    @Override public @NonNull Observable<Integer> creatorBackedProjectsCount() {
-      return this.creatorBackedProjectsCount;
+    @Override public @NonNull Observable<Pair<Integer, Integer>> creatorBackedAndLaunchedProjectsCount() {
+      return this.creatorBackedAndLaunchedProjectsCount;
     }
     @Override public @NonNull Observable<Boolean> creatorDetailsVariantIsVisible() {
       return this.creatorDetailsVariantIsVisible;
     }
-    @Override public @NonNull Observable<Integer> creatorLaunchedProjectsCount() {
-      return this.creatorLaunchedProjectsCount;
+    @Override public @NonNull Observable<Boolean> creatorDetailsLoadingContainerIsVisible() {
+      return this.creatorDetailsLoadingContainerIsVisible;
     }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;

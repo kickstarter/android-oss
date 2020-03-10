@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:layout_marginEnd="@dimen/grid_3_half"
+  tools:showIn="@layout/project_main_layout">
+
+  <ImageView
+    android:id="@+id/avatar_variant"
+    android:layout_width="@dimen/project_avatar_width"
+    android:layout_height="@dimen/project_avatar_height"
+    android:scaleType="centerCrop"
+    tools:ignore="ContentDescription"
+    tools:src="@drawable/avatar_stroke" />
+
+  <ImageView
+    android:layout_width="@dimen/project_avatar_check_width"
+    android:layout_height="@dimen/project_avatar_check_width"
+    android:layout_gravity="end|bottom"
+    android:background="@drawable/circle_blue_white_stroke"
+    android:importantForAccessibility="no"
+    android:src="@drawable/icon__check"
+    android:tint="@color/white" />
+</FrameLayout>

@@ -460,6 +460,10 @@
     <item name="android:textSize">@dimen/footnote</item>
   </style>
 
+  <style name="FootnoteWhiteMedium" parent="FootnoteWhite">
+    <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
+  </style>
+
   <style name="ProjectCardFootnote" parent="FootnoteSecondaryMedium">
     <item name="android:fontFamily">@string/font_family_sans_serif_medium</item>
     <item name="android:maxLines">1</item>

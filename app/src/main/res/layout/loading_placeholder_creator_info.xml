@@ -4,7 +4,6 @@
   android:id="@+id/creator_info_loading_container"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_below="@id/name_creator_view"
   android:baselineAligned="false"
   android:focusable="true"
   android:gravity="center_vertical"

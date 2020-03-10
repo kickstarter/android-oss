@@ -294,8 +294,10 @@ public interface ProjectHolderViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.creatorBackedAndLaunchedProjectsCount::onNext);
 
-      projectDataAndCurrentUser
-        .compose(takeWhen(creatorDetails))
+      creatorDetails
+        .compose(combineLatestPair(projectDataAndCurrentUser))
+        .take(1)
+        .map(__ -> __.second)
         .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
         .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
         .compose(bindToLifecycle())

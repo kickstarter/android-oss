@@ -22,13 +22,16 @@ import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.ProjectDataFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
-import com.kickstarter.mock.factories.VideoFactory;
+import com.kickstarter.mock.services.MockApolloClient;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.CreatorDetails;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.data.ProjectData;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -37,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
@@ -50,8 +54,9 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<String> commentsCountTextViewText = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, String>> conversionPledgedAndGoalText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> conversionTextViewIsGone = new TestSubscriber<>();
-  private final TestSubscriber<Integer> creatorBackedProjectsCount = new TestSubscriber<>();
-  private final TestSubscriber<Integer> creatorLaunchedProjectsCount = new TestSubscriber<>();
+  private final TestSubscriber<Pair<Integer, Integer>> creatorBackedAndLaunchedProjectsCount = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> creatorDetailsLoadingContainerIsVisible = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> creatorDetailsVariantIsVisible = new TestSubscriber<>();
   private final TestSubscriber<String> creatorNameTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> deadlineCountdownTextViewText = new TestSubscriber<>();
   private final TestSubscriber<String> featuredTextViewRootCategory = new TestSubscriber<>();
@@ -91,7 +96,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> updatesContainerIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> updatesCountTextViewText = new TestSubscriber<>();
 
-  private void setUpEnvironment(final @NonNull Environment environment) {
+  private void setUpEnvironment(final @NonNull Environment environment, final @NonNull ProjectData projectData) {
     this.vm = new ProjectHolderViewModel.ViewModel(environment);
     this.vm.outputs.avatarPhotoUrl().subscribe(this.avatarPhotoUrl);
     this.vm.outputs.backersCountTextViewText().subscribe(this.backersCountTextViewText);
@@ -102,8 +107,9 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.commentsCountTextViewText().subscribe(this.commentsCountTextViewText);
     this.vm.outputs.conversionPledgedAndGoalText().subscribe(this.conversionPledgedAndGoalText);
     this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone);
-    this.vm.outputs.creatorBackedProjectsCount().subscribe(this.creatorBackedProjectsCount);
-    this.vm.outputs.creatorLaunchedProjectsCount().subscribe(this.creatorLaunchedProjectsCount);
+    this.vm.outputs.creatorBackedAndLaunchedProjectsCount().subscribe(this.creatorBackedAndLaunchedProjectsCount);
+    this.vm.outputs.creatorDetailsLoadingContainerIsVisible().subscribe(this.creatorDetailsLoadingContainerIsVisible);
+    this.vm.outputs.creatorDetailsVariantIsVisible().subscribe(this.creatorDetailsVariantIsVisible);
     this.vm.outputs.creatorNameTextViewText().subscribe(this.creatorNameTextViewText);
     this.vm.outputs.deadlineCountdownTextViewText().subscribe(this.deadlineCountdownTextViewText);
     this.vm.outputs.featuredTextViewRootCategory().subscribe(this.featuredTextViewRootCategory);
@@ -142,39 +148,29 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesContainerIsEnabled().subscribe(this.updatesContainerIsEnabled);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
+
+    this.vm.inputs.configureWith(projectData);
   }
 
   @Test
   public void testBlurbVariantIsVisible_whenControl() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.blurbVariantIsVisible.assertValue(false);
   }
 
   @Test
   public void testBlurbVariantIsVisible_whenVariant1() {
-    final Project project = ProjectFactory.project();
-    final Environment environment = environment()
-            .toBuilder()
-            .optimizely(new MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
-            .build();
-    setUpEnvironment(environment);
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environmentForVariant(OptimizelyExperiment.Variant.VARIANT_1),
+      ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.blurbVariantIsVisible.assertValue(true);
   }
 
   @Test
   public void testBlurbVariantIsVisible_whenVariant2() {
-    final Project project = ProjectFactory.project();
-    final Environment environment = environment()
-            .toBuilder()
-            .optimizely(new MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
-            .build();
-    setUpEnvironment(environment);
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environmentForVariant(OptimizelyExperiment.Variant.VARIANT_2),
+      ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.blurbVariantIsVisible.assertValue(true);
   }
@@ -182,24 +178,67 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testCreatorDataEmits() {
     final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.avatarPhotoUrl.assertValues(project.creator().avatar().medium());
-    this.creatorBackedProjectsCount.assertValue(3);
-    this.creatorLaunchedProjectsCount.assertValue(2);
     this.creatorNameTextViewText.assertValues(project.creator().name());
   }
 
   @Test
-  public void testMetadata_Backing() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .isBacking(true)
-      .build();
+  public void testCreatorBackedAndLaunchedProjectsCount_whenFetchCreatorDetailsQuerySuccessful() {
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    this.creatorBackedAndLaunchedProjectsCount.assertValue(Pair.create(3, 2));
+  }
+
+  @Test
+  public void testCreatorBackedAndLaunchedProjectsCount_whenCreatorDetailsQueryUnsuccessful() {
+    setUpEnvironment(environmentWithUnsuccessfulCreatorDetailsQuery(),
+      ProjectDataFactory.Companion.project(ProjectFactory.project()));
+
+    this.creatorBackedAndLaunchedProjectsCount.assertNoValues();
+  }
+
+  @Test
+  public void testCreatorDetailsVariantIsVisible_whenCreatorDetailsQueryUnsuccessful() {
+    setUpEnvironment(environmentWithUnsuccessfulCreatorDetailsQuery(),
+      ProjectDataFactory.Companion.project(ProjectFactory.project()));
+
+    this.creatorDetailsVariantIsVisible.assertValue(false);
+  }
+
+  @Test
+  public void testCreatorDetailsVariantIsVisible_whenControl() {
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
+
+    this.creatorDetailsVariantIsVisible.assertValue(false);
+  }
+
+  @Test
+  public void testCreatorDetailsVariantIsVisible_whenVariant1() {
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
+
+    this.creatorDetailsVariantIsVisible.assertValue(true);
+  }
+
+  @Test
+  public void testCreatorDetailsLoadingContainerIsVisible_whenFetchCreatorDetailsQuerySuccessful() {
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
+
+    this.creatorDetailsLoadingContainerIsVisible.assertValues(true, false);
+  }
+
+  @Test
+  public void testCreatorDetailsLoadingContainerIsVisible_whenFetchCreatorDetailsQueryUnsuccessful() {
+    setUpEnvironment(environmentWithUnsuccessfulCreatorDetailsQuery(),
+      ProjectDataFactory.Companion.project(ProjectFactory.project()));
+
+    this.creatorDetailsLoadingContainerIsVisible.assertValues(true, false);
+  }
+
+  @Test
+  public void testMetadata_Backing() {
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.backedProject()));
 
     this.backingViewGroupIsGone.assertValues(false);
     this.featuredViewGroupIsGone.assertValues(true);
@@ -208,14 +247,13 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMetadata_Backing_Featured() {
-    final Project project = ProjectFactory.project()
+    final Project project = ProjectFactory.featured()
       .toBuilder()
       .isBacking(true)
       .featuredAt(DateTime.now())
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.backingViewGroupIsGone.assertValues(false);
     this.featuredTextViewRootCategory.assertNoValues();
@@ -233,8 +271,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .featuredAt(DateTime.now())
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertValues(category.root().name());
@@ -244,13 +281,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testMetadata_NoMetadata() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .featuredAt(null)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.backingViewGroupIsGone.assertValues(true);
     this.featuredTextViewRootCategory.assertNoValues();
@@ -265,21 +296,15 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .video(null)
       .build();
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.playButtonIsGone.assertValues(true);
   }
 
   @Test
   public void testPlayButton_Visible() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .video(VideoFactory.video())
-      .build();
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.playButtonIsGone.assertValues(false);
   }
 
@@ -289,24 +314,16 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .state(Project.STATE_LIVE)
       .build();
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.percentageFundedProgress.assertValues(ProgressBarUtils.progress(project.percentageFunded()));
     this.percentageFundedProgressBarIsGone.assertValues(false);
   }
 
   @Test
   public void testProgressBar_Gone() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .state(Project.STATE_SUCCESSFUL)
-      .build();
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.successfulProject()));
 
-    setUpEnvironment(environment());
-
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
     this.percentageFundedProgressBarIsGone.assertValues(true);
   }
 
@@ -314,12 +331,11 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectActionButtonContainerIsGone_whenNativeCheckoutDisabled() {
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(ConfigFactory.config());
-
     final Environment environment = environment()
       .toBuilder()
       .currentConfig(currentConfig)
       .build();
-    setUpEnvironment(environment);
+    setUpEnvironment(environment, ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.projectActionButtonContainerIsGone.assertValue(false);
   }
@@ -328,21 +344,19 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   public void testProjectActionButtonContainerIsGone_whenNativeCheckoutEnabled() {
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_NATIVE_CHECKOUT));
-
     final Environment environment = environment()
       .toBuilder()
       .currentConfig(currentConfig)
       .nativeCheckoutPreference(new MockBooleanPreference(true))
       .build();
-
-    setUpEnvironment(environment);
+    setUpEnvironment(environment, ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.projectActionButtonContainerIsGone.assertValue(true);
   }
 
   @Test
   public void testProjectDashboardButtonText_whenCurrentUserIsNotProjectCreator() {
-    setUpEnvironment(environment());
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.projectDashboardButtonText.assertNoValues();
   }
@@ -358,8 +372,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .currentUser(new MockCurrentUser(creator))
       .build();
-    setUpEnvironment(environment);
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment, ProjectDataFactory.Companion.project(project));
 
     this.projectDashboardButtonText.assertValue(R.string.View_progress);
   }
@@ -375,16 +388,14 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .currentUser(new MockCurrentUser(creator))
       .build();
-    setUpEnvironment(environment);
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment, ProjectDataFactory.Companion.project(project));
 
     this.projectDashboardButtonText.assertValue(R.string.View_dashboard);
   }
 
   @Test
   public void testProjectDashboardContainerIsGone_whenCurrentUserIsNotProjectCreator() {
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(ProjectFactory.project()));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.projectDashboardContainerIsGone.assertValue(true);
   }
@@ -400,16 +411,13 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .currentUser(new MockCurrentUser(creator))
       .build();
-    setUpEnvironment(environment);
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment, ProjectDataFactory.Companion.project(project));
 
     this.projectDashboardContainerIsGone.assertValue(false);
   }
 
   @Test
   public void testProjectDataEmits() {
-    setUpEnvironment(environment());
-
     final Category category = CategoryFactory.tabletopGamesCategory();
     final Location location = LocationFactory.unitedStates();
     final Project project = ProjectFactory.project()
@@ -419,8 +427,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .location(location)
       .updatesCount(10)
       .build();
-
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.blurbTextViewText.assertValues(project.blurb());
     this.categoryTextViewText.assertValues(category.name());
@@ -443,8 +450,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .pledged(500f)
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectDisclaimerGoalReachedDateTime.assertValueCount(1);
     this.projectDisclaimerTextViewIsGone.assertValues(false);
@@ -460,8 +466,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .pledged(50f)
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectDisclaimerGoalNotReachedString.assertValueCount(1);
     this.projectDisclaimerTextViewIsGone.assertValues(false);
@@ -469,9 +474,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectDisclaimer_NoDisclaimer() {
-    final Project project = ProjectFactory.successfulProject();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.successfulProject()));
 
     // Disclaimer is not shown for completed projects.
     this.projectDisclaimerTextViewIsGone.assertValues(true);
@@ -483,8 +486,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .launchedAt(null)
       .build();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDate.assertNoValues();
   }
@@ -495,8 +498,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .launchedAt(DateTime.parse("2019-11-05T14:21:42Z"))
       .build();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDate.assertValue("November 5, 2019");
   }
@@ -512,17 +515,15 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .currentUser(new MockCurrentUser(creator))
       .build();
-    setUpEnvironment(environment);
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    setUpEnvironment(environment, ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDateIsGone.assertValue(false);
   }
 
   @Test
   public void testProjectLaunchDateIsGone_whenCurrentUserIsNotProjectCreator() {
-    final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.projectLaunchDateIsGone.assertValue(true);
   }
@@ -533,8 +534,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .launchedAt(null)
       .build();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectLaunchDateIsGone.assertValue(true);
   }
@@ -548,8 +549,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .friends(Arrays.asList(myFriend, myFriend, myFriend))
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     // On click listener should be set for view with > 2 friends.
     this.setProjectSocialClickListener.assertValueCount(1);
@@ -570,8 +570,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .friends(Collections.emptyList())
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectSocialImageViewIsGone.assertValues(true);
     this.projectSocialImageViewUrl.assertNoValues();
@@ -588,8 +587,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .friends(null)
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectSocialImageViewIsGone.assertValues(true);
     this.projectSocialImageViewUrl.assertNoValues();
@@ -608,8 +606,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .friends(Collections.singletonList(myFriend))
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     // On click listener should be not set for view with < 2 friends.
     this.setProjectSocialClickListener.assertNoValues();
@@ -627,8 +624,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .state(Project.STATE_CANCELED)
       .build();
 
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -637,17 +633,10 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectState_Live() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .state(Project.STATE_LIVE)
-      .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.projectStateViewGroupBackgroundColorInt.assertNoValues();
     this.projectStateViewGroupIsGone.assertValues(true);
-
   }
 
   @Test
@@ -659,9 +648,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .state(Project.STATE_SUCCESSFUL)
       .stateChangedAt(stateChangedAt)
       .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.green_alpha_50);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -674,9 +661,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .state(Project.STATE_SUSPENDED)
       .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -692,9 +677,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .state(Project.STATE_FAILED)
       .stateChangedAt(stateChangedAt)
       .build();
-
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
     this.projectStateViewGroupIsGone.assertValues(false);
@@ -704,8 +687,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testProjectStatsEmit() {
     final Project project = ProjectFactory.project();
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.backersCountTextViewText.assertValues(NumberUtils.format(project.backersCount()));
     this.deadlineCountdownTextViewText.assertValues(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
@@ -720,8 +702,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     currentConfig.config(config);
 
     // Set the current config for a US user. KSCurrency needs this config for conversions.
-    setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build(),
+      ProjectDataFactory.Companion.project(project));
 
     // USD conversion shown for non US project.
     this.conversionPledgedAndGoalText.assertValueCount(1);
@@ -734,13 +716,10 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .toBuilder()
       .country("US")
       .build();
-
     final Config config = ConfigFactory.configForUSUser();
     final MockCurrentConfig currentConfig = new MockCurrentConfig();
     currentConfig.config(config);
-
-    setUpEnvironment(environment().toBuilder().ksCurrency(new KSCurrency(currentConfig)).build());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     // USD conversion not shown for US project.
     this.conversionTextViewIsGone.assertValue(true);
@@ -748,35 +727,49 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdatesContainerIsEnabled_whenUpdatesCountIsNull() {
-    setUpEnvironment(environment());
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(ProjectFactory.project()));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.updatesContainerIsEnabled.assertValue(false);
   }
 
   @Test
   public void testUpdatesContainerIsEnabled_whenUpdatesCountIsZero() {
-    setUpEnvironment(environment());
-
     final Project project = ProjectFactory.project()
       .toBuilder()
       .updatesCount(0)
       .build();
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.updatesContainerIsEnabled.assertValue(false);
   }
 
   @Test
   public void testUpdatesContainerIsEnabled_whenUpdatesCountIsNonZero() {
-    setUpEnvironment(environment());
-
     final Project project = ProjectFactory.project()
       .toBuilder()
       .updatesCount(3)
       .build();
-    this.vm.inputs.configureWith(ProjectDataFactory.Companion.project(project));
+    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
     this.updatesContainerIsEnabled.assertValue(true);
+  }
+
+  private Environment environmentForVariant(final @NonNull OptimizelyExperiment.Variant variant) {
+    return environment()
+      .toBuilder()
+      .optimizely(new MockExperimentsClientType(variant))
+      .build();
+  }
+
+  private Environment environmentWithUnsuccessfulCreatorDetailsQuery() {
+    return environment()
+      .toBuilder()
+      .apolloClient(new MockApolloClient() {
+        @Override
+        public @NotNull Observable<CreatorDetails> creatorDetails(final @NotNull String slug) {
+          return Observable.error(new Throwable("failure"));
+        }
+      })
+      .build();
   }
 }

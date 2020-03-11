@@ -216,7 +216,8 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testCreatorDetailsVariantIsVisible_whenVariant1() {
-    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
+    setUpEnvironment(environmentForVariant(OptimizelyExperiment.Variant.VARIANT_1),
+      ProjectDataFactory.Companion.project(ProjectFactory.project()));
 
     this.creatorDetailsVariantIsVisible.assertValue(true);
   }

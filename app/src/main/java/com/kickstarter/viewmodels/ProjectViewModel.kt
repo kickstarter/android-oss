@@ -498,13 +498,10 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startCheckoutActivity)
 
-            currentProject
-                    .compose<Project>(takeWhen(this.creatorInfoVariantClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startCreatorBioWebViewActivity)
+            val creatorInfoClicked = Observable.merge(this.creatorNameTextViewClicked, this.creatorInfoVariantClicked)
 
             currentProject
-                    .compose<Project>(takeWhen(this.creatorNameTextViewClicked))
+                    .compose<Project>(takeWhen(creatorInfoClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCreatorBioWebViewActivity)
 
@@ -843,7 +840,7 @@ interface ProjectViewModel {
                     .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.second, it.first.refTagFromIntent()) }
 
             fullProjectDataAndCurrentUser
-                    .compose<Pair<ProjectData, User?>>(takeWhen(this.creatorInfoVariantClicked))
+                    .compose<Pair<ProjectData, User?>>(takeWhen(creatorInfoClicked))
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose(bindToLifecycle())
                     .subscribe { this.optimizely.track(CREATOR_DETAILS_CLICKED, it.second, it.first.refTagFromIntent()) }

@@ -10,8 +10,7 @@
   android:orientation="horizontal"
   android:layout_marginTop="@dimen/grid_3"
   android:layout_marginBottom="@dimen/grid_2"
-  tools:ignore="InconsistentLayout"
-  tools:showIn="@layout/project_media_header">
+  tools:ignore="InconsistentLayout">
 
   <ImageView
     android:layout_width="@dimen/project_avatar_width"

@@ -20,6 +20,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ProjectViewUtils;
 import com.kickstarter.libs.utils.SocialUtils;
@@ -59,6 +60,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   private final KSString ksString;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
+  protected @Bind(R.id.avatar_variant) ImageView avatarVariantImageView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
   protected @Bind(R.id.back_project_button) @Nullable MaterialButton backProjectButton;
@@ -69,7 +71,12 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
   protected @Bind(R.id.usd_conversion_text_view) TextView conversionTextView;
+  protected @Bind(R.id.creator_details) TextView creatorDetailsTextView;
+  protected @Bind(R.id.creator_info) ViewGroup creatorInfoContainer;
+  protected @Bind(R.id.creator_info_loading_container) ViewGroup creatorInfoLoadingContainer;
+  protected @Bind(R.id.creator_info_variant) ViewGroup creatorInfoVariantContainer;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
+  protected @Bind(R.id.creator_name_variant) TextView creatorNameVariantTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.featured) TextView featuredTextView;
@@ -113,6 +120,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindDrawable(R.drawable.click_indicator_light_masked) Drawable clickIndicatorLightMaskedDrawable;
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
+  protected @BindString(R.string.projects_launched_count_created_projects_backed_count_backed) String createdAndBackedProjectsString;
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
   protected @BindString(R.string.discovery_baseball_card_stats_convert_from_pledged_of_goal) String convertedFromString;
@@ -137,6 +145,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     void projectViewHolderBlurbVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderCreatorInfoVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderDashboardClicked(ProjectViewHolder viewHolder);
     void projectViewHolderManagePledgeClicked(ProjectViewHolder viewHolder);
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
@@ -155,12 +164,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.avatarPhotoUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(url ->
-        Picasso.with(context())
-          .load(url)
-          .transform(new CircleTransformation())
-          .into(this.avatarImageView)
-      );
+      .subscribe(this::setAvatar);
 
     this.viewModel.outputs.backersCountTextViewText()
       .compose(bindToLifecycle())
@@ -192,10 +196,30 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this.commentsCountTextView::setText);
 
+    this.viewModel.outputs.creatorBackedAndLaunchedProjectsCount()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setCreatorDetailsTextView);
+
+    this.viewModel.outputs.creatorDetailsLoadingContainerIsVisible()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(visible -> ViewUtils.setGone(this.creatorInfoLoadingContainer, !visible));
+
+    this.viewModel.outputs.creatorDetailsVariantIsVisible()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setCreatorDetailsVariantVisibility);
+
     this.viewModel.outputs.creatorNameTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.creatorNameTextView::setText);
+
+    this.viewModel.outputs.creatorNameTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.creatorNameVariantTextView::setText);
 
     this.viewModel.outputs.deadlineCountdownTextViewText()
       .compose(bindToLifecycle())
@@ -411,12 +435,35 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.inputs.configureWith(projectData);
   }
 
+  private void setAvatar(final @NonNull String url) {
+    Picasso.with(context())
+      .load(url)
+      .transform(new CircleTransformation())
+      .into(this.avatarImageView);
+
+    Picasso.with(context())
+      .load(url)
+      .transform(new CircleTransformation())
+      .into(this.avatarVariantImageView);
+  }
+
   private void setConvertedCurrencyView(final @NonNull Pair<String, String> pledgedAndGoal) {
     this.conversionTextView.setText(
       this.ksString.format(
         this.convertedFromString, "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
       )
     );
+  }
+
+  private void setCreatorDetailsTextView(final @NonNull Pair<Integer, Integer> backedAndLaunchedProjectsCount) {
+    this.creatorDetailsTextView.setText(this.ksString.format(this.createdAndBackedProjectsString,
+      "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
+      "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)));
+  }
+
+  private void setCreatorDetailsVariantVisibility(final boolean visible) {
+    ViewUtils.setGone(this.creatorInfoVariantContainer, !visible);
+    ViewUtils.setGone(this.creatorInfoContainer, visible);
   }
 
   private void setGoalTextView(final @NonNull String goalString) {
@@ -554,6 +601,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick(R.id.creator_info)
   public void creatorNameOnClick() {
     this.delegate.projectViewHolderCreatorClicked(this);
+  }
+
+  @OnClick(R.id.creator_info_variant)
+  public void creatorInfoVariantOnClick() {
+    this.delegate.projectViewHolderCreatorInfoVariantClicked(this);
   }
 
   @OnClick(R.id.project_dashboard_button)

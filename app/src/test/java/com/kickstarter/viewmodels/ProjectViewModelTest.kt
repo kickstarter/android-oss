@@ -652,6 +652,18 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorInfoVariantClicked()
+        this.startCreatorBioWebViewActivity.assertValues(project)
+    }
+
+    @Test
     fun testStartCreatorDashboardActivity() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())

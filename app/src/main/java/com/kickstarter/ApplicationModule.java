@@ -639,7 +639,7 @@ public final class ApplicationModule {
     final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
       .withSDKKey(optimizelyKey)
       .withDatafileDownloadInterval(60L * 10L)
-      .withEventDispatchInterval(60L)
+      .withEventDispatchInterval(2L)
       .build(context);
 
     optimizelyManager.initialize(context, null, optimizely -> {

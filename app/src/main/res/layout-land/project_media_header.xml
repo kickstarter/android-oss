@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -68,59 +66,109 @@
 
     </LinearLayout>
 
-    <LinearLayout
-      android:id="@+id/creator_info"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+    <FrameLayout
+      android:id="@+id/creator_info_container"
       android:layout_below="@id/name_creator_view"
-      android:background="@drawable/click_indicator_light_masked"
-      android:focusable="true"
-      android:gravity="center_vertical"
-      android:orientation="horizontal"
-      android:paddingBottom="@dimen/grid_2"
-      android:paddingTop="@dimen/grid_3"
-      tools:ignore="InconsistentLayout">
-
-      <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="@dimen/project_avatar_width"
-        android:layout_height="@dimen/project_avatar_height"
-        android:layout_marginEnd="@dimen/grid_3_half"
-        android:scaleType="centerCrop"
-        tools:background="@color/ksr_green_700"
-        tools:ignore="ContentDescription" />
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/creator_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:background="@drawable/click_indicator_light_masked"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/grid_3"
+        android:paddingBottom="@dimen/grid_2"
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout">
 
-        <TextView
-          style="@style/FootnotePrimary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/project_menu_created_by"
-          android:textColor="@color/white" />
+        <ImageView
+          android:id="@+id/avatar"
+          android:layout_width="@dimen/project_avatar_width"
+          android:layout_height="@dimen/project_avatar_height"
+          android:layout_marginEnd="@dimen/grid_3_half"
+          android:scaleType="centerCrop"
+          tools:ignore="ContentDescription"
+          tools:src="@drawable/avatar_stroke" />
 
-        <TextView
-          android:id="@+id/creator_name"
-          style="@style/SubheadlineMedium"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:maxLines="1"
-          android:textColor="@color/white"
-          tools:text="Creator Name" />
+          android:layout_weight="1"
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/FootnotePrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/project_menu_created_by"
+            android:textColor="@color/white" />
+
+          <TextView
+            android:id="@+id/creator_name"
+            style="@style/SubheadlineMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            tools:text="Creator Name" />
+        </LinearLayout>
+
       </LinearLayout>
 
-    </LinearLayout>
+      <LinearLayout
+        android:id="@+id/creator_info_variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/click_indicator_light_masked"
+        android:baselineAligned="false"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/grid_3"
+        android:paddingBottom="@dimen/grid_2"
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout">
+
+        <include layout="@layout/creator_avatar_verified" />
+
+        <LinearLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:orientation="vertical">
+
+          <TextView
+            android:id="@+id/creator_name_variant"
+            style="@style/FootnoteWhiteMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Creator Name" />
+
+          <TextView
+            android:id="@+id/creator_details"
+            style="@style/FootnoteWhiteMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="3 created • 2 launched" />
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <include layout="@layout/loading_placeholder_creator_info" />
+    </FrameLayout>
 
     <LinearLayout
       android:id="@+id/blurb_category_location_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@id/creator_info"
+      android:layout_below="@id/creator_info_container"
       android:layout_marginTop="@dimen/grid_4"
       android:orientation="vertical">
 
@@ -151,8 +199,8 @@
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_3"
           android:layout_marginTop="@dimen/grid_3"
+          android:layout_marginBottom="@dimen/grid_3"
           android:gravity="center_vertical"
           android:orientation="horizontal">
 
@@ -184,8 +232,8 @@
         android:background="@drawable/click_indicator_light_masked"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible"
-        tools:ignore="InconsistentLayout">
+        tools:ignore="InconsistentLayout"
+        tools:visibility="visible">
 
         <TextView
           android:id="@+id/blurb_variant"
@@ -227,8 +275,8 @@
           style="@style/BodyWhite"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingEnd="@dimen/grid_5"
           android:paddingStart="@dimen/grid_1"
+          android:paddingEnd="@dimen/grid_5"
           tools:ignore="InconsistentLayout"
           tools:text="Category name" />
 

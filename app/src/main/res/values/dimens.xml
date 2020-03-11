@@ -118,6 +118,8 @@
   <dimen name="profile_card_photo_width">160dp</dimen>
   <dimen name="project_avatar_width">@dimen/grid_7</dimen>
   <dimen name="project_avatar_height">@dimen/grid_7</dimen>
+  <dimen name="project_avatar_check_width">13dp</dimen>
+  <dimen name="project_avatar_check_height">13dp</dimen>
   <dimen name="project_card_photo_landscape_height">135dp</dimen>
   <dimen name="project_card_photo_landscape_width">240dp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_5</dimen>

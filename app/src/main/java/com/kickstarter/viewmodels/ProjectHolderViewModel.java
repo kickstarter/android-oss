@@ -535,11 +535,11 @@ public interface ProjectHolderViewModel {
     @Override public @NonNull Observable<Pair<Integer, Integer>> creatorBackedAndLaunchedProjectsCount() {
       return this.creatorBackedAndLaunchedProjectsCount;
     }
-    @Override public @NonNull Observable<Boolean> creatorDetailsVariantIsVisible() {
-      return this.creatorDetailsVariantIsVisible;
-    }
     @Override public @NonNull Observable<Boolean> creatorDetailsLoadingContainerIsVisible() {
       return this.creatorDetailsLoadingContainerIsVisible;
+    }
+    @Override public @NonNull Observable<Boolean> creatorDetailsVariantIsVisible() {
+      return this.creatorDetailsVariantIsVisible;
     }
     @Override public @NonNull Observable<String> creatorNameTextViewText() {
       return this.creatorNameTextViewText;

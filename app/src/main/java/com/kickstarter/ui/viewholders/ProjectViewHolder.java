@@ -199,7 +199,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.viewModel.outputs.creatorBackedAndLaunchedProjectsCount()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::setCreatorDetails);
+      .subscribe(this::setCreatorDetailsTextView);
 
     this.viewModel.outputs.creatorDetailsLoadingContainerIsVisible()
       .compose(bindToLifecycle())
@@ -455,15 +455,15 @@ public final class ProjectViewHolder extends KSViewHolder {
     );
   }
 
-  private void setCreatorDetailsVariantVisibility(final boolean visible) {
-    ViewUtils.setGone(this.creatorInfoVariantContainer, !visible);
-    ViewUtils.setGone(this.creatorInfoContainer, visible);
-  }
-
-  private void setCreatorDetails(final @NonNull Pair<Integer, Integer> backedAndLaunchedProjectsCount) {
+  private void setCreatorDetailsTextView(final @NonNull Pair<Integer, Integer> backedAndLaunchedProjectsCount) {
     this.creatorDetailsTextView.setText(this.ksString.format(this.createdAndBackedProjectsString,
       "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
       "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)));
+  }
+
+  private void setCreatorDetailsVariantVisibility(final boolean visible) {
+    ViewUtils.setGone(this.creatorInfoVariantContainer, !visible);
+    ViewUtils.setGone(this.creatorInfoContainer, visible);
   }
 
   private void setGoalTextView(final @NonNull String goalString) {

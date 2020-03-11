@@ -742,8 +742,10 @@ interface ProjectViewModel {
             val currentFullProjectData = currentProjectData
                     .filter { it.project().hasRewards() }
 
-            val fullProjectDataAndPledgeFlowContext = currentFullProjectData
+            val fullProjectDataAndCurrentUser = currentFullProjectData
                     .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+
+            val fullProjectDataAndPledgeFlowContext = fullProjectDataAndCurrentUser
                     .map { Pair(it.first, pledgeFlowContext(it.first.project(), it.second)) }
 
             fullProjectDataAndPledgeFlowContext
@@ -823,8 +825,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
 
-            currentFullProjectData
-                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+            fullProjectDataAndCurrentUser
                     .compose<Pair<ProjectData, User?>>(takeWhen(this.blurbVariantClicked))
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose(bindToLifecycle())
@@ -834,13 +835,18 @@ interface ProjectViewModel {
                     .map { isPledgeCTA(it) }
                     .compose<Boolean>(takeWhen(this.nativeProjectActionButtonClicked))
 
-            currentFullProjectData
-                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+            fullProjectDataAndCurrentUser
                     .compose<Pair<Pair<ProjectData, User?>, Boolean>>(combineLatestPair(shouldTrackCTAClickedEvent))
                     .filter { it.second }
                     .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.second, it.first.refTagFromIntent()) }
+
+            fullProjectDataAndCurrentUser
+                    .compose<Pair<ProjectData, User?>>(takeWhen(this.creatorInfoVariantClicked))
+                    .filter { it.first.project().isLive && !it.first.project().isBacking }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.optimizely.track(CREATOR_DETAILS_CLICKED, it.second, it.first.refTagFromIntent()) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

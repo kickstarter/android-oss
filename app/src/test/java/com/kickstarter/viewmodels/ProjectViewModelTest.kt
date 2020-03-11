@@ -652,7 +652,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails() {
+    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_liveNotBackedProject() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -661,6 +661,33 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorInfoVariantClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertValue("Creator Details Clicked")
+    }
+
+    @Test
+    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_backedProject() {
+        val project = ProjectFactory.backedProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorInfoVariantClicked()
+        this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_endedProject() {
+        val project = ProjectFactory.successfulProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorInfoVariantClicked()
+        this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertNoValues()
     }
 
     @Test

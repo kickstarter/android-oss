@@ -14,13 +14,16 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .backedProjectsCount(10)
                 .build()
-        val attributes = ExperimentUtils.attributes(user, RefTag.discovery(), "10", ApiEndpoint.STAGING)
-        assertEquals(10, attributes["user_backed_projects_count"])
-        assertEquals("US", attributes["user_country"])
+        val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", ApiEndpoint.STAGING)
+        assertNotNull(attributes["distinct_id"])
+        assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 10", attributes["session_os_version"])
         assertEquals("discovery", attributes["session_ref_tag"])
+        assertEquals("search", attributes["session_referrer_credit"])
         assertEquals(true, attributes["session_user_is_logged_in"])
-        assertNotNull(attributes["distinct_id"])
+        assertEquals(10, attributes["user_backed_projects_count"])
+        assertEquals("US", attributes["user_country"])
     }
 
     @Test
@@ -29,34 +32,43 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
                 .toBuilder()
                 .backedProjectsCount(10)
                 .build()
-        val attributes = ExperimentUtils.attributes(user, RefTag.discovery(), "10", ApiEndpoint.PRODUCTION)
-        assertEquals(10, attributes["user_backed_projects_count"])
-        assertEquals("US", attributes["user_country"])
+        val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", ApiEndpoint.PRODUCTION)
+        assertNull(attributes["distinct_id"])
+        assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 10", attributes["session_os_version"])
         assertEquals("discovery", attributes["session_ref_tag"])
+        assertEquals("search", attributes["session_referrer_credit"])
         assertEquals(true, attributes["session_user_is_logged_in"])
-        assertNull(attributes["distinct_id"])
+        assertEquals(10, attributes["user_backed_projects_count"])
+        assertEquals("US", attributes["user_country"])
     }
 
     @Test
     fun attributes_loggedOutUser_notProd() {
-        val attributes = ExperimentUtils.attributes(null, null, "9", ApiEndpoint.STAGING)
+        val experimentData = ExperimentData(null, RefTag.discovery(), RefTag.search())
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", ApiEndpoint.STAGING)
+        assertNotNull(attributes["distinct_id"])
+        assertEquals("9.9.9", attributes["session_app_release_version"])
+        assertEquals("Android 9", attributes["session_os_version"])
+        assertEquals("discovery", attributes["session_ref_tag"])
+        assertEquals("search", attributes["session_referrer_credit"])
+        assertEquals(false, attributes["session_user_is_logged_in"])
         assertEquals(0, attributes["user_backed_projects_count"])
         assertEquals("US", attributes["user_country"])
-        assertEquals("Android 9", attributes["session_os_version"])
-        assertNull(attributes["session_ref_tag"])
-        assertEquals(false, attributes["session_user_is_logged_in"])
-        assertNotNull(attributes["distinct_id"])
     }
 
     @Test
     fun attributes_loggedOutUser_prod() {
-        val attributes = ExperimentUtils.attributes(null, null, "9", ApiEndpoint.PRODUCTION)
+        val experimentData = ExperimentData(null, RefTag.discovery(), RefTag.search())
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", ApiEndpoint.PRODUCTION)
+        assertNull(attributes["distinct_id"])
+        assertEquals("9.9.9", attributes["session_app_release_version"])
+        assertEquals("Android 9", attributes["session_os_version"])
+        assertEquals("discovery", attributes["session_ref_tag"])
+        assertEquals("search", attributes["session_referrer_credit"])
+        assertEquals(false, attributes["session_user_is_logged_in"])
         assertEquals(0, attributes["user_backed_projects_count"])
         assertEquals("US", attributes["user_country"])
-        assertEquals("Android 9", attributes["session_os_version"])
-        assertNull(attributes["session_ref_tag"])
-        assertEquals(false, attributes["session_user_is_logged_in"])
-        assertNull(attributes["distinct_id"])
     }
 }

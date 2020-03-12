@@ -768,11 +768,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLiveAndNotBacked_variant1() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
-                .optimizely(object: MockExperimentsClientType() {
-                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
-                        return OptimizelyExperiment.Variant.VARIANT_1
-                    }
-                })
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
                 .build())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
@@ -784,11 +780,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_projectIsLiveAndNotBacked_variant2() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
-                .optimizely(object: MockExperimentsClientType() {
-                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
-                        return OptimizelyExperiment.Variant.VARIANT_2
-                    }
-                })
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
                 .build())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))

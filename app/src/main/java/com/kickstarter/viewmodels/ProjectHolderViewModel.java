@@ -246,7 +246,8 @@ public interface ProjectHolderViewModel {
         .compose(combineLatestPair(this.currentUser.observable()));
 
       projectDataAndCurrentUser
-        .map (projectDataAndUser -> new ExperimentData(projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent(), projectDataAndUser.first.refTagFromCookie()) )
+        .map(projectDataAndUser -> new ExperimentData(projectDataAndUser.second, projectDataAndUser.first
+          .refTagFromIntent(), projectDataAndUser.first.refTagFromCookie()))
         .map(experimentData -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, experimentData))
         .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
         .compose(bindToLifecycle())

@@ -669,13 +669,17 @@ interface ProjectViewModel {
             val currentProjectAndUser = currentProjectWhenFeatureEnabled
                     .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
 
-            Observable.combineLatest(currentProjectAndUser, refTag)
-            { projectAndUser, ref ->
-                ProjectViewUtils.pledgeActionButtonText(
-                        projectAndUser.first,
-                        projectAndUser.second,
-                        this.optimizely.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, projectAndUser.second, ref))
+            Observable.combineLatest(currentProjectData, nativeCheckoutEnabled, this.currentUser.observable())
+            { data, checkoutEnabled, user ->
+                if (checkoutEnabled) {
+                    val experimentData = ExperimentData(user, data.refTagFromIntent(), data.refTagFromCookie())
+                    ProjectViewUtils.pledgeActionButtonText(
+                            data.project(),
+                            user,
+                            this.optimizely.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, experimentData))
+                } else null
             }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonText)
@@ -823,27 +827,29 @@ interface ProjectViewModel {
                     .subscribe { this.koala.trackOpenedAppBanner() }
 
             fullProjectDataAndCurrentUser
-                    .compose<Pair<ProjectData, User?>>(takeWhen(this.blurbVariantClicked))
-                    .filter { it.first.project().isLive && !it.first.project().isBacking }
+                    .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
+                    .compose<Pair<ExperimentData, Project>>(takeWhen(this.blurbVariantClicked))
+                    .filter { it.second.isLive && !it.second.isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, it.second, it.first.refTagFromIntent()) }
+                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, it.first) }
 
             val shouldTrackCTAClickedEvent = this.pledgeActionButtonText
                     .map { isPledgeCTA(it) }
                     .compose<Boolean>(takeWhen(this.nativeProjectActionButtonClicked))
 
             fullProjectDataAndCurrentUser
-                    .compose<Pair<Pair<ProjectData, User?>, Boolean>>(combineLatestPair(shouldTrackCTAClickedEvent))
+                    .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
+                    .compose<Pair<ExperimentData, Boolean>>(combineLatestPair(shouldTrackCTAClickedEvent))
                     .filter { it.second }
-                    .map { it.first }
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.second, it.first.refTagFromIntent()) }
+                    .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
 
             fullProjectDataAndCurrentUser
-                    .compose<Pair<ProjectData, User?>>(takeWhen(creatorInfoClicked))
-                    .filter { it.first.project().isLive && !it.first.project().isBacking }
+                    .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
+                    .compose<Pair<ExperimentData, Project>>(takeWhen(creatorInfoClicked))
+                    .filter { it.second.isLive && !it.second.isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(CREATOR_DETAILS_CLICKED, it.second, it.first.refTagFromIntent()) }
+                    .subscribe { this.optimizely.track(CREATOR_DETAILS_CLICKED, it.first) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

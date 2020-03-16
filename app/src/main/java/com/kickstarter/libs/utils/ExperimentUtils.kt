@@ -8,14 +8,18 @@ import java.util.*
 
 object ExperimentUtils {
 
-    fun attributes(user: User?, refTag: RefTag?, buildVersion: String, apiEndpoint: ApiEndpoint): MutableMap<String, Any?> {
+    fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, apiEndpoint: ApiEndpoint): MutableMap<String, Any?> {
         return mutableMapOf(
-                Pair("user_backed_projects_count", user?.backedProjectsCount() ?: 0),
-                Pair("user_country", user?.location()?.country() ?: Locale.getDefault().country),
-                Pair("session_os_version", String.format("Android %s", buildVersion)),
-                Pair("session_ref_tag", refTag?.tag()),
-                Pair("session_user_is_logged_in", user != null),
-                Pair("distinct_id", if (apiEndpoint != ApiEndpoint.PRODUCTION) FirebaseInstanceId.getInstance().id else null)
+                Pair("distinct_id", if (apiEndpoint != ApiEndpoint.PRODUCTION) FirebaseInstanceId.getInstance().id else null),
+                Pair("session_app_release_version", appVersion),
+                Pair("session_os_version", String.format("Android %s", OSVersion)),
+                Pair("session_ref_tag", experimentData.intentRefTag?.tag()),
+                Pair("session_referrer_credit", experimentData.cookieRefTag?.tag()),
+                Pair("session_user_is_logged_in", experimentData.user != null),
+                Pair("user_backed_projects_count", experimentData.user?.backedProjectsCount() ?: 0),
+                Pair("user_country", experimentData.user?.location()?.country() ?: Locale.getDefault().country)
         )
     }
 }
+
+data class ExperimentData(val user: User?, val intentRefTag: RefTag?, val cookieRefTag: RefTag?)

@@ -436,7 +436,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
             .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
 
     private fun renderProject(projectData: ProjectData) {
-        this.adapter.takeProject(projectData, true)
+        this.adapter.takeProject(projectData)
         project_recycler_view.setPadding(0, 0, 0, rewardsSheetGuideline())
     }
 

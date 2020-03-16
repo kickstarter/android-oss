@@ -538,8 +538,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
             startActivity(Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, projectData.project())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
-                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-                    .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true))
+                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData))
         }
     }
 

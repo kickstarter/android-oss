@@ -2,14 +2,11 @@ package com.kickstarter.viewmodels;
 
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
@@ -30,6 +27,7 @@ import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -57,9 +55,6 @@ public interface ThanksViewModel {
 
     /** Emits when we should finish the {@link com.kickstarter.ui.activities.ThanksActivity}. */
     Observable<Void> finish();
-
-    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
-    Observable<Void> resumeDiscoveryActivity();
 
     /** Show a dialog confirming the user will be signed up to the games newsletter. Required for German users. */
     Observable<Void> showConfirmGamesNewsletterDialog();
@@ -118,23 +113,9 @@ public interface ThanksViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
 
-      final Observable<Boolean> nativeCheckoutEnabled = intent()
-        .map(i -> i.getBooleanExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false))
-        .take(1);
-
-      nativeCheckoutEnabled
-        .compose(takeWhen(this.closeButtonClicked))
-        .filter(BooleanUtils::isTrue)
-        .compose(ignoreValues())
+      this.closeButtonClicked
         .compose(bindToLifecycle())
         .subscribe(this.finish);
-
-      nativeCheckoutEnabled
-        .compose(takeWhen(this.closeButtonClicked))
-        .filter(BooleanUtils::isFalse)
-        .compose(ignoreValues())
-        .compose(bindToLifecycle())
-        .subscribe(this.resumeDiscoveryActivity);
 
       this.projectCardViewHolderClicked
         .compose(bindToLifecycle())
@@ -288,7 +269,6 @@ public interface ThanksViewModel {
 
     private final BehaviorSubject<ThanksData> adapterData = BehaviorSubject.create();
     private final PublishSubject<Void> finish = PublishSubject.create();
-    private final PublishSubject<Void> resumeDiscoveryActivity = PublishSubject.create();
     private final PublishSubject<Void> showConfirmGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showRatingDialog = PublishSubject.create();
@@ -317,9 +297,6 @@ public interface ThanksViewModel {
     }
     @Override public @NonNull Observable<Void> finish() {
       return this.finish;
-    }
-    @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
-      return this.resumeDiscoveryActivity;
     }
     @Override public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
       return this.showConfirmGamesNewsletterDialog;

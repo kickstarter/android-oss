@@ -3,8 +3,6 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -33,13 +31,13 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
   private ThanksViewModel.ViewModel vm;
   private final TestSubscriber<ThanksData> adapterData = new TestSubscriber<>();
   private final TestSubscriber<Void> finish = new TestSubscriber<>();
-  private final TestSubscriber<Void> resumeDiscoveryActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
   private final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
@@ -50,7 +48,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     this.vm = new ThanksViewModel.ViewModel(environment);
     this.vm.outputs.adapterData().subscribe(this.adapterData);
     this.vm.outputs.finish().subscribe(this.finish);
-    this.vm.outputs.resumeDiscoveryActivity().subscribe(this.resumeDiscoveryActivity);
     this.vm.outputs.showGamesNewsletterDialog().subscribe(this.showGamesNewsletterDialogTest);
     this.vm.outputs.showRatingDialog().subscribe(this.showRatingDialogTest);
     this.vm.outputs.showConfirmGamesNewsletterDialog().subscribe(this.showConfirmGamesNewsletterDialogTest);
@@ -72,42 +69,15 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testFinishEmits_whenNativeCheckoutExtra_isTrue() {
+  public void testFinishEmits() {
     setUpEnvironment(environment());
 
     final Intent intent = new Intent()
-      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
-      .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true);
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project());
     this.vm.intent(intent);
     this.vm.inputs.closeButtonClicked();
 
     this.finish.assertValueCount(1);
-    this.resumeDiscoveryActivity.assertNoValues();
-  }
-
-  @Test
-  public void testResumeDiscoveryActivityEmits_whenNativeCheckoutExtra_isNull() {
-    setUpEnvironment(environment());
-
-    this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    this.vm.inputs.closeButtonClicked();
-
-    this.finish.assertNoValues();
-    this.resumeDiscoveryActivity.assertValueCount(1);
-  }
-
-  @Test
-  public void testResumeDiscoveryActivityEmits_whenNativeCheckoutExtra_isFalse() {
-    setUpEnvironment(environment());
-
-    final Intent intent = new Intent()
-      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
-      .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false);
-    this.vm.intent(intent);
-    this.vm.inputs.closeButtonClicked();
-
-    this.finish.assertNoValues();
-    this.resumeDiscoveryActivity.assertValueCount(1);
   }
 
   @Test
@@ -335,7 +305,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testTracking_whenCheckoutDataAndPledgeDataExtrasNull() {
+  public void testTracking_whenCheckoutDataAndPledgeDataExtrasExist() {
     setUpEnvironment(environment());
 
     final Project project = ProjectFactory.project();
@@ -346,8 +316,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-            .putExtra(IntentKey.PROJECT, project)
-            .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true);
+            .putExtra(IntentKey.PROJECT, project);
     this.vm.intent(intent);
 
     this.lakeTest.assertValue("Thanks Page Viewed");

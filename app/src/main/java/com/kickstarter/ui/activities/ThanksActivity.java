@@ -9,7 +9,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
@@ -97,11 +96,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel.ViewModel
           showRatingDialog();
         }
       });
-
-    this.viewModel.outputs.resumeDiscoveryActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> ApplicationUtils.resumeDiscoveryActivity(this));
 
     this.viewModel.outputs.startDiscoveryActivity()
       .compose(bindToLifecycle())

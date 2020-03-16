@@ -498,13 +498,10 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startCheckoutActivity)
 
-            currentProject
-                    .compose<Project>(takeWhen(this.creatorInfoVariantClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startCreatorBioWebViewActivity)
+            val creatorInfoClicked = Observable.merge(this.creatorNameTextViewClicked, this.creatorInfoVariantClicked)
 
             currentProject
-                    .compose<Project>(takeWhen(this.creatorNameTextViewClicked))
+                    .compose<Project>(takeWhen(creatorInfoClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCreatorBioWebViewActivity)
 
@@ -746,8 +743,10 @@ interface ProjectViewModel {
             val currentFullProjectData = currentProjectData
                     .filter { it.project().hasRewards() }
 
-            val fullProjectDataAndPledgeFlowContext = currentFullProjectData
+            val fullProjectDataAndCurrentUser = currentFullProjectData
                     .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+
+            val fullProjectDataAndPledgeFlowContext = fullProjectDataAndCurrentUser
                     .map { Pair(it.first, pledgeFlowContext(it.first.project(), it.second)) }
 
             fullProjectDataAndPledgeFlowContext
@@ -827,8 +826,7 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
 
-            currentFullProjectData
-                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+            fullProjectDataAndCurrentUser
                     .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
                     .compose<Pair<ExperimentData, Project>>(takeWhen(this.blurbVariantClicked))
                     .filter { it.second.isLive && !it.second.isBacking }
@@ -839,14 +837,19 @@ interface ProjectViewModel {
                     .map { isPledgeCTA(it) }
                     .compose<Boolean>(takeWhen(this.nativeProjectActionButtonClicked))
 
-            currentFullProjectData
-                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+            fullProjectDataAndCurrentUser
                     .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
                     .compose<Pair<ExperimentData, Boolean>>(combineLatestPair(shouldTrackCTAClickedEvent))
                     .filter { it.second }
-                    .map { it.first }
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it) }
+                    .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
+
+            fullProjectDataAndCurrentUser
+                    .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
+                    .compose<Pair<ExperimentData, Project>>(takeWhen(creatorInfoClicked))
+                    .filter { it.second.isLive && !it.second.isBacking }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.optimizely.track(CREATOR_DETAILS_CLICKED, it.first) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

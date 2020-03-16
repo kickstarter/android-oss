@@ -6,11 +6,9 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.models.OptimizelyExperiment;
-import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -67,7 +65,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> percentageFundedProgressBarIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> playButtonIsGone = new TestSubscriber<>();
   private final TestSubscriber<String> pledgedTextViewText = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> projectActionButtonContainerIsGone = new TestSubscriber<>();
   private final TestSubscriber<Integer> projectDashboardButtonText = new TestSubscriber<>();
   private final TestSubscriber<Boolean> projectDashboardContainerIsGone = new TestSubscriber<>();
   private final TestSubscriber<DateTime> projectDisclaimerGoalReachedDateTime = new TestSubscriber<>();
@@ -120,7 +117,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.percentageFundedProgressBarIsGone().subscribe(this.percentageFundedProgressBarIsGone);
     this.vm.outputs.playButtonIsGone().subscribe(this.playButtonIsGone);
     this.vm.outputs.pledgedTextViewText().subscribe(this.pledgedTextViewText);
-    this.vm.outputs.projectActionButtonContainerIsGone().subscribe(this.projectActionButtonContainerIsGone);
     this.vm.outputs.projectDashboardButtonText().subscribe(this.projectDashboardButtonText);
     this.vm.outputs.projectDashboardContainerIsGone().subscribe(this.projectDashboardContainerIsGone);
     this.vm.outputs.projectDisclaimerGoalReachedDateTime().subscribe(this.projectDisclaimerGoalReachedDateTime);
@@ -326,33 +322,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.successfulProject()));
 
     this.percentageFundedProgressBarIsGone.assertValues(true);
-  }
-
-  @Test
-  public void testProjectActionButtonContainerIsGone_whenNativeCheckoutDisabled() {
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.config());
-    final Environment environment = environment()
-      .toBuilder()
-      .currentConfig(currentConfig)
-      .build();
-    setUpEnvironment(environment, ProjectDataFactory.Companion.project(ProjectFactory.project()));
-
-    this.projectActionButtonContainerIsGone.assertValue(false);
-  }
-
-  @Test
-  public void testProjectActionButtonContainerIsGone_whenNativeCheckoutEnabled() {
-    final MockCurrentConfig currentConfig = new MockCurrentConfig();
-    currentConfig.config(ConfigFactory.configWithFeatureEnabled(FeatureKey.ANDROID_NATIVE_CHECKOUT));
-    final Environment environment = environment()
-      .toBuilder()
-      .currentConfig(currentConfig)
-      .nativeCheckoutPreference(new MockBooleanPreference(true))
-      .build();
-    setUpEnvironment(environment, ProjectDataFactory.Companion.project(ProjectFactory.project()));
-
-    this.projectActionButtonContainerIsGone.assertValue(true);
   }
 
   @Test

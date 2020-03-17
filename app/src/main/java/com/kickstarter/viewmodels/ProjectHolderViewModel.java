@@ -4,13 +4,11 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.models.OptimizelyExperiment;
-import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -207,17 +205,14 @@ public interface ProjectHolderViewModel {
     private final ApolloClientType apolloClient;
     private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
-    private final BooleanPreferenceType nativeCheckoutPreference;
     private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      final CurrentConfigType currentConfig = environment.currentConfig();
       this.apolloClient = environment.apolloClient();
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
-      this.nativeCheckoutPreference = environment.nativeCheckoutPreference();
       this.optimizely = environment.optimizely();
 
       final Observable<Project> project = this.projectData

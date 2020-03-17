@@ -828,7 +828,7 @@ interface ProjectViewModel {
 
             fullProjectDataAndCurrentUser
                     .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
-                    .compose<Pair<ExperimentData, Project>>(takeWhen(this.blurbVariantClicked))
+                    .compose<Pair<ExperimentData, Project>>(takeWhen(blurbClicked))
                     .filter { it.second.isLive && !it.second.isBacking }
                     .compose(bindToLifecycle())
                     .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, it.first) }

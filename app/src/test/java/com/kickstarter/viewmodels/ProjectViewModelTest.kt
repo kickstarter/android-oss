@@ -589,7 +589,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartCampaignWebViewActivity_whenBlurbClicked() {
+    fun testStartCampaignWebViewActivity_whenBlurbClicked_liveNotBackedProject() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -598,6 +598,33 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
+        this.experimentsTest.assertValue("Campaign Details Button Clicked")
+    }
+
+    @Test
+    fun testStartCampaignWebViewActivity_whenBlurbClicked_backedProject() {
+        val project = ProjectFactory.backedProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.blurbTextViewClicked()
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testStartCampaignWebViewActivity_whenBlurbClicked_endedProject() {
+        val project = ProjectFactory.successfulProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.blurbTextViewClicked()
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
+        this.experimentsTest.assertNoValues()
     }
 
     @Test

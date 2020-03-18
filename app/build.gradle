@@ -127,7 +127,6 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-
     // Fixes build error hitting GC overhead limit
     dexOptions {
         javaMaxHeapSize "3072M"

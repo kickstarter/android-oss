@@ -25,6 +25,8 @@ import javax.inject.Inject;
 import androidx.annotation.CallSuper;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
+import androidx.work.Configuration;
+import androidx.work.WorkManager;
 import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
@@ -60,6 +62,8 @@ public class KSApplication extends MultiDexApplication {
     }
 
     this.pushNotifications.initialize();
+
+    WorkManager.initialize(this, new Configuration.Builder().build());
 
     final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
     registerActivityLifecycleCallbacks(appUtil);

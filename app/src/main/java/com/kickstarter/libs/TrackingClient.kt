@@ -45,39 +45,42 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     }
 
     final override fun track(eventName: String, additionalProperties: MutableMap<String, Any?>) {
-        val tag = type().tag
         try {
-            val eventData = trackingData(eventName, combinedProperties(additionalProperties))
-            val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
-                    IntentKey.EVENT_NAME to eventName,
-                    IntentKey.EVENT_DATA to eventData)
-
-            var requestBuilder: OneTimeWorkRequest.Builder? = null
-            if (type() == Type.KOALA) {
-                requestBuilder = OneTimeWorkRequestBuilder<KoalaWorker>()
-            } else if (type() == Type.LAKE) {
-                requestBuilder = OneTimeWorkRequestBuilder<LakeWorker>()
-            }
-
-            requestBuilder?.let {
-                val request = it
-                        .setInputData(data)
-                        .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
-                        .setConstraints(baseConstraints)
-                        .build()
-
-                WorkManager.getInstance(this.context)
-                        .enqueueUniqueWork(uniqueWorkName(tag), ExistingWorkPolicy.APPEND, request)
-
-                if (this.build.isDebug) {
-                    Timber.d("Queued $tag event: $eventData")
-                }
-            }
+            queueEvent(eventName, additionalProperties)
         } catch (e: JSONException) {
             if (this.build.isDebug) {
-                Timber.e("Failed to encode $tag event: $eventName")
+                Timber.e("Failed to encode ${type().tag} event: $eventName")
             }
-            Fabric.getLogger().e(TrackingClient::class.java.simpleName, "Failed to encode ${type()} event: $eventName")
+            Fabric.getLogger().e(TrackingClient::class.java.simpleName, "Failed to encode ${type().tag} event: $eventName")
+        }
+    }
+
+    private fun queueEvent(eventName: String, additionalProperties: MutableMap<String, Any?>) {
+        val eventData = trackingData(eventName, combinedProperties(additionalProperties))
+        val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
+                IntentKey.EVENT_NAME to eventName,
+                IntentKey.EVENT_DATA to eventData)
+
+        var requestBuilder: OneTimeWorkRequest.Builder? = null
+        if (type() == Type.KOALA) {
+            requestBuilder = OneTimeWorkRequestBuilder<KoalaWorker>()
+        } else if (type() == Type.LAKE) {
+            requestBuilder = OneTimeWorkRequestBuilder<LakeWorker>()
+        }
+
+        requestBuilder?.let {
+            val request = it
+                    .setInputData(data)
+                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                    .setConstraints(baseConstraints)
+                    .build()
+
+            WorkManager.getInstance(this.context)
+                    .enqueueUniqueWork(uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
+
+            if (this.build.isDebug) {
+                Timber.d("Queued ${type().tag} $eventName event: $eventData")
+            }
         }
     }
 

@@ -27,7 +27,10 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
             Result.success()
         } else {
             logTrackingError(eventName)
-            Result.retry()
+            when {
+                response.code() in 400..499 -> Result.failure()
+                else -> Result.retry()
+            }
         }
     }
 

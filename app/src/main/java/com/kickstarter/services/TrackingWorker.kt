@@ -23,10 +23,10 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
 
     protected fun handleResult(response: Response<ResponseBody>): Result {
         return if (response.isSuccessful) {
-            logResponse(response)
+            logResponse()
             Result.success()
         } else {
-            logTrackingError(eventName)
+            logTrackingError()
             when {
                 response.code() in 400..499 -> Result.failure()
                 else -> Result.retry()
@@ -34,18 +34,14 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
         }
     }
 
-    private fun logResponse(it: Response<ResponseBody>) {
-        if (it.isSuccessful) {
-            if (this.build.isDebug) {
-                Timber.d("Successfully tracked $tag event: $eventName")
-            }
-            Crashlytics.log(eventName)
-        } else {
-            logTrackingError(eventName)
+    private fun logResponse() {
+        if (this.build.isDebug) {
+            Timber.d("Successfully tracked $tag event: $eventName")
         }
+        Crashlytics.log(this.eventName)
     }
 
-    private fun logTrackingError(eventName: String) {
+    private fun logTrackingError() {
         if (this.build.isDebug) {
             Timber.e("Failed to track $tag event: $eventName")
         }

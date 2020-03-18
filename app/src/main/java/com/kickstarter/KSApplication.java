@@ -59,11 +59,10 @@ public class KSApplication extends MultiDexApplication {
 
     if (!isInUnitTests()) {
       setVisitorCookie();
+      WorkManager.initialize(this, new Configuration.Builder().build());
     }
 
     this.pushNotifications.initialize();
-
-    WorkManager.initialize(this, new Configuration.Builder().build());
 
     final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
     registerActivityLifecycleCallbacks(appUtil);

@@ -1,12 +1,9 @@
 package com.kickstarter.libs
 
 import android.content.Context
-import com.firebase.jobdispatcher.JobService
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.MapUtils
 import com.kickstarter.models.User
-import com.kickstarter.services.LakeBackgroundService
-import com.kickstarter.ui.IntentKey
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -27,15 +24,9 @@ class LakeTrackingClient(
         this.currentConfig.observable().subscribe { c -> this.config = c }
     }
 
-    override fun backgroundServiceClass(): Class<out JobService> = LakeBackgroundService::class.java
-
-    override fun cleanPropertiesOnly(): Boolean = true
-
-    override fun eventKey(): String = IntentKey.LAKE_EVENT
-
-    override fun eventNameKey(): String = IntentKey.LAKE_EVENT_NAME
-
-    override fun tag(): String = LakeTrackingClient::class.java.simpleName
+    override fun type(): Type {
+        return Type.LAKE
+    }
 
     @Throws(JSONException::class)
     override fun trackingData(eventName: String, newProperties: Map<String, Any?>): String {

@@ -17,7 +17,7 @@ class KoalaTest : KSRobolectricTestCase() {
 
     @Test
     fun testDefaultProperties() {
-        val client = MockTrackingClient(MockCurrentUser(), mockCurrentConfig(), false)
+        val client = client(null)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -32,7 +32,7 @@ class KoalaTest : KSRobolectricTestCase() {
     @Test
     fun testDefaultProperties_LoggedInUser() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
+        val client = client(user)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -49,7 +49,7 @@ class KoalaTest : KSRobolectricTestCase() {
     @Test
     fun testDiscoveryProperties() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
+        val client = client(user)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -81,7 +81,7 @@ class KoalaTest : KSRobolectricTestCase() {
     @Test
     fun testDiscoveryProperties_AllProjects() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
+        val client = client(user)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -112,7 +112,7 @@ class KoalaTest : KSRobolectricTestCase() {
     @Test
     fun testDiscoveryProperties_NoCategory() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
+        val client = client(user)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -146,7 +146,7 @@ class KoalaTest : KSRobolectricTestCase() {
     fun testProjectProperties() {
         val project = project()
 
-        val client = MockTrackingClient(MockCurrentUser(), mockCurrentConfig(), false)
+        val client = client(null)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -162,7 +162,7 @@ class KoalaTest : KSRobolectricTestCase() {
     fun testProjectProperties_LoggedInUser() {
         val project = project()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
+        val client = client(user)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -191,7 +191,7 @@ class KoalaTest : KSRobolectricTestCase() {
                 .updatesCount(5)
                 .build()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
+        val client = client(user)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -212,7 +212,7 @@ class KoalaTest : KSRobolectricTestCase() {
     fun testProjectProperties_LoggedInUser_IsProjectCreator() {
         val project = project().toBuilder().build()
         val creator = creator()
-        val client = MockTrackingClient(MockCurrentUser(creator), mockCurrentConfig(), false)
+        val client = client(creator)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -233,7 +233,7 @@ class KoalaTest : KSRobolectricTestCase() {
     fun testProjectProperties_LoggedInUser_HasStarred() {
         val project = project().toBuilder().isStarred(true).build()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), false)
+        val client = client(user)
         client.eventNames.subscribe(this.koalaTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val koala = Koala(client)
@@ -304,6 +304,9 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals("discovery", expectedProperties["session_ref_tag"])
         assertEquals("recommended", expectedProperties["session_referrer_credit"])
     }
+
+    private fun client(user: User?) = MockTrackingClient(user?.let { MockCurrentUser(it) }
+            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.KOALA)
 
     private fun project() =
             ProjectFactory.project().toBuilder()

@@ -26,9 +26,12 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
             logResponse()
             Result.success()
         } else {
-            logTrackingError()
-            when {
-                response.code() in 400..499 -> Result.failure()
+            val code = response.code()
+            logTrackingError(code)
+            when (code) {
+                in 400..499 -> {
+                    Result.failure()
+                }
                 else -> Result.retry()
             }
         }
@@ -41,10 +44,11 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
         Crashlytics.log(this.eventName)
     }
 
-    private fun logTrackingError() {
+    private fun logTrackingError(code: Int) {
+        val errorMessage = "$code Failed to track $tag event: $eventName"
         if (this.build.isDebug) {
-            Timber.e("Failed to track $tag event: $eventName")
+            Timber.e(errorMessage)
         }
-        Crashlytics.logException(Exception("Failed to track $tag event: $eventName"))
+        Crashlytics.logException(Exception(errorMessage))
     }
 }

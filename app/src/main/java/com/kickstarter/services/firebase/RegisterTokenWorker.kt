@@ -59,7 +59,7 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
     }
 
     private fun logResponse() {
-        val successMessage = "🔌 Successfully registered push token"
+        val successMessage = "📲 Successfully registered push token"
         if (this.build.isDebug) {
             Timber.d(successMessage)
         }

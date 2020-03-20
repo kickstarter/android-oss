@@ -10,13 +10,9 @@ import com.kickstarter.services.firebase.RegisterTokenWorker
 import com.kickstarter.services.firebase.UnregisterTokenWorker
 import com.kickstarter.ui.IntentKey
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability,
                       @param:ApplicationContext @field:ApplicationContext private val context: Context) : DeviceRegistrarType {
-
-    @Inject
-    lateinit var build: Build
 
     /**
      * If Play Services is available on this device, start a service to register it in the backend.

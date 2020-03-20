@@ -31,6 +31,7 @@ public final class IntentKey {
   public static final String PROJECT = "com.kickstarter.kickstarter.intent_project";
   public static final String PROJECT_DATA = "com.kickstarter.kickstarter.intent_project_data";
   public static final String PROJECT_PARAM = "com.kickstarter.kickstarter.intent_project_param";
+  public static final String PUSH_TOKEN = "com.kickstarter.kickstarter.intent_push_token";
   public static final String REF_TAG = "com.kickstarter.kickstarter.ref_tag";
   public static final String SURVEY_RESPONSE = "com.kickstarter.kickstarter.survey_response";
   public static final String TOOLBAR_TITLE = "com.kickstarter.kickstarter.intent_toolbar_title";

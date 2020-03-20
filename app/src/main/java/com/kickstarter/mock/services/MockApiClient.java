@@ -2,9 +2,7 @@ package com.kickstarter.mock.services;
 
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import com.google.gson.JsonObject;
 import com.kickstarter.libs.Config;
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
@@ -23,7 +21,6 @@ import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -54,6 +51,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -371,7 +370,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
+  public @NonNull Observable<JsonObject> registerPushToken(final @NonNull String token) {
     return Observable.empty();
   }
 

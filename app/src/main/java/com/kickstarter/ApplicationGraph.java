@@ -6,7 +6,8 @@ import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.KoalaBackgroundService;
 import com.kickstarter.services.LakeBackgroundService;
 import com.kickstarter.services.firebase.MessageService;
-import com.kickstarter.services.firebase.RegisterService;
+import com.kickstarter.services.firebase.RegisterTokenWorker;
+import com.kickstarter.services.firebase.UnregisterTokenWorker;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
@@ -22,5 +23,6 @@ public interface ApplicationGraph {
   void inject(KSApplication __);
   void inject(LakeBackgroundService __);
   void inject(MessageService __);
-  void inject(RegisterService __);
+  void inject(RegisterTokenWorker __);
+  void inject(UnregisterTokenWorker __);
 }

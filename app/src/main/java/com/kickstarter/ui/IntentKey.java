@@ -19,10 +19,8 @@ public final class IntentKey {
   public static final String INTERNAL_BUILD_ENVELOPE = "com.kickstarter.kickstarter.intent_internal_build_envelope";
   public static final String IS_FROM_MESSAGES_ACTIVITY = "com.kickstarter.kickstarter.intent_is_from_messages_activity";
   public static final String KOALA_CONTEXT = "com.kickstarter.kickstarter.intent_koala_context";
-  public static final String KOALA_EVENT = "com.kickstarter.kickstarter.intent_koala_event";
-  public static final String KOALA_EVENT_NAME = "com.kickstarter.kickstarter.intent_koala_event_name";
-  public static final String LAKE_EVENT = "com.kickstarter.kickstarter.intent_koala_event";
-  public static final String LAKE_EVENT_NAME = "com.kickstarter.kickstarter.intent_koala_event_name";
+  public static final String EVENT_DATA = "com.kickstarter.kickstarter.intent_event_data";
+  public static final String EVENT_NAME = "com.kickstarter.kickstarter.intent_event_name";
   public static final String LOGIN_REASON = "com.kickstarter.kickstarter.intent_login_reason";
   public static final String MESSAGE_THREAD = "com.kickstarter.kickstarter.intent_message_thread";
   public static final String NATIVE_CHECKOUT_ENABLED = "com.kickstarter.kickstarter.intent_native_checkout_enabled";
@@ -35,6 +33,7 @@ public final class IntentKey {
   public static final String REF_TAG = "com.kickstarter.kickstarter.ref_tag";
   public static final String SURVEY_RESPONSE = "com.kickstarter.kickstarter.survey_response";
   public static final String TOOLBAR_TITLE = "com.kickstarter.kickstarter.intent_toolbar_title";
+  public static final String TRACKING_CLIENT_TYPE_TAG = "com.kickstarter.kickstarter.intent_tracking_client_tag";
   public static final String UPDATE = "com.kickstarter.kickstarter.intent_update";
   public static final String URL = "com.kickstarter.kickstarter.intent_url";
   public static final String PUSH_NOTIFICATION_ENVELOPE = "com.kickstarter.kickstarter.push_notification_envelope";

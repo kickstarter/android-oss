@@ -2,11 +2,8 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 
-import com.firebase.jobdispatcher.JobService;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.MapUtils;
-import com.kickstarter.services.KoalaBackgroundService;
-import com.kickstarter.ui.IntentKey;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -37,28 +34,8 @@ public final class KoalaTrackingClient extends TrackingClient {
   }
 
   @Override
-  public @NotNull Class<? extends JobService> backgroundServiceClass() {
-    return KoalaBackgroundService.class;
-  }
-
-  @Override
-  protected boolean cleanPropertiesOnly() {
-    return false;
-  }
-
-  @Override
-  public @NotNull String eventKey() {
-    return IntentKey.KOALA_EVENT;
-  }
-
-  @Override
-  public @NotNull String eventNameKey() {
-    return IntentKey.KOALA_EVENT_NAME;
-  }
-
-  @Override
-  public @NotNull String tag() {
-    return KoalaTrackingClient.class.getSimpleName();
+  public @NotNull Type type() {
+    return Type.KOALA;
   }
 
   @Override

@@ -19,7 +19,7 @@ class LakeTest : KSRobolectricTestCase() {
 
     @Test
     fun testDefaultProperties() {
-        val client = MockTrackingClient(MockCurrentUser(), mockCurrentConfig(), true)
+        val client = client(null)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -35,7 +35,7 @@ class LakeTest : KSRobolectricTestCase() {
     @Test
     fun testDefaultProperties_LoggedInUser() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -55,7 +55,7 @@ class LakeTest : KSRobolectricTestCase() {
     @Test
     fun testDiscoveryProperties_AllProjects() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -89,7 +89,7 @@ class LakeTest : KSRobolectricTestCase() {
     @Test
     fun testDiscoveryProperties_NoCategory() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -124,7 +124,7 @@ class LakeTest : KSRobolectricTestCase() {
     @Test
     fun testDiscoveryProperties_Category() {
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -160,7 +160,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testProjectProperties_loggedOutUser() {
         val project = project()
 
-        val client = MockTrackingClient(MockCurrentUser(), mockCurrentConfig(), true)
+        val client = client(null)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -184,7 +184,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testProjectProperties_LoggedInUser() {
         val project = project()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -216,7 +216,7 @@ class LakeTest : KSRobolectricTestCase() {
                 .updatesCount(5)
                 .build()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -240,7 +240,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testProjectProperties_LoggedInUser_IsProjectCreator() {
         val project = project().toBuilder().build()
         val creator = creator()
-        val client = MockTrackingClient(MockCurrentUser(creator), mockCurrentConfig(), true)
+        val client = client(creator)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -264,7 +264,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testProjectProperties_LoggedInUser_HasStarred() {
         val project = project().toBuilder().isStarred(true).build()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -288,7 +288,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testProjectProperties_LoggedInUser_NotBacked() {
         val project = project()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -313,7 +313,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testPledgeProperties() {
         val project = project()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -340,7 +340,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testCheckoutProperties() {
         val project = project()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -370,7 +370,7 @@ class LakeTest : KSRobolectricTestCase() {
     fun testSuccessfulCheckoutProperties() {
         val project = project()
         val user = user()
-        val client = MockTrackingClient(MockCurrentUser(user), mockCurrentConfig(), true)
+        val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
@@ -395,6 +395,9 @@ class LakeTest : KSRobolectricTestCase() {
 
         this.lakeTest.assertValues("Thanks Page Viewed")
     }
+
+    private fun client(user: User?) = MockTrackingClient(user?.let { MockCurrentUser(it) }
+            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.LAKE)
 
     private fun assertCheckoutProperties() {
         val expectedProperties = this.propertiesTest.value

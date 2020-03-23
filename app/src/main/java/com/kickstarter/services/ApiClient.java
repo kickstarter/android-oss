@@ -1,9 +1,7 @@
 package com.kickstarter.services;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.rx.operators.ApiErrorOperator;
 import com.kickstarter.libs.rx.operators.Operators;
@@ -12,7 +10,6 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -51,6 +48,8 @@ import com.kickstarter.ui.data.MessageSubject;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import retrofit2.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -394,7 +393,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
+  public @NonNull Observable<JsonObject> registerPushToken(final @NonNull String token) {
     return this.service
       .registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
       .lift(apiErrorOperator())

@@ -1,13 +1,10 @@
 package com.kickstarter.services;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import com.google.gson.JsonObject;
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -32,6 +29,8 @@ import com.kickstarter.ui.data.MessageSubject;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import rx.Observable;
 
 public interface ApiClientType {
@@ -111,7 +110,7 @@ public interface ApiClientType {
 
   @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body);
 
-  @NonNull Observable<Empty> registerPushToken(final @NonNull String token);
+  @NonNull Observable<JsonObject> registerPushToken(final @NonNull String token);
 
   @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, boolean sendNewsletters);
 

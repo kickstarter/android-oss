@@ -47,12 +47,13 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
         } else {
             try {
                 val errorEnvelope = this.gson.fromJson(response, ErrorEnvelope::class.java)
-                logError(errorEnvelope)
+                logError("📵 Failed to register push token ${errorEnvelope.httpCode()} ${errorEnvelope.errorMessages()?.firstOrNull()}")
                 when (errorEnvelope.httpCode()) {
                     in 400..499 -> Result.failure()
                     else -> Result.retry()
                 }
             } catch (exception: JsonSyntaxException) {
+                logError("📵 Failed to deserialize push token error $response")
                 Result.failure()
             }
         }
@@ -66,8 +67,7 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
         Crashlytics.log(successMessage)
     }
 
-    private fun logError(errorEnvelope: ErrorEnvelope) {
-        val errorMessage = "📵 Failed to register push token ${errorEnvelope.httpCode()} ${errorEnvelope.errorMessages()?.firstOrNull()}"
+    private fun logError(errorMessage: String) {
         if (this.build.isDebug) {
             Timber.e(errorMessage)
         }

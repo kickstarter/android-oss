@@ -36,7 +36,7 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
 
     private fun unregisterToken() {
         val request = OneTimeWorkRequestBuilder<UnregisterTokenWorker>()
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, BACKOFF_DELAY, TimeUnit.SECONDS)
                 .setConstraints(WorkUtils.baseConstraints)
                 .build()
 
@@ -45,6 +45,7 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
     }
 
     companion object {
+        private const val BACKOFF_DELAY = 30L
         private const val REGISTER_TOKEN = "register_push_token"
         const val UNREGISTER_TOKEN = "unregister_push_token"
 
@@ -53,7 +54,7 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
 
             val request = OneTimeWorkRequestBuilder<RegisterTokenWorker>()
                     .setInputData(data)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, BACKOFF_DELAY, TimeUnit.SECONDS)
                     .setConstraints(WorkUtils.baseConstraints)
                     .build()
 

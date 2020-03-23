@@ -19,7 +19,7 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
      */
     override fun registerDevice() {
         if (this.playServicesCapability.isCapable) {
-            FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener{
+            FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
                 registerToken(this.context, it.token)
             }
         }

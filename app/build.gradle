@@ -203,7 +203,6 @@ dependencies {
         transitive = true
     }
     implementation 'com.facebook.android:facebook-android-sdk:5.2.0'
-    implementation "com.firebase:firebase-jobdispatcher:0.8.5"
     final auto_parcel_version = "0.3.1"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"

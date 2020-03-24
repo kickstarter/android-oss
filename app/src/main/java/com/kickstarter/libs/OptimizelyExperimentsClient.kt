@@ -17,6 +17,10 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         optimizelyClient().track(eventKey, userId(), attributes(experimentData, this.apiEndpoint))
     }
 
+    override fun trackRevenue(eventKey: String, experimentData: ExperimentData) {
+        optimizelyClient().track(eventKey, userId(), attributes(experimentData, this.apiEndpoint))
+    }
+
     override fun userId(): String = FirebaseInstanceId.getInstance().id
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant {

@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.ExperimentRevenueData
 import com.kickstarter.libs.utils.ExperimentUtils
 
 interface ExperimentsClientType {
@@ -13,6 +14,7 @@ interface ExperimentsClientType {
     fun appVersion(): String
     fun OSVersion(): String
     fun track(eventKey: String, experimentData: ExperimentData)
+    fun trackRevenue(eventKey: String, experimentData: ExperimentRevenueData)
     fun userId() : String
     fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant?
 }

@@ -85,6 +85,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
         assertEquals("CREDIT_CARD", checkoutTags["checkout_payment_type"])
         assertEquals(2000, checkoutTags["checkout_revenue_in_usd_cents"])
         assertEquals("USD", checkoutTags["currency"])
+        assertEquals(2000, checkoutTags["revenue"])
     }
 
     @Test
@@ -98,5 +99,6 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
         assertEquals("CREDIT_CARD", checkoutTags["checkout_payment_type"])
         assertEquals(1500, checkoutTags["checkout_revenue_in_usd_cents"])
         assertEquals("CAD", checkoutTags["currency"])
+        assertEquals(1500, checkoutTags["revenue"])
     }
 }

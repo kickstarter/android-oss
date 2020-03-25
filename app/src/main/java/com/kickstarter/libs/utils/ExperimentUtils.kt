@@ -29,10 +29,12 @@ object ExperimentUtils {
         val project = experimentRevenueData.pledgeData.projectData().project()
         val fxRate = project.fxRate()
         val paymentType = experimentRevenueData.checkoutData.paymentType()
+        val revenue = (amount * fxRate * 100).roundToInt()
         return mutableMapOf(
                 Pair("checkout_amount", amount),
                 Pair("checkout_payment_type", paymentType.rawValue()),
-                Pair("checkout_revenue_in_usd_cents", (amount * fxRate * 100).roundToInt()),
+                Pair("checkout_revenue_in_usd_cents", revenue),
+                Pair("revenue", revenue),
                 Pair("currency", project.currency())
         )
     }

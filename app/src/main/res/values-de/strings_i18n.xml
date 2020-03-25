@@ -204,6 +204,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Finde Projekte nach deinem Geschmack - in Kunst, Design, Film, Spiele, Musik und vielen anderen Kategorien. Wenn du ein Projekt unterstützt hast, wird deren Aktivität hier angezeigt.</string>
   <string name="First_created" formatted="false">Erstes Projekt</string>
   <string name="Fix" formatted="false">Korrigieren</string>
+  <string name="Fix_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Fix_your_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} folgen.</string>
   <string name="Follow_friends" formatted="false">Freunden folgen</string>
@@ -239,7 +240,6 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Get_reminded_about_this_project" formatted="false">Möchtest du an dieses Projekt erinnert werden?</string>
   <string name="Get_started" formatted="false">Jetzt loslegen</string>
   <string name="Go_to_project_page" formatted="false">Zu Projektseite</string>
-  <string name="Going_rewardless_is_rewarding" formatted="false">"Ohne Belohnung" ist bereichernd</string>
   <string name="Got_it" formatted="false">Alles klar!</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Alles klar! Deine Änderungen wurden gespeichert.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Alles klar! Deine Antwort auf die Befragung wurde übermittelt.</string>
@@ -468,11 +468,13 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Say_something_kind" formatted="false">Sag etwas Nettes ...</string>
   <string name="Security_code" formatted="false">Sicherheitscode</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
+  <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
   <string name="See_rewards" formatted="false">Belohnungen ansehen</string>
   <string name="See_the_rewards" formatted="false">Belohnungen einblenden</string>
   <string name="Select" formatted="false">Auswählen</string>
   <string name="Select_an_option" formatted="false">Bitte eine Option wählen</string>
   <string name="Select_another_project" formatted="false">Wähle ein anderes Projekt aus</string>
+  <string name="Select_fewer_categories" formatted="false">Reduziere die Anzahl der Kategorien</string>
   <string name="Select_this_instead" formatted="false">Stattdessen diese auswählen</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
@@ -613,6 +615,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Sobald du dein Passwort geändert hast, wirst du aufgefordert, dich erneut auf der Kickstarter App anzumelden.</string>
+  <string name="Well_help_you_find_a_project_to_back" formatted="false">We\'ll help you find a project to back.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Wir importieren deinen Namen und dein Profilfoto und können auf die Liste deiner Freunde zugreifen. Wir werden jedoch niemals etwas ohne deine Zustimmung posten.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>

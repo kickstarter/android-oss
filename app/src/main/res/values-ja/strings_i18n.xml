@@ -202,6 +202,7 @@
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">お気に入りを見つけて、クリエイティブなプロジェクトに生命を吹き込もう。</string>
   <string name="First_created" formatted="false">1つめのプロジェクト</string>
   <string name="Fix" formatted="false">修正する</string>
+  <string name="Fix_payment_method" formatted="false">お支払い方法を修正</string>
   <string name="Fix_your_payment_method" formatted="false">お支払い方法を修正</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} をフォロー</string>
   <string name="Follow_friends" formatted="false">友達をフォロー</string>
@@ -237,7 +238,6 @@
   <string name="Get_reminded_about_this_project" formatted="false">このプロジェクトについてリマインダーを希望しますか？</string>
   <string name="Get_started" formatted="false">はじめよう</string>
   <string name="Go_to_project_page" formatted="false">プロジェクトページを見る</string>
-  <string name="Going_rewardless_is_rewarding" formatted="false">「リワードなし」でも、やりがいたっぷり</string>
   <string name="Got_it" formatted="false">完了</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">変更が保存されました。</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">サーベイを送信しました！</string>
@@ -467,11 +467,13 @@
   <string name="Say_something_kind" formatted="false">言葉に注意</string>
   <string name="Security_code" formatted="false">セキュリティーコード</string>
   <string name="See_all_category_name_projects" formatted="false">%{category_name} プロジェクトをすべて見る</string>
+  <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
   <string name="See_rewards" formatted="false">リワードを見る</string>
   <string name="See_the_rewards" formatted="false">リワードを保存</string>
   <string name="Select" formatted="false">選択</string>
   <string name="Select_an_option" formatted="false">選択してください</string>
   <string name="Select_another_project" formatted="false">他のプロジェクトを選ぶ</string>
+  <string name="Select_fewer_categories" formatted="false">選択カテゴリー数が多すぎます</string>
   <string name="Select_this_instead" formatted="false">代わりにこちらを選択</string>
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
@@ -612,6 +614,7 @@
   <string name="Websites" formatted="false">ウェブサイト</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Kickstarter ライブラリーへようこそ。色んなストーリーを一緒に読み漁ろう！</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">パスワードを変更したら、Kickstarter アプリにもう一度サインインし直すように促されます。</string>
+  <string name="Well_help_you_find_a_project_to_back" formatted="false">We\'ll help you find a project to back.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Kickstarter はあなたの名前とプロフィール写真をインポートし、友達リストにアクセスできるようになります。Kickstarter があなたの許可なしに Facebook に投稿することは決してありません。</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">終了48時間前に通知が届きます。保存アイテムをみるにはプロフィールをご覧ください。</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">フォローがオンになっていると、他の人のアクティビティをフォローすることができ、また、他の人もあなたのアクティビティをフォローすることができます。このようなデータを永久に削除するためにはフォローをオフにしてください。</string>

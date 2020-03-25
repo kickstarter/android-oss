@@ -11,10 +11,14 @@ interface ExperimentsClientType {
         return ExperimentUtils.attributes(experimentData, appVersion(), OSVersion(), apiEndpoint)
     }
 
+    fun ExperimentsClientType.checkoutTags(experimentRevenueData: ExperimentRevenueData): MutableMap<String, *> {
+        return ExperimentUtils.checkoutTags(experimentRevenueData)
+    }
+
     fun appVersion(): String
     fun OSVersion(): String
     fun track(eventKey: String, experimentData: ExperimentData)
-    fun trackRevenue(eventKey: String, experimentData: ExperimentRevenueData)
+    fun trackRevenue(eventKey: String, experimentRevenueData: ExperimentRevenueData)
     fun userId() : String
     fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant?
 }

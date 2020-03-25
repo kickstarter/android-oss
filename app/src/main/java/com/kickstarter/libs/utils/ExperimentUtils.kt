@@ -5,7 +5,9 @@ import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.RefTag
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
 import java.util.*
+import kotlin.math.roundToInt
 
 object ExperimentUtils {
 
@@ -21,7 +23,20 @@ object ExperimentUtils {
                 Pair("user_country", experimentData.user?.location()?.country() ?: Locale.getDefault().country)
         )
     }
+
+    fun checkoutTags(experimentRevenueData: ExperimentRevenueData): MutableMap<String, Any?> {
+        val amount = experimentRevenueData.checkoutData.amount()
+        val project = experimentRevenueData.pledgeData.projectData().project()
+        val fxRate = project.fxRate()
+        val paymentType = experimentRevenueData.checkoutData.paymentType()
+        return mutableMapOf(
+                Pair("checkout_amount", amount),
+                Pair("checkout_payment_type", paymentType.rawValue()),
+                Pair("checkout_revenue_in_usd_cents", (amount * fxRate * 100).roundToInt()),
+                Pair("currency", project.currency())
+        )
+    }
 }
 
 data class ExperimentData(val user: User?, val intentRefTag: RefTag?, val cookieRefTag: RefTag?)
-data class ExperimentRevenueData(val experimentData: ExperimentData, val checkoutData: CheckoutData)
+data class ExperimentRevenueData(val experimentData: ExperimentData, val checkoutData: CheckoutData, val pledgeData: PledgeData)

@@ -3,8 +3,6 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -33,6 +31,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
@@ -335,7 +334,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testTracking_whenCheckoutDataAndPledgeDataExtrasNull() {
+  public void testTracking_whenCheckoutDataAndPledgeDataExtrasPresent() {
     setUpEnvironment(environment());
 
     final Project project = ProjectFactory.project();
@@ -351,10 +350,11 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intent);
 
     this.lakeTest.assertValue("Thanks Page Viewed");
+    this.experimentsTest.assertValue("Temporary Completed Checkout");
   }
 
   @Test
-  public void testTracking_whenCheckoutDataAndPledgeDataExtrasPresent() {
+  public void testTracking_whenCheckoutDataAndPledgeDataExtrasNull() {
     setUpEnvironment(environment());
 
     final Intent intent = new Intent()
@@ -362,5 +362,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intent);
 
     this.lakeTest.assertNoValues();
+    this.experimentsTest.assertNoValues();
   }
 }

@@ -11,6 +11,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ExperimentData;
+import com.kickstarter.libs.utils.ExperimentRevenueData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
@@ -198,25 +199,38 @@ public interface ThanksViewModel {
         .subscribe(__ -> this.koala.trackNewsletterToggle(true));
 
       final Observable<CheckoutData> checkoutData = intent()
-              .map(i -> i.getParcelableExtra(IntentKey.CHECKOUT_DATA))
-              .ofType(CheckoutData.class)
-              .take(1);
+        .map(i -> i.getParcelableExtra(IntentKey.CHECKOUT_DATA))
+        .ofType(CheckoutData.class)
+        .take(1);
 
       final Observable<PledgeData> pledgeData = intent()
-              .map(i -> i.getParcelableExtra(IntentKey.PLEDGE_DATA))
-              .ofType(PledgeData.class)
-              .take(1);
+        .map(i -> i.getParcelableExtra(IntentKey.PLEDGE_DATA))
+        .ofType(PledgeData.class)
+        .take(1);
 
-      Observable.combineLatest(checkoutData, pledgeData, Pair::create)
-              .compose(bindToLifecycle())
-              .subscribe(checkoutDataPledgeData -> this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second));
+      final Observable<Pair<CheckoutData, PledgeData>> checkoutAndPledgeData =
+        Observable.combineLatest(checkoutData, pledgeData, Pair::create);
 
-      pledgeData
+      checkoutAndPledgeData
+        .compose(bindToLifecycle())
+        .subscribe(checkoutDataPledgeData -> this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second));
+
+      checkoutAndPledgeData
         .compose(combineLatestPair(this.currentUser.observable()))
-        .map(dataAndUser -> new ExperimentData(dataAndUser.second, dataAndUser.first.projectData().refTagFromIntent(), dataAndUser.first.projectData().refTagFromCookie()))
+        .map(this::experimentRevenueData)
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.optimizely.trackRevenue(OptimizelyEvent.CAMPAIGN_DETAILS_BUTTON_CLICKED))
+        .subscribe(data -> this.optimizely.trackRevenue(OptimizelyEvent.TEMPORARY_COMPLETED_CHECKOUT, data));
+    }
+
+    private ExperimentRevenueData experimentRevenueData(Pair<Pair<CheckoutData, PledgeData>, User> dataAndUser) {
+      final User currentUser = dataAndUser.second;
+      final PledgeData pledgeData = dataAndUser.first.second;
+      final RefTag intentRefTag = pledgeData.projectData().refTagFromIntent();
+      final RefTag cookieRefTag = pledgeData.projectData().refTagFromCookie();
+      final ExperimentData experimentData = new ExperimentData(currentUser, intentRefTag, cookieRefTag);
+      final CheckoutData checkoutData = dataAndUser.first.first;
+      return new ExperimentRevenueData(experimentData, checkoutData, pledgeData);
     }
 
     /**

@@ -9,22 +9,22 @@
   <string name="Add" formatted="false">Añadir</string>
   <string name="Add_attachments" formatted="false">Agregar anexos …</string>
   <string name="Add_new_card" formatted="false">Añadir una nueva tarjeta</string>
-  <string name="All_Art_Projects" formatted="false">Todos los proyectos de la categoría Arte</string>
-  <string name="All_Comics_Projects" formatted="false">Todos los proyectos de la categoría Comics</string>
-  <string name="All_Crafts_Projects" formatted="false">Todos los proyectos de la categoría Artesanías</string>
-  <string name="All_Dance_Projects" formatted="false">Todos los proyectos de la categoría Danza</string>
-  <string name="All_Design_Projects" formatted="false">Todos los proyectos de la categoría Diseño</string>
-  <string name="All_Fashion_Projects" formatted="false">Todos los proyectos de la categoría Moda</string>
+  <string name="All_Art_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Comics_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Crafts_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Dance_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Design_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Fashion_Projects" formatted="false">Todos los proyectos</string>
   <string name="All_Film_Projects" formatted="false">Todos los proyectos de la categoría Cine y Video</string>
-  <string name="All_Food_Projects" formatted="false">Todos los proyectos de la categoría Comida</string>
-  <string name="All_Games_Projects" formatted="false">Todos los proyectos de la categoría Juegos</string>
-  <string name="All_Journalism_Projects" formatted="false">Todos los proyectos de la categoría Periodismo</string>
+  <string name="All_Food_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Games_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Journalism_Projects" formatted="false">Todos los proyectos</string>
   <string name="All_Music_Projects" formatted="false">Todos los proyectos de la categoría Música</string>
-  <string name="All_Photography_Projects" formatted="false">Todos los proyectos de la categoría Fotografía</string>
+  <string name="All_Photography_Projects" formatted="false">Todos los proyectos</string>
   <string name="All_Projects" formatted="false">Todos los proyectos</string>
-  <string name="All_Publishing_Projects" formatted="false">Todos los proyectos de la categoría Editorial</string>
-  <string name="All_Tech_Projects" formatted="false">Todos los proyectos de la categoría Tecnología</string>
-  <string name="All_Theater_Projects" formatted="false">Todos los proyectos de la categoría Teatro</string>
+  <string name="All_Publishing_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Tech_Projects" formatted="false">Todos los proyectos</string>
+  <string name="All_Theater_Projects" formatted="false">Todos los proyectos</string>
   <string name="All_category_name_Projects" formatted="false">Todos los proyectos de la categoría %{category_name}</string>
   <string name="All_gone" formatted="false">¡Recompensas agotadas!</string>
   <string name="All_or_nothing" formatted="false">Todo o nada</string>
@@ -204,6 +204,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Proyectos a tu gusto - en arte, diseño, cine, juegos, música y otras categorías. Una vez que hayas patrocinado un proyecto, verás todas las actividades pertinentes aquí.</string>
   <string name="First_created" formatted="false">Primer proyecto creado</string>
   <string name="Fix" formatted="false">Corregir</string>
+  <string name="Fix_payment_method" formatted="false">Corregir el método de pago</string>
   <string name="Fix_your_payment_method" formatted="false">Corrige tu método de pago</string>
   <string name="Follow_friend_name" formatted="false">Seguir a %{friend_name}.</string>
   <string name="Follow_friends" formatted="false">Seguir amigos</string>
@@ -239,7 +240,6 @@ Haz clic para volver a intentarlo.</string>
   <string name="Get_reminded_about_this_project" formatted="false">¿Deseas recibir recordatorios sobre este proyecto?</string>
   <string name="Get_started" formatted="false">¡Manos a la obra!</string>
   <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
-  <string name="Going_rewardless_is_rewarding" formatted="false">Que no haya recompensa es gratificante</string>
   <string name="Got_it" formatted="false">¡Listo!</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Listo. Se han guardado tus cambios.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
@@ -469,11 +469,13 @@ Haz clic para volver a intentarlo.</string>
   <string name="Say_something_kind" formatted="false">Di algo amable...</string>
   <string name="Security_code" formatted="false">Código de seguridad</string>
   <string name="See_all_category_name_projects" formatted="false">Ver todos los proyectos de %{category_name}</string>
+  <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
   <string name="See_rewards" formatted="false">Ver recompensas</string>
   <string name="See_the_rewards" formatted="false">Ver las recompensas</string>
   <string name="Select" formatted="false">Seleccionar</string>
   <string name="Select_an_option" formatted="false">Seleccionar una opción</string>
   <string name="Select_another_project" formatted="false">Selecciona otro proyecto</string>
+  <string name="Select_fewer_categories" formatted="false">Selecciona menos categorías</string>
   <string name="Select_this_instead" formatted="false">Seleccionar esto</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
@@ -614,6 +616,7 @@ Por favor inténtalo de nuevo más tarde.</string>
   <string name="Websites" formatted="false">Sitios web</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Bienvenidos a nuestra biblioteca. Descubre montones de libros con nosotros.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Te pediremos que inicies sesión de nuevo en la aplicación de Kickstarter una vez que hayas cambiado tu contraseña.</string>
+  <string name="Well_help_you_find_a_project_to_back" formatted="false">We\'ll help you find a project to back.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Importaremos tu nombre y tu foto de perfil, y tendremos acceso a tu lista de amigos. Nunca publicaremos nada sin tu permiso.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Te recordaremos 48 horas antes de que finalice este proyecto y recibirás un recordatorio sobre todos los proyectos que guardes de aquí en adelante. Para ver todo lo que has guardado, visita tu perfil.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Cuando el seguimiento está activado, puedes seguir la actividad de los demás y otros pueden seguir tu actividad. Desactiva el seguimiento para eliminar esta información definitivamente.</string>
@@ -1565,7 +1568,7 @@ guardados</string>
 guardados</string>
   <string name="projects_count_newline_saved_two" formatted="false">2\nguardados</string>
   <string name="projects_count_newline_saved_zero" formatted="false">0\nguardados</string>
-  <string name="projects_launched_count_created_projects_backed_count_backed" formatted="false">%{projects_launched_count} created • %{projects_backed_count} backed</string>
+  <string name="projects_launched_count_created_projects_backed_count_backed" formatted="false">%{projects_launched_count} creados • %{projects_backed_count} patrocinados</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Cerrar</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">Ver</string>
   <string name="remaining_count_left_of_limit_count" formatted="false">%{remaining_count} restante de %{limit_count}</string>

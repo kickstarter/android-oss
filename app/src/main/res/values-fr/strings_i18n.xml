@@ -204,6 +204,7 @@ contributeurs</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Découvrez des projets que vous allez adorer : art, design, cinéma, jeux, musique et plus encore. L\'activité des projets que vous soutenez s\'affichera ici.</string>
   <string name="First_created" formatted="false">Premier projet créé</string>
   <string name="Fix" formatted="false">Corriger</string>
+  <string name="Fix_payment_method" formatted="false">Correction du moyen de paiement</string>
   <string name="Fix_your_payment_method" formatted="false">Corriger votre moyen de paiement</string>
   <string name="Follow_friend_name" formatted="false">Suivre %{friend_name}</string>
   <string name="Follow_friends" formatted="false">Suivre vos amis</string>
@@ -239,7 +240,6 @@ contributeurs</string>
   <string name="Get_reminded_about_this_project" formatted="false">Envie de recevoir un rappel à propos de ce projet ?</string>
   <string name="Get_started" formatted="false">Démarrer</string>
   <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
-  <string name="Going_rewardless_is_rewarding" formatted="false">L’absence de récompense est gratifiante</string>
   <string name="Got_it" formatted="false">Super.</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">C\'est bon, vos modifications ont été enregistrées.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
@@ -469,11 +469,13 @@ n\'ont rien soutenu.</string>
   <string name="Say_something_kind" formatted="false">Un petit mot sympa...</string>
   <string name="Security_code" formatted="false">Code de sécurité</string>
   <string name="See_all_category_name_projects" formatted="false">Tous les projets de la catégorie %{category_name}</string>
+  <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
   <string name="See_rewards" formatted="false">Afficher les récompenses</string>
   <string name="See_the_rewards" formatted="false">Afficher les récompenses</string>
   <string name="Select" formatted="false">Sélectionner</string>
   <string name="Select_an_option" formatted="false">Sélectionner une option</string>
   <string name="Select_another_project" formatted="false">Sélectionner un autre projet</string>
+  <string name="Select_fewer_categories" formatted="false">Veuillez sélectionner moins de catégories.</string>
   <string name="Select_this_instead" formatted="false">Sélectionner</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
   <string name="Select_this_reward_instead" formatted="false">Choisir cette récompense</string>
@@ -614,6 +616,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Websites" formatted="false">Sites Web</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Bienvenue dans notre bibliothèque. Flânons ensemble parmi ses rayons.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Une fois votre mot de passe changé, vous serez invité à vous reconnecter à l\'application Kickstarter.</string>
+  <string name="Well_help_you_find_a_project_to_back" formatted="false">We\'ll help you find a project to back.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Votre nom et votre photo de profil seront importés. Nous aurons accès à votre liste d\'amis, mais nous ne publierons rien sans votre autorisation.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Nous vous enverrons un rappel 48 heures avant la fin de cette campagne. Vous recevrez aussi des rappels pour tous les projets que vous avez enregistré. Ceux-ci sont tous accessibles depuis votre profil.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Lorsque les fonctionnalités de suivi sont activées, vous pouvez vous abonner aux activités des autres, qui pourront à leur tour s\'abonner aux vôtres. Pour supprimer définitivement ces données, il vous suffit de désactiver les fonctionnalités de suivi.</string>

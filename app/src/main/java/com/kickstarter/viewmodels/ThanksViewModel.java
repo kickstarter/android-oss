@@ -223,7 +223,7 @@ public interface ThanksViewModel {
         .subscribe(data -> this.optimizely.trackRevenue(OptimizelyEvent.TEMPORARY_COMPLETED_CHECKOUT, data));
     }
 
-    private ExperimentRevenueData experimentRevenueData(Pair<Pair<CheckoutData, PledgeData>, User> dataAndUser) {
+    private ExperimentRevenueData experimentRevenueData(final @NonNull Pair<Pair<CheckoutData, PledgeData>, User> dataAndUser) {
       final User currentUser = dataAndUser.second;
       final PledgeData pledgeData = dataAndUser.first.second;
       final RefTag intentRefTag = pledgeData.projectData().refTagFromIntent();

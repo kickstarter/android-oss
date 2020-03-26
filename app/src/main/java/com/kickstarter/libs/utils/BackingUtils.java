@@ -31,7 +31,6 @@ public final class BackingUtils {
     return backing.status().equals(Backing.STATUS_ERRORED);
   }
 
-
   public static boolean isShippable(final @NonNull Backing backing) {
     final Reward reward = backing.reward();
     if (reward == null) {

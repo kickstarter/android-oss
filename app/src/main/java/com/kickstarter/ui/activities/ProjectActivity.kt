@@ -501,10 +501,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun rewardsSheetGuideline(): Int = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
 
     private fun setBackingDetailsSubtitle(stringResOrTitle: Either<String, Int>?) {
-        stringResOrTitle?.let {
-            @StringRes val stringRes = it.right()
-            val title = it.left()
-            backing_details_subtitle.text = stringRes?.let { stringRes -> getString(stringRes) }?: title
+        stringResOrTitle?.let { either ->
+            @StringRes val stringRes = either.right()
+            val title = either.left()
+            backing_details_subtitle.text = stringRes?.let { getString(it) }?: title
         }
     }
 

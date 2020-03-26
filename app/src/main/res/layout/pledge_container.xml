@@ -87,14 +87,14 @@
       android:visibility="gone">
 
       <TextView
-        android:id="@+id/you_backer_text"
+        android:id="@+id/backing_details_title"
         style="@style/SubheadlineMedium"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="@string/Youre_a_backer" />
 
       <TextView
-        android:id="@+id/reward_infos"
+        android:id="@+id/backing_details_subtitle"
         style="@style/Caption1Secondary"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

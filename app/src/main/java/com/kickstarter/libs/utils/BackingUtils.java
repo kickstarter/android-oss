@@ -24,6 +24,14 @@ public final class BackingUtils {
     return rewardId == reward.id();
   }
 
+  public static boolean isErrored(final @Nullable Backing backing) {
+    if (backing == null) {
+      return false;
+    }
+    return backing.status().equals(Backing.STATUS_ERRORED);
+  }
+
+
   public static boolean isShippable(final @NonNull Backing backing) {
     final Reward reward = backing.reward();
     if (reward == null) {

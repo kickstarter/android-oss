@@ -116,11 +116,14 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
-        /** Emits a string with the backing details to be displayed in the manage pledge view. */
-        fun backingDetails(): Observable<String>
-
         /** Emits a boolean that determines if the backing details should be visible. */
         fun backingDetailsIsVisible(): Observable<Boolean>
+
+        /** Emits a string or string resource ID of the backing details subtitle. */
+        fun backingDetailsSubtitle(): Observable<Either<String, Int>?>
+
+        /** Emits the string resource ID of the backing details title. */
+        fun backingDetailsTitle(): Observable<Int>
 
         /** Emits when rewards sheet should expand and if it should animate. */
         fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>>
@@ -280,8 +283,9 @@ interface ProjectViewModel {
         private val viewRewardsClicked = PublishSubject.create<Void>()
         private val viewPledgeButtonClicked = PublishSubject.create<Void>()
 
-        private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
+        private val backingDetailsSubtitle = BehaviorSubject.create<Either<String, Int>?>()
+        private val backingDetailsTitle = BehaviorSubject.create<Int>()
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val goBack = PublishSubject.create<Void>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
@@ -654,17 +658,25 @@ interface ProjectViewModel {
                     .subscribe(this.revealRewardsFragment)
 
             currentProjectWhenFeatureEnabled
-                    .map { it.isBacking && it.isLive }
+                    .map { (it.isBacking && it.isLive) || BackingUtils.isErrored(it.backing())}
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetailsIsVisible)
 
             currentProjectWhenFeatureEnabled
-                    .filter { it.isBacking && it.isLive }
-                    .map { backingDetails(it) }
+                    .filter { it.isBacking }
+                    .map { it.backing() }
+                    .map { if (BackingUtils.isErrored(it)) R.string.Payment_failure else R.string.Youre_a_backer }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.backingDetails)
+                    .subscribe(this.backingDetailsTitle)
+
+            currentProjectWhenFeatureEnabled
+                    .filter { it.isBacking }
+                    .map { backingDetailsSubtitle(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backingDetailsSubtitle)
 
             val currentProjectAndUser = currentProjectWhenFeatureEnabled
                     .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
@@ -1072,7 +1084,10 @@ interface ProjectViewModel {
         }
 
         @NonNull
-        override fun backingDetails(): Observable<String> = this.backingDetails
+        override fun backingDetailsSubtitle(): Observable<Either<String, Int>?> = this.backingDetailsSubtitle
+
+        @NonNull
+        override fun backingDetailsTitle(): Observable<Int> = this.backingDetailsTitle
 
         @NonNull
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
@@ -1194,17 +1209,21 @@ interface ProjectViewModel {
         @NonNull
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments
 
-        private fun backingDetails(project: Project): String {
+        private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->
-                val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
-                val title = reward?.let { "• ${it.title()}" } ?: ""
+                return if(backing.status() == Backing.STATUS_ERRORED) {
+                    Either.Right(R.string.We_cant_process_your_pledge)
+                } else {
+                    val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
+                    val title = reward?.let { "• ${it.title()}" } ?: ""
 
-                val backingAmount = backing.amount()
+                    val backingAmount = backing.amount()
 
-                val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
+                    val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
-                return "$formattedAmount $title".trim()
-            } ?: ""
+                    Either.Left("$formattedAmount $title".trim())
+                }
+            }
         }
 
         private fun saveProject(project: Project): Observable<Project> {

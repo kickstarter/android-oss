@@ -7,11 +7,11 @@ import com.kickstarter.libs.utils.ExperimentUtils
 
 interface ExperimentsClientType {
 
-    fun ExperimentsClientType.attributes(experimentData: ExperimentData, apiEndpoint: ApiEndpoint): MutableMap<String, *> {
+    fun ExperimentsClientType.attributes(experimentData: ExperimentData, apiEndpoint: ApiEndpoint): Map<String, *> {
         return ExperimentUtils.attributes(experimentData, appVersion(), OSVersion(), apiEndpoint)
     }
 
-    fun ExperimentsClientType.checkoutTags(experimentRevenueData: ExperimentRevenueData): MutableMap<String, *> {
+    fun ExperimentsClientType.checkoutTags(experimentRevenueData: ExperimentRevenueData): Map<String, *> {
         return ExperimentUtils.checkoutTags(experimentRevenueData)
     }
 

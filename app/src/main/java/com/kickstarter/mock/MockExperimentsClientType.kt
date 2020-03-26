@@ -12,7 +12,7 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
     constructor(variant: OptimizelyExperiment.Variant) : this(variant, ApiEndpoint.STAGING)
     constructor() : this(OptimizelyExperiment.Variant.CONTROL, ApiEndpoint.STAGING)
 
-    class ExperimentsEvent internal constructor(internal val eventKey: String, internal val attributes: MutableMap<String, *>, internal val tags: MutableMap<String, *>?)
+    class ExperimentsEvent internal constructor(internal val eventKey: String, internal val attributes: Map<String, *>, internal val tags: Map<String, *>?)
 
     private val experimentEvents : PublishSubject<ExperimentsEvent> = PublishSubject.create()
     val eventKeys: Observable<String> = this.experimentEvents.map { e -> e.eventKey }

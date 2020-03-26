@@ -11,8 +11,8 @@ import kotlin.math.roundToInt
 
 object ExperimentUtils {
 
-    fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, apiEndpoint: ApiEndpoint): MutableMap<String, Any?> {
-        return mutableMapOf(
+    fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, apiEndpoint: ApiEndpoint): Map<String, Any?> {
+        return mapOf(
                 Pair("distinct_id", if (apiEndpoint != ApiEndpoint.PRODUCTION) FirebaseInstanceId.getInstance().id else null),
                 Pair("session_app_release_version", appVersion),
                 Pair("session_os_version", String.format("Android %s", OSVersion)),
@@ -24,13 +24,13 @@ object ExperimentUtils {
         )
     }
 
-    fun checkoutTags(experimentRevenueData: ExperimentRevenueData): MutableMap<String, Any?> {
+    fun checkoutTags(experimentRevenueData: ExperimentRevenueData): Map<String, Any?> {
         val amount = experimentRevenueData.checkoutData.amount()
         val project = experimentRevenueData.pledgeData.projectData().project()
         val fxRate = project.fxRate()
         val paymentType = experimentRevenueData.checkoutData.paymentType()
         val revenue = (amount * fxRate * 100).roundToInt()
-        return mutableMapOf(
+        return mapOf(
                 Pair("checkout_amount", amount),
                 Pair("checkout_payment_type", paymentType.rawValue()),
                 Pair("checkout_revenue_in_usd_cents", revenue),

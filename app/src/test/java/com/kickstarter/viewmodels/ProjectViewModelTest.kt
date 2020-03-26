@@ -919,7 +919,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .backing(BackingFactory.backing())
+                .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
@@ -1190,7 +1190,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .backing(BackingFactory.backing())
+                .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 

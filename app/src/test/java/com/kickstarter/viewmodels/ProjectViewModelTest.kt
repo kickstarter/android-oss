@@ -21,8 +21,9 @@ import rx.observers.TestSubscriber
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
-    private val backingDetails = TestSubscriber<String>()
     private val backingDetailsIsVisible = TestSubscriber<Boolean>()
+    private val backingDetailsSubtitle = TestSubscriber<Either<String, Int>?>()
+    private val backingDetailsTitle = TestSubscriber<Int>()
     private val expandPledgeSheet = TestSubscriber<Pair<Boolean, Boolean>>()
     private val goBack = TestSubscriber<Void>()
     private val heartDrawableId = TestSubscriber<Int>()
@@ -60,8 +61,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ProjectViewModel.ViewModel(environment)
-        this.vm.outputs.backingDetails().subscribe(this.backingDetails)
         this.vm.outputs.backingDetailsIsVisible().subscribe(this.backingDetailsIsVisible)
+        this.vm.outputs.backingDetailsSubtitle().subscribe(this.backingDetailsSubtitle)
+        this.vm.outputs.backingDetailsTitle().subscribe(this.backingDetailsTitle)
         this.vm.outputs.expandPledgeSheet().subscribe(this.expandPledgeSheet)
         this.vm.outputs.goBack().subscribe(this.goBack)
         this.vm.outputs.heartDrawableId().subscribe(this.heartDrawableId)
@@ -690,6 +692,20 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenBackingIsErrored() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+
+        this.pledgeActionButtonColor.assertValue(R.color.button_pledge_error)
+        this.pledgeActionButtonText.assertValue(R.string.Manage)
+    }
+
+    @Test
     fun testPledgeToolbarNavigationIcon_whenNativeCheckoutEnabled() {
         setUpEnvironment(environment())
 
@@ -876,7 +892,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
         this.backingDetailsIsVisible.assertValue(false)
-        this.backingDetails.assertNoValues()
+        this.backingDetailsSubtitle.assertNoValues()
+        this.backingDetailsTitle.assertNoValues()
     }
 
     @Test
@@ -901,8 +918,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
-        this.backingDetails.assertValuesAndClear("$34 • Digital Bundle")
         this.backingDetailsIsVisible.assertValue(true)
+        this.backingDetailsSubtitle.assertValue(Either.Left("$34 • Digital Bundle"))
+        this.backingDetailsTitle.assertValue(R.string.Youre_a_backer)
     }
 
     @Test
@@ -920,8 +938,25 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
-        this.backingDetails.assertValuesAndClear("$13.50")
         this.backingDetailsIsVisible.assertValue(true)
+        this.backingDetailsSubtitle.assertValue(Either.Left("$13.50"))
+        this.backingDetailsTitle.assertValue(R.string.Youre_a_backer)
+    }
+
+    @Test
+    fun testBackingDetails_whenBackingIsErrored() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        val backedSuccessfulProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
+        this.backingDetailsIsVisible.assertValue(true)
+        this.backingDetailsSubtitle.assertValue(Either.Right(R.string.We_cant_process_your_pledge))
+        this.backingDetailsTitle.assertValue(R.string.Payment_failure)
     }
 
     @Test

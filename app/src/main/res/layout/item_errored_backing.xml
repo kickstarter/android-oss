@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:background="@color/ksr_grey_300"
+  android:clipChildren="false"
+  android:orientation="vertical"
+  android:padding="@dimen/grid_3">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+      android:id="@+id/errored_backing_project_title"
+      style="@style/BodyPrimaryMedium"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_gravity="start"
+      android:layout_marginEnd="@dimen/grid_4"
+      android:layout_weight="1"
+      android:gravity="top"
+      android:paddingTop="@dimen/grid_1"
+      tools:text="zoe | juniper's FORM/S and Foundations" />
+
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/errored_backing_manage_button"
+      style="@style/SmallButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:backgroundTint="@color/button_pledge_error"
+      android:text="@string/Manage" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <!-- TODO: this needs a11y copy -->
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:importantForAccessibility="no"
+      android:src="@drawable/ic_icon_alert"
+      android:tint="@color/ksr_red_400" />
+
+    <TextView
+      android:id="@+id/errored_backing_project_collection_date"
+      style="@style/BodyPrimary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:includeFontPadding="false"
+      android:textColor="@color/ksr_red_400"
+      tools:text="6 days" />
+
+  </LinearLayout>
+
+</LinearLayout>

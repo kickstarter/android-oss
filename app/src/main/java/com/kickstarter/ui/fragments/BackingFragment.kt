@@ -79,6 +79,16 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { setCardLastFourText(it) }
 
+        this.viewModel.outputs.fixPaymentMethodButtonIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(fix_payment_method_button, it) }
+
+        this.viewModel.outputs.fixPaymentMethodButtonIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(fix_payment_method_message, it) }
+
         this.viewModel.outputs.notifyDelegateToRefreshProject()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())

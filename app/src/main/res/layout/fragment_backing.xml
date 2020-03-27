@@ -121,6 +121,7 @@
             android:id="@+id/payment_method"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_1"
             android:focusable="true"
             android:orientation="vertical">
 
@@ -136,7 +137,27 @@
               layout="@layout/reward_card_details"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/grid_4" />
+              android:layout_marginBottom="@dimen/grid_3" />
+
+            <TextView
+              android:id="@+id/fix_payment_method_message"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/grid_2"
+              android:text="@string/We_cant_process_your_pledge_Please_update_your_payment_method"
+              android:textColor="@color/ksr_red_400"
+              android:visibility="gone"
+              tools:visibility="visible" />
+
+            <com.google.android.material.button.MaterialButton
+              android:id="@+id/fix_payment_method_button"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/grid_3"
+              android:backgroundTint="@color/button_pledge_error"
+              android:text="@string/Fix"
+              android:visibility="gone"
+              tools:visibility="visible" />
 
             <include layout="@layout/horizontal_line_1dp_view" />
 

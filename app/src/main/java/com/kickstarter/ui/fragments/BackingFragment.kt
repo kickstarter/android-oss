@@ -169,6 +169,10 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 this, backing_swipe_refresh_layout, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
         )
 
+        RxView.clicks(fix_payment_method_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.fixPaymentMethodButtonClicked() }
+
         RxView.clicks(mark_as_received_checkbox)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(mark_as_received_checkbox.isChecked) }

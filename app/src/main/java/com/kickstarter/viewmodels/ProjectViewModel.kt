@@ -426,11 +426,6 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startCampaignWebViewActivity)
 
-            currentProject
-                    .compose<Project>(takeWhen(this.backProjectButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startCheckoutActivity)
-
             val creatorInfoClicked = Observable.merge(this.creatorNameTextViewClicked, this.creatorInfoVariantClicked)
 
             currentProject
@@ -586,17 +581,14 @@ interface ProjectViewModel {
             val currentProjectAndUser = currentProject
                     .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
 
-            Observable.combineLatest(currentProjectData, nativeCheckoutEnabled, this.currentUser.observable())
-            { data, checkoutEnabled, user ->
-                if (checkoutEnabled) {
+            Observable.combineLatest(currentProjectData, this.currentUser.observable())
+            { data, user ->
                     val experimentData = ExperimentData(user, data.refTagFromIntent(), data.refTagFromCookie())
                     ProjectViewUtils.pledgeActionButtonText(
                             data.project(),
                             user,
                             this.optimizely.variant(OptimizelyExperiment.Key.PLEDGE_CTA_COPY, experimentData))
-                } else null
             }
-                    .filter { ObjectUtils.isNotNull(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeActionButtonText)

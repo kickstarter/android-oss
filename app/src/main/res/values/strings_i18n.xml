@@ -204,6 +204,7 @@ Please tap to retry.</string>
   <string name="Find_projects_youll_love_in_art_design_film" formatted="false">Find projects you’ll love in art, design, film, games, music, and more. Once you back a project, you’ll see all your activity here.</string>
   <string name="First_created" formatted="false">First created</string>
   <string name="Fix" formatted="false">Fix</string>
+  <string name="Fix_payment_method" formatted="false">Fix payment method</string>
   <string name="Fix_your_payment_method" formatted="false">Fix your payment method</string>
   <string name="Follow_friend_name" formatted="false">Follow %{friend_name}</string>
   <string name="Follow_friends" formatted="false">Follow friends</string>
@@ -239,7 +240,6 @@ Please tap to retry.</string>
   <string name="Get_reminded_about_this_project" formatted="false">Get reminded about this project?</string>
   <string name="Get_started" formatted="false">Get started</string>
   <string name="Go_to_project_page" formatted="false">Go to project page</string>
-  <string name="Going_rewardless_is_rewarding" formatted="false">Going “rewardless” is rewarding</string>
   <string name="Got_it" formatted="false">Got it</string>
   <string name="Got_it_your_changes_have_been_saved" formatted="false">Got it! Your changes have been saved.</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Got it! Your survey response has been submitted.</string>
@@ -471,11 +471,13 @@ daring ideas.</string>
   <string name="Say_something_kind" formatted="false">Say something kind...</string>
   <string name="Security_code" formatted="false">Security code</string>
   <string name="See_all_category_name_projects" formatted="false">See all %{category_name} projects</string>
+  <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
   <string name="See_rewards" formatted="false">See rewards</string>
   <string name="See_the_rewards" formatted="false">See the rewards</string>
   <string name="Select" formatted="false">Select</string>
   <string name="Select_an_option" formatted="false">Select an option</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
+  <string name="Select_fewer_categories" formatted="false">Select fewer categories</string>
   <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
@@ -617,6 +619,7 @@ Please try again later.</string>
   <string name="Websites" formatted="false">Websites</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Welcome to our library. Peruse the stacks with us.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">We\'ll ask you to sign back into the Kickstarter app once you\'ve changed your password.</string>
+  <string name="Well_help_you_find_a_project_to_back" formatted="false">We\'ll help you find a project to back.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">We\'ll import your name and profile photo, and access your friend list. We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">We’ll remind you 48 hours before this project ends, and you\'ll get a reminder about all projects you save moving forward. To view everything you’ve saved, visit your profile.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">When following is on, you can follow the activity of others and others can follow your activity. Turn following off to permanently delete this data.</string>

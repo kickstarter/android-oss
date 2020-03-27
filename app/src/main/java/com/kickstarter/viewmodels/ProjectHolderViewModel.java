@@ -11,6 +11,7 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -234,7 +235,9 @@ public interface ProjectHolderViewModel {
         .compose(combineLatestPair(this.currentUser.observable()));
 
       projectDataAndCurrentUser
-        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
+        .map(projectDataAndUser -> new ExperimentData(projectDataAndUser.second, projectDataAndUser.first
+          .refTagFromIntent(), projectDataAndUser.first.refTagFromCookie()))
+        .map(experimentData -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, experimentData))
         .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
         .compose(bindToLifecycle())
         .subscribe(this.blurbVariantIsVisible::onNext);
@@ -287,7 +290,9 @@ public interface ProjectHolderViewModel {
         .compose(combineLatestPair(projectDataAndCurrentUser))
         .take(1)
         .map(__ -> __.second)
-        .map(projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()))
+        .map(projectDataAndUser -> new ExperimentData(projectDataAndUser.second, projectDataAndUser.first
+          .refTagFromIntent(), projectDataAndUser.first.refTagFromCookie()))
+        .map(experimentData -> this.optimizely.variant(OptimizelyExperiment.Key.CREATOR_DETAILS, experimentData))
         .map(variant -> variant != OptimizelyExperiment.Variant.CONTROL)
         .compose(bindToLifecycle())
         .subscribe(this.creatorDetailsVariantIsVisible::onNext);

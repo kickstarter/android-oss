@@ -3,13 +3,11 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.models.Project
-import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
@@ -53,11 +51,7 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     fun testPledgeContainerIsVisible_whenProjectIsLiveNotBacked_variant1() {
         val environment = environment()
                 .toBuilder()
-                .optimizely(object : MockExperimentsClientType(){
-                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
-                        return OptimizelyExperiment.Variant.VARIANT_1
-                    }
-                })
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
                 .build()
         setUpEnvironment(environment, ProjectDataFactory.project(ProjectFactory.project()))
 
@@ -68,11 +62,7 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     fun testPledgeContainerIsVisible_whenProjectIsLiveNotBacked_variant2() {
         val environment = environment()
                 .toBuilder()
-                .optimizely(object : MockExperimentsClientType(){
-                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
-                        return OptimizelyExperiment.Variant.VARIANT_2
-                    }
-                })
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
                 .build()
         setUpEnvironment(environment, ProjectDataFactory.project(ProjectFactory.project()))
 

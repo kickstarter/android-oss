@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CampaignDetailsActivity
@@ -54,7 +55,8 @@ interface CampaignDetailsViewModel {
             projectData
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
-                    .map { projectDataAndUser -> this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, projectDataAndUser.second, projectDataAndUser.first.refTagFromIntent()) }
+                    .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
+                    .map { this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
                     .map { it == OptimizelyExperiment.Variant.VARIANT_2 }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeContainerIsVisible)
@@ -77,9 +79,10 @@ interface CampaignDetailsViewModel {
 
             projectData
                     .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
-                    .compose<Pair<ProjectData, User?>>(takeWhen(this.pledgeButtonClicked))
+                    .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
+                    .compose<ExperimentData>(takeWhen(this.pledgeButtonClicked))
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, it.second, it.first.refTagFromIntent()) }
+                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, it) }
         }
 
         override fun pledgeActionButtonClicked() = this.pledgeButtonClicked.onNext(null)

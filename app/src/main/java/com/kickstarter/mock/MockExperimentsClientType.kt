@@ -2,9 +2,8 @@ package com.kickstarter.mock
 
 import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.ExperimentsClientType
-import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.models.User
+import com.kickstarter.libs.utils.ExperimentData
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -17,13 +16,15 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
     private val experimentEvents : PublishSubject<ExperimentsEvent> = PublishSubject.create()
     val eventKeys: Observable<String> = this.experimentEvents.map { e -> e.eventKey }
 
-    override fun track(eventKey: String, user: User?, refTag: RefTag?) {
-        this.experimentEvents.onNext(ExperimentsEvent(eventKey, attributes(user, refTag, this.apiEndpoint)))
+    override fun appVersion(): String = "9.9.9"
+
+    override fun OSVersion(): String = "9"
+
+    override fun track(eventKey: String, experimentData: ExperimentData) {
+        this.experimentEvents.onNext(ExperimentsEvent(eventKey, attributes(experimentData, this.apiEndpoint)))
     }
 
     override fun userId(): String = "device-id"
 
-    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant = this.variant
-
-    override fun androidBuildVersion(): String = "9"
+    override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant = this.variant
 }

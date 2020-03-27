@@ -390,7 +390,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartCampaignWebViewActivity_whenBlurbClicked() {
+    fun testStartCampaignWebViewActivity_whenBlurbClicked_liveNotBackedProject() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -399,6 +399,33 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
+        this.experimentsTest.assertValue("Campaign Details Button Clicked")
+    }
+
+    @Test
+    fun testStartCampaignWebViewActivity_whenBlurbClicked_backedProject() {
+        val project = ProjectFactory.backedProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.blurbTextViewClicked()
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testStartCampaignWebViewActivity_whenBlurbClicked_endedProject() {
+        val project = ProjectFactory.successfulProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.blurbTextViewClicked()
+        this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -441,7 +468,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testStartCreatorBioWebViewActivity() {
+    fun testStartCreatorBioWebViewActivity_whenClickingControlCreatorDetails_liveNotBackedProject() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -450,10 +477,37 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertValue("Creator Details Clicked")
     }
 
     @Test
-    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails() {
+    fun testStartCreatorBioWebViewActivity_whenClickingControlCreatorDetails_backedProject() {
+        val project = ProjectFactory.backedProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorNameTextViewClicked()
+        this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testStartCreatorBioWebViewActivity_whenClickingControlCreatorDetails_endedProject() {
+        val project = ProjectFactory.successfulProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorNameTextViewClicked()
+        this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_liveNotBackedProject() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment())
 
@@ -462,6 +516,33 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorInfoVariantClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertValue("Creator Details Clicked")
+    }
+
+    @Test
+    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_backedProject() {
+        val project = ProjectFactory.backedProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorInfoVariantClicked()
+        this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testStartCreatorBioWebViewActivity_whenClickingVariantCreatorDetails_endedProject() {
+        val project = ProjectFactory.successfulProject()
+        setUpEnvironment(environment())
+
+        // Start the view model with a project.
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.creatorInfoVariantClicked()
+        this.startCreatorBioWebViewActivity.assertValues(project)
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -545,12 +626,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant1() {
-        setUpEnvironment(environment().toBuilder()
-                .optimizely(object: MockExperimentsClientType() {
-                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
-                        return OptimizelyExperiment.Variant.VARIANT_1
-                    }
-                })
+        setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
                 .build())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
@@ -561,12 +638,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant2() {
-        setUpEnvironment(environment().toBuilder()
-                .optimizely(object: MockExperimentsClientType() {
-                    override fun variant(experiment: OptimizelyExperiment.Key, user: User?, refTag: RefTag?): OptimizelyExperiment.Variant {
-                        return OptimizelyExperiment.Variant.VARIANT_2
-                    }
-                })
+        setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
                 .build())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))

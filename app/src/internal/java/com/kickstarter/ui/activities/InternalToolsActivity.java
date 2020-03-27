@@ -112,6 +112,11 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     startActivity(featureFlagIntent);
   }
 
+  @OnClick(R.id.reset_device_id)
+  public void resetDeviceIdClick() {
+    //FirebaseInstanceId.getInstance().deleteInstanceId();
+  }
+
   private void showCustomEndpointDialog() {
     final View view = View.inflate(this, R.layout.custom_endpoint_layout, null);
     final EditText customEndpointEditText = ButterKnife.findById(view, R.id.custom_endpoint_edit_text);

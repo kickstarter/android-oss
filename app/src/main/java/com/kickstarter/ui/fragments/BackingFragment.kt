@@ -34,6 +34,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
 
     interface BackingDelegate {
         fun refreshProject()
+        fun showFixPaymentMethod()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -93,6 +94,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { (activity as BackingDelegate?)?.refreshProject() }
+
+        this.viewModel.outputs.notifyDelegateToShowFixPledge()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
 
         this.viewModel.outputs.paymentMethodIsGone()
                 .compose(bindToLifecycle())

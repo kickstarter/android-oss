@@ -57,6 +57,9 @@ interface ProjectViewModel {
         /** Call when the creator name is clicked.  */
         fun creatorNameTextViewClicked()
 
+        /** Call when the fix payment method is clicked.  */
+        fun fixPaymentMethodButtonClicked()
+
         /** Call when the count of fragments on the back stack changes.  */
         fun fragmentStackCount(count: Int)
 
@@ -263,6 +266,7 @@ interface ProjectViewModel {
         private val creatorDashboardButtonClicked = PublishSubject.create<Void>()
         private val creatorInfoVariantClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
+        private val fixPaymentMethodButtonClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val managePledgeButtonClicked = PublishSubject.create<Void>()
@@ -642,6 +646,12 @@ interface ProjectViewModel {
                     .map { pD -> BackingUtils.backedReward(pD.project())?.let { Pair(pD, it) } }
 
             projectDataAndBackedReward
+                    .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
+                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.FIX_PLEDGE) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePledge)
+
+            projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
                     .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                     .compose(bindToLifecycle())
@@ -963,6 +973,10 @@ interface ProjectViewModel {
             this.creatorNameTextViewClicked.onNext(null)
         }
 
+        override fun fixPaymentMethodButtonClicked() {
+            this.fixPaymentMethodButtonClicked.onNext(null)
+        }
+
         override fun fragmentStackCount(count: Int) {
             this.fragmentStackCount.onNext(count)
         }
@@ -1154,7 +1168,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
-
         @NonNull
         override fun showPledgeNotCancelableDialog(): Observable<Void> = this.showPledgeNotCancelableDialog
 

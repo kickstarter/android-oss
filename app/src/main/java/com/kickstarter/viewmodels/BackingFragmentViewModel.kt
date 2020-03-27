@@ -31,6 +31,9 @@ interface BackingFragmentViewModel {
         /** Configure with current [ProjectData]. */
         fun configureWith(projectData: ProjectData)
 
+        /** Call when the fix payment method button is clicked. */
+        fun fixPaymentMethodButtonClicked()
+
         /** Call when the pledge has been successfully updated. */
         fun pledgeSuccessfullyUpdated()
 
@@ -71,6 +74,9 @@ interface BackingFragmentViewModel {
 
         /** Emits when we should notify the [BackingFragment.BackingDelegate] to refresh the project. */
         fun notifyDelegateToRefreshProject(): Observable<Void>
+
+        /** Call when the [BackingFragment.BackingDelegate] should be notified to show the fix pledge flow. */
+        fun notifyDelegateToShowFixPledge(): Observable<Void>
 
         /** Emits a boolean determining if the payment method section should be visible. */
         fun paymentMethodIsGone(): Observable<Boolean>
@@ -117,6 +123,7 @@ interface BackingFragmentViewModel {
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
 
+        private val fixPaymentMethodButtonClicked = PublishSubject.create<Void>()
         private val pledgeSuccessfullyCancelled = PublishSubject.create<Void>()
         private val projectDataInput = PublishSubject.create<ProjectData>()
         private val receivedCheckboxToggled = PublishSubject.create<Boolean>()
@@ -132,6 +139,7 @@ interface BackingFragmentViewModel {
         private val fixPaymentMethodButtonIsGone = BehaviorSubject.create<Boolean>()
         private val fixPaymentMethodMessageIsGone = BehaviorSubject.create<Boolean>()
         private val notifyDelegateToRefreshProject = PublishSubject.create<Void>()
+        private val notifyDelegateToShowFixPledge = PublishSubject.create<Void>()
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeDate = BehaviorSubject.create<String>()
@@ -297,6 +305,10 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }
 
+            this.fixPaymentMethodButtonClicked
+                    .compose(bindToLifecycle())
+                    .subscribe { this.notifyDelegateToShowFixPledge.onNext(null) }
+
             backing
                     .map { it.backerCompletedAt() }
                     .map { ObjectUtils.isNotNull(it) }
@@ -386,6 +398,10 @@ interface BackingFragmentViewModel {
             this.projectDataInput.onNext(projectData)
         }
 
+        override fun fixPaymentMethodButtonClicked() {
+            this.fixPaymentMethodButtonClicked.onNext(null)
+        }
+
         override fun pledgeSuccessfullyUpdated() {
             this.showUpdatePledgeSuccess.onNext(null)
         }
@@ -417,6 +433,8 @@ interface BackingFragmentViewModel {
         override fun fixPaymentMethodMessageIsGone(): Observable<Boolean> = this.fixPaymentMethodMessageIsGone
 
         override fun notifyDelegateToRefreshProject(): Observable<Void> = this.notifyDelegateToRefreshProject
+
+        override fun notifyDelegateToShowFixPledge(): Observable<Void> = this.notifyDelegateToShowFixPledge
 
         override fun paymentMethodIsGone(): Observable<Boolean> = this.paymentMethodIsGone
 

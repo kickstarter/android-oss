@@ -27,6 +27,8 @@ interface ApolloClientType {
 
     fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data>
 
+    fun erroredBackings(): Observable<List<ErroredBacking>>
+
     fun getStoredCards(): Observable<List<StoredCard>>
 
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>

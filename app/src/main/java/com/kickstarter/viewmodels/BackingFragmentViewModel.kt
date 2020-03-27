@@ -63,6 +63,12 @@ interface BackingFragmentViewModel {
         /** Emits the card brand drawable to display. */
         fun cardLogo(): Observable<Int>
 
+        /** Emits a boolean determining if the fix payment method button should be visible. */
+        fun fixPaymentMethodButtonIsGone(): Observable<Boolean>
+
+        /** Emits a boolean determining if the fix payment method message should be visible. */
+        fun fixPaymentMethodMessageIsGone(): Observable<Boolean>
+
         /** Emits when we should notify the [BackingFragment.BackingDelegate] to refresh the project. */
         fun notifyDelegateToRefreshProject(): Observable<Void>
 
@@ -123,6 +129,8 @@ interface BackingFragmentViewModel {
         private val cardIssuer = BehaviorSubject.create<Either<String, Int>>()
         private val cardLastFour = BehaviorSubject.create<String>()
         private val cardLogo = BehaviorSubject.create<Int>()
+        private val fixPaymentMethodButtonIsGone = BehaviorSubject.create<Boolean>()
+        private val fixPaymentMethodMessageIsGone = BehaviorSubject.create<Boolean>()
         private val notifyDelegateToRefreshProject = PublishSubject.create<Void>()
         private val paymentMethodIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<CharSequence>()
@@ -276,6 +284,19 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.cardLogo)
 
+            val backingIsNotErrored = backing
+                    .map { BackingUtils.isErrored(it) }
+                    .distinctUntilChanged()
+                    .map { BooleanUtils.negate(it) }
+
+            backingIsNotErrored
+                    .compose(bindToLifecycle())
+                    .subscribe { this.fixPaymentMethodButtonIsGone.onNext(it) }
+
+            backingIsNotErrored
+                    .compose(bindToLifecycle())
+                    .subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }
+
             backing
                     .map { it.backerCompletedAt() }
                     .map { ObjectUtils.isNotNull(it) }
@@ -390,6 +411,10 @@ interface BackingFragmentViewModel {
         override fun cardLastFour(): Observable<String> = this.cardLastFour
 
         override fun cardLogo(): Observable<Int> = this.cardLogo
+
+        override fun fixPaymentMethodButtonIsGone(): Observable<Boolean> = this.fixPaymentMethodButtonIsGone
+
+        override fun fixPaymentMethodMessageIsGone(): Observable<Boolean> = this.fixPaymentMethodMessageIsGone
 
         override fun notifyDelegateToRefreshProject(): Observable<Void> = this.notifyDelegateToRefreshProject
 

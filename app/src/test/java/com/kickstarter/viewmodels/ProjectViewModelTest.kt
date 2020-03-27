@@ -13,7 +13,6 @@ import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
-import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.*
 import org.junit.Test
@@ -626,7 +625,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant1() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
+        setUpEnvironment(environment().toBuilder()
                 .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
                 .build())
 
@@ -638,7 +637,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant2() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled().toBuilder()
+        setUpEnvironment(environment().toBuilder()
                 .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
                 .build())
 

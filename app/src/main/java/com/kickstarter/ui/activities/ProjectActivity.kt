@@ -320,6 +320,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.inputs.refreshProject()
     }
 
+    override fun showFixPaymentMethod() {
+        this.viewModel.inputs.fixPaymentMethodButtonClicked()
+    }
+
     override fun onNetworkConnectionChanged(isConnected: Boolean) {}
 
     override fun exitTransition(): Pair<Int, Int>? {

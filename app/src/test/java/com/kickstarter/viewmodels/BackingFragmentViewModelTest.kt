@@ -31,6 +31,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private val fixPaymentMethodButtonIsGone = TestSubscriber.create<Boolean>()
     private val fixPaymentMethodMessageIsGone = TestSubscriber.create<Boolean>()
     private val notifyDelegateToRefreshProject = TestSubscriber.create<Void>()
+    private val notifyDelegateToShowFixPledge = TestSubscriber.create<Void>()
     private val paymentMethodIsGone = TestSubscriber.create<Boolean>()
     private val pledgeAmount = TestSubscriber.create<CharSequence>()
     private val pledgeDate = TestSubscriber.create<String>()
@@ -58,6 +59,7 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm.outputs.fixPaymentMethodButtonIsGone().subscribe(this.fixPaymentMethodButtonIsGone)
         this.vm.outputs.fixPaymentMethodMessageIsGone().subscribe(this.fixPaymentMethodMessageIsGone)
         this.vm.outputs.notifyDelegateToRefreshProject().subscribe(this.notifyDelegateToRefreshProject)
+        this.vm.outputs.notifyDelegateToShowFixPledge().subscribe(this.notifyDelegateToShowFixPledge)
         this.vm.outputs.paymentMethodIsGone().subscribe(this.paymentMethodIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.pledgeDate().subscribe(this.pledgeDate)
@@ -404,6 +406,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.refreshProject()
         this.notifyDelegateToRefreshProject.assertValueCount(1)
+    }
+
+    @Test
+    fun testNotifyDelegateToShowFixPledge() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.fixPaymentMethodButtonClicked()
+        this.notifyDelegateToShowFixPledge.assertValueCount(1)
     }
 
     @Test

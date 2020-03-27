@@ -1213,6 +1213,34 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testShowUpdatePledge_whenFixingPaymentMethod() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+
+        // Start the view model with a backed project
+        val reward = RewardFactory.reward()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .rewardId(reward.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.fixPaymentMethodButtonClicked()
+
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
+                .reward(reward)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.FIX_PLEDGE))
+        this.koalaTest.assertValue("Project Page")
+        this.lakeTest.assertValue("Project Page Viewed")
+    }
+
+    @Test
     fun testShowUpdatePledge_whenUpdatingPledge() {
         setUpEnvironment(environment())
 

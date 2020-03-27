@@ -46,6 +46,10 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(DeletePaymentSourceMutation.Data(DeletePaymentSourceMutation.PaymentSourceDelete("", "")))
     }
 
+    override fun erroredBackings(): Observable<List<ErroredBacking>> {
+        return Observable.empty()
+    }
+
     override fun getStoredCards(): Observable<List<StoredCard>> {
         return Observable.just(Collections.singletonList(StoredCardFactory.discoverCard()))
     }

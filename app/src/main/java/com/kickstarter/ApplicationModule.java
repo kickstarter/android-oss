@@ -38,6 +38,7 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.graphql.DateAdapter;
+import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
@@ -191,6 +192,7 @@ public final class ApplicationModule {
     return ApolloClient.builder()
       .addCustomTypeAdapter(CustomType.DATE, new DateAdapter())
       .addCustomTypeAdapter(CustomType.EMAIL, new EmailAdapter())
+      .addCustomTypeAdapter(CustomType.ISO8601DATETIME, new DateTimeAdapter())
       .serverUrl(webEndpoint + "/graph")
       .okHttpClient(okHttpClient)
       .build();

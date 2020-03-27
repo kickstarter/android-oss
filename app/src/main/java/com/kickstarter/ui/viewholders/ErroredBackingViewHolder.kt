@@ -3,7 +3,7 @@ package com.kickstarter.ui.viewholders
 import android.view.View
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.libs.RelativeDateTimeOptions
-import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.models.ErroredBacking
@@ -22,14 +22,19 @@ class ErroredBackingViewHolder(private val view: View, val delegate: Delegate?) 
 
     init {
 
+        this.viewModel.outputs.notifyDelegateToStartFixPaymentMethod()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { delegate?.managePledgeClicked(it) }
+
         this.viewModel.outputs.projectFinalCollectionDate()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { setProjectFinaCollectionDateText(it) }
 
         this.viewModel.outputs.projectName()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { this.view.errored_backing_project_title.text = it }
 
         RxView.clicks(this.view.errored_backing_manage_button)

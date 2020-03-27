@@ -172,7 +172,8 @@ buildscript {
 apollo {
     customTypeMapping = [
             "Date" : "java.util.Date",
-            "Email": "java.lang.String"
+            "Email": "java.lang.String",
+            "ISO8601DateTime" : "org.joda.time.DateTime"
     ]
 }
 

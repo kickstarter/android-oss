@@ -5,6 +5,7 @@ import ClearUserUnseenActivityMutation
 import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
+import ErroredBackingsQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -198,6 +199,45 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             }
                             ps.onNext(response.data())
                             ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun erroredBackings(): Observable<List<ErroredBacking>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<ErroredBacking>>()
+            this.service.query(ErroredBackingsQuery.builder().build())
+                    .enqueue(object : ApolloCall.Callback<ErroredBackingsQuery.Data>() {
+                        override fun onFailure(exception: ApolloException) {
+                            ps.onError(exception)
+                        }
+
+                        override fun onResponse(response: Response<ErroredBackingsQuery.Data>) {
+                            if (response.hasErrors()) {
+                                ps.onError(Exception(response.errors().first().message()))
+                            } else {
+                                Observable.just(response.data())
+                                        .map { cards -> cards?.me()?.backings()?.nodes() }
+                                        .map { list ->
+                                            val erroredBackings = list?.asSequence()?.map {
+                                                val project = ErroredBacking.Project.builder()
+                                                        .finalCollectionDate(it.project()?.finalCollectionDate())
+                                                        .name(it.project()?.name())
+                                                        .slug(it.project()?.slug())
+                                                        .build()
+                                                ErroredBacking.builder()
+                                                        .project(project)
+                                                        .build()
+                                            }
+                                            erroredBackings?.toList() ?: listOf()
+                                        }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
                         }
                     })
             return@defer ps

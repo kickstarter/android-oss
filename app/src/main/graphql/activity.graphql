@@ -3,3 +3,17 @@ mutation ClearUserUnseenActivity {
   activityIndicatorCount
  }
 }
+
+query ErroredBackings {
+  me {
+    backings(status:errored) {
+      nodes {
+        project {
+          finalCollectionDate
+          name
+          slug
+        }
+      }
+    }
+  }
+}

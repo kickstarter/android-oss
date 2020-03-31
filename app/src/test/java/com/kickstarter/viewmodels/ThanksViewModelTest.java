@@ -350,7 +350,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intent);
 
     this.lakeTest.assertValue("Thanks Page Viewed");
-    this.experimentsTest.assertValue("Temporary Completed Checkout");
+    this.experimentsTest.assertValue("App Completed Checkout");
   }
 
   @Test

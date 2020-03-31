@@ -220,7 +220,7 @@ public interface ThanksViewModel {
         .map(this::experimentRevenueData)
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(data -> this.optimizely.trackRevenue(OptimizelyEvent.TEMPORARY_COMPLETED_CHECKOUT, data));
+        .subscribe(data -> this.optimizely.trackRevenue(OptimizelyEvent.APP_COMPLETED_CHECKOUT, data));
     }
 
     private ExperimentRevenueData experimentRevenueData(final @NonNull Pair<Pair<CheckoutData, PledgeData>, User> dataAndUser) {

@@ -2,7 +2,7 @@
 
 package com.kickstarter.libs
 
-const val TEMPORARY_COMPLETED_CHECKOUT = "Temporary Completed Checkout"
+const val APP_COMPLETED_CHECKOUT = "App Completed Checkout"
 
 // region native_project_page_campaign_details
 const val CAMPAIGN_DETAILS_BUTTON_CLICKED = "Campaign Details Button Clicked"

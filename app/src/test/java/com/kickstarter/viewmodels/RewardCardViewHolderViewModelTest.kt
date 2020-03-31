@@ -210,7 +210,6 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.failedIndicatorIconIsVisible.assertValue(true)
     }
 
-
     @Test
     fun testFailedIndicatorIconIsVisible_whenCardIsBackingPaymentSource_backingIsNotErrored() {
         setUpEnvironment(environment())
@@ -272,7 +271,6 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.failedIndicatorIconIsVisible.assertValue(false)
     }
-
 
     @Test
     fun testId() {

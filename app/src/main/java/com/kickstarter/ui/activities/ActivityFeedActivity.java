@@ -156,6 +156,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   private void startFixPledge(final @NonNull String projectSlug) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
+      .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
       .putExtra(IntentKey.REF_TAG, RefTag.activity());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

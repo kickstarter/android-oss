@@ -32,6 +32,11 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
                 .compose(observeForUI())
                 .subscribe { setExpirationDateText(it) }
 
+        this.viewModel.outputs.failedIndicatorIconIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.failed_indicator_icon, !it) }
+
         this.viewModel.outputs.issuerImage()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

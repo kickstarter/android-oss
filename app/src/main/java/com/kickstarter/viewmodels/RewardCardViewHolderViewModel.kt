@@ -4,6 +4,7 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Backing
@@ -20,6 +21,9 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
         /** Emits a boolean that determines if the pledge button should be enabled. */
         fun buttonEnabled() : Observable<Boolean>
 
+        /** Emits a boolean that determines if the failed indicator icon should be visible. */
+        fun failedIndicatorIconIsVisible(): Observable<Boolean>
+
         /** Emits a boolean that determines if the not available copy should be visible. */
         fun notAvailableCopyIsVisible(): Observable<Boolean>
 
@@ -33,6 +37,7 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
 
         private val buttonCTA = BehaviorSubject.create<Int>()
         private val buttonEnabled = BehaviorSubject.create<Boolean>()
+        private val failedIndicatorIconIsVisible = BehaviorSubject.create<Boolean>()
         private val notAvailableCopyIsVisible = BehaviorSubject.create<Boolean>()
         private val projectCountry = BehaviorSubject.create<String>()
 
@@ -72,6 +77,12 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonCTA)
 
+            isBackingPaymentSource
+                    .compose<Pair<Boolean, Backing?>>(combineLatestPair(backing))
+                    .map { it.first && BackingUtils.isErrored(it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.failedIndicatorIconIsVisible)
+
             project
                     .map { it.location()?.expandedCountry()?: "" }
                     .compose(bindToLifecycle())
@@ -87,6 +98,8 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
         override fun buttonCTA() : Observable<Int> = this.buttonCTA
 
         override fun buttonEnabled() : Observable<Boolean> = this.buttonEnabled
+
+        override fun failedIndicatorIconIsVisible(): Observable<Boolean> = this.failedIndicatorIconIsVisible
 
         override fun notAvailableCopyIsVisible(): Observable<Boolean> = this.notAvailableCopyIsVisible
 

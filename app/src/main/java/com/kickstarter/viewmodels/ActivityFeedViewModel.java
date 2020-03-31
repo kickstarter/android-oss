@@ -8,6 +8,7 @@ import com.kickstarter.libs.KoalaContext.Update;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.ErroredBacking;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.User;
@@ -51,6 +52,9 @@ public interface ActivityFeedViewModel {
     /** Emits a list of activities representing the user's activity feed. */
     Observable<List<Activity>> activityList();
 
+    /** Emits a list of the user's errored backings. */
+    Observable<List<ErroredBacking>> erroredBackings();
+
     /** Emits when view should be returned to Discovery projects. */
     Observable<Void> goToDiscovery();
 
@@ -71,6 +75,9 @@ public interface ActivityFeedViewModel {
 
     /** Emits a logged-in user with zero activities in order to display an empty state. */
     Observable<Boolean> loggedInEmptyStateIsVisible();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
+    Observable<String> startFixPledge();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.UpdateActivity}. */
     Observable<Activity> startUpdateActivity();
@@ -117,6 +124,12 @@ public interface ActivityFeedViewModel {
 
       loggedInUser
         .compose(takeWhen(refreshOrResume))
+        .switchMap(__ -> this.apolloClient.erroredBackings().compose(neverError()).share())
+        .compose(bindToLifecycle())
+        .subscribe(this.erroredBackings::onNext);
+
+      loggedInUser
+        .compose(takeWhen(refreshOrResume))
         .map(User::unseenActivityCount)
         .map(IntegerUtils::intValueOrZero)
         .filter(IntegerUtils::isNonZero)
@@ -152,6 +165,10 @@ public interface ActivityFeedViewModel {
         .map(loggedIn -> !loggedIn)
         .compose(this.bindToLifecycle())
         .subscribe(this.loggedOutEmptyStateIsVisible);
+
+      this.managePledgeClicked
+        .compose(bindToLifecycle())
+        .subscribe(this.startFixPledge::onNext);
 
       this.currentUser.observable()
         .compose(takePairWhen(this.activityList))
@@ -193,6 +210,7 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();
     private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
     private final PublishSubject<Void> loginClick = PublishSubject.create();
+    private final PublishSubject<String> managePledgeClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
     private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
@@ -203,6 +221,7 @@ public interface ActivityFeedViewModel {
     private final PublishSubject<SurveyResponse> surveyClick = PublishSubject.create();
 
     private final BehaviorSubject<List<Activity>> activityList = BehaviorSubject.create();
+    private final BehaviorSubject<List<ErroredBacking>> erroredBackings = BehaviorSubject.create();
     private final Observable<Void> goToDiscovery;
     private final Observable<Void> goToLogin;
     private final Observable<Project> goToProject;
@@ -210,6 +229,7 @@ public interface ActivityFeedViewModel {
     private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
+    private final PublishSubject<String> startFixPledge = PublishSubject.create();
     private final Observable<Activity> startUpdateActivity;
     private final BehaviorSubject<List<SurveyResponse>> surveys = BehaviorSubject.create();
 
@@ -224,6 +244,9 @@ public interface ActivityFeedViewModel {
     }
     @Override public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
       this.friendBackingClick.onNext(activity);
+    }
+    @Override public void managePledgeClicked(final @NonNull String projectSlug) {
+      this.managePledgeClicked.onNext(projectSlug);
     }
     @Override public void nextPage() {
       this.nextPage.onNext(null);
@@ -254,6 +277,9 @@ public interface ActivityFeedViewModel {
     @Override public @NonNull Observable<List<Activity>> activityList() {
       return this.activityList;
     }
+    @Override public @NonNull Observable<List<ErroredBacking>> erroredBackings() {
+      return this.erroredBackings;
+    }
     @Override public @NonNull Observable<Void> goToDiscovery() {
       return this.goToDiscovery;
     }
@@ -274,6 +300,9 @@ public interface ActivityFeedViewModel {
     }
     @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
       return this.loggedOutEmptyStateIsVisible;
+    }
+    @Override public @NonNull Observable<String> startFixPledge() {
+      return this.startFixPledge;
     }
     @Override public @NonNull Observable<Activity> startUpdateActivity() {
       return this.startUpdateActivity;

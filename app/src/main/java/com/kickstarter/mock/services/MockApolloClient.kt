@@ -9,6 +9,7 @@ import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.CreatorDetailsFactory
+import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
@@ -47,7 +48,7 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun erroredBackings(): Observable<List<ErroredBacking>> {
-        return Observable.empty()
+        return Observable.just(Collections.singletonList(ErroredBackingFactory.erroredBacking()))
     }
 
     override fun getStoredCards(): Observable<List<StoredCard>> {

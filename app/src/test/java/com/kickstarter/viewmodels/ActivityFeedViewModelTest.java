@@ -10,6 +10,7 @@ import com.kickstarter.mock.factories.SurveyResponseFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.ErroredBacking;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.User;
@@ -28,12 +29,14 @@ import rx.observers.TestSubscriber;
 public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private ViewModel vm;
   private final TestSubscriber<List<Activity>> activityList = new TestSubscriber<>();
+  private final TestSubscriber<List<ErroredBacking>> erroredBackings = new TestSubscriber<>();
   private final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
   private final TestSubscriber<Void> goToLogin = new TestSubscriber<>();
   private final TestSubscriber<Project> goToProject = new TestSubscriber<>();
   private final TestSubscriber<SurveyResponse> goToSurvey = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedOutEmptyStateIsVisible = new TestSubscriber<>();
   private final TestSubscriber<Boolean> loggedInEmptyStateIsVisible = new TestSubscriber<>();
+  private final TestSubscriber<String> startFixPledge = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
   private final TestSubscriber<List<SurveyResponse>> surveys = new TestSubscriber<>();
   private final TestSubscriber<User> user = new TestSubscriber<>();
@@ -41,12 +44,14 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new ViewModel(environment);
     this.vm.outputs.activityList().subscribe(this.activityList);
+    this.vm.outputs.erroredBackings().subscribe(this.erroredBackings);
     this.vm.outputs.goToDiscovery().subscribe(this.goToDiscovery);
     this.vm.outputs.goToLogin().subscribe(this.goToLogin);
     this.vm.outputs.goToProject().subscribe(this.goToProject);
     this.vm.outputs.goToSurvey().subscribe(this.goToSurvey);
     this.vm.outputs.loggedOutEmptyStateIsVisible().subscribe(this.loggedOutEmptyStateIsVisible);
     this.vm.outputs.loggedInEmptyStateIsVisible().subscribe(this.loggedInEmptyStateIsVisible);
+    this.vm.outputs.startFixPledge().subscribe(this.startFixPledge);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
     this.vm.outputs.surveys().subscribe(this.surveys);
   }
@@ -108,6 +113,46 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testErroredBackings_whenLoggedIn() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final User initialUser = UserFactory.user();
+    currentUser.login(initialUser, "deadbeef");
+
+    final User updatedUser = UserFactory.user();
+    final Environment environment = this.environment().toBuilder()
+      .apiClient(new MockApiClient(){
+        @NonNull
+        @Override
+        public Observable<User> fetchCurrentUser() {
+          return Observable.just(updatedUser);
+        }
+      })
+      .currentUser(currentUser)
+      .build();
+
+    setUpEnvironment(environment);
+    this.erroredBackings.assertValueCount(1);
+
+    this.vm.inputs.refresh();
+    this.erroredBackings.assertValueCount(2);
+
+    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
+    this.lakeTest.assertValue("Activity Feed Viewed");
+  }
+
+  @Test
+  public void testErroredBackings_whenLoggedOut() {
+    setUpEnvironment(environment());
+
+    this.vm.inputs.resume();
+
+    this.erroredBackings.assertNoValues();
+
+    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
+    this.lakeTest.assertValue("Activity Feed Viewed");
+  }
+
+  @Test
   public void testLoginFlow() {
     final ApiClientType apiClient = new MockApiClient();
     final CurrentUserType currentUser = new MockCurrentUser();
@@ -159,6 +204,15 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resume();
 
     this.surveys.assertNoValues();
+  }
+
+  @Test
+  public void testStartFixPledge() {
+    setUpEnvironment(environment());
+
+    final String projectSlug = "slug";
+    this.vm.inputs.managePledgeClicked(projectSlug);
+    this.startFixPledge.assertValue(projectSlug);
   }
 
   @Test

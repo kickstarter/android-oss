@@ -8,6 +8,7 @@ import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.PaymentSourceFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.models.Backing
 import com.stripe.android.model.Card
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -62,9 +63,32 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.buttonCTA.assertValue(R.string.Not_available)
     }
 
+    @Test
+    fun testButtonCTA_whenCardIsBackingPaymentSource_andBackingIsErrored() {
+        setUpEnvironment(environment())
+        val visa = StoredCardFactory.visa()
+
+        val paymentSource = PaymentSourceFactory.visa()
+                .toBuilder()
+                .id(visa.id())
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .status(Backing.STATUS_ERRORED)
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(visa, project))
+
+        this.buttonCTA.assertValue(R.string.Select)
+    }
 
     @Test
-    fun testButtonCTA_whenCardIsBackingPaymentSource() {
+    fun testButtonCTA_whenCardIsBackingPaymentSource_andBackingIsNotErrored() {
         setUpEnvironment(environment())
         val visa = StoredCardFactory.visa()
 
@@ -127,7 +151,31 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testButtonEnabled_whenCardIsBackingPaymentSource() {
+    fun testButtonEnabled_whenCardIsBackingPaymentSource_andBackingIsErrored() {
+        setUpEnvironment(environment())
+        val visa = StoredCardFactory.visa()
+
+        val paymentSource = PaymentSourceFactory.visa()
+                .toBuilder()
+                .id(visa.id())
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .status(Backing.STATUS_ERRORED)
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(visa, project))
+
+        this.buttonEnabled.assertValue(true)
+    }
+
+    @Test
+    fun testButtonEnabled_whenCardIsBackingPaymentSource_andBackingIsNotErrored() {
         setUpEnvironment(environment())
         val visa = StoredCardFactory.visa()
 

@@ -21,6 +21,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val buttonCTA = TestSubscriber.create<Int>()
     private val buttonEnabled = TestSubscriber.create<Boolean>()
     private val expirationDate = TestSubscriber.create<String>()
+    private val failedIndicatorIconIsVisible = TestSubscriber.create<Boolean>()
     private val id = TestSubscriber.create<String>()
     private val issuer = TestSubscriber.create<String>()
     private val issuerImage = TestSubscriber.create<Int>()
@@ -34,6 +35,7 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.buttonCTA().subscribe(this.buttonCTA)
         this.vm.outputs.buttonEnabled().subscribe(this.buttonEnabled)
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
+        this.vm.outputs.failedIndicatorIconIsVisible().subscribe(this.failedIndicatorIconIsVisible)
         this.vm.outputs.id().subscribe(this.id)
         this.vm.outputs.issuer().subscribe(this.issuer)
         this.vm.outputs.issuerImage().subscribe(this.issuerImage)
@@ -229,6 +231,92 @@ class RewardCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationDate.assertValue("03/2019")
+    }
+
+    @Test
+    fun testFailedIndicatorIconIsVisible_whenCardIsBackingPaymentSource_backingIsErrored() {
+        setUpEnvironment(environment())
+        val visa = StoredCardFactory.visa()
+
+        val paymentSource = PaymentSourceFactory.visa()
+                .toBuilder()
+                .id(visa.id())
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .status(Backing.STATUS_ERRORED)
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(visa, project))
+
+        this.failedIndicatorIconIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun testFailedIndicatorIconIsVisible_whenCardIsBackingPaymentSource_backingIsNotErrored() {
+        setUpEnvironment(environment())
+        val visa = StoredCardFactory.visa()
+
+        val paymentSource = PaymentSourceFactory.visa()
+                .toBuilder()
+                .id(visa.id())
+                .build()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(paymentSource)
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(visa, project))
+
+        this.failedIndicatorIconIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testFailedIndicatorIconIsVisible_whenCardIsNotBackingPaymentSource_backingIsErrored() {
+        setUpEnvironment(environment())
+        val discover = StoredCardFactory.discoverCard()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(PaymentSourceFactory.visa())
+                .status(Backing.STATUS_ERRORED)
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(discover, project))
+
+        this.failedIndicatorIconIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testFailedIndicatorIconIsVisible_whenCardIsNotBackingPaymentSource_backingIsNotErrored() {
+        setUpEnvironment(environment())
+        val discover = StoredCardFactory.discoverCard()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(PaymentSourceFactory.visa())
+                .build()
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(Pair(discover, project))
+
+        this.failedIndicatorIconIsVisible.assertValue(false)
     }
 
     @Test

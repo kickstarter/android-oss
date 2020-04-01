@@ -13,6 +13,7 @@ public final class IntentKey {
   public static final String DISCOVERY_PARAMS = "com.kickstarter.kickstarter.intent_discovery_params";
   public static final String EDITORIAL = "com.kickstarter.kickstarter.intent_editorial";
   public static final String EMAIL = "com.kickstarter.kickstarter.intent_email";
+  public static final String EXPAND_PLEDGE_SHEET = "com.kickstarter.kickstarter.intent_expand_pledge_sheet";
   public static final String FACEBOOK_LOGIN = "com.kickstarter.kickstarter.intent_facebook_login";
   public static final String FACEBOOK_TOKEN = "com.kickstarter.kickstarter.intent_facebook_token";
   public static final String FACEBOOK_USER = "com.kickstarter.kickstarter.intent_facebook_user";

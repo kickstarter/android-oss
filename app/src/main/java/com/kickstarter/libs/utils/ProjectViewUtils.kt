@@ -6,8 +6,6 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.RelativeSizeSpan
 import android.util.Pair
-import android.view.View
-import android.widget.Button
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import com.kickstarter.R
@@ -70,34 +68,6 @@ object ProjectViewUtils {
             R.string.View_your_pledge
         } else {
             R.string.View_rewards
-        }
-    }
-
-    /**
-     * Set correct button view based on project and backing status.
-     */
-    @JvmStatic
-    fun setActionButton(project: Project, backProjectButton: Button,
-                        managePledgeButton: Button, viewPledgeButton: Button) {
-
-        if (project.hasRewards()) {
-            if (!project.isBacking && project.isLive) {
-                backProjectButton.visibility = View.VISIBLE
-            } else {
-                backProjectButton.visibility = View.GONE
-            }
-
-            if (project.isBacking && project.isLive) {
-                managePledgeButton.visibility = View.VISIBLE
-            } else {
-                managePledgeButton.visibility = View.GONE
-            }
-
-            if (project.isBacking && !project.isLive) {
-                viewPledgeButton.visibility = View.VISIBLE
-            } else {
-                viewPledgeButton.visibility = View.GONE
-            }
         }
     }
 

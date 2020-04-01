@@ -18,17 +18,17 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.NativeCheckoutRewardViewHolderViewModel
+import com.kickstarter.viewmodels.RewardViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward.view.*
 
-class NativeCheckoutRewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(view) {
+class RewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(view) {
 
     interface Delegate {
         fun rewardClicked(reward: Reward)
     }
 
     private val ksString = environment().ksString()
-    private var viewModel = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment())
+    private var viewModel = RewardViewHolderViewModel.ViewModel(environment())
 
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
     private val remainingRewardsString = context().getString(R.string.Left_count_left_few)

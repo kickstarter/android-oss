@@ -47,37 +47,4 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/reward_fragment_guideline_constraint_end" />
 
-  <RelativeLayout
-    android:id="@+id/project_action_buttons"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_gravity="bottom"
-    android:animateLayoutChanges="true"
-    android:focusable="true"
-    android:visibility="gone"
-    tools:visibility="visible">
-
-    <Button
-      android:id="@+id/back_project_button"
-      style="@style/ProjectActionButton"
-      android:text="@string/project_back_button"
-      android:visibility="gone"
-      tools:visibility="visible" />
-
-    <Button
-      android:id="@+id/manage_pledge_button"
-      style="@style/ProjectActionButton"
-      android:text="@string/project_manage_button"
-      android:visibility="gone"
-      app:backgroundTint="@color/button_secondary" />
-
-    <Button
-      android:id="@+id/view_pledge_button"
-      style="@style/ProjectActionButton"
-      android:text="@string/project_view_button"
-      android:visibility="gone"
-      app:backgroundTint="@color/button_secondary" />
-  </RelativeLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

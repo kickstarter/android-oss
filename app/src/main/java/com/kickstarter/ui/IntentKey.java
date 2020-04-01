@@ -23,7 +23,6 @@ public final class IntentKey {
   public static final String EVENT_NAME = "com.kickstarter.kickstarter.intent_event_name";
   public static final String LOGIN_REASON = "com.kickstarter.kickstarter.intent_login_reason";
   public static final String MESSAGE_THREAD = "com.kickstarter.kickstarter.intent_message_thread";
-  public static final String NATIVE_CHECKOUT_ENABLED = "com.kickstarter.kickstarter.intent_native_checkout_enabled";
   public static final String PASSWORD = "com.kickstarter.kickstarter.intent_password";
   public static final String PLEDGE_DATA = "com.kickstarter.kickstarter.intent_pledge_data";
   public static final String PROJECT = "com.kickstarter.kickstarter.intent_project";

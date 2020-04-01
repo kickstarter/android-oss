@@ -18,7 +18,7 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
+import com.kickstarter.ui.viewholders.RewardViewHolder
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -26,7 +26,7 @@ import rx.subjects.PublishSubject
 import java.math.RoundingMode
 import kotlin.math.roundToInt
 
-interface NativeCheckoutRewardViewHolderViewModel {
+interface RewardViewHolderViewModel {
     interface Inputs {
         /** Configure with the current [ProjectData] and [Reward]. */
         fun configureWith(projectData: ProjectData, reward: Reward)
@@ -115,7 +115,7 @@ interface NativeCheckoutRewardViewHolderViewModel {
         fun titleForReward(): Observable<String?>
     }
 
-    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<NativeCheckoutRewardViewHolder>(environment), Inputs, Outputs {
+    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
 

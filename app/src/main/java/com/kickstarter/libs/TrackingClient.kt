@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Bundle
-import android.util.Log
 import android.view.accessibility.AccessibilityManager
-import com.firebase.jobdispatcher.JobService
+import androidx.work.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.iid.FirebaseInstanceId
@@ -16,12 +14,17 @@ import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.ConfigUtils
 import com.kickstarter.libs.utils.WebUtils
+import com.kickstarter.libs.utils.WorkUtils.baseConstraints
+import com.kickstarter.libs.utils.WorkUtils.uniqueWorkName
 import com.kickstarter.models.User
-import com.kickstarter.services.firebase.dispatchJob
+import com.kickstarter.services.KoalaWorker
+import com.kickstarter.services.LakeWorker
+import com.kickstarter.ui.IntentKey
 import io.fabric.sdk.android.Fabric
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 abstract class TrackingClient(@param:ApplicationContext private val context: Context,
@@ -43,28 +46,44 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     final override fun track(eventName: String, additionalProperties: MutableMap<String, Any?>) {
         try {
-            val trackingData = trackingData(eventName, combinedProperties(additionalProperties))
-            val bundle = Bundle()
-            bundle.putString(eventNameKey(), eventName)
-            bundle.putString(eventKey(), trackingData)
-
-            val uniqueJobName = backgroundServiceClass().simpleName + System.currentTimeMillis()
-            dispatchJob(this.context, backgroundServiceClass(), uniqueJobName, bundle)
-            if (this.build.isDebug) {
-                Log.d(tag(), "Queued event:$trackingData")
-            }
+            queueEvent(eventName, additionalProperties)
         } catch (e: JSONException) {
             if (this.build.isDebug) {
-                Timber.e("Failed to encode event: $eventName")
+                Timber.e("Failed to encode ${type().tag} event: $eventName")
             }
-            Fabric.getLogger().e(tag(), "Failed to encode event: $eventName")
+            Fabric.getLogger().e(TrackingClient::class.java.simpleName, "Failed to encode ${type().tag} event: $eventName")
         }
     }
 
-    abstract fun backgroundServiceClass() : Class<out JobService>
-    abstract fun eventKey(): String
-    abstract fun eventNameKey(): String
-    abstract fun tag(): String
+    private fun queueEvent(eventName: String, additionalProperties: MutableMap<String, Any?>) {
+        val eventData = trackingData(eventName, combinedProperties(additionalProperties))
+        val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
+                IntentKey.EVENT_NAME to eventName,
+                IntentKey.EVENT_DATA to eventData)
+
+        var requestBuilder: OneTimeWorkRequest.Builder? = null
+        if (type() == Type.KOALA) {
+            requestBuilder = OneTimeWorkRequestBuilder<KoalaWorker>()
+        } else if (type() == Type.LAKE) {
+            requestBuilder = OneTimeWorkRequestBuilder<LakeWorker>()
+        }
+
+        requestBuilder?.let {
+            val request = it
+                    .setInputData(data)
+                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
+                    .setConstraints(baseConstraints)
+                    .build()
+
+            WorkManager.getInstance(this.context)
+                    .enqueueUniqueWork(uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
+
+            if (this.build.isDebug) {
+                Timber.d("Queued ${type().tag} $eventName event: $eventData")
+            }
+        }
+    }
+
     @Throws(JSONException::class)
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>): String
 

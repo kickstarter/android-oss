@@ -16,12 +16,12 @@ import rx.subjects.PublishSubject;
 
 public final class MockTrackingClient extends TrackingClientType {
   private static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis() / 1000;
-  private final boolean cleanPropertiesOnly;
+  private final Type type;
   @Nullable private User loggedInUser;
   @Nullable private Config config;
 
-  public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final boolean cleanPropertiesOnly) {
-    this.cleanPropertiesOnly = cleanPropertiesOnly;
+  public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final Type type) {
+    this.type = type;
     currentUser.observable().subscribe(u -> this.loggedInUser = u);
     currentConfig.observable().subscribe(c -> this.config = c);
   }
@@ -40,13 +40,13 @@ public final class MockTrackingClient extends TrackingClientType {
   public final @NonNull Observable<Map<String, Object>> eventProperties = this.events.map(e -> e.properties);
 
   @Override
-  protected boolean cleanPropertiesOnly() {
-    return this.cleanPropertiesOnly;
+  public void track(final @NonNull String eventName, final @NonNull Map<String, Object> additionalProperties) {
+    this.events.onNext(new Event(eventName, combinedProperties(additionalProperties)));
   }
 
   @Override
-  public void track(final @NonNull String eventName, final @NonNull Map<String, Object> additionalProperties) {
-    this.events.onNext(new Event(eventName, combinedProperties(additionalProperties)));
+  protected @NonNull Type type() {
+    return this.type;
   }
 
   //Default property values

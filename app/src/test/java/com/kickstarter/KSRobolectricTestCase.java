@@ -7,6 +7,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.MockTrackingClient;
+import com.kickstarter.libs.TrackingClientType;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.MockExperimentsClientType;
@@ -97,14 +98,14 @@ public abstract class KSRobolectricTestCase extends TestCase {
   }
 
   private MockTrackingClient koalaTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig) {
-    final MockTrackingClient koalaTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, false);
+    final MockTrackingClient koalaTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, TrackingClientType.Type.KOALA);
     this.koalaTest = new TestSubscriber<>();
     koalaTrackingClient.eventNames.subscribe(this.koalaTest);
     return koalaTrackingClient;
   }
 
   private MockTrackingClient lakeTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig) {
-    final MockTrackingClient lakeTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, true);
+    final MockTrackingClient lakeTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, TrackingClientType.Type.LAKE);
     this.lakeTest = new TestSubscriber<>();
     lakeTrackingClient.eventNames.subscribe(this.lakeTest);
     return lakeTrackingClient;

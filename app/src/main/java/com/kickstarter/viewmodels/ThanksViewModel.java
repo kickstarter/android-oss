@@ -9,7 +9,6 @@ import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.OptimizelyEvent;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ExperimentRevenueData;
 import com.kickstarter.libs.utils.ListUtils;

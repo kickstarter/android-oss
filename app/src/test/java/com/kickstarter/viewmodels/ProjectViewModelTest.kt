@@ -1098,6 +1098,47 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isTrue() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val intent = Intent()
+                .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+                .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
+        this.vm.intent(intent)
+
+        this.expandPledgeSheet.assertValues(Pair(true, true))
+        this.koalaTest.assertValue("Project Page")
+        this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isFalse() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val intent = Intent()
+                .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+                .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, false)
+        this.vm.intent(intent)
+
+        this.expandPledgeSheet.assertNoValues()
+        this.koalaTest.assertValue("Project Page")
+        this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
+    fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isNull() {
+        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        val intent = Intent()
+                .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+        this.vm.intent(intent)
+
+        this.expandPledgeSheet.assertNoValues()
+        this.koalaTest.assertValue("Project Page")
+        this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
+    }
+
+    @Test
     fun testGoBack_whenFragmentBackStackIsEmpty() {
         setUpEnvironment(environmentWithNativeCheckoutEnabled())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))

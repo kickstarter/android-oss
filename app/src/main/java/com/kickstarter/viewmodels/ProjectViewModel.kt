@@ -15,6 +15,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
@@ -378,6 +379,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
 
+            intent()
+                    .take(1)
+                    .filter { it.getBooleanExtra(IntentKey.EXPAND_PLEDGE_SHEET, false) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
+
             val pledgeSheetExpanded = this.expandPledgeSheet
                     .map { it.first }
                     .startWith(false)
@@ -385,9 +392,6 @@ interface ProjectViewModel {
             progressBarIsGone
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(nativeCheckoutEnabled))
                     .filter { BooleanUtils.isTrue(it.second) }
-                    .map { it.first }
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(pledgeSheetExpanded))
-                    .filter { BooleanUtils.isFalse(it.second) }
                     .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.retryProgressBarIsGone)

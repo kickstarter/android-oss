@@ -333,11 +333,11 @@ interface PledgeFragmentViewModel {
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
 
             val updatingPayment = pledgeReason
-                    .map { it == PledgeReason.UPDATE_PAYMENT }
+                    .map { it == PledgeReason.UPDATE_PAYMENT || it == PledgeReason.FIX_PLEDGE }
                     .distinctUntilChanged()
 
             val updatingPaymentOrUpdatingPledge = pledgeReason
-                    .map { it == PledgeReason.UPDATE_PAYMENT || it == PledgeReason.UPDATE_PLEDGE }
+                    .map { it == PledgeReason.UPDATE_PAYMENT || it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.FIX_PLEDGE  }
                     .distinctUntilChanged()
 
             val projectAndReward = project
@@ -830,7 +830,7 @@ interface PledgeFragmentViewModel {
 
             val updatePaymentClick = pledgeReason
                     .compose<PledgeReason>(takeWhen(this.pledgeButtonClicked))
-                    .filter { it == PledgeReason.UPDATE_PAYMENT }
+                    .filter { it == PledgeReason.UPDATE_PAYMENT || it.first == PledgeReason.FIX_PLEDGE }
                     .compose(ignoreValues())
 
             val updatePledgeClick = pledgeReason
@@ -888,7 +888,7 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.showUpdatePledgeSuccess)
 
             successAndPledgeReason
-                    .filter { it.second == PledgeReason.UPDATE_PAYMENT }
+                    .filter { it.second == PledgeReason.UPDATE_PAYMENT || it.second == PledgeReason.FIX_PLEDGE }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePaymentSuccess)
@@ -932,7 +932,7 @@ interface PledgeFragmentViewModel {
                     }
 
             errorAndPledgeReason
-                    .filter { it.second == PledgeReason.UPDATE_PAYMENT }
+                    .filter { it.second == PledgeReason.UPDATE_PAYMENT || it.second == PledgeReason.FIX_PLEDGE }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe {
@@ -984,8 +984,10 @@ interface PledgeFragmentViewModel {
 
             project
                     .compose<Project>(takeWhen(updatePaymentClick))
+                    .compose<Pair<Project, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.UPDATE_PAYMENT }
                     .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackUpdatePaymentMethodButtonClicked(it) }
+                    .subscribe { this.koala.trackUpdatePaymentMethodButtonClicked(it.first) }
 
             pledgeData
                     .take(1)

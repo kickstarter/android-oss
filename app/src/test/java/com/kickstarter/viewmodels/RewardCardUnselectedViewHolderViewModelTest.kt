@@ -6,6 +6,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.models.Backing
 import com.kickstarter.models.StoredCard
 import com.stripe.android.model.Card
 import org.junit.Test

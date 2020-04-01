@@ -1,13 +1,10 @@
 package com.kickstarter.services;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import com.google.gson.JsonObject;
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
@@ -43,6 +40,8 @@ import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -154,7 +153,7 @@ public interface ApiService {
   Observable<Response<ProjectStatsEnvelope>> projectStats(@Path("project_param") String projectParam);
 
   @POST("/v1/users/self/push_tokens")
-  Observable<Response<Empty>> registerPushToken(@Body PushTokenBody body);
+  Observable<Response<JsonObject>> registerPushToken(@Body PushTokenBody body);
 
   @POST("/v1/users/reset")
   Observable<Response<User>> resetPassword(@Body ResetPasswordBody body);

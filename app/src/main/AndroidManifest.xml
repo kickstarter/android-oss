@@ -312,38 +312,6 @@
       </intent-filter>
     </service>
 
-    <!-- Registers new tokens with the app, sets up device subscription with Firebase. -->
-    <service
-      android:name=".services.firebase.RegisterService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-      </intent-filter>
-    </service>
-    <service
-      android:name=".services.KoalaBackgroundService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-      </intent-filter>
-    </service>
-    <service
-      android:name=".services.LakeBackgroundService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-      </intent-filter>
-    </service>
-
-    <!-- Unsubscribes the device from Firebase. -->
-    <service
-      android:name=".services.firebase.UnregisterService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-      </intent-filter>
-    </service>
-
     <provider
       android:name="com.facebook.FacebookContentProvider"
       android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"

@@ -305,7 +305,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testTracking_whenCheckoutDataAndPledgeDataExtrasExist() {
+  public void testTracking_whenCheckoutDataAndPledgeDataExtrasPresent() {
     setUpEnvironment(environment());
 
     final Project project = ProjectFactory.project();
@@ -320,10 +320,11 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intent);
 
     this.lakeTest.assertValue("Thanks Page Viewed");
+    this.experimentsTest.assertValue("App Completed Checkout");
   }
 
   @Test
-  public void testTracking_whenCheckoutDataAndPledgeDataExtrasPresent() {
+  public void testTracking_whenCheckoutDataAndPledgeDataExtrasNull() {
     setUpEnvironment(environment());
 
     final Intent intent = new Intent()
@@ -331,5 +332,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intent);
 
     this.lakeTest.assertNoValues();
+    this.experimentsTest.assertNoValues();
   }
 }

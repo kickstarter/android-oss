@@ -71,7 +71,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         requestBuilder?.let {
             val request = it
                     .setInputData(data)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
                     .setConstraints(baseConstraints)
                     .build()
 

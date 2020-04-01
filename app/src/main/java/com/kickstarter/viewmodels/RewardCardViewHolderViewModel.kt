@@ -4,6 +4,7 @@ import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Backing
@@ -57,18 +58,14 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(allowedCardType))
 
             isBackingPaymentAndAllowedType
-                    .map { !it.first && it.second }
+                    .compose<Pair<Pair<Boolean, Boolean>, Backing?>>(combineLatestPair(backing))
+                    .map { buttonEnabled(it.first.first, it.first.second, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonEnabled)
 
             isBackingPaymentAndAllowedType
-                    .map {
-                        when {
-                            it.first -> R.string.Selected
-                            it.second -> R.string.Select
-                            else -> R.string.Not_available
-                        }
-                    }
+                    .compose<Pair<Pair<Boolean, Boolean>, Backing?>>(combineLatestPair(backing))
+                    .map { buttonCTA(it.first.first, it.first.second, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonCTA)
 
@@ -82,6 +79,22 @@ interface RewardCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.notAvailableCopyIsVisible)
 
+        }
+
+        private fun buttonCTA(isBackingPaymentSource: Boolean, isAllowedCardType: Boolean, backing: Backing?): Int {
+            return when {
+                BackingUtils.isErrored(backing) && isAllowedCardType -> R.string.Select
+                isBackingPaymentSource -> R.string.Selected
+                isAllowedCardType -> R.string.Select
+                else -> R.string.Not_available
+            }
+        }
+
+        private fun buttonEnabled(isBackingPaymentSource: Boolean, isAllowedCardType: Boolean, backing: Backing?) : Boolean {
+            return when {
+                BackingUtils.isErrored(backing) -> isAllowedCardType
+                else -> !isBackingPaymentSource && isAllowedCardType
+            }
         }
 
         override fun buttonCTA() : Observable<Int> = this.buttonCTA

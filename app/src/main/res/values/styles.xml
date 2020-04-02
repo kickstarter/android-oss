@@ -39,10 +39,6 @@
   <!-- Activities -->
   <style name="ActivityFeedActivity" parent="KSTheme" />
 
-  <style name="CheckoutActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
-  </style>
-
   <style name="CommentsActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>

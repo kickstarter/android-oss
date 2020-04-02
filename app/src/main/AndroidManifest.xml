@@ -51,11 +51,6 @@
     <activity android:name=".ui.activities.EditProfileActivity"
       android:theme="@style/SettingsActivity" />
     <activity
-      android:name=".ui.activities.CheckoutActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity"
-      android:theme="@style/CheckoutActivity">
-    </activity>
-    <activity
       android:name=".ui.activities.CommentsActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/CommentsActivity">

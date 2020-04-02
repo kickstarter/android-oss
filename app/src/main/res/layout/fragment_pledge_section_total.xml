@@ -1,47 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/total"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_marginTop="@dimen/grid_4"
+  android:layout_marginBottom="@dimen/grid_2"
   android:focusable="true"
-  android:orientation="vertical"
+  android:orientation="horizontal"
   tools:showIn="@layout/fragment_pledge">
 
   <TextView
     style="@style/CalloutPrimaryMedium"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_1"
-    android:layout_marginTop="@dimen/grid_4"
     android:text="@string/dashboard_graphs_funding_total" />
 
   <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_weight="1"
     android:orientation="horizontal">
-
-    <TextView
-      android:id="@+id/pledge_agreement"
-      style="@style/FootnoteSecondary"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="@id/terms_guideline"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="@string/By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy" />
-
-    <androidx.constraintlayout.widget.Guideline
-      android:id="@+id/terms_guideline"
-      android:layout_width="1dp"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      app:layout_constraintGuide_percent="0.6" />
 
     <TextView
       android:id="@+id/total_amount"
@@ -53,7 +33,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1"
-      app:layout_constraintStart_toEndOf="@id/pledge_agreement"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintVertical_bias="0"
       tools:text="40" />
@@ -66,7 +45,6 @@
       app:layout_constraintBottom_toBottomOf="@id/total_amount"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1"
-      app:layout_constraintStart_toEndOf="@id/pledge_agreement"
       app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -78,7 +56,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="1"
-      app:layout_constraintStart_toEndOf="@id/pledge_agreement"
       app:layout_constraintTop_toBottomOf="@id/total_amount"
       app:layout_constraintVertical_bias="0"
       tools:text="About $40.00" />

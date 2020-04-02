@@ -14,12 +14,6 @@ import androidx.annotation.NonNull;
 public final class KSUri {
   private KSUri() {}
 
-  public static boolean isAndroidPayUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint)
-      && (Secrets.RegExpPattern.ANDROID_PAY_1.matcher(UriUtilsKt.path(uri)).matches()
-        || Secrets.RegExpPattern.ANDROID_PAY_2.matcher(UriUtilsKt.path(uri)).matches());
-  }
-
   public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.API.matcher(UriUtilsKt.host(uri)).matches();
   }

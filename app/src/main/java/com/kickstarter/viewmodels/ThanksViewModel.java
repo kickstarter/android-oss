@@ -2,14 +2,15 @@ package com.kickstarter.viewmodels;
 
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
+import com.kickstarter.libs.OptimizelyEvent;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.ExperimentData;
+import com.kickstarter.libs.utils.ExperimentRevenueData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
@@ -30,6 +31,7 @@ import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -58,9 +60,6 @@ public interface ThanksViewModel {
     /** Emits when we should finish the {@link com.kickstarter.ui.activities.ThanksActivity}. */
     Observable<Void> finish();
 
-    /** Emits when we should resume the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
-    Observable<Void> resumeDiscoveryActivity();
-
     /** Show a dialog confirming the user will be signed up to the games newsletter. Required for German users. */
     Observable<Void> showConfirmGamesNewsletterDialog();
 
@@ -82,6 +81,7 @@ public interface ThanksViewModel {
     private final BooleanPreferenceType hasSeenAppRatingPreference;
     private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
     private final CurrentUserType currentUser;
+    private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -90,6 +90,7 @@ public interface ThanksViewModel {
       this.currentUser = environment.currentUser();
       this.hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
       this.hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference();
+      this.optimizely = environment.optimizely();
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -118,23 +119,9 @@ public interface ThanksViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
 
-      final Observable<Boolean> nativeCheckoutEnabled = intent()
-        .map(i -> i.getBooleanExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, false))
-        .take(1);
-
-      nativeCheckoutEnabled
-        .compose(takeWhen(this.closeButtonClicked))
-        .filter(BooleanUtils::isTrue)
-        .compose(ignoreValues())
+      this.closeButtonClicked
         .compose(bindToLifecycle())
         .subscribe(this.finish);
-
-      nativeCheckoutEnabled
-        .compose(takeWhen(this.closeButtonClicked))
-        .filter(BooleanUtils::isFalse)
-        .compose(ignoreValues())
-        .compose(bindToLifecycle())
-        .subscribe(this.resumeDiscoveryActivity);
 
       this.projectCardViewHolderClicked
         .compose(bindToLifecycle())
@@ -194,18 +181,38 @@ public interface ThanksViewModel {
         .subscribe(__ -> this.koala.trackNewsletterToggle(true));
 
       final Observable<CheckoutData> checkoutData = intent()
-              .map(i -> i.getParcelableExtra(IntentKey.CHECKOUT_DATA))
-              .ofType(CheckoutData.class)
-              .take(1);
+        .map(i -> i.getParcelableExtra(IntentKey.CHECKOUT_DATA))
+        .ofType(CheckoutData.class)
+        .take(1);
 
       final Observable<PledgeData> pledgeData = intent()
-              .map(i -> i.getParcelableExtra(IntentKey.PLEDGE_DATA))
-              .ofType(PledgeData.class)
-              .take(1);
+        .map(i -> i.getParcelableExtra(IntentKey.PLEDGE_DATA))
+        .ofType(PledgeData.class)
+        .take(1);
 
-      Observable.combineLatest(checkoutData, pledgeData, Pair::create)
-              .compose(bindToLifecycle())
-              .subscribe(checkoutDataPledgeData -> this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second));
+      final Observable<Pair<CheckoutData, PledgeData>> checkoutAndPledgeData =
+        Observable.combineLatest(checkoutData, pledgeData, Pair::create);
+
+      checkoutAndPledgeData
+        .compose(bindToLifecycle())
+        .subscribe(checkoutDataPledgeData -> this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second));
+
+      checkoutAndPledgeData
+        .compose(combineLatestPair(this.currentUser.observable()))
+        .map(this::experimentRevenueData)
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(data -> this.optimizely.trackRevenue(OptimizelyEvent.APP_COMPLETED_CHECKOUT, data));
+    }
+
+    private ExperimentRevenueData experimentRevenueData(final @NonNull Pair<Pair<CheckoutData, PledgeData>, User> dataAndUser) {
+      final User currentUser = dataAndUser.second;
+      final PledgeData pledgeData = dataAndUser.first.second;
+      final RefTag intentRefTag = pledgeData.projectData().refTagFromIntent();
+      final RefTag cookieRefTag = pledgeData.projectData().refTagFromCookie();
+      final ExperimentData experimentData = new ExperimentData(currentUser, intentRefTag, cookieRefTag);
+      final CheckoutData checkoutData = dataAndUser.first.first;
+      return new ExperimentRevenueData(experimentData, checkoutData, pledgeData);
     }
 
     /**
@@ -288,7 +295,6 @@ public interface ThanksViewModel {
 
     private final BehaviorSubject<ThanksData> adapterData = BehaviorSubject.create();
     private final PublishSubject<Void> finish = PublishSubject.create();
-    private final PublishSubject<Void> resumeDiscoveryActivity = PublishSubject.create();
     private final PublishSubject<Void> showConfirmGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showGamesNewsletterDialog = PublishSubject.create();
     private final PublishSubject<Void> showRatingDialog = PublishSubject.create();
@@ -317,9 +323,6 @@ public interface ThanksViewModel {
     }
     @Override public @NonNull Observable<Void> finish() {
       return this.finish;
-    }
-    @Override public @NonNull Observable<Void> resumeDiscoveryActivity() {
-      return this.resumeDiscoveryActivity;
     }
     @Override public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
       return this.showConfirmGamesNewsletterDialog;

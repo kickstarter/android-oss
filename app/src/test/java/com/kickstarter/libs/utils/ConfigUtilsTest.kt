@@ -1,7 +1,6 @@
 package com.kickstarter.libs.utils
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.FeatureKey
 import com.kickstarter.mock.factories.ConfigFactory
 import org.json.JSONArray
 import org.junit.Test
@@ -32,13 +31,13 @@ class ConfigUtilsTest : KSRobolectricTestCase() {
         assertEquals(JSONArray(), ConfigUtils.enabledFeatureFlags(ConfigFactory.configWithFeatureEnabled("ios_native_checkout")))
 
         assertEquals(JSONArray(),
-                ConfigUtils.enabledFeatureFlags(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(FeatureKey.ANDROID_NATIVE_CHECKOUT, false),
+                ConfigUtils.enabledFeatureFlags(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("android_native_checkout", false),
                         Pair("ios_go_rewardless", true),
                         Pair("ios_native_checkout", true)))))
 
         assertEquals(JSONArray().apply {
             put("android_native_checkout")
-        }, ConfigUtils.enabledFeatureFlags(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(FeatureKey.ANDROID_NATIVE_CHECKOUT, true),
+        }, ConfigUtils.enabledFeatureFlags(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("android_native_checkout", true),
                 Pair("ios_go_rewardless", true),
                 Pair("ios_native_checkout", true)))))
     }

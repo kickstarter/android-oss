@@ -59,7 +59,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val pledgeSummaryIsGone = TestSubscriber<Boolean>()
     private val pledgeTextColor = TestSubscriber<Int>()
     private val projectCurrencySymbol = TestSubscriber<String>()
-    private val rewardTitle = TestSubscriber<Either<Int, String>>()
+    private val rewardTitle = TestSubscriber<String>()
     private val selectedShippingRule = TestSubscriber<ShippingRule>()
     private val shippingAmount = TestSubscriber<CharSequence>()
     private val shippingRuleAndProject = TestSubscriber<Pair<List<ShippingRule>, Project>>()
@@ -1529,7 +1529,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
 
-        this.rewardTitle.assertValue(Either.Right("Coolest reward"))
+        this.rewardTitle.assertValue("Coolest reward")
     }
 
     @Test
@@ -1548,11 +1548,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(backing)
+                .name("Restart Your Computer")
                 .build()
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
 
-        this.rewardTitle.assertValue(Either.Left(R.string.Back_it_because_you_believe_in_it))
+        this.rewardTitle.assertValue("Restart Your Computer")
     }
 
     @Test
@@ -1568,11 +1569,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(backing)
+                .name("Restart Your Computer")
                 .build()
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.PLEDGE)
 
-        this.rewardTitle.assertValue(Either.Left(R.string.Back_it_because_you_believe_in_it))
+        this.rewardTitle.assertValue("Restart Your Computer")
     }
 
     @Test

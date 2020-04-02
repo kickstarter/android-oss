@@ -14,9 +14,9 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
+class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: NativeCheckoutRewardViewHolderViewModel.ViewModel
+    private lateinit var vm: RewardViewHolderViewModel.ViewModel
     private val backersCount = TestSubscriber.create<Int>()
     private val backersCountIsGone = TestSubscriber.create<Boolean>()
     private val buttonCTA = TestSubscriber.create<Int>()
@@ -45,7 +45,7 @@ class NativeCheckoutRewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val titleIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
-        this.vm = NativeCheckoutRewardViewHolderViewModel.ViewModel(environment)
+        this.vm = RewardViewHolderViewModel.ViewModel(environment)
         this.vm.outputs.backersCount().subscribe(this.backersCount)
         this.vm.outputs.backersCountIsGone().subscribe(this.backersCountIsGone)
         this.vm.outputs.buttonCTA().subscribe(this.buttonCTA)

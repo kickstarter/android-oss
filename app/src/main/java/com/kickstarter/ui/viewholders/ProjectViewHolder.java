@@ -15,14 +15,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.material.button.MaterialButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
-import com.kickstarter.libs.utils.ProjectViewUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Photo;
@@ -63,7 +61,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.avatar_variant) ImageView avatarVariantImageView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
-  protected @Bind(R.id.back_project_button) @Nullable MaterialButton backProjectButton;
   protected @Bind(R.id.blurb_view) ViewGroup blurbViewGroup;
   protected @Bind(R.id.blurb_view_variant) ViewGroup blurbVariantViewGroup;
   protected @Bind(R.id.blurb) TextView blurbTextView;
@@ -85,13 +82,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.land_overlay_text) @Nullable ViewGroup landOverlayTextViewGroup;
   protected @Bind(R.id.location) TextView locationTextView;
-  protected @Bind(R.id.manage_pledge_button) @Nullable MaterialButton managePledgeButton;
   protected @Bind(R.id.name_creator_view) @Nullable ViewGroup nameCreatorViewGroup;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) ImageButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
-  protected @Bind(R.id.project_action_buttons) @Nullable ViewGroup projectActionButtonsContainer;
   protected @Bind(R.id.project_dashboard_button) Button projectDashboardButton;
   protected @Bind(R.id.project_dashboard_container) ViewGroup projectDashboardContainer;
   protected @Bind(R.id.project_launch_date) TextView projectLaunchDateTextView;
@@ -104,7 +99,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
-  protected @Bind(R.id.view_pledge_button) @Nullable MaterialButton viewPledgeButton;
   protected @Bind(R.id.updates) ViewGroup updatesContainer;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
@@ -140,17 +134,14 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
 
   public interface Delegate {
-    void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);
     void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
     void projectViewHolderBlurbVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorInfoVariantClicked(ProjectViewHolder viewHolder);
     void projectViewHolderDashboardClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderManagePledgeClicked(ProjectViewHolder viewHolder);
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
     void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
-    void projectViewHolderViewPledgeClicked(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -252,7 +243,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .subscribe(p -> {
         // todo: break down these helpers
         setLandscapeOverlayText(p);
-        setLandscapeActionButton(p);
         this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, context(), this.ksString));
       });
 
@@ -275,11 +265,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.pledgedTextView::setText);
-
-    this.viewModel.outputs.projectActionButtonContainerIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setProjectActionButtonsContainerVisibility);
 
     this.viewModel.outputs.projectDashboardButtonText()
       .compose(bindToLifecycle())
@@ -492,12 +477,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
   }
 
-  private void setProjectActionButtonsContainerVisibility(final boolean gone) {
-    if (this.projectActionButtonsContainer != null) {
-      ViewUtils.setGone(this.projectActionButtonsContainer, gone);
-    }
-  }
-
   private void setBlurbTextViews(final String blurb) {
     final Spanned blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb));
     this.blurbTextView.setText(blurbHtml);
@@ -578,11 +557,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  @Nullable @OnClick(R.id.back_project_button)
-  public void backProjectButtonOnClick() {
-    this.delegate.projectViewHolderBackProjectClicked(this);
-  }
-
   @OnClick({R.id.blurb_view, R.id.campaign})
   public void blurbOnClick() {
     this.delegate.projectViewHolderBlurbClicked(this);
@@ -613,33 +587,14 @@ public final class ProjectViewHolder extends KSViewHolder {
     this.delegate.projectViewHolderDashboardClicked(this);
   }
 
-  @Nullable @OnClick(R.id.manage_pledge_button)
-  public void managePledgeOnClick() {
-    this.delegate.projectViewHolderManagePledgeClicked(this);
-  }
-
   @OnClick(R.id.play_button_overlay)
   public void playButtonOnClick() {
     this.delegate.projectViewHolderVideoStarted(this);
   }
 
-  @Nullable @OnClick(R.id.view_pledge_button)
-  public void viewPledgeOnClick() {
-    this.delegate.projectViewHolderViewPledgeClicked(this);
-  }
-
   @OnClick(R.id.updates)
   public void updatesOnClick() {
     this.delegate.projectViewHolderUpdatesClicked(this);
-  }
-
-  /**
-   * Set landscape project action buttons in the ViewHolder rather than Activity.
-   */
-  private void setLandscapeActionButton(final @NonNull Project project) {
-    if (this.backProjectButton != null && this.managePledgeButton != null && this.viewPledgeButton != null) {
-      ProjectViewUtils.setActionButton(project, this.backProjectButton, this.managePledgeButton, this.viewPledgeButton);
-    }
   }
 
   /**

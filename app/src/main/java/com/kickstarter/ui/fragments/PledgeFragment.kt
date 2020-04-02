@@ -17,7 +17,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
@@ -27,7 +26,6 @@ import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.Either
 import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -43,7 +41,10 @@ import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.CardState
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
@@ -192,7 +193,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.rewardTitle()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setRewardTitle(it) }
+                .subscribe { reward_title.text = it }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
@@ -509,12 +510,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val ksString = this.viewModel.environment.ksString()
         textView.contentDescription = ksString.format(getString(R.string.plus_shipping_cost), "shipping_cost", localizedAmount.toString())
         textView.text = localizedAmount
-    }
-
-    private fun setRewardTitle(stringResOrTitle: Either<Int, String>) {
-        @StringRes val stringRes = stringResOrTitle.left()
-        val title = stringResOrTitle.right()
-        reward_title.text = stringRes?.let { getString(it) }?: title
     }
 
     private fun setTextColor(colorResId: Int, vararg textViews: TextView) {

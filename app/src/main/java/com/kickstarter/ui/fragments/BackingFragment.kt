@@ -19,7 +19,7 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.NativeCheckoutRewardViewHolder
+import com.kickstarter.ui.viewholders.RewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_backing.*
@@ -187,7 +187,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
     }
 
     private fun bindDataToRewardViewHolder(projectAndReward: Pair<ProjectData, Reward>) {
-        val rewardViewHolder = NativeCheckoutRewardViewHolder(reward_container, delegate = null, inset = true)
+        val rewardViewHolder = RewardViewHolder(reward_container, delegate = null, inset = true)
         val project = projectAndReward.first
         val reward = projectAndReward.second
         rewardViewHolder.bindData(Pair(project, reward))

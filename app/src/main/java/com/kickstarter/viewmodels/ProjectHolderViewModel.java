@@ -4,16 +4,11 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.Build;
-import com.kickstarter.libs.Config;
-import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.FeatureKey;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.models.OptimizelyExperiment;
-import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ExperimentData;
@@ -125,9 +120,6 @@ public interface ProjectHolderViewModel {
     /** Emits the pledged amount for display. */
     Observable<String> pledgedTextViewText();
 
-    /** Emits a boolean determining if the project action buttons should be visible. */
-    Observable<Boolean> projectActionButtonContainerIsGone();
-
     /** Emits the string resource ID of the project dashboard button. */
     Observable<Integer> projectDashboardButtonText();
 
@@ -214,17 +206,14 @@ public interface ProjectHolderViewModel {
     private final ApolloClientType apolloClient;
     private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
-    private final BooleanPreferenceType nativeCheckoutPreference;
     private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      final CurrentConfigType currentConfig = environment.currentConfig();
       this.apolloClient = environment.apolloClient();
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
-      this.nativeCheckoutPreference = environment.nativeCheckoutPreference();
       this.optimizely = environment.optimizely();
 
       final Observable<Project> project = this.projectData
@@ -340,13 +329,6 @@ public interface ProjectHolderViewModel {
 
       this.pledgedTextViewText = project
         .map(p -> this.ksCurrency.formatWithUserPreference(p.pledged(), p));
-
-      this.projectActionButtonContainerIsGone = currentConfig.observable()
-        .map(Config::features)
-        .map(features -> ObjectUtils.isNotNull(features) ? ObjectUtils.coalesce(features.get(FeatureKey.ANDROID_NATIVE_CHECKOUT), false) : false)
-        .map(enabled -> Pair.create(enabled, this.nativeCheckoutPreference.get()))
-        .map(enabledAndOverride -> Build.isExternal() ? enabledAndOverride.first : enabledAndOverride.second)
-        .distinctUntilChanged();
 
       final Observable<Boolean> userIsCreatorOfProject = project
         .map(Project::creator)
@@ -472,7 +454,6 @@ public interface ProjectHolderViewModel {
     private final Observable<Boolean> percentageFundedProgressBarIsGone;
     private final Observable<Boolean> playButtonIsGone;
     private final Observable<String> pledgedTextViewText;
-    private final Observable<Boolean> projectActionButtonContainerIsGone;
     private final Observable<Integer> projectDashboardButtonText;
     private final Observable<Boolean> projectDashboardContainerIsGone;
     private final Observable<DateTime> projectDisclaimerGoalReachedDateTime;
@@ -575,9 +556,6 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<String> pledgedTextViewText() {
       return this.pledgedTextViewText;
-    }
-    @Override public @NonNull Observable<Boolean> projectActionButtonContainerIsGone() {
-      return this.projectActionButtonContainerIsGone;
     }
     @Override public @NonNull Observable<Integer> projectDashboardButtonText() {
       return this.projectDashboardButtonText;

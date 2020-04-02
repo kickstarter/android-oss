@@ -50,6 +50,7 @@ import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_footer.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
@@ -578,7 +579,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val agreementWithUrls = ksString.format(byPledgingYouAgree, "terms_of_use_link", termsOfUseUrl,
                 "privacy_policy_link", privacyPolicyUrl, "cookie_policy_link", cookiePolicyUrl)
 
-        setClickableHtml(agreementWithUrls, pledge_agreement)
+        setClickableHtml(agreementWithUrls, pledge_footer_pledge_agreement)
 
         val trustUrl = UrlUtils.appendPath(baseUrl, "trust")
         val accountabilityLink = "<a href=$trustUrl>"+ getString(R.string.Learn_more_about_accountability)+"</a>"

@@ -58,6 +58,8 @@
         style="@style/Headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
         tools:text="Attend the Wrap Party in Sandusky, Ohio" />
 
     </LinearLayout>

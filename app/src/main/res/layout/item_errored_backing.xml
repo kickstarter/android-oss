@@ -32,12 +32,11 @@
       android:gravity="center_vertical"
       android:orientation="horizontal">
 
-      <!-- TODO: this needs a11y copy -->
       <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/grid_1"
-        android:importantForAccessibility="no"
+        android:contentDescription="@string/Alert"
         android:src="@drawable/ic_icon_alert"
         android:tint="@color/ksr_red_400" />
 
@@ -52,7 +51,6 @@
 
     </LinearLayout>
   </LinearLayout>
-
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/errored_backing_manage_button"

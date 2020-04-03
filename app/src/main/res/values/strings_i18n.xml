@@ -205,6 +205,7 @@ Please tap to retry.</string>
   <string name="First_created" formatted="false">First created</string>
   <string name="Fix" formatted="false">Fix</string>
   <string name="Fix_payment_method" formatted="false">Fix payment method</string>
+  <string name="Fix_within" formatted="false">Fix within %{time_remaining}</string>
   <string name="Fix_your_payment_method" formatted="false">Fix your payment method</string>
   <string name="Follow_friend_name" formatted="false">Follow %{friend_name}</string>
   <string name="Follow_friends" formatted="false">Follow friends</string>

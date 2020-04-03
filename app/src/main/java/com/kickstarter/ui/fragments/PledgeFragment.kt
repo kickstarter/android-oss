@@ -523,7 +523,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setUpCardsAdapter() {
-        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         cards_recycler.adapter = RewardCardAdapter(this)
         cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_3_half)))
     }

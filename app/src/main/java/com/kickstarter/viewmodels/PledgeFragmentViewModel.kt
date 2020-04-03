@@ -36,9 +36,6 @@ interface PledgeFragmentViewModel {
         /** Call when a card has successfully saved. */
         fun cardSaved(storedCard: StoredCard)
 
-        /** Call when user deselects a card they want to pledge with. */
-        fun closeCardButtonClicked(position: Int)
-
         /** Call when logged out user clicks the continue button. */
         fun continueButtonClicked()
 
@@ -188,14 +185,14 @@ interface PledgeFragmentViewModel {
         /** Emits when we should show the [com.kickstarter.ui.fragments.NewCardFragment]. */
         fun showNewCardFragment(): Observable<Project>
 
-        /** Emits when the cards adapter should update the selected position. */
-        fun showPledgeCard(): Observable<Pair<Int, CardState>>
-
         /**  Emits when the pledge call was unsuccessful. */
         fun showPledgeError(): Observable<Void>
 
         /** Emits when the creating backing mutation was successful. */
         fun showPledgeSuccess(): Observable<Pair<CheckoutData, PledgeData>>
+
+        /** Emits when the cards adapter should update the selected position. */
+        fun showSelectedCard(): Observable<Pair<Int, CardState>>
 
         /** Emits when we should show the SCA flow with the client secret. */
         fun showSCAFlow(): Observable<String>
@@ -244,7 +241,6 @@ interface PledgeFragmentViewModel {
 
         private val addedCardPosition = PublishSubject.create<Int>()
         private val cardSaved = PublishSubject.create<StoredCard>()
-        private val closeCardButtonClicked = PublishSubject.create<Int>()
         private val continueButtonClicked = PublishSubject.create<Void>()
         private val decreasePledgeButtonClicked = PublishSubject.create<Void>()
         private val increasePledgeButtonClicked = PublishSubject.create<Void>()
@@ -295,9 +291,9 @@ interface PledgeFragmentViewModel {
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val shippingSummaryLocation = BehaviorSubject.create<String>()
         private val showNewCardFragment = PublishSubject.create<Project>()
-        private val showPledgeCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showPledgeError = PublishSubject.create<Void>()
         private val showPledgeSuccess = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
+        private val showSelectedCard = BehaviorSubject.create<Pair<Int, CardState>>()
         private val showSCAFlow = PublishSubject.create<String>()
         private val showUpdatePaymentError = PublishSubject.create<Void>()
         private val showUpdatePaymentSuccess = PublishSubject.create<Void>()
@@ -757,18 +753,14 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.selectCardButtonClicked)
 
-            this.showPledgeCard
+            this.showSelectedCard
                     .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(selectedPosition)
 
             this.selectCardButtonClicked
                     .compose(bindToLifecycle())
-                    .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.PLEDGE)) }
-
-            this.closeCardButtonClicked
-                    .compose(bindToLifecycle())
-                    .subscribe { this.showPledgeCard.onNext(Pair(it, CardState.SELECT)) }
+                    .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
 
             project
                     .compose<Project>(takeWhen(this.newCardButtonClicked))
@@ -830,7 +822,7 @@ interface PledgeFragmentViewModel {
                     .map { CreateBackingData(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag) }
                     .switchMap {
                         this.apolloClient.createBacking(it)
-                                .doOnSubscribe { this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING)) }
+                                .doOnSubscribe { /** todo add loading state to pledge button */ }
                                 .materialize()
                     }
                     .share()
@@ -858,7 +850,7 @@ interface PledgeFragmentViewModel {
                         this.apolloClient.updateBacking(it)
                                 .doOnSubscribe {
                                     this.updatePledgeProgressIsGone.onNext(false)
-                                    this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.LOADING))
+                                    /** todo add loading state to pledge button */
                                 }
                                 .materialize()
                     }
@@ -921,10 +913,7 @@ interface PledgeFragmentViewModel {
                     .filter { it.second == PledgeReason.PLEDGE }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        this.showPledgeError.onNext(null)
-                        this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
-                    }
+                    .subscribe { this.showPledgeError.onNext(null) }
 
             errorAndPledgeReason
                     .filter { it.second == PledgeReason.UPDATE_PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
@@ -939,10 +928,7 @@ interface PledgeFragmentViewModel {
                     .filter { it.second == PledgeReason.UPDATE_PAYMENT }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        this.showUpdatePaymentError.onNext(null)
-                        this.showPledgeCard.onNext(Pair(selectedPosition.value, CardState.PLEDGE))
-                    }
+                    .subscribe { this.showUpdatePaymentError.onNext(null) }
 
             this.baseUrlForTerms.onNext(this.environment.webEndpoint())
 
@@ -1039,8 +1025,6 @@ interface PledgeFragmentViewModel {
         override fun addedCardPosition(position: Int) = this.addedCardPosition.onNext(position)
 
         override fun cardSaved(storedCard: StoredCard) = this.cardSaved.onNext(storedCard)
-
-        override fun closeCardButtonClicked(position: Int) = this.closeCardButtonClicked.onNext(position)
 
         override fun continueButtonClicked() = this.continueButtonClicked.onNext(null)
 
@@ -1177,13 +1161,13 @@ interface PledgeFragmentViewModel {
         override fun showNewCardFragment(): Observable<Project> = this.showNewCardFragment
 
         @NonNull
-        override fun showPledgeCard(): Observable<Pair<Int, CardState>> = this.showPledgeCard
-
-        @NonNull
         override fun showPledgeError(): Observable<Void> = this.showPledgeError
 
         @NonNull
         override fun showPledgeSuccess(): Observable<Pair<CheckoutData, PledgeData>> = this.showPledgeSuccess
+
+        @NonNull
+        override fun showSelectedCard(): Observable<Pair<Int, CardState>> = this.showSelectedCard
 
         @NonNull
         override fun showSCAFlow(): Observable<String> = this.showSCAFlow

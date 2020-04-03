@@ -26,7 +26,6 @@ import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
 import com.kickstarter.extensions.snackbar
 import com.kickstarter.libs.BaseFragment
-import com.kickstarter.libs.FreezeLinearLayoutManager
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
@@ -148,7 +147,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(payment_container, it) }
 
-        this.viewModel.outputs.showPledgeCard()
+        this.viewModel.outputs.showSelectedCard()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { updatePledgeCardState(it) }
@@ -365,7 +364,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { enablePledgeButton(it) }
+                .subscribe { pledge_footer_pledge_button.isEnabled = it }
 
         this.viewModel.outputs.continueButtonIsEnabled()
                 .compose(observeForUI())
@@ -433,14 +432,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.cardSaved(storedCard)
     }
 
-    override fun closePledgeButtonClicked(position: Int) {
-        this.viewModel.inputs.closeCardButtonClicked(position)
-    }
-
-    override fun pledgeButtonClicked(id: String) {
-        this.viewModel.inputs.pledgeButtonClicked(id)
-    }
-
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
@@ -454,11 +445,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
         shipping_rules.isEnabled = true
         adapter.populateShippingRules(shippingRules, project)
-    }
-
-    private fun enablePledgeButton(enabled: Boolean) {
-        val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
-        rewardCardAdapter.setPledgeEnabled(enabled)
     }
 
     private fun relativeTop(view: View, parent: ViewGroup): Int {
@@ -523,9 +509,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setUpCardsAdapter() {
-        cards_recycler.layoutManager = FreezeLinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        cards_recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         cards_recycler.adapter = RewardCardAdapter(this)
-        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_3_half)))
+        cards_recycler.addItemDecoration(RewardCardItemDecoration(resources.getDimensionPixelSize(R.dimen.grid_1)))
     }
 
     private fun setUpShippingAdapter() {
@@ -593,18 +579,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val cardState = positionAndCardState.second
         val rewardCardAdapter = cards_recycler.adapter as RewardCardAdapter
 
-        val freezeLinearLayoutManager = cards_recycler.layoutManager as FreezeLinearLayoutManager
-        if (cardState == CardState.SELECT) {
-            rewardCardAdapter.resetPledgePosition(position)
-            freezeLinearLayoutManager.setFrozen(false)
+        if (cardState == CardState.SELECTED) {
+            rewardCardAdapter.setSelectedPosition(position)
         } else {
-            if (cardState == CardState.PLEDGE) {
-                rewardCardAdapter.setPledgePosition(position)
-            } else {
-                rewardCardAdapter.setLoadingPosition(position)
-            }
-            cards_recycler.scrollToPosition(position)
-            freezeLinearLayoutManager.setFrozen(true)
+            rewardCardAdapter.resetSelectedPosition()
         }
     }
 

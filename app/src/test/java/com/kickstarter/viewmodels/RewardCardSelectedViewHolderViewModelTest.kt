@@ -11,9 +11,9 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.*
 
-class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
+class RewardCardSelectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: RewardPledgeCardViewHolderViewModel.ViewModel
+    private lateinit var vm: RewardCardSelectedViewHolderViewModel.ViewModel
 
     private val expirationDate = TestSubscriber.create<String>()
     private val id = TestSubscriber.create<String>()
@@ -22,7 +22,7 @@ class RewardPledgeCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val lastFour = TestSubscriber.create<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = RewardPledgeCardViewHolderViewModel.ViewModel(environment)
+        this.vm = RewardCardSelectedViewHolderViewModel.ViewModel(environment)
 
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
         this.vm.outputs.id().subscribe(this.id)

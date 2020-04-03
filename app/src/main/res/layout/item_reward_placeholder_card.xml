@@ -9,19 +9,14 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="@dimen/grid_3">
-
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:minHeight="@dimen/grid_8"
-      android:orientation="horizontal">
 
       <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
       <ImageView
         android:layout_width="@dimen/credit_card_logo_width"
         android:layout_height="@dimen/credit_card_logo_height"
+        android:layout_marginStart="@dimen/grid_5"
         android:background="@color/ksr_grey_400"
         android:contentDescription="@null"
         android:scaleType="fitXY" />
@@ -34,13 +29,13 @@
 
           <TextView
             style="@style/CreditCardLastFour"
-            android:foreground="@color/ksr_grey_400"
+            android:foreground="@drawable/rect_grey_500_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Card_ending_in_last_four" />
 
           <TextView
-            android:foreground="@color/ksr_grey_400"
+            android:foreground="@drawable/rect_grey_500_loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/CreditCardExpiration"
@@ -48,13 +43,5 @@
       </LinearLayout>
 
     </LinearLayout>
-
-    <Button
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      android:enabled="false"
-      android:text="@string/Loading" />
-  </LinearLayout>
 
 </androidx.cardview.widget.CardView>

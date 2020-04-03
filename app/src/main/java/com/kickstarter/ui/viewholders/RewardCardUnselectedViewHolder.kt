@@ -2,23 +2,24 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
-import com.kickstarter.viewmodels.RewardCardViewHolderViewModel
-import kotlinx.android.synthetic.main.item_reward_credit_card.view.*
+import com.kickstarter.viewmodels.RewardCardUnselectedViewHolderViewModel
+import kotlinx.android.synthetic.main.item_reward_unselected_card.view.*
 import kotlinx.android.synthetic.main.reward_card_details.view.*
 
-class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
+class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
 
     interface Delegate {
         fun selectCardButtonClicked(position: Int)
     }
 
-    private val viewModel: RewardCardViewHolderViewModel.ViewModel = RewardCardViewHolderViewModel.ViewModel(environment())
+    private val viewModel: RewardCardUnselectedViewHolderViewModel.ViewModel = RewardCardUnselectedViewHolderViewModel.ViewModel(environment())
     private val ksString: KSString = environment().ksString()
 
     private val cardNotAllowedString = this.context().getString(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
@@ -32,6 +33,11 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
                 .compose(observeForUI())
                 .subscribe { setExpirationDateText(it) }
 
+        this.viewModel.outputs.isClickable()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.card_container.isClickable = it }
+
         this.viewModel.outputs.issuerImage()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -42,32 +48,37 @@ class RewardCardViewHolder(val view : View, val delegate : Delegate) : KSViewHol
                 .compose(observeForUI())
                 .subscribe { this.view.reward_card_logo.contentDescription = it }
 
+        this.viewModel.outputs.issuerImageAlpha()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.reward_card_logo.alpha = it }
+
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setLastFourText(it) }
 
-        this.viewModel.outputs.buttonCTA()
+        this.viewModel.outputs.lastFourTextColor()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.select_button.setText(it) }
-
-        this.viewModel.outputs.buttonEnabled()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.select_button.isEnabled = it }
+                .subscribe { this.view.reward_card_last_four.setTextColor(ContextCompat.getColor(context(), it)) }
 
         this.viewModel.outputs.notAvailableCopyIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setInvisible(this.view.card_not_allowed_warning, !it) }
+                .subscribe { ViewUtils.setGone(this.view.card_not_allowed_warning, !it) }
 
         this.viewModel.outputs.projectCountry()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setCardNotAllowedWarningText(it) }
 
-        this.view.select_button.setOnClickListener {
+        this.viewModel.outputs.selectImageIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setInvisible(this.view.select_image_view, !it) }
+
+        this.view.card_container.setOnClickListener {
             this.delegate.selectCardButtonClicked(adapterPosition)
         }
     }

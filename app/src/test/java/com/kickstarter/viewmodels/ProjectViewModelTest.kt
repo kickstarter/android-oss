@@ -692,8 +692,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeActionButtonUIOutputs_whenNativeCheckoutEnabled_whenBackingIsErrored() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+    fun testPledgeActionButtonUIOutputs_whenBackingIsErrored() {
+        setUpEnvironment(environment())
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
@@ -706,7 +706,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeToolbarNavigationIcon_whenNativeCheckoutEnabled() {
+    fun testPledgeToolbarNavigationIcon() {
         setUpEnvironment(environment())
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
@@ -858,7 +858,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isTrue() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        setUpEnvironment(environment())
         val intent = Intent()
                 .putExtra(IntentKey.PROJECT, ProjectFactory.project())
                 .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
@@ -872,7 +872,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isFalse() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        setUpEnvironment(environment())
         val intent = Intent()
                 .putExtra(IntentKey.PROJECT, ProjectFactory.project())
                 .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, false)
@@ -886,7 +886,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isNull() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        setUpEnvironment(environment())
         val intent = Intent()
                 .putExtra(IntentKey.PROJECT, ProjectFactory.project())
         this.vm.intent(intent)
@@ -986,7 +986,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testBackingDetails_whenBackingIsErrored() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        setUpEnvironment(environment())
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
                 .toBuilder()
@@ -1255,7 +1255,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledge_whenFixingPaymentMethod() {
-        setUpEnvironment(environmentWithNativeCheckoutEnabled())
+        setUpEnvironment(environment())
 
         // Start the view model with a backed project
         val reward = RewardFactory.reward()

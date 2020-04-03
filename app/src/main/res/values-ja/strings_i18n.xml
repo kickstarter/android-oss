@@ -203,6 +203,7 @@
   <string name="First_created" formatted="false">1つめのプロジェクト</string>
   <string name="Fix" formatted="false">修正する</string>
   <string name="Fix_payment_method" formatted="false">お支払い方法を修正</string>
+  <string name="Fix_within" formatted="false">Fix within %{time_remaining}</string>
   <string name="Fix_your_payment_method" formatted="false">お支払い方法を修正</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} をフォロー</string>
   <string name="Follow_friends" formatted="false">友達をフォロー</string>

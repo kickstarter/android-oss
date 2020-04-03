@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import android.view.View
 import com.jakewharton.rxbinding.view.RxView
+import com.kickstarter.R
 import com.kickstarter.libs.RelativeDateTimeOptions
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.DateTimeUtils
@@ -49,7 +50,10 @@ class ErroredBackingViewHolder(private val view: View, val delegate: Delegate?) 
                 .relativeToDateTime(DateTime.now())
                 .build()
 
-        this.view.errored_backing_project_collection_date.text = DateTimeUtils.relative(context(), this.ksString, finalCollectionDate, options)
+        val timeRemaining = DateTimeUtils.relative(context(), this.ksString, finalCollectionDate, options)
+        val fixWithinTemplate = context().getString(R.string.Fix_within)
+        this.view.errored_backing_project_collection_date.text = this.ksString.format(fixWithinTemplate,
+                "time_remaining", timeRemaining)
     }
 
     override fun bindData(data: Any?) {

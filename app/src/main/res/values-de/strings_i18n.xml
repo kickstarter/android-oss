@@ -264,6 +264,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Introduce_yourself" formatted="false">Stelle dich vor</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">Gemeinsam mehr erreichen</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Fast wie Radio, nur ohne die schlechten Nachrichten - unser Newsletter!</string>
   <string name="Its_our_birthday" formatted="false">Mithilfe von über 16.000.000 Unterstützern wurden in den letzten zehn Jahren über 160.000 kreative Projekte auf Kickstarter verwirklicht.</string>

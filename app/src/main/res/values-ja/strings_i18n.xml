@@ -262,6 +262,7 @@
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトを実現するためのプラットフォームです。</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">友達にとってより良い。</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">ラジオみたいな (でもつまらない内容をダラダラと語ったりしない) ニュースレター。</string>
   <string name="Its_our_birthday" formatted="false">Kickstarter の誕生日です！過去10年の間に、16万以上のクリエイティブなプロジェクトが、1600万人以上のバッカーの支援のもと、Kickstarter で実現化しました。</string>

@@ -264,6 +264,7 @@ contributeurs</string>
   <string name="Introduce_yourself" formatted="false">Présentez-vous ici.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">On est mieux ensemble.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Un peu comme la radio, mais en mieux. Une lettre d\'information, quoi.</string>
   <string name="Its_our_birthday" formatted="false">C\'est notre anniversaire ! Au cours des dix dernières années, plus de 160 000 projets créatifs ont vu le jour sur Kickstarter grâce au soutien de plus de 16 000 000 contributeurs.</string>

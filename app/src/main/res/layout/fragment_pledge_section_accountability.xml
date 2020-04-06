@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/accountability_container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginStart="@dimen/activity_vertical_margin"
+  android:layout_marginEnd="@dimen/activity_vertical_margin"
+  android:layout_marginBottom="@dimen/grid_4"
+  android:foreground="@drawable/click_indicator_light"
+  app:cardBackgroundColor="@color/ksr_grey_400"
+  app:cardCornerRadius="@dimen/grid_2"
+  app:cardElevation="@dimen/card_no_elevation">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/grid_2">
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_4"
+      android:importantForAccessibility="no"
+      android:src="@drawable/ic_not_a_store"
+      android:tint="@color/accent" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <TextView
+        style="@style/BodySecondaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Kickstarter_is_not_a_store" />
+
+      <TextView
+        android:id="@+id/accountability"
+        style="@style/BodySecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@string/Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" />
+    </LinearLayout>
+
+  </LinearLayout>
+
+</androidx.cardview.widget.CardView>

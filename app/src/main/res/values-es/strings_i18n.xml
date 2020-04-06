@@ -265,6 +265,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Introduce_yourself" formatted="false">Preséntate</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es una plataforma para dar vida a proyectos creativos.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">Todo en la vida es mejor con amigos ...</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Es como la radio, pero sin malas noticias y, además, es un boletín informativo.</string>
   <string name="Its_our_birthday" formatted="false">¡Cumplimos años! Más de 160.000 proyectos creativos se han hecho realidad en Kickstarter durante la última década, gracias al apoyo de más de 16.000.000 de patrocinadores.</string>

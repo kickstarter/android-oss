@@ -1,75 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/delivery"
+  android:id="@+id/reward_summary"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_gravity="center_horizontal"
+  android:layout_marginStart="@dimen/activity_horizontal_margin"
   android:layout_marginTop="@dimen/grid_2"
-  android:layout_marginBottom="@dimen/grid_2"
+  android:layout_marginEnd="@dimen/activity_horizontal_margin"
   android:orientation="vertical"
-  android:paddingStart="@dimen/activity_horizontal_margin"
-  android:paddingEnd="@dimen/activity_horizontal_margin"
+  app:cardCornerRadius="@dimen/reward_card_radius"
+  app:cardElevation="0dp"
   tools:showIn="@layout/fragment_pledge">
 
-  <androidx.cardview.widget.CardView
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginBottom="@dimen/grid_2"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/reward_card_radius"
-    app:cardElevation="0dp">
+    android:padding="@dimen/grid_3">
 
-    <LinearLayout
-      android:layout_width="match_parent"
+    <com.google.android.flexbox.FlexboxLayout
+      android:id="@+id/pledge_estimated_delivery_container"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:padding="@dimen/grid_3">
-
-      <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/pledge_estimated_delivery_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_1_half"
-        android:orientation="horizontal"
-        app:alignItems="center"
-        app:dividerDrawable="@drawable/divider_grid_1_half"
-        app:flexWrap="wrap"
-        app:showDivider="middle">
-
-        <TextView
-          style="@style/FootnoteSecondary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/Estimated_delivery" />
-
-        <TextView
-          android:id="@+id/pledge_estimated_delivery"
-          style="@style/FootnotePrimary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="December 2019" />
-
-      </com.google.android.flexbox.FlexboxLayout>
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:orientation="horizontal"
+      app:alignItems="center"
+      app:dividerDrawable="@drawable/divider_grid_1_half"
+      app:flexWrap="wrap"
+      app:showDivider="middle">
 
       <TextView
-        android:id="@+id/reward_title"
-        style="@style/Headline"
+        style="@style/FootnoteSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="2"
-        tools:text="Attend the Wrap Party in Sandusky, Ohio" />
+        android:text="@string/Estimated_delivery" />
 
-    </LinearLayout>
+      <TextView
+        android:id="@+id/pledge_estimated_delivery"
+        style="@style/FootnotePrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="December 2019" />
 
-  </androidx.cardview.widget.CardView>
+    </com.google.android.flexbox.FlexboxLayout>
 
-  <TextView
-    android:id="@+id/accountability"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    tools:text="@string/Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" />
+    <TextView
+      android:id="@+id/reward_title"
+      style="@style/Headline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="2"
+      tools:text="Attend the Wrap Party in Sandusky, Ohio" />
 
-</LinearLayout>
+  </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -50,6 +50,7 @@ import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_footer.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
@@ -118,15 +119,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(pledge_estimated_delivery_container, it) }
 
-        this.viewModel.outputs.deliverySectionIsGone()
+        this.viewModel.outputs.rewardSummaryIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(delivery, it) }
-
-        this.viewModel.outputs.deliveryDividerIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(divider_delivery, it) }
+                .subscribe { ViewUtils.setGone(reward_summary, it) }
 
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
@@ -582,10 +578,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         setClickableHtml(agreementWithUrls, pledge_footer_pledge_agreement)
 
         val trustUrl = UrlUtils.appendPath(baseUrl, "trust")
-        val accountabilityLink = "<a href=$trustUrl>"+ getString(R.string.Learn_more_about_accountability)+"</a>"
-        val accountabilityWithUrl = "${getString(R.string.Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life)} $accountabilityLink"
+        val accountabilityWithUrl = ksString.format(getString(R.string.Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability),
+                "trust_link",
+                trustUrl)
 
         setClickableHtml(accountabilityWithUrl, accountability)
+        accountability_container.setOnClickListener {
+            this.viewModel.inputs.linkClicked(trustUrl)
+        }
     }
 
     private fun updatePledgeCardState(positionAndCardState: Pair<Int, CardState>) {

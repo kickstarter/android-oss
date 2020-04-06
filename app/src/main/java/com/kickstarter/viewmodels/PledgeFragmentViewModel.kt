@@ -110,12 +110,6 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the decrease pledge button should be enabled. */
         fun decreasePledgeButtonIsEnabled(): Observable<Boolean>
 
-        /** Emits a boolean determining if the divider below the delivery section should be hidden. */
-        fun deliveryDividerIsGone(): Observable<Boolean>
-
-        /** Emits a boolean determining if the delivery section should be hidden. */
-        fun deliverySectionIsGone(): Observable<Boolean>
-
         /** Emits the estimated delivery date string of the reward. */
         fun estimatedDelivery(): Observable<String>
 
@@ -160,6 +154,9 @@ interface PledgeFragmentViewModel {
 
         /** Emits the currency symbol string of the project. */
         fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>>
+
+        /** Emits a boolean determining if the delivery section should be hidden. */
+        fun rewardSummaryIsGone(): Observable<Boolean>
 
         /** Emits the title of the current reward. */
         fun rewardTitle(): Observable<String>
@@ -269,8 +266,7 @@ interface PledgeFragmentViewModel {
         private val conversionText = BehaviorSubject.create<String>()
         private val conversionTextViewIsGone = BehaviorSubject.create<Boolean>()
         private val decreasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
-        private val deliveryDividerIsGone = BehaviorSubject.create<Boolean>()
-        private val deliverySectionIsGone = BehaviorSubject.create<Boolean>()
+        private val rewardSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val estimatedDeliveryInfoIsGone = BehaviorSubject.create<Boolean>()
         private val increasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
@@ -383,11 +379,7 @@ interface PledgeFragmentViewModel {
 
             updatingPaymentOrUpdatingPledge
                     .compose(bindToLifecycle())
-                    .subscribe(this.deliverySectionIsGone)
-
-            updatingPaymentOrUpdatingPledge
-                    .compose(bindToLifecycle())
-                    .subscribe(this.deliveryDividerIsGone)
+                    .subscribe(this.rewardSummaryIsGone)
 
             //Base pledge amount
             val rewardMinimum = reward
@@ -1099,12 +1091,6 @@ interface PledgeFragmentViewModel {
         override fun decreasePledgeButtonIsEnabled(): Observable<Boolean> = this.decreasePledgeButtonIsEnabled
 
         @NonNull
-        override fun deliveryDividerIsGone(): Observable<Boolean> = this.deliveryDividerIsGone
-
-        @NonNull
-        override fun deliverySectionIsGone(): Observable<Boolean> = this.deliverySectionIsGone
-
-        @NonNull
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
         @NonNull
@@ -1148,6 +1134,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>> = this.projectCurrencySymbol
+
+        @NonNull
+        override fun rewardSummaryIsGone(): Observable<Boolean> = this.rewardSummaryIsGone
 
         @NonNull
         override fun rewardTitle(): Observable<String> = this.rewardTitle

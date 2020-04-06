@@ -264,6 +264,7 @@ Please tap to retry.</string>
   <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">It’s better\n
 with friends.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>

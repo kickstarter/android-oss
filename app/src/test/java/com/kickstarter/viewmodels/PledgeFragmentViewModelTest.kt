@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockSharedPreferences
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.StringUtils
@@ -68,9 +71,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingSummaryLocation = TestSubscriber<String>()
     private val showNewCardFragment = TestSubscriber<Project>()
-    private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
     private val showPledgeSuccess = TestSubscriber<Pair<CheckoutData, PledgeData>>()
+    private val showSelectedCard = TestSubscriber<Pair<Int, CardState>>()
     private val showSCAFlow = TestSubscriber<String>()
     private val showUpdatePaymentError = TestSubscriber<Void>()
     private val showUpdatePaymentSuccess = TestSubscriber<Void>()
@@ -128,9 +131,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.shippingSummaryLocation().subscribe(this.shippingSummaryLocation)
         this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
-        this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.showPledgeSuccess().subscribe(this.showPledgeSuccess)
+        this.vm.outputs.showSelectedCard().subscribe(this.showSelectedCard)
         this.vm.outputs.showSCAFlow().subscribe(this.showSCAFlow)
         this.vm.outputs.showUpdatePaymentError().subscribe(this.showUpdatePaymentError)
         this.vm.outputs.showUpdatePaymentSuccess().subscribe(this.showUpdatePaymentSuccess)
@@ -190,7 +193,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
         this.addedCard.assertValue(Pair(visa, project))
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
     }
 
     @Test
@@ -1570,11 +1573,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
         this.showUpdatePaymentError.assertValueCount(1)
         this.koalaTest.assertValues("Update Payment Method Button Clicked")
     }
@@ -1584,10 +1587,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
 
         this.showUpdatePaymentSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Payment Method Button Clicked")
@@ -1606,17 +1609,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertValueCount(1)
@@ -1636,17 +1639,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertValueCount(1)
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -1666,17 +1669,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
 
         this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("eek"))
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertValueCount(1)
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -2084,12 +2087,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
         //Successfully pledging with a valid amount should show the thanks page
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2104,12 +2107,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
         //Successfully pledging with a valid amount should show the thanks page
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2128,12 +2131,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
         //Successfully pledging with a valid amount should show the thanks page
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2155,11 +2158,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
         this.showSCAFlow.assertNoValues()
@@ -2182,11 +2185,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
@@ -2214,11 +2217,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        this.showPledgeCard.assertValue(Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
@@ -2227,7 +2230,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
     }
@@ -2247,11 +2250,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.selectCardButtonClicked(0)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         this.vm.inputs.pledgeButtonClicked("t3st")
 
-        this.showPledgeCard.assertValue(Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
@@ -2260,7 +2263,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("yikes"))
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
     }

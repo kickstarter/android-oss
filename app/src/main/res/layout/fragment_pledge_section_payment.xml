@@ -42,8 +42,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
+    android:paddingStart="@dimen/activity_vertical_margin"
+    android:paddingEnd="@dimen/activity_vertical_margin"
     android:nestedScrollingEnabled="false"
     android:overScrollMode="never"
-    tools:listitem="@layout/item_reward_credit_card" />
+    tools:listitem="@layout/item_reward_unselected_card" />
 
 </LinearLayout>

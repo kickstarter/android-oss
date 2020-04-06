@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
-  android:id="@+id/card_container"
   style="@style/PledgeStoredCard"
+  android:id="@+id/add_card_button"
+  android:foreground="@drawable/click_indicator_light"
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
@@ -9,19 +10,15 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:gravity="center"
     android:padding="@dimen/grid_3">
 
-    <include
-      layout="@layout/reward_card_details"
-      android:visibility="invisible" />
-
-    <Button
-      android:id="@+id/add_card_button"
-      style="@style/SelectButton"
-      android:layout_width="match_parent"
+    <TextView
+      style="@style/SubheadlineMedium"
+      android:textColor="@color/accent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
       android:text="@string/Add_new_card" />
   </LinearLayout>
 

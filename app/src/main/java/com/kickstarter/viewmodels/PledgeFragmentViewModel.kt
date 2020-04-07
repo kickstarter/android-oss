@@ -733,12 +733,11 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.cardsAndProject)
 
-            cardsAndProject
+            val initialCardSelection = cardsAndProject
                     .take(1)
                     .map { initialCardSelection(it.first, it.second) }
                     .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.cardSelected.onNext(it as Pair<StoredCard, Int>) }
+                    .map { it as Pair<StoredCard, Int> }
 
             this.cardSaved
                     .compose<Pair<StoredCard, Project>>(combineLatestPair(project))
@@ -750,7 +749,7 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.cardSelected)
 
-            this.cardSelected
+            Observable.merge(initialCardSelection, this.cardSelected)
                     .compose(bindToLifecycle())
                     .subscribe { this.showSelectedCard.onNext(Pair(it.second, CardState.SELECTED)) }
 

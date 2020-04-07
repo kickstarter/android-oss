@@ -240,7 +240,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .backing(backing)
                 .build()
 
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+        val environment = environment()
                 .toBuilder()
                 .currentUser(mockCurrentUser)
                 .apolloClient(object : MockApolloClient() {

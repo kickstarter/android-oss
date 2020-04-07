@@ -731,7 +731,7 @@ interface PledgeFragmentViewModel {
 
             cardsAndProject
                     .compose(bindToLifecycle())
-                    .subscribe(this.cardsAndProject)
+                    .subscribe { this.cardsAndProject.onNext(it) }
 
             val initialCardSelection = cardsAndProject
                     .take(1)
@@ -744,14 +744,14 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.addedCard)
 
-            this.cardSaved
-                    .compose<Pair<StoredCard, Int>>(zipPair(this.addedCardPosition))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cardSelected)
+            val selectedCardAndPosition = Observable.merge(initialCardSelection,
+                    this.cardSelected,
+                    this.cardSaved.compose<Pair<StoredCard, Int>>(zipPair(this.addedCardPosition)))
 
-            Observable.merge(initialCardSelection, this.cardSelected)
+            selectedCardAndPosition
+                    .map { it.second }
                     .compose(bindToLifecycle())
-                    .subscribe { this.showSelectedCard.onNext(Pair(it.second, CardState.SELECTED)) }
+                    .subscribe { this.showSelectedCard.onNext(Pair(it, CardState.SELECTED)) }
 
             project
                     .compose<Project>(takeWhen(this.newCardButtonClicked))
@@ -802,7 +802,7 @@ interface PledgeFragmentViewModel {
                     .ofType(Backing::class.java)
                     .distinctUntilChanged()
 
-            val paymentMethodId: Observable<String> = this.cardSelected.map { it.first.id() }
+            val paymentMethodId: Observable<String> = selectedCardAndPosition.map { it.first.id() }
 
             val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },

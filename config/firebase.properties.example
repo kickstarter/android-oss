@@ -1,0 +1,4 @@
+external_debug=external_debug_id
+external_release=external_release_id
+internal_debug=internal_debug_id
+internal_release=internal_release_id

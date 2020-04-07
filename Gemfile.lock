@@ -90,6 +90,7 @@ GEM
       apktools (~> 0.7)
       aws-sdk (~> 2.3)
       mime-types (~> 3.1)
+    fastlane-plugin-firebase_app_distribution (0.1.4)
     gh_inspector (1.1.3)
     google-api-client (0.23.9)
       addressable (~> 2.5, >= 2.5.1)
@@ -194,6 +195,7 @@ DEPENDENCIES
   excon
   fastlane
   fastlane-plugin-aws_s3
+  fastlane-plugin-firebase_app_distribution
   rainbow
 
 BUNDLED WITH

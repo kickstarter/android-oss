@@ -6,6 +6,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.models.StoredCard
 import com.stripe.android.model.Card
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -24,6 +25,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
     private val lastFourTextColor = TestSubscriber.create<Int>()
     private val lastFour = TestSubscriber.create<String>()
     private val notAvailableCopyIsVisible = TestSubscriber.create<Boolean>()
+    private val notifyDelegateCardSelected = TestSubscriber.create<Pair<StoredCard, Int>>()
     private val projectCountry = TestSubscriber.create<String>()
     private val selectImageIsVisible = TestSubscriber.create<Boolean>()
 
@@ -38,6 +40,7 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.lastFourTextColor().subscribe(this.lastFourTextColor)
         this.vm.outputs.lastFour().subscribe(this.lastFour)
         this.vm.outputs.notAvailableCopyIsVisible().subscribe(this.notAvailableCopyIsVisible)
+        this.vm.outputs.notifyDelegateCardSelected().subscribe(this.notifyDelegateCardSelected)
         this.vm.outputs.projectCountry().subscribe(this.projectCountry)
         this.vm.outputs.selectImageIsVisible().subscribe(this.selectImageIsVisible)
     }
@@ -168,6 +171,18 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.mxProject()))
 
         this.notAvailableCopyIsVisible.assertValue(true)
+    }
+
+    @Test
+    fun testNotifyDelegateCardSelected() {
+        setUpEnvironment(environment())
+
+        val creditCard = StoredCardFactory.visa()
+
+        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
+
+        this.vm.inputs.cardSelected(2)
+        this.notifyDelegateCardSelected.assertValue(Pair(creditCard, 2))
     }
 
     @Test

@@ -13,6 +13,7 @@ import rx.subjects.PublishSubject
 
 interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderViewModel {
     interface Inputs : BaseRewardCardViewHolderViewModel.Inputs {
+        /** Call when the user selects this card. */
         fun cardSelected(position: Int)
     }
 
@@ -29,7 +30,7 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         /** Emits a boolean that determines if the not available copy should be visible. */
         fun notAvailableCopyIsVisible(): Observable<Boolean>
 
-        /**  */
+        /** Emits when we should notify the delegate the card was selected. */
         fun notifyDelegateCardSelected(): Observable<Pair<StoredCard, Int>>
 
         /** Emits a string representing the project's country when the card is not accepted. */

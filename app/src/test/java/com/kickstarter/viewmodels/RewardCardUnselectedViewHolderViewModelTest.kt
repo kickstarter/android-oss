@@ -31,7 +31,6 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm = RewardCardUnselectedViewHolderViewModel.ViewModel(environment)
 
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
-        this.vm.outputs.id().subscribe(this.id)
         this.vm.outputs.isClickable().subscribe(this.isClickable)
         this.vm.outputs.issuer().subscribe(this.issuer)
         this.vm.outputs.issuerImage().subscribe(this.issuerImage)
@@ -56,16 +55,6 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationDate.assertValue("03/2019")
-    }
-
-    @Test
-    fun testId() {
-        setUpEnvironment(environment())
-        val creditCard = StoredCardFactory.discoverCard()
-
-        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
-
-        this.id.assertValue(creditCard.id())
     }
 
     @Test

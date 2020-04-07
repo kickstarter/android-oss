@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.reward_card_details.view.*
 class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
 
     interface Delegate {
-        fun selectCardButtonClicked(position: Int)
+        fun cardSelected(storedCard: StoredCard, position: Int)
     }
 
     private val viewModel: RewardCardUnselectedViewHolderViewModel.ViewModel = RewardCardUnselectedViewHolderViewModel.ViewModel(environment())
@@ -68,6 +68,11 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.card_not_allowed_warning, !it) }
 
+        this.viewModel.outputs.notifyDelegateCardSelected()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.delegate.cardSelected(it.first, it.second) }
+
         this.viewModel.outputs.projectCountry()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -79,7 +84,7 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
                 .subscribe { ViewUtils.setInvisible(this.view.select_image_view, !it) }
 
         this.view.card_container.setOnClickListener {
-            this.delegate.selectCardButtonClicked(adapterPosition)
+            this.viewModel.inputs.cardSelected(adapterPosition)
         }
     }
 

@@ -400,6 +400,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(update_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.updatePledgeButtonClicked() }
+
+        RxView.clicks(pledge_footer_pledge_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -429,14 +433,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.cardSaved(storedCard)
     }
 
+    override fun cardSelected(storedCard: StoredCard, position: Int) {
+        this.viewModel.inputs.cardSelected(storedCard, position)
+    }
+
     override fun ruleSelected(rule: ShippingRule) {
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
         shipping_rules.clearFocus()
-    }
-
-    override fun selectCardButtonClicked(position: Int) {
-        this.viewModel.inputs.selectCardButtonClicked(position)
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {

@@ -4,24 +4,23 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:animateLayoutChanges="true"
-      android:orientation="horizontal"
-      android:padding="@dimen/grid_2">
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="horizontal"
+    android:padding="@dimen/grid_2">
 
-      <!-- TODO: add a11y string "Selected card" -->
-      <ImageView
-        android:layout_width="@dimen/grid_3"
-        android:layout_height="@dimen/grid_3"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/grid_3"
-        android:importantForAccessibility="no"
-        android:background="@drawable/circle_accent"
-        android:tint="@color/white"
-        android:src="@drawable/icon__check" />
+    <ImageView
+      android:layout_width="@dimen/grid_3"
+      android:layout_height="@dimen/grid_3"
+      android:layout_gravity="center_vertical"
+      android:layout_marginEnd="@dimen/grid_3"
+      android:background="@drawable/circle_accent"
+      android:contentDescription="@string/Selected_card"
+      android:src="@drawable/icon__check"
+      android:tint="@color/white" />
 
-      <include layout="@layout/reward_card_details" />
-    </LinearLayout>
+    <include layout="@layout/reward_card_details" />
+  </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -475,11 +475,13 @@
   <string name="Select_an_option" formatted="false">選択してください</string>
   <string name="Select_another_project" formatted="false">他のプロジェクトを選ぶ</string>
   <string name="Select_fewer_categories" formatted="false">選択カテゴリー数が多すぎます</string>
+  <string name="Select_this_card" formatted="false">このカードを選択する</string>
   <string name="Select_this_instead" formatted="false">代わりにこちらを選択</string>
   <string name="Select_this_reward" formatted="false">このリワードを選ぶ</string>
   <string name="Select_this_reward_instead" formatted="false">このリワードを選択</string>
   <string name="Select_up_to_five" formatted="false">以下のオプションから最大5つをお選びください。</string>
   <string name="Selected" formatted="false">選択済み</string>
+  <string name="Selected_card" formatted="false">選択済みのカード</string>
   <string name="Selected_reward" formatted="false">選択したリワード</string>
   <string name="Send" formatted="false">送信</string>
   <string name="Send_verfication_email" formatted="false">認証メールを送信する</string>

@@ -477,11 +477,13 @@ n\'ont rien soutenu.</string>
   <string name="Select_an_option" formatted="false">Sélectionner une option</string>
   <string name="Select_another_project" formatted="false">Sélectionner un autre projet</string>
   <string name="Select_fewer_categories" formatted="false">Veuillez sélectionner moins de catégories.</string>
+  <string name="Select_this_card" formatted="false">Sélectionner cette carte</string>
   <string name="Select_this_instead" formatted="false">Sélectionner</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
   <string name="Select_this_reward_instead" formatted="false">Choisir cette récompense</string>
   <string name="Select_up_to_five" formatted="false">Sélectionnez cinq catégories parmi les propositions ci-dessous.</string>
   <string name="Selected" formatted="false">Sélectionné</string>
+  <string name="Selected_card" formatted="false">Carte sélectionnée</string>
   <string name="Selected_reward" formatted="false">Récompense sélectionnée</string>
   <string name="Send" formatted="false">Envoyer</string>
   <string name="Send_verfication_email" formatted="false">Envoyer un e-mail de vérification</string>

@@ -324,6 +324,7 @@ contributeurs</string>
   <string name="Never" formatted="false">Jamais</string>
   <string name="New_email" formatted="false">Nouvelle adresse e-mail</string>
   <string name="New_password" formatted="false">Nouveau mot de passe</string>
+  <string name="New_payment_method" formatted="false">New payment method</string>
   <string name="New_pledge_activity" formatted="false">Nouveaux engagements</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Grandes idées et nouveaux travaux signés par des artistes établis et émergents.</string>
   <string name="News_events" formatted="false">Les grandes nouvelles et événements près de chez vous, quelques fois par an.</string>

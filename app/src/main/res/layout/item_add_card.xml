@@ -14,8 +14,8 @@
     android:padding="@dimen/grid_3">
 
     <ImageView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="@dimen/grid_4"
+      android:layout_height="@dimen/grid_4"
       android:layout_marginEnd="@dimen/grid_3_half"
       android:background="@drawable/circle_accent_alpha_20"
       android:contentDescription="@string/Add"

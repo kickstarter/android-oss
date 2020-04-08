@@ -167,9 +167,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCards_whenLoggedIn() {
+    fun testCards_whenLoggedIn_userHasCards() {
         val card = StoredCardFactory.discoverCard()
         val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.project()
 
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
@@ -179,11 +180,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                         return Observable.just(Collections.singletonList(card))
                     }
                 }).build()
-        val project = ProjectFactory.project()
 
         setUpEnvironment(environment, project = project)
 
         this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         val visa = StoredCardFactory.visa()
         this.vm.inputs.cardSaved(visa)
@@ -191,7 +192,67 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
         this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED), Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testCards_whenLoggedIn_userHasNoCards() {
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.project()
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(Collections.emptyList())
+                    }
+                }).build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
+        this.showSelectedCard.assertNoValues()
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
+        this.addedCard.assertValue(Pair(visa, project))
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testCards_whenLoggedIn_userBackedProject() {
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val storedCards = testData.storedCards
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
+
+        val environment = environmentForShippingRules(shippingRulesEnvelope)
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+                })
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .build()
+
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, backedProject))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, backedProject))
+        this.addedCard.assertValue(Pair(visa, backedProject))
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
     }
 
     @Test
@@ -199,6 +260,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.cardsAndProject.assertNoValues()
+        this.showSelectedCard.assertNoValues()
     }
 
     @Test
@@ -355,27 +417,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPledgeOfShippableReward() {
-        val shippableReward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(50.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(shippableReward)
-                .rewardId(shippableReward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -405,16 +450,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPledgeOfDigitalReward() {
-        val noReward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .reward(noReward)
-                .rewardId(noReward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
@@ -439,27 +477,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPaymentOfShippableReward() {
-        val shippableReward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(50.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(shippableReward)
-                .rewardId(shippableReward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -489,16 +510,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPaymentOfDigitalReward() {
-        val noReward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .reward(noReward)
-                .rewardId(noReward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
@@ -577,50 +591,21 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeSummaryAmount() {
-        val reward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(30.0)
-                .reward(reward)
-                .rewardId(reward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
 
-        setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+        setUpEnvironment(environment(), noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.pledgeSummaryAmount.assertValue("$30")
+        this.pledgeSummaryAmount.assertValue("$10")
     }
 
     @Test
     fun testTotalAmount_whenUpdatingPledge() {
-        val reward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(40.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(reward)
-                .rewardId(reward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -631,38 +616,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.totalAmount.assertValue("$40")
+        this.totalAmount.assertValue("$50")
     }
 
     @Test
     fun testTotalAmount_whenUpdatingPayment() {
-        val reward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(40.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(reward)
-                .rewardId(reward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -673,9 +637,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.totalAmount.assertValue("$40")
+        this.totalAmount.assertValue("$50")
     }
 
     @Test
@@ -1346,8 +1310,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.cardSelected(StoredCardFactory.visa(), 0)
+        this.vm.inputs.pledgeButtonClicked()
 
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
         this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
@@ -1443,34 +1407,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShippingSummaryLocation() {
-        val reward = RewardFactory.rewardWithShipping()
-        val nigeria = LocationFactory.nigeria()
-        val nigeriaShippingRule = ShippingRuleFactory.usShippingRule()
-                .toBuilder()
-                .location(nigeria)
-                .build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(40.0)
-                .location(nigeria)
-                .locationId(nigeria.id())
-                .reward(reward)
-                .rewardId(reward.id())
-                .shippingAmount(nigeriaShippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), nigeriaShippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -1481,9 +1421,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.shippingSummaryLocation.assertValue("Nigeria")
+        this.shippingSummaryLocation.assertValue("Brooklyn, NY")
     }
 
     @Test
@@ -1550,35 +1490,63 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePaymentError() {
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
         val environment = environment()
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.error(Exception("womp"))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
 
-        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
+
         this.showUpdatePaymentError.assertValueCount(1)
         this.koalaTest.assertValues("Update Payment Method Button Clicked")
     }
 
     @Test
     fun testShowUpdatePaymentSuccess() {
-        setUpEnvironment(environment(), RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+                }).build()
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
+
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
 
         this.showUpdatePaymentSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Payment Method Button Clicked")
@@ -1586,28 +1554,39 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePaymentSuccess_whenRequiresAction_isSuccessful_successOutcome() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
+        val environment = environment()
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertValueCount(1)
@@ -1616,28 +1595,38 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePaymentSuccess_whenRequiresAction_isSuccessful_unsuccessfulOutcome() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
-        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertValueCount(1)
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -1646,28 +1635,38 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePaymentSuccess_whenRequiresAction_isUnsuccessful() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
+        val environment = environment()
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("eek"))
 
-        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertValueCount(1)
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -2073,11 +2072,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         //Successfully pledging with a valid amount should show the thanks page
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
@@ -2093,11 +2090,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.reward()
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), reward, project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         //Successfully pledging with a valid amount should show the thanks page
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
@@ -2117,11 +2112,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, reward, project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         //Successfully pledging with a valid amount should show the thanks page
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
@@ -2144,11 +2137,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
@@ -2171,11 +2162,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
@@ -2203,11 +2192,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
@@ -2236,11 +2223,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
@@ -2420,5 +2405,66 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .apiClient(apiClient)
                 .currentConfig(currentConfig)
                 .build()
+    }
+
+    data class TestData(val reward: Reward,
+                        val project: Project,
+                        val backing: Backing?,
+                        val shippingRulesEnvelope: ShippingRulesEnvelope?,
+                        val storedCards: List<StoredCard>)
+
+
+
+    private fun setUpBackedShippableRewardTestData(): TestData {
+        val backingCard = StoredCardFactory.visa()
+        val shippableReward = RewardFactory.rewardWithShipping()
+        val unitedStates = LocationFactory.unitedStates()
+        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
+        val storedCards = listOf(StoredCardFactory.discoverCard(), backingCard, StoredCardFactory.visa())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(50.0)
+                .location(unitedStates)
+                .locationId(unitedStates.id())
+                .paymentSource(PaymentSourceFactory.visa()
+                        .toBuilder()
+                        .id(backingCard.id())
+                        .build())
+                .reward(shippableReward)
+                .rewardId(shippableReward.id())
+                .shippingAmount(shippingRule.cost().toFloat())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
+                .toBuilder()
+                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
+                .build()
+
+        return TestData(shippableReward, backedProject, backing, shippingRulesEnvelope, storedCards)
+    }
+
+    private fun setUpBackedNoRewardTestData(): TestData {
+        val backingCard = StoredCardFactory.visa()
+        val noReward = RewardFactory.noReward()
+        val storedCards = listOf(StoredCardFactory.discoverCard(), backingCard, StoredCardFactory.visa())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(PaymentSourceFactory.visa()
+                        .toBuilder()
+                        .id(backingCard.id())
+                        .build())
+                .reward(noReward)
+                .rewardId(noReward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        return TestData(noReward, backedProject, backing, null, storedCards)
     }
 }

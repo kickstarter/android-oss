@@ -1,14 +1,22 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.models.StoredCard
 import rx.Observable
 import rx.subjects.BehaviorSubject
+import rx.subjects.PublishSubject
 
 interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderViewModel {
-    interface Inputs : BaseRewardCardViewHolderViewModel.Inputs
+    interface Inputs : BaseRewardCardViewHolderViewModel.Inputs {
+        /** Call when the user selects this card. */
+        fun cardSelected(position: Int)
+    }
+
     interface Outputs : BaseRewardCardViewHolderViewModel.Outputs {
         /** Emits a boolean that determines if the card is clickable. */
         fun isClickable(): Observable<Boolean>
@@ -22,6 +30,9 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         /** Emits a boolean that determines if the not available copy should be visible. */
         fun notAvailableCopyIsVisible(): Observable<Boolean>
 
+        /** Emits when we should notify the delegate the card was selected. */
+        fun notifyDelegateCardSelected(): Observable<Pair<StoredCard, Int>>
+
         /** Emits a string representing the project's country when the card is not accepted. */
         fun projectCountry(): Observable<String>
 
@@ -33,10 +44,13 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private val cardSelected = PublishSubject.create<Int>()
+
         private val isClickable = BehaviorSubject.create<Boolean>()
         private val issuerImageAlpha = BehaviorSubject.create<Float>()
         private val lastFourTextColor = BehaviorSubject.create<Int>()
         private val notAvailableCopyIsVisible = BehaviorSubject.create<Boolean>()
+        private val notifyDelegateCardSelected = BehaviorSubject.create<Pair<StoredCard, Int>>()
         private val projectCountry = BehaviorSubject.create<String>()
         private val selectImageIsVisible = BehaviorSubject.create<Boolean>()
 
@@ -76,7 +90,14 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
                     .compose(bindToLifecycle())
                     .subscribe(this.selectImageIsVisible)
 
+            this.cardAndProject
+                    .map { it.first }
+                    .compose<Pair<StoredCard, Int>>(takePairWhen(this.cardSelected))
+                    .compose(bindToLifecycle())
+                    .subscribe { this.notifyDelegateCardSelected.onNext(it) }
         }
+
+        override fun cardSelected(position: Int) = this.cardSelected.onNext(position)
 
         override fun isClickable() : Observable<Boolean> = this.isClickable
 
@@ -85,6 +106,8 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         override fun lastFourTextColor() : Observable<Int> = this.lastFourTextColor
 
         override fun notAvailableCopyIsVisible(): Observable<Boolean> = this.notAvailableCopyIsVisible
+
+        override fun notifyDelegateCardSelected(): Observable<Pair<StoredCard, Int>> = this.notifyDelegateCardSelected
 
         override fun projectCountry(): Observable<String> = this.projectCountry
 

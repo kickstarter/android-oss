@@ -57,7 +57,7 @@ abstract class StoredCard : Parcelable {
             }
         }
 
-        const val DATE_FORMAT = "MM/yyyy"
+        const val DATE_FORMAT = "MM/YYYY"
     }
 
 }

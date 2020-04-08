@@ -33,9 +33,6 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         /** Emits when we should notify the delegate the card was selected. */
         fun notifyDelegateCardSelected(): Observable<Pair<StoredCard, Int>>
 
-        /** Emits a string representing the project's country when the card is not accepted. */
-        fun projectCountry(): Observable<String>
-
         /** Emits a boolean that determines if the select image should be visible. */
         fun selectImageIsVisible(): Observable<Boolean>
     }
@@ -51,7 +48,6 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         private val lastFourTextColor = BehaviorSubject.create<Int>()
         private val notAvailableCopyIsVisible = BehaviorSubject.create<Boolean>()
         private val notifyDelegateCardSelected = BehaviorSubject.create<Pair<StoredCard, Int>>()
-        private val projectCountry = BehaviorSubject.create<String>()
         private val selectImageIsVisible = BehaviorSubject.create<Boolean>()
 
         init {
@@ -75,11 +71,6 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
                     .map { if (it) R.color.text_primary else R.color.text_secondary }
                     .compose(bindToLifecycle())
                     .subscribe(this.lastFourTextColor)
-
-            project
-                    .map { it.location()?.expandedCountry()?: "" }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.projectCountry)
 
             allowedCardType
                     .map { BooleanUtils.negate(it) }
@@ -108,8 +99,6 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         override fun notAvailableCopyIsVisible(): Observable<Boolean> = this.notAvailableCopyIsVisible
 
         override fun notifyDelegateCardSelected(): Observable<Pair<StoredCard, Int>> = this.notifyDelegateCardSelected
-
-        override fun projectCountry(): Observable<String> = this.projectCountry
 
         override fun selectImageIsVisible(): Observable<Boolean> = this.selectImageIsVisible
     }

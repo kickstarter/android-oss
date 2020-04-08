@@ -196,6 +196,65 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testCards_whenLoggedIn_userHasCards_firstCardIsNotAllowed() {
+        val allowedCard = StoredCardFactory.visa()
+        val storedCards = listOf(StoredCardFactory.discoverCard(), allowedCard, StoredCardFactory.visa())
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.mxProject()
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+                }).build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testCards_whenLoggedIn_userHasCards_noAllowedCards() {
+        val storedCards = listOf(StoredCardFactory.discoverCard())
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.mxProject()
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+                }).build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.showSelectedCard.assertNoValues()
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
+    }
+
+    @Test
     fun testCards_whenLoggedIn_userHasNoCards() {
         val mockCurrentUser = MockCurrentUser(UserFactory.user())
         val project = ProjectFactory.project()
@@ -2412,8 +2471,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                         val backing: Backing?,
                         val shippingRulesEnvelope: ShippingRulesEnvelope?,
                         val storedCards: List<StoredCard>)
-
-
 
     private fun setUpBackedShippableRewardTestData(): TestData {
         val backingCard = StoredCardFactory.visa()

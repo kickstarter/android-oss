@@ -22,7 +22,6 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
     private val viewModel: RewardCardUnselectedViewHolderViewModel.ViewModel = RewardCardUnselectedViewHolderViewModel.ViewModel(environment())
     private val ksString: KSString = environment().ksString()
 
-    private val cardNotAllowedString = this.context().getString(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
     private val endingInString = this.context().getString(R.string.Ending_in_last_four)
 
@@ -73,11 +72,6 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
                 .compose(observeForUI())
                 .subscribe { this.delegate.cardSelected(it.first, it.second) }
 
-        this.viewModel.outputs.projectCountry()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setCardNotAllowedWarningText(it) }
-
         this.viewModel.outputs.selectImageIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -92,11 +86,6 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
         @Suppress("UNCHECKED_CAST")
         val cardAndProject = requireNotNull(data) as Pair<StoredCard, Project>
         this.viewModel.inputs.configureWith(cardAndProject)
-    }
-
-    private fun setCardNotAllowedWarningText(country: String) {
-        this.view.card_not_allowed_warning.text = this.ksString.format(this.cardNotAllowedString,
-                "project_country", country)
     }
 
     private fun setExpirationDateText(date: String) {

@@ -552,6 +552,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">Esta contribución no pudo ser cobrada por un error en el método de pago.</string>
   <string name="This_post_is_for_backers_only" formatted="false">Esta publicación es únicamente para patrocinadores</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">Este proyecto no alcanzó su meta de financiamiento, así que no se realizó ningún cargo a tu método de pago.</string>
+  <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">Dado que este proyecto tiene una moneda establecida, no se puede procesar esta opción.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">Este proyecto sólo será financiado si se contribuye al menos un monto de %{amount} antes del %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Accede a tus categorías favoritas en el menú en la parte superior de la app.</string>

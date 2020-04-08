@@ -550,6 +550,7 @@
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">支払関連のエラーにより、このプレッジは取り消されました。</string>
   <string name="This_post_is_for_backers_only" formatted="false">この投稿はバッカー向けです</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">このプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
+  <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">このプロジェクトには、このオプションを処理できない通貨が設定されています。</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">%{date} までに %{amount} 以上のプレッジが集まれば、このプロジェクトは資金を得ることができます。</string>
   <string name="Time_left_left" formatted="false">あと%{time_left}</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">上部の「さがす」をタップし、お気に入りカテゴリにアクセス。</string>

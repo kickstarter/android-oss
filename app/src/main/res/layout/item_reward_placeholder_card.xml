@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-  style="@style/PledgeStoredCard"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/card_container"
-  xmlns:android="http://schemas.android.com/apk/res/android"
+  style="@style/PledgeStoredCard"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
@@ -10,38 +9,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="@dimen/grid_3">
+    android:padding="@dimen/grid_2">
 
-      <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
-      <ImageView
-        android:layout_width="@dimen/credit_card_logo_width"
-        android:layout_height="@dimen/credit_card_logo_height"
-        android:layout_marginStart="@dimen/grid_5"
-        android:background="@color/ksr_grey_400"
-        android:contentDescription="@null"
-        android:scaleType="fitXY" />
+    <ImageView
+      android:layout_width="@dimen/credit_card_logo_width"
+      android:layout_height="@dimen/credit_card_logo_height"
+      android:layout_marginStart="@dimen/grid_6"
+      android:background="@color/ksr_grey_400"
+      android:contentDescription="@null"
+      android:scaleType="fitXY" />
 
-      <LinearLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_2"
+      android:orientation="vertical">
+
+      <include
+        layout="@layout/loading_placeholder_body"
+        android:layout_width="@dimen/grid_10"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_2"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/grid_1_half" />
 
-          <TextView
-            style="@style/CreditCardLastFour"
-            android:foreground="@drawable/rect_grey_500_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Card_ending_in_last_four" />
-
-          <TextView
-            android:foreground="@drawable/rect_grey_500_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/CreditCardExpiration"
-            android:text="@string/Credit_card_expiration" />
-      </LinearLayout>
-
+      <include
+        layout="@layout/loading_placeholder_caption_2"
+        android:layout_width="@dimen/grid_15"
+        android:layout_height="wrap_content" />
     </LinearLayout>
+
+  </LinearLayout>
 
 </androidx.cardview.widget.CardView>

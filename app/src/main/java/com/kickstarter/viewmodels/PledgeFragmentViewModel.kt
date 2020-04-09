@@ -124,6 +124,9 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the pledge button should be enabled. */
         fun pledgeButtonIsEnabled(): Observable<Boolean>
 
+        /** Emits a boolean determining if the pledge progress bar should be hidden. */
+        fun pledgeProgressIsGone(): Observable<Boolean>
+
         /** Emits the hint text for the pledge amount. */
         fun pledgeHint(): Observable<String>
 
@@ -268,6 +271,7 @@ interface PledgeFragmentViewModel {
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
+        private val pledgeProgressIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeHint = BehaviorSubject.create<String>()
         private val pledgeMaximum = BehaviorSubject.create<String>()
         private val pledgeMaximumIsGone = BehaviorSubject.create<Boolean>()
@@ -710,6 +714,11 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.updatePledgeButtonIsEnabled)
 
+            Observable.merge(updatingReward, changeDuringUpdatingPledge)
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.pledgeButtonIsEnabled)
+
             // Payment section
             pledgeReason
                     .map { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
@@ -725,7 +734,10 @@ interface PledgeFragmentViewModel {
 
             val cardsAndProject = userIsLoggedIn
                     .filter { BooleanUtils.isTrue(it) }
-                    .compose<Boolean>(waitUntil(total))
+                    .compose(ignoreValues())
+                    .compose<Void>(waitUntil(total))
+                    .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT}
                     .switchMap { storedCards() }
                     .compose<Pair<List<StoredCard>, Project>>(combineLatestPair(project))
 
@@ -812,10 +824,12 @@ interface PledgeFragmentViewModel {
                     cookieRefTag)
             { p, a, id, l, r, c -> CreateBackingData(p, a, id, l, r, c) }
                     .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
-                    .map { CreateBackingData(it.project, it.amount, it.paymentSourceId, it.locationId, it.reward, it.refTag) }
                     .switchMap {
                         this.apolloClient.createBacking(it)
-                                .doOnSubscribe { /** todo add loading state to pledge button */ }
+                                .doOnSubscribe {
+                                    this.pledgeProgressIsGone.onNext(false)
+                                    this.pledgeButtonIsEnabled.onNext(false)
+                                }
                                 .materialize()
                     }
                     .share()
@@ -842,8 +856,9 @@ interface PledgeFragmentViewModel {
                     .switchMap {
                         this.apolloClient.updateBacking(it)
                                 .doOnSubscribe {
+                                    this.pledgeProgressIsGone.onNext(false)
+                                    this.pledgeButtonIsEnabled.onNext(false)
                                     this.updatePledgeProgressIsGone.onNext(false)
-                                    /** todo add loading state to pledge button */
                                 }
                                 .materialize()
                     }
@@ -906,13 +921,19 @@ interface PledgeFragmentViewModel {
                     .filter { it.second == PledgeReason.PLEDGE }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe { this.showPledgeError.onNext(null) }
+                    .subscribe {
+                        this.pledgeProgressIsGone.onNext(true)
+                        this.pledgeButtonIsEnabled.onNext(true)
+                        this.showPledgeError.onNext(null)
+                    }
 
             errorAndPledgeReason
                     .filter { it.second == PledgeReason.UPDATE_PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
                     .subscribe {
+                        this.pledgeProgressIsGone.onNext(true)
+                        this.pledgeButtonIsEnabled.onNext(true)
                         this.showUpdatePledgeError.onNext(null)
                         this.updatePledgeProgressIsGone.onNext(true)
                     }
@@ -921,7 +942,11 @@ interface PledgeFragmentViewModel {
                     .filter { it.second == PledgeReason.UPDATE_PAYMENT }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())
-                    .subscribe { this.showUpdatePaymentError.onNext(null) }
+                    .subscribe {
+                        this.pledgeProgressIsGone.onNext(true)
+                        this.pledgeButtonIsEnabled.onNext(true)
+                        this.showUpdatePaymentError.onNext(null)
+                    }
 
             this.baseUrlForTerms.onNext(this.environment.webEndpoint())
 
@@ -1102,6 +1127,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun pledgeButtonIsEnabled(): Observable<Boolean> = this.pledgeButtonIsEnabled
+
+        @NonNull
+        override fun pledgeProgressIsGone(): Observable<Boolean> = this.pledgeProgressIsGone
 
         @NonNull
         override fun pledgeHint(): Observable<String> = this.pledgeHint

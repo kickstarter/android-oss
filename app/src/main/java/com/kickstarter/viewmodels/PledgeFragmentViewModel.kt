@@ -1204,6 +1204,5 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun totalDividerIsGone(): Observable<Boolean> = this.totalDividerIsGone
-
     }
 }

@@ -40,9 +40,9 @@
       android:layout_marginStart="@dimen/grid_8"
       android:layout_marginEnd="@dimen/grid_2"
       android:layout_marginBottom="@dimen/grid_2"
+      android:text="@string/This_project_has_a_set_currency_that_cant_process_this_option"
       android:textColor="@color/ksr_red_400"
       android:visibility="gone"
-      tools:text="@string/You_cant_use_this_credit_card_to_back_a_project_from_project_country"
       tools:visibility="visible" />
   </LinearLayout>
 </androidx.cardview.widget.CardView>

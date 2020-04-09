@@ -552,6 +552,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">Dieser Finanzierungsbeitrag wurde aufgrund von Fehlern, die bei der Zahlung auftraten, nicht übernommen.</string>
   <string name="This_post_is_for_backers_only" formatted="false">Dieser Beitrag ist nur für Unterstützer</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">Bei diesem Projekt wurde das Finanzierungsziel nicht erreicht. Daher wurde deine Zahlungsmethode nicht belastet.</string>
+  <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">Diese Option ist für die Währung dieses Projekts nicht verfügbar.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">Dieses Projekt wird nur finanziert, wenn bis am %{date} Unterstützungsbeiträge von mindestens %{amount} geleistet werden.</string>
   <string name="Time_left_left" formatted="false">%{time_left} übrig</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Für schnellen Zugriff auf deine meist besuchten Kategorien, tippe auf das Dropdown-Menü oben.</string>

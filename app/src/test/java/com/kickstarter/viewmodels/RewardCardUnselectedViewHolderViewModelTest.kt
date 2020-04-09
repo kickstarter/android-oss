@@ -26,7 +26,6 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
     private val lastFour = TestSubscriber.create<String>()
     private val notAvailableCopyIsVisible = TestSubscriber.create<Boolean>()
     private val notifyDelegateCardSelected = TestSubscriber.create<Pair<StoredCard, Int>>()
-    private val projectCountry = TestSubscriber.create<String>()
     private val selectImageIsVisible = TestSubscriber.create<Boolean>()
 
     private fun setUpEnvironment(environment: Environment) {
@@ -41,7 +40,6 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.lastFour().subscribe(this.lastFour)
         this.vm.outputs.notAvailableCopyIsVisible().subscribe(this.notAvailableCopyIsVisible)
         this.vm.outputs.notifyDelegateCardSelected().subscribe(this.notifyDelegateCardSelected)
-        this.vm.outputs.projectCountry().subscribe(this.projectCountry)
         this.vm.outputs.selectImageIsVisible().subscribe(this.selectImageIsVisible)
     }
 
@@ -183,17 +181,6 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.cardSelected(2)
         this.notifyDelegateCardSelected.assertValue(Pair(creditCard, 2))
-    }
-
-    @Test
-    fun testProjectCountry() {
-        setUpEnvironment(environment())
-
-        val creditCard = StoredCardFactory.discoverCard()
-
-        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
-
-        this.projectCountry.assertValue("United States")
     }
 
     @Test

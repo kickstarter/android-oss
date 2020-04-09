@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.reward_card_details.view.*
 class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
-    private val endingInString = this.context().getString(R.string.Ending_in_last_four)
+    private val lastFourString = this.context().getString(R.string.payment_method_last_four)
 
     private val viewModel: RewardCardSelectedViewHolderViewModel.ViewModel = RewardCardSelectedViewHolderViewModel.ViewModel(environment())
     private val ksString: KSString = environment().ksString()
@@ -53,7 +53,9 @@ class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
     }
 
     private fun setLastFourTextView(lastFour: String) {
-        this.view.reward_card_last_four.text = this.ksString.format(this.endingInString, "last_four", lastFour)
+        this.view.reward_card_last_four.text = this.ksString.format(this.lastFourString,
+                "last_four",
+                lastFour)
     }
 
 }

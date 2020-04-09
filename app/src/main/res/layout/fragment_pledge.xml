@@ -76,43 +76,6 @@
           android:visibility="gone"
           tools:visibility="gone" />
 
-        <FrameLayout
-          android:id="@+id/update_pledge_button_container"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-
-          <com.google.android.material.button.MaterialButton
-            android:id="@+id/update_pledge_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_4"
-            android:enabled="false"
-            android:text="@string/Update_pledge"
-            tools:visibility="visible" />
-
-          <FrameLayout
-            android:id="@+id/update_pledge_button_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_4"
-            android:visibility="gone">
-
-            <Button
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:stateListAnimator="@null" />
-
-            <ProgressBar
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:indeterminate="true"
-              android:indeterminateTint="@color/white"
-              android:indeterminateTintMode="src_in" />
-
-          </FrameLayout>
-        </FrameLayout>
-
       </LinearLayout>
 
       <include layout="@layout/fragment_pledge_section_payment" />

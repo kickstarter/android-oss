@@ -70,9 +70,6 @@ interface PledgeFragmentViewModel {
 
         /** Call when Stripe SCA is unsuccessful. */
         fun stripeSetupResultUnsuccessful(exception: Exception)
-
-        /** Call when user clicks the update pledge button. */
-        fun updatePledgeButtonClicked()
     }
 
     interface Outputs {
@@ -225,15 +222,6 @@ interface PledgeFragmentViewModel {
 
         /** Emits a boolean determining if the divider above the total should be hidden. */
         fun totalDividerIsGone(): Observable<Boolean>
-
-        /** Emits a boolean determining if the update pledge button should be enabled. */
-        fun updatePledgeButtonIsEnabled(): Observable<Boolean>
-
-        /** Emits a boolean determining if the update pledge button should be hidden. */
-        fun updatePledgeButtonIsGone(): Observable<Boolean>
-
-        /** Emits a boolean determining if the update pledge progress bar should be hidden. */
-        fun updatePledgeProgressIsGone(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -252,7 +240,6 @@ interface PledgeFragmentViewModel {
         private val shippingRule = PublishSubject.create<ShippingRule>()
         private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
         private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
-        private val updatePledgeButtonClicked = PublishSubject.create<Void>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
@@ -304,9 +291,6 @@ interface PledgeFragmentViewModel {
         private val totalAndDeadline = BehaviorSubject.create<Pair<String, String>>()
         private val totalAndDeadlineIsVisible = BehaviorSubject.create<Void>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
-        private val updatePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
-        private val updatePledgeButtonIsGone = BehaviorSubject.create<Boolean>()
-        private val updatePledgeProgressIsGone = BehaviorSubject.create<Boolean>()
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
@@ -625,11 +609,6 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.increasePledgeButtonIsEnabled)
 
             // Manage pledge section
-            pledgeReason
-                    .map { it == PledgeReason.PLEDGE || it == PledgeReason.UPDATE_PAYMENT }
-                    .distinctUntilChanged()
-                    .subscribe(this.updatePledgeButtonIsGone)
-
             backingAmount
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
@@ -708,11 +687,6 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(updatingPledge))
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map { it.first }
-
-            Observable.merge(updatingReward, changeDuringUpdatingPledge)
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.updatePledgeButtonIsEnabled)
 
             Observable.merge(updatingReward, changeDuringUpdatingPledge)
                     .distinctUntilChanged()
@@ -843,6 +817,11 @@ interface PledgeFragmentViewModel {
                     .filter { it == PledgeReason.UPDATE_PAYMENT }
                     .compose(ignoreValues())
 
+            val updatePledgeClick = pledgeReason
+                    .compose<PledgeReason>(takeWhen(this.pledgeButtonClicked))
+                    .filter { it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.UPDATE_REWARD }
+                    .compose(ignoreValues())
+
             val optionalPaymentMethodId: Observable<String?> = paymentMethodId
                     .startWith(null as String?)
 
@@ -852,13 +831,12 @@ interface PledgeFragmentViewModel {
                     reward,
                     optionalPaymentMethodId)
             { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
-                    .compose<UpdateBackingData>(takeWhen(Observable.merge(this.updatePledgeButtonClicked, updatePaymentClick)))
+                    .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick)))
                     .switchMap {
                         this.apolloClient.updateBacking(it)
                                 .doOnSubscribe {
                                     this.pledgeProgressIsGone.onNext(false)
                                     this.pledgeButtonIsEnabled.onNext(false)
-                                    this.updatePledgeProgressIsGone.onNext(false)
                                 }
                                 .materialize()
                     }
@@ -935,7 +913,6 @@ interface PledgeFragmentViewModel {
                         this.pledgeProgressIsGone.onNext(true)
                         this.pledgeButtonIsEnabled.onNext(true)
                         this.showUpdatePledgeError.onNext(null)
-                        this.updatePledgeProgressIsGone.onNext(true)
                     }
 
             errorAndPledgeReason
@@ -980,7 +957,7 @@ interface PledgeFragmentViewModel {
                     .subscribe { this.koala.trackPledgeButtonClicked(it.first, it.second) }
 
             projectAndTotal
-                    .compose<Pair<Project, Double>>(takeWhen(this.updatePledgeButtonClicked))
+                    .compose<Pair<Project, Double>>(takeWhen(updatePledgeClick))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackUpdatePledgeButtonClicked(it.first, it.second) }
 
@@ -1077,8 +1054,6 @@ interface PledgeFragmentViewModel {
         override fun stripeSetupResultSuccessful(@StripeIntentResult.Outcome outcome: Int) = this.stripeSetupResultSuccessful.onNext(outcome)
 
         override fun stripeSetupResultUnsuccessful(exception: Exception) = this.stripeSetupResultUnsuccessful.onNext(exception)
-
-        override fun updatePledgeButtonClicked() = this.updatePledgeButtonClicked.onNext(null)
 
         @NonNull
         override fun addedCard(): Observable<Pair<StoredCard, Project>> = this.addedCard
@@ -1229,15 +1204,6 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun totalDividerIsGone(): Observable<Boolean> = this.totalDividerIsGone
-
-        @NonNull
-        override fun updatePledgeButtonIsEnabled(): Observable<Boolean> = this.updatePledgeButtonIsEnabled
-
-        @NonNull
-        override fun updatePledgeButtonIsGone(): Observable<Boolean> = this.updatePledgeButtonIsGone
-
-        @NonNull
-        override fun updatePledgeProgressIsGone(): Observable<Boolean> = this.updatePledgeProgressIsGone
 
     }
 }

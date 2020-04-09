@@ -323,21 +323,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { setHtmlStrings(it) }
 
-        this.viewModel.outputs.updatePledgeButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(update_pledge_button_container, it) }
-
-        this.viewModel.outputs.updatePledgeButtonIsEnabled()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { update_pledge_button.isEnabled = it }
-
-        this.viewModel.outputs.updatePledgeProgressIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(update_pledge_button_progress, it) }
-
         this.viewModel.outputs.showUpdatePledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -401,10 +386,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         increase_pledge.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
-
-        RxView.clicks(update_pledge_button)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.updatePledgeButtonClicked() }
 
         RxView.clicks(pledge_footer_pledge_button)
                 .compose(bindToLifecycle())

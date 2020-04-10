@@ -127,7 +127,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(continue_to_tout, it) }
+                .subscribe { ViewUtils.setGone(pledge_footer_continue_button, it) }
 
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -363,6 +363,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { pledge_footer_pledge_button.isEnabled = it }
 
+        this.viewModel.outputs.pledgeButtonIsGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setInvisible(pledge_footer_pledge_button_progress, it) }
+
         this.viewModel.outputs.pledgeProgressIsGone()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
@@ -371,7 +376,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.continueButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { continue_to_tout.isEnabled = it }
+                .subscribe { pledge_footer_continue_button.isEnabled = it }
 
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
@@ -390,10 +395,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             false
         }
 
-        continue_to_tout.setOnClickListener {
-            this.viewModel.inputs.continueButtonClicked()
-        }
-
         decrease_pledge.setOnClickListener {
             this.viewModel.inputs.decreasePledgeButtonClicked()
         }
@@ -409,6 +410,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(pledge_footer_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
+
+        RxView.clicks(pledge_footer_continue_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.continueButtonClicked() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -732,13 +732,18 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.continueButtonIsGone)
 
-            val cardsAndProject = userIsLoggedIn
+            val storedCards = BehaviorSubject.create<List<StoredCard>>()
+
+            userIsLoggedIn
                     .filter { BooleanUtils.isTrue(it) }
-                    .compose(ignoreValues())
-                    .compose<Void>(waitUntil(total))
-                    .compose<Pair<Void, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
                     .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT}
+                    .take(1)
                     .switchMap { storedCards() }
+                    .compose(bindToLifecycle())
+                    .subscribe { storedCards.onNext(it) }
+
+            val cardsAndProject = storedCards
                     .compose<Pair<List<StoredCard>, Project>>(combineLatestPair(project))
 
             cardsAndProject
@@ -783,11 +788,9 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.continueButtonIsEnabled)
 
-            userIsLoggedIn
-                    .filter { BooleanUtils.isTrue(it) }
-                    .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT }
-                    .compose<Pair<Pair<Boolean, PledgeReason>, Boolean>>(combineLatestPair(totalIsValid))
+            initialCardSelection
+                    .compose(ignoreValues())
+                    .compose<Pair<Void, Boolean>>(combineLatestPair(totalIsValid))
                     .map { it.second }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeButtonIsEnabled)

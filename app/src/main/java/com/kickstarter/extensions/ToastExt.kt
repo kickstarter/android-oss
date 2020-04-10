@@ -10,8 +10,8 @@ import com.kickstarter.R
 
 fun showErrorToast(applicationContext: Context, root: ViewGroup, message: String) {
     val layout: ViewGroup = LayoutInflater.from(applicationContext).inflate(R.layout.toast_error, root, false) as ViewGroup
-    val text: TextView = layout.findViewById(R.id.toast_text_view)
-    text.text = message
+    val toastTextView: TextView = layout.findViewById(R.id.toast_text_view)
+    toastTextView.text = message
     val resources = applicationContext.resources
     val yOffset = resources.getDimensionPixelSize(R.dimen.ks_toolbar_height) + resources.getDimensionPixelSize(R.dimen.grid_1)
     with (Toast(applicationContext)) {

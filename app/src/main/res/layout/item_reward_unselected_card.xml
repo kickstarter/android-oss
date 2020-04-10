@@ -19,14 +19,13 @@
       android:orientation="horizontal"
       android:padding="@dimen/grid_2">
 
-      <!-- TODO: add a11y string "Unselected card" -->
       <ImageView
         android:id="@+id/select_image_view"
         android:layout_width="@dimen/grid_3"
         android:layout_height="@dimen/grid_3"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/grid_3"
-        android:importantForAccessibility="no"
+        android:contentDescription="@string/Select_this_card"
         android:src="@drawable/circle_grey_500_stroke" />
 
       <include layout="@layout/reward_card_details" />

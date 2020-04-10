@@ -25,7 +25,7 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.snackbar
+import com.kickstarter.extensions.showErrorToast
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -307,7 +307,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.startChromeTab()
                 .compose(bindToLifecycle())
@@ -341,7 +341,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showUpdatePledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
                 .compose(observeForUI())
@@ -351,7 +351,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showUpdatePaymentError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.showUpdatePaymentSuccess()
                 .compose(observeForUI())

@@ -124,6 +124,9 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the pledge button should be enabled. */
         fun pledgeButtonIsEnabled(): Observable<Boolean>
 
+        /** Emits a boolean determining if the pledge button should be hidden. */
+        fun pledgeButtonIsGone(): Observable<Boolean>
+
         /** Emits a boolean determining if the pledge progress bar should be hidden. */
         fun pledgeProgressIsGone(): Observable<Boolean>
 
@@ -271,6 +274,7 @@ interface PledgeFragmentViewModel {
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
+        private val pledgeButtonIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeProgressIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeHint = BehaviorSubject.create<String>()
         private val pledgeMaximum = BehaviorSubject.create<String>()
@@ -732,6 +736,11 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.continueButtonIsGone)
 
+            userIsLoggedIn
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.pledgeButtonIsGone.onNext(it) }
+
             val storedCards = BehaviorSubject.create<List<StoredCard>>()
 
             userIsLoggedIn
@@ -1130,6 +1139,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun pledgeButtonIsEnabled(): Observable<Boolean> = this.pledgeButtonIsEnabled
+
+        @NonNull
+        override fun pledgeButtonIsGone(): Observable<Boolean> = this.pledgeButtonIsGone
 
         @NonNull
         override fun pledgeProgressIsGone(): Observable<Boolean> = this.pledgeProgressIsGone

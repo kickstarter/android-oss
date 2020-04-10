@@ -25,7 +25,7 @@ import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.snackbar
+import com.kickstarter.extensions.showErrorToast
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -127,7 +127,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(continue_to_tout, it) }
+                .subscribe { ViewUtils.setGone(pledge_footer_continue_button, it) }
 
         this.viewModel.outputs.conversionTextViewIsGone()
                 .compose(bindToLifecycle())
@@ -307,7 +307,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showPledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.startChromeTab()
                 .compose(bindToLifecycle())
@@ -341,7 +341,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showUpdatePledgeError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
                 .compose(observeForUI())
@@ -351,7 +351,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.showUpdatePaymentError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { snackbar(pledge_content, getString(R.string.general_error_something_wrong)).show() }
+                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.showUpdatePaymentSuccess()
                 .compose(observeForUI())
@@ -363,6 +363,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { pledge_footer_pledge_button.isEnabled = it }
 
+        this.viewModel.outputs.pledgeButtonIsGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { ViewUtils.setInvisible(pledge_footer_pledge_button_progress, it) }
+
         this.viewModel.outputs.pledgeProgressIsGone()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
@@ -371,7 +376,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.continueButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { continue_to_tout.isEnabled = it }
+                .subscribe { pledge_footer_continue_button.isEnabled = it }
 
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
@@ -390,10 +395,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             false
         }
 
-        continue_to_tout.setOnClickListener {
-            this.viewModel.inputs.continueButtonClicked()
-        }
-
         decrease_pledge.setOnClickListener {
             this.viewModel.inputs.decreasePledgeButtonClicked()
         }
@@ -409,6 +410,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(pledge_footer_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
+
+        RxView.clicks(pledge_footer_continue_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.continueButtonClicked() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -277,6 +277,7 @@ interface PledgeFragmentViewModel {
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
         private val pledgeButtonCTA = BehaviorSubject.create<Int>()
+        private val pledgeButtonIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val pledgeHint = BehaviorSubject.create<String>()
         private val pledgeMaximum = BehaviorSubject.create<String>()

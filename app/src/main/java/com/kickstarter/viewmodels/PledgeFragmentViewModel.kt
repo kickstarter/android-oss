@@ -127,6 +127,9 @@ interface PledgeFragmentViewModel {
         /** Emits a boolean determining if the pledge button should be enabled. */
         fun pledgeButtonIsEnabled(): Observable<Boolean>
 
+        /** Emits a boolean determining if the pledge button should be hidden. */
+        fun pledgeButtonIsGone(): Observable<Boolean>
+
         /** Emits a boolean determining if the pledge progress bar should be hidden. */
         fun pledgeProgressIsGone(): Observable<Boolean>
 
@@ -736,6 +739,11 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.continueButtonIsGone)
 
+            userIsLoggedIn
+                    .map { BooleanUtils.negate(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.pledgeButtonIsGone.onNext(it) }
+
             val cardsAndProject = userIsLoggedIn
                     .filter { BooleanUtils.isTrue(it) }
                     .compose(ignoreValues())
@@ -1139,6 +1147,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun pledgeButtonIsEnabled(): Observable<Boolean> = this.pledgeButtonIsEnabled
+
+        @NonNull
+        override fun pledgeButtonIsGone(): Observable<Boolean> = this.pledgeButtonIsGone
 
         @NonNull
         override fun pledgeHint(): Observable<String> = this.pledgeHint

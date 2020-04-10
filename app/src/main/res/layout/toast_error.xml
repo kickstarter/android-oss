@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/grid_1"
+    app:cardBackgroundColor="@color/ksr_red_400"
+    app:cardCornerRadius="@dimen/grid_1">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      android:padding="@dimen/grid_2">
+
+      <ImageView
+        android:id="@+id/toast_icon"
+        android:layout_width="@dimen/grid_5_half"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:contentDescription="@string/Alert"
+        android:accessibilityTraversalBefore="@id/toast_text_view"
+        android:src="@drawable/ic_icon_alert"
+        android:tint="@color/white" />
+
+      <TextView
+        android:id="@+id/toast_text_view"
+        style="@style/Subheadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/white"
+        tools:text="Error message here!" />
+
+    </LinearLayout>
+  </androidx.cardview.widget.CardView>
+</FrameLayout>

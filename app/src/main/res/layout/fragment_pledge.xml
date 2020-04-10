@@ -66,16 +66,6 @@
 
         </FrameLayout>
 
-        <Button
-          android:id="@+id/continue_to_tout"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:text="@string/Continue"
-          android:visibility="gone"
-          tools:visibility="gone" />
-
         <FrameLayout
           android:id="@+id/update_pledge_button_container"
           android:layout_width="match_parent"

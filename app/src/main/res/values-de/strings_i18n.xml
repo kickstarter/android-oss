@@ -477,11 +477,13 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Select_an_option" formatted="false">Bitte eine Option wählen</string>
   <string name="Select_another_project" formatted="false">Wähle ein anderes Projekt aus</string>
   <string name="Select_fewer_categories" formatted="false">Reduziere die Anzahl der Kategorien</string>
+  <string name="Select_this_card" formatted="false">Diese Karte auswählen</string>
   <string name="Select_this_instead" formatted="false">Stattdessen diese auswählen</string>
   <string name="Select_this_reward" formatted="false">Diese Belohnung wählen</string>
   <string name="Select_this_reward_instead" formatted="false">Diese Belohnung auswählen</string>
   <string name="Select_up_to_five" formatted="false">Wähle bis zu fünf aus den unten stehenden Optionen aus.</string>
   <string name="Selected" formatted="false">Ausgewählt</string>
+  <string name="Selected_card" formatted="false">Ausgewählte Karte</string>
   <string name="Selected_reward" formatted="false">Gewählte Belohnung</string>
   <string name="Send" formatted="false">Senden</string>
   <string name="Send_verfication_email" formatted="false">Verifizeirungs-E-Mail senden</string>

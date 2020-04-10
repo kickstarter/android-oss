@@ -480,11 +480,13 @@ daring ideas.</string>
   <string name="Select_an_option" formatted="false">Select an option</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
   <string name="Select_fewer_categories" formatted="false">Select fewer categories</string>
+  <string name="Select_this_card" formatted="false">Select this card</string>
   <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
   <string name="Select_up_to_five" formatted="false">Select up to five from the options below.</string>
   <string name="Selected" formatted="false">Selected</string>
+  <string name="Selected_card" formatted="false">Selected card</string>
   <string name="Selected_reward" formatted="false">Selected reward</string>
   <string name="Send" formatted="false">Send</string>
   <string name="Send_verfication_email" formatted="false">Send verification email</string>

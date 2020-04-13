@@ -29,11 +29,9 @@ import com.kickstarter.libs.KoalaContext
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
-import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
-import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.*
@@ -52,8 +50,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
 
-    private val projectBackButtonString = R.string.project_back_button
-    private val managePledgeString = R.string.project_checkout_manage_navbar_title
     private val projectShareLabelString = R.string.project_accessibility_button_share_label
     private val projectShareCopyString = R.string.project_share_twitter_message
     private val projectStarConfirmationString = R.string.project_star_confirmation
@@ -117,11 +113,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(Transformers.observeForUI())
                 .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
-        this.viewModel.outputs.horizontalProgressBarIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(project_progress_bar, it) }
-
         this.viewModel.outputs.managePledgeMenu()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -142,11 +133,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { setPledgeActionButtonCTA(it) }
 
-        this.viewModel.outputs.pledgeContainerIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(pledge_container_root, it) }
-
         this.viewModel.outputs.pledgeToolbarNavigationIcon()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -162,12 +148,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { openProjectAndFinish(it) }
 
-        this.viewModel.outputs.projectActionButtonContainerIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(project_action_buttons, if (ViewUtils.isLandscape(this)) true else it) }
-
-        this.viewModel.outputs.projectDataAndNativeCheckoutEnabled()
+        this.viewModel.outputs.projectData()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { renderProject(it) }
@@ -232,20 +213,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { showPledgeFragment(it) }
 
-        this.viewModel.outputs.startBackingActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startBackingActivity(it) }
-
         this.viewModel.outputs.startCampaignWebViewActivity()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCampaignWebViewActivity(it) }
-
-        this.viewModel.outputs.startCheckoutActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCheckoutActivity(it) }
 
         this.viewModel.outputs.startCommentsActivity()
                 .compose(bindToLifecycle())
@@ -261,11 +232,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startCreatorDashboardActivity(it) }
-
-        this.viewModel.outputs.startManagePledgeActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startManagePledge(it) }
 
         this.viewModel.outputs.startProjectUpdatesActivity()
                 .compose(bindToLifecycle())
@@ -469,12 +435,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun pledgeFragment() = supportFragmentManager
             .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
 
-    private fun renderProject(projectDataAndNativeCheckoutEnabled: Pair<ProjectData, Boolean>) {
-        val projectData = projectDataAndNativeCheckoutEnabled.first
-        val nativeCheckoutEnabled = projectDataAndNativeCheckoutEnabled.second
-        this.adapter.takeProject(projectData, nativeCheckoutEnabled)
-        ProjectViewUtils.setActionButton(projectData.project(), this.back_project_button, this.manage_pledge_button, this.view_pledge_button)
-        project_recycler_view.setPadding(0, 0, 0, if (nativeCheckoutEnabled) rewardsSheetGuideline() else 0)
+    private fun renderProject(projectData: ProjectData) {
+        this.adapter.takeProject(projectData)
+        project_recycler_view.setPadding(0, 0, 0, rewardsSheetGuideline())
     }
 
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
@@ -536,23 +499,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
             this.viewModel.inputs.reloadProjectContainerClicked()
         }
 
-        project_action_buttons.visibility = when {
-            ViewUtils.isLandscape(this) -> View.GONE
-            else -> View.VISIBLE
-        }
-
-        back_project_button.setOnClickListener {
-            this.viewModel.inputs.backProjectButtonClicked()
-        }
-
-        manage_pledge_button.setOnClickListener {
-            this.viewModel.inputs.managePledgeButtonClicked()
-        }
-
-        view_pledge_button.setOnClickListener {
-            this.viewModel.inputs.viewPledgeButtonClicked()
-        }
-
         heart_icon.setOnClickListener {
             this.viewModel.inputs.heartButtonClicked()
         }
@@ -592,8 +538,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
             startActivity(Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, projectData.project())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
-                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
-                    .putExtra(IntentKey.NATIVE_CHECKOUT_ENABLED, true))
+                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData))
         }
     }
 
@@ -658,22 +603,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startCheckoutActivity(project: Project) {
-        val intent = Intent(this, CheckoutActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.URL, project.newPledgeUrl())
-                .putExtra(IntentKey.TOOLBAR_TITLE, this.projectBackButtonString)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
-    private fun startManagePledge(project: Project) {
-        val intent = Intent(this, CheckoutActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.URL, project.editPledgeUrl())
-                .putExtra(IntentKey.TOOLBAR_TITLE, this.managePledgeString)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
-    }
-
     private fun startCommentsActivity(project: Project) {
         val intent = Intent(this, CommentsActivity::class.java)
                 .putExtra(IntentKey.PROJECT, project)
@@ -695,13 +624,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val intent = Intent(this, LoginToutActivity::class.java)
                 .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
-    }
-
-    private fun startBackingActivity(projectAndBacker: Pair<Project, User>) {
-        val intent = Intent(this, BackingActivity::class.java)
-                .putExtra(IntentKey.PROJECT, projectAndBacker.first)
-                .putExtra(IntentKey.BACKER, projectAndBacker.second)
-        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startMessagesActivity(project: Project) {

@@ -13,13 +13,28 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 
 public abstract class TrackingClientType {
+  public enum Type {
+    KOALA("🐨 Koala"),
+    LAKE("💧 Lake");
+
+    private String tag;
+
+    Type(final String tag) {
+      this.tag = tag;
+    }
+
+    public String getTag() {
+      return this.tag;
+    }
+  }
+
   public abstract void track(final String eventName, final Map<String, Object> additionalProperties);
 
   public final void track(final String eventName) {
     track(eventName, new HashMap<>());
   }
 
-  private @NonNull Map<String, Object> cleanProperties() {
+  private @NonNull Map<String, Object> lakeProperties() {
     final Map<String, Object> hashMap = new HashMap<>();
 
     final boolean userIsLoggedIn = loggedInUser() != null;
@@ -72,7 +87,7 @@ public abstract class TrackingClientType {
     return MapUtils.prefixKeys(properties, "session_");
   }
 
-  private @NonNull Map<String, Object> defaultProperties() {
+  private @NonNull Map<String, Object> koalaProperties() {
     final Map<String, Object> hashMap = new HashMap<>();
 
     final boolean userIsLoggedIn = loggedInUser() != null;
@@ -105,15 +120,15 @@ public abstract class TrackingClientType {
 
   @NonNull Map<String, Object> combinedProperties(final @NonNull Map<String, Object> additionalProperties) {
     final Map<String, Object> combinedProperties = new HashMap<>(additionalProperties);
-    if (cleanPropertiesOnly()) {
-      combinedProperties.putAll(cleanProperties());
-    } else {
-      combinedProperties.putAll(defaultProperties());
+    if (type() == Type.LAKE) {
+      combinedProperties.putAll(lakeProperties());
+    } else if (type() == Type.KOALA){
+      combinedProperties.putAll(koalaProperties());
     }
     return combinedProperties;
   }
 
-  protected abstract boolean cleanPropertiesOnly();
+  protected abstract Type type();
 
   //Default properties
   protected abstract String brand();

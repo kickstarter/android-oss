@@ -51,45 +51,6 @@ jobs:
           path: app/build/outputs
           destination: tests
 
-  create_alpha:
-    <<: *base_job
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
-      - attach_workspace:
-          at: ~/project
-      - run:
-          name: push to alpha branch
-          command: make alpha
-
-  alpha:
-    <<: *base_job
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-            - v5-android-
-      - restore_cache:
-          keys:
-            - v1-bundler-{{ checksum "Gemfile.lock" }}
-            - v1-bundler-
-      - run:
-          name: Bundle install
-          command: bundle check || bundle install --path vendor/bundle
-      - save_cache:
-          key: v1-bundler-{{ checksum "Gemfile.lock" }}
-          paths:
-            - ./vendor/bundle
-      - attach_workspace:
-          at: ~/project
-      - run:
-          name: Deploy Alpha to Crashlytics
-          command: bundle exec fastlane alpha
-
   create_internal:
     <<: *base_job
     steps:
@@ -126,6 +87,9 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run:
+          name: Install Firebase CLI
+          command: curl -sL https://firebase.tools | bash
+      - run:
           name: Deploy Internal to Crashlytics and S3
           command: bundle exec fastlane internal
 
@@ -137,13 +101,6 @@ workflows:
       - test:
           requires:
             - build
-      - alpha:
-          requires:
-            - build
-            - test
-          filters:
-            branches:
-              only: alpha
       - create_internal:
           requires:
             - build
@@ -164,5 +121,4 @@ experimental:
     branches:
       only:
         - master
-        - alpha
         - internal

@@ -6,7 +6,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
-import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
@@ -163,7 +162,7 @@ interface PledgeFragmentViewModel {
         fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>>
 
         /** Emits the title of the current reward. */
-        fun rewardTitle(): Observable<Either<Int, String>>
+        fun rewardTitle(): Observable<String>
 
         /** Emits the currently selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
@@ -287,7 +286,7 @@ interface PledgeFragmentViewModel {
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeTextColor = BehaviorSubject.create<Int>()
         private val projectCurrencySymbol = BehaviorSubject.create<Pair<SpannableString, Boolean>>()
-        private val rewardTitle = BehaviorSubject.create<Either<Int, String>>()
+        private val rewardTitle = BehaviorSubject.create<String>()
         private val selectedShippingRule = BehaviorSubject.create<ShippingRule>()
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
@@ -363,14 +362,8 @@ interface PledgeFragmentViewModel {
                     .ofType(Backing::class.java)
 
             // Reward summary section
-            reward
-                    .map<Either<Int, String>> {
-                        when {
-                            RewardUtils.isNoReward(it) -> Either.Left(R.string.Back_it_because_you_believe_in_it)
-                            else -> it.title()?.let { title -> Either.Right<Int, String>(title) }
-                                    ?: Either.Left(R.string.Back_it_because_you_believe_in_it)
-                        }
-                    }
+            projectAndReward
+                    .map { rewardTitle(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardTitle)
@@ -1029,6 +1022,14 @@ interface PledgeFragmentViewModel {
                     }
         }
 
+        private fun rewardTitle(project: Project, reward: Reward): String {
+            val projectName = project.name()
+            return when {
+                RewardUtils.isNoReward(reward) -> projectName
+                else -> reward.title() ?: projectName
+            }
+        }
+
         private fun storedCards(): Observable<List<StoredCard>> {
             return this.apolloClient.getStoredCards()
                     .compose(bindToLifecycle())
@@ -1149,7 +1150,7 @@ interface PledgeFragmentViewModel {
         override fun projectCurrencySymbol(): Observable<Pair<SpannableString, Boolean>> = this.projectCurrencySymbol
 
         @NonNull
-        override fun rewardTitle(): Observable<Either<Int, String>> = this.rewardTitle
+        override fun rewardTitle(): Observable<String> = this.rewardTitle
 
         @NonNull
         override fun selectedShippingRule(): Observable<ShippingRule> = this.selectedShippingRule

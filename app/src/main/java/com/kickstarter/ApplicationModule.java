@@ -59,7 +59,6 @@ import com.kickstarter.libs.qualifiers.KoalaTracker;
 import com.kickstarter.libs.qualifiers.LakeEndpoint;
 import com.kickstarter.libs.qualifiers.LakeRetrofit;
 import com.kickstarter.libs.qualifiers.LakeTracker;
-import com.kickstarter.libs.qualifiers.NativeCheckoutPreference;
 import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
@@ -132,7 +131,6 @@ public final class ApplicationModule {
     final @NonNull KSString ksString,
     final @NonNull @LakeTracker Koala lake,
     final @NonNull Logout logout,
-    final @NonNull @NativeCheckoutPreference BooleanPreferenceType nativeCheckoutPreference,
     final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
@@ -160,7 +158,6 @@ public final class ApplicationModule {
       .ksString(ksString)
       .lake(lake)
       .logout(logout)
-      .nativeCheckoutPreference(nativeCheckoutPreference)
       .optimizely(optimizely)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
@@ -395,14 +392,6 @@ public final class ApplicationModule {
   @NonNull
   static BooleanPreferenceType provideFirstSessionPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, SharedPreferenceKey.FIRST_SESSION);
-  }
-
-  @Provides
-  @Singleton
-  @NativeCheckoutPreference
-  @NonNull
-  static BooleanPreferenceType provideNativeCheckoutPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new BooleanPreference(sharedPreferences, SharedPreferenceKey.NATIVE_CHECKOUT);
   }
 
   @Provides

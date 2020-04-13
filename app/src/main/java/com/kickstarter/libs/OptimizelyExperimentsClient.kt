@@ -5,6 +5,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.ExperimentRevenueData
 import com.optimizely.ab.android.sdk.OptimizelyClient
 import com.optimizely.ab.android.sdk.OptimizelyManager
 
@@ -15,6 +16,10 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
 
     override fun track(eventKey: String, experimentData: ExperimentData) {
         optimizelyClient().track(eventKey, userId(), attributes(experimentData, this.apiEndpoint))
+    }
+
+    override fun trackRevenue(eventKey: String, experimentRevenueData: ExperimentRevenueData) {
+        optimizelyClient().track(eventKey, userId(), attributes(experimentRevenueData.experimentData, this.apiEndpoint), checkoutTags(experimentRevenueData))
     }
 
     override fun userId(): String = FirebaseInstanceId.getInstance().id

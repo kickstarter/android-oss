@@ -30,8 +30,6 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { featureFlagAdapter.takeFlags(it) }
-
-        displayPreference(R.string.Native_Checkout, environment().nativeCheckoutPreference(), native_checkout)
     }
 
     private fun displayPreference(@StringRes labelRes: Int, booleanPreferenceType: BooleanPreferenceType, overrideContainer: View) {

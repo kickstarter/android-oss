@@ -86,9 +86,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val totalAndDeadline = TestSubscriber<Pair<String, String>>()
     private val totalAndDeadlineIsVisible = TestSubscriber<Void>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
-    private val updatePledgeButtonIsEnabled = TestSubscriber<Boolean>()
-    private val updatePledgeButtonIsGone = TestSubscriber<Boolean>()
-    private val updatePledgeProgressIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward = RewardFactory.rewardWithShipping(),
@@ -147,9 +144,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.totalAndDeadline().subscribe(this.totalAndDeadline)
         this.vm.outputs.totalAndDeadlineIsVisible().subscribe(this.totalAndDeadlineIsVisible)
         this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
-        this.vm.outputs.updatePledgeButtonIsEnabled().subscribe(this.updatePledgeButtonIsEnabled)
-        this.vm.outputs.updatePledgeButtonIsGone().subscribe(this.updatePledgeButtonIsGone)
-        this.vm.outputs.updatePledgeProgressIsGone().subscribe(this.updatePledgeProgressIsGone)
 
         val projectData = ProjectDataFactory.project(project.toBuilder()
                 .deadline(DateTime.parse("2020-10-23T18:13:09Z"))
@@ -403,10 +397,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
-
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
@@ -428,9 +418,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
@@ -457,9 +444,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
@@ -482,9 +466,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
@@ -517,9 +498,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -546,9 +524,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -581,9 +556,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(false)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -610,9 +582,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -641,9 +610,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(true)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -668,9 +634,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(true)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -1823,10 +1786,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeProgressIsGone.assertValues(false, true)
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1855,11 +1817,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1876,11 +1837,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, project = ProjectFactory.backedProject(), pledgeReason = PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(true, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1897,11 +1857,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(true, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1948,10 +1907,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeProgressIsGone.assertValues(false)
-        this.updatePledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1973,11 +1931,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(false, true, false)
         this.pledgeProgressIsGone.assertValues(false)
-        this.updatePledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1987,11 +1944,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
         setUpEnvironment(environment, project = ProjectFactory.backedProject(), pledgeReason = PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeProgressIsGone.assertValues(false)
-        this.updatePledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -2000,11 +1956,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShowUpdatePledgeSuccess_whenUpdatingRewardWithNoShipping() {
         setUpEnvironment(environment(), RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeProgressIsGone.assertValues(false)
-        this.updatePledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -2034,14 +1989,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(false, true, false)
         this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValue(false)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
@@ -2050,7 +2004,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updatePledgeProgressIsGone.assertValue(false)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -2079,14 +2032,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(false, true, false)
         this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValue(false)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
@@ -2095,7 +2047,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertValueCount(1)
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -2124,14 +2075,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(false, true, false)
         this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValue(false)
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("woops"))
 
@@ -2140,7 +2090,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertValueCount(1)
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -2391,7 +2340,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testUpdatePledgeButtonIsEnabled_UpdatingPledge_whenAmountChanged() {
+    fun testPledgeButtonIsEnabled_UpdatingPledge_whenAmountChanged() {
         val reward = RewardFactory.noReward()
         val backing = BackingFactory.backing()
                 .toBuilder()
@@ -2406,13 +2355,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.updatePledgeButtonIsEnabled.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.pledgeInput("31")
-        this.updatePledgeButtonIsEnabled.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.pledgeInput("30")
-        this.updatePledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
     }
 
     @Test
@@ -2457,18 +2406,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.selectedShippingRule.assertValue(backingShippingRule)
-        this.updatePledgeButtonIsEnabled.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
         this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule)
-        this.updatePledgeButtonIsEnabled.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.shippingRuleSelected(backingShippingRule)
         this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule, backingShippingRule)
-        this.updatePledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
 
         this.vm.inputs.pledgeInput("500")
-        this.updatePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject() {

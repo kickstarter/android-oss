@@ -59,7 +59,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Inject Logout logout;
   private final BroadcastReceiver resetDeviceIdReceiver = new BroadcastReceiver() {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
       showDeviceId(true);
       setupBuildInformationSection();
     }

@@ -205,11 +205,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
                 .currentUser(mockCurrentUser)
-                .apolloClient(object : MockApolloClient() {
-                    override fun getStoredCards(): Observable<List<StoredCard>> {
-                        return Observable.just(storedCards)
-                    }
-                }).build()
+                .apolloClient(apolloClientWithStoredCards(storedCards))
+                .build()
 
         setUpEnvironment(environment, project = project)
 
@@ -234,11 +231,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
                 .currentUser(mockCurrentUser)
-                .apolloClient(object : MockApolloClient() {
-                    override fun getStoredCards(): Observable<List<StoredCard>> {
-                        return Observable.just(storedCards)
-                    }
-                }).build()
+                .apolloClient(apolloClientWithStoredCards(storedCards))
+                .build()
 
         setUpEnvironment(environment, project = project)
 
@@ -292,11 +286,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
-                .apolloClient(object : MockApolloClient() {
-                    override fun getStoredCards(): Observable<List<StoredCard>> {
-                        return Observable.just(storedCards)
-                    }
-                })
+                .apolloClient(apolloClientWithStoredCards(storedCards))
                 .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
 
@@ -1091,6 +1081,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .apolloClient(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
                 .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment, project = project)
@@ -1149,6 +1140,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .apolloClient(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
                 .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment, project = project)
@@ -1254,6 +1246,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .apolloClient(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
                 .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment, project = project)
@@ -1596,11 +1589,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .currentUser(MockCurrentUser(UserFactory.user()))
-                .apolloClient(object : MockApolloClient() {
-                    override fun getStoredCards(): Observable<List<StoredCard>> {
-                        return Observable.just(storedCards)
-                    }
-                }).build()
+                .apolloClient(apolloClientWithStoredCards(storedCards))
+                .build()
 
         setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
@@ -1677,6 +1667,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     override fun getStoredCards(): Observable<List<StoredCard>> {
                         return Observable.just(storedCards)
                     }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
@@ -1721,6 +1712,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     override fun getStoredCards(): Observable<List<StoredCard>> {
                         return Observable.just(storedCards)
                     }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
@@ -2493,7 +2485,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
     }
 
-    private fun environmentForLoggedInUser(user: User) : Environment {
+    private fun apolloClientWithStoredCards(storedCards: List<StoredCard>): MockApolloClient {
+        return object : MockApolloClient() {
+            override fun getStoredCards(): Observable<List<StoredCard>> {
+                return Observable.just(storedCards)
+            }
+        }
+    }
+
+    private fun environmentForLoggedInUser(user: User): Environment {
         return environment()
                 .toBuilder()
                 .currentUser(MockCurrentUser(user))

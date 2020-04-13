@@ -356,7 +356,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeButtonIsGone()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setInvisible(pledge_footer_pledge_button_progress, it) }
+                .subscribe { ViewUtils.setInvisible(pledge_footer_pledge_button, it) }
 
         this.viewModel.outputs.pledgeProgressIsGone()
                 .compose(observeForUI())

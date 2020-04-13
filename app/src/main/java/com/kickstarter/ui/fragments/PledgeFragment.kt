@@ -343,6 +343,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
 
+        this.viewModel.outputs.pledgeButtonCTA()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe { pledge_footer_pledge_button.setText(it) }
+
         this.viewModel.outputs.pledgeButtonIsEnabled()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())

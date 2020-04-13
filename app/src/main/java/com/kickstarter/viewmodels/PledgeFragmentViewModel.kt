@@ -118,6 +118,9 @@ interface PledgeFragmentViewModel {
         /** Emits the pledge amount string of the reward or backing. */
         fun pledgeAmount(): Observable<String>
 
+        /** Emits the string resource ID of the pledge button. */
+        fun pledgeButtonCTA(): Observable<Int>
+
         /** Emits a boolean determining if the pledge button should be enabled. */
         fun pledgeButtonIsEnabled(): Observable<Boolean>
 
@@ -260,13 +263,14 @@ interface PledgeFragmentViewModel {
         private val increasePledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val paymentContainerIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeAmount = BehaviorSubject.create<String>()
-        private val pledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
+        private val pledgeButtonCTA = BehaviorSubject.create<Int>()
         private val pledgeButtonIsGone = BehaviorSubject.create<Boolean>()
-        private val pledgeProgressIsGone = BehaviorSubject.create<Boolean>()
+        private val pledgeButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val pledgeHint = BehaviorSubject.create<String>()
         private val pledgeMaximum = BehaviorSubject.create<String>()
         private val pledgeMaximumIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeMinimum = BehaviorSubject.create<String>()
+        private val pledgeProgressIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeSectionIsGone = BehaviorSubject.create<Boolean>()
         private val pledgeSummaryAmount = BehaviorSubject.create<CharSequence>()
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
@@ -940,6 +944,11 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startChromeTab)
 
+            pledgeReason
+                    .map { if (it == PledgeReason.PLEDGE) R.string.Pledge else R.string.Confirm }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.pledgeButtonCTA.onNext(it) }
+
             //Tracking
             val projectAndTotal = project
                     .compose<Pair<Project, Double>>(combineLatestPair(total))
@@ -1110,13 +1119,13 @@ interface PledgeFragmentViewModel {
         override fun pledgeAmount(): Observable<String> = this.pledgeAmount
 
         @NonNull
+        override fun pledgeButtonCTA(): Observable<Int> = this.pledgeButtonCTA
+
+        @NonNull
         override fun pledgeButtonIsEnabled(): Observable<Boolean> = this.pledgeButtonIsEnabled
 
         @NonNull
         override fun pledgeButtonIsGone(): Observable<Boolean> = this.pledgeButtonIsGone
-
-        @NonNull
-        override fun pledgeProgressIsGone(): Observable<Boolean> = this.pledgeProgressIsGone
 
         @NonNull
         override fun pledgeHint(): Observable<String> = this.pledgeHint
@@ -1129,6 +1138,9 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun pledgeMinimum(): Observable<String> = this.pledgeMinimum
+
+        @NonNull
+        override fun pledgeProgressIsGone(): Observable<Boolean> = this.pledgeProgressIsGone
 
         @NonNull
         override fun pledgeSectionIsGone(): Observable<Boolean> = this.pledgeSectionIsGone

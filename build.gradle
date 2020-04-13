@@ -17,6 +17,7 @@ buildscript {
 allprojects {
     repositories {
         google()
+        maven { url = uri("https://dl.bintray.com/apollographql/android/") }
         jcenter()
         mavenCentral()
         maven {

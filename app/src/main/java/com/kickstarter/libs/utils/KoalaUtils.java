@@ -1,9 +1,8 @@
 package com.kickstarter.libs.utils;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyEnvironment;
+import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -18,7 +17,11 @@ import com.kickstarter.ui.data.ProjectData;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class KoalaUtils {
   private KoalaUtils() {}
@@ -162,6 +165,28 @@ public final class KoalaUtils {
         put("shipping_enabled", RewardUtils.isShippable(reward));
         put("shipping_preference", reward.shippingPreference());
         put("title", reward.title());
+      }
+    };
+
+    return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  public static @NonNull Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment, final @NonNull List<OptimizelyExperiment> experiments) {
+    return optimizelyProperties(optimizelyEnvironment, experiments, "optimizely_");
+  }
+
+  public static @NonNull Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment, final @NonNull List<OptimizelyExperiment> experiments, final @NonNull String prefix) {
+    final Map<String, Object> properties = new HashMap<String, Object>() {
+      {
+        //put("estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
+        //put("has_items", RewardUtils.isItemized(reward));
+        //put("id", reward.id());
+        //put("is_limited_time", RewardUtils.isTimeLimited(reward));
+        //put("is_limited_quantity", reward.limit() != null);
+        //put("minimum", reward.minimum());
+        //put("shipping_enabled", RewardUtils.isShippable(reward));
+        //put("shipping_preference", reward.shippingPreference());
+        //put("title", reward.title());
       }
     };
 

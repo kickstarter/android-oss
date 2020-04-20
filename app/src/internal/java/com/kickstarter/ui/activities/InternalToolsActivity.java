@@ -1,12 +1,16 @@
 package com.kickstarter.ui.activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -22,15 +26,24 @@ import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.Secrets;
+import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.libs.utils.WorkUtils;
+import com.kickstarter.services.firebase.ResetDeviceIdWorker;
 import com.kickstarter.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.work.BackoffPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
@@ -44,11 +57,20 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
   @Inject Build build;
   @Inject Logout logout;
+  private final BroadcastReceiver resetDeviceIdReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(final Context context, final Intent intent) {
+      showDeviceId(true);
+      setupBuildInformationSection();
+    }
+  };
 
   @Bind(R.id.api_endpoint) TextView apiEndpoint;
   @Bind(R.id.build_date) TextView buildDate;
   @Bind(R.id.commit_sha) TextView commitSha;
   @Bind(R.id.device_id) TextView deviceID;
+  @Bind(R.id.device_id_loading_indicator) View deviceIdLoadingIndicator;
+  @Bind(R.id.reset_device_id) Button resetDeviceId;
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
   @Bind(R.id.version_name) TextView versionName;
@@ -63,6 +85,20 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     ((KSApplication) getApplicationContext()).component().inject(this);
 
     setupBuildInformationSection();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    this.registerReceiver(this.resetDeviceIdReceiver, new IntentFilter(ResetDeviceIdWorker.BROADCAST));
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+
+    this.unregisterReceiver(this.resetDeviceIdReceiver);
   }
 
   @OnClick(R.id.playground_button)
@@ -112,6 +148,19 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     startActivity(featureFlagIntent);
   }
 
+  @OnClick(R.id.reset_device_id)
+  public void resetDeviceIdClick() {
+    showDeviceId(false);
+
+    final OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(ResetDeviceIdWorker.class)
+      .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5, TimeUnit.SECONDS)
+      .setConstraints(WorkUtils.INSTANCE.getBaseConstraints())
+      .build();
+
+    WorkManager.getInstance(this)
+      .enqueueUniqueWork(ResetDeviceIdWorker.TAG, ExistingWorkPolicy.REPLACE, request);
+  }
+
   private void showCustomEndpointDialog() {
     final View view = View.inflate(this, R.layout.custom_endpoint_layout, null);
     final EditText customEndpointEditText = ButterKnife.findById(view, R.id.custom_endpoint_edit_text);
@@ -130,6 +179,12 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       })
       .setIcon(this.icDialogAlertDrawable)
       .show();
+  }
+
+  private void showDeviceId(final boolean show) {
+    this.resetDeviceId.setEnabled(!show);
+    ViewUtils.setInvisible(this.deviceID, !show);
+    ViewUtils.setInvisible(this.deviceIdLoadingIndicator, show);
   }
 
   private void showHivequeenEndpointDialog() {

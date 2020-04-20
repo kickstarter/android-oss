@@ -69,6 +69,7 @@
   <dimen name="project_card_margin_bottom">@dimen/grid_1</dimen>
   <dimen name="profile_card_height">178dp</dimen>
   <dimen name="editorial_radius">8dp</dimen>
+  <dimen name="stored_card_radius">@dimen/grid_1</dimen>
 
   <!-- Discovery drawer -->
   <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
@@ -181,14 +182,13 @@
   <dimen name="reward_margin">@dimen/grid_3</dimen>
   <dimen name="reward_fragment_guideline_constraint_end">100dp</dimen>
   <dimen name="fragment_rewards_parent_min_height">@dimen/grid_20</dimen>
-  <dimen name="stored_card_radius">16dp</dimen>
   <dimen name="mini_reward_height">@dimen/grid_20</dimen>
-  <dimen name="stored_card_width">260dp</dimen>
   <dimen name="mini_reward_elevation">8dp</dimen>
   <dimen name="plus_sign_height">20dp</dimen>
   <dimen name="plus_sign_width">9dp</dimen>
   <dimen name="autocomplete_drop_down_width">265dp</dimen>
   <dimen name="card_container_radius">@dimen/grid_5</dimen>
+  <dimen name="unselected_card_stroke_width">2dp</dimen>
 
   <!--  Progress Bars -->
   <dimen name="indeterminate_horizontal_progress_bar_margin_top">-6dp</dimen>

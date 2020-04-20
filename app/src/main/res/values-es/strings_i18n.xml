@@ -9,6 +9,7 @@
   <string name="Add" formatted="false">Añadir</string>
   <string name="Add_attachments" formatted="false">Agregar anexos …</string>
   <string name="Add_new_card" formatted="false">Añadir una nueva tarjeta</string>
+  <string name="Alert" formatted="false">Alert</string>
   <string name="All_Art_Projects" formatted="false">Todos los proyectos</string>
   <string name="All_Comics_Projects" formatted="false">Todos los proyectos</string>
   <string name="All_Crafts_Projects" formatted="false">Todos los proyectos</string>
@@ -265,6 +266,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Introduce_yourself" formatted="false">Preséntate</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es una plataforma para dar vida a proyectos creativos.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">Todo en la vida es mejor con amigos ...</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Es como la radio, pero sin malas noticias y, además, es un boletín informativo.</string>
   <string name="Its_our_birthday" formatted="false">¡Cumplimos años! Más de 160.000 proyectos creativos se han hecho realidad en Kickstarter durante la última década, gracias al apoyo de más de 16.000.000 de patrocinadores.</string>
@@ -323,6 +325,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Name" formatted="false">Nombre</string>
   <string name="Never" formatted="false">Nunca</string>
   <string name="New_email" formatted="false">Nuevo correo electrónico</string>
+  <string name="New_payment_method" formatted="false">New payment method</string>
   <string name="New_password" formatted="false">Contraseña nueva</string>
   <string name="New_pledge_activity" formatted="false">Nueva actividad de contribución</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Nuevos trabajos y grandes ideas de artistas establecidos y emergentes.</string>
@@ -476,11 +479,13 @@ Haz clic para volver a intentarlo.</string>
   <string name="Select_an_option" formatted="false">Seleccionar una opción</string>
   <string name="Select_another_project" formatted="false">Selecciona otro proyecto</string>
   <string name="Select_fewer_categories" formatted="false">Selecciona menos categorías</string>
+  <string name="Select_this_card" formatted="false">Selecciona esta tarjeta</string>
   <string name="Select_this_instead" formatted="false">Seleccionar esto</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
   <string name="Select_up_to_five" formatted="false">Selecciona hasta cinco de las opciones que aparecen a continuación.</string>
   <string name="Selected" formatted="false">Seleccionada</string>
+  <string name="Selected_card" formatted="false">Tarjeta seleccionada</string>
   <string name="Selected_reward" formatted="false">Recompensa seleccionada</string>
   <string name="Send" formatted="false">Enviar</string>
   <string name="Send_verfication_email" formatted="false">Enviar correo de verificación</string>
@@ -551,6 +556,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">Esta contribución no pudo ser cobrada por un error en el método de pago.</string>
   <string name="This_post_is_for_backers_only" formatted="false">Esta publicación es únicamente para patrocinadores</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">Este proyecto no alcanzó su meta de financiamiento, así que no se realizó ningún cargo a tu método de pago.</string>
+  <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">Dado que este proyecto tiene una moneda establecida, no se puede procesar esta opción.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">Este proyecto sólo será financiado si se contribuye al menos un monto de %{amount} antes del %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">Accede a tus categorías favoritas en el menú en la parte superior de la app.</string>

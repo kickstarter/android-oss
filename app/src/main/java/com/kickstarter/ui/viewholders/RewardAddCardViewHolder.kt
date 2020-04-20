@@ -1,7 +1,7 @@
 package com.kickstarter.ui.viewholders
 
 import android.view.View
-import kotlinx.android.synthetic.main.item_reward_add_card.view.*
+import kotlinx.android.synthetic.main.item_add_card.view.*
 
 class RewardAddCardViewHolder (val view : View, val delegate : Delegate) : KSViewHolder(view) {
 

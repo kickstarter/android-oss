@@ -9,6 +9,7 @@
   <string name="Add" formatted="false">Add</string>
   <string name="Add_attachments" formatted="false">Add attachments…</string>
   <string name="Add_new_card" formatted="false">Add new card</string>
+  <string name="Alert" formatted="false">Alert</string>
   <string name="All_Art_Projects" formatted="false">All Art Projects</string>
   <string name="All_Comics_Projects" formatted="false">All Comics Projects</string>
   <string name="All_Crafts_Projects" formatted="false">All Crafts Projects</string>
@@ -264,6 +265,7 @@ Please tap to retry.</string>
   <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">It’s better\n
 with friends.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
@@ -324,6 +326,7 @@ with friends.</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_email" formatted="false">New email</string>
   <string name="New_password" formatted="false">New password</string>
+  <string name="New_payment_method" formatted="false">New payment method</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">New work and big ideas from established and emerging artists.</string>
   <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
@@ -478,11 +481,13 @@ daring ideas.</string>
   <string name="Select_an_option" formatted="false">Select an option</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
   <string name="Select_fewer_categories" formatted="false">Select fewer categories</string>
+  <string name="Select_this_card" formatted="false">Select this card</string>
   <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
   <string name="Select_up_to_five" formatted="false">Select up to five from the options below.</string>
   <string name="Selected" formatted="false">Selected</string>
+  <string name="Selected_card" formatted="false">Selected card</string>
   <string name="Selected_reward" formatted="false">Selected reward</string>
   <string name="Send" formatted="false">Send</string>
   <string name="Send_verfication_email" formatted="false">Send verification email</string>
@@ -554,6 +559,7 @@ catch your eye?</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
   <string name="This_post_is_for_backers_only" formatted="false">This post is for backers only</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
+  <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">This project has a set currency that can\'t process this option.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">To access all your favorite categories, tap the explore dropdown at the top of the app.</string>

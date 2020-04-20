@@ -4,9 +4,8 @@
   android:id="@+id/card_details"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:minHeight="@dimen/grid_8"
   android:orientation="horizontal"
-  tools:showIn="@layout/item_reward_credit_card">
+  tools:showIn="@layout/item_reward_unselected_card">
 
   <!--Content description should be set programmatically in RewardCardsAdapter to the card brand-->
   <ImageView
@@ -28,7 +27,7 @@
       style="@style/CreditCardLastFour"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      tools:text="Card ending in 1234" />
+      tools:text="•••• 1234" />
 
     <TextView
       android:id="@+id/reward_card_expiration_date"

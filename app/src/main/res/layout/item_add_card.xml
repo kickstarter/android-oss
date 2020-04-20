@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/add_card_button"
+  style="@style/PledgeStoredCard"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:foreground="@drawable/click_indicator_light">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="@dimen/grid_3">
+
+    <ImageView
+      android:layout_width="@dimen/grid_4"
+      android:layout_height="@dimen/grid_4"
+      android:layout_marginEnd="@dimen/grid_3_half"
+      android:background="@drawable/circle_accent_alpha_20"
+      android:contentDescription="@string/Add"
+      android:src="@drawable/ic_add_rounded"
+      android:tint="@color/accent" />
+
+    <TextView
+      style="@style/SubheadlineMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/New_payment_method"
+      android:textColor="@color/accent" />
+  </LinearLayout>
+
+</androidx.cardview.widget.CardView>

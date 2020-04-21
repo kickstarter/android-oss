@@ -82,7 +82,7 @@
           android:layout_marginTop="@dimen/grid_3"
           android:ellipsize="end"
           android:importantForAccessibility="no"
-          tools:text="This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout."
+          tools:text="This is some placeholder copy that is only visible when previewing the layout."
           android:maxLines="6"/>
       </LinearLayout>
 

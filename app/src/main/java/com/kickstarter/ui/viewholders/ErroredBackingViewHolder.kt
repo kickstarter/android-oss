@@ -51,7 +51,7 @@ class ErroredBackingViewHolder(private val view: View, val delegate: Delegate?) 
                 .build()
 
         val timeRemaining = DateTimeUtils.relative(context(), this.ksString, finalCollectionDate, options)
-        val fixWithinTemplate = context().getString(R.string.Fix_within)
+        val fixWithinTemplate = context().getString(R.string.Fix_within_time_remaining)
         this.view.errored_backing_project_collection_date.text = this.ksString.format(fixWithinTemplate,
                 "time_remaining", timeRemaining)
     }

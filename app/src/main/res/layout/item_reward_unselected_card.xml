@@ -43,5 +43,7 @@
       android:textColor="@color/ksr_red_400"
       android:visibility="gone"
       tools:visibility="visible" />
+
+    <include layout="@layout/retry_card_warning" />
   </LinearLayout>
 </androidx.cardview.widget.CardView>

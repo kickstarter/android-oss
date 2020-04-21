@@ -35,6 +35,7 @@
   <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Any payment methods you\'ve saved to Kickstarter are listed here (securely) for your convenience.</string>
   <string name="App_version" formatted="false">App version</string>
+  <string name="Apple_ID" formatted="false">Apple ID</string>
   <string name="Are_you_sure" formatted="false">Are you sure?</string>
   <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">Are you sure you wish to cancel your %{amount} pledge to %{project_name}?</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Are you sure you wish to remove this card from your payment method options?</string>
@@ -206,7 +207,7 @@ Please tap to retry.</string>
   <string name="First_created" formatted="false">First created</string>
   <string name="Fix" formatted="false">Fix</string>
   <string name="Fix_payment_method" formatted="false">Fix payment method</string>
-  <string name="Fix_within" formatted="false">Fix within %{time_remaining}</string>
+  <string name="Fix_within_time_remaining" formatted="false">Fix within %{time_remaining}</string>
   <string name="Fix_your_payment_method" formatted="false">Fix your payment method</string>
   <string name="Follow_friend_name" formatted="false">Follow %{friend_name}</string>
   <string name="Follow_friends" formatted="false">Follow friends</string>
@@ -266,13 +267,13 @@ Please tap to retry.</string>
   <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life. &lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">It’s better\n
 with friends.</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">It\'s like the radio but nothing sucks and also it\'s a newsletter.</string>
   <string name="Its_our_birthday" formatted="false">It\'s our birthday! More than 160,000 creative projects have come to life on Kickstarter over the past decade, with support from over 16,000,000 backers.</string>
   <string name="Join_a_fruitful_community" formatted="false">Join a fruitful community</string>
   <string name="Join_our_secret_society" formatted="false">Join our secret society.</string>
-  <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">Join us in supporting creative work for its own sake this holiday season.</string>
   <string name="Joining_the_live_stream" formatted="false">Joining the live stream</string>
   <string name="Just_for_you" formatted="false">Just for you.</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Keep in touch after your campaign and plan your next project.</string>
@@ -311,6 +312,7 @@ with friends.</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Make a pledge without a reward</string>
   <string name="Making_this_change" formatted="false">Making this change will allow you to see project goal and pledge amounts converted to your chosen currency.</string>
   <string name="Manage" formatted="false">Manage</string>
+  <string name="Manage_this_account" formatted="false">Manage this account in your Apple ID settings.</string>
   <string name="Manage_your_pledge" formatted="false">Manage your pledge</string>
   <string name="Manage_your_pledge_below" formatted="false">Manage your pledge below</string>
   <string name="Manage_your_reward" formatted="false">Manage your reward</string>
@@ -326,6 +328,7 @@ with friends.</string>
   <string name="Never" formatted="false">Never</string>
   <string name="New_email" formatted="false">New email</string>
   <string name="New_password" formatted="false">New password</string>
+  <string name="New_payment_method" formatted="false">New payment method</string>
   <string name="New_pledge_activity" formatted="false">New pledge activity</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">New work and big ideas from established and emerging artists.</string>
   <string name="News_events" formatted="false">Big news and events happening near you, delivered just a few times a year.</string>
@@ -441,6 +444,7 @@ daring ideas.</string>
   <string name="Request_my_personal_data" formatted="false">Request my personal data</string>
   <string name="Resend_verification_email" formatted="false">Re-send verification email</string>
   <string name="Retry" formatted="false">Retry</string>
+  <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Reward Surveys</string>
   <string name="Reward_Surveys_one" formatted="false">Reward Survey</string>
@@ -480,11 +484,13 @@ daring ideas.</string>
   <string name="Select_an_option" formatted="false">Select an option</string>
   <string name="Select_another_project" formatted="false">Select another project</string>
   <string name="Select_fewer_categories" formatted="false">Select fewer categories</string>
+  <string name="Select_this_card" formatted="false">Select this card</string>
   <string name="Select_this_instead" formatted="false">Select this instead</string>
   <string name="Select_this_reward" formatted="false">Select this reward</string>
   <string name="Select_this_reward_instead" formatted="false">Select this reward instead</string>
   <string name="Select_up_to_five" formatted="false">Select up to five from the options below.</string>
   <string name="Selected" formatted="false">Selected</string>
+  <string name="Selected_card" formatted="false">Selected card</string>
   <string name="Selected_reward" formatted="false">Selected reward</string>
   <string name="Send" formatted="false">Send</string>
   <string name="Send_verfication_email" formatted="false">Send verification email</string>
@@ -525,7 +531,6 @@ catch your eye?</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Subscribes to upcoming live streams.</string>
   <string name="Successful_projects_have_been_created_on_kickstarter" formatted="false">Successful projects have been created on Kickstarter.</string>
   <string name="Support_creative_independence" formatted="false">Support creative independence</string>
-  <string name="Support_the_project_for_no_reward" formatted="false">Support the project for no reward, just because it speaks to you.</string>
   <string name="Survey" formatted="false">Survey</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tap the heart icon on a project to get notified 48 hours before it ends.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Tap the heart on each project page to save it. We’ll remind you 48 hours before the project ends.</string>
@@ -556,6 +561,7 @@ catch your eye?</string>
   <string name="This_pledge_was_dropped_because_of_payment_errors" formatted="false">This pledge was dropped because of payment errors.</string>
   <string name="This_post_is_for_backers_only" formatted="false">This post is for backers only</string>
   <string name="This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged" formatted="false">This project didn’t reach its funding goal, so your payment method was never charged.</string>
+  <string name="This_project_has_a_set_currency_that_cant_process_this_option" formatted="false">This project has a set currency that can\'t process this option.</string>
   <string name="This_project_will_only_be_funded_on_if_at_least_amount_is_pledged_by_date" formatted="false">This project will only be funded on if at least %{amount} is pledged by %{date}.</string>
   <string name="Time_left_left" formatted="false">%{time_left} left</string>
   <string name="To_access_all_your_favorite_categories_tap_the_explore_dropdown" formatted="false">To access all your favorite categories, tap the explore dropdown at the top of the app.</string>

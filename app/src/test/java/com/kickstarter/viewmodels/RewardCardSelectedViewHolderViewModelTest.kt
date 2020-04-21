@@ -11,9 +11,9 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.*
 
-class RewardLoadingCardViewHolderViewModelTest : KSRobolectricTestCase() {
+class RewardCardSelectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
-    private lateinit var vm: RewardLoadingCardViewHolderViewModel.ViewModel
+    private lateinit var vm: RewardCardSelectedViewHolderViewModel.ViewModel
 
     private val expirationDate = TestSubscriber.create<String>()
     private val id = TestSubscriber.create<String>()
@@ -22,10 +22,9 @@ class RewardLoadingCardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val lastFour = TestSubscriber.create<String>()
 
     private fun setUpEnvironment(environment: Environment) {
-        this.vm = RewardLoadingCardViewHolderViewModel.ViewModel(environment)
+        this.vm = RewardCardSelectedViewHolderViewModel.ViewModel(environment)
 
         this.vm.outputs.expirationDate().subscribe(this.expirationDate)
-        this.vm.outputs.id().subscribe(this.id)
         this.vm.outputs.issuer().subscribe(this.issuer)
         this.vm.outputs.issuerImage().subscribe(this.issuerImage)
         this.vm.outputs.lastFour().subscribe(this.lastFour)
@@ -44,16 +43,6 @@ class RewardLoadingCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationDate.assertValue("03/2019")
-    }
-
-    @Test
-    fun testId() {
-        setUpEnvironment(environment())
-        val creditCard = StoredCardFactory.discoverCard()
-
-        this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
-
-        this.id.assertValue(creditCard.id())
     }
 
     @Test

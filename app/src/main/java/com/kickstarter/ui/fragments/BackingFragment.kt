@@ -217,7 +217,9 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
     }
 
     private fun setCardLastFourText(lastFour: String) {
-        reward_card_last_four.text = this.viewModel.ksString.format(getString(R.string.Ending_in_last_four), "last_four", lastFour)
+        reward_card_last_four.text = this.viewModel.ksString.format(getString(R.string.payment_method_last_four),
+                "last_four",
+                lastFour)
     }
 
     private fun setPledgeDateText(pledgeDate: String) {

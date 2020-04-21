@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.libs.Environment
 
-interface RewardPledgeCardViewHolderViewModel : BaseRewardCardViewHolderViewModel {
+interface RewardCardSelectedViewHolderViewModel : BaseRewardCardViewHolderViewModel {
 
     interface Inputs : BaseRewardCardViewHolderViewModel.Inputs
     interface Outputs : BaseRewardCardViewHolderViewModel.Outputs

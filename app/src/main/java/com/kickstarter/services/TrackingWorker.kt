@@ -27,7 +27,7 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
             Result.success()
         } else {
             val code = response.code()
-            logTrackingError(code)
+            logTrackingError(code, response.message())
             when (code) {
                 in 400..499 -> {
                     Result.failure()
@@ -44,8 +44,8 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
         Crashlytics.log(this.eventName)
     }
 
-    private fun logTrackingError(code: Int) {
-        val errorMessage = "$code Failed to track $tag event: $eventName"
+    private fun logTrackingError(code: Int, message: String) {
+        val errorMessage = "$code Failed to track $tag event $eventName (run attempt #$runAttemptCount) $message"
         if (this.build.isDebug) {
             Timber.e(errorMessage)
         }

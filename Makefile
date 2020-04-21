@@ -15,10 +15,10 @@ submodules:
 	git submodule foreach git checkout $(sha1)
 
 secrets:
-	# Copy java secrets over. Fallback to example secrets if they don't exist.
 	-@rm -rf vendor/native-secrets
-	-@git clone git@github.com:kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo '(Skipping secrets.)'
+	-@git clone git@github.com:kickstarter/native-secrets.git vendor/native-secrets 2>/dev/null || echo 'You do not have access to the native-secrets repo. Falling back to placeholder values.'
 
+	# Copy java secrets over.
 	cp vendor/native-secrets/android/Secrets.java app/src/main/java/com/kickstarter/libs/utils/Secrets.java \
 		|| cp app/src/main/java/com/kickstarter/libs/utils/Secrets.java.example app/src/main/java/com/kickstarter/libs/utils/Secrets.java
 
@@ -30,6 +30,9 @@ secrets:
 
   # Copy slack_webhook over.
 	cp vendor/native-secrets/android/slack.properties app/slack.properties || true
+
+  # Copy Firebase project IDs
+	cp vendor/native-secrets/android/firebase.properties app/firebase.properties || cp config/firebase.properties.example app/firebase.properties
 
 	# Copy web client over.
 	cp -rf vendor/native-secrets/android/WebViewJavascriptInterface.java app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java \
@@ -56,18 +59,6 @@ sync_private_to_oss:
 	@git push oss $(BRANCH)
 
 	@echo "private and oss remotes are now synced!"
-
-alpha:
-	@echo "Adding remotes..."
-	@git remote add private https://github.com/kickstarter/android-private
-
-	@echo "Deploying private/alpha"
-
-	@git branch -f alpha
-	@git push -f private alpha
-	@git branch -d alpha
-
-	@echo "Deploy has been kicked off to CircleCI!"
 
 internal:
 	@echo "Adding remotes..."

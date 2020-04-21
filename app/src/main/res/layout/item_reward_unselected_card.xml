@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/card_container"
+  style="@style/PledgeStoredCard"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/click_indicator_light"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:animateLayoutChanges="true"
+      android:orientation="horizontal"
+      android:padding="@dimen/grid_2">
+
+      <ImageView
+        android:id="@+id/select_image_view"
+        android:layout_width="@dimen/grid_3"
+        android:layout_height="@dimen/grid_3"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:contentDescription="@string/Select_this_card"
+        android:src="@drawable/circle_grey_500_stroke" />
+
+      <include layout="@layout/reward_card_details" />
+    </LinearLayout>
+
+    <TextView
+      android:id="@+id/card_not_allowed_warning"
+      style="@style/Caption1SecondaryMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_8"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:text="@string/This_project_has_a_set_currency_that_cant_process_this_option"
+      android:textColor="@color/ksr_red_400"
+      android:visibility="gone"
+      tools:visibility="visible" />
+  </LinearLayout>
+</androidx.cardview.widget.CardView>

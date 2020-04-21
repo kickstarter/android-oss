@@ -11,10 +11,9 @@ import com.kickstarter.ui.viewholders.*
 import rx.Observable
 
 class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
-    interface Delegate : RewardCardViewHolder.Delegate, RewardPledgeCardViewHolder.Delegate, RewardAddCardViewHolder.Delegate
+    interface Delegate : RewardCardUnselectedViewHolder.Delegate, RewardAddCardViewHolder.Delegate
 
-    private var enabled = true
-    private var selectedPosition = Pair(RecyclerView.NO_POSITION, CardState.SELECT)
+    private var selectedPosition = Pair(RecyclerView.NO_POSITION, CardState.SELECTED)
 
     init {
         val placeholders = arrayOfNulls<Any>(3).toList()
@@ -28,28 +27,22 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
             if (sectionRow.section() == 0) {
                 if (sectionRow.row() == this.selectedPosition.first) {
                     return when {
-                        this.selectedPosition.second == CardState.SELECT -> R.layout.item_reward_credit_card
-                        this.selectedPosition.second == CardState.PLEDGE -> when {
-                            this.enabled -> R.layout.item_reward_pledge_card
-                            else -> R.layout.item_reward_pledge_card_disabled
-                        }
-                        else -> R.layout.item_reward_loading_card
+                        this.selectedPosition.second == CardState.SELECTED -> R.layout.item_reward_selected_card
+                        else -> R.layout.item_reward_unselected_card
                     }
                 }
-                R.layout.item_reward_credit_card
+                R.layout.item_reward_unselected_card
             } else {
-                R.layout.item_reward_add_card
+                R.layout.item_add_card
             }
         }
     }
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when (layout) {
-            R.layout.item_reward_add_card -> RewardAddCardViewHolder(view, this.delegate)
-            R.layout.item_reward_pledge_card -> RewardPledgeCardViewHolder(view, this.delegate)
-            R.layout.item_reward_pledge_card_disabled -> RewardPledgeCardViewHolder(view, this.delegate)
-            R.layout.item_reward_credit_card -> RewardCardViewHolder(view, this.delegate)
-            R.layout.item_reward_loading_card -> RewardLoadingCardViewHolder(view)
+            R.layout.item_add_card -> RewardAddCardViewHolder(view, this.delegate)
+            R.layout.item_reward_selected_card -> RewardCardSelectedViewHolder(view)
+            R.layout.item_reward_unselected_card -> RewardCardUnselectedViewHolder(view, this.delegate)
             else -> EmptyViewHolder(view)
         }
     }
@@ -64,19 +57,14 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyDataSetChanged()
     }
 
-    fun setLoadingPosition(position: Int) {
-        this.selectedPosition = Pair(position, CardState.LOADING)
-        notifyItemChanged(position)
+    fun setSelectedPosition(position: Int) {
+        this.selectedPosition = Pair(position, CardState.SELECTED)
+        notifyDataSetChanged()
     }
 
-    fun setPledgePosition(position: Int) {
-        this.selectedPosition = Pair(position, CardState.PLEDGE)
-        notifyItemChanged(position)
-    }
-
-    fun resetPledgePosition(position: Int) {
-        this.selectedPosition = Pair(RecyclerView.NO_POSITION, CardState.SELECT)
-        notifyItemChanged(position)
+    fun resetSelectedPosition() {
+        this.selectedPosition = Pair(RecyclerView.NO_POSITION, CardState.SELECTED)
+        notifyDataSetChanged()
     }
 
     fun insertCard(storedCardAndProject: Pair<StoredCard, Project>) : Int {
@@ -86,14 +74,6 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyItemInserted(position)
 
         return position
-    }
-
-    fun setPledgeEnabled(enabled: Boolean) {
-        val selectedIndex = this.selectedPosition.first
-        this.enabled = enabled
-        if (selectedIndex != RecyclerView.NO_POSITION) {
-            notifyItemChanged(this.selectedPosition.first)
-        }
     }
 
 }

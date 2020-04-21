@@ -7,43 +7,54 @@ require_relative '../config/initializer'
 default_platform :android
 
 lane :alpha do
-  Milkrun::VersionCode.new(audience: 'internal').bump
-  gradle(task: "assembleInternalDebug")
+  audience      = 'internal'
+  build_type    = 'debug'
+  version_code  = Milkrun::VersionCode.new(audience: audience).bump
+  version_name  = Milkrun::VersionName.new(audience: audience).read
+  slack_message = ["🚀",audience,build_type,"|",version_name,version_code,"successfully delivered to Firebase!"].join(' ')
 
-  crashlytics(
-    api_token: ENV["apiKey"],
-    build_secret: ENV["apiSecret"],
-    groups: "development",
-    notifications: true
-    )
+  build_android_app(task: "assembleInternalDebug")
 
-  slack(
-    slack_url: ENV["slack_webhook"],
-    message: "Alpha build successfully delivered to Crashlytics!"
-    )
-end
-
-lane :external do
-  Milkrun::VersionCode.new(audience: 'external').bump
-  build_android_app(task: "assembleExternalRelease")
-
-  crashlytics(
-    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
-    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
-    groups: "development",
-    notifications: true
-    )
+  firebase_app_distribution(
+    app: Milkrun::FirebaseCredentialsExtractor.new.internal_debug,
+    groups: "android-testers, dev",
+    release_notes: commit_message
+  )
 
   slack(
     slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
-    message: "External release build successfully delivered!"
-    )
+    message: slack_message
+  )
+end
+
+lane :external do
+  audience      = 'external'
+  build_type    = 'release'
+  version_code  = Milkrun::VersionCode.new(audience: audience).bump
+  version_name  = Milkrun::VersionName.new(audience: audience).read
+  slack_message = ["🚀",audience,build_type,"|",version_name,version_code,"successfully delivered to Firebase!"].join(' ')
+  release_notes = changelog_from_git_commits(pretty: "- %an | %s %h | %as")
+
+  build_android_app(task: "assembleExternalRelease")
+
+  firebase_app_distribution(
+    app: Milkrun::FirebaseCredentialsExtractor.new.external_release,
+    groups: "android-testers, dev",
+    release_notes: release_notes
+  )
+
+  slack(
+    slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
+    message: slack_message
+  )
 end
 
 lane :internal do
-  audience = 'internal'
-  build_type = 'release'
-  version_code = Milkrun::VersionCode.new(audience: audience).bump
+  audience      = 'internal'
+  build_type    = 'release'
+  version_code  = Milkrun::VersionCode.new(audience: audience).bump
+  version_name  = Milkrun::VersionName.new(audience: audience).read
+  slack_message = ["🚀",audience,build_type,"|",version_name,version_code,"successfully delivered to S3 and Firebase!"].join(' ')
 
   build_android_app(task: "assembleInternalRelease")
 
@@ -55,16 +66,15 @@ lane :internal do
   changelog.instance_variable_set(:@changelog, commit_message)
   changelog.publish
 
-  crashlytics(
-    api_token: Milkrun::FabricCredentialsExtractor.new.api_key,
-    build_secret: Milkrun::FabricCredentialsExtractor.new.api_secret,
-    groups: "development",
-    notifications: true
-    )
+  firebase_app_distribution(
+    app: Milkrun::FirebaseCredentialsExtractor.new.internal_release,
+    groups: "android-testers, dev",
+    release_notes: commit_message
+  )
 
   slack(
     slack_url: Milkrun::SlackWebhookExtractor.new.webhook,
-    message: "Internal release build successfully delivered to S3 and Crashlytics!"
-    )
+    message: slack_message
+  )
 
 end

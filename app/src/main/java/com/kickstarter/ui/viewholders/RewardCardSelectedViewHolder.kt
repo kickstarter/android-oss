@@ -7,21 +7,15 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
-import com.kickstarter.viewmodels.RewardPledgeCardViewHolderViewModel
-import kotlinx.android.synthetic.main.item_reward_pledge_card.view.*
+import com.kickstarter.viewmodels.RewardCardSelectedViewHolderViewModel
 import kotlinx.android.synthetic.main.reward_card_details.view.*
 
-class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
-
-    interface Delegate {
-        fun pledgeButtonClicked(id: String)
-        fun closePledgeButtonClicked(position: Int)
-    }
+class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
-    private val endingInString = this.context().getString(R.string.Ending_in_last_four)
+    private val lastFourString = this.context().getString(R.string.payment_method_last_four)
 
-    private val viewModel: RewardPledgeCardViewHolderViewModel.ViewModel = RewardPledgeCardViewHolderViewModel.ViewModel(environment())
+    private val viewModel: RewardCardSelectedViewHolderViewModel.ViewModel = RewardCardSelectedViewHolderViewModel.ViewModel(environment())
     private val ksString: KSString = environment().ksString()
 
     init {
@@ -45,19 +39,6 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setLastFourTextView(it) }
-
-        this.viewModel.outputs.id()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {id ->
-                    this.view.pledge_button.setOnClickListener {
-                        this.delegate.pledgeButtonClicked(id)
-                    }
-                }
-
-        this.view.close_pledge.setOnClickListener {
-            this.delegate.closePledgeButtonClicked(adapterPosition)
-        }
     }
 
     override fun bindData(data: Any?) {
@@ -72,7 +53,9 @@ class RewardPledgeCardViewHolder(val view : View, val delegate : Delegate) : KSV
     }
 
     private fun setLastFourTextView(lastFour: String) {
-        this.view.reward_card_last_four.text = this.ksString.format(this.endingInString, "last_four", lastFour)
+        this.view.reward_card_last_four.text = this.ksString.format(this.lastFourString,
+                "last_four",
+                lastFour)
     }
 
 }

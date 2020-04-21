@@ -40,15 +40,16 @@
       android:id="@+id/update_details_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/update_sequence">
+      android:layout_below="@id/update_sequence"
+      android:layout_marginBottom="@dimen/grid_3">
 
       <TextView
         android:id="@+id/update_backers_only"
         style="@style/Headline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_9"
-        android:layout_marginBottom="@dimen/grid_9"
+        android:layout_marginTop="@dimen/grid_12"
+        android:layout_marginBottom="@dimen/grid_12"
         android:gravity="center"
         android:text="@string/This_post_is_for_backers_only"
         android:visibility="gone" />
@@ -57,7 +58,6 @@
         android:id="@+id/update_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_3"
         android:orientation="vertical"
         tools:visibility="visible">
 
@@ -82,9 +82,15 @@
           android:layout_marginTop="@dimen/grid_3"
           android:ellipsize="end"
           android:importantForAccessibility="no"
-          android:maxLines="4"
-          tools:text="This is some placeholder copy that is only visible when previewing the layout." />
+          tools:text="This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout.This is some placeholder copy that is only visible when previewing the layout."
+          android:maxLines="6"/>
       </LinearLayout>
+
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_3"
+          android:layout_gravity="bottom"
+          android:background="@drawable/white_gradient"/>
     </FrameLayout>
 
     <LinearLayout

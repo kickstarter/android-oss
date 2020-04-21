@@ -91,6 +91,7 @@
           android:layout_height="@dimen/grid_3"
           android:layout_gravity="bottom"
           android:background="@drawable/white_gradient"
+          android:importantForAccessibility="no"
           android:contentDescription="@null"/>
     </FrameLayout>
 

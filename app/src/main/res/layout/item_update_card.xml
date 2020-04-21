@@ -90,7 +90,8 @@
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_3"
           android:layout_gravity="bottom"
-          android:background="@drawable/white_gradient"/>
+          android:background="@drawable/white_gradient"
+          android:contentDescription="@null"/>
     </FrameLayout>
 
     <LinearLayout

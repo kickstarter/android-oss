@@ -1,5 +1,7 @@
 package com.kickstarter.libs.utils;
 
+import android.util.Pair;
+
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyEnvironment;
 import com.kickstarter.libs.models.OptimizelyExperiment;
@@ -171,22 +173,22 @@ public final class KoalaUtils {
     return MapUtils.prefixKeys(properties, prefix);
   }
 
-  public static @NonNull Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment, final @NonNull List<OptimizelyExperiment> experiments) {
+  public static @NonNull Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment,
+    final @NonNull List<Pair<OptimizelyExperiment.Key, OptimizelyExperiment.Variant>> experiments) {
     return optimizelyProperties(optimizelyEnvironment, experiments, "optimizely_");
   }
 
-  public static @NonNull Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment, final @NonNull List<OptimizelyExperiment> experiments, final @NonNull String prefix) {
+  public static @NonNull
+  Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment,
+    final @NonNull List<Pair<OptimizelyExperiment.Key, OptimizelyExperiment.Variant>> experiments, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
-        //put("estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
-        //put("has_items", RewardUtils.isItemized(reward));
-        //put("id", reward.id());
-        //put("is_limited_time", RewardUtils.isTimeLimited(reward));
-        //put("is_limited_quantity", reward.limit() != null);
-        //put("minimum", reward.minimum());
-        //put("shipping_enabled", RewardUtils.isShippable(reward));
-        //put("shipping_preference", reward.shippingPreference());
-        //put("title", reward.title());
+        put("api_key", optimizelyEnvironment.getSdkKey());
+        put("environment_key", optimizelyEnvironment.getEnvironmentKey());
+        for (Pair<OptimizelyExperiment.Key, OptimizelyExperiment.Variant> experimentAndVariant : experiments) {
+          put("experiment_slug", experimentAndVariant.first.getKey());
+          put("variant", experimentAndVariant.second.getRawValue());
+        }
       }
     };
 

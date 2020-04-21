@@ -1,6 +1,7 @@
 package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.ExperimentTrackingData
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
@@ -396,6 +397,31 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValues("Thanks Page Viewed")
     }
 
+    @Test
+    fun testOptimizelyProperties() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertOptimizelyProperties()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Campaign Details Button Clicked")
+    }
+
     private fun client(user: User?) = MockTrackingClient(user?.let { MockCurrentUser(it) }
             ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.LAKE)
 
@@ -412,7 +438,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
     }
 
-    private fun assertPledgeProperties() {
+    private fun assertOptimizelyProperties() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["pledge_backer_reward_estimated_delivery_on"])
         assertEquals(false, expectedProperties["pledge_backer_reward_has_items"])
@@ -421,6 +447,12 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_quantity"])
         assertEquals(10.0, expectedProperties["pledge_backer_reward_minimum"])
         assertEquals(true, expectedProperties["pledge_backer_reward_shipping_enabled"])
+        assertEquals("unrestricted", expectedProperties["pledge_backer_reward_shipping_preference"])
+        assertEquals("Digital Bundle", expectedProperties["pledge_backer_reward_title"])
+    }
+
+    private fun assertPledgeProperties() {
+        val expectedProperties = this.propertiesTest.value
         assertEquals("unrestricted", expectedProperties["pledge_backer_reward_shipping_preference"])
         assertEquals("Digital Bundle", expectedProperties["pledge_backer_reward_title"])
     }

@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_12"
-        android:layout_marginBottom="@dimen/grid_12"
+        android:layout_marginBottom="@dimen/grid_9"
         android:gravity="center"
         android:text="@string/This_post_is_for_backers_only"
         android:visibility="gone" />

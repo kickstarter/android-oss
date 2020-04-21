@@ -9,7 +9,7 @@
   <string name="Add" formatted="false">Hinzufügen</string>
   <string name="Add_attachments" formatted="false">Anhänge hinzufügen ...</string>
   <string name="Add_new_card" formatted="false">Kreditkarte hinzufügen</string>
-  <string name="Alert" formatted="false">Alert</string>
+  <string name="Alert" formatted="false">Hinweis</string>
   <string name="All_Art_Projects" formatted="false">Alle Projekte der Kategorie Kunst</string>
   <string name="All_Comics_Projects" formatted="false">Alle Projekte der Kategorie Comics</string>
   <string name="All_Crafts_Projects" formatted="false">Alle Projekte der Kategorie Kunsthandwerk</string>
@@ -26,7 +26,7 @@
   <string name="All_Publishing_Projects" formatted="false">Alle Projekte der Kategorie Publishing</string>
   <string name="All_Tech_Projects" formatted="false">Alle Projekte der Kategorie Technologie</string>
   <string name="All_Theater_Projects" formatted="false">Alle Projekte der Kategorie Theater</string>
-  <string name="All_category_name_Projects" formatted="false">Alle Projekte der Kategorie %{category_name}</string>
+  <string name="All_category_name_Projects" formatted="false">Alle Projekte in %{category_name}</string>
   <string name="All_gone" formatted="false">Alle weg</string>
   <string name="All_or_nothing" formatted="false">Alles oder nichts</string>
   <string name="Almost_there" formatted="false">Fast geschafft!</string>
@@ -35,6 +35,7 @@
   <string name="Amounts_shown" formatted="false">Die angezeigten Beträge stellen nur eine ungefähre Umrechnung dar. Nach erfolgreicher Finanzierung des Projekts wird dein Finanzierungsbeitrag in der Währung des Erstellungslandes abgebucht. Dieser Betrag wird ebenso angezeigt.</string>
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Sämtliche auf Kickstarter gespeicherten Zahlungsmethoden sind hier (sicher) hinterlegt.</string>
   <string name="App_version" formatted="false">App-Version</string>
+  <string name="Apple_ID" formatted="false">Apple ID</string>
   <string name="Are_you_sure" formatted="false">Bist du sicher?</string>
   <string name="Are_you_sure_you_wish_to_cancel_your_amount_pledge_to_project_name" formatted="false">Bist du sicher, dass du deinen Beitrag von %{amount} für %{project_name} zurückziehen möchtest?</string>
   <string name="Are_you_sure_you_wish_to_remove_this_card" formatted="false">Bist du sicher, dass du diese Karte aus deinen Zahlungsmethoden entfernen möchtest?</string>
@@ -206,6 +207,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="First_created" formatted="false">Erstes Projekt</string>
   <string name="Fix" formatted="false">Korrigieren</string>
   <string name="Fix_payment_method" formatted="false">Zahlungsmethode ändern</string>
+  <string name="Fix_within_time_remaining" formatted="false">Innerhalb von %{time_remaining} korrigieren</string>
   <string name="Fix_your_payment_method" formatted="false">Zahlungsmethode ändern</string>
   <string name="Follow_friend_name" formatted="false">%{friend_name} folgen.</string>
   <string name="Follow_friends" formatted="false">Freunden folgen</string>
@@ -265,13 +267,12 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Introduce_yourself" formatted="false">Stelle dich vor</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.</string>
-  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life.&lt;br/>&lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>
+  <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Es ist eine Plattform, um kreative Projekte zu verwirklichen. &lt;a href="%{trust_link}">Hier findest du mehr Info zur Rechenschaftspflicht&lt;/a></string>
   <string name="Its_better_with_friends" formatted="false">Gemeinsam mehr erreichen</string>
   <string name="Its_like_the_radio_but_nothing_sucks_and_also_its_a_newsletter" formatted="false">Fast wie Radio, nur ohne die schlechten Nachrichten - unser Newsletter!</string>
   <string name="Its_our_birthday" formatted="false">Mithilfe von über 16.000.000 Unterstützern wurden in den letzten zehn Jahren über 160.000 kreative Projekte auf Kickstarter verwirklicht.</string>
   <string name="Join_a_fruitful_community" formatted="false">Schließe dich einer erfolgreichen Community an</string>
   <string name="Join_our_secret_society" formatted="false">Sei dabei bei unserem Geheimbund.</string>
-  <string name="Join_us_in_supporting_creative_work_for_its_own_sake_this_holiday_season" formatted="false">Bald ist Weihnachten: Unterstütze kreative Arbeiten einfach ihrer Kreativität wegen.</string>
   <string name="Joining_the_live_stream" formatted="false">Verbindung zum Live-Stream wird aufgebaut</string>
   <string name="Just_for_you" formatted="false">Nur für dich.</string>
   <string name="Keep_in_touch_after_your_campaign" formatted="false">Bleibe auch nach deiner Kampagne in Verbindung und plane dein nächstes Projekt.</string>
@@ -281,7 +282,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Kickstarter_if_funded" formatted="false">Kickstarter (bei Finanzierung)</string>
   <string name="Kickstarter_is_not_a_store" formatted="false">Kickstarter ist kein Geschäft.</string>
   <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen.</string>
-  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen..&lt;/br>&lt;a href="%{trust_link}">HIer findest du mehr Info zur Rechenschaftspflicht&lt;/a></string>
+  <string name="Kickstarter_is_not_a_store_Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Kickstarter ist kein Geschäft, sondern eine Plattform, um kreative Projekte zu verwirklichen. &lt;br/>&lt;a href="%{trust_link}">Hier findest du mehr Info zur Rechenschftspflicht&lt;/a></string>
   <string name="Know_when_creators_and_backers_message_you" formatted="false">Aktiviere Benachrichtigungen, damit du über eingehende Nachrichten von Projektgründern und Unterstützern Bescheid weißt.</string>
   <string name="Learn_more_about_accountability" formatted="false">Weitere Informationen zur Rechenschaftspflicht</string>
   <string name="Left_count_left_few" formatted="false">%{left_count} übrig</string>
@@ -310,6 +311,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Make_a_pledge_without_a_reward" formatted="false">Ohne Belohnung unterstützen</string>
   <string name="Making_this_change" formatted="false">Wenn du die Währung wechselst, werden das Finanzierungsziel und die Finanzierungsbeiträge in der von dir gewählten Währung angezeigt.</string>
   <string name="Manage" formatted="false">Verwalten</string>
+  <string name="Manage_this_account" formatted="false">Verwalte dieses Konto in deinen Apple ID-Einstellungen.</string>
   <string name="Manage_your_pledge" formatted="false">Meinen Beitrag verwalten</string>
   <string name="Manage_your_pledge_below" formatted="false">Folgenden Beitrag verwalten</string>
   <string name="Manage_your_reward" formatted="false">Belohnung verwalten</string>
@@ -325,7 +327,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Never" formatted="false">Niemals</string>
   <string name="New_email" formatted="false">Neue E-Mail</string>
   <string name="New_password" formatted="false">Neues Passwort</string>
-  <string name="New_payment_method" formatted="false">New payment method</string>
+  <string name="New_payment_method" formatted="false">Neue Zahlungsmethode</string>
   <string name="New_pledge_activity" formatted="false">Neue Finanzierungsbeiträge</string>
   <string name="New_work_and_big_ideas_from_established_and" formatted="false">Neue Arbeiten und großartige Ideen von etablierten und neuen Künstlern.</string>
   <string name="News_events" formatted="false">Ein paar Mal pro Jahr: Neuigkeiten und Events in deiner Nähe.</string>
@@ -439,6 +441,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Request_my_personal_data" formatted="false">Meine persönlichen Daten anfordern</string>
   <string name="Resend_verification_email" formatted="false">Verifizierungs-E-Mail erneut senden</string>
   <string name="Retry" formatted="false">Erneut versuchen</string>
+  <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_one" formatted="false">Befragung</string>
@@ -471,7 +474,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Say_something_kind" formatted="false">Sag etwas Nettes ...</string>
   <string name="Security_code" formatted="false">Sicherheitscode</string>
   <string name="See_all_category_name_projects" formatted="false">Alle %{category_name}-Projekte anzeigen</string>
-  <string name="See_our_suggestions" formatted="false">See our suggestions ▸</string>
+  <string name="See_our_suggestions" formatted="false">Unsere Empfehlungen ansehen ▸</string>
   <string name="See_rewards" formatted="false">Belohnungen ansehen</string>
   <string name="See_the_rewards" formatted="false">Belohnungen einblenden</string>
   <string name="Select" formatted="false">Auswählen</string>
@@ -524,7 +527,6 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Zukünftige Live-Streams abonnieren.</string>
   <string name="Successful_projects_have_been_created_on_kickstarter" formatted="false">Projekte wurden erfolgreich auf Kickstarter finanziert.</string>
   <string name="Support_creative_independence" formatted="false">Unterstütze kreative Unabhängigkeit</string>
-  <string name="Support_the_project_for_no_reward" formatted="false">Unterstütze ein Projekt ohne Belohnung; einfach, weil es dich anspricht.</string>
   <string name="Survey" formatted="false">Befragung</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Tippe auf das Herz neben einem Projekt und wir benachrichtigen dich 48 Stunden, bevor es abläuft.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Klicke einfach auf das Herz auf der Projektseite, um dieses Projekt zu speichern. Wir werden dir 48 Stunden vor Ablauf eine Benachrichtigung schicken.</string>
@@ -621,7 +623,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Websites" formatted="false">Webseiten</string>
   <string name="Welcome_to_our_library_Peruse_the_stacks_with_us" formatted="false">Willkommen in unserer Bibliothek. Viel Spaß beim Stöbern.</string>
   <string name="Well_ask_you_to_sign_back_into_the_Kickstarter_app_once_youve_changed_your_password" formatted="false">Sobald du dein Passwort geändert hast, wirst du aufgefordert, dich erneut auf der Kickstarter App anzumelden.</string>
-  <string name="Well_help_you_find_a_project_to_back" formatted="false">We\'ll help you find a project to back.</string>
+  <string name="Well_help_you_find_a_project_to_back" formatted="false">Wir helfen dir dabei, Projekte nach deinem Geschmack zu finden.</string>
   <string name="Well_import_your_name_and_profile_photo_and_access_your_friend_list" formatted="false">Wir importieren deinen Namen und dein Profilfoto und können auf die Liste deiner Freunde zugreifen. Wir werden jedoch niemals etwas ohne deine Zustimmung posten.</string>
   <string name="Well_remind_you_forty_eight_hours_before_this_project_ends" formatted="false">Wir werden dir 48 Stunden vor Ablauf dieses Projekts eine Benachrichtigung senden, sowie für alle Projekte, die du in Zukunft speicherst. Um alle gespeicherten Projekte anzusehen, gehe bitte zu deiner Profilseite.</string>
   <string name="When_following_is_on_you_can_follow_the_acticity_of_others" formatted="false">Wenn die Funktion Folgen gewählt wurde, kannst du die Aktivitäten von anderen einsehen und diese sehen deine Aktivitäten. Wenn die Funktion abgewählt wurde, werden diese Daten endgültig gelöscht.</string>

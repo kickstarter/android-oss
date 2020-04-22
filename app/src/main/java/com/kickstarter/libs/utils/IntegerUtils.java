@@ -32,4 +32,11 @@ public final class IntegerUtils {
   public static boolean isNullOrZero(final @Nullable Integer value) {
     return value == null || value == 0;
   }
+
+  /**
+   * Returns `true` if `value` is zero or higher, and false otherwise.
+   */
+  public static boolean isZeroOrHigher(final @Nullable Integer value) {
+    return value != null && value >= 0;
+  }
 }

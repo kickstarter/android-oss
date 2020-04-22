@@ -20,9 +20,6 @@ interface BaseRewardCardViewHolderViewModel {
     }
 
     interface Outputs {
-        /** Emits the id of the stored card. */
-        fun id(): Observable<String>
-
         /** Emits the expiration date for a credit card. */
         fun expirationDate(): Observable<String>
 
@@ -40,7 +37,6 @@ interface BaseRewardCardViewHolderViewModel {
         protected val cardAndProject: PublishSubject<Pair<StoredCard, Project>> = PublishSubject.create()
 
         private val expirationDate = BehaviorSubject.create<String>()
-        private val id = BehaviorSubject.create<String>()
         private val issuer = BehaviorSubject.create<String>()
         private val issuerImage = BehaviorSubject.create<Int>()
         private val lastFour = BehaviorSubject.create<String>()
@@ -51,10 +47,6 @@ interface BaseRewardCardViewHolderViewModel {
 
             val card = cardAndProject
                     .map { it.first }
-
-            card
-                    .map { it.id() }
-                    .subscribe(this.id)
 
             card
                     .map { it.expiration() }
@@ -77,8 +69,6 @@ interface BaseRewardCardViewHolderViewModel {
 
         }
         override fun configureWith(cardAndProject: Pair<StoredCard, Project>) = this.cardAndProject.onNext(cardAndProject)
-
-        override fun id(): Observable<String> = this.id
 
         override fun issuer(): Observable<String> = this.issuer
 

@@ -47,8 +47,10 @@
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="Overrides">Overrides</string>
+  <string name="payment_method_last_four">•••• %{last_four}</string>
   <string name="playground_playground">Playground</string>
   <string name="Production">Production</string>
+  <string name="Reset">Reset</string>
   <string name="Select_email_application">Select email application:</string>
   <string name="Staging">Staging</string>
   <string name="Submit_feedback">Submit feedback</string>

@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockSharedPreferences
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.StringUtils
@@ -42,23 +45,25 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val conversionText = TestSubscriber<String>()
     private val conversionTextViewIsGone = TestSubscriber<Boolean>()
     private val decreasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
-    private val deliveryDividerIsGone = TestSubscriber<Boolean>()
-    private val deliverySectionIsGone = TestSubscriber<Boolean>()
     private val estimatedDelivery = TestSubscriber<String>()
     private val estimatedDeliveryInfoIsGone = TestSubscriber<Boolean>()
     private val increasePledgeButtonIsEnabled = TestSubscriber<Boolean>()
     private val paymentContainerIsGone = TestSubscriber<Boolean>()
     private val pledgeAmount = TestSubscriber<String>()
-    private val pledgeHint = TestSubscriber<String>()
+    private val pledgeButtonCTA = TestSubscriber<Int>()
     private val pledgeButtonIsEnabled = TestSubscriber<Boolean>()
+    private val pledgeButtonIsGone = TestSubscriber<Boolean>()
+    private val pledgeHint = TestSubscriber<String>()
     private val pledgeMaximum = TestSubscriber<String>()
     private val pledgeMaximumIsGone = TestSubscriber<Boolean>()
     private val pledgeMinimum = TestSubscriber<String>()
+    private val pledgeProgressIsGone = TestSubscriber<Boolean>()
     private val pledgeSectionIsGone = TestSubscriber<Boolean>()
     private val pledgeSummaryAmount = TestSubscriber<CharSequence>()
     private val pledgeSummaryIsGone = TestSubscriber<Boolean>()
     private val pledgeTextColor = TestSubscriber<Int>()
     private val projectCurrencySymbol = TestSubscriber<String>()
+    private val rewardSummaryIsGone = TestSubscriber<Boolean>()
     private val rewardTitle = TestSubscriber<String>()
     private val selectedShippingRule = TestSubscriber<ShippingRule>()
     private val shippingAmount = TestSubscriber<CharSequence>()
@@ -68,9 +73,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingSummaryIsGone = TestSubscriber<Boolean>()
     private val shippingSummaryLocation = TestSubscriber<String>()
     private val showNewCardFragment = TestSubscriber<Project>()
-    private val showPledgeCard = TestSubscriber<Pair<Int, CardState>>()
     private val showPledgeError = TestSubscriber<Void>()
     private val showPledgeSuccess = TestSubscriber<Pair<CheckoutData, PledgeData>>()
+    private val showSelectedCard = TestSubscriber<Pair<Int, CardState>>()
     private val showSCAFlow = TestSubscriber<String>()
     private val showUpdatePaymentError = TestSubscriber<Void>()
     private val showUpdatePaymentSuccess = TestSubscriber<Void>()
@@ -82,9 +87,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val totalAndDeadline = TestSubscriber<Pair<String, String>>()
     private val totalAndDeadlineIsVisible = TestSubscriber<Void>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
-    private val updatePledgeButtonIsEnabled = TestSubscriber<Boolean>()
-    private val updatePledgeButtonIsGone = TestSubscriber<Boolean>()
-    private val updatePledgeProgressIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward = RewardFactory.rewardWithShipping(),
@@ -102,23 +104,25 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.conversionText().subscribe(this.conversionText)
         this.vm.outputs.conversionTextViewIsGone().subscribe(this.conversionTextViewIsGone)
         this.vm.outputs.decreasePledgeButtonIsEnabled().subscribe(this.decreasePledgeButtonIsEnabled)
-        this.vm.outputs.deliveryDividerIsGone().subscribe(this.deliveryDividerIsGone)
-        this.vm.outputs.deliverySectionIsGone().subscribe(this.deliverySectionIsGone)
         this.vm.outputs.estimatedDelivery().subscribe(this.estimatedDelivery)
         this.vm.outputs.estimatedDeliveryInfoIsGone().subscribe(this.estimatedDeliveryInfoIsGone)
         this.vm.outputs.increasePledgeButtonIsEnabled().subscribe(this.increasePledgeButtonIsEnabled)
         this.vm.outputs.paymentContainerIsGone().subscribe(this.paymentContainerIsGone)
         this.vm.outputs.pledgeAmount().subscribe(this.pledgeAmount)
+        this.vm.outputs.pledgeButtonCTA().subscribe(this.pledgeButtonCTA)
         this.vm.outputs.pledgeButtonIsEnabled().subscribe(this.pledgeButtonIsEnabled)
+        this.vm.outputs.pledgeButtonIsGone().subscribe(this.pledgeButtonIsGone)
         this.vm.outputs.pledgeHint().subscribe(this.pledgeHint)
         this.vm.outputs.pledgeMaximum().subscribe(this.pledgeMaximum)
         this.vm.outputs.pledgeMaximumIsGone().subscribe(this.pledgeMaximumIsGone)
         this.vm.outputs.pledgeMinimum().subscribe(this.pledgeMinimum)
+        this.vm.outputs.pledgeProgressIsGone().subscribe(this.pledgeProgressIsGone)
         this.vm.outputs.pledgeSectionIsGone().subscribe(this.pledgeSectionIsGone)
         this.vm.outputs.pledgeSummaryAmount().map { it.toString() }.subscribe(this.pledgeSummaryAmount)
         this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.pledgeTextColor().subscribe(this.pledgeTextColor)
         this.vm.outputs.projectCurrencySymbol().map { StringUtils.trim(it.first.toString()) }.subscribe(this.projectCurrencySymbol)
+        this.vm.outputs.rewardSummaryIsGone().subscribe(this.rewardSummaryIsGone)
         this.vm.outputs.rewardTitle().subscribe(this.rewardTitle)
         this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
@@ -128,9 +132,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
         this.vm.outputs.shippingSummaryLocation().subscribe(this.shippingSummaryLocation)
         this.vm.outputs.showNewCardFragment().subscribe(this.showNewCardFragment)
-        this.vm.outputs.showPledgeCard().subscribe(this.showPledgeCard)
         this.vm.outputs.showPledgeError().subscribe(this.showPledgeError)
         this.vm.outputs.showPledgeSuccess().subscribe(this.showPledgeSuccess)
+        this.vm.outputs.showSelectedCard().subscribe(this.showSelectedCard)
         this.vm.outputs.showSCAFlow().subscribe(this.showSCAFlow)
         this.vm.outputs.showUpdatePaymentError().subscribe(this.showUpdatePaymentError)
         this.vm.outputs.showUpdatePaymentSuccess().subscribe(this.showUpdatePaymentSuccess)
@@ -142,9 +146,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.totalAndDeadline().subscribe(this.totalAndDeadline)
         this.vm.outputs.totalAndDeadlineIsVisible().subscribe(this.totalAndDeadlineIsVisible)
         this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
-        this.vm.outputs.updatePledgeButtonIsEnabled().subscribe(this.updatePledgeButtonIsEnabled)
-        this.vm.outputs.updatePledgeButtonIsGone().subscribe(this.updatePledgeButtonIsGone)
-        this.vm.outputs.updatePledgeProgressIsGone().subscribe(this.updatePledgeProgressIsGone)
 
         val projectData = ProjectDataFactory.project(project.toBuilder()
                 .deadline(DateTime.parse("2020-10-23T18:13:09Z"))
@@ -166,9 +167,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCards_whenLoggedIn() {
+    fun testCards_whenLoggedIn_userHasCards() {
         val card = StoredCardFactory.discoverCard()
         val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.project()
 
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
@@ -178,11 +180,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                         return Observable.just(Collections.singletonList(card))
                     }
                 }).build()
-        val project = ProjectFactory.project()
 
         setUpEnvironment(environment, project = project)
 
         this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
         val visa = StoredCardFactory.visa()
         this.vm.inputs.cardSaved(visa)
@@ -190,7 +192,116 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.cardsAndProject.assertValue(Pair(Collections.singletonList(card), project))
         this.addedCard.assertValue(Pair(visa, project))
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED), Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testCards_whenLoggedIn_userHasCards_firstCardIsNotAllowed() {
+        val allowedCard = StoredCardFactory.visa()
+        val storedCards = listOf(StoredCardFactory.discoverCard(), allowedCard, StoredCardFactory.visa())
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.mxProject()
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(apolloClientWithStoredCards(storedCards))
+                .build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testCards_whenLoggedIn_userHasCards_noAllowedCards() {
+        val storedCards = listOf(StoredCardFactory.discoverCard())
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.mxProject()
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(apolloClientWithStoredCards(storedCards))
+                .build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.showSelectedCard.assertNoValues()
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, project))
+        this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValues(Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testCards_whenLoggedIn_userHasNoCards() {
+        val mockCurrentUser = MockCurrentUser(UserFactory.user())
+        val project = ProjectFactory.project()
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
+                .toBuilder()
+                .currentUser(mockCurrentUser)
+                .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(Collections.emptyList())
+                    }
+                }).build()
+
+        setUpEnvironment(environment, project = project)
+
+        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
+        this.showSelectedCard.assertNoValues()
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(Collections.emptyList(), project))
+        this.addedCard.assertValue(Pair(visa, project))
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+    }
+
+    @Test
+    fun testCards_whenLoggedIn_userBackedProject() {
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val storedCards = testData.storedCards
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
+
+        val environment = environmentForShippingRules(shippingRulesEnvelope)
+                .toBuilder()
+                .apolloClient(apolloClientWithStoredCards(storedCards))
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .build()
+
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, backedProject))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        val visa = StoredCardFactory.visa()
+        this.vm.inputs.cardSaved(visa)
+        this.vm.inputs.addedCardPosition(0)
+
+        this.cardsAndProject.assertValue(Pair(storedCards, backedProject))
+        this.addedCard.assertValue(Pair(visa, backedProject))
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
     }
 
     @Test
@@ -198,6 +309,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         this.cardsAndProject.assertNoValues()
+        this.showSelectedCard.assertNoValues()
     }
 
     @Test
@@ -212,12 +324,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.cardsAndProject.assertNoValues()
         this.continueButtonIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(true)
 
         mockCurrentUser.refresh(UserFactory.user())
 
         this.cardsAndProject.assertValueCount(1)
         this.continueButtonIsGone.assertValues(false, true)
         this.paymentContainerIsGone.assertValues(true, false)
+        this.pledgeButtonIsGone.assertValues(true, false)
     }
 
     @Test
@@ -228,12 +342,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.cardsAndProject.assertNoValues()
         this.continueButtonIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(true)
 
         mockCurrentUser.refresh(UserFactory.user())
 
         this.cardsAndProject.assertValueCount(1)
         this.continueButtonIsGone.assertValues(false, true)
         this.paymentContainerIsGone.assertValues(true, false)
+        this.pledgeButtonIsGone.assertValues(true, false)
     }
 
     @Test
@@ -262,20 +378,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(false)
-        this.deliveryDividerIsGone.assertValue(false)
-        this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonCTA.assertValue(R.string.Pledge)
         this.pledgeButtonIsEnabled.assertNoValues()
+        this.pledgeButtonIsGone.assertValue(true)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
-
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
     }
@@ -286,19 +400,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertValue(true)
         this.continueButtonIsGone.assertValue(false)
-        this.deliveryDividerIsGone.assertValue(false)
-        this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
+        this.pledgeButtonCTA.assertValue(R.string.Pledge)
         this.pledgeButtonIsEnabled.assertNoValues()
+        this.pledgeButtonIsGone.assertValue(true)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
@@ -314,19 +427,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(false)
-        this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonCTA.assertValue(R.string.Pledge)
         this.pledgeButtonIsEnabled.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
@@ -338,19 +450,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(false)
-        this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonCTA.assertValue(R.string.Pledge)
         this.pledgeButtonIsEnabled.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
@@ -358,27 +469,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPledgeOfShippableReward() {
-        val shippableReward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(50.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(shippableReward)
-                .rewardId(shippableReward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -389,19 +483,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(true)
-        this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(true)
-        this.pledgeButtonIsEnabled.assertNoValues()
+        this.pledgeButtonCTA.assertValue(R.string.Confirm)
+        this.pledgeButtonIsEnabled.assertValue(false)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -409,34 +502,26 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPledgeOfDigitalReward() {
-        val noReward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .reward(noReward)
-                .rewardId(noReward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(true)
-        this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(true)
-        this.pledgeButtonIsEnabled.assertNoValues()
+        this.pledgeButtonCTA.assertValue(R.string.Confirm)
+        this.pledgeButtonIsEnabled.assertValue(false)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(false)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -444,27 +529,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPaymentOfShippableReward() {
-        val shippableReward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(50.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(shippableReward)
-                .rewardId(shippableReward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -475,19 +543,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(true)
-        this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonCTA.assertValue(R.string.Confirm)
         this.pledgeButtonIsEnabled.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertNoValues()
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
+        this.rewardSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(false)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -495,34 +562,26 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeScreenConfiguration_whenUpdatingPaymentOfDigitalReward() {
-        val noReward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .reward(noReward)
-                .rewardId(noReward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
 
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(true)
-        this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
+        this.pledgeButtonCTA.assertValue(R.string.Confirm)
         this.pledgeButtonIsEnabled.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertNoValues()
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -540,19 +599,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(false)
-        this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
-        this.pledgeButtonIsEnabled.assertNoValues()
+        this.pledgeButtonCTA.assertValue(R.string.Confirm)
+        this.pledgeButtonIsEnabled.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(true)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -566,19 +624,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(false)
-        this.deliverySectionIsGone.assertValue(false)
         this.paymentContainerIsGone.assertValue(true)
-        this.pledgeButtonIsEnabled.assertNoValues()
+        this.pledgeButtonCTA.assertValue(R.string.Confirm)
+        this.pledgeButtonIsEnabled.assertValue(true)
+        this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
+        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
-        this.updatePledgeButtonIsEnabled.assertValue(true)
-        this.updatePledgeButtonIsGone.assertValue(false)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -586,50 +643,21 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeSummaryAmount() {
-        val reward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(30.0)
-                .reward(reward)
-                .rewardId(reward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
 
-        setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+        setUpEnvironment(environment(), noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.pledgeSummaryAmount.assertValue("$30")
+        this.pledgeSummaryAmount.assertValue("$10")
     }
 
     @Test
     fun testTotalAmount_whenUpdatingPledge() {
-        val reward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(40.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(reward)
-                .rewardId(reward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -640,38 +668,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.totalAmount.assertValue("$40")
+        this.totalAmount.assertValue("$50")
     }
 
     @Test
     fun testTotalAmount_whenUpdatingPayment() {
-        val reward = RewardFactory.rewardWithShipping()
-        val unitedStates = LocationFactory.unitedStates()
-        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(40.0)
-                .location(unitedStates)
-                .locationId(unitedStates.id())
-                .reward(reward)
-                .rewardId(reward.id())
-                .shippingAmount(shippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -682,9 +689,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.totalAmount.assertValue("$40")
+        this.totalAmount.assertValue("$50")
     }
 
     @Test
@@ -1074,6 +1081,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .apolloClient(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
                 .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment, project = project)
@@ -1132,6 +1140,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .apolloClient(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
                 .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment, project = project)
@@ -1237,6 +1246,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .apolloClient(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
                 .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment, project = project)
@@ -1355,8 +1365,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.cardSelected(StoredCardFactory.visa(), 0)
+        this.vm.inputs.pledgeButtonClicked()
 
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
         this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
@@ -1452,34 +1462,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShippingSummaryLocation() {
-        val reward = RewardFactory.rewardWithShipping()
-        val nigeria = LocationFactory.nigeria()
-        val nigeriaShippingRule = ShippingRuleFactory.usShippingRule()
-                .toBuilder()
-                .location(nigeria)
-                .build()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(40.0)
-                .location(nigeria)
-                .locationId(nigeria.id())
-                .reward(reward)
-                .rewardId(reward.id())
-                .shippingAmount(nigeriaShippingRule.cost().toFloat())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
-                .toBuilder()
-                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), nigeriaShippingRule))
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
+        val backedProject = testData.project
+        val shippableReward = testData.reward
+        val shippingRulesEnvelope = testData.shippingRulesEnvelope as ShippingRulesEnvelope
 
         val environment = environmentForShippingRules(shippingRulesEnvelope)
                 .toBuilder()
@@ -1490,9 +1476,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PAYMENT)
+        setUpEnvironment(environment, shippableReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.shippingSummaryLocation.assertValue("Nigeria")
+        this.shippingSummaryLocation.assertValue("Brooklyn, NY")
     }
 
     @Test
@@ -1559,64 +1545,108 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePaymentError() {
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
         val environment = environment()
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.error(Exception("womp"))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
+
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePaymentError.assertValueCount(1)
         this.koalaTest.assertValues("Update Payment Method Button Clicked")
     }
 
     @Test
     fun testShowUpdatePaymentSuccess() {
-        setUpEnvironment(environment(), RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .apolloClient(apolloClientWithStoredCards(storedCards))
+                .build()
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
+
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePaymentSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Payment Method Button Clicked")
     }
 
     @Test
     fun testShowUpdatePaymentSuccess_whenRequiresAction_isSuccessful_successOutcome() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
+        val environment = environment()
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertValueCount(1)
@@ -1625,28 +1655,43 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePaymentSuccess_whenRequiresAction_isSuccessful_unsuccessfulOutcome() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
+        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertValueCount(1)
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -1655,28 +1700,43 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePaymentSuccess_whenRequiresAction_isUnsuccessful() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
+        val testData = setUpBackedNoRewardTestData()
+        val backedProject = testData.project
+        val noReward = testData.reward
+        val storedCards = testData.storedCards
+
+        val environment = environment()
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(object : MockApolloClient() {
+                    override fun getStoredCards(): Observable<List<StoredCard>> {
+                        return Observable.just(storedCards)
+                    }
+
                     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
                         return Observable.just(CheckoutFactory.requiresAction(true))
                     }
-                })
-                .build()
-        setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_PAYMENT)
+                }).build()
 
-        this.vm.inputs.selectCardButtonClicked(0)
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING))
+        this.showSelectedCard.assertValue(Pair(1, CardState.SELECTED))
+
+        this.vm.inputs.cardSelected(storedCards[0], 0)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
+
+        this.vm.inputs.pledgeButtonClicked()
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertNoValues()
         this.showUpdatePaymentSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("eek"))
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
+        this.showSelectedCard.assertValues(Pair(1, CardState.SELECTED), Pair(0, CardState.SELECTED))
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePaymentError.assertValueCount(1)
         this.showUpdatePaymentSuccess.assertNoValues()
@@ -1730,9 +1790,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1761,9 +1821,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1780,9 +1841,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, project = ProjectFactory.backedProject(), pledgeReason = PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1799,9 +1861,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1848,9 +1911,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1872,9 +1935,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1884,9 +1948,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
         setUpEnvironment(environment, project = ProjectFactory.backedProject(), pledgeReason = PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1895,9 +1960,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     fun testShowUpdatePledgeSuccess_whenUpdatingRewardWithNoShipping() {
         setUpEnvironment(environment(), RewardFactory.noReward(), ProjectFactory.backedProject(), PledgeReason.UPDATE_REWARD)
 
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.updatePledgeProgressIsGone.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -1927,19 +1993,21 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValue(false)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeProgressIsGone.assertValues(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updatePledgeProgressIsGone.assertValue(false)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -1968,19 +2036,21 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValue(false)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
+        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertValueCount(1)
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -2009,19 +2079,21 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.updatePledgeButtonClicked()
+        this.vm.inputs.pledgeButtonClicked()
 
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValue(false)
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("woops"))
 
+        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertValueCount(1)
         this.showUpdatePledgeSuccess.assertNoValues()
-        this.updatePledgeProgressIsGone.assertValues(false, true)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -2082,14 +2154,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
-
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         //Successfully pledging with a valid amount should show the thanks page
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2102,14 +2174,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val reward = RewardFactory.reward()
         setUpEnvironment(environmentForLoggedInUser(UserFactory.user()), reward, project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
-
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         //Successfully pledging with a valid amount should show the thanks page
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2126,14 +2198,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, reward, project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
-
-        this.vm.inputs.pledgeButtonClicked("t3st")
+        this.vm.inputs.pledgeButtonClicked()
 
         //Successfully pledging with a valid amount should show the thanks page
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2153,13 +2225,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.showPledgeCard.assertValue(Pair(0, CardState.PLEDGE))
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE), Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
         this.showSCAFlow.assertNoValues()
@@ -2180,13 +2252,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.LOADING))
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
@@ -2212,24 +2284,27 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
+        this.pledgeButtonIsEnabled.assertValues(true)
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-
-        this.showPledgeCard.assertValue(Pair(0, CardState.LOADING))
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValue(false)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
+        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
     }
 
     @Test
@@ -2245,28 +2320,31 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
-        this.vm.inputs.selectCardButtonClicked(0)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
 
-        this.showPledgeCard.assertValuesAndClear(Pair(0, CardState.PLEDGE))
+        this.vm.inputs.pledgeButtonClicked()
 
-        this.vm.inputs.pledgeButtonClicked("t3st")
-
-        this.showPledgeCard.assertValue(Pair(0, CardState.LOADING))
+        this.pledgeButtonIsEnabled.assertValues(true, false)
+        this.pledgeProgressIsGone.assertValues(false)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
-        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+
 
         this.vm.inputs.stripeSetupResultUnsuccessful(Exception("yikes"))
 
-        this.showPledgeCard.assertValues(Pair(0, CardState.LOADING), Pair(0, CardState.PLEDGE))
+        this.pledgeButtonIsEnabled.assertValues(true, false, true)
+        this.pledgeProgressIsGone.assertValues(false, true)
+        this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
+        this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
     }
 
     @Test
-    fun testUpdatePledgeButtonIsEnabled_UpdatingPledge_whenAmountChanged() {
+    fun testPledgeButtonIsEnabled_UpdatingPledge_whenAmountChanged() {
         val reward = RewardFactory.noReward()
         val backing = BackingFactory.backing()
                 .toBuilder()
@@ -2281,13 +2359,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.updatePledgeButtonIsEnabled.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.pledgeInput("31")
-        this.updatePledgeButtonIsEnabled.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.pledgeInput("30")
-        this.updatePledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
     }
 
     @Test
@@ -2332,18 +2410,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.selectedShippingRule.assertValue(backingShippingRule)
-        this.updatePledgeButtonIsEnabled.assertValues(false)
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
         this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule)
-        this.updatePledgeButtonIsEnabled.assertValues(false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.shippingRuleSelected(backingShippingRule)
         this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule, backingShippingRule)
-        this.updatePledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false)
 
         this.vm.inputs.pledgeInput("500")
-        this.updatePledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject() {
@@ -2407,7 +2485,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
     }
 
-    private fun environmentForLoggedInUser(user: User) : Environment {
+    private fun apolloClientWithStoredCards(storedCards: List<StoredCard>): MockApolloClient {
+        return object : MockApolloClient() {
+            override fun getStoredCards(): Observable<List<StoredCard>> {
+                return Observable.just(storedCards)
+            }
+        }
+    }
+
+    private fun environmentForLoggedInUser(user: User): Environment {
         return environment()
                 .toBuilder()
                 .currentUser(MockCurrentUser(user))
@@ -2429,5 +2515,64 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .apiClient(apiClient)
                 .currentConfig(currentConfig)
                 .build()
+    }
+
+    data class TestData(val reward: Reward,
+                        val project: Project,
+                        val backing: Backing?,
+                        val shippingRulesEnvelope: ShippingRulesEnvelope?,
+                        val storedCards: List<StoredCard>)
+
+    private fun setUpBackedShippableRewardTestData(): TestData {
+        val backingCard = StoredCardFactory.visa()
+        val shippableReward = RewardFactory.rewardWithShipping()
+        val unitedStates = LocationFactory.unitedStates()
+        val shippingRule = ShippingRuleFactory.usShippingRule().toBuilder().location(unitedStates).build()
+        val storedCards = listOf(StoredCardFactory.discoverCard(), backingCard, StoredCardFactory.visa())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(50.0)
+                .location(unitedStates)
+                .locationId(unitedStates.id())
+                .paymentSource(PaymentSourceFactory.visa()
+                        .toBuilder()
+                        .id(backingCard.id())
+                        .build())
+                .reward(shippableReward)
+                .rewardId(shippableReward.id())
+                .shippingAmount(shippingRule.cost().toFloat())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val shippingRulesEnvelope = ShippingRulesEnvelopeFactory.shippingRules()
+                .toBuilder()
+                .shippingRules(listOf(ShippingRuleFactory.germanyShippingRule(), shippingRule))
+                .build()
+
+        return TestData(shippableReward, backedProject, backing, shippingRulesEnvelope, storedCards)
+    }
+
+    private fun setUpBackedNoRewardTestData(): TestData {
+        val backingCard = StoredCardFactory.visa()
+        val noReward = RewardFactory.noReward()
+        val storedCards = listOf(StoredCardFactory.discoverCard(), backingCard, StoredCardFactory.visa())
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .paymentSource(PaymentSourceFactory.visa()
+                        .toBuilder()
+                        .id(backingCard.id())
+                        .build())
+                .reward(noReward)
+                .rewardId(noReward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        return TestData(noReward, backedProject, backing, null, storedCards)
     }
 }

@@ -5,6 +5,8 @@ import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ExperimentRevenueData
+import org.json.JSONArray
+import org.json.JSONObject
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -20,6 +22,17 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
     override fun appVersion(): String = "9.9.9"
 
     override fun optimizelyEnvironment(): OptimizelyEnvironment = this.optimizelyEnvironment
+
+    override fun optimizelyProperties(experimentData: ExperimentData): Map<String, Any> {
+        val experiments = JSONArray()
+        val variant = this.variant.rawValue ?: "unknown"
+        experiments.put(JSONObject(mutableMapOf<Any?, Any?>("optimizely_experiment_slug" to "test_experiment",
+                "optimizely_variant_id" to variant)))
+
+        return mapOf("optimizely_api_key" to optimizelyEnvironment.sdkKey,
+                "optimizely_environment_key" to optimizelyEnvironment.environmentKey,
+                "optimizely_experiments" to experiments)
+    }
 
     override fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String? = this.variant.rawValue
 

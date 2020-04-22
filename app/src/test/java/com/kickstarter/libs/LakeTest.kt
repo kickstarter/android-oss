@@ -1,7 +1,9 @@
 package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -10,6 +12,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
 import org.json.JSONArray
+import org.json.JSONObject
 import org.junit.Test
 import rx.subjects.BehaviorSubject
 
@@ -405,7 +408,7 @@ class LakeTest : KSRobolectricTestCase() {
         client.eventProperties.subscribe(this.propertiesTest)
         val lake = Koala(client)
 
-        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        lake.trackProjectPagePledgeButtonClicked(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -418,11 +421,11 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
-        this.lakeTest.assertValues("Campaign Details Button Clicked")
+        this.lakeTest.assertValues("Project Page Pledge Button Clicked")
     }
 
     private fun client(user: User?) = MockTrackingClient(user?.let { MockCurrentUser(it) }
-            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.LAKE)
+            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.LAKE, MockExperimentsClientType())
 
     private fun assertCheckoutProperties() {
         val expectedProperties = this.propertiesTest.value
@@ -439,15 +442,13 @@ class LakeTest : KSRobolectricTestCase() {
 
     private fun assertOptimizelyProperties() {
         val expectedProperties = this.propertiesTest.value
-        assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["pledge_backer_reward_estimated_delivery_on"])
-        assertEquals(false, expectedProperties["pledge_backer_reward_has_items"])
-        assertEquals(2L, expectedProperties["pledge_backer_reward_id"])
-        assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_time"])
-        assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_quantity"])
-        assertEquals(10.0, expectedProperties["pledge_backer_reward_minimum"])
-        assertEquals(true, expectedProperties["pledge_backer_reward_shipping_enabled"])
-        assertEquals("unrestricted", expectedProperties["pledge_backer_reward_shipping_preference"])
-        assertEquals("Digital Bundle", expectedProperties["pledge_backer_reward_title"])
+        assertEquals(OptimizelyEnvironment.STAGING.sdkKey, expectedProperties["optimizely_api_key"])
+        assertEquals(OptimizelyEnvironment.STAGING.environmentKey, expectedProperties["optimizely_environment_key"])
+        assertNotNull(expectedProperties["optimizely_experiments"])
+        val experiments = expectedProperties["optimizely_experiments"] as JSONArray
+        val experiment = experiments[0] as JSONObject
+        assertEquals("test_experiment", experiment["optimizely_experiment_slug"])
+        assertEquals("unknown", experiment["optimizely_variant_id"])
     }
 
     private fun assertPledgeProperties() {

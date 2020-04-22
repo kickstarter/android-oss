@@ -38,15 +38,4 @@
       tools:text="Expires in 03/2020" />
   </LinearLayout>
 
-  <!--  TODO: I need some a11y copy-->
-  <ImageView
-    android:id="@+id/failed_indicator_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1_half"
-    android:importantForAccessibility="no"
-    android:src="@drawable/ic_icon_alert"
-    android:tint="@color/ksr_red_400"
-    android:visibility="gone" />
-
 </LinearLayout>

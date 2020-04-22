@@ -3,6 +3,9 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.BackingUtils
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.viewholders.KSViewHolder
@@ -31,6 +34,9 @@ interface BaseRewardCardViewHolderViewModel {
 
         /** Emits the last four digits of the credit card. */
         fun lastFour(): Observable<String>
+
+        /** Emits a boolean that determines if the retry copy should be visible. */
+        fun retryCopyIsVisible(): Observable<Boolean>
     }
 
     abstract class ViewModel(val environment: Environment) : ActivityViewModel<KSViewHolder>(environment), Inputs, Outputs {
@@ -40,6 +46,7 @@ interface BaseRewardCardViewHolderViewModel {
         private val issuer = BehaviorSubject.create<String>()
         private val issuerImage = BehaviorSubject.create<Int>()
         private val lastFour = BehaviorSubject.create<String>()
+        private val retryCopyIsVisible = PublishSubject.create<Boolean>()
 
         private val sdf = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
@@ -67,6 +74,21 @@ interface BaseRewardCardViewHolderViewModel {
                     .map { StoredCard.issuer(it) }
                     .subscribe(this.issuer)
 
+            val project = this.cardAndProject
+                    .map { it.second }
+
+            val backing = project
+                    .map { it.backing() }
+
+            val isBackingPaymentSource = backing
+                    .compose<Pair<Backing?, StoredCard>>(combineLatestPair(card))
+                    .map { backingAndCard -> backingAndCard.first?.let { b -> b.paymentSource()?.let { it.id() == backingAndCard.second.id() } }?: false }
+
+            isBackingPaymentSource
+                    .compose<Pair<Boolean, Backing?>>(combineLatestPair(backing))
+                    .map { it.first && BackingUtils.isErrored(it.second) }
+                    .subscribe(this.retryCopyIsVisible)
+
         }
         override fun configureWith(cardAndProject: Pair<StoredCard, Project>) = this.cardAndProject.onNext(cardAndProject)
 
@@ -78,5 +100,6 @@ interface BaseRewardCardViewHolderViewModel {
 
         override fun lastFour(): Observable<String> = this.lastFour
 
+        override fun retryCopyIsVisible(): Observable<Boolean> = this.retryCopyIsVisible
     }
 }

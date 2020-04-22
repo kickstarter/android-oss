@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/retry_card_warning"
+  style="@style/Caption1SecondaryMedium"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:layout_marginStart="@dimen/grid_8"
+  android:layout_marginEnd="@dimen/grid_2"
+  android:layout_marginBottom="@dimen/grid_2"
+  android:text="@string/Retry_or_select_another_method"
+  android:textColor="@color/ksr_red_400"
+  android:visibility="gone"
+  tools:showIn="@layout/item_reward_unselected_card"
+  tools:visibility="visible" />

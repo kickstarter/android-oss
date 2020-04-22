@@ -7,20 +7,29 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
-    android:orientation="horizontal"
-    android:padding="@dimen/grid_2">
+    android:orientation="vertical">
 
-    <ImageView
-      android:layout_width="@dimen/grid_3"
-      android:layout_height="@dimen/grid_3"
-      android:layout_gravity="center_vertical"
-      android:layout_marginEnd="@dimen/grid_3"
-      android:background="@drawable/circle_accent"
-      android:contentDescription="@string/Selected_card"
-      android:src="@drawable/icon__check"
-      android:tint="@color/white" />
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:animateLayoutChanges="true"
+      android:orientation="horizontal"
+      android:padding="@dimen/grid_2">
 
-    <include layout="@layout/reward_card_details" />
+      <ImageView
+        android:layout_width="@dimen/grid_3"
+        android:layout_height="@dimen/grid_3"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:background="@drawable/circle_accent"
+        android:contentDescription="@string/Selected_card"
+        android:src="@drawable/icon__check"
+        android:tint="@color/white" />
+
+      <include layout="@layout/reward_card_details" />
+    </LinearLayout>
+
+    <include layout="@layout/retry_card_warning" />
+
   </LinearLayout>
 </androidx.cardview.widget.CardView>

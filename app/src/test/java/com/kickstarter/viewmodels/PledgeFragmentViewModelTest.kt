@@ -620,8 +620,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(true)
-        this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeMaximumIsGone.assertNoValues()
@@ -630,9 +628,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(false)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -655,8 +650,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.continueButtonIsEnabled.assertNoValues()
         this.continueButtonIsGone.assertValue(true)
-        this.deliveryDividerIsGone.assertValue(true)
-        this.deliverySectionIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeMaximumIsGone.assertNoValues()
@@ -665,9 +658,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
-        this.updatePledgeButtonIsEnabled.assertNoValues()
-        this.updatePledgeButtonIsGone.assertValue(true)
-        this.updatePledgeProgressIsGone.assertNoValues()
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()

@@ -52,9 +52,6 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
 
         init {
 
-            val project = this.cardAndProject
-                    .map { it.second }
-
             val allowedCardType = this.cardAndProject
                     .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
 

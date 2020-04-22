@@ -724,7 +724,7 @@ interface PledgeFragmentViewModel {
             userIsLoggedIn
                     .filter { BooleanUtils.isTrue(it) }
                     .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT}
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_PAYMENT || it.second == PledgeReason.FIX_PLEDGE }
                     .take(1)
                     .switchMap { storedCards() }
                     .compose(bindToLifecycle())
@@ -830,7 +830,12 @@ interface PledgeFragmentViewModel {
 
             val updatePaymentClick = pledgeReason
                     .compose<PledgeReason>(takeWhen(this.pledgeButtonClicked))
-                    .filter { it == PledgeReason.UPDATE_PAYMENT || it.first == PledgeReason.FIX_PLEDGE }
+                    .filter { it == PledgeReason.UPDATE_PAYMENT }
+                    .compose(ignoreValues())
+
+            val fixPaymentClick = pledgeReason
+                    .compose<PledgeReason>(takeWhen(this.pledgeButtonClicked))
+                    .filter { it == PledgeReason.FIX_PLEDGE }
                     .compose(ignoreValues())
 
             val updatePledgeClick = pledgeReason
@@ -847,7 +852,7 @@ interface PledgeFragmentViewModel {
                     reward,
                     optionalPaymentMethodId)
             { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
-                    .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick)))
+                    .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
                     .switchMap {
                         this.apolloClient.updateBacking(it)
                                 .doOnSubscribe {

@@ -5,9 +5,11 @@ import android.view.View
 import com.kickstarter.R
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardCardSelectedViewHolderViewModel
+import kotlinx.android.synthetic.main.retry_card_warning.view.*
 import kotlinx.android.synthetic.main.reward_card_details.view.*
 
 class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
@@ -39,6 +41,11 @@ class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setLastFourTextView(it) }
+
+        this.viewModel.outputs.retryCopyIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.retry_card_warning, !it) }
     }
 
     override fun bindData(data: Any?) {

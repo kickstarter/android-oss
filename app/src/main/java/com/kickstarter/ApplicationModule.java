@@ -405,16 +405,16 @@ public final class ApplicationModule {
   @KoalaTracker
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig));
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
+    return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
   }
 
   @Provides
   @LakeTracker
   @Singleton
   static Koala provideLake(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig) {
-    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig));
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
+    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
   }
 
   @Provides

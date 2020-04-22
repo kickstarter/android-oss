@@ -1,10 +1,6 @@
 package com.kickstarter.libs.utils;
 
-import android.util.Pair;
-
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.models.OptimizelyEnvironment;
-import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -19,7 +15,6 @@ import com.kickstarter.ui.data.ProjectData;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
@@ -167,28 +162,6 @@ public final class KoalaUtils {
         put("shipping_enabled", RewardUtils.isShippable(reward));
         put("shipping_preference", reward.shippingPreference());
         put("title", reward.title());
-      }
-    };
-
-    return MapUtils.prefixKeys(properties, prefix);
-  }
-
-  public static @NonNull Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment,
-    final @NonNull List<Pair<OptimizelyExperiment.Key, OptimizelyExperiment.Variant>> experiments) {
-    return optimizelyProperties(optimizelyEnvironment, experiments, "optimizely_");
-  }
-
-  public static @NonNull
-  Map<String, Object> optimizelyProperties(final @NonNull OptimizelyEnvironment optimizelyEnvironment,
-    final @NonNull List<Pair<OptimizelyExperiment.Key, OptimizelyExperiment.Variant>> experiments, final @NonNull String prefix) {
-    final Map<String, Object> properties = new HashMap<String, Object>() {
-      {
-        put("api_key", optimizelyEnvironment.getSdkKey());
-        put("environment_key", optimizelyEnvironment.getEnvironmentKey());
-        for (Pair<OptimizelyExperiment.Key, OptimizelyExperiment.Variant> experimentAndVariant : experiments) {
-          put("experiment_slug", experimentAndVariant.first.getKey());
-          put("variant", experimentAndVariant.second.getRawValue());
-        }
       }
     };
 

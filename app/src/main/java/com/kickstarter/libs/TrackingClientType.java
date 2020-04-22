@@ -45,7 +45,6 @@ public abstract class TrackingClientType {
 
     hashMap.putAll(sessionProperties(userIsLoggedIn));
     hashMap.putAll(contextProperties());
-    hashMap.putAll(optimizelyProperties());
 
     return hashMap;
   }
@@ -130,6 +129,7 @@ public abstract class TrackingClientType {
   }
 
   protected abstract Type type();
+  protected abstract ExperimentsClientType optimizely();
 
   //Default properties
   protected abstract String brand();
@@ -144,7 +144,6 @@ public abstract class TrackingClientType {
   protected abstract User loggedInUser();
   protected abstract String manufacturer();
   protected abstract String model();
-  protected abstract Map<String, Object> optimizelyProperties();
   protected abstract String OSVersion();
   protected abstract long time();
   protected abstract String userAgent();

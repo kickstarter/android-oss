@@ -1,7 +1,6 @@
 package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.utils.ExperimentTrackingData
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project

@@ -36,5 +36,11 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         return OptimizelyExperiment.Variant.safeValueOf(variationString)
     }
 
+    override fun optimizelyEnvironment(): OptimizelyEnvironment = this.optimizelyEnvironment
+
     private fun optimizelyClient(): OptimizelyClient = this.optimizelyManager.optimizely
+
+    override fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String? {
+        return optimizelyClient().getVariation(experimentKey, userId(), attributes(experimentData, this.optimizelyEnvironment))?.key
+    }
 }

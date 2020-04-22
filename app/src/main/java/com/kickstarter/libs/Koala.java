@@ -16,8 +16,6 @@ import com.kickstarter.ui.data.PledgeData;
 import com.kickstarter.ui.data.PledgeFlowContext;
 import com.kickstarter.ui.data.ProjectData;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -502,12 +500,6 @@ public final class Koala {
     this.client.track(KoalaEvent.PLEDGE_SCREEN_VIEWED, properties);
   }
 
-  public void trackCampaignDetailsButtonClicked(final @NonNull Project project) {
-    final Map<String, Object> properties = KoalaUtils.projectProperties(project, this.client.loggedInUser());
-
-    this.client.track(KoalaEvent.PLEDGE_SCREEN_VIEWED, properties);
-  }
-
   // SHARE
   public void trackShowProjectShareSheet(final @NonNull Project project) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project, this.client.loggedInUser());
@@ -771,7 +763,7 @@ public final class Koala {
   }
   //endregion
 
-  private @NotNull Map<String, Object> optimizelyProperties(final @NonNull ProjectData projectData) {
+  private @NonNull Map<String, Object> optimizelyProperties(final @NonNull ProjectData projectData) {
     final ExperimentData experimentData = new ExperimentData(this.client.loggedInUser(), projectData.refTagFromIntent(), projectData.refTagFromCookie());
     return this.client.optimizely().optimizelyProperties(experimentData);
   }

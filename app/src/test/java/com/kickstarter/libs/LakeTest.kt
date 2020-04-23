@@ -1,7 +1,9 @@
 package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -10,6 +12,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import org.joda.time.DateTime
 import org.json.JSONArray
+import org.json.JSONObject
 import org.junit.Test
 import rx.subjects.BehaviorSubject
 
@@ -396,8 +399,33 @@ class LakeTest : KSRobolectricTestCase() {
         this.lakeTest.assertValues("Thanks Page Viewed")
     }
 
+    @Test
+    fun testOptimizelyProperties() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        lake.trackProjectPagePledgeButtonClicked(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertOptimizelyProperties()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Project Page Pledge Button Clicked")
+    }
+
     private fun client(user: User?) = MockTrackingClient(user?.let { MockCurrentUser(it) }
-            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.LAKE)
+            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.LAKE, MockExperimentsClientType())
 
     private fun assertCheckoutProperties() {
         val expectedProperties = this.propertiesTest.value
@@ -410,6 +438,17 @@ class LakeTest : KSRobolectricTestCase() {
     private fun assertContextProperties() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
+    }
+
+    private fun assertOptimizelyProperties() {
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(OptimizelyEnvironment.STAGING.sdkKey, expectedProperties["optimizely_api_key"])
+        assertEquals(OptimizelyEnvironment.STAGING.environmentKey, expectedProperties["optimizely_environment_key"])
+        assertNotNull(expectedProperties["optimizely_experiments"])
+        val experiments = expectedProperties["optimizely_experiments"] as JSONArray
+        val experiment = experiments[0] as JSONObject
+        assertEquals("test_experiment", experiment["optimizely_experiment_slug"])
+        assertEquals("unknown", experiment["optimizely_variant_id"])
     }
 
     private fun assertPledgeProperties() {

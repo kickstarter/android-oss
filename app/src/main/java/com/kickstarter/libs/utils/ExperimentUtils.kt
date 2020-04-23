@@ -1,8 +1,8 @@
 package com.kickstarter.libs.utils
 
 import com.google.firebase.iid.FirebaseInstanceId
-import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -11,9 +11,9 @@ import kotlin.math.roundToInt
 
 object ExperimentUtils {
 
-    fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, apiEndpoint: ApiEndpoint): Map<String, Any?> {
+    fun attributes(experimentData: ExperimentData, appVersion: String, OSVersion: String, optimizelyEnvironment: OptimizelyEnvironment): Map<String, Any?> {
         return mapOf(
-                Pair("distinct_id", if (apiEndpoint != ApiEndpoint.PRODUCTION) FirebaseInstanceId.getInstance().id else null),
+                Pair("distinct_id", if (optimizelyEnvironment != OptimizelyEnvironment.PRODUCTION) FirebaseInstanceId.getInstance().id else null),
                 Pair("session_app_release_version", appVersion),
                 Pair("session_os_version", String.format("Android %s", OSVersion)),
                 Pair("session_ref_tag", experimentData.intentRefTag?.tag()),

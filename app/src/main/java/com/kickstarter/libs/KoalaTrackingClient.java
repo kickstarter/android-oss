@@ -25,8 +25,9 @@ public final class KoalaTrackingClient extends TrackingClient {
     final @ApplicationContext @NonNull Context context,
     final @NonNull CurrentUserType currentUser,
     final @NonNull Build build,
-    final @NonNull CurrentConfigType currentConfig) {
-    super(context, currentUser, build, currentConfig);
+    final @NonNull CurrentConfigType currentConfig,
+    final @NonNull ExperimentsClientType optimizely) {
+    super(context, currentUser, build, currentConfig, optimizely);
 
     this.currentUser = currentUser;
     this.build = build;

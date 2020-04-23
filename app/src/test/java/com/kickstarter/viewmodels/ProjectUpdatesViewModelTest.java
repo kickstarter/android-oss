@@ -84,7 +84,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testNoUpdatesState() {
+  public void test_projectAndUpdates_whenUpdatesListIsEmpty() {
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment().toBuilder().apiClient(new MockApiClient() {
       @NonNull

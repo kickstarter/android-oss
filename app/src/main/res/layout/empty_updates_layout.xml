@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="6dp"
         android:background="@drawable/ic_bubble"
+        android:contentDescription="@string/no_updates"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

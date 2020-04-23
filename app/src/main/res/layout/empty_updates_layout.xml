@@ -15,8 +15,7 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- TODO: ask about translations for resource @string/no_updates -->
+    
     <TextView
         style="@style/Headline"
         android:id="@+id/title"

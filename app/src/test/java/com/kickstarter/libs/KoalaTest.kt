@@ -2,7 +2,6 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -307,7 +306,7 @@ class KoalaTest : KSRobolectricTestCase() {
     }
 
     private fun client(user: User?) = MockTrackingClient(user?.let { MockCurrentUser(it) }
-            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.KOALA, MockExperimentsClientType())
+            ?: MockCurrentUser(), mockCurrentConfig(), TrackingClientType.Type.KOALA)
 
     private fun project() =
             ProjectFactory.project().toBuilder()

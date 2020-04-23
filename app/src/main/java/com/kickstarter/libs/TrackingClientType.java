@@ -129,7 +129,6 @@ public abstract class TrackingClientType {
   }
 
   protected abstract Type type();
-  protected abstract ExperimentsClientType optimizely();
 
   //Default properties
   protected abstract String brand();

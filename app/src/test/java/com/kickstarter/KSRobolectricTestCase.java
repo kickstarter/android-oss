@@ -45,8 +45,8 @@ public abstract class KSRobolectricTestCase extends TestCase {
     final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
 
     final MockExperimentsClientType experimentsClientType = experimentsClient();
-    final MockTrackingClient koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType);
-    final MockTrackingClient lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType);
+    final MockTrackingClient koalaTrackingClient = koalaTrackingClient(mockCurrentConfig);
+    final MockTrackingClient lakeTrackingClient = lakeTrackingClient(mockCurrentConfig);
 
     DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
 
@@ -97,19 +97,15 @@ public abstract class KSRobolectricTestCase extends TestCase {
     return experimentsClientType;
   }
 
-  private MockTrackingClient koalaTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig,
-    final @NonNull MockExperimentsClientType experimentsClientType) {
-    final MockTrackingClient koalaTrackingClient = new MockTrackingClient(new MockCurrentUser(),
-      mockCurrentConfig, TrackingClientType.Type.KOALA, experimentsClientType);
+  private MockTrackingClient koalaTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig) {
+    final MockTrackingClient koalaTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, TrackingClientType.Type.KOALA);
     this.koalaTest = new TestSubscriber<>();
     koalaTrackingClient.eventNames.subscribe(this.koalaTest);
     return koalaTrackingClient;
   }
 
-  private MockTrackingClient lakeTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig,
-    final @NonNull MockExperimentsClientType experimentsClientType) {
-    final MockTrackingClient lakeTrackingClient = new MockTrackingClient(new MockCurrentUser(),
-      mockCurrentConfig, TrackingClientType.Type.LAKE, experimentsClientType);
+  private MockTrackingClient lakeTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig) {
+    final MockTrackingClient lakeTrackingClient = new MockTrackingClient(new MockCurrentUser(), mockCurrentConfig, TrackingClientType.Type.LAKE);
     this.lakeTest = new TestSubscriber<>();
     lakeTrackingClient.eventNames.subscribe(this.lakeTest);
     return lakeTrackingClient;

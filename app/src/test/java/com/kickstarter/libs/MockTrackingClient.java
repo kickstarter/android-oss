@@ -17,13 +17,11 @@ import rx.subjects.PublishSubject;
 public final class MockTrackingClient extends TrackingClientType {
   private static final long DEFAULT_TIME = DateTime.parse("2018-11-02T18:42:05Z").getMillis() / 1000;
   private final Type type;
-  private final ExperimentsClientType optimizely;
   @Nullable private User loggedInUser;
   @Nullable private Config config;
 
-  public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final Type type, final @NonNull ExperimentsClientType optimizely) {
+  public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final Type type) {
     this.type = type;
-    this.optimizely = optimizely;
     currentUser.observable().subscribe(u -> this.loggedInUser = u);
     currentConfig.observable().subscribe(c -> this.config = c);
   }
@@ -44,11 +42,6 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   public void track(final @NonNull String eventName, final @NonNull Map<String, Object> additionalProperties) {
     this.events.onNext(new Event(eventName, combinedProperties(additionalProperties)));
-  }
-
-  @Override
-  protected ExperimentsClientType optimizely() {
-    return this.optimizely;
   }
 
   @Override

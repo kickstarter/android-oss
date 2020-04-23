@@ -775,10 +775,11 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.continueButtonIsEnabled)
 
-            initialCardSelection
+            selectedCardAndPosition
                     .compose(ignoreValues())
                     .compose<Pair<Void, Boolean>>(combineLatestPair(totalIsValid))
                     .map { it.second }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeButtonIsEnabled)
 

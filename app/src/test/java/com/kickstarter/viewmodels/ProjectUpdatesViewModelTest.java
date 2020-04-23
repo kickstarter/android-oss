@@ -84,6 +84,29 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testNoUpdatesState() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment().toBuilder().apiClient(new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<UpdatesEnvelope> fetchUpdates(final @NonNull Project project) {
+        return Observable.just(
+                UpdatesEnvelope
+                        .builder()
+                        .updates(Collections.emptyList())
+                        .urls(urlsEnvelope())
+                        .build()
+        );
+      }
+    }).build(), project);
+
+    this.projectAndUpdates.assertValues(Pair.create(project, Collections.emptyList()));
+    this.isFetchingUpdates.assertValues(true, false);
+    this.horizontalProgressBarIsGone.assertValues(false, true);
+    this.koalaTest.assertValue("Viewed Updates");
+  }
+
+  @Test
   public void testStartUpdateActivity() {
     final Update update = UpdateFactory.update();
     final List<Update> updates = Collections.singletonList(update);

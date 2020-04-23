@@ -39,6 +39,7 @@ import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
+import com.kickstarter.libs.models.OptimizelyEnvironment;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -404,16 +405,16 @@ public final class ApplicationModule {
   @KoalaTracker
   @Singleton
   static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig));
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
+    return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
   }
 
   @Provides
   @LakeTracker
   @Singleton
   static Koala provideLake(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig) {
-    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig));
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
+    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
   }
 
   @Provides
@@ -616,17 +617,17 @@ public final class ApplicationModule {
   @Singleton
   @NonNull
   ExperimentsClientType provideOptimizely(final @ApplicationContext @NonNull Context context, final @NonNull ApiEndpoint apiEndpoint, final @NonNull Build build) {
-    final String optimizelyKey;
+    final OptimizelyEnvironment optimizelyEnvironment;
     if (apiEndpoint == ApiEndpoint.PRODUCTION) {
-      optimizelyKey = Secrets.Optimizely.PRODUCTION;
+      optimizelyEnvironment = OptimizelyEnvironment.PRODUCTION;
     } else if (apiEndpoint == ApiEndpoint.STAGING) {
-      optimizelyKey = Secrets.Optimizely.STAGING;
+      optimizelyEnvironment = OptimizelyEnvironment.STAGING;
     } else {
-      optimizelyKey = Secrets.Optimizely.DEVELOPMENT;
+      optimizelyEnvironment = OptimizelyEnvironment.DEVELOPMENT;
     }
 
     final OptimizelyManager optimizelyManager = OptimizelyManager.builder()
-      .withSDKKey(optimizelyKey)
+      .withSDKKey(optimizelyEnvironment.getSdkKey())
       .withDatafileDownloadInterval(60L * 10L)
       .withEventDispatchInterval(2L)
       .build(context);
@@ -640,6 +641,6 @@ public final class ApplicationModule {
         }
       }
     });
-    return new OptimizelyExperimentsClient(optimizelyManager, apiEndpoint);
+    return new OptimizelyExperimentsClient(optimizelyManager, optimizelyEnvironment);
   }
 }

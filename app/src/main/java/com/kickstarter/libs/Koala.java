@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -701,6 +702,9 @@ public final class Koala {
   public void trackProjectPagePledgeButtonClicked(final @NonNull ProjectData projectData, final @Nullable PledgeFlowContext pledgeFlowContext) {
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
     props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
+
+    final Map<String, Object> optimizelyProperties = optimizelyProperties(projectData);
+    props.putAll(optimizelyProperties);
     if (pledgeFlowContext != null) {
       props.put("context_pledge_flow", pledgeFlowContext.getTrackingString());
     }
@@ -758,4 +762,9 @@ public final class Koala {
     this.client.track(LakeEvent.TWO_FACTOR_CONFIRMATION_VIEWED);
   }
   //endregion
+
+  private @NonNull Map<String, Object> optimizelyProperties(final @NonNull ProjectData projectData) {
+    final ExperimentData experimentData = new ExperimentData(this.client.loggedInUser(), projectData.refTagFromIntent(), projectData.refTagFromCookie());
+    return this.client.optimizely().optimizelyProperties(experimentData);
+  }
 }

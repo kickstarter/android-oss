@@ -90,7 +90,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> setSuspendedProjectStateView = new TestSubscriber<>();
   private final TestSubscriber<DateTime> setUnsuccessfulProjectStateView = new TestSubscriber<>();
   private final TestSubscriber<Project> startProjectSocialActivity = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> updatesContainerIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> updatesCountTextViewText = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment, final @NonNull ProjectData projectData) {
@@ -142,7 +141,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setSuspendedProjectStateView().subscribe(this.setSuspendedProjectStateView);
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
-    this.vm.outputs.updatesContainerIsEnabled().subscribe(this.updatesContainerIsEnabled);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
 
     this.vm.inputs.configureWith(projectData);
@@ -693,35 +691,6 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     // USD conversion not shown for US project.
     this.conversionTextViewIsGone.assertValue(true);
-  }
-
-  @Test
-  public void testUpdatesContainerIsEnabled_whenUpdatesCountIsNull() {
-    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(ProjectFactory.project()));
-
-    this.updatesContainerIsEnabled.assertValue(false);
-  }
-
-  @Test
-  public void testUpdatesContainerIsEnabled_whenUpdatesCountIsZero() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .updatesCount(0)
-      .build();
-    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
-
-    this.updatesContainerIsEnabled.assertValue(true);
-  }
-
-  @Test
-  public void testUpdatesContainerIsEnabled_whenUpdatesCountIsNonZero() {
-    final Project project = ProjectFactory.project()
-      .toBuilder()
-      .updatesCount(3)
-      .build();
-    setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
-
-    this.updatesContainerIsEnabled.assertValue(true);
   }
 
   private Environment environmentForVariant(final @NonNull OptimizelyExperiment.Variant variant) {

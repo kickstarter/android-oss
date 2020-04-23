@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/grid_1"
         android:background="@drawable/ic_bubble"
-        android:contentDescription="@string/no_updates"
+        android:contentDescription="@string/project_updates_empty_state_backer_title"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
         android:gravity="center"
-        android:text="@string/no_updates"
+        android:text="@string/project_updates_empty_state_backer_title"
         app:layout_constraintTop_toBottomOf="@+id/guideline"
         tools:text="No updates" />
 
@@ -34,5 +34,4 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.43" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

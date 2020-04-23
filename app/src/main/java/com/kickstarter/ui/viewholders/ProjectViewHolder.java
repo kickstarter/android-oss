@@ -392,11 +392,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(this::startProjectSocialActivity);
 
-    this.viewModel.outputs.updatesContainerIsEnabled()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.updatesContainer::setEnabled);
-
     this.viewModel.outputs.updatesCountTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())

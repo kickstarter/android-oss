@@ -195,9 +195,6 @@ public interface ProjectHolderViewModel {
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectSocialActivity}. */
     Observable<Project> startProjectSocialActivity();
 
-    /** Emits a boolean determining if the updates container should be enabled. */
-    Observable<Boolean> updatesContainerIsEnabled();
-
     /** Emits the updates count for display. */
     Observable<String> updatesCountTextViewText();
   }
@@ -417,12 +414,6 @@ public interface ProjectHolderViewModel {
 
       this.startProjectSocialActivity = project.compose(takeWhen(this.projectSocialViewGroupClicked));
 
-      project
-        .map(Project::hasUpdates)
-        .distinctUntilChanged()
-        .compose(bindToLifecycle())
-        .subscribe(this.updatesContainerIsClickable);
-
       this.updatesCountTextViewText = project
         .map(Project::updatesCount)
         .filter(ObjectUtils::isNotNull)
@@ -631,9 +622,6 @@ public interface ProjectHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> shouldSetDefaultStatsMargins() {
       return this.shouldSetDefaultStatsMargins;
-    }
-    @Override public @NonNull Observable<Boolean> updatesContainerIsEnabled() {
-      return this.updatesContainerIsClickable;
     }
     @Override public @NonNull Observable<String> updatesCountTextViewText() {
       return this.updatesCountTextViewText;

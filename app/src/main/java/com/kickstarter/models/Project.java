@@ -236,10 +236,6 @@ public abstract class Project implements Parcelable, Relay {
     return rewards() != null;
   }
 
-  public boolean hasUpdates() {
-    return !IntegerUtils.isNullOrZero(updatesCount());
-  }
-
   public boolean hasVideo() {
     return video() != null;
   }

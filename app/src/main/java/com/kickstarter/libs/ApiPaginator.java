@@ -249,6 +249,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
         .doOnNext(this::keepMorePath)
         .map(this.envelopeToListOfData)
         .map(this.pageTransformation)
+        .takeUntil(data -> data.isEmpty())
         .doOnSubscribe(() -> this._isFetching.onNext(true))
         .doAfterTerminate(() -> this._isFetching.onNext(false));
   }

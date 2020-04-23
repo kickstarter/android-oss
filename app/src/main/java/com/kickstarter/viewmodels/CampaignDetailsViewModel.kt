@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
@@ -78,11 +77,9 @@ interface CampaignDetailsViewModel {
                     .subscribe(this.goBackToProject)
 
             projectData
-                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
-                    .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                    .compose<ExperimentData>(takeWhen(this.pledgeButtonClicked))
+                    .compose<ProjectData>(takeWhen(this.pledgeButtonClicked))
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, it) }
+                    .subscribe { this.lake.trackCampaignDetailsPledgeButtonClicked(it) }
         }
 
         override fun pledgeActionButtonClicked() = this.pledgeButtonClicked.onNext(null)

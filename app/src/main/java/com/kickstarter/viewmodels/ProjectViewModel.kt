@@ -330,7 +330,7 @@ interface ProjectViewModel {
 
             progressBarIsGone
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(pledgeSheetExpanded))
-                    .filter { BooleanUtils.isTrue(it.second) }
+                    .filter { BooleanUtils.isFalse(it.second) }
                     .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.retryProgressBarIsGone)

@@ -30,8 +30,7 @@ import javax.inject.Inject
 abstract class TrackingClient(@param:ApplicationContext private val context: Context,
                      @set:Inject var currentUser: CurrentUserType,
                      @set:Inject var build: Build,
-                     @set:Inject var currentConfig: CurrentConfigType,
-                     @set:Inject var optimizely: ExperimentsClientType) : TrackingClientType() {
+                     @set:Inject var currentConfig: CurrentConfigType) : TrackingClientType() {
 
     private var loggedInUser: User? = null
     private var config: Config? = null
@@ -55,8 +54,6 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
             Fabric.getLogger().e(TrackingClient::class.java.simpleName, "Failed to encode ${type().tag} event: $eventName")
         }
     }
-
-    override fun optimizely(): ExperimentsClientType = this.optimizely
 
     private fun queueEvent(eventName: String, additionalProperties: MutableMap<String, Any?>) {
         val eventData = trackingData(eventName, combinedProperties(additionalProperties))

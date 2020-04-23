@@ -1,8 +1,8 @@
 package com.kickstarter.libs.utils
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.ApiEndpoint
 import com.kickstarter.libs.RefTag
-import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.mock.factories.*
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
@@ -17,7 +17,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
                 .backedProjectsCount(10)
                 .build()
         val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
-        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", OptimizelyEnvironment.STAGING)
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", ApiEndpoint.STAGING)
         assertNotNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 10", attributes["session_os_version"])
@@ -35,7 +35,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
                 .backedProjectsCount(10)
                 .build()
         val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
-        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", OptimizelyEnvironment.PRODUCTION)
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", ApiEndpoint.PRODUCTION)
         assertNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 10", attributes["session_os_version"])
@@ -49,7 +49,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
     @Test
     fun attributes_loggedOutUser_notProd() {
         val experimentData = ExperimentData(null, RefTag.discovery(), RefTag.search())
-        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", OptimizelyEnvironment.STAGING)
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", ApiEndpoint.STAGING)
         assertNotNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 9", attributes["session_os_version"])
@@ -63,7 +63,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
     @Test
     fun attributes_loggedOutUser_prod() {
         val experimentData = ExperimentData(null, RefTag.discovery(), RefTag.search())
-        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", OptimizelyEnvironment.PRODUCTION)
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", ApiEndpoint.PRODUCTION)
         assertNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 9", attributes["session_os_version"])

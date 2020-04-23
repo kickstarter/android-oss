@@ -11,8 +11,7 @@ class LakeTrackingClient(
         @param:ApplicationContext private val context: Context,
         currentUser: CurrentUserType,
         build: Build,
-        currentConfig: CurrentConfigType,
-        optimizely: ExperimentsClientType) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
+        currentConfig: CurrentConfigType) : TrackingClient(context, currentUser, build, currentConfig) {
     private var loggedInUser: User? = null
     private var config: Config? = null
 

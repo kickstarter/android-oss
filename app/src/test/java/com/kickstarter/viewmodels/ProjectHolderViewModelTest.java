@@ -710,7 +710,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
-    this.updatesContainerIsEnabled.assertValue(false);
+    this.updatesContainerIsEnabled.assertValue(true);
   }
 
   @Test

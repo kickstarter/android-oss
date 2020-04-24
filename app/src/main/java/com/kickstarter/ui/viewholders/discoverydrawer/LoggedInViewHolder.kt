@@ -52,7 +52,7 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                     }
                 }
 
-        this.viewModel.outputs.unseenActivityCount()
+        this.viewModel.outputs.activityCount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {

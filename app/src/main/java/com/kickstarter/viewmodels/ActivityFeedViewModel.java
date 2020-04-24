@@ -130,8 +130,7 @@ public interface ActivityFeedViewModel {
 
       loggedInUser
         .compose(takeWhen(refreshOrResume))
-        .map(User::unseenActivityCount)
-        .map(IntegerUtils::intValueOrZero)
+        .map(user -> IntegerUtils.intValueOrZero(user.unseenActivityCount()) + IntegerUtils.intValueOrZero(user.erroredBackingsCount()))
         .filter(IntegerUtils::isNonZero)
         .distinctUntilChanged()
         .switchMap(__ -> this.apolloClient.clearUnseenActivity().compose(neverError()))

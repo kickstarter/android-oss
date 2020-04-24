@@ -20,6 +20,7 @@ public abstract class User implements Parcelable, Relay {
   public abstract Avatar avatar();
   public abstract @Nullable Integer backedProjectsCount();
   public abstract @Nullable Integer createdProjectsCount();
+  public abstract @Nullable Integer erroredBackingsCount();
   public abstract @Nullable Boolean facebookConnected();
   public abstract @Nullable Boolean filmNewsletter();
   public abstract @Nullable Boolean gamesNewsletter();
@@ -65,6 +66,7 @@ public abstract class User implements Parcelable, Relay {
     public abstract Builder avatar(Avatar __);
     public abstract Builder backedProjectsCount(Integer __);
     public abstract Builder createdProjectsCount(Integer __);
+    public abstract Builder erroredBackingsCount(Integer __);
     public abstract Builder facebookConnected(Boolean __);
     public abstract Builder filmNewsletter(Boolean __);
     public abstract Builder gamesNewsletter(Boolean __);

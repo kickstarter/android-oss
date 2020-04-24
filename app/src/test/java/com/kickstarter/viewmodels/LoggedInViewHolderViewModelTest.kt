@@ -9,21 +9,71 @@ import rx.observers.TestSubscriber
 
 class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoggedInViewHolderViewModel.ViewModel
+    private val activityCount = TestSubscriber<Int>()
     private val avatarUrl = TestSubscriber<String>()
     private val dashboardRowIsGone = TestSubscriber<Boolean>()
     private val name = TestSubscriber<String>()
     private val unreadMessagesCount = TestSubscriber<Int>()
-    private val unseenActivityCount = TestSubscriber<Int>()
     private val user = TestSubscriber<User>()
 
     fun setUpEnvironment(environment: Environment) {
         this.vm = LoggedInViewHolderViewModel.ViewModel(environment)
+        this.vm.outputs.activityCount().subscribe(this.activityCount)
         this.vm.outputs.avatarUrl().subscribe(this.avatarUrl)
         this.vm.outputs.dashboardRowIsGone().subscribe(this.dashboardRowIsGone)
         this.vm.outputs.name().subscribe(this.name)
         this.vm.outputs.unreadMessagesCount().subscribe(this.unreadMessagesCount)
-        this.vm.outputs.unseenActivityCount().subscribe(this.unseenActivityCount)
         this.vm.outputs.user().subscribe(this.user)
+    }
+
+    @Test
+    fun testActivityCount_whenUserHasUnseenActivityAndErroredBackings() {
+        setUpEnvironment(environment())
+
+        val user = UserFactory.user()
+                .toBuilder()
+                .erroredBackingsCount(3)
+                .unseenActivityCount(2)
+                .build()
+        this.vm.inputs.configureWith(user)
+
+        this.activityCount.assertValue(5)
+    }
+
+    @Test
+    fun testActivityCount_whenUserHasUnseenActivityAndNoErroredBackings() {
+        setUpEnvironment(environment())
+
+        val user = UserFactory.user()
+                .toBuilder()
+                .unseenActivityCount(2)
+                .build()
+        this.vm.inputs.configureWith(user)
+
+        this.activityCount.assertValue(2)
+    }
+
+    @Test
+    fun testActivityCount_whenUserHasNoUnseenActivityAndErroredBackings() {
+        setUpEnvironment(environment())
+
+        val user = UserFactory.user()
+                .toBuilder()
+                .erroredBackingsCount(3)
+                .build()
+        this.vm.inputs.configureWith(user)
+
+        this.activityCount.assertValue(3)
+    }
+
+
+    @Test
+    fun testActivityCount_whenUserHasNoUnseenActivityAndNoErroredBackings() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(UserFactory.user())
+
+        this.activityCount.assertValue(0)
     }
 
     @Test
@@ -64,15 +114,6 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(UserFactory.user().toBuilder().unreadMessagesCount(5).build())
 
         this.unreadMessagesCount.assertValue(5)
-    }
-
-    @Test
-    fun testUnseenActivityCount() {
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(UserFactory.user().toBuilder().unseenActivityCount(2).build())
-
-        this.unseenActivityCount.assertValue(2)
     }
 
     @Test

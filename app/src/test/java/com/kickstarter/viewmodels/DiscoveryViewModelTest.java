@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.R;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
@@ -33,6 +34,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private DiscoveryViewModel.ViewModel vm;
   private final TestSubscriber<List<Integer>> clearPages = new TestSubscriber<>();
   private final TestSubscriber<Boolean> drawerIsOpen = new TestSubscriber<>();
+  private final TestSubscriber<Integer> drawerMenuIcon = new TestSubscriber<>();
   private final TestSubscriber<Boolean> expandSortTabLayout = new TestSubscriber<>();
   private final TestSubscriber<Void> navigationDrawerDataEmitted = new TestSubscriber<>();
   private final TestSubscriber<Integer> position = new TestSubscriber<>();
@@ -49,7 +51,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Void> showHelp = new TestSubscriber<>();
   private final TestSubscriber<Void> showInternalTools = new TestSubscriber<>();
   private final TestSubscriber<Void> showLoginTout = new TestSubscriber<>();
-  private final TestSubscriber<Boolean> showMenuIconWithIndicator = new TestSubscriber<>();
   private final TestSubscriber<Void> showMessages = new TestSubscriber<>();
   private final TestSubscriber<Void> showProfile = new TestSubscriber<>();
   private final TestSubscriber<String> showQualtricsSurvey = new TestSubscriber<>();
@@ -486,65 +487,48 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShowMenuIconWithIndicator_whenLoggedOut() {
+  public void testDrawerMenuIcon_whenLoggedOut() {
     this.vm = new DiscoveryViewModel.ViewModel(environment());
 
-    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+    this.vm.outputs.drawerMenuIcon().subscribe(this.drawerMenuIcon);
 
-    this.showMenuIconWithIndicator.assertValue(false);
+    this.drawerMenuIcon.assertValue(R.drawable.ic_menu);
   }
 
   @Test
-  public void testShowMenuIconWithIndicator_afterLogIn() {
+  public void testDrawerMenuIcon_afterLogInRefreshAndLogOut() {
     final MockCurrentUser currentUser = new MockCurrentUser();
 
     this.vm = new DiscoveryViewModel.ViewModel(environment().toBuilder().currentUser(currentUser).build());
-    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+    this.vm.outputs.drawerMenuIcon().subscribe(this.drawerMenuIcon);
 
-    this.showMenuIconWithIndicator.assertValue(false);
+    this.drawerMenuIcon.assertValue(R.drawable.ic_menu);
 
     currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(4).build());
+    this.drawerMenuIcon.assertValues(R.drawable.ic_menu, R.drawable.ic_menu_indicator);
 
-    this.showMenuIconWithIndicator.assertValues(false, true);
+    currentUser.refresh(UserFactory.user().toBuilder().erroredBackingsCount(2).build());
+    this.drawerMenuIcon.assertValues(R.drawable.ic_menu, R.drawable.ic_menu_indicator, R.drawable.ic_menu_error_indicator);
+
+    currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(4).unseenActivityCount(3).erroredBackingsCount(2).build());
+    this.drawerMenuIcon.assertValues(R.drawable.ic_menu, R.drawable.ic_menu_indicator, R.drawable.ic_menu_error_indicator);
 
     currentUser.logout();
-
-    this.showMenuIconWithIndicator.assertValues(false, true, false);
-
-    currentUser.refresh(UserFactory.user().toBuilder().unseenActivityCount(2).build());
-
-    this.showMenuIconWithIndicator.assertValues(false, true, false, true);
+    this.drawerMenuIcon.assertValues(R.drawable.ic_menu, R.drawable.ic_menu_indicator, R.drawable.ic_menu_error_indicator,
+      R.drawable.ic_menu);
   }
 
   @Test
-  public void testShowMenuIconWithIndicator_whenUserHasNoMessagesOrUnseenActivity() {
+  public void testDrawerMenuIcon_whenUserHasNoUnreadMessagesOrUnseenActivityOrErroredBackings() {
     final MockCurrentUser currentUser = new MockCurrentUser(UserFactory.user());
     this.vm = new DiscoveryViewModel.ViewModel(environment()
       .toBuilder()
       .currentUser(currentUser)
       .build());
 
-    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
+    this.vm.outputs.drawerMenuIcon().subscribe(this.drawerMenuIcon);
 
-    this.showMenuIconWithIndicator.assertValue(false);
-  }
-
-  @Test
-  public void testShowMenuIconWithIndicator_whenUserHasUnreadMessagesOrUnseenActivity() {
-    final User user = UserFactory.user().toBuilder().unreadMessagesCount(3).build();
-    final MockCurrentUser currentUser = new MockCurrentUser(user);
-    this.vm = new DiscoveryViewModel.ViewModel(environment()
-      .toBuilder()
-      .currentUser(currentUser)
-      .build());
-
-    this.vm.outputs.showMenuIconWithIndicator().subscribe(this.showMenuIconWithIndicator);
-
-    this.showMenuIconWithIndicator.assertValue(true);
-
-    currentUser.refresh(UserFactory.user().toBuilder().unreadMessagesCount(0).unseenActivityCount(2).build());
-
-    this.showMenuIconWithIndicator.assertValue(true);
+    this.drawerMenuIcon.assertValue(R.drawable.ic_menu);
   }
 
   @Test

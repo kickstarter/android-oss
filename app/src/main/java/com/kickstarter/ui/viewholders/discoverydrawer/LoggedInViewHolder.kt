@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders.discoverydrawer
 
 import android.view.View
 import androidx.annotation.NonNull
+import androidx.core.content.ContextCompat
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.IntegerUtils
@@ -61,6 +62,11 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                         else -> NumberUtils.format(it)
                     }
                 }
+
+        this.viewModel.outputs.activityCountTextColor()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { view.unseen_activity_count.setTextColor(ContextCompat.getColor(context(), it)) }
 
         this.viewModel.outputs.dashboardRowIsGone()
                 .compose(bindToLifecycle())

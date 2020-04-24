@@ -1,8 +1,10 @@
 package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder
@@ -20,6 +22,9 @@ interface LoggedInViewHolderViewModel {
     interface Outputs {
         /** Emits the user's unseen activity and errored backings count. */
         fun activityCount(): Observable<Int>
+
+        /** Emits the color resource ID of the activity count text color. */
+        fun activityCountTextColor(): Observable<Int>
 
         /** Emits the user's medium avatar URL. */
         fun avatarUrl(): Observable<String>
@@ -42,6 +47,7 @@ interface LoggedInViewHolderViewModel {
         private val user = PublishSubject.create<User>()
 
         private val activityCount = BehaviorSubject.create<Int>()
+        private val activityCountTextColor = BehaviorSubject.create<Int>()
         private val avatarUrl = BehaviorSubject.create<String>()
         private val dashboardRowIsGone = BehaviorSubject.create<Boolean>()
         private val name = BehaviorSubject.create<String>()
@@ -78,6 +84,12 @@ interface LoggedInViewHolderViewModel {
                     .subscribe(this.activityCount)
 
             this.user
+                    .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.erroredBackingsCount())) }
+                    .map { if (BooleanUtils.isTrue(it)) R.color.text_primary else R.color.ksr_red_400 }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.activityCountTextColor)
+
+            this.user
                     .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.memberProjectsCount())) }
                     .compose(bindToLifecycle())
                     .subscribe(this.dashboardRowIsGone)
@@ -90,6 +102,9 @@ interface LoggedInViewHolderViewModel {
 
         @NonNull
         override fun activityCount(): Observable<Int> = this.activityCount
+
+        @NonNull
+        override fun activityCountTextColor(): Observable<Int> = this.activityCountTextColor
 
         @NonNull
         override fun avatarUrl(): Observable<String> = this.avatarUrl

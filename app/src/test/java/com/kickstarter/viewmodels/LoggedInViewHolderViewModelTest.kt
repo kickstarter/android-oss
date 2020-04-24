@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.User
@@ -10,6 +11,7 @@ import rx.observers.TestSubscriber
 class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoggedInViewHolderViewModel.ViewModel
     private val activityCount = TestSubscriber<Int>()
+    private val activityCountTextColor = TestSubscriber<Int>()
     private val avatarUrl = TestSubscriber<String>()
     private val dashboardRowIsGone = TestSubscriber<Boolean>()
     private val name = TestSubscriber<String>()
@@ -19,6 +21,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
     fun setUpEnvironment(environment: Environment) {
         this.vm = LoggedInViewHolderViewModel.ViewModel(environment)
         this.vm.outputs.activityCount().subscribe(this.activityCount)
+        this.vm.outputs.activityCountTextColor().subscribe(this.activityCountTextColor)
         this.vm.outputs.avatarUrl().subscribe(this.avatarUrl)
         this.vm.outputs.dashboardRowIsGone().subscribe(this.dashboardRowIsGone)
         this.vm.outputs.name().subscribe(this.name)
@@ -66,7 +69,6 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.activityCount.assertValue(3)
     }
 
-
     @Test
     fun testActivityCount_whenUserHasNoUnseenActivityAndNoErroredBackings() {
         setUpEnvironment(environment())
@@ -74,6 +76,28 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(UserFactory.user())
 
         this.activityCount.assertValue(0)
+    }
+
+    @Test
+    fun testActivityCountTextColor_whenUserHasErroredBackings() {
+        setUpEnvironment(environment())
+
+        val user = UserFactory.user()
+                .toBuilder()
+                .erroredBackingsCount(3)
+                .build()
+        this.vm.inputs.configureWith(user)
+
+        this.activityCountTextColor.assertValue(R.color.ksr_red_400)
+    }
+
+    @Test
+    fun testActivityCountTextColor_whenUserNoErroredBackings() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(UserFactory.user())
+
+        this.activityCountTextColor.assertValue(R.color.text_primary)
     }
 
     @Test

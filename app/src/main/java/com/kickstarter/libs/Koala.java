@@ -16,6 +16,8 @@ import com.kickstarter.ui.data.PledgeData;
 import com.kickstarter.ui.data.PledgeFlowContext;
 import com.kickstarter.ui.data.ProjectData;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -765,23 +767,25 @@ public final class Koala {
 
   //region Experiments
   public void trackCampaignDetailsButtonClicked(final @NonNull ProjectData projectData) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
-    props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
-    props.putAll(optimizelyProperties(projectData));
-    props.put("context_pledge_flow", PledgeFlowContext.NEW_PLEDGE.getTrackingString());
-
-    this.client.track(LakeEvent.CAMPAIGN_DETAILS_BUTTON_CLICKED, props);
+    this.client.track(LakeEvent.CAMPAIGN_DETAILS_BUTTON_CLICKED, experimentProperties(projectData));
   }
 
   public void trackCampaignDetailsPledgeButtonClicked(final @NonNull ProjectData projectData) {
+    this.client.track(LakeEvent.CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, experimentProperties(projectData));
+  }
+
+  public void trackCreatorDetailsClicked(final @NonNull ProjectData projectData) {
+    this.client.track(LakeEvent.CREATOR_DETAILS_CLICKED, experimentProperties(projectData));
+  }
+  //endregion
+
+  private @NonNull Map<String, Object> experimentProperties(@NonNull ProjectData projectData) {
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
     props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
     props.putAll(optimizelyProperties(projectData));
     props.put("context_pledge_flow", PledgeFlowContext.NEW_PLEDGE.getTrackingString());
-
-    this.client.track(LakeEvent.CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, props);
+    return props;
   }
-  //endregion
 
   private @NonNull Map<String, Object> optimizelyProperties(final @NonNull ProjectData projectData) {
     final ExperimentData experimentData = new ExperimentData(this.client.loggedInUser(), projectData.refTagFromIntent(), projectData.refTagFromCookie());

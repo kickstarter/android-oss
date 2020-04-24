@@ -16,8 +16,6 @@ import com.kickstarter.ui.data.PledgeData;
 import com.kickstarter.ui.data.PledgeFlowContext;
 import com.kickstarter.ui.data.ProjectData;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 

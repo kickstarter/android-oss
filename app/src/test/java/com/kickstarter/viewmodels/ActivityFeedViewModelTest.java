@@ -268,4 +268,32 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.surveys.assertValueCount(2);
     this.user.assertValues(initialUser, updatedUser);
   }
+
+  @Test
+  public void testUser_whenLoggedInAndResumedWithErroredBackings() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final User initialUser = UserFactory.user()
+      .toBuilder()
+      .erroredBackingsCount(3)
+      .build();
+    currentUser.login(initialUser, "token");
+
+    final User updatedUser = UserFactory.user();
+    final Environment environment = this.environment().toBuilder()
+      .apiClient(new MockApiClient() {
+        @Override public @NonNull Observable<User> fetchCurrentUser() {
+          return Observable.just(updatedUser);
+        }
+      })
+      .currentUser(currentUser)
+      .build();
+
+    environment.currentUser().loggedInUser().subscribe(this.user);
+
+    setUpEnvironment(environment);
+    this.user.assertValues(initialUser, updatedUser);
+
+    this.vm.inputs.resume();
+    this.user.assertValues(initialUser, updatedUser);
+  }
 }

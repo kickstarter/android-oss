@@ -25,6 +25,16 @@ public final class BackingUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testIsErrored() {
+    assertFalse(BackingUtils.isErrored(BackingFactory.backing(Backing.STATUS_CANCELED)));
+    assertFalse(BackingUtils.isErrored(BackingFactory.backing(Backing.STATUS_COLLECTED)));
+    assertFalse(BackingUtils.isErrored(BackingFactory.backing(Backing.STATUS_DROPPED)));
+    assertTrue(BackingUtils.isErrored(BackingFactory.backing(Backing.STATUS_ERRORED)));
+    assertFalse(BackingUtils.isErrored(BackingFactory.backing(Backing.STATUS_PLEDGED)));
+    assertFalse(BackingUtils.isErrored(BackingFactory.backing(Backing.STATUS_PREAUTH)));
+  }
+
+  @Test
   public void testIsShippable() {
     final Backing backingWithShipping = BackingFactory.backing().toBuilder()
       .reward(RewardFactory.rewardWithShipping())

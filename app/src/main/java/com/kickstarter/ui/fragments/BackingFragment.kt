@@ -34,6 +34,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
 
     interface BackingDelegate {
         fun refreshProject()
+        fun showFixPaymentMethod()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -79,10 +80,25 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
                 .compose(Transformers.observeForUI())
                 .subscribe { setCardLastFourText(it) }
 
+        this.viewModel.outputs.fixPaymentMethodButtonIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(fix_payment_method_button, it) }
+
+        this.viewModel.outputs.fixPaymentMethodButtonIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(fix_payment_method_message, it) }
+
         this.viewModel.outputs.notifyDelegateToRefreshProject()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { (activity as BackingDelegate?)?.refreshProject() }
+
+        this.viewModel.outputs.notifyDelegateToShowFixPledge()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
 
         this.viewModel.outputs.paymentMethodIsGone()
                 .compose(bindToLifecycle())
@@ -152,6 +168,10 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
         SwipeRefresher(
                 this, backing_swipe_refresh_layout, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
         )
+
+        RxView.clicks(fix_payment_method_button)
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.fixPaymentMethodButtonClicked() }
 
         RxView.clicks(mark_as_received_checkbox)
                 .compose(bindToLifecycle())

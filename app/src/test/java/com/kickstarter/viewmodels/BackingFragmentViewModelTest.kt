@@ -28,7 +28,10 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     private val cardIssuer = TestSubscriber.create<Either<String, Int>>()
     private val cardLastFour = TestSubscriber.create<String>()
     private val cardLogo = TestSubscriber.create<Int>()
+    private val fixPaymentMethodButtonIsGone = TestSubscriber.create<Boolean>()
+    private val fixPaymentMethodMessageIsGone = TestSubscriber.create<Boolean>()
     private val notifyDelegateToRefreshProject = TestSubscriber.create<Void>()
+    private val notifyDelegateToShowFixPledge = TestSubscriber.create<Void>()
     private val paymentMethodIsGone = TestSubscriber.create<Boolean>()
     private val pledgeAmount = TestSubscriber.create<CharSequence>()
     private val pledgeDate = TestSubscriber.create<String>()
@@ -53,7 +56,10 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
         this.vm.outputs.cardIssuer().subscribe(this.cardIssuer)
         this.vm.outputs.cardLastFour().subscribe(this.cardLastFour)
         this.vm.outputs.cardLogo().subscribe(this.cardLogo)
+        this.vm.outputs.fixPaymentMethodButtonIsGone().subscribe(this.fixPaymentMethodButtonIsGone)
+        this.vm.outputs.fixPaymentMethodMessageIsGone().subscribe(this.fixPaymentMethodMessageIsGone)
         this.vm.outputs.notifyDelegateToRefreshProject().subscribe(this.notifyDelegateToRefreshProject)
+        this.vm.outputs.notifyDelegateToShowFixPledge().subscribe(this.notifyDelegateToShowFixPledge)
         this.vm.outputs.paymentMethodIsGone().subscribe(this.paymentMethodIsGone)
         this.vm.outputs.pledgeAmount().map { it.toString() }.subscribe(this.pledgeAmount)
         this.vm.outputs.pledgeDate().subscribe(this.pledgeDate)
@@ -339,11 +345,75 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
     }
 
     @Test
+    fun testFixPaymentMethodButtonIsGone_whenBackingIsErrored() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_ERRORED)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+        this.fixPaymentMethodButtonIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testFixPaymentMethodButtonIsGone_whenBackingIsNotErrored() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+        this.fixPaymentMethodButtonIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testFixPaymentMethodMessageIsGone_whenBackingIsErrored() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_ERRORED)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+        this.fixPaymentMethodMessageIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testFixPaymentMethodMessageIsGone_whenBackingIsNotErrored() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+        this.fixPaymentMethodMessageIsGone.assertValue(true)
+    }
+
+    @Test
     fun testNotifyDelegateToRefreshProject() {
         setUpEnvironment(environment())
 
         this.vm.inputs.refreshProject()
         this.notifyDelegateToRefreshProject.assertValueCount(1)
+    }
+
+    @Test
+    fun testNotifyDelegateToShowFixPledge() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.fixPaymentMethodButtonClicked()
+        this.notifyDelegateToShowFixPledge.assertValueCount(1)
     }
 
     @Test
@@ -453,6 +523,21 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.Your_pledge_was_dropped_because_of_payment_errors,
+                "$20", "November 11, 2019"))
+    }
+
+    @Test
+    fun testPledgeStatusData_whenBackingIsErrored() {
+        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_ERRORED)
+                .toBuilder()
+                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .state(Project.STATE_SUCCESSFUL)
+                .build()
+
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+        this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_cant_process_your_pledge_Please_update_your_payment_method,
                 "$20", "November 11, 2019"))
     }
 

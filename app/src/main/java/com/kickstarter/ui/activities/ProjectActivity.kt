@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.MenuRes
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -22,10 +23,7 @@ import com.crashlytics.android.Crashlytics
 import com.kickstarter.R
 import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.extensions.showSnackbar
-import com.kickstarter.libs.ActivityRequestCodes
-import com.kickstarter.libs.BaseActivity
-import com.kickstarter.libs.KSString
-import com.kickstarter.libs.KoalaContext
+import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
@@ -88,10 +86,15 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         project_recycler_view.adapter = this.adapter
         project_recycler_view.layoutManager = LinearLayoutManager(this)
 
-        this.viewModel.outputs.backingDetails()
+        this.viewModel.outputs.backingDetailsSubtitle()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { reward_infos.text = it }
+                .subscribe { setBackingDetailsSubtitle(it) }
+
+        this.viewModel.outputs.backingDetailsTitle()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { backing_details_title.setText(it) }
 
         this.viewModel.outputs.backingDetailsIsVisible()
                 .compose(bindToLifecycle())
@@ -317,6 +320,10 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         this.viewModel.inputs.refreshProject()
     }
 
+    override fun showFixPaymentMethod() {
+        this.viewModel.inputs.fixPaymentMethodButtonClicked()
+    }
+
     override fun onNetworkConnectionChanged(isConnected: Boolean) {}
 
     override fun exitTransition(): Pair<Int, Int>? {
@@ -459,6 +466,14 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun rewardsFragment() = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?
 
     private fun rewardsSheetGuideline(): Int = resources.getDimensionPixelSize(R.dimen.reward_fragment_guideline_constraint_end)
+
+    private fun setBackingDetailsSubtitle(stringResOrTitle: Either<String, Int>?) {
+        stringResOrTitle?.let { either ->
+            @StringRes val stringRes = either.right()
+            val title = either.left()
+            backing_details_subtitle.text = stringRes?.let { getString(it) }?: title
+        }
+    }
 
     private fun setClickListeners() {
         pledge_action_button.setOnClickListener {

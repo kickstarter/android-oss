@@ -11,6 +11,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardCardUnselectedViewHolderViewModel
 import kotlinx.android.synthetic.main.item_reward_unselected_card.view.*
+import kotlinx.android.synthetic.main.retry_card_warning.view.*
 import kotlinx.android.synthetic.main.reward_card_details.view.*
 
 class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
@@ -71,6 +72,11 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.delegate.cardSelected(it.first, it.second) }
+
+        this.viewModel.outputs.retryCopyIsVisible()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.retry_card_warning, !it) }
 
         this.viewModel.outputs.selectImageIsVisible()
                 .compose(bindToLifecycle())

@@ -28,7 +28,10 @@ object ProjectViewUtils {
         return if (project.isBacking && project.isLive) {
             R.color.button_pledge_manage
         } else if (!project.isLive || project.creator().id() == currentUser?.id()) {
-            R.color.button_pledge_ended
+            when {
+                BackingUtils.isErrored(project.backing()) -> R.color.button_pledge_error
+                else -> R.color.button_pledge_ended
+            }
         } else {
             R.color.button_pledge_live
         }
@@ -50,7 +53,10 @@ object ProjectViewUtils {
         } else if (project.isBacking && project.isLive) {
             R.string.Manage
         } else if (project.isBacking && !project.isLive) {
-            R.string.View_your_pledge
+            when {
+                BackingUtils.isErrored(project.backing()) -> R.string.Manage
+                else -> R.string.View_your_pledge
+            }
         } else {
             R.string.View_rewards
         }

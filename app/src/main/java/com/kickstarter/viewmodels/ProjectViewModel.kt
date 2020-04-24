@@ -14,6 +14,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.*
@@ -51,6 +52,9 @@ interface ProjectViewModel {
 
         /** Call when the creator name is clicked.  */
         fun creatorNameTextViewClicked()
+
+        /** Call when the fix payment method is clicked.  */
+        fun fixPaymentMethodButtonClicked()
 
         /** Call when the count of fragments on the back stack changes.  */
         fun fragmentStackCount(count: Int)
@@ -105,11 +109,14 @@ interface ProjectViewModel {
     }
 
     interface Outputs {
-        /** Emits a string with the backing details to be displayed in the manage pledge view. */
-        fun backingDetails(): Observable<String>
-
         /** Emits a boolean that determines if the backing details should be visible. */
         fun backingDetailsIsVisible(): Observable<Boolean>
+
+        /** Emits a string or string resource ID of the backing details subtitle. */
+        fun backingDetailsSubtitle(): Observable<Either<String, Int>?>
+
+        /** Emits the string resource ID of the backing details title. */
+        fun backingDetailsTitle(): Observable<Int>
 
         /** Emits when rewards sheet should expand and if it should animate. */
         fun expandPledgeSheet(): Observable<Pair<Boolean, Boolean>>
@@ -228,6 +235,7 @@ interface ProjectViewModel {
         private val creatorDashboardButtonClicked = PublishSubject.create<Void>()
         private val creatorInfoVariantClicked = PublishSubject.create<Void>()
         private val creatorNameTextViewClicked = PublishSubject.create<Void>()
+        private val fixPaymentMethodButtonClicked = PublishSubject.create<Void>()
         private val fragmentStackCount = PublishSubject.create<Int>()
         private val heartButtonClicked = PublishSubject.create<Void>()
         private val nativeProjectActionButtonClicked = PublishSubject.create<Void>()
@@ -246,8 +254,9 @@ interface ProjectViewModel {
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewRewardsClicked = PublishSubject.create<Void>()
 
-        private val backingDetails = BehaviorSubject.create<String>()
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
+        private val backingDetailsSubtitle = BehaviorSubject.create<Either<String, Int>?>()
+        private val backingDetailsTitle = BehaviorSubject.create<Int>()
         private val expandPledgeSheet = BehaviorSubject.create<Pair<Boolean, Boolean>>()
         private val goBack = PublishSubject.create<Void>()
         private val heartDrawableId = BehaviorSubject.create<Int>()
@@ -306,6 +315,12 @@ interface ProjectViewModel {
             activityResult()
                     .filter { it.isOk }
                     .filter { it.isRequestCode(ActivityRequestCodes.SHOW_REWARDS) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
+
+            intent()
+                    .take(1)
+                    .filter { it.getBooleanExtra(IntentKey.EXPAND_PLEDGE_SHEET, false) }
                     .compose(bindToLifecycle())
                     .subscribe { this.expandPledgeSheet.onNext(Pair(true, true)) }
 
@@ -550,6 +565,12 @@ interface ProjectViewModel {
                     .map { pD -> BackingUtils.backedReward(pD.project())?.let { Pair(pD, it) } }
 
             projectDataAndBackedReward
+                    .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
+                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.FIX_PLEDGE) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showUpdatePledge)
+
+            projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
                     .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                     .compose(bindToLifecycle())
@@ -566,17 +587,25 @@ interface ProjectViewModel {
                     .subscribe(this.revealRewardsFragment)
 
             currentProject
-                    .map { it.isBacking && it.isLive }
+                    .map { it.isBacking && it.isLive || BackingUtils.isErrored(it.backing()) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetailsIsVisible)
 
             currentProject
-                    .filter { it.isBacking && it.isLive }
-                    .map { backingDetails(it) }
+                    .filter { it.isBacking }
+                    .map { it.backing() }
+                    .map { if (BackingUtils.isErrored(it)) R.string.Payment_failure else R.string.Youre_a_backer }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.backingDetails)
+                    .subscribe(this.backingDetailsTitle)
+
+            currentProject
+                    .filter { it.isBacking }
+                    .map { backingDetailsSubtitle(it) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.backingDetailsSubtitle)
 
             val currentProjectAndUser = currentProject
                     .compose<Pair<Project, User>>(combineLatestPair(this.currentUser.observable()))
@@ -856,6 +885,10 @@ interface ProjectViewModel {
             this.creatorNameTextViewClicked.onNext(null)
         }
 
+        override fun fixPaymentMethodButtonClicked() {
+            this.fixPaymentMethodButtonClicked.onNext(null)
+        }
+
         override fun fragmentStackCount(count: Int) {
             this.fragmentStackCount.onNext(count)
         }
@@ -957,7 +990,10 @@ interface ProjectViewModel {
         }
 
         @NonNull
-        override fun backingDetails(): Observable<String> = this.backingDetails
+        override fun backingDetailsSubtitle(): Observable<Either<String, Int>?> = this.backingDetailsSubtitle
+
+        @NonNull
+        override fun backingDetailsTitle(): Observable<Int> = this.backingDetailsTitle
 
         @NonNull
         override fun backingDetailsIsVisible(): Observable<Boolean> = this.backingDetailsIsVisible
@@ -1015,7 +1051,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun showCancelPledgeSuccess(): Observable<Void> = this.showCancelPledgeSuccess
-
         @NonNull
         override fun showPledgeNotCancelableDialog(): Observable<Void> = this.showPledgeNotCancelableDialog
 
@@ -1061,17 +1096,21 @@ interface ProjectViewModel {
         @NonNull
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments
 
-        private fun backingDetails(project: Project): String {
+        private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->
-                val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
-                val title = reward?.let { "• ${it.title()}" } ?: ""
+                return if(backing.status() == Backing.STATUS_ERRORED) {
+                    Either.Right(R.string.We_cant_process_your_pledge)
+                } else {
+                    val reward = project.rewards()?.firstOrNull { it.id() == backing.rewardId() }
+                    val title = reward?.let { "• ${it.title()}" } ?: ""
 
-                val backingAmount = backing.amount()
+                    val backingAmount = backing.amount()
 
-                val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
+                    val formattedAmount = this.ksCurrency.format(backingAmount, project, RoundingMode.HALF_UP)
 
-                return "$formattedAmount $title".trim()
-            } ?: ""
+                    Either.Left("$formattedAmount $title".trim())
+                }
+            }
         }
 
         private fun saveProject(project: Project): Observable<Project> {

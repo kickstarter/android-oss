@@ -9,6 +9,7 @@ import UpdateUserPasswordMutation
 import UserPrivacyQuery
 import com.kickstarter.mock.factories.CheckoutFactory
 import com.kickstarter.mock.factories.CreatorDetailsFactory
+import com.kickstarter.mock.factories.ErroredBackingFactory
 import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
@@ -44,6 +45,10 @@ open class MockApolloClient : ApolloClientType {
 
     override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
         return Observable.just(DeletePaymentSourceMutation.Data(DeletePaymentSourceMutation.PaymentSourceDelete("", "")))
+    }
+
+    override fun erroredBackings(): Observable<List<ErroredBacking>> {
+        return Observable.just(Collections.singletonList(ErroredBackingFactory.erroredBacking()))
     }
 
     override fun getStoredCards(): Observable<List<StoredCard>> {

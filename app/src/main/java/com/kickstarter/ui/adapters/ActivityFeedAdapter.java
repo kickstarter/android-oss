@@ -5,9 +5,11 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.ErroredBacking;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
+import com.kickstarter.ui.viewholders.ErroredBackingViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.FriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -27,20 +29,29 @@ import androidx.annotation.Nullable;
 public final class ActivityFeedAdapter extends KSAdapter {
   private static final int SECTION_LOGGED_IN_EMPTY_VIEW = 0;
   private static final int SECTION_LOGGED_OUT_EMPTY_VIEW = 1;
-  private static final int SECTION_SURVEYS_HEADER_VIEW = 2;
-  private static final int SECTION_SURVEYS_VIEW = 3;
-  private static final int SECTION_ACTIVITIES_VIEW = 4;
+  private static final int SECTION_ERRORED_BACKINGS_HEADER_VIEW = 2;
+  private static final int SECTION_ERRORED_BACKINGS_VIEW = 3;
+  private static final int SECTION_SURVEYS_HEADER_VIEW = 4;
+  private static final int SECTION_SURVEYS_VIEW = 5;
+  private static final int SECTION_ACTIVITIES_VIEW = 6;
 
   private final @Nullable Delegate delegate;
 
-  public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
-    ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate {}
+  public interface Delegate extends
+    ErroredBackingViewHolder.Delegate,
+    FriendBackingViewHolder.Delegate,
+    ProjectStateChangedPositiveViewHolder.Delegate,
+    ProjectStateChangedViewHolder.Delegate,
+    ProjectUpdateViewHolder.Delegate,
+    EmptyActivityFeedViewHolder.Delegate {}
 
   public ActivityFeedAdapter(final @Nullable Delegate delegate) {
     this.delegate = delegate;
 
     insertSection(SECTION_LOGGED_IN_EMPTY_VIEW, Collections.emptyList());
     insertSection(SECTION_LOGGED_OUT_EMPTY_VIEW, Collections.emptyList());
+    insertSection(SECTION_ERRORED_BACKINGS_HEADER_VIEW, Collections.emptyList());
+    insertSection(SECTION_ERRORED_BACKINGS_VIEW, Collections.emptyList());
     insertSection(SECTION_SURVEYS_HEADER_VIEW, Collections.emptyList());
     insertSection(SECTION_SURVEYS_VIEW, Collections.emptyList());
     insertSection(SECTION_ACTIVITIES_VIEW, Collections.emptyList());
@@ -48,6 +59,17 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
   public void takeActivities(final @NonNull List<Activity> activities) {
     setSection(SECTION_ACTIVITIES_VIEW, activities);
+    notifyDataSetChanged();
+  }
+
+  public void takeErroredBackings(final @NonNull List<ErroredBacking> erroredBackings) {
+    if (erroredBackings.isEmpty()) {
+      setSection(SECTION_ERRORED_BACKINGS_HEADER_VIEW, Collections.emptyList());
+      setSection(SECTION_ERRORED_BACKINGS_VIEW, Collections.emptyList());
+    } else {
+      setSection(SECTION_ERRORED_BACKINGS_HEADER_VIEW, Collections.singletonList(erroredBackings.size()));
+      setSection(SECTION_ERRORED_BACKINGS_VIEW, erroredBackings);
+    }
     notifyDataSetChanged();
   }
 
@@ -79,6 +101,10 @@ public final class ActivityFeedAdapter extends KSAdapter {
         return R.layout.empty_activity_feed_view;
       case SECTION_LOGGED_OUT_EMPTY_VIEW:
         return R.layout.empty_activity_feed_view;
+      case SECTION_ERRORED_BACKINGS_HEADER_VIEW:
+        return R.layout.item_header_errored_backings;
+      case SECTION_ERRORED_BACKINGS_VIEW:
+        return R.layout.item_errored_backing;
       case SECTION_SURVEYS_HEADER_VIEW:
         return R.layout.activity_survey_header_view;
       case SECTION_SURVEYS_VIEW:
@@ -130,6 +156,8 @@ public final class ActivityFeedAdapter extends KSAdapter {
         return new ProjectUpdateViewHolder(view, this.delegate);
       case R.layout.empty_activity_feed_view:
         return new EmptyActivityFeedViewHolder(view, this.delegate);
+      case R.layout.item_errored_backing:
+        return new ErroredBackingViewHolder(view, this.delegate);
       default:
         return new EmptyViewHolder(view);
     }

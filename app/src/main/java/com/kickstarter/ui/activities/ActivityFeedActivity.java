@@ -14,6 +14,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.ErroredBacking;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.ui.IntentKey;
@@ -71,6 +72,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(observeForUI())
       .subscribe(this::showActivities);
 
+    this.viewModel.outputs.erroredBackings()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::showErroredBackings);
+
     this.viewModel.outputs.goToDiscovery()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -85,6 +91,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startProjectActivity);
+
+    this.viewModel.outputs.startFixPledge()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startFixPledge);
 
     this.viewModel.outputs.startUpdateActivity()
       .compose(bindToLifecycle())
@@ -124,6 +135,10 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     this.adapter.takeActivities(activities);
   }
 
+  private void showErroredBackings(final @NonNull List<ErroredBacking> erroredBackings) {
+    this.adapter.takeErroredBackings(erroredBackings);
+  }
+
   private void showSurveys(final @NonNull List<SurveyResponse> surveyResponses) {
     this.adapter.takeSurveys(surveyResponses);
   }
@@ -136,6 +151,14 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.ACTIVITY_FEED);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
+  }
+
+  private void startFixPledge(final @NonNull String projectSlug) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT_PARAM, projectSlug)
+      .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
+      .putExtra(IntentKey.REF_TAG, RefTag.activity());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startProjectActivity(final @NonNull Project project) {

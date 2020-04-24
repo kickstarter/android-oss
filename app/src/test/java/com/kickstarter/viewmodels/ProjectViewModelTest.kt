@@ -6,7 +6,10 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KoalaEvent
+import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
@@ -398,7 +401,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.experimentsTest.assertValue("Campaign Details Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 
     @Test
@@ -411,7 +414,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.experimentsTest.assertNoValues()
+        this.lakeTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -424,7 +427,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.experimentsTest.assertNoValues()
+        this.lakeTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -437,7 +440,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.experimentsTest.assertValue("Campaign Details Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 
     @Test
@@ -450,7 +453,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.experimentsTest.assertNoValues()
+        this.lakeTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -463,7 +466,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.experimentsTest.assertNoValues()
+        this.lakeTest.assertValue("Project Page Viewed")
     }
 
     @Test

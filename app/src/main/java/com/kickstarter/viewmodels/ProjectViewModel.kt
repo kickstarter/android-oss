@@ -735,12 +735,12 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackOpenedAppBanner() }
 
-            fullProjectDataAndCurrentUser
-                    .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
-                    .compose<Pair<ExperimentData, Project>>(takeWhen(blurbClicked))
-                    .filter { it.second.isLive && !it.second.isBacking }
+            fullProjectDataAndPledgeFlowContext
+                    .map { it.first }
+                    .compose<ProjectData>(takeWhen(blurbClicked))
+                    .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, it.first) }
+                    .subscribe { this.lake.trackCampaignDetailsButtonClicked(it) }
 
             val shouldTrackCTAClickedEvent = this.pledgeActionButtonText
                     .map { isPledgeCTA(it) }

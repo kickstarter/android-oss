@@ -703,10 +703,11 @@ public final class Koala {
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
     props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
 
-    final Map<String, Object> optimizelyProperties = optimizelyProperties(projectData);
-    props.putAll(optimizelyProperties);
     if (pledgeFlowContext != null) {
       props.put("context_pledge_flow", pledgeFlowContext.getTrackingString());
+      if (pledgeFlowContext == PledgeFlowContext.NEW_PLEDGE) {
+        props.putAll(optimizelyProperties(projectData));
+      }
     }
 
     this.client.track(LakeEvent.PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, props);

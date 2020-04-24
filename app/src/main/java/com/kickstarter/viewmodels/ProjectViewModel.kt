@@ -771,17 +771,6 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCampaignDetailsButtonClicked(it) }
 
-            val shouldTrackCTAClickedEvent = this.pledgeActionButtonText
-                    .map { isPledgeCTA(it) }
-                    .compose<Boolean>(takeWhen(this.nativeProjectActionButtonClicked))
-
-            fullProjectDataAndCurrentUser
-                    .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                    .compose<Pair<ExperimentData, Boolean>>(combineLatestPair(shouldTrackCTAClickedEvent))
-                    .filter { it.second }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
-
             fullProjectDataAndCurrentUser
                     .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
                     .compose<Pair<ExperimentData, Project>>(takeWhen(creatorInfoClicked))
@@ -798,17 +787,6 @@ interface ProjectViewModel {
                 R.string.Manage -> KoalaEvent.MANAGE_PLEDGE_BUTTON_CLICKED
                 R.string.View_your_pledge -> KoalaEvent.VIEW_YOUR_PLEDGE_BUTTON_CLICKED
                 else -> KoalaEvent.VIEW_REWARDS_BUTTON_CLICKED
-            }
-        }
-
-        private fun isPledgeCTA(projectActionButtonStringRes: Int) : Boolean {
-            return when (projectActionButtonStringRes) {
-                R.string.Back_this_project -> true
-                R.string.View_the_rewards -> true
-                R.string.See_the_rewards -> true
-                R.string.Manage -> false
-                R.string.View_your_pledge -> false
-                else -> false
             }
         }
 

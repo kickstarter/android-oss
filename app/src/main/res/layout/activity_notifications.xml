@@ -340,6 +340,30 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/announcements"
+            style="@style/SettingsNotificationRow">
+
+          <TextView
+              style="@style/SettingsSectionLabel"
+              android:text="Announcements" />
+
+          <ImageButton
+              android:id="@+id/announcements__mail_icon"
+              style="@style/KSSettingsMailIcon"
+              android:contentDescription="@null" />
+
+          <Space
+              android:layout_width="@dimen/grid_2"
+              android:layout_height="wrap_content" />
+
+          <ImageButton
+              android:id="@+id/announcements_phone_icon"
+              style="@style/KSSettingsPhoneIcon"
+              android:contentDescription="@null" />
+
+        </LinearLayout>
+
       </LinearLayout>
 
     </LinearLayout>

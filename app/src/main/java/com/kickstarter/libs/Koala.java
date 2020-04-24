@@ -777,7 +777,7 @@ public final class Koala {
   }
   //endregion
 
-  private @NonNull Map<String, Object> experimentProperties(@NonNull ProjectData projectData) {
+  private @NonNull Map<String, Object> experimentProperties(final @NonNull ProjectData projectData) {
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
     props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
     props.putAll(optimizelyProperties(projectData));

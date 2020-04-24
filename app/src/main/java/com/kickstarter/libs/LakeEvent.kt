@@ -33,3 +33,7 @@ const val SIGN_UP_BUTTON_CLICKED = "Sign Up Button Clicked"
 const val SIGN_UP_SUBMIT_BUTTON_CLICKED = "Sign Up Submit Button Clicked"
 const val TWO_FACTOR_CONFIRMATION_VIEWED = "Two-Factor Confirmation Viewed"
 // endregion
+
+// region native_project_page_campaign_details experiment
+const val CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED = "Campaign Details Pledge Button Clicked"
+// endregion

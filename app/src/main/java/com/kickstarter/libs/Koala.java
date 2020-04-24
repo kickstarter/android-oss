@@ -763,6 +763,17 @@ public final class Koala {
   }
   //endregion
 
+  //region Experiments
+  public void trackCampaignDetailsPledgeButtonClicked(final @NonNull ProjectData projectData) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
+    props.putAll(KoalaUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()));
+    props.putAll(optimizelyProperties(projectData));
+    props.put("context_pledge_flow", PledgeFlowContext.NEW_PLEDGE.getTrackingString());
+
+    this.client.track(LakeEvent.CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, props);
+  }
+  //endregion
+
   private @NonNull Map<String, Object> optimizelyProperties(final @NonNull ProjectData projectData) {
     final ExperimentData experimentData = new ExperimentData(this.client.loggedInUser(), projectData.refTagFromIntent(), projectData.refTagFromCookie());
     return this.client.optimizely().optimizelyProperties(experimentData);

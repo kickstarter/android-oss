@@ -35,5 +35,6 @@ const val TWO_FACTOR_CONFIRMATION_VIEWED = "Two-Factor Confirmation Viewed"
 // endregion
 
 // region native_project_page_campaign_details experiment
+const val CAMPAIGN_DETAILS_BUTTON_CLICKED = "Campaign Details Button Clicked"
 const val CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED = "Campaign Details Pledge Button Clicked"
 // endregion

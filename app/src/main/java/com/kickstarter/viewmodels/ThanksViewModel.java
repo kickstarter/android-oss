@@ -6,11 +6,8 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
-import com.kickstarter.libs.OptimizelyEvent;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.utils.ExperimentData;
-import com.kickstarter.libs.utils.ExperimentRevenueData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.UserUtils;
@@ -196,23 +193,6 @@ public interface ThanksViewModel {
       checkoutAndPledgeData
         .compose(bindToLifecycle())
         .subscribe(checkoutDataPledgeData -> this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second));
-
-      checkoutAndPledgeData
-        .compose(combineLatestPair(this.currentUser.observable()))
-        .map(this::experimentRevenueData)
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(data -> this.optimizely.trackRevenue(OptimizelyEvent.APP_COMPLETED_CHECKOUT, data));
-    }
-
-    private ExperimentRevenueData experimentRevenueData(final @NonNull Pair<Pair<CheckoutData, PledgeData>, User> dataAndUser) {
-      final User currentUser = dataAndUser.second;
-      final PledgeData pledgeData = dataAndUser.first.second;
-      final RefTag intentRefTag = pledgeData.projectData().refTagFromIntent();
-      final RefTag cookieRefTag = pledgeData.projectData().refTagFromCookie();
-      final ExperimentData experimentData = new ExperimentData(currentUser, intentRefTag, cookieRefTag);
-      final CheckoutData checkoutData = dataAndUser.first.first;
-      return new ExperimentRevenueData(experimentData, checkoutData, pledgeData);
     }
 
     /**

@@ -783,11 +783,11 @@ interface ProjectViewModel {
                     .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
 
             fullProjectDataAndCurrentUser
-                    .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
-                    .compose<Pair<ExperimentData, Project>>(takeWhen(creatorInfoClicked))
-                    .filter { it.second.isLive && !it.second.isBacking }
+                    .map { it.first }
+                    .compose<ProjectData>(takeWhen(creatorInfoClicked))
+                    .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(CREATOR_DETAILS_CLICKED, it.first) }
+                    .subscribe { this.lake.trackCreatorDetailsClicked(it) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

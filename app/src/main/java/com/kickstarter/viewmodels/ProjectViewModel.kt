@@ -566,7 +566,7 @@ interface ProjectViewModel {
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
-                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.FIX_PLEDGE) }
+                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE), PledgeReason.FIX_PLEDGE) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 

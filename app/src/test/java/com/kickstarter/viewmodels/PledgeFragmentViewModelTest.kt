@@ -1773,6 +1773,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePaymentError.assertValueCount(1)
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertValues("Pledge Submit Button Clicked")
     }
 
     @Test
@@ -1831,6 +1832,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePaymentSuccess.assertValueCount(1)
         this.koalaTest.assertNoValues()
+        this.lakeTest.assertValues("Pledge Submit Button Clicked")
     }
 
     @Test

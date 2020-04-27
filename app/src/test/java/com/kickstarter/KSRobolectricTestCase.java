@@ -44,7 +44,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
     super.setUp();
     final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
 
-    final MockExperimentsClientType experimentsClientType = experimentsClient();
+    final MockExperimentsClientType experimentsClientType = new MockExperimentsClientType();
     final MockTrackingClient koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType);
     final MockTrackingClient lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType);
 
@@ -88,13 +88,6 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
   protected @NonNull KSString ksString() {
     return new KSString(application().getPackageName(), application().getResources());
-  }
-
-  private MockExperimentsClientType experimentsClient() {
-    this.experimentsTest = new TestSubscriber<>();
-    final MockExperimentsClientType experimentsClientType = new MockExperimentsClientType();
-    experimentsClientType.getEventKeys().subscribe(this.experimentsTest);
-    return experimentsClientType;
   }
 
   private MockTrackingClient koalaTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig,

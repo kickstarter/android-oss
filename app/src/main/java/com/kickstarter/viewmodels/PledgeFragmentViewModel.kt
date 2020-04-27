@@ -1004,7 +1004,7 @@ interface PledgeFragmentViewModel {
             Observable.combineLatest<Double, Double, CheckoutData>(shippingAmount, total)
             { s, t -> checkoutData(s, t, null) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
-                    .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                    .filter { shouldTrackPledgeSubmitButtonClicked(it.second.pledgeFlowContext()) }
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackPledgeSubmitButtonClicked(it.first, it.second) }
@@ -1049,6 +1049,10 @@ interface PledgeFragmentViewModel {
                 else -> reward.title() ?: projectName
             }
         }
+
+        private fun shouldTrackPledgeSubmitButtonClicked(pledgeFlowContext: PledgeFlowContext) =
+                pledgeFlowContext == PledgeFlowContext.NEW_PLEDGE
+                        || pledgeFlowContext == PledgeFlowContext.FIX_ERRORED_PLEDGE
 
         private fun storedCards(): Observable<List<StoredCard>> {
             return this.apolloClient.getStoredCards()

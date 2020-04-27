@@ -52,7 +52,7 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/ksr_grey_100"
         android:orientation="vertical">
 
         <TextView
@@ -62,6 +62,7 @@
 
         <LinearLayout
           android:id="@+id/project_updates_row"
+          android:background="@color/white"
           style="@style/SettingsNotificationRow">
 
           <TextView
@@ -115,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/white"
+        android:background="@color/ksr_grey_100"
         android:orientation="vertical">
 
         <TextView
@@ -124,6 +125,7 @@
           android:text="@string/Projects_youve_launched" />
 
         <LinearLayout
+          android:background="@color/white"
           android:id="@+id/backings_row"
           style="@style/SettingsNotificationRow">
 
@@ -242,7 +244,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/white"
+        android:background="@color/ksr_grey_100"
         android:orientation="vertical">
 
         <TextView
@@ -251,6 +253,7 @@
 
         <LinearLayout
           android:id="@+id/messages_notification_row"
+          android:background="@color/white"
           style="@style/SettingsNotificationRow">
 
           <TextView
@@ -341,27 +344,42 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/announcements"
-            style="@style/SettingsNotificationRow">
+            android:id="@+id/from_kickstarter_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@color/ksr_grey_100"
+            android:orientation="vertical">
 
           <TextView
-              style="@style/SettingsSectionLabel"
-              android:text="Announcements" />
+              style="@style/SettingsSectionTitle"
+              android:layout_marginBottom="@dimen/grid_2"
+              android:text="From Kickstarter" />
 
-          <ImageButton
-              android:id="@+id/announcements__mail_icon"
-              style="@style/KSSettingsMailIcon"
-              android:contentDescription="@null" />
+          <LinearLayout
+              android:id="@+id/announcements"
+              style="@style/SettingsNotificationRow"
+              android:background="@color/white">
 
-          <Space
-              android:layout_width="@dimen/grid_2"
-              android:layout_height="wrap_content" />
+            <TextView
+                style="@style/SettingsSectionLabel"
+                android:text="Announcements" />
 
-          <ImageButton
-              android:id="@+id/announcements_phone_icon"
-              style="@style/KSSettingsPhoneIcon"
-              android:contentDescription="@null" />
+            <ImageButton
+                android:id="@+id/announcements__mail_icon"
+                style="@style/KSSettingsMailIcon"
+                android:contentDescription="@null" />
 
+            <Space
+                android:layout_width="@dimen/grid_2"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/announcements_phone_icon"
+                style="@style/KSSettingsPhoneIcon"
+                android:contentDescription="@null" />
+
+          </LinearLayout>
         </LinearLayout>
 
       </LinearLayout>

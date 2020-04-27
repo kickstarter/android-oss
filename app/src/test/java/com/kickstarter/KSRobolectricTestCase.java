@@ -33,7 +33,6 @@ import rx.observers.TestSubscriber;
 @Config(shadows = ShadowAndroidXMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
-  public TestSubscriber<String> experimentsTest;
   public TestSubscriber<String> koalaTest;
   public TestSubscriber<String> lakeTest;
   private Environment environment;

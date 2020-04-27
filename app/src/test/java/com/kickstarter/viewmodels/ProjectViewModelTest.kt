@@ -1263,7 +1263,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.fixPaymentMethodButtonClicked()
 
         this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
+                .pledgeFlowContext(PledgeFlowContext.FIX_ERRORED_PLEDGE)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(backedProject))
                 .build(), PledgeReason.FIX_PLEDGE))

@@ -777,6 +777,11 @@ interface ProjectViewModel {
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCreatorDetailsClicked(it) }
+
+            currentProjectData
+                    .compose<ProjectData>(takeWhen(this.nativeProjectActionButtonClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.lake.trackManagePledgeButtonClicked(it) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

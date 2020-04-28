@@ -192,10 +192,10 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
-    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.browser:browser:1.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta01'
+    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha02'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.work:work-runtime-ktx:2.3.4'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
@@ -207,11 +207,11 @@ dependencies {
     final auto_parcel_version = "0.3.1"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
-    implementation "com.google.firebase:firebase-messaging:19.0.1"
+    implementation "com.google.firebase:firebase-messaging:20.1.6"
     implementation "com.google.android.gms:play-services-wallet:18.0.0"
     implementation "com.google.android.exoplayer:exoplayer:2.10.2"
     implementation 'com.google.android:flexbox:1.1.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha08'
+    implementation 'com.google.android.material:material:1.2.0-alpha06'
     final dagger_version = "2.11"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
@@ -238,7 +238,7 @@ dependencies {
     implementation "com.trello:rxlifecycle:$rx_lifecycle_version"
     implementation "com.trello:rxlifecycle-components:$rx_lifecycle_version"
     implementation 'io.reactivex:rxandroid:1.2.1'
-    implementation "io.reactivex:rxjava:1.1.5"
+    implementation "io.reactivex:rxjava:1.3.0"
     implementation "net.danlew:android.joda:2.7.2"
     implementation "org.jsoup:jsoup:1.12.1"
 

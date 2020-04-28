@@ -33,6 +33,7 @@
   <string name="Amount_previous_amount" formatted="false">Amount: %{amount}, previous amount: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Amount: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">The amounts shown are an approximate conversion. If the project is successful, your pledge will be collected in the native currency of the project, which is also displayed.</string>
+  <string name="Announcements" formatted="false">Announcements</string>
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Any payment methods you\'ve saved to Kickstarter are listed here (securely) for your convenience.</string>
   <string name="App_version" formatted="false">App version</string>
   <string name="Apple_ID" formatted="false">Apple ID</string>
@@ -235,6 +236,7 @@ Please tap to retry.</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Technology&lt;/i> project.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> backed a &lt;i>Theater&lt;/i> project.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} launched a project!</string>
+  <string name="From_Kickstarter" formatted="false">From Kickstarter</string>
   <string name="Funding_successful" formatted="false">Funding successful</string>
   <string name="Games_newsletter" formatted="false">Sign up to receive a biweekly mix of new projects and updates on all things games, handpicked by Kickstarter\'s Games team.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Get notified about new messages?</string>

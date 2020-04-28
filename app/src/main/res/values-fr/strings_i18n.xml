@@ -33,6 +33,7 @@
   <string name="Amount_previous_amount" formatted="false">Montant : %{amount}, montant précédant : %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Montant : %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Les montants qui s\'affichent représentent une conversion approximative. Si le projet est intégralement financé, votre contribution sera débitée dans la devise d\'origine du projet, également affichée.</string>
+  <string name="Announcements" formatted="false">Annonces</string>
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Voici une liste (sécurisée) de tous les moyens de paiement que vous avez ajoutés à votre compte Kickstarter.</string>
   <string name="App_version" formatted="false">Version de l\'application</string>
   <string name="Apple_ID" formatted="false">Apple ID</string>
@@ -235,6 +236,7 @@ contributeurs</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>technologie&lt;/i>.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>théâtre&lt;/i>.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} a lancé un projet !</string>
+  <string name="From_Kickstarter" formatted="false">From Kickstarter</string>
   <string name="Funding_successful" formatted="false">Intégralement financé</string>
   <string name="Games_newsletter" formatted="false">Un mix de nouveaux projets et d\'actus sur le thème des jeux, soigneusement sélectionné par l\'équipe Jeux de Kickstarter.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Envie d\'être informé des messages entrants ?</string>
@@ -442,7 +444,7 @@ n\'ont rien soutenu.</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
   <string name="Resend_verification_email" formatted="false">Renvoyer l\'e-mail de vérification</string>
   <string name="Retry" formatted="false">Réessayer</string>
-  <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
+  <string name="Retry_or_select_another_method" formatted="false">Veuillez réessayer ou choisir un autre moyen de paiement.</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>

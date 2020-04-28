@@ -33,6 +33,7 @@
   <string name="Amount_previous_amount" formatted="false">Jetziger Betrag: %{amount}, vorheriger Betrag: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Betrag: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Die angezeigten Beträge stellen nur eine ungefähre Umrechnung dar. Nach erfolgreicher Finanzierung des Projekts wird dein Finanzierungsbeitrag in der Währung des Erstellungslandes abgebucht. Dieser Betrag wird ebenso angezeigt.</string>
+  <string name="Announcements" formatted="false">Ankündigungen</string>
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Sämtliche auf Kickstarter gespeicherten Zahlungsmethoden sind hier (sicher) hinterlegt.</string>
   <string name="App_version" formatted="false">App-Version</string>
   <string name="Apple_ID" formatted="false">Apple ID</string>
@@ -235,6 +236,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Technologie-Projekt&lt;/i> unterstützt.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> hat ein &lt;i>Theater-Projekt&lt;/i> unterstützt.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} hat ein Projekt veröffentlicht!</string>
+  <string name="From_Kickstarter" formatted="false">Von Kickstarter</string>
   <string name="Funding_successful" formatted="false">Finanzierung erfolgreich</string>
   <string name="Games_newsletter" formatted="false">Jetzt abonnieren - du erhältst von Kickstarters Games-Team alle zwei Wochen News zu neuen Projekten und Updates rund um Games.</string>
   <string name="Get_notified_about_new_messages" formatted="false">Möchtest du benachrichtigt werden bei neuen Nachrichten?</string>
@@ -441,7 +443,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Request_my_personal_data" formatted="false">Meine persönlichen Daten anfordern</string>
   <string name="Resend_verification_email" formatted="false">Verifizierungs-E-Mail erneut senden</string>
   <string name="Retry" formatted="false">Erneut versuchen</string>
-  <string name="Retry_or_select_another_method" formatted="false">Retry or select another method.</string>
+  <string name="Retry_or_select_another_method" formatted="false">Versuche es erneut oder wähle eine andere Karte.</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} Befragungen</string>
   <string name="Reward_Surveys_one" formatted="false">Befragung</string>

@@ -33,6 +33,7 @@
   <string name="Amount_previous_amount" formatted="false">Monto actual: %{amount}, monto previo: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Monto: %{amount}, %{reward}</string>
   <string name="Amounts_shown" formatted="false">Los montos mostrados son una conversión aproximada. Si el proyecto tiene éxito, tu contribución se recaudará en la moneda nativa del proyecto, que también se mostrará.</string>
+  <string name="Announcements" formatted="false">Anuncios</string>
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Para tu comodidad, aquí se enumeran (de manera absolutamente segura) los métodos de pago que guardaste en Kickstarter.</string>
   <string name="App_version" formatted="false">Versión de la aplicación</string>
   <string name="Apple_ID" formatted="false">Apple ID</string>
@@ -235,6 +236,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Tecnología&lt;/i>.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Teatro&lt;/i>.</string>
   <string name="Friend_name_launched_a_project" formatted="false">¡%{friend_name} publicó un proyecto!</string>
+  <string name="From_Kickstarter" formatted="false">From Kickstarter</string>
   <string name="Funding_successful" formatted="false">Financiado con éxito</string>
   <string name="Games_newsletter" formatted="false">Suscríbete para recibir, cada dos semanas, una combinación de nuevos proyectos y actualizaciones sobre todo lo relacionado a juegos, seleccionados exclusivamente para ti por el equipo de Juegos de Kickstarter.</string>
   <string name="Get_notified_about_new_messages" formatted="false">¿Deseas recibir notificaciones sobre nuevos mensajes?</string>

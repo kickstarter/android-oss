@@ -354,7 +354,7 @@
           <TextView
               style="@style/SettingsSectionTitle"
               android:layout_marginBottom="@dimen/grid_2"
-              android:text="From Kickstarter" />
+              android:text="@string/From_Kickstarter" />
 
           <LinearLayout
               android:id="@+id/announcements"
@@ -363,7 +363,7 @@
 
             <TextView
                 style="@style/SettingsSectionLabel"
-                android:text="Announcements" />
+                android:text="@string/Announcements" />
 
             <ImageButton
                 android:id="@+id/announcements__mail_icon"
@@ -380,6 +380,11 @@
                 android:contentDescription="@null" />
 
           </LinearLayout>
+
+          <TextView
+              style="@style/SettingsSectionTitle"
+              android:layout_marginBottom="@dimen/grid_2"
+              android:text="Big Kickstarter announcements, plus occasional projects and events chosen just for you." />
         </LinearLayout>
 
       </LinearLayout>

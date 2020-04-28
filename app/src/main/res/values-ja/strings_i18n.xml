@@ -33,6 +33,7 @@
   <string name="Amount_previous_amount" formatted="false">金額: %{amount}, 以前の金額: %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">金額：%{amount}、%{reward}</string>
   <string name="Amounts_shown" formatted="false">表示されている金額は、おおよその換算金額ですのでご注意ください。プロジェクトが成功した場合、プレッジはプロジェクトをローンチした国の通貨で集められ、その換算額も表示されます。</string>
+  <string name="Announcements" formatted="false">Announcements</string>
   <string name="Any_payment_methods_you_saved_to_Kickstarter" formatted="false">Kickstarter に保存されたお支払い方法は、こちらに (安全に) リストアップされます。</string>
   <string name="App_version" formatted="false">アプリ版</string>
   <string name="Apple_ID" formatted="false">Apple ID</string>
@@ -233,6 +234,7 @@
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>テクノロジー&lt;/i> プロジェクトをバックしています。</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> は&lt;i>演劇&lt;/i> プロジェクトをバックしています。</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} がプロジェクトを発表しました！</string>
+  <string name="From_Kickstarter" formatted="false">From Kickstarter</string>
   <string name="Funding_successful" formatted="false">ファンディング成功</string>
   <string name="Games_newsletter" formatted="false">Kickstarter の「ゲーム」チーム選りすぐりの、ゲームに関するあらゆる新プロジェクトや更新情報を毎月2回お届けするニュースレターに登録しましょう。</string>
   <string name="Get_notified_about_new_messages" formatted="false">新規メッセージについて通知の受信を希望しますか？</string>

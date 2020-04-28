@@ -52,14 +52,20 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 
 public final class PushNotifications {
+  private static final String CHANNEL_ERRORED_PLEDGES = "ERRORED_PLEDGES";
   private static final String CHANNEL_FOLLOWING = "FOLLOWING";
   private static final String CHANNEL_MESSAGES = "MESSAGES";
   private static final String CHANNEL_PROJECT_ACTIVITY = "PROJECT_ACTIVITY";
   private static final String CHANNEL_PROJECT_REMINDER = "PROJECT_REMINDER";
   private static final String CHANNEL_PROJECT_UPDATES = "PROJECT_UPDATES";
   private static final String CHANNEL_SURVEY = "SURVEY";
-  private static final String[] NOTIFICATION_CHANNELS = {CHANNEL_FOLLOWING, CHANNEL_MESSAGES, CHANNEL_PROJECT_ACTIVITY,
-    CHANNEL_PROJECT_REMINDER, CHANNEL_PROJECT_UPDATES, CHANNEL_SURVEY};
+  private static final String[] NOTIFICATION_CHANNELS = {CHANNEL_ERRORED_PLEDGES,
+    CHANNEL_FOLLOWING,
+    CHANNEL_MESSAGES,
+    CHANNEL_PROJECT_ACTIVITY,
+    CHANNEL_PROJECT_REMINDER,
+    CHANNEL_PROJECT_UPDATES,
+    CHANNEL_SURVEY};
 
   private final @ApplicationContext Context context;
   private final ApiClientType client;
@@ -74,6 +80,14 @@ public final class PushNotifications {
 
   public void initialize() {
     createNotificationChannels();
+
+    this.subscriptions.add(
+      this.notifications
+        .onBackpressureBuffer()
+        .filter(PushNotificationEnvelope::isErroredPledge)
+        .observeOn(Schedulers.newThread())
+        .subscribe(this::displayNotificationFromErroredPledge)
+    );
 
     this.subscriptions.add(
       this.notifications
@@ -160,6 +174,7 @@ public final class PushNotifications {
   @TargetApi(Build.VERSION_CODES.O)
   private @NonNull List<NotificationChannel> getListOfNotificationChannels() {
     final List<NotificationChannel> channels = new ArrayList<>(NOTIFICATION_CHANNELS.length);
+    channels.add(getNotificationChannel(CHANNEL_ERRORED_PLEDGES, R.string.Fix_your_payment_method, NotificationManager.IMPORTANCE_HIGH));
     channels.add(getNotificationChannel(CHANNEL_MESSAGES, R.string.Messages, NotificationManager.IMPORTANCE_DEFAULT));
     channels.add(getNotificationChannel(CHANNEL_PROJECT_ACTIVITY, R.string.Project_activity, NotificationManager.IMPORTANCE_DEFAULT));
     channels.add(getNotificationChannel(CHANNEL_PROJECT_REMINDER, R.string.Project_reminders, NotificationManager.IMPORTANCE_DEFAULT));
@@ -175,6 +190,24 @@ public final class PushNotifications {
   private @NonNull NotificationChannel getNotificationChannel(final @NonNull String channelId, final int nameResId, final int importance) {
     final CharSequence name = this.context.getString(nameResId);
     return new NotificationChannel(channelId, name, importance);
+  }
+
+  private void displayNotificationFromErroredPledge(final @NonNull PushNotificationEnvelope envelope) {
+    final GCM gcm = envelope.gcm();
+
+    final PushNotificationEnvelope.ErroredPledge erroredPledge = envelope.erroredPledge();
+    if (erroredPledge == null) {
+      return;
+    }
+
+    final Long projectId = erroredPledge.projectId();
+    final Intent projectIntent = projectIntent(envelope, ObjectUtils.toString(projectId))
+      .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true);
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_REMINDER)
+      .setContentIntent(projectContentIntent(envelope, projectIntent))
+      .build();
+
+    notificationManager().notify(envelope.signature(), notification);
   }
 
   private void displayNotificationFromFriendFollowActivity(final @NonNull PushNotificationEnvelope envelope) {
@@ -221,10 +254,8 @@ public final class PushNotifications {
     }
     final String projectPhoto = activity.projectPhoto();
 
-    final String projectParam = ObjectUtils.toString(projectId);
-
     NotificationCompat.Builder notificationBuilder = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_ACTIVITY)
-      .setContentIntent(projectContentIntent(envelope, projectParam));
+      .setContentIntent(projectContentIntent(envelope, projectIntent(envelope, ObjectUtils.toString(projectId))));
     if (projectPhoto != null) {
       notificationBuilder = notificationBuilder.setLargeIcon(fetchBitmap(projectPhoto, false));
     }
@@ -241,8 +272,9 @@ public final class PushNotifications {
       return;
     }
 
+    final Intent projectIntent = projectIntent(envelope, ObjectUtils.toString(project.id()));
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_REMINDER)
-      .setContentIntent(projectContentIntent(envelope, ObjectUtils.toString(project.id())))
+      .setContentIntent(projectContentIntent(envelope, projectIntent))
       .setLargeIcon(fetchBitmap(project.photo(), false))
       .build();
 
@@ -328,12 +360,7 @@ public final class PushNotifications {
   }
 
   private @NonNull PendingIntent projectContentIntent(final @NonNull PushNotificationEnvelope envelope,
-    final @NonNull String projectParam) {
-
-    final Intent projectIntent = new Intent(this.context, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT_PARAM, projectParam)
-      .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)
-      .putExtra(IntentKey.REF_TAG, RefTag.push());
+    final @NonNull Intent projectIntent) {
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this.context)
       .addNextIntentWithParentStack(projectIntent);
@@ -453,5 +480,12 @@ public final class PushNotifications {
 
     return Observable.just(envelope)
       .compose(combineLatestPair(update));
+  }
+
+  private @NonNull Intent projectIntent(final @NonNull PushNotificationEnvelope envelope, final @NonNull String projectParam) {
+    return new Intent(this.context, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT_PARAM, projectParam)
+      .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)
+      .putExtra(IntentKey.REF_TAG, RefTag.push());
   }
 }

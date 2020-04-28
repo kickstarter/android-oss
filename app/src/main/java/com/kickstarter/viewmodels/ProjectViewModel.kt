@@ -329,9 +329,6 @@ interface ProjectViewModel {
                     .startWith(false)
 
             progressBarIsGone
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(pledgeSheetExpanded))
-                    .filter { BooleanUtils.isFalse(it.second) }
-                    .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.retryProgressBarIsGone)
 
@@ -566,7 +563,7 @@ interface ProjectViewModel {
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
-                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.FIX_PLEDGE) }
+                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.FIX_ERRORED_PLEDGE), PledgeReason.FIX_PLEDGE) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledge)
 
@@ -777,6 +774,11 @@ interface ProjectViewModel {
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCreatorDetailsClicked(it) }
+
+            projectData
+                    .compose<ProjectData>(takeWhen(this.fixPaymentMethodButtonClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.lake.trackFixPledgeButtonClicked(it) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

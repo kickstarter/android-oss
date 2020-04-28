@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 import android.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfigType;
@@ -78,6 +79,9 @@ public interface DiscoveryViewModel {
     /** Emits a boolean that determines if the drawer is open or not. */
     Observable<Boolean> drawerIsOpen();
 
+    /** Emits the drawable resource ID of the drawer menu icon.  */
+    Observable<Integer> drawerMenuIcon();
+
     /** Emits a boolean that determines if the sort tab layout should be expanded/collapsed. */
     Observable<Boolean> expandSortTabLayout();
 
@@ -120,9 +124,6 @@ public interface DiscoveryViewModel {
 
     /** Start login tout activity for result. */
     Observable<Void> showLoginTout();
-
-    /** Emits a boolean that determines if the menu icon should be shown with an indicator. */
-    Observable<Boolean> showMenuIconWithIndicator();
 
     /** Start {@link com.kickstarter.ui.activities.MessageThreadsActivity}. */
     Observable<Void> showMessages();
@@ -335,11 +336,11 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackOpenedAppBanner());
 
-      this.showMenuIconWithIndicator = currentUser
-        .map(this::userHasNoUnreadMessagesOrUnseenActivity)
-        .map(BooleanUtils::negate)
+      currentUser
+        .map(this::currentDrawerMenuIcon)
         .distinctUntilChanged()
-        .compose(bindToLifecycle());
+        .compose(bindToLifecycle())
+        .subscribe(this.drawerMenuIcon::onNext);
 
       Observable.just(this.firstSessionPreference)
         .map(pref -> {
@@ -402,14 +403,22 @@ public interface DiscoveryViewModel {
         .subscribe(this.showQualtricsSurvey);
     }
 
-    private boolean userHasNoUnreadMessagesOrUnseenActivity(final @Nullable User user) {
+    private int currentDrawerMenuIcon(final @Nullable User user) {
       if (ObjectUtils.isNull(user)) {
-        return true;
+        return R.drawable.ic_menu;
       }
 
+      final int erroredBackingsCount = IntegerUtils.intValueOrZero(user.erroredBackingsCount());
       final int unreadMessagesCount = IntegerUtils.intValueOrZero(user.unreadMessagesCount());
       final int unseenActivityCount = IntegerUtils.intValueOrZero(user.unseenActivityCount());
-      return IntegerUtils.isZero(unreadMessagesCount + unseenActivityCount);
+
+      if (!IntegerUtils.isZero(erroredBackingsCount)) {
+        return R.drawable.ic_menu_error_indicator;
+      } else if (!(IntegerUtils.isZero(unreadMessagesCount + unseenActivityCount + erroredBackingsCount))) {
+        return R.drawable.ic_menu_indicator;
+      } else {
+        return R.drawable.ic_menu;
+      }
     }
 
     private final PublishSubject<Void> activityFeedClick = PublishSubject.create();
@@ -433,6 +442,7 @@ public interface DiscoveryViewModel {
 
     private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
+    private final BehaviorSubject<Integer> drawerMenuIcon = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
     private final BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> qualtricsPromptIsGone = BehaviorSubject.create();
@@ -444,7 +454,6 @@ public interface DiscoveryViewModel {
     private final Observable<Void> showHelp;
     private final Observable<Void> showInternalTools;
     private final Observable<Void> showLoginTout;
-    private final Observable<Boolean> showMenuIconWithIndicator;
     private final Observable<Void> showMessages;
     private final Observable<Void> showProfile;
     private final PublishSubject<String> showQualtricsSurvey = PublishSubject.create();
@@ -523,6 +532,9 @@ public interface DiscoveryViewModel {
     @Override public @NonNull Observable<Boolean> drawerIsOpen() {
       return this.drawerIsOpen;
     }
+    @Override public @NonNull Observable<Integer> drawerMenuIcon() {
+      return this.drawerMenuIcon;
+    }
     @Override public @NonNull Observable<Boolean> expandSortTabLayout() {
       return this.expandSortTabLayout;
     }
@@ -555,9 +567,6 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
-    }
-    @Override public @NonNull Observable<Boolean> showMenuIconWithIndicator() {
-      return this.showMenuIconWithIndicator;
     }
     @Override public @NonNull Observable<Void> showMessages() {
       return this.showMessages;

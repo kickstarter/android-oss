@@ -33,7 +33,6 @@ import rx.observers.TestSubscriber;
 @Config(shadows = ShadowAndroidXMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
-  public TestSubscriber<String> experimentsTest;
   public TestSubscriber<String> koalaTest;
   public TestSubscriber<String> lakeTest;
   private Environment environment;
@@ -44,7 +43,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
     super.setUp();
     final MockCurrentConfig mockCurrentConfig = new MockCurrentConfig();
 
-    final MockExperimentsClientType experimentsClientType = experimentsClient();
+    final MockExperimentsClientType experimentsClientType = new MockExperimentsClientType();
     final MockTrackingClient koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType);
     final MockTrackingClient lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType);
 
@@ -88,13 +87,6 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
   protected @NonNull KSString ksString() {
     return new KSString(application().getPackageName(), application().getResources());
-  }
-
-  private MockExperimentsClientType experimentsClient() {
-    this.experimentsTest = new TestSubscriber<>();
-    final MockExperimentsClientType experimentsClientType = new MockExperimentsClientType();
-    experimentsClientType.getEventKeys().subscribe(this.experimentsTest);
-    return experimentsClientType;
   }
 
   private MockTrackingClient koalaTrackingClient(final @NonNull MockCurrentConfig mockCurrentConfig,

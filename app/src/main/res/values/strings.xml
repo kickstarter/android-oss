@@ -18,6 +18,7 @@
   <string name="Device_ID">Device ID</string>
   <string name="debug_push_notifications_register_device">Register device</string>
   <string name="debug_push_notifications_device_registration">Device registration</string>
+  <string name="debug_push_notifications_errored_pldege">Errored pledge</string>
   <string name="debug_push_notifications_friend_backing">Friend backing</string>
   <string name="debug_push_notifications_friend_follow">Friend follow</string>
   <string name="debug_push_notifications_message">Message</string>

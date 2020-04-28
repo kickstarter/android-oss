@@ -340,7 +340,7 @@ class LakeTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCheckoutProperties() {
+    fun testCheckoutProperties_whenNewPledge() {
         val project = project()
         val user = user()
         val client = client(user)
@@ -364,6 +364,44 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
+        assertEquals(false, expectedProperties["project_user_is_project_creator"])
+
+        this.lakeTest.assertValues("Pledge Submit Button Clicked")
+    }
+
+    @Test
+    fun testCheckoutProperties_whenFixingPledge() {
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .id(4)
+                .category(CategoryFactory.ceramicsCategory())
+                .commentsCount(3)
+                .creator(creator())
+                .location(LocationFactory.unitedStates())
+                .updatesCount(5)
+                .build()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val lake = Koala(client)
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        lake.trackPledgeSubmitButtonClicked(CheckoutDataFactory.checkoutData(20.0, 30.0),
+                PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward()))
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+        assertPledgeProperties()
+        assertCheckoutProperties()
+
+        val expectedProperties = this.propertiesTest.value
+        assertNull(expectedProperties["checkout_id"])
+        assertEquals("fix_errored_pledge", expectedProperties["context_pledge_flow"])
+        assertEquals(false, expectedProperties["project_user_has_watched"])
+        assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.lakeTest.assertValues("Pledge Submit Button Clicked")

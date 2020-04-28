@@ -16,6 +16,7 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class PushNotificationEnvelope implements Parcelable {
   public abstract @Nullable Activity activity();
+  public abstract @Nullable ErroredPledge erroredPledge();
   public abstract GCM gcm();
   public abstract @Nullable Message message();
   public abstract @Nullable Project project();
@@ -32,6 +33,7 @@ public abstract class PushNotificationEnvelope implements Parcelable {
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder activity(Activity __);
+    public abstract Builder erroredPledge(ErroredPledge __);
     public abstract Builder gcm(GCM __);
     public abstract Builder message(Message __);
     public abstract Builder project(Project __);
@@ -44,6 +46,10 @@ public abstract class PushNotificationEnvelope implements Parcelable {
   }
 
   public abstract Builder toBuilder();
+
+  public boolean isErroredPledge() {
+    return erroredPledge() != null;
+  }
 
   public boolean isFriendFollow() {
     return activity() != null && activity().category().equals(com.kickstarter.models.Activity.CATEGORY_FOLLOW);
@@ -79,6 +85,22 @@ public abstract class PushNotificationEnvelope implements Parcelable {
     // The server doesn't send unique notification ids, so hashing the alert text is a weak substitute. Probably won't
     // make use of this feature anyhow.
     return gcm().alert().hashCode();
+  }
+
+  @AutoGson
+  @AutoParcel
+  public abstract static class ErroredPledge implements Parcelable {
+    public abstract Long projectId();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder projectId(Long __);
+      public abstract ErroredPledge build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_PushNotificationEnvelope_ErroredPledge.Builder();
+    }
   }
 
   @AutoGson

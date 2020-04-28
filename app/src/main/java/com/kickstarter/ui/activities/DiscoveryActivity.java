@@ -183,10 +183,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(RxDrawerLayout.open(this.discoveryLayout, GravityCompat.START));
 
-    this.viewModel.outputs.showMenuIconWithIndicator()
+    this.viewModel.outputs.drawerMenuIcon()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::showMenuIconWithIndicator);
+      .subscribe(this::updateDrawerMenuIcon);
 
     //region Qualtrics
     this.viewModel.outputs.qualtricsPromptIsGone()
@@ -278,13 +278,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       });
   }
 
-  private void showMenuIconWithIndicator(final boolean withIndicator) {
-    if (withIndicator) {
-      this.menuImageButton.setImageResource(R.drawable.ic_menu_indicator);
+  private void updateDrawerMenuIcon(final @NonNull Integer drawerMenuIcon) {
+    this.menuImageButton.setImageResource(drawerMenuIcon);
+    if (this.menuImageButton.getDrawable() instanceof Animatable) {
       final Animatable menuDrawable = (Animatable) this.menuImageButton.getDrawable();
       menuDrawable.start();
-    } else {
-      this.menuImageButton.setImageResource(R.drawable.ic_menu);
     }
   }
 

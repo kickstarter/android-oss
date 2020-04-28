@@ -778,10 +778,11 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCreatorDetailsClicked(it) }
 
-            currentProjectData
-                    .compose<ProjectData>(takeWhen(this.nativeProjectActionButtonClicked))
+            fullProjectDataAndPledgeFlowContext
+                    .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
+                    .filter { it.second == PledgeFlowContext.FIX_ERRORED_PLEDGE }
                     .compose(bindToLifecycle())
-                    .subscribe{ this.lake.trackManagePledgeButtonClicked(it) }
+                    .subscribe{ this.lake.trackManagePledgeButtonClicked(it.first, it.second) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

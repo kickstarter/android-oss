@@ -47,8 +47,8 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && !isKSFavIcon(uri, webEndpoint);
   }
 
-  public static boolean isNewGuestCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && NEW_GUEST_CHECKOUT_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+  public static boolean isCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && (NATIVE_CHECKOUT_PATTERN.matcher(UriUtilsKt.path(uri)).matches() || NATIVE_CHECKOUT_PATTERN_2.matcher(UriUtilsKt.path(uri)).matches());
   }
 
   public static boolean isProjectUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -65,10 +65,6 @@ public final class KSUri {
 
   public static boolean isStagingUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.STAGING.matcher(UriUtilsKt.host(uri)).matches();
-  }
-
-  public static boolean isCheckoutThanksUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
   }
 
   public static boolean isModalUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -113,9 +109,14 @@ public final class KSUri {
   // /discover/places/param
   private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");
 
-  // /checkouts/:checkout_id/guest/new
-  private static final Pattern NEW_GUEST_CHECKOUT_PATTERN = Pattern.compile(
-    "\\A\\/checkouts\\/[a-zA-Z0-9-_]+\\/guest\\/new\\z"
+  //  /projects/:creator_param/:project_param/pledge
+  private static final Pattern NATIVE_CHECKOUT_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/pledge\\z"
+  );
+
+  //  /projects/:creator_param/:project_param/pledge/new
+  private static final Pattern NATIVE_CHECKOUT_PATTERN_2 = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z"
   );
 
   // /projects/:creator_param/:project_param

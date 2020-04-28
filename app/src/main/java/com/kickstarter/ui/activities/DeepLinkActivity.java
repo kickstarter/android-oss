@@ -37,6 +37,11 @@ public final class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this::startProjectActivity);
+
+    this.viewModel.outputs.startProjectActivityForCheckout()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startProjectActivityForCheckout);
   }
 
   private void startDiscoveryActivity() {
@@ -45,14 +50,25 @@ public final class DeepLinkActivity extends BaseActivity<DeepLinkViewModel.ViewM
   }
 
   private void startProjectActivity(final @NonNull Uri uri) {
+    startActivity(projectIntent(uri));
+    finish();
+  }
+
+  private void startProjectActivityForCheckout(final @NonNull Uri uri) {
+    final Intent projectIntent = projectIntent(uri)
+      .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true);
+    startActivity(projectIntent);
+    finish();
+  }
+
+  private @NonNull Intent projectIntent(final @NonNull Uri uri) {
     final Intent projectIntent = new Intent(this, ProjectActivity.class)
       .setData(uri);
     final String ref = UrlUtils.INSTANCE.refTag(uri.toString());
     if (ref != null) {
       projectIntent.putExtra(IntentKey.REF_TAG, RefTag.from(ref));
     }
-    startActivity(projectIntent);
-    finish();
+    return projectIntent;
   }
 
   private void startBrowser(final @NonNull String url) {

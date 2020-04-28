@@ -731,6 +731,13 @@ public final class Koala {
 
     this.client.track(LakeEvent.THANKS_PAGE_VIEWED, props);
   }
+
+  public void trackFixPledgeButtonClicked(final @NonNull ProjectData projectData) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
+    props.put("context_pledge_flow", PledgeFlowContext.FIX_ERRORED_PLEDGE.getTrackingString());
+
+    this.client.track(LakeEvent.FIX_PLEDGE_BUTTON_CLICKED, props);
+  }
   //endregion
 
   //region Log In or Signup

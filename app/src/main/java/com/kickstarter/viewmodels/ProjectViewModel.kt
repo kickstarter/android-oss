@@ -329,9 +329,6 @@ interface ProjectViewModel {
                     .startWith(false)
 
             progressBarIsGone
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(pledgeSheetExpanded))
-                    .filter { BooleanUtils.isFalse(it.second) }
-                    .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.retryProgressBarIsGone)
 
@@ -783,6 +780,11 @@ interface ProjectViewModel {
                     .filter { it.second == PledgeFlowContext.FIX_ERRORED_PLEDGE }
                     .compose(bindToLifecycle())
                     .subscribe{ this.lake.trackManagePledgeButtonClicked(it.first, it.second) }
+
+            projectData
+                    .compose<ProjectData>(takeWhen(this.fixPaymentMethodButtonClicked))
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.lake.trackFixPledgeButtonClicked(it) }
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

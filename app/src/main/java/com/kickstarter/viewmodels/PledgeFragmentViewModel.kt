@@ -580,7 +580,7 @@ interface PledgeFragmentViewModel {
 
             pledgeInput
                     .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))
-                    .map { it.first in it.second.first..cit.second.second }
+                    .map { it.first in it.second.first..it.second.second }
                     .map { if (it) R.color.ksr_green_500 else R.color.ksr_red_400 }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())

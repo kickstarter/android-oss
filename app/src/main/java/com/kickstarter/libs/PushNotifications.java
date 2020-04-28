@@ -33,8 +33,6 @@ import com.kickstarter.ui.activities.UpdateActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -202,9 +200,11 @@ public final class PushNotifications {
       return;
     }
 
-    final PendingIntent projectContentIntent = projectContentIntent(envelope, ObjectUtils.toString(erroredPledge.projectId()));
+    final Long projectId = erroredPledge.projectId();
+    final Intent projectIntent = projectIntent(envelope, ObjectUtils.toString(projectId))
+      .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true);
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_REMINDER)
-      .setContentIntent(projectContentIntent)
+      .setContentIntent(projectContentIntent(envelope, projectIntent))
       .build();
 
     notificationManager().notify(envelope.signature(), notification);
@@ -272,8 +272,9 @@ public final class PushNotifications {
       return;
     }
 
+    final Intent projectIntent = projectIntent(envelope, ObjectUtils.toString(project.id()));
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert(), CHANNEL_PROJECT_REMINDER)
-      .setContentIntent(projectContentIntent(envelope, ObjectUtils.toString(project.id())))
+      .setContentIntent(projectContentIntent(envelope, projectIntent))
       .setLargeIcon(fetchBitmap(project.photo(), false))
       .build();
 
@@ -482,10 +483,9 @@ public final class PushNotifications {
   }
 
   private @NonNull Intent projectIntent(final @NonNull PushNotificationEnvelope envelope, final @NonNull String projectParam) {
-    final Intent intent = new Intent(this.context, ProjectActivity.class)
+    return new Intent(this.context, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam)
       .putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope)
       .putExtra(IntentKey.REF_TAG, RefTag.push());
-    return intent;
   }
 }

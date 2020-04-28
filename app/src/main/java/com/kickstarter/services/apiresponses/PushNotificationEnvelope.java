@@ -95,7 +95,7 @@ public abstract class PushNotificationEnvelope implements Parcelable {
     @AutoParcel.Builder
     public abstract static class Builder {
       public abstract Builder projectId(Long __);
-      public abstract Message build();
+      public abstract ErroredPledge build();
     }
 
     public static Builder builder() {

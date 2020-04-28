@@ -62,6 +62,25 @@ public final class DebugPushNotificationsView extends ScrollView {
     this.deviceRegistrar.unregisterDevice();
   }
 
+  @OnClick(R.id.simulate_errored_pledge_button)
+  public void simulateErroredPledgeButtonClick() {
+    final GCM gcm = GCM.builder()
+      .title("Payment failure")
+      .alert("Response needed! Get your reward for backing SKULL GRAPHIC TEE.")
+      .build();
+
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
+      .gcm(gcm)
+      .erroredPledge(
+        PushNotificationEnvelope.ErroredPledge.builder()
+          .projectId(PROJECT_ID)
+          .build()
+      )
+      .build();
+
+    this.pushNotifications.add(envelope);
+  }
+
   @OnClick(R.id.simulate_friend_backing_button)
   public void simulateFriendBackingButtonClick() {
     final GCM gcm = GCM.builder()

@@ -777,6 +777,13 @@ interface ProjectViewModel {
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCreatorDetailsClicked(it) }
+
+            fullProjectDataAndPledgeFlowContext
+                    .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.fixPaymentMethodButtonClicked))
+                    .filter { it.second == PledgeFlowContext.FIX_ERRORED_PLEDGE }
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.lake.trackFixPledgeButtonClicked(it.first) }
+
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

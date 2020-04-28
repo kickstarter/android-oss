@@ -782,7 +782,6 @@ interface ProjectViewModel {
                     .compose<ProjectData>(takeWhen(this.fixPaymentMethodButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe{ this.lake.trackFixPledgeButtonClicked(it) }
-
         }
 
         private fun eventName(projectActionButtonStringRes: Int) : String {

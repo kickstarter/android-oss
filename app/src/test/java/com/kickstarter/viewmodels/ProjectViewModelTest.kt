@@ -802,6 +802,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testExpandPledgeSheet_whenProjectBackedAndErrored() {
+        setUpEnvironment(environment())
+        val backing = BackingFactory.backing(Backing.STATUS_ERRORED)
+        val project = ProjectFactory.backedSuccessfulProject().toBuilder().backing(backing).build()
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
+
+        this.vm.inputs.nativeProjectActionButtonClicked()
+
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed","Manage Pledge Button Clicked")
+    }
+
+    @Test
     fun testExpandPledgeSheet_whenProjectEndedAndNotBacked() {
         setUpEnvironment(environment())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()))

@@ -54,6 +54,7 @@ public interface DeepLinkViewModel {
 
       uriFromIntent
         .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> !KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .filter(uri -> !KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .map(this::appendRefTagIfNone)
         .compose(bindToLifecycle())

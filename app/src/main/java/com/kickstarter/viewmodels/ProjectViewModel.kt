@@ -779,7 +779,7 @@ interface ProjectViewModel {
                     .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
                     .filter { it.second == PledgeFlowContext.FIX_ERRORED_PLEDGE }
                     .compose(bindToLifecycle())
-                    .subscribe{ this.lake.trackManagePledgeButtonClicked(it.first, it.second) }
+                    .subscribe{ this.lake.trackManagePledgeButtonClicked(it.first) }
 
             projectData
                     .compose<ProjectData>(takeWhen(this.fixPaymentMethodButtonClicked))

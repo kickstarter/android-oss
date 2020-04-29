@@ -699,9 +699,9 @@ public final class Koala {
     this.client.track(LakeEvent.PLEDGE_SUBMIT_BUTTON_CLICKED, props);
   }
 
-  public void trackManagePledgeButtonClicked(final @NonNull ProjectData projectData, PledgeFlowContext context) {
+  public void trackManagePledgeButtonClicked(final @NonNull ProjectData projectData) {
     final Map<String, Object> props = KoalaUtils.projectProperties(projectData.project(), this.client.loggedInUser());
-    props.put("context_pledge_flow", context.getTrackingString());
+    props.put("context_pledge_flow", PledgeFlowContext.FIX_ERRORED_PLEDGE.getTrackingString());
 
     this.client.track(LakeEvent.MANAGE_PLEDGE_BUTTON_CLICKED, props);
   }

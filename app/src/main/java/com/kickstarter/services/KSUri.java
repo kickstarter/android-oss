@@ -18,6 +18,10 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.API.matcher(UriUtilsKt.host(uri)).matches();
   }
 
+  public static boolean isCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && NATIVE_CHECKOUT_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+  }
+
   public static boolean isDiscoverCategoriesPath(final @NonNull String path) {
     return DISCOVER_CATEGORIES_PATTERN.matcher(path).matches();
   }
@@ -112,6 +116,11 @@ public final class KSUri {
 
   // /discover/places/param
   private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");
+
+  //  /projects/:creator_param/:project_param/pledge
+  private static final Pattern NATIVE_CHECKOUT_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/pledge\\z"
+  );
 
   // /checkouts/:checkout_id/guest/new
   private static final Pattern NEW_GUEST_CHECKOUT_PATTERN = Pattern.compile(

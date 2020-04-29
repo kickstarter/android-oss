@@ -48,6 +48,7 @@ public class MessageService extends FirebaseMessagingService {
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
       .activity(this.gson.fromJson(data.get("activity"), Activity.class))
+      .erroredPledge(this.gson.fromJson(data.get("errored_pledge"), PushNotificationEnvelope.ErroredPledge.class))
       .gcm(this.gson.fromJson(data.get("gcm"), GCM.class))
       .message(this.gson.fromJson(data.get("message"), PushNotificationEnvelope.Message.class))
       .project(this.gson.fromJson(data.get("project"), PushNotificationEnvelope.Project.class))

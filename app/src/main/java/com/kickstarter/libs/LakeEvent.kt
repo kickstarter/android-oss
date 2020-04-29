@@ -23,6 +23,7 @@ const val THANKS_PAGE_VIEWED = "Thanks Page Viewed"
 // endregion
 
 // region Manage a Pledge
+const val MANAGE_PLEDGE_BUTTON_CLICKED = "Manage Pledge Button Clicked"
 const val FIX_PLEDGE_BUTTON_CLICKED = "Fix Pledge Button Clicked"
 //endregion
 

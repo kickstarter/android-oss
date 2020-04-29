@@ -61,7 +61,7 @@ public interface DeepLinkViewModel {
         .subscribe(this.startProjectActivity::onNext);
 
       uriFromIntent
-        .filter(uri -> KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION) )
+        .filter(uri -> KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .map(this::appendRefTagIfNone)
         .compose(bindToLifecycle())
         .subscribe(this.startProjectActivityWithCheckout::onNext);

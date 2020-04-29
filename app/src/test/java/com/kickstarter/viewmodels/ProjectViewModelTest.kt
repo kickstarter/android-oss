@@ -1268,7 +1268,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .projectData(ProjectDataFactory.project(backedProject))
                 .build(), PledgeReason.FIX_PLEDGE))
         this.koalaTest.assertValue("Project Page")
-        this.lakeTest.assertValue("Project Page Viewed")
+        this.lakeTest.assertValues("Project Page Viewed","Fix Pledge Button Clicked")
     }
 
     @Test

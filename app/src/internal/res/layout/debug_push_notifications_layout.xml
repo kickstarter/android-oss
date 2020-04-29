@@ -52,6 +52,15 @@
       android:text="@string/debug_push_notifications_simulate_notifications" />
 
     <Button
+      android:id="@+id/simulate_errored_pledge_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/debug_push_notifications_errored_pldege"
+      style="@style/BorderButton" />
+
+    <Button
       android:id="@+id/simulate_friend_backing_button"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"

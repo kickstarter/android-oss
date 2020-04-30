@@ -52,7 +52,7 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ksr_grey_100"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <TextView
@@ -62,7 +62,6 @@
 
         <LinearLayout
           android:id="@+id/project_updates_row"
-          android:background="@color/white"
           style="@style/SettingsNotificationRow">
 
           <TextView
@@ -116,7 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/ksr_grey_100"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <TextView
@@ -125,7 +124,6 @@
           android:text="@string/Projects_youve_launched" />
 
         <LinearLayout
-          android:background="@color/white"
           android:id="@+id/backings_row"
           style="@style/SettingsNotificationRow">
 
@@ -244,7 +242,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:background="@color/ksr_grey_100"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <TextView
@@ -253,7 +251,6 @@
 
         <LinearLayout
           android:id="@+id/messages_notification_row"
-          android:background="@color/white"
           style="@style/SettingsNotificationRow">
 
           <TextView

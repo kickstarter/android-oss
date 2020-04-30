@@ -351,11 +351,6 @@
             android:background="@color/ksr_grey_100"
             android:orientation="vertical">
 
-          <TextView
-              style="@style/SettingsSectionTitle"
-              android:layout_marginBottom="@dimen/grid_2"
-              android:text="@string/From_Kickstarter" />
-
           <LinearLayout
               android:id="@+id/announcements"
               style="@style/SettingsNotificationRow"
@@ -384,7 +379,7 @@
           <TextView
               style="@style/SettingsSectionTitle"
               android:layout_marginBottom="@dimen/grid_2"
-              android:text="Big Kickstarter announcements, plus occasional projects and events chosen just for you." />
+              android:text="@string/A_weekly_mix_of_handpicked_projects" />
         </LinearLayout>
 
       </LinearLayout>

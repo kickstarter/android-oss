@@ -2365,7 +2365,7 @@
       "Are_you_sure_you_wish_to_remove_this_card": "Bist du sicher, dass du diese Karte aus deinen Zahlungsmethoden entfernen möchtest?",
       "As_of_pledge_date": "Stand: %{pledge_date}",
       "Ask_me_anything": "Frage stellen",
-      "A_weekly_mix_of_handpicked_projects": "A weekly mix of handpicked projects, plus occasional Kickstarter news",
+      "A_weekly_mix_of_handpicked_projects": "Ein wöchentlicher Mix handverlesener Projekte plus gelegentliche Nachrichten von Kickstarter",
       "Available_to_watch_for_time_more_units": "Kann noch %{time} %{units} angesehen werden",
       "Back": "Zurück",
       "Back_it_because_you_believe_in_it": "Du glaubst an dieses Projekt. Unterstütze es.",
@@ -4687,7 +4687,7 @@
       "Are_you_sure_you_wish_to_remove_this_card": "¿Estás seguro de que deseas eliminar esta tarjeta de tus opciones de métodos de pago?",
       "As_of_pledge_date": "A partir del %{pledge_date}",
       "Ask_me_anything": "¡Pregúntame!",
-      "A_weekly_mix_of_handpicked_projects": "A weekly mix of handpicked projects, plus occasional Kickstarter news",
+      "A_weekly_mix_of_handpicked_projects": "Una combinación semanal de proyectos seleccionados exclusivamente para mí, además de noticias ocasionales de Kickstarter",
       "Available_to_watch_for_time_more_units": "Disponible para reproducción %{time} %{units} más",
       "Back": "Atrás",
       "Back_it_because_you_believe_in_it": "Apóyalo porque crees en él.",
@@ -7009,7 +7009,7 @@
       "Are_you_sure_you_wish_to_remove_this_card": "Êtes-vous certain de vouloir supprimer cette carte de vos moyens de paiement ?",
       "As_of_pledge_date": "Depuis le %{pledge_date}",
       "Ask_me_anything": "Posez-moi une question !",
-      "A_weekly_mix_of_handpicked_projects": "A weekly mix of handpicked projects, plus occasional Kickstarter news",
+      "A_weekly_mix_of_handpicked_projects": "Une sélection de projets hebdomadaire, et de temps en temps des actualités de Kickstarter",
       "Available_to_watch_for_time_more_units": "Plus que %{time}%{units} pour regarder cette diffusion",
       "Back": "Retour",
       "Back_it_because_you_believe_in_it": "Ce projet ne décollera pas sans vous.",
@@ -11653,7 +11653,7 @@
       "Are_you_sure_you_wish_to_remove_this_card": "このカードをお支払い方法から削除してもよろしいですか？",
       "As_of_pledge_date": "%{pledge_date} 日現在",
       "Ask_me_anything": "お問い合わせ",
-      "A_weekly_mix_of_handpicked_projects": "A weekly mix of handpicked projects, plus occasional Kickstarter news",
+      "A_weekly_mix_of_handpicked_projects": "Kickstarter イチオシのプロジェクトを毎週紹介するニュースレター (Kickstarter ニュースも随時送信)",
       "Available_to_watch_for_time_more_units": "さらに%{time} の%{units} を見ることができます",
       "Back": "バック",
       "Back_it_because_you_believe_in_it": "このプロジェクトの可能性を信じてバックしよう。",
@@ -16976,6 +16976,6 @@
       ]
     }
   },
-  "country_code": "CA",
+  "country_code": "US",
   "locale": "en"
 }

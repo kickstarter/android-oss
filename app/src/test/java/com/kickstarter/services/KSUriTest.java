@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import org.junit.Test;
 
 public final class KSUriTest extends KSRobolectricTestCase {
+  private final Uri checkoutUri = Uri.parse("https://www.ksr.com/projects/creator/project/pledge");
   private final Uri discoverCategoriesUri = Uri.parse("https://www.ksr.com/discover/categories/art");
   private final Uri discoverScopeUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");
   private final Uri discoverPlacesUri = Uri.parse("https://www.ksr.com/discover/places/newest");
@@ -18,6 +19,11 @@ public final class KSUriTest extends KSRobolectricTestCase {
   private final Uri updateUri = Uri.parse("https://www.ksr.com/projects/creator/project/posts/id");
   private final Uri userSurveyUri = Uri.parse("https://www.ksr.com/users/user-param/surveys/survey-id");
   private final String webEndpoint = "https://www.ksr.com";
+
+  @Test
+  public void testKSUri_isCheckoutUri() {
+    assertTrue(KSUri.isCheckoutUri(this.checkoutUri, this.webEndpoint));
+  }
 
   @Test
   public void testKSUri_isDiscoverCategoriesPath() {

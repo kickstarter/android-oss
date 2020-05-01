@@ -207,7 +207,7 @@ dependencies {
     final auto_parcel_version = "0.3.1"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
-    implementation "com.google.firebase:firebase-messaging:20.1.6"
+    implementation "com.google.firebase:firebase-messaging:19.0.1"
     implementation "com.google.android.gms:play-services-wallet:18.0.0"
     implementation "com.google.android.exoplayer:exoplayer:2.10.2"
     implementation 'com.google.android:flexbox:1.1.0'

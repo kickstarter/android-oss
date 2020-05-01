@@ -23,6 +23,11 @@ public class MessageService extends FirebaseMessagingService {
   @Inject protected PushNotifications pushNotifications;
 
   @Override
+  public void onNewToken(String s) {
+    super.onNewToken(s);
+  }
+
+  @Override
   public void onCreate() {
     super.onCreate();
     ((KSApplication) getApplicationContext()).component().inject(this);

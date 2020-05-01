@@ -22,20 +22,17 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 public interface DeepLinkViewModel {
 
   interface Outputs {
-    /**
-     * Emits when we should start an external browser because we don't want to deep link.
-     */
+    /** Emits when we should start an external browser because we don't want to deep link. */
     Observable<String> startBrowser();
 
-    /**
-     * Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}.
-     */
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.DiscoveryActivity}. */
     Observable<Void> startDiscoveryActivity();
 
-    /**
-     * Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}.
-     */
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity}. */
     Observable<Uri> startProjectActivity();
+
+    /** Emits when we should start the {@link com.kickstarter.ui.activities.ProjectActivity} with pledge sheet expanded. */
+    Observable<Uri> startProjectActivityForCheckout();
   }
 
   final class ViewModel extends ActivityViewModel<DeepLinkActivity> implements Outputs {
@@ -57,10 +54,17 @@ public interface DeepLinkViewModel {
 
       uriFromIntent
         .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .filter(uri -> !KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .filter(uri -> !KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .map(this::appendRefTagIfNone)
         .compose(bindToLifecycle())
         .subscribe(this.startProjectActivity::onNext);
+
+      uriFromIntent
+        .filter(uri -> KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
+        .map(this::appendRefTagIfNone)
+        .compose(bindToLifecycle())
+        .subscribe(this.startProjectActivityWithCheckout::onNext);
 
       this.startProjectActivity
         .subscribe(__ -> koala.trackContinueUserActivityAndOpenedDeepLink());
@@ -70,6 +74,7 @@ public interface DeepLinkViewModel {
 
       final Observable<Uri> unsupportedDeepLink = uriFromIntent
         .filter(uri -> !lastPathSegmentIsProjects(uri))
+        .filter(uri -> !KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .filter(uri -> !KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION));
 
       Observable.merge(projectPreview, unsupportedDeepLink)
@@ -96,6 +101,7 @@ public interface DeepLinkViewModel {
     private final BehaviorSubject<String> startBrowser = BehaviorSubject.create();
     private final BehaviorSubject<Void> startDiscoveryActivity = BehaviorSubject.create();
     private final BehaviorSubject<Uri> startProjectActivity = BehaviorSubject.create();
+    private final BehaviorSubject<Uri> startProjectActivityWithCheckout = BehaviorSubject.create();
 
     public final Outputs outputs = this;
 
@@ -107,6 +113,9 @@ public interface DeepLinkViewModel {
     }
     @Override public @NonNull Observable<Uri> startProjectActivity() {
       return this.startProjectActivity;
+    }
+    @Override public @NonNull Observable<Uri> startProjectActivityForCheckout() {
+      return this.startProjectActivityWithCheckout;
     }
   }
 }

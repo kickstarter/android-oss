@@ -13,6 +13,7 @@
   <string name="Commit_SHA">Commit SHA</string>
   <string name="Changelog">Changelog</string>
   <string name="Change_endpoint">Change API endpoint</string>
+  <string name="Config">Config</string>
   <string name="Custom">Custom</string>
   <string name="Development_settings">Development Settings</string>
   <string name="Device_ID">Device ID</string>
@@ -47,6 +48,7 @@
   <string name="Network">Network</string>
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
+  <string name="Optimizely">Optimizely</string>
   <string name="Overrides">Overrides</string>
   <string name="payment_method_last_four">•••• %{last_four}</string>
   <string name="playground_playground">Playground</string>

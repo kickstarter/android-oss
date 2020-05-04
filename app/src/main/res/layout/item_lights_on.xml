@@ -11,47 +11,52 @@
     android:focusable="true"
     app:cardCornerRadius="@dimen/editorial_radius">
 
-    <LinearLayout
-        android:id="@+id/item_background"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:id="@+id/item_background"
         android:background="@drawable/lights_on">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50" />
 
-            <TextView
-                android:id="@+id/title"
-                style="@style/Title2WhiteMedium"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/grid_1"
-                android:paddingStart="@dimen/grid_3"
-                android:paddingTop="@dimen/grid_3"
-                android:paddingEnd="@dimen/grid_3"
-                tools:text="@string/lights_on_title" />
-
-            <TextView
-                android:id="@+id/description"
-                style="@style/CalloutWhite2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/grid_3"
-                android:paddingEnd="@dimen/grid_3"
-                android:paddingTop="@dimen/grid_1"
-                android:paddingBottom="@dimen/grid_4"
-                tools:text="@string/lights_on_description" />
-        </LinearLayout>
-
-        <View
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_description"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/placeholder"
-            android:layout_weight="1"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.70" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/Title2WhiteMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_3"
+            android:paddingTop="@dimen/grid_3"
+            android:paddingEnd="@dimen/grid_3"
+            app:layout_constraintEnd_toStartOf="@id/guideline_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/lights_on_title" />
+
+        <TextView
+            android:id="@+id/description"
+            style="@style/CalloutWhite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/grid_3"
+            android:paddingEnd="@dimen/grid_3"
+            android:paddingTop="@dimen/grid_1"
+            android:paddingBottom="@dimen/grid_4"
+            app:layout_constraintEnd_toStartOf="@id/guideline_description"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="@string/lights_on_description" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

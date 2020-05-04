@@ -2,8 +2,10 @@ package com.kickstarter.libs
 
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.ExperimentUtils
+import com.kickstarter.models.User
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -29,6 +31,8 @@ interface ExperimentsClientType {
     }
 
     fun appVersion(): String
+    fun enabledFeatures(user: User?): List<String>
+    fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean
     fun optimizelyEnvironment(): OptimizelyEnvironment
     fun OSVersion(): String
     fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String?

@@ -126,7 +126,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
                     val configFlags = ConfigUtils.enabledFeatureFlags(this@TrackingClient.config)
                     configFlags?.let {
                         for (index in 0 until it.length()) {
-                            put(it.getJSONObject(index))
+                            put(it.get(index))
                         }
                     }
                 }

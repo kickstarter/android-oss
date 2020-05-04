@@ -5,7 +5,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.models.User
 import com.optimizely.ab.android.sdk.OptimizelyClient
 import com.optimizely.ab.android.sdk.OptimizelyManager
 
@@ -15,6 +17,15 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
     override fun OSVersion(): String = Build.VERSION.RELEASE
 
     override fun userId(): String = FirebaseInstanceId.getInstance().id
+
+    override fun enabledFeatures(user: User?): List<String> {
+        return this.optimizelyClient().getEnabledFeatures(userId(),
+                attributes(ExperimentData(user, null, null), this.optimizelyEnvironment))
+    }
+
+    override fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean {
+        return optimizelyClient().isFeatureEnabled(feature.key, userId(), attributes(experimentData, this.optimizelyEnvironment))
+    }
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant {
         val user = experimentData.user

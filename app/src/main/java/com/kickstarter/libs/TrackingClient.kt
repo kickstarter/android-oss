@@ -121,7 +121,15 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     }
 
     override fun enabledFeatureFlags(): JSONArray? {
-        return ConfigUtils.enabledFeatureFlags(this.config)
+        return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
+                .apply {
+                    val configFlags = ConfigUtils.enabledFeatureFlags(this@TrackingClient.config)
+                    configFlags?.let {
+                        for (index in 0 until it.length()) {
+                            put(it.getJSONObject(index))
+                        }
+                    }
+                }
     }
 
     /**

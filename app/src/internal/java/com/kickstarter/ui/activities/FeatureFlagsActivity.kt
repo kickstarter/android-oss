@@ -22,14 +22,23 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feature_flags)
 
-        val featureFlagAdapter = FeatureFlagsAdapter()
-        config_flags.adapter = featureFlagAdapter
+        val configFlagsAdapter = FeatureFlagsAdapter()
+        config_flags.adapter = configFlagsAdapter
         config_flags.addItemDecoration(TableItemDecoration())
 
-        this.viewModel.outputs.features()
+        val optimizelyFlagsAdapter = FeatureFlagsAdapter()
+        optimizely_flags.adapter = optimizelyFlagsAdapter
+        optimizely_flags.addItemDecoration(TableItemDecoration())
+
+        this.viewModel.outputs.configFeatures()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { featureFlagAdapter.takeFlags(it) }
+                .subscribe { configFlagsAdapter.takeFlags(it) }
+
+        this.viewModel.outputs.optimizelyFeatures()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { optimizelyFlagsAdapter.takeFlags(it) }
     }
 
     private fun displayPreference(@StringRes labelRes: Int, booleanPreferenceType: BooleanPreferenceType, overrideContainer: View) {

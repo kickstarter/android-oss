@@ -7,9 +7,9 @@ import com.kickstarter.R
 
 enum class Editorial(@StringRes val ctaTitle: Int,
                      @StringRes val ctaDescription: Int,
-                     @StringRes val title: Int,
-                     @StringRes val description: Int,
-                     @ColorRes val backgroundColor: Int,
+                     @StringRes val title: Int?,
+                     @StringRes val description: Int?,
+                     @ColorRes val backgroundColor: Int?,
                      @DrawableRes val graphic: Int,
                      val tagId: Int) {
 
@@ -19,5 +19,12 @@ enum class Editorial(@StringRes val ctaTitle: Int,
             R.string.These_projects_could_use_your_support,
             R.color.trust_700,
             R.drawable.go_rewardless_header,
-            518)
+            518),
+    LIGHTS_ON(R.string.lights_on_title,
+            R.string.lights_on_description,
+            null,
+            null,
+            null,
+            R.drawable.lights_on,
+            518);
 }

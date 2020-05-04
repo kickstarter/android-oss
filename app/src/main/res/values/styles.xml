@@ -508,6 +508,10 @@
     <item name="android:lineSpacingExtra">@dimen/callout_line_spacing_extra</item>
   </style>
 
+  <style name="CalloutWhite2" parent="TextWhite">
+    <item name="android:textSize">@dimen/callout_2</item>
+  </style>
+
   <style name="Subheadline" parent="TextPrimary">
     <item name="android:textSize">@dimen/subheadline</item>
   </style>

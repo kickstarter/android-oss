@@ -43,6 +43,7 @@
   <dimen name="body">14sp</dimen>
   <dimen name="subheadline">15sp</dimen>
   <dimen name="callout">16sp</dimen>
+  <dimen name="callout_2">14sp</dimen>
   <dimen name="headline">18sp</dimen>
   <dimen name="title_3">20sp</dimen>
   <dimen name="title_2">22sp</dimen>

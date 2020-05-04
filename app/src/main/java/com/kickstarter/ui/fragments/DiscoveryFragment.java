@@ -121,6 +121,11 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(adapter::setShouldShowOnboardingView);
 
+    this.viewModel.outputs.shouldShowLightsOn()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(adapter::setShouldShowLightsOnView);
+
     this.viewModel.outputs.showActivityFeed()
       .compose(bindToLifecycle())
       .compose(observeForUI())

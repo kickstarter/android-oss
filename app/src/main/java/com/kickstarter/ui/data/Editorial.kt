@@ -26,5 +26,5 @@ enum class Editorial(@StringRes val ctaTitle: Int,
             R.string.inside_lights_on_description,
             R.color.white,
             R.drawable.lights_on,
-            518);// TODO: figure it out which is the tagId
+            519);// TODO: figure it out which is the tagId
 }

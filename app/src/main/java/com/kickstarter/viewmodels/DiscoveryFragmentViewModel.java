@@ -5,6 +5,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
@@ -115,6 +116,7 @@ public interface DiscoveryFragmentViewModel {
     private final ApiClientType apiClient;
     private final CurrentUserType currentUser;
     private final IntPreferenceType activitySamplePreference;
+    private ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -122,6 +124,7 @@ public interface DiscoveryFragmentViewModel {
       this.apiClient = environment.apiClient();
       this.activitySamplePreference = environment.activitySamplePreference();
       this.currentUser = environment.currentUser();
+      this.optimizely = environment.optimizely();
 
       final Observable<User> changedUser = this.currentUser.observable()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
@@ -140,11 +143,11 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
-      // TODO: check feature flag, get configuration for lights On. It's just showing it
+      // TODO: check the real feature flag and substitute the "android_lights_on"
       this.currentUser.observable()
-              .compose(combineLatestPair(this.paramsFromActivity))
-              .map(this::isDefaultParams)
-              .map( shouldShow -> shouldShow ? Editorial.LIGHTS_ON: null)
+              .map( user -> optimizely.enabledFeatures(user))
+              .filter(features -> containsOptimizelyFeature(features, "android_lights_on"))
+              .map( editorial -> Editorial.LIGHTS_ON)
               .compose(bindToLifecycle())
               .subscribe(this.shouldShowLightsOn);
 
@@ -291,6 +294,10 @@ public interface DiscoveryFragmentViewModel {
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
       return activity != null && activity.id() != this.activitySamplePreference.get();
+    }
+
+    private boolean containsOptimizelyFeature(final @NonNull List<String> features, final @NonNull String featureKey) {
+      return !features.isEmpty() && features.contains(featureKey);
     }
 
     private Observable<Activity> fetchActivity() {

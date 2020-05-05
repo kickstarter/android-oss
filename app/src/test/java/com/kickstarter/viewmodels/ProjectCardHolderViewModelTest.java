@@ -43,6 +43,8 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> fundingUnsuccessfulViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> fundingSuccessfulViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Boolean> imageIsInvisible = new TestSubscriber<>();
+  private final TestSubscriber<Boolean> locationContainerIsGone = new TestSubscriber<>();
+  private final TestSubscriber<String> locationName = new TestSubscriber<>();
   private final TestSubscriber<Integer> metadataViewGroupBackgroundDrawable = new TestSubscriber<>();
   private final TestSubscriber<Boolean> metadataViewGroupIsGone = new TestSubscriber<>();
   private final TestSubscriber<Pair<String, String>> nameAndBlurbText = new TestSubscriber<>();
@@ -80,6 +82,8 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.fundingUnsuccessfulViewGroupIsGone().subscribe(this.fundingUnsuccessfulViewGroupIsGone);
     this.vm.outputs.fundingSuccessfulViewGroupIsGone().subscribe(this.fundingSuccessfulViewGroupIsGone);
     this.vm.outputs.imageIsInvisible().subscribe(this.imageIsInvisible);
+    this.vm.outputs.locationContainerIsGone().subscribe(this.locationContainerIsGone);
+    this.vm.outputs.locationName().subscribe(this.locationName);
     this.vm.outputs.metadataViewGroupBackgroundDrawable().subscribe(this.metadataViewGroupBackgroundDrawable);
     this.vm.outputs.metadataViewGroupIsGone().subscribe(this.metadataViewGroupIsGone);
     this.vm.outputs.nameAndBlurbText().subscribe(this.nameAndBlurbText);
@@ -289,6 +293,51 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
     this.imageIsInvisible.assertValues(ObjectUtils.isNull(project.photo()));
+  }
+
+  @Test
+  public void testLocationContainerIsGone_whenSortIsDistance() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    final DiscoveryParams discoveryParams = DiscoveryParams.builder()
+      .sort(DiscoveryParams.Sort.DISTANCE)
+      .build();
+    this.vm.inputs.configureWith(Pair.create(project, discoveryParams));
+    this.locationContainerIsGone.assertValues(false);
+  }
+
+  @Test
+  public void testLocationContainerIsGone_whenSortIsNotDistance() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    final DiscoveryParams discoveryParams = DiscoveryParams.builder()
+      .sort(DiscoveryParams.Sort.MAGIC)
+      .build();
+    this.vm.inputs.configureWith(Pair.create(project, discoveryParams));
+    this.locationContainerIsGone.assertValues(true);
+  }
+
+  @Test
+  public void testLocationName_whenLocationIsNull() {
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .location(null)
+      .build();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
+    this.locationName.assertNoValues();
+  }
+
+  @Test
+  public void testLocationName_whenLocationIsNotNull() {
+    final Project project = ProjectFactory.project();
+    setUpEnvironment(environment());
+
+    this.vm.inputs.configureWith(Pair.create(project, DiscoveryParams.builder().build()));
+    this.locationName.assertValue("Brooklyn, NY");
   }
 
   @Test

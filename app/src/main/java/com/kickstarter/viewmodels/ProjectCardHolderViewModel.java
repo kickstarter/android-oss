@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
@@ -81,6 +83,12 @@ public interface ProjectCardHolderViewModel {
 
     /** Emits to determine if unsuccessful funding state should be shown. */
     Observable<Boolean> fundingUnsuccessfulViewGroupIsGone();
+
+    /** Emits a Boolean determining if the project's location should be shown. */
+    Observable<Boolean> locationContainerIsGone();
+
+    /** Emits the displayable name of the location of the project. */
+    Observable<String> locationName();
 
     /** Emits to determine if metadata container should be shown. */
     Observable<Boolean> metadataViewGroupIsGone();
@@ -218,6 +226,23 @@ public interface ProjectCardHolderViewModel {
         .map(Project::photo)
         .map(ObjectUtils::isNull);
 
+      this.project
+        .map(Project::location)
+        .filter(ObjectUtils::isNotNull)
+        .map(Location::displayableName)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.locationName::onNext);
+
+      this.discoveryParams
+        .map(params -> params.sort() == DiscoveryParams.Sort.DISTANCE)
+        .compose(combineLatestPair(this.project))
+        .map(distanceSortAndProject -> distanceSortAndProject.first && ObjectUtils.isNotNull(distanceSortAndProject.second.location()))
+        .map(BooleanUtils::negate)
+        .distinctUntilChanged()
+        .compose(bindToLifecycle())
+        .subscribe(this.locationContainerIsGone::onNext);
+
       this.metadataViewGroupIsGone = this.project
         .map(p -> ProjectUtils.metadataForProject(p) == null);
 
@@ -330,6 +355,8 @@ public interface ProjectCardHolderViewModel {
     private final Observable<Boolean> fundingSuccessfulViewGroupIsGone;
     private final Observable<Boolean> fundingUnsuccessfulViewGroupIsGone;
     private final Observable<Boolean> imageIsInvisible;
+    private final BehaviorSubject<String> locationName = BehaviorSubject.create();
+    private final BehaviorSubject<Boolean> locationContainerIsGone = BehaviorSubject.create();
     private final Observable<Integer> metadataViewGroupBackground;
     private final Observable<Boolean> metadataViewGroupIsGone;
     private final Observable<Pair<String, String>> nameAndBlurbText;
@@ -405,6 +432,12 @@ public interface ProjectCardHolderViewModel {
     }
     @Override public @NonNull Observable<Boolean> imageIsInvisible() {
       return this.imageIsInvisible;
+    }
+    @Override public @NonNull Observable<Boolean> locationContainerIsGone() {
+      return this.locationContainerIsGone;
+    }
+    @Override public @NonNull Observable<String> locationName() {
+      return this.locationName;
     }
     @Override
     public Observable<Integer> metadataViewGroupBackgroundDrawable() {

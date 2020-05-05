@@ -269,7 +269,7 @@ public interface DiscoveryViewModel {
         .compose(takeWhen(params))
         .compose(combineLatestPair(changedUser))
         .map(pageAndUser -> pageAndUser.first)
-        .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
+        .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.defaultSorts)
           .map(DiscoveryUtils::positionFromSort)
           .filter(sortPosition -> !sortPosition.equals(currentPage))
           .toList()

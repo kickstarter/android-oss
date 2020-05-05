@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:orientation="horizontal">
+  android:layout_height="wrap_content">
 
   <LinearLayout
     android:id="@+id/subcategory_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
-    android:layout_marginEnd="@dimen/grid_5"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    tools:visibility="visible"
+    app:layout_constraintBottom_toTopOf="@id/location_container"
+    app:layout_constraintEnd_toStartOf="@id/project_we_love_container"
+    app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
+      android:id="@+id/subcategory_icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/grid_1"
       android:contentDescription="@null"
       android:src="@drawable/icon__compass" />
 
@@ -25,6 +28,7 @@
       style="@style/ProjectCardFootnote"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_1"
       tools:text="This is a really long project subcategory" />
   </LinearLayout>
 
@@ -33,28 +37,69 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
-    android:layout_toEndOf="@id/subcategory_container"
+    android:layout_marginStart="@dimen/grid_5"
     android:gravity="center_vertical"
-    tools:ignore="RelativeOverlap">
+    app:layout_constraintBottom_toBottomOf="@id/subcategory_container"
+    app:layout_constraintStart_toEndOf="@id/subcategory_container"
+    app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
+      android:id="@+id/pwl_icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="@dimen/grid_1"
       android:contentDescription="@null"
-      android:src="@drawable/icon__small_k" />
+      android:src="@drawable/icon__small_k"
+      app:layout_constraintBottom_toBottomOf="@id/subcategory_icon"
+      app:layout_constraintStart_toEndOf="@id/subcategory_text_view"
+      app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+      android:id="@+id/pwl_text_view"
       style="@style/ProjectCardFootnote"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_1"
       android:text="@string/Projects_We_Love" />
   </LinearLayout>
 
   <ImageView
+    android:id="@+id/overflow_gradient"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentEnd="true"
     android:contentDescription="@null"
-    android:src="@drawable/gradient_tag" />
-</RelativeLayout>
+    android:src="@drawable/gradient_tag"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <LinearLayout
+    android:id="@+id/location_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:layout_marginTop="@dimen/grid_2"
+    android:gravity="center_vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/subcategory_container">
+
+    <com.kickstarter.ui.views.IconTextView
+      android:id="@+id/location_icon"
+      style="@style/Caption1Primary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
+      android:text="@string/location_on_icon"
+      android:textColor="@color/ksr_dark_grey_400" />
+
+    <TextView
+      android:id="@+id/location_text_view"
+      style="@style/ProjectCardFootnote"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/grid_1"
+      app:layout_constraintBottom_toBottomOf="@id/location_icon"
+      app:layout_constraintStart_toEndOf="@id/location_icon"
+      app:layout_constraintTop_toTopOf="@id/location_icon"
+      tools:text="Brooklyn, NY" />
+  </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

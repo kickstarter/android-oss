@@ -5,7 +5,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.models.User
 import com.optimizely.ab.android.sdk.OptimizelyClient
 import com.optimizely.ab.android.sdk.OptimizelyManager
 
@@ -16,12 +18,22 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
 
     override fun userId(): String = FirebaseInstanceId.getInstance().id
 
+    override fun enabledFeatures(user: User?): List<String> {
+        return this.optimizelyClient()?.getEnabledFeatures(userId(),
+                attributes(ExperimentData(user, null, null), this.optimizelyEnvironment))
+                ?: emptyList()
+    }
+
+    override fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean {
+        return optimizelyClient()?.isFeatureEnabled(feature.key, userId(), attributes(experimentData, this.optimizelyEnvironment))?: false
+    }
+
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant {
         val user = experimentData.user
         val variationString: String? = if (user?.isAdmin == true) {
-            optimizelyClient().getVariation(experiment.key, user.id().toString(), attributes(experimentData, this.optimizelyEnvironment))
+            optimizelyClient()?.getVariation(experiment.key, user.id().toString(), attributes(experimentData, this.optimizelyEnvironment))
         } else {
-            optimizelyClient().activate(experiment.key, userId(), attributes(experimentData, this.optimizelyEnvironment))
+            optimizelyClient()?.activate(experiment.key, userId(), attributes(experimentData, this.optimizelyEnvironment))
         }?.key
 
         return OptimizelyExperiment.Variant.safeValueOf(variationString)
@@ -29,9 +41,9 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
 
     override fun optimizelyEnvironment(): OptimizelyEnvironment = this.optimizelyEnvironment
 
-    private fun optimizelyClient(): OptimizelyClient = this.optimizelyManager.optimizely
+    private fun optimizelyClient(): OptimizelyClient? = this.optimizelyManager.optimizely
 
     override fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String? {
-        return optimizelyClient().getVariation(experimentKey, userId(), attributes(experimentData, this.optimizelyEnvironment))?.key
+        return optimizelyClient()?.getVariation(experimentKey, userId(), attributes(experimentData, this.optimizelyEnvironment))?.key
     }
 }

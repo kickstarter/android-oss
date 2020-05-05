@@ -3,7 +3,9 @@ package com.kickstarter.mock
 import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.models.User
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -12,6 +14,10 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
     constructor() : this(OptimizelyExperiment.Variant.CONTROL, OptimizelyEnvironment.STAGING)
 
     override fun appVersion(): String = "9.9.9"
+
+    override fun enabledFeatures(user: User?): List<String> = emptyList()
+
+    override fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean = false
 
     override fun optimizelyEnvironment(): OptimizelyEnvironment = this.optimizelyEnvironment
 

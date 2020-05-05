@@ -23,27 +23,60 @@
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
+      <TextView
+        style="@style/CalloutSecondaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:text="@string/Config" />
+
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/config_flags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false"
         android:orientation="vertical"
+        android:overScrollMode="never"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:itemCount="3"
         tools:listitem="@layout/item_feature_flag" />
 
-      <include layout="@layout/horizontal_line_1dp_view"/>
+      <include layout="@layout/horizontal_line_1dp_view" />
 
       <TextView
-        android:paddingStart="@dimen/activity_vertical_margin"
-        android:paddingEnd="@dimen/activity_vertical_margin"
-        android:layout_marginTop="@dimen/grid_3"
-        style="@style/CalloutPrimaryMedium"
+        style="@style/CalloutSecondaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Overrides"/>
+        android:layout_marginTop="@dimen/grid_3"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:text="@string/Optimizely" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/optimizely_flags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        android:orientation="vertical"
+        android:overScrollMode="never"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:itemCount="0"
+        tools:listitem="@layout/item_feature_flag" />
+
+      <include layout="@layout/horizontal_line_1dp_view" />
+
+      <TextView
+        style="@style/CalloutSecondaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:text="@string/Overrides" />
     </LinearLayout>
 
   </ScrollView>

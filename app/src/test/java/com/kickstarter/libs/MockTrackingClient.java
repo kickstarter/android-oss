@@ -6,6 +6,7 @@ import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.Map;
 
@@ -89,7 +90,17 @@ public final class MockTrackingClient extends TrackingClientType {
 
   @Override
   protected JSONArray enabledFeatureFlags() {
-    return ConfigUtils.INSTANCE.enabledFeatureFlags(this.config);
+    final JSONArray combinedFeatures = new JSONArray(this.optimizely.enabledFeatures(this.loggedInUser));
+    final JSONArray configFeatures = ConfigUtils.INSTANCE.enabledFeatureFlags(this.config);
+    if (configFeatures != null) {
+      for (int i = 0; i < configFeatures.length(); i++) {
+        try {
+          combinedFeatures.put(configFeatures.get(i));
+        } catch (JSONException ignored) {
+        }
+      }
+    }
+    return combinedFeatures;
   }
 
   @Override

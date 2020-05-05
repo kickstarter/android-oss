@@ -186,7 +186,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     return this.recyclerView != null;
   }
 
-  private View getEditorialView() {
+  private ImageView getEditorialImageView() {
     final LinearLayoutManager layoutManager = (LinearLayoutManager) this.recyclerView.getLayoutManager();
     final DiscoveryAdapter discoveryAdapter = (DiscoveryAdapter) this.recyclerView.getAdapter();
 
@@ -195,10 +195,10 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
         final View childView = layoutManager.getChildAt(i);
         if (childView != null) {
           final RecyclerView.ViewHolder viewHolder = this.recyclerView.getChildViewHolder(childView);
-          if (viewHolder instanceof EditorialViewHolder ) {
+          if (viewHolder instanceof EditorialViewHolder) {
             return childView.findViewById(R.id.editorial_graphic);
           } else if(viewHolder instanceof LightsOnViewHolder){
-            return childView.findViewById(R.id.lights_on_container);
+            return childView.findViewById(R.id.editorial_graphic);
           }
         }
       }
@@ -219,11 +219,12 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
 
   private void startEditorialActivity(final @NonNull Editorial editorial) {
     final FragmentActivity activity = getActivity();
-    final View editorialView = getEditorialView();
-    if (activity != null && editorialView != null) {
+    //The transition view must be an ImageView
+    final ImageView editorialImageView = getEditorialImageView();
+    if (activity != null && editorialImageView != null) {
       final Intent intent = new Intent(activity, EditorialActivity.class)
         .putExtra(IntentKey.EDITORIAL, editorial);
-      final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, editorialView, "editorial");
+      final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, editorialImageView, "editorial");
       startActivity(intent, options.toBundle());
     }
   }

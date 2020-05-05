@@ -7,9 +7,9 @@ import com.kickstarter.R
 
 enum class Editorial(@StringRes val ctaTitle: Int,
                      @StringRes val ctaDescription: Int,
-                     @StringRes val title: Int?,
-                     @StringRes val description: Int?,
-                     @ColorRes val backgroundColor: Int?,
+                     @StringRes val title: Int,
+                     @StringRes val description: Int,
+                     @ColorRes val backgroundColor: Int,
                      @DrawableRes val graphic: Int,
                      val tagId: Int) {
 
@@ -22,9 +22,9 @@ enum class Editorial(@StringRes val ctaTitle: Int,
             518),
     LIGHTS_ON(R.string.lights_on_title,
             R.string.lights_on_description,
-            null,
-            null,
-            null,
+            R.string.inside_lights_on_title,
+            R.string.inside_lights_on_description,
+            R.color.white,
             R.drawable.lights_on,
-            518);
+            518);// TODO: figure it out which is the tagId
 }

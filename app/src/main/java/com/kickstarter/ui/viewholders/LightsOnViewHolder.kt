@@ -11,13 +11,12 @@ import kotlinx.android.synthetic.main.item_lights_on.view.*
 import rx.Observable
 
 class LightsOnViewHolder(val view:View, val delegate: DiscoveryAdapter.Delegate): KSViewHolder(view) {
-    interface Delegate {
-        fun editorialViewHolderClicked(editorial: Editorial)
-    }
 
     private val vm: EditorialViewHolderViewModel.ViewModel = EditorialViewHolderViewModel.ViewModel(environment())
 
     init {
+
+        this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
 
         this.vm.outputs.ctaTitle()
                 .compose(bindToLifecycle())
@@ -33,6 +32,11 @@ class LightsOnViewHolder(val view:View, val delegate: DiscoveryAdapter.Delegate)
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { this.itemView.item_background.background = ContextCompat.getDrawable(context(),it) }
+
+        this.vm.outputs.editorial()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { delegate.editorialViewHolderClicked(it) }
     }
 
     override fun bindData(data: Any?) {

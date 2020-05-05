@@ -34,6 +34,7 @@ import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.viewholders.EditorialViewHolder;
+import com.kickstarter.ui.viewholders.LightsOnViewHolder;
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel;
 
 import java.util.List;
@@ -185,7 +186,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     return this.recyclerView != null;
   }
 
-  private ImageView getEditorialImageView() {
+  private View getEditorialView() {
     final LinearLayoutManager layoutManager = (LinearLayoutManager) this.recyclerView.getLayoutManager();
     final DiscoveryAdapter discoveryAdapter = (DiscoveryAdapter) this.recyclerView.getAdapter();
 
@@ -194,8 +195,10 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
         final View childView = layoutManager.getChildAt(i);
         if (childView != null) {
           final RecyclerView.ViewHolder viewHolder = this.recyclerView.getChildViewHolder(childView);
-          if (viewHolder instanceof EditorialViewHolder) {
+          if (viewHolder instanceof EditorialViewHolder ) {
             return childView.findViewById(R.id.editorial_graphic);
+          } else if(viewHolder instanceof LightsOnViewHolder){
+            return childView.findViewById(R.id.lights_on_container);
           }
         }
       }
@@ -216,11 +219,11 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
 
   private void startEditorialActivity(final @NonNull Editorial editorial) {
     final FragmentActivity activity = getActivity();
-    final ImageView editorialImageView = getEditorialImageView();
-    if (activity != null && editorialImageView != null) {
+    final View editorialView = getEditorialView();
+    if (activity != null && editorialView != null) {
       final Intent intent = new Intent(activity, EditorialActivity.class)
         .putExtra(IntentKey.EDITORIAL, editorial);
-      final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, editorialImageView, "editorial");
+      final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, editorialView, "editorial");
       startActivity(intent, options.toBundle());
     }
   }

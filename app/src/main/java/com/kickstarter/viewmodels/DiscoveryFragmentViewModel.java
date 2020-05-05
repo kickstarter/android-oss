@@ -280,6 +280,10 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(v -> this.koala.trackDiscoveryRefreshTriggered());
 
+      this.editorialClicked
+              .compose(bindToLifecycle())
+              .subscribe(this.startEditorialActivity);
+
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
         .subscribe(v -> this.lake.trackLogInSignUpButtonClicked());

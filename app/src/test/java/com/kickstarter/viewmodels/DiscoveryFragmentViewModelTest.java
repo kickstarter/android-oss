@@ -39,6 +39,7 @@ import rx.observers.TestSubscriber;
 public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private DiscoveryFragmentViewModel.ViewModel vm;
 
+  //TODO: test logic for show/Not show Lights on & open activity when pressed Lights on
   private final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
   private final TestSubscriber<List<Pair<Project, DiscoveryParams>>> projects = new TestSubscriber<>();

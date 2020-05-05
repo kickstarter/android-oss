@@ -73,4 +73,42 @@ class EditorialViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.graphic.assertValue(R.drawable.go_rewardless_header)
     }
+
+    @Test
+    fun testLightsOnTitle() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(Editorial.LIGHTS_ON)
+
+        this.ctaTitle.assertValue(R.string.lights_on_title)
+    }
+
+    @Test
+    fun testLightsOnDescription() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(Editorial.LIGHTS_ON)
+
+        this.ctaDescription.assertValue(R.string.lights_on_description)
+    }
+
+    @Test
+    fun testLightsOnGrafic() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(Editorial.LIGHTS_ON)
+
+        this.graphic.assertValue(R.drawable.lights_on)
+    }
+
+    @Test
+    fun testLightsOnEditorialClicked() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(Editorial.LIGHTS_ON)
+
+        this.vm.inputs.editorialClicked()
+
+        this.editorial.assertValue(Editorial.LIGHTS_ON)
+    }
 }

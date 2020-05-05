@@ -72,10 +72,4 @@
   <string name="No_thanks">No thanks</string>
   <string name="Let_s_go">Let\'s go</string>
 
-  <!--  While waiting translations -->
-  <string name="lights_on_title">Introducing Lights On</string>
-  <string name="lights_on_description">Support creative spaces and businesses affected by COVID-19. See projects near you ▸</string>
-  <string name="inside_lights_on_title">Show up for the spaces you love</string>
-  <string name="inside_lights_on_description">Help local businesses keep the lights on during COVID-19 closures.</string>
-
 </resources>

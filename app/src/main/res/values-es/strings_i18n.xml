@@ -252,6 +252,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Happening_newsletter" formatted="false">Suscríbete para recibir una combinación de nuevos proyectos, historias persuasivas e inspiración visual, que se entregan una vez (y algunas veces dos veces) por semana.</string>
   <string name="Help" formatted="false">Ayuda</string>
   <string name="Help_center" formatted="false">Centro de ayuda</string>
+  <string name="Help_local_businesses_keep_the_lights" formatted="false">Help local businesses keep the lights on during COVID-19 closures.</string>
   <string name="Hide_password" formatted="false">Ocultar contraseña</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="How_backers_found_your_project" formatted="false">Cómo encontraron tu proyecto los patrocinadores</string>
@@ -512,6 +513,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Ships_worldwide" formatted="false">Envíos a todo el mundo</string>
   <string name="Show_me_projects" formatted="false">Múestrame proyectos</string>
   <string name="Show_password" formatted="false">Mostrar contraseña</string>
+  <string name="Show_up_for_the_spaces_you_love" formatted="false">Show up for the spaces you love</string>
   <string name="Shows_list_of_subcategories" formatted="false">Mostrar lista de subcategorías.</string>
   <string name="Sign_up" formatted="false">Registrarse</string>
   <string name="Sign_up_newsletter" formatted="false">Suscríbete a Nuestros favoritos para recibir una combinación semanal de proyectos destacados, seleccionados por el equipo de Kickstarter.</string>

@@ -148,7 +148,6 @@ public interface DiscoveryFragmentViewModel {
       // TODO: check the real feature flag and substitute the "android_lights_on"
       final Observable<Boolean> lightsOnEnabled = this.currentUser.observable()
         .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.LIGHTS_ON, new ExperimentData(user, null, null)))
-        .map(featureEnabled -> true)
         .distinctUntilChanged();
 
       this.currentUser.observable()

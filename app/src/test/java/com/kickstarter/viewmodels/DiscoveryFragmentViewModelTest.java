@@ -238,24 +238,21 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testShouldShowEditorial_whenOptimizelyInitializationDelay(){
-    final MockCurrentUser user = new MockCurrentUser();
-    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
-      int enabledCount;
-      @Override
-      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
-        if (enabledCount == 0) {
-          enabledCount += 1;
-          return false;
-        } else {
-          return true;
-        }
-      }
-    };
-
     final Environment environment = environment().toBuilder()
-            .currentUser(user)
-            .optimizely(mockExperimentsClientType)
-            .build();
+      .currentUser(new MockCurrentUser())
+      .optimizely(new MockExperimentsClientType() {
+        int enabledCount;
+        @Override
+        public boolean isFeatureEnabled(final @NonNull OptimizelyFeature.Key feature, final @NonNull ExperimentData experimentData) {
+          if (enabledCount == 0) {
+            enabledCount += 1;
+            return false;
+          } else {
+            return true;
+          }
+        }
+      })
+      .build();
 
     setUpEnvironment(environment);
 
@@ -265,7 +262,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.optimizelyReady();
     this.shouldShowEditorial.assertValues(null, Editorial.LIGHTS_ON);
-
   }
 
   @Test

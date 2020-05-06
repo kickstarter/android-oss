@@ -8,8 +8,11 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.MockIntPreference;
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.mock.MockExperimentsClientType;
 import com.kickstarter.mock.factories.ActivityEnvelopeFactory;
 import com.kickstarter.mock.factories.ActivityFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
@@ -26,6 +29,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.data.Editorial;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -39,7 +43,6 @@ import rx.observers.TestSubscriber;
 public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private DiscoveryFragmentViewModel.ViewModel vm;
 
-  //TODO: test logic for show/Not show Lights on & open activity when pressed Lights on
   private final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
   private final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
   private final TestSubscriber<List<Pair<Project, DiscoveryParams>>> projects = new TestSubscriber<>();
@@ -51,6 +54,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Editorial> startEditorialActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
+  private final TestSubscriber<Editorial> shouldShowLightsOn = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new DiscoveryFragmentViewModel.ViewModel(environment);
@@ -65,6 +69,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startEditorialActivity().subscribe(this.startEditorialActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
+    this.vm.outputs.shouldShowLightsOn().subscribe(this.shouldShowLightsOn);
   }
 
   private void setUpInitialHomeAllProjectsParams() {
@@ -186,6 +191,51 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     setUpInitialHomeAllProjectsParams();
 
     this.shouldShowEditorial.assertNoValues();
+  }
+
+
+  @Test
+  public void testShouldShowLightsOne_featureEnabled(){
+    final MockCurrentUser user = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(@NotNull OptimizelyFeature.Key feature, @NotNull ExperimentData experimentData) {
+        return true;
+      }
+    };
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(user)
+            .optimizely(mockExperimentsClientType)
+            .build();
+
+    setUpEnvironment(environment);
+
+    setUpInitialHomeAllProjectsParams();
+
+    this.shouldShowLightsOn.assertValue(Editorial.LIGHTS_ON);
+  }
+
+  @Test
+  public void testShouldShowLightsOne_featureDisabled(){
+    final MockCurrentUser user = new MockCurrentUser();
+    final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
+      @Override
+      public boolean isFeatureEnabled(@NotNull OptimizelyFeature.Key feature, @NotNull ExperimentData experimentData) {
+        return false;
+      }
+    };
+
+    final Environment environment = environment().toBuilder()
+            .currentUser(user)
+            .optimizely(mockExperimentsClientType)
+            .build();
+
+    setUpEnvironment(environment);
+
+    setUpInitialHomeAllProjectsParams();
+
+    this.shouldShowLightsOn.assertValue(null);
   }
 
   @Test
@@ -328,9 +378,10 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Click on editorial
     this.vm.inputs.editorialViewHolderClicked(Editorial.GO_REWARDLESS);
+    this.vm.inputs.editorialViewHolderClicked(Editorial.LIGHTS_ON);
 
-    this.startEditorialActivity.assertValue(Editorial.GO_REWARDLESS);
-    this.koalaTest.assertValues("Discover List View", "Editorial Card Clicked");
+    this.startEditorialActivity.assertValues(Editorial.GO_REWARDLESS, Editorial.LIGHTS_ON);
+    this.koalaTest.assertValues("Discover List View", "Editorial Card Clicked", "Editorial Card Clicked");
     this.lakeTest.assertValue("Explore Page Viewed");
   }
 

@@ -145,7 +145,6 @@ public interface DiscoveryFragmentViewModel {
         selectedParams.compose(takeWhen(this.refresh))
       );
 
-      // TODO: check the real feature flag and substitute the "android_lights_on"
       final Observable<Boolean> lightsOnEnabled = this.currentUser.observable()
         .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.LIGHTS_ON, new ExperimentData(user, null, null)))
         .distinctUntilChanged();
@@ -289,10 +288,6 @@ public interface DiscoveryFragmentViewModel {
       this.refresh
         .compose(bindToLifecycle())
         .subscribe(v -> this.koala.trackDiscoveryRefreshTriggered());
-
-      this.editorialClicked
-              .compose(bindToLifecycle())
-              .subscribe(this.startEditorialActivity);
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())

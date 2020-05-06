@@ -48,7 +48,7 @@
       style="@style/Title2WhiteMedium"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/grid_3"
+      android:paddingStart="@dimen/grid_3"
       android:paddingTop="@dimen/grid_3"
       android:paddingEnd="@dimen/grid_3"
       app:layout_constraintEnd_toStartOf="@id/guideline_title"

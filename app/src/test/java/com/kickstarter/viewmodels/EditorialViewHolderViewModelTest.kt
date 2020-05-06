@@ -80,7 +80,7 @@ class EditorialViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(Editorial.LIGHTS_ON)
 
-        this.ctaTitle.assertValue(R.string.lights_on_title)
+        this.ctaTitle.assertValue(R.string.Introducing_Lights_On)
     }
 
     @Test
@@ -89,7 +89,7 @@ class EditorialViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(Editorial.LIGHTS_ON)
 
-        this.ctaDescription.assertValue(R.string.lights_on_description)
+        this.ctaDescription.assertValue(R.string.Support_creative_spaces_and_businesses_affected_by)
     }
 
     @Test

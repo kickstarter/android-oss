@@ -5,12 +5,15 @@ import android.util.Pair;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -115,6 +118,7 @@ public interface DiscoveryFragmentViewModel {
     private final ApiClientType apiClient;
     private final CurrentUserType currentUser;
     private final IntPreferenceType activitySamplePreference;
+    private ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -122,6 +126,7 @@ public interface DiscoveryFragmentViewModel {
       this.apiClient = environment.apiClient();
       this.activitySamplePreference = environment.activitySamplePreference();
       this.currentUser = environment.currentUser();
+      this.optimizely = environment.optimizely();
 
       final Observable<User> changedUser = this.currentUser.observable()
         .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
@@ -139,6 +144,18 @@ public interface DiscoveryFragmentViewModel {
         selectedParams,
         selectedParams.compose(takeWhen(this.refresh))
       );
+
+      final Observable<Boolean> lightsOnEnabled = this.currentUser.observable()
+        .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.LIGHTS_ON, new ExperimentData(user, null, null)))
+        .distinctUntilChanged();
+
+      this.currentUser.observable()
+        .compose(combineLatestPair(this.paramsFromActivity))
+        .compose(combineLatestPair(lightsOnEnabled))
+        .map(defaultParamsAndEnabled -> isDefaultParams(defaultParamsAndEnabled.first) && BooleanUtils.isTrue(defaultParamsAndEnabled.second))
+        .map(shouldShow -> shouldShow ? Editorial.LIGHTS_ON : null)
+        .compose(bindToLifecycle())
+        .subscribe(this.shouldShowEditorial);
 
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()

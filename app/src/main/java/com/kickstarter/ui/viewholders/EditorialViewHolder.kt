@@ -6,7 +6,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.viewmodels.EditorialViewHolderViewModel
-import kotlinx.android.synthetic.main.item_editorial.view.*
+import kotlinx.android.synthetic.main.item_lights_on.view.*
 
 class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder(view) {
 
@@ -18,20 +18,27 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
 
     init {
 
-        this.vm.outputs.backgroundColor()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.editorial_root.setCardBackgroundColor(ContextCompat.getColor(context(), R.color.trust_700)) }
-
-        this.vm.outputs.ctaDescription()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.editorial_description.setText(it) }
+        this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
 
         this.vm.outputs.ctaTitle()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.editorial_title.setText(it) }
+                .subscribe { this.itemView.title.setText(it) }
+
+        this.vm.outputs.ctaDescription()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { this.itemView.description.setText(it) }
+
+        this.vm.graphic()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { this.itemView.item_background.background = ContextCompat.getDrawable(context(),it) }
+
+        this.vm.outputs.editorial()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { delegate.editorialViewHolderClicked(it) }
 
         this.vm.outputs.editorial()
                 .compose(bindToLifecycle())
@@ -50,4 +57,5 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
     override fun bindData(data: Any?) {
         this.vm.inputs.configureWith(data as Editorial)
     }
+
 }

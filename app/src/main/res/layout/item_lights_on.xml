@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/lights_on_container"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginStart="@dimen/grid_2"
+  android:layout_marginTop="@dimen/grid_3"
+  android:layout_marginEnd="@dimen/grid_2"
+  android:focusable="true"
+  app:cardCornerRadius="@dimen/editorial_radius">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/item_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/editorial_graphic"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:importantForAccessibility="no"
+      android:scaleType="centerCrop"
+      android:src="@drawable/lights_on"
+      android:transitionName="editorial"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.50" />
+
+    <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline_description"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.70" />
+
+    <TextView
+      android:id="@+id/title"
+      style="@style/Title2WhiteMedium"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingTop="@dimen/grid_3"
+      android:paddingEnd="@dimen/grid_3"
+      app:layout_constraintEnd_toStartOf="@id/guideline_title"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="@string/Introducing_Lights_On" />
+
+    <TextView
+      android:id="@+id/description"
+      style="@style/CalloutWhite"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingTop="@dimen/grid_1"
+      android:paddingEnd="@dimen/grid_3"
+      android:paddingBottom="@dimen/grid_4"
+      app:layout_constraintEnd_toStartOf="@id/guideline_description"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/title"
+      tools:text="@string/Support_creative_spaces_and_businesses_affected_by" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

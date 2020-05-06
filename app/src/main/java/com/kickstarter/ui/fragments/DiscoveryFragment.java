@@ -236,6 +236,7 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
 
   private void startEditorialActivity(final @NonNull Editorial editorial) {
     final FragmentActivity activity = getActivity();
+    //The transition view must be an ImageView
     final ImageView editorialImageView = getEditorialImageView();
     if (activity != null && editorialImageView != null) {
       final Intent intent = new Intent(activity, EditorialActivity.class)

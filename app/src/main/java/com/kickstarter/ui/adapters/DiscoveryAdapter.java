@@ -15,7 +15,6 @@ import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.EditorialViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.ui.viewholders.LightsOnViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import java.util.Collections;
@@ -28,9 +27,8 @@ import androidx.annotation.Nullable;
 public final class DiscoveryAdapter extends KSAdapter {
   private static final int SECTION_ONBOARDING_VIEW = 0;
   private static final int SECTION_EDITORIAL_VIEW = 1;
-  private static final int SECTION_LIGHTS_ON_VIEW = 2;
-  private static final int SECTION_ACTIVITY_SAMPLE_VIEW = 3;
-  private static final int SECTION_PROJECT_CARD_VIEW = 4;
+  private static final int SECTION_ACTIVITY_SAMPLE_VIEW = 2;
+  private static final int SECTION_PROJECT_CARD_VIEW = 3;
 
   private final Delegate delegate;
 
@@ -46,7 +44,6 @@ public final class DiscoveryAdapter extends KSAdapter {
 
     insertSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
     insertSection(SECTION_EDITORIAL_VIEW, Collections.emptyList());
-    insertSection(SECTION_LIGHTS_ON_VIEW, Collections.emptyList());
     insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
     insertSection(SECTION_PROJECT_CARD_VIEW, Collections.emptyList());
   }
@@ -57,16 +54,6 @@ public final class DiscoveryAdapter extends KSAdapter {
     } else {
       setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.singletonList(activity));
     }
-    notifyDataSetChanged();
-  }
-
-  public void setShouldShowLightsOnView(final @Nullable Editorial editorial) {
-    if (editorial == null) {
-      setSection(SECTION_LIGHTS_ON_VIEW, Collections.emptyList());
-    } else {
-      setSection(SECTION_LIGHTS_ON_VIEW, Collections.singletonList(editorial));
-    }
-
     notifyDataSetChanged();
   }
 
@@ -100,8 +87,6 @@ public final class DiscoveryAdapter extends KSAdapter {
     if (sectionRow.section() == SECTION_ONBOARDING_VIEW) {
       return R.layout.discovery_onboarding_view;
     } else if (sectionRow.section() == SECTION_EDITORIAL_VIEW) {
-      return R.layout.item_editorial;
-    } else if (sectionRow.section() == SECTION_LIGHTS_ON_VIEW) {
       return R.layout.item_lights_on;
     } else if (sectionRow.section() == SECTION_ACTIVITY_SAMPLE_VIEW) {
       if (objectFromSectionRow(sectionRow) instanceof Activity) {
@@ -125,10 +110,8 @@ public final class DiscoveryAdapter extends KSAdapter {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
         return new DiscoveryOnboardingViewHolder(view, this.delegate);
-      case R.layout.item_editorial:
-        return new EditorialViewHolder(view, this.delegate);
       case R.layout.item_lights_on:
-        return new LightsOnViewHolder(view, this.delegate);
+        return new EditorialViewHolder(view, this.delegate);
       case R.layout.project_card_view:
         return new ProjectCardViewHolder(view, this.delegate);
       case R.layout.activity_sample_friend_backing_view:

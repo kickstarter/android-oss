@@ -34,7 +34,6 @@ import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.viewholders.EditorialViewHolder;
-import com.kickstarter.ui.viewholders.LightsOnViewHolder;
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel;
 
 import java.util.List;
@@ -122,11 +121,6 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .compose(observeForUI())
       .subscribe(adapter::setShouldShowOnboardingView);
 
-    this.viewModel.outputs.shouldShowLightsOn()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(adapter::setShouldShowLightsOnView);
-
     this.viewModel.outputs.showActivityFeed()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -196,8 +190,6 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
         if (childView != null) {
           final RecyclerView.ViewHolder viewHolder = this.recyclerView.getChildViewHolder(childView);
           if (viewHolder instanceof EditorialViewHolder) {
-            return childView.findViewById(R.id.editorial_graphic);
-          } else if(viewHolder instanceof LightsOnViewHolder){
             return childView.findViewById(R.id.editorial_graphic);
           }
         }

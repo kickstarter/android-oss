@@ -86,9 +86,6 @@ public interface DiscoveryFragmentViewModel {
     /** Emits a boolean that determines if an editorial should be shown. */
     Observable<Editorial> shouldShowEditorial();
 
-    /** Emits a boolean that determines if an editorial for Lights On should be shown. */
-    Observable<Editorial> shouldShowLightsOn();
-
     /** Emits a boolean that determines if the saved empty view should be shown. */
     Observable<Boolean> shouldShowEmptySavedView();
 
@@ -155,7 +152,7 @@ public interface DiscoveryFragmentViewModel {
         .map(defaultParamsAndEnabled -> isDefaultParams(defaultParamsAndEnabled.first) && BooleanUtils.isTrue(defaultParamsAndEnabled.second))
         .map(shouldShow -> shouldShow ? Editorial.LIGHTS_ON : null)
         .compose(bindToLifecycle())
-        .subscribe(this.shouldShowLightsOn);
+        .subscribe(this.shouldShowEditorial);
 
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -347,7 +344,6 @@ public interface DiscoveryFragmentViewModel {
     private final Observable<Boolean> showActivityFeed;
     private final Observable<Boolean> showLoginTout;
     private final BehaviorSubject<Editorial> shouldShowEditorial = BehaviorSubject.create();
-    private final BehaviorSubject<Editorial> shouldShowLightsOn = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowEmptySavedView = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> shouldShowOnboardingView = BehaviorSubject.create();
     private final PublishSubject<Editorial> startEditorialActivity = PublishSubject.create();
@@ -424,9 +420,6 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public @NonNull Observable<Editorial> shouldShowEditorial() {
       return this.shouldShowEditorial;
-    }
-    @Override public @NonNull Observable<Editorial> shouldShowLightsOn() {
-      return this.shouldShowLightsOn;
     }
     @Override public @NonNull Observable<Boolean> shouldShowEmptySavedView() {
       return this.shouldShowEmptySavedView;

@@ -54,7 +54,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Editorial> startEditorialActivity = new TestSubscriber<>();
   private final TestSubscriber<Pair<Project, RefTag>> startProjectActivity = new TestSubscriber<>();
   private final TestSubscriber<Activity> startUpdateActivity = new TestSubscriber<>();
-  private final TestSubscriber<Editorial> shouldShowLightsOn = new TestSubscriber<>();
 
   private void setUpEnvironment(final @NonNull Environment environment) {
     this.vm = new DiscoveryFragmentViewModel.ViewModel(environment);
@@ -69,7 +68,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.startEditorialActivity().subscribe(this.startEditorialActivity);
     this.vm.outputs.startProjectActivity().subscribe(this.startProjectActivity);
     this.vm.outputs.startUpdateActivity().subscribe(this.startUpdateActivity);
-    this.vm.outputs.shouldShowLightsOn().subscribe(this.shouldShowLightsOn);
   }
 
   private void setUpInitialHomeAllProjectsParams() {
@@ -180,7 +178,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
         .build()
     );
 
-    this.shouldShowEditorial.assertNoValues();
+    this.shouldShowEditorial.assertValue(null);
   }
 
   @Test
@@ -190,7 +188,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     // Initial home all projects params.
     setUpInitialHomeAllProjectsParams();
 
-    this.shouldShowEditorial.assertNoValues();
+    this.shouldShowEditorial.assertValue(null);
   }
 
 
@@ -213,7 +211,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     setUpInitialHomeAllProjectsParams();
 
-    this.shouldShowLightsOn.assertValue(Editorial.LIGHTS_ON);
+    this.shouldShowEditorial.assertValue(Editorial.LIGHTS_ON);
   }
 
   @Test
@@ -235,7 +233,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     setUpInitialHomeAllProjectsParams();
 
-    this.shouldShowLightsOn.assertValue(null);
+    this.shouldShowEditorial.assertValue(null);
   }
 
   @Test

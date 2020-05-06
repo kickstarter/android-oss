@@ -47,7 +47,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract @Nullable String term();
 
   public enum Sort {
-    MAGIC, POPULAR, NEWEST, ENDING_SOON;
+    MAGIC, POPULAR, NEWEST, ENDING_SOON, DISTANCE;
     @Override
     public @NonNull String toString() {
       switch (this) {
@@ -59,9 +59,15 @@ public abstract class DiscoveryParams implements Parcelable {
           return "newest";
         case ENDING_SOON:
           return "end_date";
+        case DISTANCE:
+          return "distance";
       }
       return "";
     }
+
+    public static Sort[] defaultSorts = {
+      MAGIC, POPULAR, NEWEST, ENDING_SOON
+    };
 
     public static @Nullable Sort fromString(final @NonNull String string) {
       switch (string) {
@@ -73,6 +79,8 @@ public abstract class DiscoveryParams implements Parcelable {
           return NEWEST;
         case "end_date":
           return ENDING_SOON;
+        case "distance":
+          return DISTANCE;
       }
       return MAGIC;
     }
@@ -87,6 +95,8 @@ public abstract class DiscoveryParams implements Parcelable {
           return "_newest";
         case ENDING_SOON:
           return "_ending_soon";
+        case DISTANCE:
+          return "_distance";
         default:
           return "";
       }

@@ -1,9 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Pair;
@@ -29,6 +26,9 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;
@@ -61,6 +61,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.funding_unsuccessful_date_text_view) TextView fundingUnsuccessfulTextViewDate;
   protected @Nullable @Bind(R.id.land_card_view_group) ViewGroup landCardViewGroup;
+  protected @Bind(R.id.location_container) ViewGroup locationContainer;
+  protected @Bind(R.id.location_text_view) TextView locationTextView;
   protected @Bind(R.id.name_and_blurb_text_view) TextView nameAndBlurbTextView;
   protected @Bind(R.id.percent) TextView percentTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
@@ -169,6 +171,16 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(ViewUtils.setInvisible(this.photoImageView));
+
+    this.viewModel.outputs.locationName()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.locationTextView::setText);
+
+    this.viewModel.outputs.locationContainerIsGone()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(ViewUtils.setGone(this.locationContainer));
 
     this.viewModel.outputs.nameAndBlurbText()
       .compose(bindToLifecycle())

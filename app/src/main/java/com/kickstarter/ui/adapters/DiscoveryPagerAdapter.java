@@ -54,7 +54,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
 
   @Override
   public int getCount() {
-    return DiscoveryParams.Sort.values().length;
+    return DiscoveryParams.Sort.defaultSorts.length;
   }
 
   @Override

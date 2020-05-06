@@ -199,7 +199,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final MockCurrentUser user = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
-      public boolean isFeatureEnabled(@NotNull OptimizelyFeature.Key feature, @NotNull ExperimentData experimentData) {
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
         return true;
       }
     };
@@ -221,7 +221,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final MockCurrentUser user = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
-      public boolean isFeatureEnabled(@NotNull OptimizelyFeature.Key feature, @NotNull ExperimentData experimentData) {
+      public boolean isFeatureEnabled(final @NotNull OptimizelyFeature.Key feature, final @NotNull ExperimentData experimentData) {
         return false;
       }
     };

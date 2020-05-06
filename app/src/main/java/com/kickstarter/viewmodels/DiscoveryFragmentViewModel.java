@@ -60,6 +60,9 @@ public interface DiscoveryFragmentViewModel {
     /** Call for project pagination. */
     void nextPage();
 
+    /** Call when Optimizely is ready. */
+    void optimizelyReady();
+
     /** Call when params from Discovery Activity change. */
     void paramsFromActivity(final DiscoveryParams params);
 
@@ -315,6 +318,7 @@ public interface DiscoveryFragmentViewModel {
     private final PublishSubject<Boolean> discoveryOnboardingLoginToutClick = PublishSubject.create();
     private final PublishSubject<Editorial> editorialClicked = PublishSubject.create();
     private final PublishSubject<Void> nextPage = PublishSubject.create();
+    private final PublishSubject<Void> optimizelyReady = PublishSubject.create();
     private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
     private final PublishSubject<Project> projectCardClicked = PublishSubject.create();
     private final PublishSubject<Void> refresh = PublishSubject.create();
@@ -360,6 +364,9 @@ public interface DiscoveryFragmentViewModel {
     }
     @Override public void editorialViewHolderClicked(final @NonNull Editorial editorial) {
       this.editorialClicked.onNext(editorial);
+    }
+    @Override public void optimizelyReady() {
+      this.optimizelyReady.onNext(null);
     }
     @Override public void projectCardViewHolderClicked(final @NonNull Project project) {
       this.projectCardClicked.onNext(project);

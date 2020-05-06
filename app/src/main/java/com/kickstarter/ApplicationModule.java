@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -27,6 +28,7 @@ import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
+import com.kickstarter.libs.ExperimentsClientTypeKt;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
@@ -641,6 +643,7 @@ public final class ApplicationModule {
         if (build.isDebug()) {
           Log.d(ApplicationModule.class.getSimpleName(), "🔮 Optimizely successfully initialized.");
         }
+        context.sendBroadcast(new Intent(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
       }
     });
     return new OptimizelyExperimentsClient(optimizelyManager, optimizelyEnvironment);

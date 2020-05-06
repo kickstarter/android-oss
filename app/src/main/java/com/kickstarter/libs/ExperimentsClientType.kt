@@ -39,3 +39,5 @@ interface ExperimentsClientType {
     fun userId() : String
     fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant?
 }
+
+const val EXPERIMENTS_CLIENT_READY = "experiments_client_ready"

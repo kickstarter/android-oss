@@ -19,5 +19,12 @@ enum class Editorial(@StringRes val ctaTitle: Int,
             R.string.These_projects_could_use_your_support,
             R.color.trust_700,
             R.drawable.go_rewardless_header,
-            518)
+            518),
+    LIGHTS_ON(R.string.Introducing_Lights_On,
+            R.string.Support_creative_spaces_and_businesses_affected_by,
+            R.string.Show_up_for_the_spaces_you_love,
+            R.string.Help_local_businesses_keep_the_lights,
+            R.color.white,
+            R.drawable.lights_on,
+            557);
 }

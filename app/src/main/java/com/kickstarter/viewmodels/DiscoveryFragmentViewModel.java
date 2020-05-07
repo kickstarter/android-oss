@@ -221,7 +221,7 @@ public interface DiscoveryFragmentViewModel {
 
       this.editorialClicked
         .compose(bindToLifecycle())
-        .subscribe(this.koala::trackEditorialCardClicked);
+        .subscribe(this.lake::trackEditorialCardClicked);
 
       this.paramsFromActivity
         .compose(combineLatestPair(userIsLoggedIn))

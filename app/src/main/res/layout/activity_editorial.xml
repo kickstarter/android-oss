@@ -18,7 +18,7 @@
 
       <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_40">
+          android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/editorial_graphic"
@@ -38,8 +38,8 @@
             style="@style/Title2WhiteMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/grid_3"
+            android:layout_marginEnd="@dimen/grid_3"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,14 +51,22 @@
             style="@style/CalloutWhite"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/grid_3"
+            android:layout_marginTop="@dimen/grid_3_half"
+            android:layout_marginEnd="@dimen/grid_3"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editorial_title"
             tools:text="@string/Help_local_businesses_keep_the_lights" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/ks_toolbar_height"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/editorial_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"

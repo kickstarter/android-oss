@@ -219,10 +219,6 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startEditorialActivity);
 
-      this.editorialClicked
-        .compose(bindToLifecycle())
-        .subscribe(this.lake::trackEditorialCardClicked);
-
       this.paramsFromActivity
         .compose(combineLatestPair(userIsLoggedIn))
         .map(pu -> isOnboardingVisible(pu.first, pu.second))
@@ -294,6 +290,11 @@ public interface DiscoveryFragmentViewModel {
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
         .subscribe(v -> this.lake.trackLogInSignUpButtonClicked());
+
+      this.paramsFromActivity
+        .compose(takePairWhen(this.editorialClicked))
+        .compose(bindToLifecycle())
+        .subscribe(paramsAndEditorial -> this.lake.trackEditorialCardClicked(paramsAndEditorial.first, paramsAndEditorial.second));
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

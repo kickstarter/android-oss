@@ -26,7 +26,6 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     private val rootCategories = TestSubscriber<List<Category>>()
     private val title = TestSubscriber<Int>()
 
-    @Suppress("SameParameterValue")
     private fun setUpEnvironment(environment: Environment, editorial: Editorial) {
         this.vm = EditorialViewModel.ViewModel(environment)
 
@@ -49,12 +48,23 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDiscoveryParams() {
+    fun testDiscoveryParams_whenGoRewardless() {
         setUpEnvironment(environment(), Editorial.GO_REWARDLESS)
 
         val expectedParams = DiscoveryParams.builder()
                 .sort(DiscoveryParams.Sort.MAGIC)
                 .tagId(Editorial.GO_REWARDLESS.tagId)
+                .build()
+        this.discoveryParams.assertValue(expectedParams)
+    }
+
+    @Test
+    fun testDiscoveryParams_whenLightsOn() {
+        setUpEnvironment(environment(), Editorial.LIGHTS_ON)
+
+        val expectedParams = DiscoveryParams.builder()
+                .sort(DiscoveryParams.Sort.DISTANCE)
+                .tagId(557)
                 .build()
         this.discoveryParams.assertValue(expectedParams)
     }

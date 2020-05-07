@@ -407,8 +407,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.editorialViewHolderClicked(Editorial.LIGHTS_ON);
 
     this.startEditorialActivity.assertValues(Editorial.GO_REWARDLESS, Editorial.LIGHTS_ON);
-    this.koalaTest.assertValues("Discover List View", "Editorial Card Clicked", "Editorial Card Clicked");
-    this.lakeTest.assertValue("Explore Page Viewed");
+    this.lakeTest.assertValues("Explore Page Viewed", "Editorial Card Clicked", "Editorial Card Clicked");
   }
 
   @Test

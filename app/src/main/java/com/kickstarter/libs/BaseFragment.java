@@ -1,7 +1,9 @@
 package com.kickstarter.libs;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -28,6 +31,12 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
   private final BehaviorSubject<FragmentEvent> lifecycle = BehaviorSubject.create();
   private static final String VIEW_MODEL_KEY = "FragmentViewModel";
   protected ViewModelType viewModel;
+  private final BroadcastReceiver optimizelyReadyReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(final Context context, final Intent intent) {
+      BaseFragment.this.viewModel.optimizelyReady();
+    }
+  };
 
   /**
    * Returns an observable of the fragment's lifecycle events.
@@ -111,6 +120,11 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
     assignViewModel(null);
     if (this.viewModel != null) {
       this.viewModel.onResume(this);
+
+      final FragmentActivity activity = getActivity();
+      if (activity != null) {
+        activity.registerReceiver(this.optimizelyReadyReceiver, new IntentFilter(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
+      }
     }
   }
 
@@ -123,6 +137,11 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
 
     if (this.viewModel != null) {
       this.viewModel.onPause();
+
+      final FragmentActivity activity = getActivity();
+      if (activity != null) {
+        activity.unregisterReceiver(this.optimizelyReadyReceiver);
+      }
     }
   }
 

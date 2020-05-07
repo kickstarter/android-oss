@@ -2,10 +2,7 @@ package com.kickstarter.ui.fragments;
 
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +13,6 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseFragment;
-import com.kickstarter.libs.ExperimentsClientTypeKt;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.SwipeRefresher;
@@ -60,12 +56,6 @@ import static com.kickstarter.libs.utils.TransitionUtils.transition;
 public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewModel.ViewModel> {
   private AnimatorSet heartsAnimation;
   private RecyclerViewPaginator recyclerViewPaginator;
-  private final BroadcastReceiver optimizelyReadyReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(final Context context, final Intent intent) {
-      DiscoveryFragment.this.viewModel.inputs.optimizelyReady();
-    }
-  };
 
   protected @Bind(R.id.discovery_empty_heart_filled) ImageView heartFilled;
   protected @Bind(R.id.discovery_empty_heart_outline) ImageView heartOutline;
@@ -164,24 +154,9 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-
-    final FragmentActivity activity = getActivity();
-    if (activity != null) {
-      activity.registerReceiver(this.optimizelyReadyReceiver, new IntentFilter(ExperimentsClientTypeKt.EXPERIMENTS_CLIENT_READY));
-    }
-  }
-
-  @Override
   public void onPause() {
     super.onPause();
     this.heartsAnimation = null;
-
-    final FragmentActivity activity = getActivity();
-    if (activity != null) {
-      activity.unregisterReceiver(this.optimizelyReadyReceiver);
-    }
   }
 
   @Override

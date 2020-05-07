@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.viewmodels.EditorialViewHolderViewModel
@@ -38,12 +37,7 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
         this.vm.outputs.editorial()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { delegate.editorialViewHolderClicked(it) }
-
-        this.vm.outputs.editorial()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { delegate.editorialViewHolderClicked(it) }
+                .subscribe { this.delegate.editorialViewHolderClicked(it) }
 
         this.vm.outputs.graphic()
                 .compose(bindToLifecycle())

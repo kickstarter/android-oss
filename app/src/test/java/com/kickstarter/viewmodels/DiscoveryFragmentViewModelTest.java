@@ -260,7 +260,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     this.shouldShowEditorial.assertValue(null);
 
-    this.vm.inputs.optimizelyReady();
+    this.vm.optimizelyReady();
     this.shouldShowEditorial.assertValues(null, Editorial.LIGHTS_ON);
   }
 

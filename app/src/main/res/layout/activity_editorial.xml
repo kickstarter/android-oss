@@ -16,55 +16,61 @@
       android:layout_height="wrap_content"
       app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/ks_toolbar_height"
-        android:orientation="vertical">
-
-        <LinearLayout
+      <androidx.constraintlayout.widget.ConstraintLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:background="@color/trust_700"
-          android:orientation="vertical">
+          android:layout_height="@dimen/grid_40">
 
-          <TextView
-            android:id="@+id/editorial_title"
-            style="@style/Title2WhiteMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/grid_6"
-            android:layout_marginEnd="@dimen/grid_6"
-            android:layout_marginBottom="@dimen/grid_8"
-            android:gravity="center"
-            tools:text="@string/This_holiday_season_support_a_project_for_no_reward" />
-
-          <com.kickstarter.ui.views.BottomCropImageView
+        <ImageView
             android:id="@+id/editorial_graphic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/lights_on"
             android:transitionName="editorial"
-            tools:src="@drawable/go_rewardless_header" />
-
-        </LinearLayout>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-          android:id="@+id/editorial_description"
-          style="@style/CalloutPrimary"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginStart="@dimen/grid_5"
-          android:layout_marginTop="@dimen/grid_4"
-          android:layout_marginEnd="@dimen/grid_5"
-          android:gravity="center"
-          android:textColor="@color/trust_700"
-          tools:text="@string/These_projects_could_use_your_support" />
-      </LinearLayout>
+            android:id="@+id/editorial_title"
+            style="@style/Title2WhiteMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideline"
+            tools:text="@string/Show_up_for_the_spaces_you_love" />
+
+        <TextView
+            android:id="@+id/editorial_description"
+            style="@style/CalloutWhite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editorial_title"
+            tools:text="@string/Help_local_businesses_keep_the_lights" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.40" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
 
       <com.kickstarter.ui.toolbars.KSToolbar
         style="@style/Toolbar"
-        android:backgroundTint="@color/trust_700"
+        android:backgroundTint="@color/transparent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:layout_collapseMode="pin">
@@ -79,7 +85,6 @@
             android:id="@+id/back_button"
             style="@style/ToolbarIconBackButton"
             android:drawableTint="@color/white" />
-
         </RelativeLayout>
 
       </com.kickstarter.ui.toolbars.KSToolbar>

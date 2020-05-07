@@ -17,8 +17,6 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
 
     init {
 
-        this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
-
         this.vm.outputs.ctaTitle()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -28,11 +26,6 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { this.itemView.description.setText(it) }
-
-        this.vm.graphic()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.item_background.background = ContextCompat.getDrawable(context(),it) }
 
         this.vm.outputs.editorial()
                 .compose(bindToLifecycle())

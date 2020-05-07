@@ -142,12 +142,15 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testBackingAmountAndDateTextViewText() {
-    final Backing backing = BackingFactory.backing().toBuilder()
+    final Project project = ProjectFactory.project();
+    final Backing backing = BackingFactory.backing(project, UserFactory.user()).toBuilder()
       .amount(50.0f)
       .build();
-    setUpEnvironmentAndIntent(backing);
 
-    this.backingAmountAndDateTextViewText.assertValue(Pair.create("$50", DateTimeUtils.fullDate(backing.pledgedAt())));
+    final Environment environment = setUpEnvironmentAndIntent(backing);
+    final String formattedCurrency = environment.ksCurrency().format(50.0, project);
+
+    this.backingAmountAndDateTextViewText.assertValue(Pair.create(formattedCurrency, DateTimeUtils.fullDate(backing.pledgedAt())));
   }
 
   @Test
@@ -366,13 +369,15 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
       .minimum(100.0f)
       .build();
 
-    final Backing backing = BackingFactory.backing().toBuilder()
+    final Project project = ProjectFactory.project();
+    final Backing backing = BackingFactory.backing(project, UserFactory.user()).toBuilder()
       .reward(reward)
       .build();
 
-    setUpEnvironmentAndIntent(backing);
+    final Environment environment = setUpEnvironmentAndIntent(backing);
 
-    this.rewardMinimumAndDescriptionTextViewText.assertValue(Pair.create("$100", backing.reward().description()));
+    final String formattedCurrency = environment.ksCurrency().format(100.0, project);
+    this.rewardMinimumAndDescriptionTextViewText.assertValue(Pair.create(formattedCurrency, backing.reward().description()));
   }
 
   @Test
@@ -418,16 +423,18 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
   public void testShipping_withShippingLocation() {
     final Location location = LocationFactory.sydney();
     final Reward reward = RewardFactory.rewardWithShipping();
-    final Backing backing = BackingFactory.backing().toBuilder()
+    final Project project = ProjectFactory.project();
+    final Backing backing = BackingFactory.backing(project, UserFactory.user()).toBuilder()
       .location(location)
       .reward(reward)
       .rewardId(reward.id())
       .shippingAmount(5.0f)
       .build();
-    setUpEnvironmentAndIntent(backing);
+    final Environment environment = setUpEnvironmentAndIntent(backing);
 
     this.shippingLocationTextViewText.assertValues("Sydney, AU");
-    this.shippingAmountTextViewText.assertValues("$5");
+    final String formattedCurrency = environment.ksCurrency().format(5.0, project);
+    this.shippingAmountTextViewText.assertValues(formattedCurrency);
     this.shippingSectionIsGone.assertValues(false);
   }
 
@@ -511,10 +518,13 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
 
   /**
    * Helper method to set up environment and intent with a backing and logged in user.
+   * @return
    */
-  private void setUpEnvironmentAndIntent(final @NonNull Backing backing) {
-    setUpEnvironment(envWithBacking(backing));
+  private Environment setUpEnvironmentAndIntent(final @NonNull Backing backing) {
+    final Environment environment = envWithBacking(backing);
+    setUpEnvironment(environment);
 
     this.vm.intent(intentForBacking(backing, null));
+    return environment;
   }
 }

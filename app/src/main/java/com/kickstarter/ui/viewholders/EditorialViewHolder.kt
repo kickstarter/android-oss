@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.viewmodels.EditorialViewHolderViewModel
@@ -17,8 +16,6 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
 
     init {
 
-        this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
-
         this.vm.outputs.ctaTitle()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -28,11 +25,6 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { this.itemView.description.setText(it) }
-
-        this.vm.graphic()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.item_background.background = ContextCompat.getDrawable(context(),it) }
 
         this.vm.outputs.editorial()
                 .compose(bindToLifecycle())
@@ -45,7 +37,6 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
                 .subscribe { this.itemView.editorial_graphic.setImageResource(it) }
 
         this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
-
     }
 
     override fun bindData(data: Any?) {

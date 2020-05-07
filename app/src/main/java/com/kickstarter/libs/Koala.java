@@ -82,12 +82,11 @@ public final class Koala {
     });
   }
 
-  public void trackEditorialCardClicked(final @NonNull Editorial editorial) {
-    this.client.track(KoalaEvent.EDITORIAL_CARD_CLICKED, new HashMap<String, Object>() {
-      {
-        put("ref_tag", RefTag.collection(editorial.getTagId()).tag());
-      }
-    });
+  public void trackEditorialCardClicked(final @NonNull DiscoveryParams discoveryParams, final @NonNull Editorial editorial) {
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
+    props.put("session_ref_tag", RefTag.collection(editorial.getTagId()).tag());
+
+    this.client.track(LakeEvent.EDITORIAL_CARD_CLICKED, props);
   }
 
   /**

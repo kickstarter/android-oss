@@ -82,13 +82,6 @@ public final class Koala {
     });
   }
 
-  public void trackEditorialCardClicked(final @NonNull DiscoveryParams discoveryParams, final @NonNull Editorial editorial) {
-    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
-    props.put("session_ref_tag", RefTag.collection(editorial.getTagId()).tag());
-
-    this.client.track(LakeEvent.EDITORIAL_CARD_CLICKED, props);
-  }
-
   /**
    * Tracks a project show event.
    *
@@ -632,6 +625,13 @@ public final class Koala {
   //region Discover a Project
   public void trackActivityFeedViewed() {
     this.client.track(LakeEvent.ACTIVITY_FEED_VIEWED);
+  }
+
+  public void trackEditorialCardClicked(final @NonNull DiscoveryParams discoveryParams, final @NonNull Editorial editorial) {
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(discoveryParams);
+    props.put("session_ref_tag", RefTag.collection(editorial.getTagId()).tag());
+
+    this.client.track(LakeEvent.EDITORIAL_CARD_CLICKED, props);
   }
 
   public void trackExplorePageViewed(final @NonNull DiscoveryParams discoveryParams) {

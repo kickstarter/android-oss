@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.viewmodels.EditorialViewHolderViewModel
@@ -38,7 +37,6 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
                 .subscribe { this.itemView.editorial_graphic.setImageResource(it) }
 
         this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
-
     }
 
     override fun bindData(data: Any?) {

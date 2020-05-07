@@ -26,6 +26,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
   protected final Koala koala;
   protected final Koala lake;
+  protected final PublishSubject<Void> optimizelyReady = PublishSubject.create();
 
   public FragmentViewModel(final @NonNull Environment environment) {
     this.koala = environment.koala();
@@ -50,6 +51,13 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
    */
   public void arguments(final @Nullable Bundle bundle) {
     this.arguments.onNext(bundle);
+  }
+
+  /**
+   * Signals that the Optimizely instance is ready.
+   */
+  public void optimizelyReady() {
+    this.optimizelyReady.onNext(null);
   }
 
   protected @NonNull Observable<Bundle> arguments() {

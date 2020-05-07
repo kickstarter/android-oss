@@ -115,7 +115,7 @@ public interface DiscoveryFragmentViewModel {
     private final ApiClientType apiClient;
     private final CurrentUserType currentUser;
     private final IntPreferenceType activitySamplePreference;
-    private ExperimentsClientType optimizely;
+    private final ExperimentsClientType optimizely;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -141,18 +141,6 @@ public interface DiscoveryFragmentViewModel {
         selectedParams,
         selectedParams.compose(takeWhen(this.refresh))
       );
-
-      final Observable<Boolean> lightsOnEnabled = this.currentUser.observable()
-        .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.LIGHTS_ON, new ExperimentData(user, null, null)))
-        .distinctUntilChanged();
-
-      this.currentUser.observable()
-        .compose(combineLatestPair(this.paramsFromActivity))
-        .compose(combineLatestPair(lightsOnEnabled))
-        .map(defaultParamsAndEnabled -> isDefaultParams(defaultParamsAndEnabled.first) && BooleanUtils.isTrue(defaultParamsAndEnabled.second))
-        .map(shouldShow -> shouldShow ? Editorial.LIGHTS_ON : null)
-        .compose(bindToLifecycle())
-        .subscribe(this.shouldShowEditorial);
 
       final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -209,6 +197,23 @@ public interface DiscoveryFragmentViewModel {
           this.activity.onNext(null);
           this.projectList.onNext(Collections.emptyList());
         });
+
+      final Observable<User> userWhenOptimizelyReady = Observable.merge(
+        changedUser,
+        changedUser.compose(takeWhen(this.optimizelyReady))
+      );
+
+      final Observable<Boolean> lightsOnEnabled = userWhenOptimizelyReady
+        .map(user -> this.optimizely.isFeatureEnabled(OptimizelyFeature.Key.LIGHTS_ON, new ExperimentData(user, null, null)))
+        .distinctUntilChanged();
+
+      this.currentUser.observable()
+        .compose(combineLatestPair(this.paramsFromActivity))
+        .compose(combineLatestPair(lightsOnEnabled))
+        .map(defaultParamsAndEnabled -> isDefaultParams(defaultParamsAndEnabled.first) && BooleanUtils.isTrue(defaultParamsAndEnabled.second))
+        .map(shouldShow -> shouldShow ? Editorial.LIGHTS_ON : null)
+        .compose(bindToLifecycle())
+        .subscribe(this.shouldShowEditorial);
 
       this.editorialClicked
         .compose(bindToLifecycle())

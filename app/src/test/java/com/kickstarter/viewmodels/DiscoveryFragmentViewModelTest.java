@@ -193,7 +193,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
 
   @Test
-  public void testShouldShowLightsOne_featureEnabled(){
+  public void testShouldShowEditorial_featureEnabled(){
     final MockCurrentUser user = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
@@ -215,7 +215,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShouldShowLightsOne_featureDisabled(){
+  public void testShouldShowEditorial_featureDisabled(){
     final MockCurrentUser user = new MockCurrentUser();
     final MockExperimentsClientType mockExperimentsClientType = new MockExperimentsClientType() {
       @Override
@@ -234,6 +234,34 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     setUpInitialHomeAllProjectsParams();
 
     this.shouldShowEditorial.assertValue(null);
+  }
+
+  @Test
+  public void testShouldShowEditorial_whenOptimizelyInitializationDelay(){
+    final Environment environment = environment().toBuilder()
+      .currentUser(new MockCurrentUser())
+      .optimizely(new MockExperimentsClientType() {
+        int enabledCount;
+        @Override
+        public boolean isFeatureEnabled(final @NonNull OptimizelyFeature.Key feature, final @NonNull ExperimentData experimentData) {
+          if (enabledCount == 0) {
+            enabledCount += 1;
+            return false;
+          } else {
+            return true;
+          }
+        }
+      })
+      .build();
+
+    setUpEnvironment(environment);
+
+    setUpInitialHomeAllProjectsParams();
+
+    this.shouldShowEditorial.assertValue(null);
+
+    this.vm.optimizelyReady();
+    this.shouldShowEditorial.assertValues(null, Editorial.LIGHTS_ON);
   }
 
   @Test

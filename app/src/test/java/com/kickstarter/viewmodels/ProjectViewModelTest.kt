@@ -18,6 +18,7 @@ import com.kickstarter.ui.data.*
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import java.math.RoundingMode
 
 class ProjectViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: ProjectViewModel.ViewModel
@@ -942,15 +943,17 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testBackingDetails_whenShippableRewardBacked() {
-        setUpEnvironment(environment())
+        val environment = environment()
+        setUpEnvironment(environment)
         val reward = RewardFactory.reward()
                 .toBuilder()
                 .id(4)
                 .build()
 
+        val amount = 34.0
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .amount(34.0)
+                .amount(amount)
                 .shippingAmount(4f)
                 .rewardId(4)
                 .build()
@@ -963,16 +966,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
         this.backingDetailsIsVisible.assertValue(true)
-        this.backingDetailsSubtitle.assertValue(Either.Left("$34 • Digital Bundle"))
+        val expectedCurrency = expectedCurrency(environment, backedProject, amount)
+        this.backingDetailsSubtitle.assertValue(Either.Left("$expectedCurrency • Digital Bundle"))
         this.backingDetailsTitle.assertValue(R.string.Youre_a_backer)
     }
 
     @Test
     fun testBackingDetails_whenDigitalReward() {
-        setUpEnvironment(environment())
+        val environment = environment()
+        setUpEnvironment(environment)
+        val amount = 13.5
         val noRewardBacking = BackingFactory.backing()
                 .toBuilder()
-                .amount(13.5)
+                .amount(amount)
                 .reward(RewardFactory.noReward())
                 .build()
 
@@ -983,7 +989,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
         this.backingDetailsIsVisible.assertValue(true)
-        this.backingDetailsSubtitle.assertValue(Either.Left("$13.50"))
+        val expectedCurrency = expectedCurrency(environment, backedProject, amount)
+        this.backingDetailsSubtitle.assertValue(Either.Left(expectedCurrency))
         this.backingDetailsTitle.assertValue(R.string.Youre_a_backer)
     }
 
@@ -1441,4 +1448,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee")
         return Intent(Intent.ACTION_VIEW, uri)
     }
+
+    private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
+            environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
 }

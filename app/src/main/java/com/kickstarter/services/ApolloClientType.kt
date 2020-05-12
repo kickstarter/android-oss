@@ -29,6 +29,8 @@ interface ApolloClientType {
 
     fun erroredBackings(): Observable<List<ErroredBacking>>
 
+    fun getProjectBacking(slug: String): Observable<Backing>
+
     fun getStoredCards(): Observable<List<StoredCard>>
 
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>

@@ -22,6 +22,11 @@ import java.util.*
 
 open class MockApolloClient : ApolloClientType {
 
+    //TODO: improve
+    override fun getProjectBacking(slug: String): Observable<Backing> {
+        TODO("Not yet implemented")
+    }
+
     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
         return Observable.just(true)
     }

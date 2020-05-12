@@ -244,6 +244,34 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun getProjectBacking(slug: String): Observable<Backing> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Backing>()
+            // TODO: Created the Query Izzy gave me. Get the data now
+            this.service.query(GetProjectBackingQuery.builder()
+                    .slug(slug).build())
+                    .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
+                            response.data()?.let {data ->
+                                val backing = data.project().takeIf { it != null }?.backing().takeIf { it != null }
+                                Observable.just(backing)
+                                        .map { ba -> Backing.builder().amount(ba?.amount().toString().toDouble()).build() }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
+                        }
+                    })
+
+            return@defer ps
+        }
+    }
+
     override fun getStoredCards(): Observable<List<StoredCard>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<StoredCard>>()

@@ -8,3 +8,47 @@ query ProjectCreatorDetails($slug: String!) {
     }
   }
 }
+
+query GetProjectBacking($slug: String!) {
+  project(slug: $slug) {
+    backing {
+      status
+      pledgedOn
+      amount {
+        amount
+        currency
+        symbol
+      }
+      paymentSource {
+        ... on CreditCard {
+          id
+          lastFour
+          expirationDate
+          type
+        }
+      }
+      shippingAmount {
+        amount
+      }
+      reward {
+        name
+        backersCount
+        description
+        estimatedDeliveryOn
+        items {
+          nodes {
+            name
+          }
+        }
+        amount {
+          amount
+          currency
+          symbol
+        }
+      }
+      backer {
+        name
+      }
+    }
+  }
+}

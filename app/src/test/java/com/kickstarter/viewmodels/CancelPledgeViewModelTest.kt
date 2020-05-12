@@ -12,6 +12,7 @@ import com.kickstarter.ui.ArgumentsKey
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+import java.math.RoundingMode
 
 class CancelPledgeViewModelTest : KSRobolectricTestCase() {
 
@@ -54,16 +55,19 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPledgeAmountAndProjectName() {
         var backedProject = ProjectFactory.backedProject()
+        val amount = 30.0
         val backing = (backedProject.backing()?: BackingFactory.backing())
                 .toBuilder()
-                .amount(30.0)
+                .amount(amount)
                 .build()
         backedProject = backedProject.toBuilder()
                 .backing(backing)
                 .build()
-        setUpEnvironment(environment(), backedProject)
+        val environment = environment()
+        setUpEnvironment(environment, backedProject)
 
-        this.pledgeAmount.assertValue("$30")
+        val expectedCurrency = environment.ksCurrency().format(amount, backedProject, RoundingMode.HALF_UP)
+        this.pledgeAmount.assertValue(expectedCurrency)
         this.projectName.assertValue("Some Name")
     }
 

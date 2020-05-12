@@ -13,6 +13,7 @@ import com.kickstarter.models.RewardsItem
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
+import java.math.RoundingMode
 
 class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -294,40 +295,44 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testConversion_USDProject_currentCurrencyUSD() {
-        setUpEnvironment(environment())
+        val environment = environment()
+        setUpEnvironment(environment)
 
         val usProject = ProjectFactory.project()
                 .toBuilder()
                 .currentCurrency("USD")
                 .build()
+        val minimum = 50.0
         val reward = RewardFactory.reward()
                 .toBuilder()
-                .minimum(50.0)
-                .convertedMinimum(50.0)
+                .minimum(minimum)
+                .convertedMinimum(minimum)
                 .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(usProject), reward)
-        this.conversion.assertValue("$50")
+        this.conversion.assertValue(expectedConvertedCurrency(environment, usProject, minimum))
         this.conversionIsGone.assertValue(true)
     }
 
     @Test
     fun testConversion_CADProject_currentCurrencyUSD() {
-        setUpEnvironment(environment())
+        val environment = environment()
+        setUpEnvironment(environment)
 
         val caProject = ProjectFactory.caProject()
                 .toBuilder()
                 .currentCurrency("USD")
                 .build()
 
+        val convertedMinimum = 40.0
         val reward = RewardFactory.reward()
                 .toBuilder()
                 .minimum(50.0)
-                .convertedMinimum(40.0)
+                .convertedMinimum(convertedMinimum)
                 .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(caProject), reward)
-        this.conversion.assertValue("$40")
+        this.conversion.assertValue(expectedConvertedCurrency(environment, caProject, convertedMinimum))
         this.conversionIsGone.assertValue(false)
     }
 
@@ -603,20 +608,22 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testMinimumAmountTitle() {
         val project = ProjectFactory.project()
         val reward = RewardFactory.reward()
-        setUpEnvironment(environment())
+        val environment = environment()
+        setUpEnvironment(environment)
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), reward)
-        this.minimumAmountTitle.assertValue("$20")
+        this.minimumAmountTitle.assertValue(expectedCurrency(environment, project, 20.0))
     }
 
     @Test
     fun testMinimumAmountTitle_whenUKProject() {
         val project = ProjectFactory.ukProject()
         val reward = RewardFactory.reward()
-        setUpEnvironment(environment())
+        val environment = environment()
+        setUpEnvironment(environment)
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), reward)
-        this.minimumAmountTitle.assertValue("£20")
+        this.minimumAmountTitle.assertValue(expectedCurrency(environment, project, 20.0))
     }
 
     @Test
@@ -776,4 +783,10 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.titleForReward.assertNoValues()
         this.titleForNoReward.assertValue(R.string.You_pledged_without_a_reward)
     }
+
+    private fun expectedConvertedCurrency(environment: Environment, project: Project, amount: Double): String =
+            environment.ksCurrency().format(amount, project, true, RoundingMode.HALF_UP, true)
+
+    private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
+            environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
 }

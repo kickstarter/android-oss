@@ -20,6 +20,7 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloParseException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
@@ -251,15 +252,57 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             this.service.query(GetProjectBackingQuery.builder()
                     .slug(slug).build())
                     .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
+                        override fun onParseError(e: ApolloParseException) {
+                            super.onParseError(e)
+                        }
                         override fun onFailure(e: ApolloException) {
                             ps.onError(e)
                         }
 
                         override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
                             response.data()?.let {data ->
-                                val backing = data.project().takeIf { it != null }?.backing().takeIf { it != null }
-                                Observable.just(backing)
-                                        .map { ba -> Backing.builder().amount(ba?.amount().toString().toDouble()).build() }
+                                val backingGr = data.project()?.let { it?.let { it.backing() }}
+
+                                val paymentGR = (backingGr?.paymentSource() as GetProjectBackingQuery.AsCreditCard)
+                                val payment = Backing.PaymentSource.builder()
+                                        .state(paymentGR.state().toString())
+                                        .paymentType(paymentGR.type().toString()) // TODO: check
+                                        .id(paymentGR.id())
+                                        //.expirationDate() --> this date do not have the parse error from the graph but in format Date! while pledgeOn is in DateTime
+                                        .lastFour(paymentGR.lastFour())
+                                        .build()
+
+                                val backer = User.builder()
+                                        .name(backingGr.backer()?.name())
+                                        .id(backingGr.backer()?.id()?.toLong()!!) // TODO: unwrap
+                                        .build()
+
+
+                                // TODO: create val location, reward
+                                val backing = Backing.builder()
+                                        .amount(backingGr?.amount()?.amount().toString().toDouble())
+                                        .backer(backer)
+                                        .paymentSource(payment)
+                                        //.backerNote() ??
+                                        .backerId(backer.id())
+                                        //.backerCompletedAt() --> backedOn field crashing at parsing
+                                        //.completedAt() --> ??
+                                        .id(backingGr?.id().toLong())
+                                        //.locationId()
+                                        //.locationName()
+                                        //.pledgedAt()
+                                        //.project()
+                                        .projectId(backingGr.id().toLong())
+                                        //.reward()
+                                        //.rewardId()
+                                        //.sequence() // TODO: ask what is this for
+                                        //.shippingAmount()
+                                        //.status()
+                                        .build()
+
+                                // TODO: build the Backing object with the data
+                                Observable.just(backingGr)
+                                        .map { ba -> Backing.builder().amount(ba?.amount()?.amount().toString().toDouble()).build() }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()

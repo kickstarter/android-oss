@@ -11,9 +11,20 @@ query ProjectCreatorDetails($slug: String!) {
 
 query GetProjectBacking($slug: String!) {
   project(slug: $slug) {
+    id
     backing {
+      id
       status
-      pledgedOn
+      sequence
+      shippingAmount {
+        amount
+        currency
+        symbol
+      }
+      location {
+        id
+        countryName
+      }
       amount {
         amount
         currency
@@ -21,6 +32,7 @@ query GetProjectBacking($slug: String!) {
       }
       paymentSource {
         ... on CreditCard {
+          state
           id
           lastFour
           expirationDate
@@ -31,6 +43,7 @@ query GetProjectBacking($slug: String!) {
         amount
       }
       reward {
+        id
         name
         backersCount
         description
@@ -48,6 +61,7 @@ query GetProjectBacking($slug: String!) {
       }
       backer {
         name
+        id
       }
     }
   }

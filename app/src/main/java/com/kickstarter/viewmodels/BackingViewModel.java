@@ -32,6 +32,7 @@ import com.kickstarter.ui.activities.BackingActivity;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import rx.Observable;
@@ -160,14 +161,14 @@ public interface BackingViewModel {
         .compose(combineLatestPair(loggedInUser))
         .map(backerAndCurrentUser -> backerAndCurrentUser.first.id() != backerAndCurrentUser.second.id());
 
-      // TODO: change this switchMap to use the this.apolloclient.getBackingInfo
       final Observable<Backing> backing = Observable.combineLatest(project, initialBacker, Pair::create)
         .switchMap(pb -> this.client.fetchProjectBacking(pb.first, pb.second))
         .compose(neverError())
         .share();
 
+      // TODO: testing this.apolloclient.getBackingInfo
       final Observable<Backing> backing2 = Observable.combineLatest(project, initialBacker, Pair::create)
-              .switchMap(pb -> this.apolloClient.getProjectBacking(pb.first.slug()))
+              .switchMap(pb -> this.apolloClient.getProjectBacking(Objects.requireNonNull(pb.first.slug())))
               .compose(neverError())
               .share();
 
@@ -200,8 +201,9 @@ public interface BackingViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backerNameTextViewText);
 
+      // TODO: just testing, change it back
       project
-        .compose(zipPair(backing))
+        .compose(zipPair(backing2))
         .map(pb -> backingAmountAndDate(this.ksCurrency, pb.first, pb.second))
         .compose(bindToLifecycle())
         .subscribe(this.backingAmountAndDateTextViewText);

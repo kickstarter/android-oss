@@ -32,7 +32,6 @@ import com.kickstarter.ui.activities.BackingActivity;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import rx.Observable;

@@ -21,6 +21,8 @@ public abstract class Backing implements Parcelable, Relay {
   public abstract @Nullable User backer();
   public abstract @Nullable String backerNote();
   public abstract long backerId();
+  public abstract @Nullable String backerName();
+  public abstract @Nullable String backerUrl();
   public abstract @Nullable DateTime backerCompletedAt();
   public abstract boolean cancelable();
   public abstract @Nullable DateTime completedAt();
@@ -31,7 +33,6 @@ public abstract class Backing implements Parcelable, Relay {
   public abstract @Nullable PaymentSource paymentSource();
   public abstract DateTime pledgedAt();
   public abstract @Nullable Project project();
-  public abstract String projectCountry();
   public abstract long projectId();
   public abstract @Nullable Reward reward();
   public abstract @Nullable Long rewardId();
@@ -44,6 +45,8 @@ public abstract class Backing implements Parcelable, Relay {
     public abstract Builder amount(double __);
     public abstract Builder backer(User __);
     public abstract Builder backerNote(String __);
+    public abstract Builder backerName(String __);
+    public abstract Builder backerUrl(String __);
     public abstract Builder backerId(long __);
     public abstract Builder backerCompletedAt(DateTime __);
     public abstract Builder cancelable(boolean __);
@@ -55,7 +58,6 @@ public abstract class Backing implements Parcelable, Relay {
     public abstract Builder paymentSource(PaymentSource __);
     public abstract Builder pledgedAt(DateTime __);
     public abstract Builder project(Project __);
-    public abstract Builder projectCountry(String __);
     public abstract Builder projectId(long __);
     public abstract Builder reward(Reward __);
     public abstract Builder rewardId(Long __);

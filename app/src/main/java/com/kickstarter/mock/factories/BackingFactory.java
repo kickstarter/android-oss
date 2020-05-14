@@ -34,7 +34,6 @@ public final class BackingFactory {
       .paymentSource(PaymentSourceFactory.Companion.visa())
       .pledgedAt(DateTime.now())
       .project(project)
-      .projectCountry(project.country())
       .projectId(project.id())
       .reward(reward)
       .rewardId(reward.id())

@@ -162,15 +162,9 @@ public interface BackingViewModel {
         .map(backerAndCurrentUser -> backerAndCurrentUser.first.id() != backerAndCurrentUser.second.id());
 
       final Observable<Backing> backing = Observable.combineLatest(project, initialBacker, Pair::create)
-        .switchMap(pb -> this.client.fetchProjectBacking(pb.first, pb.second))
+        .switchMap(pb -> this.apolloClient.getProjectBacking(Objects.requireNonNull(pb.first.slug())))
         .compose(neverError())
         .share();
-
-      // TODO: testing this.apolloclient.getBackingInfo
-      final Observable<Backing> backing2 = Observable.combineLatest(project, initialBacker, Pair::create)
-              .switchMap(pb -> this.apolloClient.getProjectBacking(Objects.requireNonNull(pb.first.slug())))
-              .compose(neverError())
-              .share();
 
       final Observable<User> backer = backing
         .map(Backing::backer);
@@ -201,9 +195,8 @@ public interface BackingViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.backerNameTextViewText);
 
-      // TODO: just testing, change it back
       project
-        .compose(zipPair(backing2))
+        .compose(zipPair(backing))
         .map(pb -> backingAmountAndDate(this.ksCurrency, pb.first, pb.second))
         .compose(bindToLifecycle())
         .subscribe(this.backingAmountAndDateTextViewText);

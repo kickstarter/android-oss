@@ -20,7 +20,6 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloParseException
 import com.google.android.gms.common.util.Base64Utils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.*
@@ -249,7 +248,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     override fun getProjectBacking(slug: String): Observable<Backing> {
         return Observable.defer {
             val ps = PublishSubject.create<Backing>()
-            // TODO: Created the Query Izzy gave me. Get the data now
+
             this.service.query(GetProjectBackingQuery.builder()
                     .slug(slug).build())
                     .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
@@ -259,52 +258,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
                             response.data()?.let {data ->
-                                val backingGr = data.project()?.backing()
-
-                                val paymentGR = (backingGr?.paymentSource() as GetProjectBackingQuery.AsCreditCard)
-                                val payment = Backing.PaymentSource.builder()
-                                        .state(paymentGR.state().toString())
-                                        .type(paymentGR.type().rawValue())
-                                        .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
-                                        .id(paymentGR.id())
-                                        .expirationDate(paymentGR.expirationDate())
-                                        .lastFour(paymentGR.lastFour())
-                                        .build()
-
-                                val name = backingGr.backer()?.name() ?: ""
-                                val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
-
-                                val backer = User.builder()
-                                        .name(name)
-                                        .id(id)
-                                        //.avatar() requires avatar, and I don't find that data, just backer {name,id}
-                                        .build()
-
-                                // TODO: create val location, reward
-                                val backing = Backing.builder()
-                                        .amount(backingGr.amount().amount().toString().toDouble())
-                                        .backer(backer)
-                                        .paymentSource(payment)
-                                        //.backerNote() ??
-                                        .backerId(backer?.id() ?: 0 )
-                                        //.backerCompletedAt() ?? backerCompleted is a boolean
-                                        //.completedAt() --> ??
-                                        .id(backingGr.id().toLong())
-                                        .locationId(backingGr.location()?.id()?.toLong()) // TODO: need to encode this one??
-                                        .locationName(backingGr.location()?.countryName()) // TODO: is this field country or country name ??
-                                        .pledgedAt(backingGr.pledgedOn())
-                                        //.project() // TODO: Do I have to get the entire project???
-                                        .projectId(backingGr.id().toLong())
-                                        //.reward() // TODO: Do I have to get the entire reward???
-                                        //.rewardId(backingGr?.reward())
-                                        .sequence(backingGr.sequence()?.toLong() ?: 0) // TODO: ask what is this for
-                                        .shippingAmount(backingGr.shippingAmount()?.amount().toString().toFloat())
-                                        .status(backingGr.status().rawValue())
-                                        .build()
-
-                                // TODO: build the Backing object with the data
-                                Observable.just(backingGr)
-                                        .map { ba -> Backing.builder().amount(ba?.amount()?.amount().toString().toDouble()).build() }
+                                Observable.just(data.project()?.backing())
+                                        .map { backingObj -> createBackingObject(backingObj) }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()
@@ -312,7 +267,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             }
                         }
                     })
-
             return@defer ps
         }
     }
@@ -564,6 +518,41 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
+}
+
+fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {
+    val paymentGR = (backingGr?.paymentSource() as GetProjectBackingQuery.AsCreditCard)
+    val payment = Backing.PaymentSource.builder()
+            .state(paymentGR.state().toString())
+            .type(paymentGR.type().rawValue())
+            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
+            .id(paymentGR.id())
+            .expirationDate(paymentGR.expirationDate())
+            .lastFour(paymentGR.lastFour())
+            .build()
+
+    val name = backingGr.backer()?.name() ?: ""
+    val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
+    val locationId = decodeRelayId(backingGr.location()?.id()) ?: 0
+    val projectId = decodeRelayId(backingGr.id()) ?: 0
+    val backerId= decodeRelayId(backingGr.backer()?.id()) ?: 0
+
+    return Backing.builder()
+            .amount(backingGr.amount().amount().toString().toDouble())
+            .paymentSource(payment)
+            .backerId(backerId)
+            .backerUrl(backingGr.backer()?.imageUrl())
+            .backerName(name)
+            .id(id)
+            .locationId(locationId)
+            .locationName(backingGr.location()?.displayableName())
+            .pledgedAt(backingGr.pledgedOn())
+            .projectId(projectId)
+            .sequence(backingGr.sequence()?.toLong() ?: 0)
+            .shippingAmount(backingGr.shippingAmount()?.amount().toString().toFloat())
+            .status(backingGr.status().rawValue())
+            .cancelable(backingGr.cancelable())
+            .build()
 }
 
 fun <T : Relay> encodeRelayId(relay: T): String {

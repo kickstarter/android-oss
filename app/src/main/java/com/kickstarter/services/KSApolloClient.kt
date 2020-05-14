@@ -521,7 +521,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     }
 }
 
-fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {
+private fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {
     val paymentGR = (backingGr?.paymentSource() as GetProjectBackingQuery.AsCreditCard)
     val payment = Backing.PaymentSource.builder()
             .state(paymentGR.state().toString())

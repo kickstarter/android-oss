@@ -458,7 +458,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
                 .apolloClient(mockApolloClientForBacking(backing))
                 .build()
         setUpEnvironment(environment)
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.pledgeAmount.assertValue(expectedCurrency(environment, backedProject, 40.0))
     }
@@ -913,7 +914,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
                 .apolloClient(mockApolloClientForBacking(backing))
                 .build()
         setUpEnvironment(environment)
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.totalAmount.assertValue(expectedCurrency(environment, backedProject, amount))
     }

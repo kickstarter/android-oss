@@ -162,7 +162,7 @@ public interface BackingViewModel {
         .map(backerAndCurrentUser -> backerAndCurrentUser.first.id() != backerAndCurrentUser.second.id());
 
       final Observable<Backing> backing = Observable.combineLatest(project, initialBacker, Pair::create)
-        .switchMap(pb -> this.apolloClient.getProjectBacking(Objects.requireNonNull(pb.first.slug())))
+        .switchMap(pb -> this.client.fetchProjectBacking(pb.first, pb.second))
         .compose(neverError())
         .share();
 

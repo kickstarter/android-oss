@@ -29,6 +29,8 @@ public final class BackingFactory {
       .amount(10.0f)
       .backer(backer)
       .backerId(backer.id())
+      .backerName("Pikachu")
+      .backerUrl("www.avatars.com/medium.jpg")
       .cancelable(true)
       .id(IdFactory.id())
       .paymentSource(PaymentSourceFactory.Companion.visa())

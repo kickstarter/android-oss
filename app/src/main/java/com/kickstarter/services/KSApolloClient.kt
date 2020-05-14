@@ -30,6 +30,7 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState
+import type.CreditCardPaymentType
 import type.CurrencyCode
 import type.PaymentTypes
 import java.nio.charset.Charset
@@ -252,52 +253,53 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             this.service.query(GetProjectBackingQuery.builder()
                     .slug(slug).build())
                     .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
-                        override fun onParseError(e: ApolloParseException) {
-                            super.onParseError(e)
-                        }
                         override fun onFailure(e: ApolloException) {
                             ps.onError(e)
                         }
 
                         override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
                             response.data()?.let {data ->
-                                val backingGr = data.project()?.let { it?.let { it.backing() }}
+                                val backingGr = data.project()?.backing()
 
                                 val paymentGR = (backingGr?.paymentSource() as GetProjectBackingQuery.AsCreditCard)
                                 val payment = Backing.PaymentSource.builder()
                                         .state(paymentGR.state().toString())
-                                        .paymentType(paymentGR.type().toString()) // TODO: check
+                                        .type(paymentGR.type().rawValue())
+                                        .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
                                         .id(paymentGR.id())
-                                        //.expirationDate() --> this date do not have the parse error from the graph but in format Date! while pledgeOn is in DateTime
+                                        .expirationDate(paymentGR.expirationDate())
                                         .lastFour(paymentGR.lastFour())
                                         .build()
 
-                                val backer = User.builder()
-                                        .name(backingGr.backer()?.name())
-                                        .id(backingGr.backer()?.id()?.toLong()!!) // TODO: unwrap
-                                        .build()
+                                val name = backingGr.backer()?.name() ?: ""
+                                val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
 
+                                val backer = User.builder()
+                                        .name(name)
+                                        .id(id)
+                                        //.avatar() requires avatar, and I don't find that data, just backer {name,id}
+                                        .build()
 
                                 // TODO: create val location, reward
                                 val backing = Backing.builder()
-                                        .amount(backingGr?.amount()?.amount().toString().toDouble())
+                                        .amount(backingGr.amount().amount().toString().toDouble())
                                         .backer(backer)
                                         .paymentSource(payment)
                                         //.backerNote() ??
-                                        .backerId(backer.id())
-                                        //.backerCompletedAt() --> backedOn field crashing at parsing
+                                        .backerId(backer?.id() ?: 0 )
+                                        //.backerCompletedAt() ?? backerCompleted is a boolean
                                         //.completedAt() --> ??
-                                        .id(backingGr?.id().toLong())
-                                        //.locationId()
-                                        //.locationName()
-                                        //.pledgedAt()
-                                        //.project()
+                                        .id(backingGr.id().toLong())
+                                        .locationId(backingGr.location()?.id()?.toLong()) // TODO: need to encode this one??
+                                        .locationName(backingGr.location()?.countryName()) // TODO: is this field country or country name ??
+                                        .pledgedAt(backingGr.pledgedOn())
+                                        //.project() // TODO: Do I have to get the entire project???
                                         .projectId(backingGr.id().toLong())
-                                        //.reward()
-                                        //.rewardId()
-                                        //.sequence() // TODO: ask what is this for
-                                        //.shippingAmount()
-                                        //.status()
+                                        //.reward() // TODO: Do I have to get the entire reward???
+                                        //.rewardId(backingGr?.reward())
+                                        .sequence(backingGr.sequence()?.toLong() ?: 0) // TODO: ask what is this for
+                                        .shippingAmount(backingGr.shippingAmount()?.amount().toString().toFloat())
+                                        .status(backingGr.status().rawValue())
                                         .build()
 
                                 // TODO: build the Backing object with the data

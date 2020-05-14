@@ -16,6 +16,8 @@ query GetProjectBacking($slug: String!) {
       id
       status
       sequence
+      pledgedOn
+      backerCompleted
       shippingAmount {
         amount
         currency

@@ -7,10 +7,7 @@ import UpdateUserCurrencyMutation
 import UpdateUserEmailMutation
 import UpdateUserPasswordMutation
 import UserPrivacyQuery
-import com.kickstarter.mock.factories.CheckoutFactory
-import com.kickstarter.mock.factories.CreatorDetailsFactory
-import com.kickstarter.mock.factories.ErroredBackingFactory
-import com.kickstarter.mock.factories.StoredCardFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.*
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.mutations.CreateBackingData
@@ -22,9 +19,8 @@ import java.util.*
 
 open class MockApolloClient : ApolloClientType {
 
-    //TODO: improve
     override fun getProjectBacking(slug: String): Observable<Backing> {
-        TODO("Not yet implemented")
+        return Observable.just(BackingFactory.backing())
     }
 
     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {

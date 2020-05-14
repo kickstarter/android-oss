@@ -10,6 +10,7 @@ import java.util.Arrays;
 import androidx.annotation.NonNull;
 
 public final class RewardFactory {
+  public static final DateTime ESTIMATED_DELIVERY = DateTime.parse("2019-03-26T19:26:09Z");
   private RewardFactory() {}
 
   public static @NonNull Reward reward() {
@@ -19,7 +20,7 @@ public final class RewardFactory {
       .convertedMinimum(20.0)
       .id(IdFactory.id())
       .description(description)
-      .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
+      .estimatedDeliveryOn(ESTIMATED_DELIVERY)
       .minimum(20.0f)
       .shippingPreference("unrestricted")
       .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
@@ -96,7 +97,7 @@ public final class RewardFactory {
   public static @NonNull Reward multipleLocationShipping() {
     return reward().toBuilder()
       .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS)
-      .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
+      .estimatedDeliveryOn(ESTIMATED_DELIVERY)
       .build();
   }
 
@@ -104,7 +105,7 @@ public final class RewardFactory {
     return reward().toBuilder()
       .shippingPreference("unrestricted")
       .shippingType(Reward.SHIPPING_TYPE_ANYWHERE)
-      .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
+      .estimatedDeliveryOn(ESTIMATED_DELIVERY)
       .build();
   }
 
@@ -115,7 +116,7 @@ public final class RewardFactory {
         .id(IdFactory.id())
         .localizedName(localizedLocationName)
         .build())
-      .estimatedDeliveryOn(DateTime.parse("2019-03-26T19:26:09Z"))
+      .estimatedDeliveryOn(ESTIMATED_DELIVERY)
       .build();
   }
 

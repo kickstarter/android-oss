@@ -6,6 +6,7 @@ import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import ErroredBackingsQuery
+import GetProjectBackingQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -533,7 +534,7 @@ fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {
 
     val name = backingGr.backer()?.name() ?: ""
     val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
-    val locationId = decodeRelayId(backingGr.location()?.id()) ?: 0
+    val locationId = decodeRelayId(backingGr.location()?.id())
     val projectId = decodeRelayId(backingGr.id()) ?: 0
     val backerId= decodeRelayId(backingGr.backer()?.id()) ?: 0
 

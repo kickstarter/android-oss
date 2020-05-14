@@ -156,6 +156,7 @@ interface BackingFragmentViewModel {
         private val totalAmount = BehaviorSubject.create<CharSequence>()
 
         private val apiClient = this.environment.apiClient()
+        private val apolloClient = this.environment.apolloClient()
         private val currentUser = this.environment.currentUser()
         private val ksCurrency = this.environment.ksCurrency()
         val ksString: KSString = this.environment.ksString()
@@ -174,18 +175,18 @@ interface BackingFragmentViewModel {
                     .filter { it.isBacking }
 
             val backing = backedProject
-                    .map { it.backing() }
-                    .ofType(Backing::class.java)
+                    .switchMap { it.slug()?.let { slug -> this.apolloClient.getProjectBacking(slug) } }
+                    .compose(neverError())
+                    .share()
+                    .filter { ObjectUtils.isNotNull(it) }
 
-            val backer = this.currentUser.loggedInUser()
-
-            backer
-                    .map { it.name() }
+            backing
+                    .map { it.backerName() }
                     .compose(bindToLifecycle())
                     .subscribe(this.backerName)
 
-            backer
-                    .map { it.avatar().medium() }
+            backing
+                    .map { it.backerUrl() }
                     .compose(bindToLifecycle())
                     .subscribe(this.backerAvatar)
 

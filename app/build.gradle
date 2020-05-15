@@ -177,7 +177,8 @@ apollo {
     customTypeMapping = [
             "Date" : "java.util.Date",
             "Email": "java.lang.String",
-            "ISO8601DateTime" : "org.joda.time.DateTime"
+            "ISO8601DateTime" : "org.joda.time.DateTime",
+            "DateTime" : "org.joda.time.DateTime"
     ]
 }
 

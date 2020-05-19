@@ -63,7 +63,7 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), Editorial.LIGHTS_ON)
 
         val expectedParams = DiscoveryParams.builder()
-                .sort(DiscoveryParams.Sort.DISTANCE)
+                .sort(DiscoveryParams.Sort.MAGIC)
                 .tagId(557)
                 .build()
         this.discoveryParams.assertValue(expectedParams)

@@ -16,8 +16,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
                 .backedProjectsCount(10)
                 .build()
         val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
-        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", OptimizelyEnvironment.STAGING)
-        Log.i("Info", attributes["distinct_id"].toString() )
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", OptimizelyEnvironment.DEVELOPMENT)
         assertNotNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 10", attributes["session_os_version"])
@@ -49,8 +48,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
     @Test
     fun attributes_loggedOutUser_notProd() {
         val experimentData = ExperimentData(null, RefTag.discovery(), RefTag.search())
-        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", OptimizelyEnvironment.STAGING)
-        Log.i("Info", attributes["distinct_id"].toString() )
+        val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", OptimizelyEnvironment.DEVELOPMENT)
         assertNotNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 9", attributes["session_os_version"])

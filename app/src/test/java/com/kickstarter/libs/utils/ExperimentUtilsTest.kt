@@ -1,5 +1,6 @@
 package com.kickstarter.libs.utils
 
+import android.util.Log
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyEnvironment
@@ -16,6 +17,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
                 .build()
         val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
         val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", OptimizelyEnvironment.STAGING)
+        Log.i("Info", attributes["distinct_id"].toString() )
         assertNotNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 10", attributes["session_os_version"])
@@ -48,6 +50,7 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
     fun attributes_loggedOutUser_notProd() {
         val experimentData = ExperimentData(null, RefTag.discovery(), RefTag.search())
         val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "9", OptimizelyEnvironment.STAGING)
+        Log.i("Info", attributes["distinct_id"].toString() )
         assertNotNull(attributes["distinct_id"])
         assertEquals("9.9.9", attributes["session_app_release_version"])
         assertEquals("Android 9", attributes["session_os_version"])

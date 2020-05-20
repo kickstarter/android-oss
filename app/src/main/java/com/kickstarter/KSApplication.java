@@ -55,7 +55,7 @@ public class KSApplication extends MultiDexApplication {
     component().inject(this);
 
     FirebaseApp.initializeApp(this);
-//    FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true);
+    FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true);
 
     if (!isInUnitTests()) {
       setVisitorCookie();

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
@@ -47,6 +48,7 @@ public class KSApplication extends MultiDexApplication {
 
     JodaTimeAndroid.init(this);
     Fabric.with(this, new Crashlytics());
+    FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true);
 
     this.component = DaggerApplicationComponent.builder()
       .applicationModule(new ApplicationModule(this))

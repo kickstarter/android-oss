@@ -1,6 +1,5 @@
 package com.kickstarter.libs.utils
 
-import android.util.Log
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyEnvironment

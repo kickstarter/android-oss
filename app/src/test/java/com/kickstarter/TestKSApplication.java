@@ -9,7 +9,7 @@ public class TestKSApplication extends KSApplication {
   public void onCreate() {
     super.onCreate();
 
-    FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
+    //FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
     FacebookSdk.sdkInitialize(this);
   }
 

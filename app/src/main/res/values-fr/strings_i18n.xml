@@ -252,7 +252,7 @@ contributeurs</string>
   <string name="Happening_newsletter" formatted="false">Inscrivez-vous pour recevoir une sélection de nouveaux projets, de témoignages et d\'inspiration visuelle, une fois par semaine (et parfois deux).</string>
   <string name="Help" formatted="false">Aide</string>
   <string name="Help_center" formatted="false">Centre d\'aide</string>
-  <string name="Help_local_businesses_keep_the_lights" formatted="false">Help local businesses keep the lights on during COVID-19 closures.</string>
+  <string name="Help_local_businesses_keep_the_lights" formatted="false">À l\'ère du COVID-19, les entreprises de votre région ont besoin de vous pour survire.</string>
   <string name="Hide_password" formatted="false">Masquer le mot de passe</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="How_backers_found_your_project" formatted="false">Comment les contributeurs ont découvert votre projet</string>
@@ -268,7 +268,7 @@ contributeurs</string>
   <string name="Individual_Emails" formatted="false">E-mails individuels</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Présentez-vous ici.</string>
-  <string name="Introducing_Lights_On" formatted="false">Introducing Lights On</string>
+  <string name="Introducing_Lights_On" formatted="false">Voici Lueurs d\'espoir</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Notre plateforme est un moyen de faire vivre des projets créatifs. &lt;a href="%{trust_link}">En savoir plus sur la notion de responsabilité&lt;/a></string>
@@ -513,7 +513,7 @@ n\'ont rien soutenu.</string>
   <string name="Ships_worldwide" formatted="false">Livraison dans le monde entier</string>
   <string name="Show_me_projects" formatted="false">Montrez-moi des projets</string>
   <string name="Show_password" formatted="false">Afficher le mot de passe</string>
-  <string name="Show_up_for_the_spaces_you_love" formatted="false">Show up for the spaces you love</string>
+  <string name="Show_up_for_the_spaces_you_love" formatted="false">Soutenez vos espaces culturels préférés.</string>
   <string name="Shows_list_of_subcategories" formatted="false">Affiche la liste des sous-catégories.</string>
   <string name="Sign_up" formatted="false">Inscription</string>
   <string name="Sign_up_newsletter" formatted="false">Inscrivez-vous à Coups de cœur pour recevoir une sélection hebdomadaire de projets marquants qui nous ont plu.</string>
@@ -534,7 +534,7 @@ n\'ont rien soutenu.</string>
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Abonnement aux diffusions en direct à venir.</string>
   <string name="Successful_projects_have_been_created_on_kickstarter" formatted="false">Le nombre total de projets intégralement financés sur Kickstarter.</string>
   <string name="Support_creative_independence" formatted="false">Soutenez l\'indépendance créative</string>
-  <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">Support creative spaces and businesses affected by COVID-19. See projects near you. ▸</string>
+  <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">Les entreprises et les espaces créatifs touchés par le COVID-19 ont besoin de vous. Découvrez les projets de votre région. ▸</string>
   <string name="Survey" formatted="false">Questionnaire</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">Cliquez sur l\'icône en forme de cœur située à côté du projet pour recevoir une notification 48 avant la fin de la campagne.</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">Cliquez sur le cœur qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>

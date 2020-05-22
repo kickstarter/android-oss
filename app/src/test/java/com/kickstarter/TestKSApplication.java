@@ -7,7 +7,6 @@ public class TestKSApplication extends KSApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-
     FacebookSdk.sdkInitialize(this);
   }
 

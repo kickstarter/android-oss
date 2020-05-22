@@ -250,7 +250,7 @@
   <string name="Happening_newsletter" formatted="false">新しいプロジェクトや、感動的なストーリー、視覚的なインスピレーションなどが週に1回 (時には2回) 届くニュースレターにサインアップしましょう。</string>
   <string name="Help" formatted="false">ヘルプ</string>
   <string name="Help_center" formatted="false">ヘルプセンター</string>
-  <string name="Help_local_businesses_keep_the_lights" formatted="false">Help local businesses keep the lights on during COVID-19 closures.</string>
+  <string name="Help_local_businesses_keep_the_lights" formatted="false">新型コロナウイルス感染症(COVID- 19)の影響により休業を強いられた地元のビジネスを支援しましょう。</string>
   <string name="Hide_password" formatted="false">パスワードを非表示にする</string>
   <string name="Home" formatted="false">ホーム</string>
   <string name="How_backers_found_your_project" formatted="false">バッカ―があなたのプロジェクトを見つけた経緯</string>
@@ -266,7 +266,7 @@
   <string name="Individual_Emails" formatted="false">個人メール</string>
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
-  <string name="Introducing_Lights_On" formatted="false">Introducing Lights On</string>
+  <string name="Introducing_Lights_On" formatted="false">新企画「Lights On」</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトを実現するためのプラットフォームです。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">クリエイティブなプロジェクトに生命を吹き込む場です。&lt;a href="%{trust_link}">アカウンタビリティについて詳しくみる。&lt;/a></string>
@@ -511,7 +511,7 @@
   <string name="Ships_worldwide" formatted="false">世界各地へ配送</string>
   <string name="Show_me_projects" formatted="false">プロジェクトを表示</string>
   <string name="Show_password" formatted="false">パスワードを表示する</string>
-  <string name="Show_up_for_the_spaces_you_love" formatted="false">Show up for the spaces you love</string>
+  <string name="Show_up_for_the_spaces_you_love" formatted="false">お気に入りの場所や団体のためにできること</string>
   <string name="Shows_list_of_subcategories" formatted="false">サブカテゴリーリストを見せる。</string>
   <string name="Sign_up" formatted="false">サインアップ。</string>
   <string name="Sign_up_newsletter" formatted="false">Projects We Love に登録して、私たち Kickstarter チームが選別した注目プロジェクトに関する情報を週に1度受け取りましょう。</string>
@@ -532,7 +532,7 @@
   <string name="Subscribes_to_upcoming_lives_streams" formatted="false">ライブ配信を購読</string>
   <string name="Successful_projects_have_been_created_on_kickstarter" formatted="false">のプロジェクトが Kickstarter で作成されました。</string>
   <string name="Support_creative_independence" formatted="false">クリエイティブな独立プロジェクトをサポートしよう</string>
-  <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">Support creative spaces and businesses affected by COVID-19. See projects near you. ▸</string>
+  <string name="Support_creative_spaces_and_businesses_affected_by" formatted="false">コロナ禍に影響を受けた文化スペースやクリエイティブなビジネスたちをサポートしましょう。近辺のプロジェクトを表示 ▸ </string>
   <string name="Survey" formatted="false">サーベイ</string>
   <string name="Tap_the_heart_on_a_project_to_get_notified" formatted="false">終了48時間前に知らせるにはハートのアイコンをタップ！</string>
   <string name="Tap_the_heart_on_each_project_page_to_save_it" formatted="false">ハートのアイコンを押して保存しましょう。終了48時間前に通知が届きます。</string>

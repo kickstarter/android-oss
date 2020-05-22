@@ -204,11 +204,13 @@ dependencies {
     implementation("com.crashlytics.sdk.android:crashlytics:2.10.1@aar") {
         transitive = true
     }
+    // Google Analytics SDK
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.1'
     implementation 'com.facebook.android:facebook-android-sdk:5.2.0'
     final auto_parcel_version = "0.3.1"
     implementation "com.github.frankiesardo:auto-parcel:$auto_parcel_version"
     kapt "com.github.frankiesardo:auto-parcel-processor:$auto_parcel_version"
-    implementation "com.google.firebase:firebase-messaging:19.0.1"
+    implementation "com.google.firebase:firebase-messaging:20.1.7"
     implementation "com.google.android.gms:play-services-wallet:18.0.0"
     implementation "com.google.android.exoplayer:exoplayer:2.10.2"
     implementation 'com.google.android:flexbox:1.1.0'

@@ -107,6 +107,32 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun getBacking(backingId: String): Observable<Backing> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Backing>()
+
+            this.service.query(GetBackingQuery.builder()
+                    .backingId("96021967").build())
+                    .enqueue(object : ApolloCall.Callback<GetBackingQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetBackingQuery.Data>) {
+                            response.data()?.let {data ->
+                                Observable.just(data.backing())
+                                        .map { backingObj -> createBackingObject(backingObj) }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
     override fun clearUnseenActivity(): Observable<Int> {
         return Observable.defer {
             val ps = PublishSubject.create<Int>()
@@ -250,6 +276,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Observable.defer {
             val ps = PublishSubject.create<Backing>()
 
+            //TODO
+            this.service.query(GetBackingQuery.builder()
+                    .backingId("96021967").build())
             this.service.query(GetProjectBackingQuery.builder()
                     .slug(slug).build())
                     .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
@@ -519,6 +548,40 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
+}
+private fun createBackingObject(backingGr: GetBackingQuery.Backing?): Backing {
+    val paymentGR = (backingGr?.paymentSource() as GetBackingQuery.AsCreditCard)
+    val payment = Backing.PaymentSource.builder()
+            .state(paymentGR.state().toString())
+            .type(paymentGR.type().rawValue())
+            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
+            .id(paymentGR.id())
+            .expirationDate(paymentGR.expirationDate())
+            .lastFour(paymentGR.lastFour())
+            .build()
+
+    val name = backingGr.backer()?.name() ?: ""
+    val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
+    val locationId = decodeRelayId(backingGr.location()?.id())
+    val projectId = decodeRelayId(backingGr.id()) ?: 0
+    val backerId= decodeRelayId(backingGr.backer()?.id()) ?: 0
+
+    return Backing.builder()
+            .amount(backingGr.amount().amount().toString().toDouble())
+            .paymentSource(payment)
+            .backerId(backerId)
+            .backerUrl(backingGr.backer()?.imageUrl())
+            .backerName(name)
+            .id(id)
+            .locationId(locationId)
+            .locationName(backingGr.location()?.displayableName())
+            .pledgedAt(backingGr.pledgedOn())
+            .projectId(projectId)
+            .sequence(backingGr.sequence()?.toLong() ?: 0)
+            .shippingAmount(backingGr.shippingAmount()?.amount().toString().toFloat())
+            .status(backingGr.status().rawValue())
+            .cancelable(backingGr.cancelable())
+            .build()
 }
 
 private fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {

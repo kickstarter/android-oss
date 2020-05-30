@@ -152,6 +152,9 @@ public interface BackingViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class);
 
+      final Observable<Backing> backing = intent()
+              .map(i -> i.getParcelableExtra(IntentKey.BACKING));
+
       final Observable<Boolean> isFromMessagesActivity = intent()
         .map(i -> i.getBooleanExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, false))
         .ofType(Boolean.class);
@@ -159,11 +162,6 @@ public interface BackingViewModel {
       final Observable<Boolean> isCreator = initialBacker
         .compose(combineLatestPair(loggedInUser))
         .map(backerAndCurrentUser -> backerAndCurrentUser.first.id() != backerAndCurrentUser.second.id());
-
-      final Observable<Backing> backing = Observable.combineLatest(project, initialBacker, Pair::create)
-        .switchMap(pb -> this.client.fetchProjectBacking(pb.first, pb.second))
-        .compose(neverError())
-        .share();
 
       final Observable<User> backer = backing
         .map(Backing::backer);

@@ -152,7 +152,7 @@ public interface BackingViewModel {
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class);
 
-      final Observable<Backing> backing = intent()
+      final Observable<Backing> backingInfo = intent()
               .map(i -> i.getParcelableExtra(IntentKey.BACKING));
 
       final Observable<Boolean> isFromMessagesActivity = intent()
@@ -163,6 +163,11 @@ public interface BackingViewModel {
         .compose(combineLatestPair(loggedInUser))
         .map(backerAndCurrentUser -> backerAndCurrentUser.first.id() != backerAndCurrentUser.second.id());
 
+      final Observable<Backing> backing = Observable.combineLatest(project, backingInfo, Pair::create)
+        .switchMap(pb -> this.apolloClient.getBacking(pb.second.id()+""))
+        .compose(neverError())
+        .share();
+
       final Observable<User> backer = backing
         .map(Backing::backer);
 
@@ -170,8 +175,8 @@ public interface BackingViewModel {
         .filter(BackingUtils::isShippable);
 
       final Observable<Reward> reward = backing
-        .map(Backing::reward)
-        .filter(ObjectUtils::isNotNull);
+              .map(Backing::reward)
+              .filter(ObjectUtils::isNotNull);
 
       final Observable<String> status = backing
         .map(Backing::status);

@@ -27,6 +27,7 @@ import com.kickstarter.models.*
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState
@@ -112,7 +113,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<Backing>()
 
             this.service.query(GetBackingQuery.builder()
-                    .backingId("96021967").build())
+                    .backingId(backingId).build())
                     .enqueue(object : ApolloCall.Callback<GetBackingQuery.Data>() {
                         override fun onFailure(e: ApolloException) {
                             ps.onError(e)
@@ -121,7 +122,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         override fun onResponse(response: Response<GetBackingQuery.Data>) {
                             response.data()?.let {data ->
                                 Observable.just(data.backing())
-                                        .map { backingObj -> createBackingObject(backingObj) }
+                                        .map { backingObj -> backingObjectFromId(backingObj) }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()
@@ -276,9 +277,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         return Observable.defer {
             val ps = PublishSubject.create<Backing>()
 
-            //TODO
-            this.service.query(GetBackingQuery.builder()
-                    .backingId("96021967").build())
             this.service.query(GetProjectBackingQuery.builder()
                     .slug(slug).build())
                     .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
@@ -549,38 +547,54 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 }
-private fun createBackingObject(backingGr: GetBackingQuery.Backing?): Backing {
-    val paymentGR = (backingGr?.paymentSource() as GetBackingQuery.AsCreditCard)
-    val payment = Backing.PaymentSource.builder()
-            .state(paymentGR.state().toString())
-            .type(paymentGR.type().rawValue())
-            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
-            .id(paymentGR.id())
-            .expirationDate(paymentGR.expirationDate())
-            .lastFour(paymentGR.lastFour())
+private fun backingObjectFromId(backingGr: GetBackingQuery.Backing?): Backing {
+
+    val name = backingGr?.backer()?.name() ?: ""
+    val id = decodeRelayId(backingGr?.id())?.let { it } ?: 0
+    val locationId = decodeRelayId(backingGr?.location()?.id())
+    val projectId = decodeRelayId(backingGr?.id()) ?: 0
+    val backerId = decodeRelayId(backingGr?.backer()?.id()) ?: 0
+    val rewardId = decodeRelayId(backingGr?.reward()?.id()) ?: 0
+    val avatar = Avatar.builder()
+            .medium(backingGr?.backer()?.imageUrl())
+            .build()
+    val rewardAmount = backingGr?.reward()?.amount()?.amount()?.toDouble()
+    val rewardSingleLocation = Reward.SingleLocation.builder()
+            .localizedName(backingGr?.location()?.displayableName())
+            .id(decodeRelayId(backingGr?.location()?.id())?.toLong()?: 0)
             .build()
 
-    val name = backingGr.backer()?.name() ?: ""
-    val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
-    val locationId = decodeRelayId(backingGr.location()?.id())
-    val projectId = decodeRelayId(backingGr.id()) ?: 0
-    val backerId= decodeRelayId(backingGr.backer()?.id()) ?: 0
+    val reward = Reward.builder()
+            .minimum(rewardAmount?: 0.0)
+            .description(backingGr?.reward()?.description())
+            .estimatedDeliveryOn(DateTime(backingGr?.reward()?.estimatedDeliveryOn()))
+            .convertedMinimum(rewardAmount ?: 0.0)
+            .shippingSingleLocation(rewardSingleLocation)
+            .id(rewardId)
+            .build()
+
+    val backer = User.builder()
+            .id(id)
+            .name(name)
+            .avatar(avatar)
+            .build()
 
     return Backing.builder()
-            .amount(backingGr.amount().amount().toString().toDouble())
-            .paymentSource(payment)
+            .amount(backingGr?.amount()?.amount().toString().toDouble())
             .backerId(backerId)
-            .backerUrl(backingGr.backer()?.imageUrl())
+            .backerUrl(avatar.medium())
             .backerName(name)
-            .id(id)
+            .reward(reward)
+            .id(backerId)
+            .backer(backer)
             .locationId(locationId)
-            .locationName(backingGr.location()?.displayableName())
-            .pledgedAt(backingGr.pledgedOn())
+            .locationName(backingGr?.location()?.displayableName())
+            .pledgedAt(backingGr?.pledgedOn())
             .projectId(projectId)
-            .sequence(backingGr.sequence()?.toLong() ?: 0)
-            .shippingAmount(backingGr.shippingAmount()?.amount().toString().toFloat())
-            .status(backingGr.status().rawValue())
-            .cancelable(backingGr.cancelable())
+            .sequence(backingGr?.sequence()?.toLong() ?: 0)
+            .shippingAmount(backingGr?.shippingAmount()?.amount().toString().toFloat())
+            .status(backingGr?.status()?.rawValue())
+            .cancelable(backingGr?.let { it.cancelable() }?: false)
             .build()
 }
 

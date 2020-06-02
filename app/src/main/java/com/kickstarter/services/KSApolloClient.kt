@@ -123,6 +123,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             response.data()?.let {data ->
                                 Observable.just(data.backing())
                                         .map { backingObj -> backingObjectFromId(backingObj) }
+                                        .filter { ObjectUtils.isNotNull(it) }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()
@@ -561,7 +562,7 @@ private fun backingObjectFromId(backingGr: GetBackingQuery.Backing?): Backing {
     val rewardAmount = backingGr?.reward()?.amount()?.amount()?.toDouble()
     val rewardSingleLocation = Reward.SingleLocation.builder()
             .localizedName(backingGr?.location()?.displayableName())
-            .id(decodeRelayId(backingGr?.location()?.id())?.toLong()?: 0)
+            .id(decodeRelayId(backingGr?.location()?.id())?: 0)
             .build()
 
     val reward = Reward.builder()

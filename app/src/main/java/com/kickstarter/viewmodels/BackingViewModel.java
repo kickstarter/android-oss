@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.BackingWrapper;
 import com.kickstarter.models.Project;
@@ -50,8 +51,9 @@ public interface BackingViewModel {
 
       final Observable<Backing> backing = Observable.combineLatest(project, backingInfo, Pair::create)
         .switchMap(pb -> this.apolloClient.getBacking(Long.toString(pb.second.id())))
-        .compose(neverError())
-        .share();
+        .distinctUntilChanged()
+        .filter(bk -> ObjectUtils.isNotNull(bk))
+        .compose(neverError());
 
       Observable.combineLatest(backing, project,loggedInUser, this::createWrapper)
               .subscribe(this.backingWrapper::onNext);

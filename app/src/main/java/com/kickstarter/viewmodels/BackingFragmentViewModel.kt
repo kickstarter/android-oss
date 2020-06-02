@@ -171,18 +171,13 @@ interface BackingFragmentViewModel {
 
             val backedProject = this.projectDataInput
                     .map { it.project() }
-                    .filter { it.isBacking }
 
-            val backingInfo = this.projectDataInput
-                    .filter { ObjectUtils.isNotNull(it.backing()) }
-                    .map { it.backing() }
-
-            val backing = backedProject
-                    .compose<Pair<Project, Backing?>>(combineLatestPair(backingInfo))
+            val backing = this.projectDataInput
                     .switchMap { getBackingInfo(it) }
+                    .distinctUntilChanged()
                     .compose(neverError())
-                    .share()
                     .filter { ObjectUtils.isNotNull(it) }
+                    .share()
 
             backing
                     .map { it.backerName() }
@@ -361,12 +356,11 @@ interface BackingFragmentViewModel {
                     .subscribe(this.swipeRefresherProgressIsVisible)
         }
 
-        private fun getBackingInfo(it: Pair<Project, Backing?>): Observable<Backing> {
-            val slug = it?.first?.slug() ?: ""
-            return if (it?.second != null) {
-                this.apolloClient.getProjectBacking(slug)
+        private fun getBackingInfo(it: ProjectData): Observable<Backing> {
+            return if (it.backing() == null) {
+                this.apolloClient.getProjectBacking(it.project().slug()?:"")
             } else {
-                this.apolloClient.getBacking(it?.second?.id().toString())
+                Observable.just(it.backing())
             }
         }
 

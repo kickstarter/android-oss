@@ -13,6 +13,7 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
+import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -168,6 +169,14 @@ interface BackingFragmentViewModel {
             this.pledgeSuccessfullyCancelled
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledgeSuccess)
+
+            /*val projectDataFromIntent = arguments()
+                    .map { it.getParcelable(ArgumentsKey.BACKING_FRAGMENT) as ProjectData? }
+                    .ofType(ProjectData::class.java)
+
+            projectDataFromIntent.compose(combineLatestPair<ProjectData, ProjectData>(this.projectDataInput))
+                    .map { if (it.first == null) it.second else it.first }
+                    .subscribe(this.projectDataInput)*/
 
             val backedProject = this.projectDataInput
                     .map { it.project() }

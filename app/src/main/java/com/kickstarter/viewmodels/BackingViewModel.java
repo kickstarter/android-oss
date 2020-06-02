@@ -54,13 +54,13 @@ public interface BackingViewModel {
         .filter(bk -> ObjectUtils.isNotNull(bk))
         .compose(neverError());
 
-      Observable.combineLatest(backing, project,loggedInUser, this::createWrapper)
+      Observable.combineLatest(backing, project, loggedInUser, this::createWrapper)
               .subscribe(this.backingWrapper::onNext);
     }
 
     public final Outputs outputs = this;
 
-    private BackingWrapper createWrapper(Backing backing, Project project, User currentUser) {
+    private BackingWrapper createWrapper(final Backing backing, final Project project, final User currentUser) {
       return new BackingWrapper(backing, currentUser, project);
     }
 

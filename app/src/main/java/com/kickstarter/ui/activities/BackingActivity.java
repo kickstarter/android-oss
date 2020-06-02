@@ -25,8 +25,8 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
             .subscribe(this::startBackingFragment);
   }
 
-  private void startBackingFragment(BackingWrapper backingWrapper) {
-    ProjectData data = ProjectData.Companion.builder()
+  private void startBackingFragment(final BackingWrapper backingWrapper) {
+    final ProjectData data = ProjectData.Companion.builder()
             .project(backingWrapper.getProject())
             .backing(backingWrapper.getBacking())
             .user(backingWrapper.getUser())

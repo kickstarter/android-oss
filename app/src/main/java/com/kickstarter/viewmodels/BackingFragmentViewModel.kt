@@ -190,8 +190,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.backerAvatar)
 
             this.projectDataInput
-                    .filter { it.project().isBacking }
-                    .map { projectData -> BackingUtils.backedReward(projectData.project())?.let { Pair(projectData, it) } }
+                    .map { projectData -> joinProjectDataAndReward(projectData) }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectDataAndReward)
 
@@ -362,6 +361,15 @@ interface BackingFragmentViewModel {
             } else {
                 Observable.just(it.backing())
             }
+        }
+
+        private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
+            val reward = projectData.backing()?.let {
+                it.reward()
+            }?: BackingUtils.backedReward(projectData.project())
+            ?: Reward.builder().build()
+
+            return Pair(projectData,reward)
         }
 
         private fun cardIssuer(paymentSource: Backing.PaymentSource) : Either<String, Int> {

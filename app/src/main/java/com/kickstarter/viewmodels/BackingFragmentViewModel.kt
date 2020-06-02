@@ -13,7 +13,6 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.StoredCard
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -170,20 +169,17 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledgeSuccess)
 
-            /*val projectDataFromIntent = arguments()
-                    .map { it.getParcelable(ArgumentsKey.BACKING_FRAGMENT) as ProjectData? }
-                    .ofType(ProjectData::class.java)
-
-            projectDataFromIntent.compose(combineLatestPair<ProjectData, ProjectData>(this.projectDataInput))
-                    .map { if (it.first == null) it.second else it.first }
-                    .subscribe(this.projectDataInput)*/
-
             val backedProject = this.projectDataInput
                     .map { it.project() }
                     .filter { it.isBacking }
 
+            val backingInfo = this.projectDataInput
+                    .filter { ObjectUtils.isNotNull(it.backing()) }
+                    .map { it.backing() }
+
             val backing = backedProject
-                    .switchMap { it.slug()?.let { slug -> this.apolloClient.getProjectBacking(slug) } }
+                    .compose<Pair<Project, Backing?>>(combineLatestPair(backingInfo))
+                    .switchMap { getBackingInfo(it) }
                     .compose(neverError())
                     .share()
                     .filter { ObjectUtils.isNotNull(it) }
@@ -363,6 +359,15 @@ interface BackingFragmentViewModel {
                     .map { false }
                     .compose(bindToLifecycle())
                     .subscribe(this.swipeRefresherProgressIsVisible)
+        }
+
+        private fun getBackingInfo(it: Pair<Project, Backing?>): Observable<Backing> {
+            val slug = it?.first?.slug() ?: ""
+            return if (it?.second != null) {
+                this.apolloClient.getProjectBacking(slug)
+            } else {
+                this.apolloClient.getBacking(it?.second?.id().toString())
+            }
         }
 
         private fun cardIssuer(paymentSource: Backing.PaymentSource) : Either<String, Int> {

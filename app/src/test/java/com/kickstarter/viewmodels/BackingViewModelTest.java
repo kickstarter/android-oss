@@ -63,7 +63,7 @@ public final class BackingViewModelTest extends KSRobolectricTestCase {
         new MockApolloClient() {
           @NotNull
           @Override
-          public Observable<Backing> getBacking(@NotNull String backingId) {
+          public Observable<Backing> getBacking(final @NotNull String backingId) {
             return Observable.just(backing);
           }
         }

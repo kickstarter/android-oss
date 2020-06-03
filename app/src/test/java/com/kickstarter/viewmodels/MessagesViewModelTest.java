@@ -550,7 +550,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
       @NonNull
       @Override
-      public Observable<Backing> fetchProjectBacking(@NonNull Project project, @NonNull User user) {
+      public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
         return Observable.just(backing);
       }
     };

@@ -18,6 +18,7 @@ import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Backing;
+import com.kickstarter.models.BackingWrapper;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
@@ -54,7 +55,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Boolean> sendMessageButtonIsEnabled = new TestSubscriber<>();
   private final TestSubscriber<String> setMessageEditText = new TestSubscriber<>();
   private final TestSubscriber<String> showMessageErrorToast = new TestSubscriber<>();
-  private final TestSubscriber<Pair<Project, User>> startBackingActivity = new TestSubscriber<>();
+  private final TestSubscriber<BackingWrapper> startBackingActivity = new TestSubscriber<>();
   private final TestSubscriber<Void> successfullyMarkedAsRead = new TestSubscriber<>();
   private final TestSubscriber<Boolean> toolbarIsExpanded = new TestSubscriber<>();
   private final TestSubscriber<Boolean> viewPledgeButtonIsGone = new TestSubscriber<>();
@@ -474,6 +475,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
   public void testStartBackingActivity_AsBacker() {
     final User user = UserFactory.user();
     final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
+    final Backing backing = BackingFactory.backing();
 
     final MessageThread messageThread = MessageThreadFactory.messageThread()
       .toBuilder()
@@ -494,16 +496,17 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(user)).build());
 
-    this.vm.intent(backerModalContextIntent(BackingFactory.backing(), project));
+    this.vm.intent(backerModalContextIntent(backing, project));
     this.vm.inputs.viewPledgeButtonClicked();
 
-    this.startBackingActivity.assertValues(Pair.create(project, user));
+    this.startBackingActivity.assertValues(new BackingWrapper(backing, user, project));
   }
 
   @Test
   public void testStartBackingActivity_AsBacker_EmptyThread() {
     final User user = UserFactory.user();
     final Project project = ProjectFactory.project().toBuilder().isBacking(true).build();
+    final Backing backing = BackingFactory.backing();
 
     final MockApiClient apiClient = new MockApiClient() {
       @Override
@@ -514,20 +517,22 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(user)).build());
 
-    this.vm.intent(creatorBioModalContextIntent(BackingFactory.backing(), project));
+    this.vm.intent(creatorBioModalContextIntent(backing, project));
     this.vm.inputs.viewPledgeButtonClicked();
 
-    this.startBackingActivity.assertValues(Pair.create(project, user));
+    this.startBackingActivity.assertValues(new BackingWrapper(backing, user, project));
   }
 
   @Test
   public void testStartBackingActivity_AsCreator() {
     final User backer = UserFactory.user().toBuilder().name("Vanessa").build();
     final User creator = UserFactory.user().toBuilder().name("Jessica").build();
+    final Backing backing = BackingFactory.backing();
     final Project project = ProjectFactory.project().toBuilder().creator(creator).build();
 
     final MessageThread messageThread = MessageThreadFactory.messageThread()
       .toBuilder()
+      .backing(backing)
       .participant(backer)
       .project(project)
       .build();
@@ -542,6 +547,12 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
       public @NonNull Observable<MessageThreadEnvelope> fetchMessagesForThread(final @NonNull MessageThread messageThread) {
         return Observable.just(messageThreadEnvelope);
       }
+
+      @NonNull
+      @Override
+      public Observable<Backing> fetchProjectBacking(@NonNull Project project, @NonNull User user) {
+        return Observable.just(backing);
+      }
     };
 
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).currentUser(new MockCurrentUser(creator)).build());
@@ -549,7 +560,7 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(messagesContextIntent(messageThread));
     this.vm.inputs.viewPledgeButtonClicked();
 
-    this.startBackingActivity.assertValues(Pair.create(project, backer));
+    this.startBackingActivity.assertValues(new BackingWrapper(messageThread.backing(), backer, project));
   }
 
   @Test

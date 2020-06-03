@@ -52,15 +52,6 @@ query GetBacking($backingId: ID!) {
       currency
       symbol
     }
-    paymentSource {
-      ... on CreditCard {
-        state
-        id
-        lastFour
-        expirationDate
-        type
-      }
-    }
     shippingAmount {
       amount
     }

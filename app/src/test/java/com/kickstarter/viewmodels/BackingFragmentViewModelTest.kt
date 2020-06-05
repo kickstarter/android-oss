@@ -6,8 +6,9 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -16,9 +17,11 @@ import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.model.Card
 import org.joda.time.DateTime
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
+import java.math.RoundingMode
 
-class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
+class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: BackingFragmentViewModel.ViewModel
 
     private val backerAvatar = TestSubscriber.create<String>()
@@ -78,34 +81,27 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
     @Test
     fun testBackerAvatar() {
-        val user = UserFactory.user()
-                .toBuilder()
-                .avatar(AvatarFactory.avatar("www.avatars.com/"))
-                .build()
         val environment = environment()
                 .toBuilder()
-                .currentUser(MockCurrentUser(user))
+                .apolloClient(mockApolloClientForBacking(BackingFactory.backing()))
                 .build()
-        setUpEnvironment(environment)
 
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+
         this.backerAvatar.assertValue("www.avatars.com/medium.jpg")
     }
 
     @Test
     fun testBackerName() {
-        val user = UserFactory.user()
-                .toBuilder()
-                .name("Nathan Squid")
-                .build()
         val environment = environment()
                 .toBuilder()
-                .currentUser(MockCurrentUser(user))
+                .apolloClient(mockApolloClientForBacking(BackingFactory.backing()))
                 .build()
         setUpEnvironment(environment)
-
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
-        this.backerName.assertValue("Nathan Squid")
+
+        this.backerName.assertValue("Pikachu")
     }
 
     @Test
@@ -114,14 +110,13 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .sequence(15L)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
+
+        val environment = environment().toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.backerNumber.assertValue("15")
     }
 
@@ -136,14 +131,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardExpiration.assertValue("08/2019")
     }
 
@@ -153,14 +148,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(null)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(true)
     }
 
@@ -171,14 +166,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(false)
     }
 
@@ -189,14 +184,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(false)
     }
 
@@ -207,14 +202,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(false)
     }
 
@@ -225,14 +220,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.paymentMethodIsGone.assertValue(true)
     }
 
@@ -243,14 +238,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardLogo.assertValue(R.drawable.apple_pay_mark)
     }
 
@@ -261,14 +256,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardLogo.assertValue(R.drawable.google_pay_mark)
     }
 
@@ -279,14 +274,15 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardLogo.assertValue(R.drawable.visa_md)
     }
 
@@ -297,14 +293,16 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardIssuer.assertValue(Either.Right(R.string.apple_pay_content_description))
     }
 
@@ -315,14 +313,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardIssuer.assertValue(Either.Right(R.string.googlepay_button_content_description))
     }
 
@@ -333,76 +331,102 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .paymentSource(paymentSource)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.cardIssuer.assertValue(Either.Left(Card.CardBrand.VISA))
     }
 
     @Test
     fun testFixPaymentMethodButtonIsGone_whenBackingIsErrored() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_ERRORED)
+        val backing = backingWithStatus(Backing.STATUS_ERRORED)
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.fixPaymentMethodButtonIsGone.assertValue(false)
     }
 
     @Test
     fun testFixPaymentMethodButtonIsGone_whenBackingIsNotErrored() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
+        val backing = backingWithStatus(Backing.STATUS_COLLECTED)
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.fixPaymentMethodButtonIsGone.assertValue(true)
     }
 
     @Test
     fun testFixPaymentMethodMessageIsGone_whenBackingIsErrored() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_ERRORED)
+        val backing = backingWithStatus(Backing.STATUS_ERRORED)
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.fixPaymentMethodMessageIsGone.assertValue(false)
     }
 
     @Test
     fun testFixPaymentMethodMessageIsGone_whenBackingIsNotErrored() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
+        val backing = backingWithStatus(Backing.STATUS_COLLECTED)
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.fixPaymentMethodMessageIsGone.assertValue(true)
     }
 
     @Test
     fun testNotifyDelegateToRefreshProject() {
-        setUpEnvironment(environment())
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(BackingFactory.backing()))
+                .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.vm.inputs.refreshProject()
         this.notifyDelegateToRefreshProject.assertValueCount(1)
@@ -410,7 +434,12 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
     @Test
     fun testNotifyDelegateToShowFixPledge() {
-        setUpEnvironment(environment())
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(BackingFactory.backing()))
+                .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.vm.inputs.fixPaymentMethodButtonClicked()
         this.notifyDelegateToShowFixPledge.assertValueCount(1)
@@ -423,15 +452,16 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .amount(50.0)
                 .shippingAmount(10f)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
-
-        setUpEnvironment(environment())
-
+        setUpEnvironment(environment)
+        val backedProject = ProjectFactory.backedProject()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
-        this.pledgeAmount.assertValue("$40")
+
+        this.pledgeAmount.assertValue(expectedCurrency(environment, backedProject, 40.0))
     }
 
     @Test
@@ -441,132 +471,188 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .pledgedAt(pledgeDate)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
-        this.pledgeDate.assertValue("August 28, 2019")
+        this.pledgeDate.assertValue(DateTimeUtils.longDate(pledgeDate))
     }
 
     @Test
     fun testPledgeStatusData_whenProjectIsCanceled() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PLEDGED)
+        val backing = backingWithStatus(Backing.STATUS_PLEDGED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .state(Project.STATE_CANCELED)
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
     fun testPledgeStatusData_whenProjectIsUnsuccessful() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PLEDGED)
+        val backing = backingWithStatus(Backing.STATUS_PLEDGED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .state(Project.STATE_FAILED)
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
     fun testPledgeStatusData_whenBackingIsCanceled() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_CANCELED)
+        val backing = backingWithStatus(Backing.STATUS_CANCELED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.You_canceled_your_pledge_for_this_project,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
     fun testPledgeStatusData_whenBackingIsCollected() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_COLLECTED)
+        val backing = backingWithStatus(Backing.STATUS_COLLECTED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_collected_your_pledge_for_this_project,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
     fun testPledgeStatusData_whenBackingIsDropped() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_DROPPED)
+        val backing = backingWithStatus(Backing.STATUS_DROPPED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.Your_pledge_was_dropped_because_of_payment_errors,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
     fun testPledgeStatusData_whenBackingIsErrored() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_ERRORED)
+        val backing = backingWithStatus(Backing.STATUS_ERRORED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_cant_process_your_pledge_Please_update_your_payment_method,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
     fun testPledgeStatusData_whenBackingIsPledged() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PLEDGED)
+        val backing = backingWithStatus(Backing.STATUS_PLEDGED)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
     fun testPledgeStatusData_whenBackingIsPreAuth() {
-        val backedProject = backedProjectWithBackingStatus(Backing.STATUS_PREAUTH)
+        val backing = backingWithStatus(Backing.STATUS_PREAUTH)
+        val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")
+        val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
-                .deadline(DateTime.parse("2019-11-11T17:10:04+00:00"))
+                .deadline(deadline)
                 .build()
 
-        setUpEnvironment(environment())
-
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
         this.pledgeStatusData.assertValue(PledgeStatusData(R.string.We_re_processing_your_pledge_pull_to_refresh,
-                "$20", "November 11, 2019"))
+                expectedCurrency(environment, backedProject, 20.0),
+                DateTimeUtils.longDate(deadline)))
     }
 
     @Test
@@ -575,14 +661,15 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .locationId(null)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeSummaryIsGone.assertValue(true)
     }
 
@@ -592,14 +679,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .locationId(4L)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.pledgeSummaryIsGone.assertValue(false)
     }
 
@@ -616,7 +703,11 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .rewards(listOf(RewardFactory.noReward(), reward))
                 .build()
 
-        setUpEnvironment(environment())
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
 
         val projectData = ProjectDataFactory.project(backedProject)
         this.vm.inputs.configureWith(projectData)
@@ -629,14 +720,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .backerCompletedAt(DateTime.now())
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedCheckboxChecked.assertValue(true)
     }
 
@@ -646,14 +737,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .backerCompletedAt(null)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedCheckboxChecked.assertValue(false)
     }
 
@@ -663,14 +754,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .status(Backing.STATUS_PLEDGED)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedSectionIsGone.assertValue(true)
     }
 
@@ -681,14 +772,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .rewardId(3L)
                 .status(Backing.STATUS_COLLECTED)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedSectionIsGone.assertValue(false)
     }
 
@@ -699,14 +790,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .rewardId(null)
                 .status(Backing.STATUS_COLLECTED)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.receivedSectionIsGone.assertValue(true)
     }
 
@@ -716,14 +807,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .shippingAmount(3f)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingAmount.assertValue("$3")
     }
 
@@ -733,14 +824,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .locationName(LocationFactory.nigeria().displayableName())
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingLocation.assertValue("Nigeria")
     }
 
@@ -750,14 +841,14 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .locationId(null)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingSummaryIsGone.assertValue(true)
     }
 
@@ -767,20 +858,25 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
                 .toBuilder()
                 .locationId(4L)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
-        setUpEnvironment(environment())
-
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.shippingSummaryIsGone.assertValue(false)
     }
 
     @Test
     fun testShowUpdatePledgeSuccess() {
-        setUpEnvironment(environment())
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(BackingFactory.backing()))
+                .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
         this.showUpdatePledgeSuccess.assertValueCount(1)
@@ -788,7 +884,11 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
     @Test
     fun testSwipeRefresherProgressIsVisible() {
-        setUpEnvironment(environment())
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(BackingFactory.backing()))
+                .build()
+        setUpEnvironment(environment)
 
         //initial project is loaded
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
@@ -803,31 +903,40 @@ class BackingFragmentViewModelTest :  KSRobolectricTestCase() {
 
     @Test
     fun testTotalAmount() {
+        val amount = 10.5
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .amount(10.50)
+                .amount(amount)
                 .build()
-        val backedProject = ProjectFactory.backedProject()
+
+        val environment = environment()
                 .toBuilder()
-                .backing(backing)
+                .apolloClient(mockApolloClientForBacking(backing))
                 .build()
-
-        setUpEnvironment(environment())
-
+        setUpEnvironment(environment)
+        val backedProject = ProjectFactory.backedProject()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
-        this.totalAmount.assertValue("$10.50")
+
+        this.totalAmount.assertValue(expectedCurrency(environment, backedProject, amount))
     }
 
-    private fun backedProjectWithBackingStatus(@Backing.Status backingStatus: String): Project {
-        val backing = BackingFactory.backing()
+    private fun backingWithStatus(@Backing.Status backingStatus: String): Backing {
+        return BackingFactory.backing()
                 .toBuilder()
                 .amount(20.0)
                 .status(backingStatus)
                 .build()
-        return ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
     }
+
+    private fun mockApolloClientForBacking(backing: Backing): MockApolloClient {
+        return object : MockApolloClient() {
+            override fun getProjectBacking(slug: String): Observable<Backing> {
+                return Observable.just(backing)
+            }
+        }
+    }
+
+    private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
+            environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
 
 }

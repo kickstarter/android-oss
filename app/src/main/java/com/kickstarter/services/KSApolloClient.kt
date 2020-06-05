@@ -6,6 +6,7 @@ import CreateBackingMutation
 import CreatePasswordMutation
 import DeletePaymentSourceMutation
 import ErroredBackingsQuery
+import GetProjectBackingQuery
 import ProjectCreatorDetailsQuery
 import SavePaymentMethodMutation
 import SendEmailVerificationMutation
@@ -29,6 +30,7 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState
+import type.CreditCardPaymentType
 import type.CurrencyCode
 import type.PaymentTypes
 import java.nio.charset.Charset
@@ -233,6 +235,32 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                             }
                                             erroredBackings?.toList() ?: listOf()
                                         }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun getProjectBacking(slug: String): Observable<Backing> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Backing>()
+
+            this.service.query(GetProjectBackingQuery.builder()
+                    .slug(slug).build())
+                    .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
+                            response.data()?.let {data ->
+                                Observable.just(data.project()?.backing())
+                                        .map { backingObj -> createBackingObject(backingObj) }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()
@@ -491,6 +519,41 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
+}
+
+private fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {
+    val paymentGR = (backingGr?.paymentSource() as GetProjectBackingQuery.AsCreditCard)
+    val payment = Backing.PaymentSource.builder()
+            .state(paymentGR.state().toString())
+            .type(paymentGR.type().rawValue())
+            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
+            .id(paymentGR.id())
+            .expirationDate(paymentGR.expirationDate())
+            .lastFour(paymentGR.lastFour())
+            .build()
+
+    val name = backingGr.backer()?.name() ?: ""
+    val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
+    val locationId = decodeRelayId(backingGr.location()?.id())
+    val projectId = decodeRelayId(backingGr.id()) ?: 0
+    val backerId= decodeRelayId(backingGr.backer()?.id()) ?: 0
+
+    return Backing.builder()
+            .amount(backingGr.amount().amount().toString().toDouble())
+            .paymentSource(payment)
+            .backerId(backerId)
+            .backerUrl(backingGr.backer()?.imageUrl())
+            .backerName(name)
+            .id(id)
+            .locationId(locationId)
+            .locationName(backingGr.location()?.displayableName())
+            .pledgedAt(backingGr.pledgedOn())
+            .projectId(projectId)
+            .sequence(backingGr.sequence()?.toLong() ?: 0)
+            .shippingAmount(backingGr.shippingAmount()?.amount().toString().toFloat())
+            .status(backingGr.status().rawValue())
+            .cancelable(backingGr.cancelable())
+            .build()
 }
 
 fun <T : Relay> encodeRelayId(relay: T): String {

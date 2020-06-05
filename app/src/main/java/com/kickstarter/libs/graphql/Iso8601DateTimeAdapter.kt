@@ -3,19 +3,17 @@ package com.kickstarter.libs.graphql
 import com.apollographql.apollo.response.CustomTypeAdapter
 import com.apollographql.apollo.response.CustomTypeValue
 import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
 import java.text.ParseException
 
-
-class DateTimeAdapter: CustomTypeAdapter<DateTime> {
+class Iso8601DateTimeAdapter: CustomTypeAdapter<DateTime> {
 
     override fun encode(value: DateTime): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLNumber(value.toString().toLong() / 1000L)
+        return CustomTypeValue.GraphQLString(value.toString())
     }
 
     override fun decode(value: CustomTypeValue<*>): DateTime {
         try {
-            return DateTime(java.lang.Long.valueOf(value.value.toString().toLong() * 1000L), DateTimeZone.UTC)
+            return DateTime.parse(value.value.toString())
         } catch (exception: ParseException) {
             throw RuntimeException(exception)
         }

@@ -245,11 +245,15 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), Rewar
             }
         }
 
-        val spannablePledgeStatus = SpannableString(pledgeStatusText)
-        pledgeStatusData.pledgeTotal?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
-        pledgeStatusData.projectDeadline?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
+        pledgeStatusText?.let { statusText ->
+            val spannablePledgeStatus = SpannableString(statusText)
+            pledgeStatusData.pledgeTotal?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
+            pledgeStatusData.projectDeadline?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
 
-        backer_pledge_status.text = spannablePledgeStatus
+            backer_pledge_status.text = spannablePledgeStatus
+        }?: run {
+            backer_pledge_status.text = null
+        }
     }
 
     private fun setupRecyclerView() {

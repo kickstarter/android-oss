@@ -25,6 +25,7 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.BackingActivity;
 
@@ -129,6 +130,7 @@ public interface BackingViewModel {
     private final ApiClientType client;
     private final CurrentUserType currentUser;
     private final KSCurrency ksCurrency;
+    private ApolloClientType apolloClient;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -136,6 +138,7 @@ public interface BackingViewModel {
       this.client = environment.apiClient();
       this.currentUser = environment.currentUser();
       this.ksCurrency = environment.ksCurrency();
+      this.apolloClient = environment.apolloClient();
 
       final Observable<User> loggedInUser = this.currentUser.loggedInUser();
 
@@ -143,6 +146,7 @@ public interface BackingViewModel {
         .compose(combineLatestPair(loggedInUser))
         .map(this::backer)
         .ofType(User.class);
+
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))

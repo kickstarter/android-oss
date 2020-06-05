@@ -37,6 +37,7 @@ class ShippingRuleViewHolderViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
 
         this.vm.inputs.configureWith(shippingRule, project)
-        this.shippingRuleText.assertValue("Brooklyn, NY $30")
+        val expectedCurrency = environment.ksCurrency().format(30.0, project)
+        this.shippingRuleText.assertValue("Brooklyn, NY $expectedCurrency")
     }
 }

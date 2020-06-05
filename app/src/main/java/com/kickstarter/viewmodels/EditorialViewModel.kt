@@ -82,7 +82,8 @@ interface EditorialViewModel {
                     .subscribe { this.retryContainerIsGone.onNext(false) }
 
             editorial
-                    .map { discoveryParams(it) }
+                    .map { it.tagId }
+                    .map { DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).tagId(it).build() }
                     .compose(bindToLifecycle())
                     .subscribe(this.discoveryParams)
 
@@ -104,14 +105,6 @@ interface EditorialViewModel {
             this.retryContainerClicked
                     .compose(bindToLifecycle())
                     .subscribe(this.refreshDiscoveryFragment)
-        }
-
-        private fun discoveryParams(editorial: Editorial): DiscoveryParams {
-            val sort = when (editorial) {
-                Editorial.LIGHTS_ON -> DiscoveryParams.Sort.DISTANCE
-                else -> DiscoveryParams.Sort.MAGIC
-            }
-            return DiscoveryParams.builder().sort(sort).tagId(editorial.tagId).build()
         }
 
         private fun fetchCategories(): Observable<Notification<MutableList<Category>>>? {

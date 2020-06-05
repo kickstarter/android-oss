@@ -156,7 +156,7 @@ interface BackingFragmentViewModel {
         private val totalAmount = BehaviorSubject.create<CharSequence>()
 
         private val apiClient = this.environment.apiClient()
-        private val currentUser = this.environment.currentUser()
+        private val apolloClient = this.environment.apolloClient()
         private val ksCurrency = this.environment.ksCurrency()
         val ksString: KSString = this.environment.ksString()
 
@@ -174,18 +174,18 @@ interface BackingFragmentViewModel {
                     .filter { it.isBacking }
 
             val backing = backedProject
-                    .map { it.backing() }
-                    .ofType(Backing::class.java)
+                    .switchMap { it.slug()?.let { slug -> this.apolloClient.getProjectBacking(slug) } }
+                    .compose(neverError())
+                    .share()
+                    .filter { ObjectUtils.isNotNull(it) }
 
-            val backer = this.currentUser.loggedInUser()
-
-            backer
-                    .map { it.name() }
+            backing
+                    .map { it.backerName() }
                     .compose(bindToLifecycle())
                     .subscribe(this.backerName)
 
-            backer
-                    .map { it.avatar().medium() }
+            backing
+                    .map { it.backerUrl() }
                     .compose(bindToLifecycle())
                     .subscribe(this.backerAvatar)
 
@@ -224,8 +224,8 @@ interface BackingFragmentViewModel {
                         this.shippingSummaryIsGone.onNext(it)
                     }
 
-            backedProject
-                    .map { pledgeStatusData(it) }
+            Observable.combineLatest(backedProject, backing) { p, b -> Pair(p, b)}
+                    .map { pledgeStatusData(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeStatusData)
@@ -374,11 +374,11 @@ interface BackingFragmentViewModel {
             }
         }
 
-        private fun pledgeStatusData(project: Project) : PledgeStatusData {
+        private fun pledgeStatusData(project: Project, backing: Backing) : PledgeStatusData {
             val statusStringRes = when (project.state()) {
                 Project.STATE_CANCELED -> R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged
                 Project.STATE_FAILED -> R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged
-                else -> when (project.backing()?.status()) {
+                else -> when (backing.status()) {
                     Backing.STATUS_CANCELED -> R.string.You_canceled_your_pledge_for_this_project
                     Backing.STATUS_COLLECTED -> R.string.We_collected_your_pledge_for_this_project
                     Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
@@ -390,7 +390,7 @@ interface BackingFragmentViewModel {
             }
 
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
-            val pledgeTotal = project.backing()?.amount()?.let { this.ksCurrency.format(it, project) }
+            val pledgeTotal = backing.amount().let { this.ksCurrency.format(it, project) }
             return PledgeStatusData(statusStringRes, pledgeTotal, projectDeadline)
         }
 

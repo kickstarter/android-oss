@@ -4,6 +4,7 @@ package com.kickstarter.libs
 
 // region Discover a Project
 const val ACTIVITY_FEED_VIEWED = "Activity Feed Viewed"
+const val EDITORIAL_CARD_CLICKED = "Editorial Card Clicked"
 const val EXPLORE_PAGE_VIEWED = "Explore Page Viewed"
 const val EXPLORE_SORT_CLICKED = "Explore Sort Clicked"
 const val FILTER_CLICKED = "Filter Clicked"

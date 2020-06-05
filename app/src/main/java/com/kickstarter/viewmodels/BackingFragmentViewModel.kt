@@ -173,8 +173,9 @@ interface BackingFragmentViewModel {
                     .map { it.project() }
 
             val backing = this.projectDataInput
-                    .switchMap { getBackingInfo(it) }
+                    .debounce(1, TimeUnit.SECONDS)
                     .distinctUntilChanged()
+                    .switchMap { getBackingInfo(it) }
                     .compose(neverError())
                     .filter { ObjectUtils.isNotNull(it) }
                     .share()

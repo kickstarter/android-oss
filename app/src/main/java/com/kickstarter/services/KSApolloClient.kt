@@ -569,7 +569,6 @@ private fun backingObjectFromId(backingGr: GetBackingQuery.Backing?): Backing {
             .minimum(rewardAmount?: 0.0)
             .description(backingGr?.reward()?.description())
             .estimatedDeliveryOn(DateTime(backingGr?.reward()?.estimatedDeliveryOn()))
-            .convertedMinimum(rewardAmount ?: 0.0)
             .shippingSingleLocation(rewardSingleLocation)
             .id(rewardId)
             .build()

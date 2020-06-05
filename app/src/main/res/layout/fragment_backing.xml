@@ -173,12 +173,6 @@
 
         </LinearLayout>
 
-        <include
-          layout="@layout/item_reward"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_4"/>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reward_add_on_recycler"
             android:layout_width="match_parent"

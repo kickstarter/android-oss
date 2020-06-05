@@ -12,6 +12,7 @@ import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
+import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -192,10 +193,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), Rewar
     }
 
     private fun bindDataToRewardViewHolder(projectAndReward: Pair<ProjectData, Reward>) {
-        val rewardViewHolder = RewardViewHolder(reward_container, delegate = null, inset = true)
         val project = projectAndReward.first
         val reward = projectAndReward.second
-        rewardViewHolder.bindData(Pair(project, reward))
+
+        val projectAndRw = Pair(project, reward)
+        rewardsAndAddOnsAdapter.populateDataForRewad(projectAndRw)
     }
 
     private fun setBackerImageView(url: String) {

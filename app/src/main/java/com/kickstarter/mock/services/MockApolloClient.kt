@@ -31,6 +31,10 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(CheckoutFactory.requiresAction(false))
     }
 
+    override fun getBacking(backingId: String): Observable<Backing> {
+        return Observable.just(BackingFactory.backing())
+    }
+
     override fun clearUnseenActivity(): Observable<Int> {
         return Observable.just(0)
     }

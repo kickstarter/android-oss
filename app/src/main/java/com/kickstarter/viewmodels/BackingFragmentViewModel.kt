@@ -171,13 +171,12 @@ interface BackingFragmentViewModel {
 
             val backedProject = this.projectDataInput
                     .map { it.project() }
-                    .filter { it.isBacking }
 
-            val backing = backedProject
-                    .switchMap { it.slug()?.let { slug -> this.apolloClient.getProjectBacking(slug) } }
+            val backing = this.projectDataInput
+                    .switchMap { getBackingInfo(it) }
                     .compose(neverError())
-                    .share()
                     .filter { ObjectUtils.isNotNull(it) }
+                    .share()
 
             backing
                     .map { it.backerName() }
@@ -190,8 +189,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.backerAvatar)
 
             this.projectDataInput
-                    .filter { it.project().isBacking }
-                    .map { projectData -> BackingUtils.backedReward(projectData.project())?.let { Pair(projectData, it) } }
+                    .map { projectData -> joinProjectDataAndReward(projectData) }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectDataAndReward)
 
@@ -354,6 +352,23 @@ interface BackingFragmentViewModel {
                     .map { false }
                     .compose(bindToLifecycle())
                     .subscribe(this.swipeRefresherProgressIsVisible)
+        }
+
+        private fun getBackingInfo(it: ProjectData): Observable<Backing> {
+            return if (it.backing() == null) {
+                this.apolloClient.getProjectBacking(it.project().slug()?:"")
+            } else {
+                Observable.just(it.backing())
+            }
+        }
+
+        private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
+            val reward = projectData.backing()?.let {
+                it.reward()
+            }?: BackingUtils.backedReward(projectData.project())
+            ?: Reward.builder().build()
+
+            return Pair(projectData,reward)
         }
 
         private fun cardIssuer(paymentSource: Backing.PaymentSource) : Either<String, Int> {

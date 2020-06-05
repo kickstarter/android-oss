@@ -27,6 +27,7 @@ import com.kickstarter.models.*
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.PublishSubject
 import type.BackingState
@@ -101,6 +102,33 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     .backing(backing)
                                     .build())
                             ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun getBacking(backingId: String): Observable<Backing> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Backing>()
+
+            this.service.query(GetBackingQuery.builder()
+                    .backingId(backingId).build())
+                    .enqueue(object : ApolloCall.Callback<GetBackingQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetBackingQuery.Data>) {
+                            response.data()?.let {data ->
+                                Observable.just(data.backing())
+                                        .map { backingObj -> backingObjectFromId(backingObj) }
+                                        .filter { ObjectUtils.isNotNull(it) }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
                         }
                     })
             return@defer ps
@@ -519,6 +547,55 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             return@defer ps
         }
     }
+}
+private fun backingObjectFromId(backingGr: GetBackingQuery.Backing?): Backing {
+
+    val name = backingGr?.backer()?.name() ?: ""
+    val id = decodeRelayId(backingGr?.id())?.let { it } ?: 0
+    val locationId = decodeRelayId(backingGr?.location()?.id())
+    val projectId = decodeRelayId(backingGr?.id()) ?: 0
+    val backerId = decodeRelayId(backingGr?.backer()?.id()) ?: 0
+    val rewardId = decodeRelayId(backingGr?.reward()?.id()) ?: 0
+    val avatar = Avatar.builder()
+            .medium(backingGr?.backer()?.imageUrl())
+            .build()
+    val rewardAmount = backingGr?.reward()?.amount()?.amount()?.toDouble()
+    val rewardSingleLocation = Reward.SingleLocation.builder()
+            .localizedName(backingGr?.location()?.displayableName())
+            .id(decodeRelayId(backingGr?.location()?.id())?: 0)
+            .build()
+
+    val reward = Reward.builder()
+            .minimum(rewardAmount?: 0.0)
+            .description(backingGr?.reward()?.description())
+            .estimatedDeliveryOn(DateTime(backingGr?.reward()?.estimatedDeliveryOn()))
+            .shippingSingleLocation(rewardSingleLocation)
+            .id(rewardId)
+            .build()
+
+    val backer = User.builder()
+            .id(id)
+            .name(name)
+            .avatar(avatar)
+            .build()
+
+    return Backing.builder()
+            .amount(backingGr?.amount()?.amount().toString().toDouble())
+            .backerId(backerId)
+            .backerUrl(avatar.medium())
+            .backerName(name)
+            .reward(reward)
+            .id(backerId)
+            .backer(backer)
+            .locationId(locationId)
+            .locationName(backingGr?.location()?.displayableName())
+            .pledgedAt(backingGr?.pledgedOn())
+            .projectId(projectId)
+            .sequence(backingGr?.sequence()?.toLong() ?: 0)
+            .shippingAmount(backingGr?.shippingAmount()?.amount().toString().toFloat())
+            .status(backingGr?.status()?.rawValue())
+            .cancelable(backingGr?.let { it.cancelable() }?: false)
+            .build()
 }
 
 private fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {

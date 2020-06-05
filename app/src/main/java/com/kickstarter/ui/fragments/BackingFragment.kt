@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
-import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -22,7 +22,6 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.RewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_backing.*
@@ -254,7 +253,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), Rewar
     }
 
     private fun setupRecyclerView() {
-        reward_add_on_recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        reward_add_on_recycler.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         reward_add_on_recycler.adapter = rewardsAndAddOnsAdapter
     }
 

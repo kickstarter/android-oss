@@ -19,6 +19,8 @@ interface ApolloClientType {
 
     fun createBacking(createBackingData: CreateBackingData): Observable<Checkout>
 
+    fun getBacking(backingId: String): Observable<Backing>
+
     fun clearUnseenActivity(): Observable<Int>
 
     fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data>

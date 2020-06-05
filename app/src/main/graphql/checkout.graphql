@@ -29,3 +29,53 @@ mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String, $r
     }
   }
 }
+
+query GetBacking($backingId: ID!) {
+  backing(id: $backingId){
+    id
+    status
+    sequence
+    pledgedOn
+    backerCompleted
+    cancelable
+    shippingAmount {
+      amount
+      currency
+      symbol
+    }
+    location {
+      id
+      displayableName
+    }
+    amount {
+      amount
+      currency
+      symbol
+    }
+    shippingAmount {
+      amount
+    }
+    reward {
+      id
+      name
+      backersCount
+      description
+      estimatedDeliveryOn
+      items {
+        nodes {
+          name
+        }
+      }
+      amount {
+        amount
+        currency
+        symbol
+      }
+    }
+    backer {
+      imageUrl(blur: false, width: 54)
+      name
+      id
+    }
+  }
+}

@@ -11,7 +11,7 @@
     <androidx.cardview.widget.CardView
       android:id="@+id/add_on_reward_card"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="300dp"
       android:layout_gravity="center_horizontal"
       app:cardCornerRadius="@dimen/reward_card_radius"
       app:cardElevation="0dp">

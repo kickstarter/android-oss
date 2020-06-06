@@ -1,0 +1,88 @@
+fragment backing on Backing {
+    id
+    status
+    sequence
+    cancelable
+    pledgedOn
+    backerCompleted
+    project {
+        ... project
+    }
+    location {
+        ... location
+    }
+    amount {
+        ... amount
+    }
+    paymentSource {
+        ... payment
+    }
+    shippingAmount {
+        ... amount
+    }
+    reward {
+        ... reward
+    }
+    backer {
+        ... user
+    }
+}
+
+fragment project on Project {
+    id
+    slug
+}
+
+fragment reward on Reward {
+    id
+    name
+    backersCount
+    description
+    estimatedDeliveryOn
+    items {
+        edges {
+            quantity
+            node {
+                project{
+                    id
+                }
+                hasBackers
+                id
+                name
+                rewardsCount
+            }
+        }
+    }
+    amount {
+        ... amount
+    }
+}
+
+fragment user on User {
+    name
+    id
+    imageUrl(blur: false, width: 54)
+}
+
+fragment amount on Money {
+    amount
+    currency
+    symbol
+}
+
+fragment location on Location {
+    county
+    countryName
+    discoverUrl
+    displayableName
+    id
+    name
+}
+
+fragment payment on CreditCard {
+    id
+    lastFour
+    expirationDate
+    type
+    state
+}

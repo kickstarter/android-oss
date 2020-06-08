@@ -15,5 +15,10 @@ query GetProjectBacking($slug: String!) {
     backing {
       ... backing
     }
+    addOns {
+      nodes {
+        ... reward
+      }
+    }
   }
 }

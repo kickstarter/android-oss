@@ -26,6 +26,11 @@ fragment backing on Backing {
     backer {
         ... user
     }
+    addOns {
+        nodes {
+            ... reward
+        }
+    }
 }
 
 fragment project on Project {

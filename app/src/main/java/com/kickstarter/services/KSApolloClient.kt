@@ -562,6 +562,11 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
                 .build()
     }
 
+    val addOns = backingGr?.addOns()?.let {
+        return@let fromApolloBackingToAddOnsList(it)
+    }
+
+
     val id = decodeRelayId(backingGr?.id())?.let { it } ?: 0
 
     val location = backingGr?.location()?.fragments()?.location()
@@ -580,6 +585,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         return@let Reward.builder()
                 .minimum(rewardAmount?: 0.0)
                 .description(reward.description())
+                .isAddOn(false)
                 .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
                 .shippingSingleLocation(rewardSingleLocation)
                 .id(rewardId)
@@ -608,6 +614,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
             .backer(backer)
             .id(id)
             .reward(reward)
+            .addOns(addOns)
             .rewardId(reward?.id())
             .locationId(locationId)
             .locationName(location?.displayableName())
@@ -647,4 +654,34 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
             ps.onCompleted()
         }
     }
+}
+
+fun fromApolloBackingToAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
+    val rewardsList = addOns.nodes()?.map { node ->
+            val rewardGr = node.fragments().reward()
+            val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
+            val desc = rewardGr.description()
+            val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
+            val rewardId = decodeRelayId(rewardGr.id()) ?: -1
+
+            val items = rewardGr.items()?.let {
+                return@let getRewardItems(it)
+            }
+
+            return@map Reward.builder()
+            .minimum(amount)
+            .description(desc)
+            .estimatedDeliveryOn(estimatedDelivery)
+            .isAddOn(true)
+            .addOnsItems(items)
+            .id(rewardId)
+            .build()
+        } ?: emptyList()
+
+    return rewardsList.toList()
+}
+
+fun getRewardItems(items: fragment.Reward.Items): List<RewardsItem> {
+    // TODO: get the items
+    return emptyList()
 }

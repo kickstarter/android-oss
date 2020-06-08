@@ -189,6 +189,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.backerAvatar)
 
             this.projectDataInput
+                    .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
                     .map { projectData -> joinProjectDataAndReward(projectData) }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectDataAndReward)

@@ -122,6 +122,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         override fun onResponse(response: Response<GetBackingQuery.Data>) {
                             response.data()?.let {data ->
                                 Observable.just(data.backing())
+                                        .filter { it?.fragments()?.backing() != null }
                                         .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
                                         .filter { ObjectUtils.isNotNull(it) }
                                         .subscribe {
@@ -286,8 +287,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
                             response.data()?.let {data ->
-                                Observable.just(data.project()?.backing()?.fragments()?.backing())
-                                        .map { backingObj -> createBackingObject(backingObj) }
+                                Observable.just(data.project()?.backing())
+                                        .filter { it?.fragments()?.backing() != null }
+                                        .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()

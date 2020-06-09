@@ -6,6 +6,8 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
 import com.kickstarter.extensions.showSnackbar
@@ -17,9 +19,9 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
+import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.RewardViewHolder
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_backing.*
@@ -30,7 +32,9 @@ import kotlinx.android.synthetic.main.item_reward.*
 import kotlinx.android.synthetic.main.reward_card_details.*
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
-class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
+class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), RewardAndAddOnsAdapter.ViewListener {
+
+    private var rewardsAndAddOnsAdapter = RewardAndAddOnsAdapter(this)
 
     interface BackingDelegate {
         fun refreshProject()
@@ -44,6 +48,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
 
         this.viewModel.outputs.backerAvatar()
                 .compose(bindToLifecycle())
@@ -187,10 +192,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
     }
 
     private fun bindDataToRewardViewHolder(projectAndReward: Pair<ProjectData, Reward>) {
-        val rewardViewHolder = RewardViewHolder(reward_container, delegate = null, inset = true)
         val project = projectAndReward.first
         val reward = projectAndReward.second
-        rewardViewHolder.bindData(Pair(project, reward))
+
+        val projectAndRw = Pair(project, reward)
+        rewardsAndAddOnsAdapter.populateDataForRewad(projectAndRw)
     }
 
     private fun setBackerImageView(url: String) {
@@ -250,4 +256,12 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>()  {
         }
     }
 
+    private fun setupRecyclerView() {
+        reward_add_on_recycler.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        reward_add_on_recycler.adapter = rewardsAndAddOnsAdapter
+    }
+
+    override fun rewardClicked(reward: Reward) {
+        // TODO in https://kickstarter.atlassian.net/browse/NT-1290
+    }
 }

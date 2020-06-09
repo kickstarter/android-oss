@@ -607,6 +607,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
 
     return Backing.builder()
             .amount(backingGr?.amount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
+            .bonusAmount(backingGr?.bonusAmount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
             .paymentSource(payment)
             .backerId(backerId)
             .backerUrl(backerData?.imageUrl())

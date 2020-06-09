@@ -563,7 +563,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     }
 
     val addOns = backingGr?.addOns()?.let {
-        return@let fromApolloBackingToAddOnsList(it)
+        return@let getAddOnsList(it)
     }
 
 
@@ -656,7 +656,7 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
     }
 }
 
-fun fromApolloBackingToAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
+fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
     val rewardsList = addOns.nodes()?.map { node ->
             val rewardGr = node.fragments().reward()
             val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
@@ -665,7 +665,7 @@ fun fromApolloBackingToAddOnsList(addOns: fragment.Backing.AddOns): List<Reward>
             val rewardId = decodeRelayId(rewardGr.id()) ?: -1
 
             val items = rewardGr.items()?.let {
-                return@let getRewardItems(it)
+                return@let getAddonItems(it)
             }
 
             return@map Reward.builder()
@@ -681,7 +681,25 @@ fun fromApolloBackingToAddOnsList(addOns: fragment.Backing.AddOns): List<Reward>
     return rewardsList.toList()
 }
 
-fun getRewardItems(items: fragment.Reward.Items): List<RewardsItem> {
-    // TODO: get the items
-    return emptyList()
+fun getAddonItems(items: fragment.Reward.Items): List<RewardsItem> {
+    val rewardItems = items.edges()?.map { edge ->
+        val quantity = edge.quantity()
+        val description = edge.node()?.name()
+        val hasBackers = edge.node()?.hasBackers() ?: false
+        val id = decodeRelayId(edge.node()?.id()) ?: -1
+        val projectId = decodeRelayId(edge.node()?.project()?.id()) ?: -1
+
+        val item = Item.builder()
+                .description(description)
+                .id(id)
+                .projectId(projectId)
+                .build()
+
+        return@map RewardsItem.builder()
+                .item(item)
+                .hasBackers(hasBackers)
+                .quantity(quantity)
+                .build()
+    } ?: emptyList()
+    return rewardItems.toList()
 }

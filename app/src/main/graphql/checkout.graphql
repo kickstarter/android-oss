@@ -33,10 +33,5 @@ mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String, $r
 query GetBacking($backingId: ID!) {
   backing(id: $backingId) {
     ... backing
-    addOns {
-      nodes {
-        ... reward
-      }
-    }
   }
 }

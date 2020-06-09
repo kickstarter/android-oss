@@ -571,19 +571,19 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
 
     val location = backingGr?.location()?.fragments()?.location()
     val locationId = decodeRelayId(location?.id())
-    val projectId = decodeRelayId(backingGr?.project()?.fragments()?.project()?.id()) ?: 0
+    val projectId = decodeRelayId(backingGr?.project()?.fragments()?.project()?.id()) ?: -1
     val shippingAmount = backingGr?.shippingAmount()?.fragments()
 
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
-        val rewardId = decodeRelayId(reward.id()) ?: 0
+        val rewardId = decodeRelayId(reward.id()) ?: -1
         val rewardAmount = reward.amount().fragments().amount().amount()?.toDouble()
         val rewardSingleLocation = Reward.SingleLocation.builder()
                 .localizedName(location?.displayableName())
-                .id(decodeRelayId(location?.id())?: 0)
+                .id(decodeRelayId(location?.id())?:-1)
                 .build()
 
         return@let Reward.builder()
-                .minimum(rewardAmount?: 0.0)
+                .minimum(rewardAmount?: -1.0)
                 .description(reward.description())
                 .isAddOn(false)
                 .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
@@ -594,7 +594,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
 
     val backerData = backingGr?.backer()?.fragments()?.user()
     val nameBacker = backerData?.name()
-    val backerId= decodeRelayId(backerData?.id()) ?: 0
+    val backerId= decodeRelayId(backerData?.id()) ?: -1
     val avatar = Avatar.builder()
             .medium(backerData?.imageUrl())
             .build()

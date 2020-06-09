@@ -15,6 +15,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.model.Card
+import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
@@ -712,6 +713,67 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(backedProject)
         this.vm.inputs.configureWith(projectData)
         this.projectDataAndReward.assertValue(Pair(projectData, reward))
+    }
+
+    @Test
+    fun testProjectAndRewardAsCreator() {
+        val reward = RewardFactory.reward()
+        val backer = UserFactory.user()
+
+        val backing = BackingFactory.backing(backer)
+                .toBuilder()
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+
+        val creator = UserFactory
+                .creator()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .backing(backing)
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectData.builder()
+                .project(project)
+                .backing(backing)
+                .user(creator)
+                .build()
+
+        this.vm.inputs.configureWith(projectData)
+        this.vm.outputs.projectDataAndReward()
+                .subscribe {
+                    TestCase.assertEquals(it.first, projectData)
+                    TestCase.assertEquals(it.second, reward)
+                }
+    }
+
+    @Test
+    fun testProjectAndRewardNoCreatorNoBacker() {
+        val reward = RewardFactory.reward()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        this.vm.inputs.configureWith(projectData)
+        this.projectDataAndReward.assertNoValues()
     }
 
     @Test

@@ -2,8 +2,6 @@ package com.kickstarter.models;
 
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
-
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import auto.parcel.AutoParcel;

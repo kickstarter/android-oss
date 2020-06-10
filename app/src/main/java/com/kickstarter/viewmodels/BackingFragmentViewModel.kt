@@ -96,6 +96,9 @@ interface BackingFragmentViewModel {
         /** Emits the [ProjectData] and currently backed [Reward]. */
         fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>>
 
+        /** Emits the [ProjectData] and currently selected AddOns: [List<Reward>]. */
+        fun projectDataAndAddOns(): Observable<List<Reward>>
+
         /** Emits a boolean that determines if received checkbox should be checked. */
         fun receivedCheckboxChecked(): Observable<Boolean>
 
@@ -154,6 +157,7 @@ interface BackingFragmentViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val swipeRefresherProgressIsVisible = BehaviorSubject.create<Boolean>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
+        private val addOnsList = BehaviorSubject.create<List<Reward>>()
 
         private val apiClient = this.environment.apiClient()
         private val apolloClient = this.environment.apolloClient()
@@ -353,6 +357,12 @@ interface BackingFragmentViewModel {
                     .map { false }
                     .compose(bindToLifecycle())
                     .subscribe(this.swipeRefresherProgressIsVisible)
+
+            val addOns = backing
+                    .filter { it.addOns() != null }
+                    .map { it.addOns() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addOnsList)
         }
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
@@ -463,6 +473,8 @@ interface BackingFragmentViewModel {
         override fun pledgeSummaryIsGone(): Observable<Boolean> = this.pledgeSummaryIsGone
 
         override fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>> = this.projectDataAndReward
+
+        override fun projectDataAndAddOns(): Observable<List<Reward>> = this.addOnsList
 
         override fun receivedCheckboxChecked(): Observable<Boolean> = this.receivedCheckboxChecked
 

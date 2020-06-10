@@ -562,11 +562,16 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
                 .build()
     }
 
+    val addOns = backingGr?.addOns()?.let {
+        return@let getAddOnsList(it)
+    }
+
+
     val id = decodeRelayId(backingGr?.id())?.let { it } ?: 0
 
     val location = backingGr?.location()?.fragments()?.location()
     val locationId = decodeRelayId(location?.id())
-    val projectId = decodeRelayId(backingGr?.project()?.fragments()?.project()?.id()) ?: 0
+    val projectId = decodeRelayId(backingGr?.project()?.fragments()?.project()?.id()) ?: -1
     val shippingAmount = backingGr?.shippingAmount()?.fragments()
 
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
@@ -574,12 +579,13 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         val rewardAmount = reward.amount().fragments().amount().amount()?.toDouble()
         val rewardSingleLocation = Reward.SingleLocation.builder()
                 .localizedName(location?.displayableName())
-                .id(decodeRelayId(location?.id())?: -1)
+                .id(decodeRelayId(location?.id())?:-1)
                 .build()
 
         return@let Reward.builder()
-                .minimum(rewardAmount?: 0.0)
+                .minimum(rewardAmount?: -1.0)
                 .description(reward.description())
+                .isAddOn(false)
                 .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
                 .shippingSingleLocation(rewardSingleLocation)
                 .id(rewardId)
@@ -601,6 +607,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
 
     return Backing.builder()
             .amount(backingGr?.amount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
+            .bonusAmount(backingGr?.bonusAmount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
             .paymentSource(payment)
             .backerId(backerId)
             .backerUrl(backerData?.imageUrl())
@@ -608,6 +615,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
             .backer(backer)
             .id(id)
             .reward(reward)
+            .addOns(addOns)
             .rewardId(reward?.id())
             .locationId(locationId)
             .locationName(location?.displayableName())
@@ -647,4 +655,52 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
             ps.onCompleted()
         }
     }
+}
+
+fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
+    val rewardsList = addOns.nodes()?.map { node ->
+            val rewardGr = node.fragments().reward()
+            val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
+            val desc = rewardGr.description()
+            val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
+            val rewardId = decodeRelayId(rewardGr.id()) ?: -1
+
+            val items = rewardGr.items()?.let {
+                return@let getAddonItems(it)
+            }
+
+            return@map Reward.builder()
+            .minimum(amount)
+            .description(desc)
+            .estimatedDeliveryOn(estimatedDelivery)
+            .isAddOn(true)
+            .addOnsItems(items)
+            .id(rewardId)
+            .build()
+        } ?: emptyList()
+
+    return rewardsList.toList()
+}
+
+fun getAddonItems(items: fragment.Reward.Items): List<RewardsItem> {
+    val rewardItems = items.edges()?.map { edge ->
+        val quantity = edge.quantity()
+        val description = edge.node()?.name()
+        val hasBackers = edge.node()?.hasBackers() ?: false
+        val id = decodeRelayId(edge.node()?.id()) ?: -1
+        val projectId = decodeRelayId(edge.node()?.project()?.id()) ?: -1
+
+        val item = Item.builder()
+                .description(description)
+                .id(id)
+                .projectId(projectId)
+                .build()
+
+        return@map RewardsItem.builder()
+                .item(item)
+                .hasBackers(hasBackers)
+                .quantity(quantity)
+                .build()
+    } ?: emptyList()
+    return rewardItems.toList()
 }

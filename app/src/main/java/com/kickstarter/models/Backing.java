@@ -9,6 +9,7 @@ import org.joda.time.DateTime;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Date;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
@@ -39,6 +40,8 @@ public abstract class Backing implements Parcelable, Relay {
   public abstract long sequence();
   public abstract float shippingAmount();
   public abstract @Status String status();
+  public abstract @Nullable List<Reward> addOns();
+  public abstract @Nullable double bonusAmount();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -64,6 +67,8 @@ public abstract class Backing implements Parcelable, Relay {
     public abstract Builder sequence(long __);
     public abstract Builder shippingAmount(float __);
     public abstract Builder status(@Status String __);
+    public abstract Builder addOns(List<Reward> __);
+    public abstract Builder bonusAmount(double __);
     public abstract Backing build();
   }
 

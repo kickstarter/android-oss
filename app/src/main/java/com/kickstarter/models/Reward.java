@@ -33,6 +33,8 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable SingleLocation shippingSingleLocation();
   public abstract @Nullable @ShippingType String shippingType();
   public abstract @Nullable String title();
+  public abstract @Nullable boolean isAddOn();
+  public abstract @Nullable List<RewardsItem> addOnsItems();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -50,6 +52,8 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder shippingSingleLocation(SingleLocation __);
     public abstract Builder shippingType(@ShippingType String __);
     public abstract Builder title(String __);
+    public abstract Builder isAddOn(boolean __);
+    public abstract Builder addOnsItems(List<RewardsItem> __);
     public abstract Reward build();
   }
 

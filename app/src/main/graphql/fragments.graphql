@@ -8,6 +8,9 @@ fragment backing on Backing {
     project {
         ... project
     }
+    bonusAmount {
+        ... amount
+    }
     location {
         ... location
     }
@@ -25,6 +28,11 @@ fragment backing on Backing {
     }
     backer {
         ... user
+    }
+    addOns {
+        nodes {
+            ... reward
+        }
     }
 }
 

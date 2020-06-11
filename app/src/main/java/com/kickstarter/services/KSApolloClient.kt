@@ -658,31 +658,47 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
     }
 }
 
+/**
+ * For addOns we receive this kind of data structure :[D, D, D, D, D, C, E, E]
+ * and we need to transform it in : D(5),C(1),E(2)
+ */
 fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
-    val quantity = addOns.nodes()?.size
+    val mutableMap = mutableMapOf<Reward, Int>()
+
     val rewardsList = addOns.nodes()?.map { node ->
-            val rewardGr = node.fragments().reward()
-            val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
-            val desc = rewardGr.description()
-            val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
-            val rewardId = decodeRelayId(rewardGr.id()) ?: -1
+        val rewardGr = node.fragments().reward()
+        val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
+        val desc = rewardGr.description()
+        val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
+        val rewardId = decodeRelayId(rewardGr.id()) ?: -1
 
-            val items = rewardGr.items()?.let {
-                return@let getAddonItems(it)
-            }
+        val items = rewardGr.items()?.let {
+            return@let getAddonItems(it)
+        }
 
-            return@map Reward.builder()
-            .minimum(amount)
-            .quantity(quantity)
-            .description(desc)
-            .estimatedDeliveryOn(estimatedDelivery)
-            .isAddOn(true)
-            .addOnsItems(items)
-            .id(rewardId)
-            .build()
-        } ?: emptyList()
+        return@map Reward.builder()
+        .minimum(amount)
+        .description(desc)
+        .estimatedDeliveryOn(estimatedDelivery)
+        .isAddOn(true)
+        .addOnsItems(items)
+        .id(rewardId)
+        .build()
+    }
 
-    return rewardsList.toList()
+    rewardsList?.map {
+        var addOnQuantity = mutableMap.getOrPut(it, {1})
+        if (addOnQuantity != null) addOnQuantity += 1
+
+        mutableMap.put(it, addOnQuantity)
+    }
+
+    return mutableMap.map {
+        return@map it.key
+                .toBuilder()
+                .quantity(it.value)
+                .build()
+    }.toList()
 }
 
 fun getAddonItems(items: fragment.Reward.Items): List<RewardsItem> {

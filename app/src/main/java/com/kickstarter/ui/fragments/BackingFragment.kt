@@ -169,6 +169,11 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
                 .compose(Transformers.observeForUI())
                 .subscribe { total_summary_amount.text = it }
 
+        this.viewModel.outputs.projectDataAndAddOns()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { populateAddOns(it) }
+
         SwipeRefresher(
                 this, backing_swipe_refresh_layout, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
         )
@@ -196,6 +201,14 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
 
         val projectAndRw = Pair(project, reward)
         rewardsAndAddOnsAdapter.populateDataForReward(projectAndRw)
+    }
+
+    private fun populateAddOns(projectAndAddOn: Pair<ProjectData, List<Reward>>) {
+        val project = projectAndAddOn.first
+        val addOns  = projectAndAddOn.second
+
+        val projectAndRw = Pair(project, addOns)
+        rewardsAndAddOnsAdapter.populateDataForAddOns(projectAndRw)
     }
 
     private fun setBackerImageView(url: String) {

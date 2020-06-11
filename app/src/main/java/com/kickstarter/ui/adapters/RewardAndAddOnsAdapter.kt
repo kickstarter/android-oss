@@ -9,14 +9,13 @@ import com.kickstarter.ui.viewholders.*
 
 class RewardAndAddOnsAdapter() : KSAdapter() {
 
-
     init {
         insertSection(SECTION_REWARD_CARD, emptyList<Reward>())
         insertSection(SECTION_ADD_ONS_CARD, emptyList<Reward>())
     }
 
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()){
-        SECTION_REWARD_CARD -> R.layout.item_reward
+        SECTION_REWARD_CARD,
         SECTION_ADD_ONS_CARD -> R.layout.item_add_on
         else -> 0
     }
@@ -29,9 +28,11 @@ class RewardAndAddOnsAdapter() : KSAdapter() {
         }
     }
 
-    fun populateDataForAddOns(rewards: List<Pair<ProjectData, Reward>>) {
-        setSection(SECTION_ADD_ONS_CARD, rewards)
-        notifyDataSetChanged()
+    fun populateDataForAddOns(rewards: Pair<ProjectData, List<Reward>>) {
+        if (rewards.second.isNotEmpty()) {
+            setSection(SECTION_ADD_ONS_CARD, listOf(rewards))
+            notifyDataSetChanged()
+        }
     }
 
     fun populateDataForReward(reward: Pair<ProjectData, Reward>) {

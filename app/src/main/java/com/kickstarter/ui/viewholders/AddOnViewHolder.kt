@@ -40,6 +40,11 @@ class AddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe { this.view.add_on_description_text_view.setText(it) }
 
+        this.viewModel.outputs.titleForNoReward()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.view.add_on_title_text_view_no_quantity.setText(it) }
+
         this.viewModel.outputs.descriptionForReward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

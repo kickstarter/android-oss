@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
@@ -53,6 +54,9 @@ interface AddOnViewHolderViewModel {
 
         /** Emits the reward's title when `isReward` is true.  */
         fun titleForReward(): Observable<String?>
+
+        /** Emits the reward's title when `noReward` is true.  */
+        fun titleForNoReward(): Observable<Int>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs{
@@ -64,6 +68,7 @@ interface AddOnViewHolderViewModel {
         private val conversion = BehaviorSubject.create<String>()
         private val conversionIsGone = BehaviorSubject.create<Boolean>()
         private val descriptionForNoReward = BehaviorSubject.create<Int>()
+        private val titleForNoReward = BehaviorSubject.create<Int>()
         private val descriptionForReward = BehaviorSubject.create<String?>()
         private val minimumAmountTitle = PublishSubject.create<SpannableString>()
         private val rewardItems = BehaviorSubject.create<List<RewardsItem>>()
@@ -104,6 +109,14 @@ interface AddOnViewHolderViewModel {
                     .subscribe(this.descriptionForReward)
 
             reward
+                    .filter { RewardUtils.isNoReward(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.descriptionForNoReward.onNext(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
+                        this.titleForNoReward.onNext(R.string.You_pledged_without_a_reward)
+                    }
+
+            reward
                     .map { it.quantity()?.let { it <= 0 } ?: true }
                     .compose(bindToLifecycle())
                     .subscribe(this.quantityIsGone)
@@ -128,7 +141,7 @@ interface AddOnViewHolderViewModel {
                     .subscribe(this.titleForReward)
 
             reward
-                    .map { RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
+                    .map { RewardUtils.isNoReward(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.titleIsGone)
@@ -145,6 +158,8 @@ interface AddOnViewHolderViewModel {
         override fun conversionIsGone(): Observable<Boolean> = this.conversionIsGone
 
         override fun descriptionForNoReward(): Observable<Int> = this.descriptionForNoReward
+
+        override fun titleForNoReward(): Observable<Int> = this.titleForNoReward
 
         override fun descriptionForReward(): Observable<String?> = this.descriptionForReward
 

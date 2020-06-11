@@ -566,7 +566,6 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         return@let getAddOnsList(it)
     }
 
-
     val id = decodeRelayId(backingGr?.id())?.let { it } ?: 0
 
     val location = backingGr?.location()?.fragments()?.location()
@@ -660,6 +659,7 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
 }
 
 fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
+    val quantity = addOns.nodes()?.size
     val rewardsList = addOns.nodes()?.map { node ->
             val rewardGr = node.fragments().reward()
             val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
@@ -673,6 +673,7 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
 
             return@map Reward.builder()
             .minimum(amount)
+            .quantity(quantity)
             .description(desc)
             .estimatedDeliveryOn(estimatedDelivery)
             .isAddOn(true)

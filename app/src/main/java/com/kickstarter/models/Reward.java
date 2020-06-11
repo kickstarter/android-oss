@@ -35,6 +35,7 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable String title();
   public abstract @Nullable boolean isAddOn();
   public abstract @Nullable List<RewardsItem> addOnsItems();
+  public abstract @Nullable Integer quantity();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -54,6 +55,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder title(String __);
     public abstract Builder isAddOn(boolean __);
     public abstract Builder addOnsItems(List<RewardsItem> __);
+    public abstract Builder quantity(Integer __);
     public abstract Reward build();
   }
 

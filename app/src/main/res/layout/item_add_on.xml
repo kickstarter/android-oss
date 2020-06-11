@@ -13,7 +13,7 @@
         android:overScrollMode="never">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/reward_card"
+            android:id="@+id/add_on_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -31,13 +31,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-
                 <TextView
-                    android:id="@+id/reward_minimum_text_view"
+                    android:id="@+id/add_on_conversion_text_view"
                     style="@style/Title2Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     android:textColor="@color/ksr_green_500"
                     android:textSize="@dimen/title_reward"
                     app:layout_constraintStart_toStartOf="parent"
@@ -51,98 +49,46 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/reward_minimum_text_view"
-                    tools:text="About $15 USD" />
+                    app:layout_constraintTop_toBottomOf="@id/add_on_conversion_text_view"
+                    tools:text="About $15 USD"
+                    android:visibility="visible"/>
 
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline"
-                    android:layout_width="wrap_content"
+                <include
+                    android:id="@+id/title_container"
+                    layout="@layout/add_on_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_percent="0.50" />
-
-                <TextView
-                    android:id="@+id/add_on_quantity"
-                    style="@style/Title2Medium"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:textColor="@color/ksr_green_500"
-                    android:textSize="@dimen/title_reward"
+                    android:visibility="visible"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/reward_conversion_text_view"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/add_on_symbol"
-                    app:layout_constraintTop_toBottomOf="@id/guideline"
-                    tools:text="2" />
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-                <TextView
-                    android:id="@+id/add_on_symbol"
-                    style="@style/Title2Medium"
-                    android:layout_width="wrap_content"
+                <include
+                    android:id="@+id/items_container"
+                    layout="@layout/add_on_items"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:textColor="@color/ksr_green_500"
-                    android:textSize="@dimen/title_reward"
-                    app:layout_constraintEnd_toStartOf="@+id/reward_title_text_view"
-                    app:layout_constraintStart_toEndOf="@id/add_on_quantity"
-                    app:layout_constraintTop_toBottomOf="@id/guideline"
-                    tools:text="x" />
+                    android:visibility="visible"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@id/title_container"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
-                    android:id="@+id/reward_title_text_view"
-                    style="@style/TextPrimary"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/title_reward"
-                    android:textStyle="bold"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:maxLines="1"
-                    app:layout_constraintStart_toEndOf="@id/add_on_symbol"
-                    app:layout_constraintTop_toBottomOf="@id/guideline"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="Make a pledge without a reward" />
-
-                <TextView
-                    android:id="@+id/reward_description_text_view"
+                    android:id="@+id/add_on_description_text_view"
                     style="@style/BodyPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/reward_title_text_view"
+                    app:layout_constraintTop_toBottomOf="@id/items_container"
                     tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
 
-
-                <LinearLayout
-                    android:id="@+id/rewards_item_section"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/grid_3"
-                    android:focusable="true"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        style="@style/RewardSectionTitle"
-                        android:text="@string/rewards_info_includes" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rewards_item_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        tools:itemCount="3"
-                        tools:listitem="@layout/rewards_item_view" />
-
-                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
-
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -7,9 +7,8 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.*
 
-class RewardAndAddOnsAdapter(private val viewListener: RewardAndAddOnsAdapter.ViewListener) : KSAdapter() {
+class RewardAndAddOnsAdapter() : KSAdapter() {
 
-    interface ViewListener:RewardViewHolder.Delegate, AddOnViewHolder.ViewListener
 
     init {
         insertSection(SECTION_REWARD_CARD, emptyList<Reward>())
@@ -24,8 +23,8 @@ class RewardAndAddOnsAdapter(private val viewListener: RewardAndAddOnsAdapter.Vi
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.item_reward -> RewardViewHolder(view, viewListener)
-            R.layout.item_add_on -> AddOnViewHolder(view, viewListener)
+            R.layout.item_reward,
+            R.layout.item_add_on -> AddOnViewHolder(view)
             else -> EmptyViewHolder(view)
         }
     }
@@ -35,7 +34,7 @@ class RewardAndAddOnsAdapter(private val viewListener: RewardAndAddOnsAdapter.Vi
         notifyDataSetChanged()
     }
 
-    fun populateDataForRewad(reward: Pair<ProjectData, Reward>) {
+    fun populateDataForReward(reward: Pair<ProjectData, Reward>) {
         setSection(SECTION_REWARD_CARD, listOf(reward))
         notifyDataSetChanged()
     }

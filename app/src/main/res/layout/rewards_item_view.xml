@@ -4,15 +4,22 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical">
+  android:orientation="horizontal">
+
+  <TextView
+      android:layout_marginLeft="@dimen/grid_2"
+      android:layout_marginRight="@dimen/grid_2"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:text="&#8226;"/>
 
   <TextView
     android:id="@+id/rewards_item_title"
     style="@style/BodyPrimary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_2"
-    android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_1"
+    android:layout_marginTop="@dimen/grid_1"
     tools:text="3 T-Shirts" />
-
 </LinearLayout>

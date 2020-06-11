@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <TextView
+        android:id="@+id/add_on_quantity"
+        style="@style/Title2Medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/ksr_green_500"
+        android:textSize="@dimen/title_reward"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/add_on_symbol"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2"
+        android:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/add_on_symbol"
+        style="@style/Title2Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginStart="6dp"
+        android:textColor="@color/ksr_green_500"
+        android:textSize="@dimen/title_reward"
+        app:layout_constraintEnd_toStartOf="@+id/add_on_title_text_view"
+        app:layout_constraintStart_toEndOf="@id/add_on_quantity"
+        app:layout_constraintBaseline_toBaselineOf="@+id/add_on_quantity"
+        tools:text="x"
+        android:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/add_on_title_text_view"
+        style="@style/TextPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title_reward"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:maxLines="1"
+        app:layout_constraintStart_toEndOf="@id/add_on_symbol"
+        app:layout_constraintBaseline_toBaselineOf="@+id/add_on_quantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
+        tools:text="Make a pledge without a reward" />
+
+    <TextView
+        android:id="@+id/reward_title_text_view"
+        style="@style/TextPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title_reward"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Make a pledge without a reward"
+        tools:visibility="visible"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

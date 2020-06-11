@@ -52,7 +52,7 @@
         tools:text="Make a pledge without a reward" />
 
     <TextView
-        android:id="@+id/reward_title_text_view"
+        android:id="@+id/add_on_title_text_view_no_quantity"
         style="@style/TextPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

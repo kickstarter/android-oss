@@ -32,7 +32,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/add_on_conversion_text_view"
+                    android:id="@+id/add_on_minimum_text_view"
                     style="@style/Title2Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_conversion_text_view"
+                    app:layout_constraintTop_toBottomOf="@id/add_on_minimum_text_view"
                     tools:text="About $15 USD"
                     android:visibility="visible"/>
 

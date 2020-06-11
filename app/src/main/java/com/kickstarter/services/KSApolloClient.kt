@@ -577,10 +577,12 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
         val rewardId = decodeRelayId(reward.id()) ?: -1
         val rewardAmount = reward.amount().fragments().amount().amount()?.toDouble()
-        val rewardSingleLocation = Reward.SingleLocation.builder()
-                .localizedName(location?.displayableName())
-                .id(decodeRelayId(location?.id())?:-1)
-                .build()
+        val rewardSingleLocation = location?.let { location ->
+            return@let Reward.SingleLocation.builder()
+                    .localizedName(location.displayableName())
+                    .id(decodeRelayId(location.id())?:-1)
+                    .build()
+        }
 
         return@let Reward.builder()
                 .minimum(rewardAmount?: -1.0)

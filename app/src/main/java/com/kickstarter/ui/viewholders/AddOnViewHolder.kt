@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardItemsAdapter
@@ -43,7 +43,7 @@ class AddOnViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.titleForNoReward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.add_on_title_text_view_no_quantity.setText(it) }
+                .subscribe { this.view.add_on_title_no_spannable.setText(it) }
 
         this.viewModel.outputs.descriptionForReward()
                 .compose(bindToLifecycle())
@@ -65,31 +65,28 @@ class AddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(observeForUI())
                 .subscribe(ViewUtils.setGone(this.view.items_container))
 
-        this.viewModel.outputs.quantityIsGone()
+        this.viewModel.outputs.isAddonTitleGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe {
-                    if (it) {
-                        this.view.add_on_quantity.visibility = View.GONE
-                        this.view.add_on_symbol.visibility = View.GONE
-                        this.view.add_on_title_text_view_no_quantity.visibility = View.VISIBLE
+                .subscribe { shouldHideAddonAmount ->
+                    if (shouldHideAddonAmount) {
+                        this.view.add_on_title_text_view.visibility = View.GONE
+                        this.view.add_on_title_no_spannable.visibility = View.VISIBLE
                     } else {
-                        this.view.add_on_quantity.visibility = View.VISIBLE
-                        this.view.add_on_symbol.visibility = View.VISIBLE
-                        this.view.add_on_minimum_text_view.visibility = View.VISIBLE
-                        this.view.add_on_title_text_view_no_quantity.visibility = View.GONE
+                        this.view.add_on_title_no_spannable.visibility = View.GONE
+                        this.view.add_on_title_text_view.visibility = View.VISIBLE
                     }
                 }
 
         this.viewModel.outputs.titleForReward()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.add_on_title_text_view.text = it }
+                .subscribe { this.view.add_on_title_no_spannable.text = it }
 
-        this.viewModel.outputs.titleIsGone()
+        this.viewModel.outputs.titleForAddOn()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.add_on_title_text_view, it) }
+                .subscribe { this.view.add_on_title_text_view.text = RewardViewUtils.styleTitleForAddOns(context(), it.first, it.second) }
     }
 
     override fun bindData(data: Any?) {

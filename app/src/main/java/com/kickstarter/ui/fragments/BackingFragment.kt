@@ -18,6 +18,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
@@ -170,6 +171,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
                 .subscribe { total_summary_amount.text = it }
 
         this.viewModel.outputs.projectDataAndAddOns()
+                .filter { it.second.isNotEmpty() }
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { populateAddOns(it) }
@@ -206,9 +208,10 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
     private fun populateAddOns(projectAndAddOn: Pair<ProjectData, List<Reward>>) {
         val project = projectAndAddOn.first
         val addOns  = projectAndAddOn.second
-
-        val projectAndRw = Pair(project, addOns)
-        rewardsAndAddOnsAdapter.populateDataForAddOns(projectAndRw)
+        val listData = addOns.map {
+            Pair(project, it)
+        }.toList()
+        rewardsAndAddOnsAdapter.populateDataForAddOns(listData)
     }
 
     private fun setBackerImageView(url: String) {

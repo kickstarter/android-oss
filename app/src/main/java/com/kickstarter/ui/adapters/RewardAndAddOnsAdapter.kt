@@ -28,9 +28,9 @@ class RewardAndAddOnsAdapter() : KSAdapter() {
         }
     }
 
-    fun populateDataForAddOns(rewards: Pair<ProjectData, List<Reward>>) {
-        if (rewards.second.isNotEmpty()) {
-            setSection(SECTION_ADD_ONS_CARD, listOf(rewards))
+    fun populateDataForAddOns(rewards: List<Pair<ProjectData,Reward>>) {
+        if (rewards.isNotEmpty()) {
+            setSection(SECTION_ADD_ONS_CARD, rewards)
             notifyDataSetChanged()
         }
     }

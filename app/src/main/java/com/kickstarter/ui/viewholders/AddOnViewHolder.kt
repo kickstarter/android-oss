@@ -95,32 +95,13 @@ class AddOnViewHolder(private val view: View) : KSViewHolder(view) {
     override fun bindData(data: Any?) {
         if (data is (Pair<*, *>)) {
             if (data.second is Reward) {
-                bindReward(data)
-            } else if (data.second is List<*>) {
-                bindListAddOns(data)
+                bindReward(data as Pair<ProjectData, Reward>)
             }
         }
     }
 
-    private fun bindListAddOns(data: Pair<*, *>) {
-        @Suppress("UNCHECKED_CAST")
-        val tracking = data.first as ProjectData
-        val listOfAddOns = data.second as? List<Reward>
-
-        if (!listOfAddOns.isNullOrEmpty()) {
-            listOfAddOns?.forEach { addOn ->
-                val addOn = requireNonNull(addOn)
-                this.viewModel.inputs.configureWith(tracking, addOn)
-            }
-        }
-    }
-
-    private fun bindReward(data: Any?) {
-        @Suppress("UNCHECKED_CAST")
-        val projectAndReward = requireNonNull(data as Pair<ProjectData, Reward>)
-        val projectTracking = requireNonNull(projectAndReward.first, ProjectData::class.java)
-        val reward = requireNonNull(projectAndReward.second, Reward::class.java)
-        this.viewModel.inputs.configureWith(projectTracking, reward)
+    private fun bindReward(projectAndReward: Pair<ProjectData, Reward>) {
+        this.viewModel.inputs.configureWith(projectAndReward.first, projectAndReward.second)
     }
 
     private fun setUpItemAdapter(): RewardItemsAdapter {

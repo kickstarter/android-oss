@@ -108,7 +108,7 @@ interface AddOnViewHolderViewModel {
                     .subscribe(this.conversionIsGone)
 
             projectAndReward
-                    .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true) }
+                    .map { getCurrency(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.conversion)
 
@@ -157,6 +157,9 @@ interface AddOnViewHolderViewModel {
                     .subscribe(this.titleForAddOn)
 
         }
+
+        private fun getCurrency(it: Pair<Project, Reward>) =
+                this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true)
 
         private fun buildCurrency(project: Project, reward: Reward): String {
             val completeCurrency = ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP)

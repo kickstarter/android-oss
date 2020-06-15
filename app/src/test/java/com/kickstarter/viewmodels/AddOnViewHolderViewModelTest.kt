@@ -3,7 +3,11 @@ package com.kickstarter.viewmodels
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.RewardsItem
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -38,36 +42,68 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRewardWithoutAddon() {
+        setUpEnvironment(environment())
 
-    }
+        val reward = RewardFactory.rewardWithShipping().toBuilder().isAddOn(false).build()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
-    @Test
-    fun testRewardWithOneAddOn() {
-
-    }
-
-    @Test
-    fun testRewardWithMultipleAddons() {
-
+        this.titleForAddOn.assertNoValues()
+        this.titleForReward.assertValue(reward.title())
+        this.descriptionForReward.assertValue(reward.description())
     }
 
     @Test
     fun testRewardAndAddOnWithItems() {
+        setUpEnvironment(environment())
 
+        val reward = RewardFactory.itemized().toBuilder().quantity(1).isAddOn(true).build()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
+
+        val title = reward.title()?.let { it } ?: ""
+        val quantity = reward.quantity()?.let { it } ?: 0
+
+        this.titleForAddOn.assertValue(Pair(title, quantity))
+        this.titleForReward.assertNoValues()
+        this.quantityIsGone.assertNoValues()
+        this.rewardItems.assertValue(reward.rewardsItems())
+        this.rewardItemsAreGone.assertValue(false)
+        this.descriptionForReward.assertValue(reward.description())
     }
 
     @Test
-    fun testRewardNoRewardNoAddOns() {
+    fun testNoReward() {
+        setUpEnvironment(environment())
 
-    }
+        val reward = RewardFactory.noReward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
-    @Test
-    fun testRewardWithAddOnsAndQuantity() {
-
+        this.titleForAddOn.assertNoValues()
+        this.titleForReward.assertNoValues()
+        this.titleForNoReward.assertValue(R.string.You_pledged_without_a_reward)
+        this.rewardItemsAreGone.assertValue(true)
+        this.descriptionForReward.assertNoValues()
+        this.descriptionForNoReward.assertValue(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
     }
 
     @Test
     fun testCurrencyIsGone() {
+        val environment = environment()
+        setUpEnvironment(environment)
 
+        val usProject = ProjectFactory.project()
+                .toBuilder()
+                .currentCurrency("USD")
+                .build()
+        val minimum = 50.0
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .minimum(minimum)
+                .convertedMinimum(minimum)
+                .build()
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(usProject), reward)
+
+        this.conversionIsGone.assertValue(true)
+        this.conversion.assertValue("$50")
     }
 }

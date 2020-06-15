@@ -579,7 +579,7 @@ catch your eye?</string>
   <string name="Top_ten_pledge_sources" formatted="false">Top 10 pledge sources</string>
   <string name="Top_ten_rewards" formatted="false">Top 10 rewards</string>
   <string name="Total" formatted="false">Total</string>
-  <string name="Total_amount" formatted="false">Total amount</string>
+  <string name="Total_amount" formatted="false">Total</string>
   <string name="Total_amount_backers_have_pledged_to_projects" formatted="false">Total amount (USD) backers have pledged to projects.</string>
   <string name="Total_amount_billion_plus" formatted="false">%{total_amount} billion+</string>
   <string name="Total_pledged" formatted="false">Total pledged</string>
@@ -1723,4 +1723,9 @@ saved</string>
   <string name="via_custom" formatted="false">via custom</string>
   <string name="via_external" formatted="false">via external</string>
   <string name="via_kickstarter" formatted="false">via Kickstarter</string>
+  <string name="pledge_details_backer" formatted="false">Your pledge details</string>
+  <string name="pledge_details_creator" formatted="false">Pledge details</string>
+  <string name="pledge_delivery_warning" formatted="false">Remember that delivery dates are \nnot guaranteed. Delays or changes are \npossible.</string>
+  <string name="pledge_delivery_delivered" formatted="false">Estimated Delivery June 2020.\nReward delivered?</string>
+  <string name="pledge_bonus_label" formatted="false">Bonus</string>
 </resources>

@@ -373,10 +373,21 @@ interface RewardViewHolderViewModel {
 
         }
 
+        /**
+         * In case the `suggested_no_reward_amount` is active and the selected reward is no reward
+         * update the value with one of the variants. Otherwise return the reward as it is
+         *
+         * @param rewardAndVariant contains the selected reward and the variant value
+         *
+         * @return reward if modified value if needed
+         */
         private fun updateReward(rewardAndVariant: Pair<Reward, Int?>):Reward {
             val reward = rewardAndVariant.first
 
-            val updatedMinimum = rewardAndVariant.second?.let { it.toDouble()  } ?: reward.minimum()
+            val updatedMinimum = rewardAndVariant.second?.let {
+                if (RewardUtils.isNoReward(reward)) it.toDouble()
+                else reward.minimum()
+            } ?: reward.minimum()
 
             return reward.toBuilder().minimum(updatedMinimum).build()
         }

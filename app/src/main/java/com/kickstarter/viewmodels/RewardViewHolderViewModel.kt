@@ -150,7 +150,7 @@ interface RewardViewHolderViewModel {
         private val titleForNoReward = BehaviorSubject.create<Int>()
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
-        private val variantSuggestedAmount = BehaviorSubject.create<Int>()
+        private val variantSuggestedAmount = BehaviorSubject.create<Int?>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -174,10 +174,12 @@ interface RewardViewHolderViewModel {
 
             val reward = this.projectDataAndReward
                     .map { it.second }
+                    .compose<Pair<Reward, Int?>>(combineLatestPair(variantSuggestedAmount))
+                    .map { updateReward(it) }
 
             val project = this.projectDataAndReward
                     .map { it.first.project() }
-            
+
             val projectAndReward = this.projectDataAndReward
                     .map { Pair(it.first.project(), it.second) }
 
@@ -369,6 +371,14 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDelivery)
 
+        }
+
+        private fun updateReward(rewardAndVariant: Pair<Reward, Int?>):Reward {
+            val reward = rewardAndVariant.first
+
+            val updatedMinimum = rewardAndVariant.second?.let { it.toDouble()  } ?: reward.minimum()
+
+            return reward.toBuilder().minimum(updatedMinimum).build()
         }
 
         private fun buttonIsGone(project: Project, reward: Reward, userCreatedProject: Boolean): Boolean {

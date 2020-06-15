@@ -10,10 +10,10 @@ class OptimizelyExperiment {
 
     enum class Variant(val rawValue: String?) {
         CONTROL(null),
-        VARIANT_1("variant-1"),
-        VARIANT_2("variant-2"),
-        VARIANT_3("variant-3"),
-        VARIANT_4("variant-4");
+        VARIANT_1("variant_1"),
+        VARIANT_2("variation_2"),
+        VARIANT_3("variation_3"),
+        VARIANT_4("variation_4");
 
         companion object {
             fun safeValueOf(rawValue: String?): Variant {

@@ -157,16 +157,11 @@ interface RewardViewHolderViewModel {
 
         init {
 
-            val currentProjectData = this.projectDataAndReward
-                    .map { it.first }
-
-            Observable.combineLatest(currentProjectData, this.currentUser.observable())
+            Observable.combineLatest(this.projectDataAndReward, this.currentUser.observable())
             { data, user ->
-                val experimentData = ExperimentData(user, data.refTagFromIntent(), data.refTagFromCookie())
-                ProjectViewUtils.pledgeActionButtonText(
-                        data.project(),
-                        user,
-                        this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData))
+                val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
+                val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
+                rewardAmountByVariant(variant)
             }
             .distinctUntilChanged()
             .compose(bindToLifecycle())
@@ -181,6 +176,8 @@ interface RewardViewHolderViewModel {
                     .map { it.first.project() }
 
             val projectAndReward = this.projectDataAndReward
+                    .map { it.first }
+                    .compose<Pair<ProjectData, Reward>>(combineLatestPair(reward))
                     .map { Pair(it.first.project(), it.second) }
 
             projectAndReward
@@ -371,6 +368,14 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDelivery)
 
+        }
+
+        private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {
+                OptimizelyExperiment.Variant.CONTROL -> 1
+                OptimizelyExperiment.Variant.VARIANT_2 -> 10
+                OptimizelyExperiment.Variant.VARIANT_3 -> 20
+                OptimizelyExperiment.Variant.VARIANT_4 -> 50
+            else -> null
         }
 
         /**

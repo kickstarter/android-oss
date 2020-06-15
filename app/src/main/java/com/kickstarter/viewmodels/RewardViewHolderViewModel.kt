@@ -170,15 +170,16 @@ interface RewardViewHolderViewModel {
             val reward = this.projectDataAndReward
                     .map { it.second }
                     .compose<Pair<Reward, Int?>>(combineLatestPair(variantSuggestedAmount))
+                    .distinctUntilChanged()
                     .map { updateReward(it) }
 
             val project = this.projectDataAndReward
                     .map { it.first.project() }
 
-            val projectAndReward = this.projectDataAndReward
-                    .map { it.first }
-                    .compose<Pair<ProjectData, Reward>>(combineLatestPair(reward))
-                    .map { Pair(it.first.project(), it.second) }
+            val projectAndReward = project
+                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
+                    .map { Pair(it.first, it.second) }
+                    .distinctUntilChanged()
 
             projectAndReward
                     .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
@@ -237,8 +238,8 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.descriptionIsGone)
 
-            projectAndReward
-                    .map { isSelectable(it.first, it.second) }
+            this.projectDataAndReward
+                    .map { isSelectable(it.first.project(), it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonIsEnabled)

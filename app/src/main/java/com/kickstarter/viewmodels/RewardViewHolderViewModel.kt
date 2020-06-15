@@ -8,6 +8,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
@@ -118,6 +119,7 @@ interface RewardViewHolderViewModel {
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val optimizely = environment.optimizely()
 
         private val projectDataAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
         private val rewardClicked = PublishSubject.create<Int>()
@@ -148,11 +150,27 @@ interface RewardViewHolderViewModel {
         private val titleForNoReward = BehaviorSubject.create<Int>()
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
+        private val variantSuggestedAmount = BehaviorSubject.create<Int>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
+
+            val currentProjectData = this.projectDataAndReward
+                    .map { it.first }
+
+            Observable.combineLatest(currentProjectData, this.currentUser.observable())
+            { data, user ->
+                val experimentData = ExperimentData(user, data.refTagFromIntent(), data.refTagFromCookie())
+                ProjectViewUtils.pledgeActionButtonText(
+                        data.project(),
+                        user,
+                        this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData))
+            }
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .subscribe(variantSuggestedAmount)
 
             val reward = this.projectDataAndReward
                     .map { it.second }

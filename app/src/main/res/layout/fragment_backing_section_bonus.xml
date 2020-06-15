@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/shipping_summary"
+    android:id="@+id/bonus_summary"
     android:focusable="true"
     android:visibility="gone"
     tools:visibility="visible"

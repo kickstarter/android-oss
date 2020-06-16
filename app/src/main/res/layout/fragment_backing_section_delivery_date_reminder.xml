@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="75dp"
     android:layout_marginStart="@dimen/grid_4"
@@ -22,7 +21,7 @@
 
 
     <TextView
-        android:id="@+id/estimated_delivery_label"
+        android:id="@+id/delivery_reminder_label"
         style="@style/BodyPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,8 +30,7 @@
         app:layout_constraintStart_toEndOf="@id/icon_calendar"
         android:paddingEnd="@dimen/grid_4"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/pledge_delivery_warning"
-        tools:text="@string/pledge_delivery_warning" />
+        android:text="@string/pledge_delivery_warning" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

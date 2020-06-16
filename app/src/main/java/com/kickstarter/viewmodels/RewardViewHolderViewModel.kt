@@ -8,6 +8,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
@@ -118,6 +119,7 @@ interface RewardViewHolderViewModel {
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
         private val currentUser: CurrentUserType = environment.currentUser()
         private val ksCurrency: KSCurrency = environment.ksCurrency()
+        private val optimizely = environment.optimizely()
 
         private val projectDataAndReward = PublishSubject.create<Pair<ProjectData, Reward>>()
         private val rewardClicked = PublishSubject.create<Int>()
@@ -148,20 +150,36 @@ interface RewardViewHolderViewModel {
         private val titleForNoReward = BehaviorSubject.create<Int>()
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
+        private val variantSuggestedAmount = BehaviorSubject.create<Int?>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
 
+            Observable.combineLatest(this.projectDataAndReward, this.currentUser.observable())
+            { data, user ->
+                val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
+                val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
+                rewardAmountByVariant(variant)
+            }
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .subscribe(variantSuggestedAmount)
+
             val reward = this.projectDataAndReward
                     .map { it.second }
+                    .compose<Pair<Reward, Int?>>(combineLatestPair(variantSuggestedAmount))
+                    .distinctUntilChanged()
+                    .map { updateReward(it) }
 
             val project = this.projectDataAndReward
                     .map { it.first.project() }
-            
-            val projectAndReward = this.projectDataAndReward
-                    .map { Pair(it.first.project(), it.second) }
+
+            val projectAndReward = project
+                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
+                    .map { Pair(it.first, it.second) }
+                    .distinctUntilChanged()
 
             projectAndReward
                     .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
@@ -220,8 +238,8 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.descriptionIsGone)
 
-            projectAndReward
-                    .map { isSelectable(it.first, it.second) }
+            this.projectDataAndReward
+                    .map { isSelectable(it.first.project(), it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.buttonIsEnabled)
@@ -351,6 +369,33 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDelivery)
 
+        }
+
+        private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {
+                OptimizelyExperiment.Variant.CONTROL -> 1
+                OptimizelyExperiment.Variant.VARIANT_2 -> 10
+                OptimizelyExperiment.Variant.VARIANT_3 -> 20
+                OptimizelyExperiment.Variant.VARIANT_4 -> 50
+            else -> null
+        }
+
+        /**
+         * In case the `suggested_no_reward_amount` is active and the selected reward is no reward
+         * update the value with one of the variants. Otherwise return the reward as it is
+         *
+         * @param rewardAndVariant contains the selected reward and the variant value
+         *
+         * @return reward if modified value if needed
+         */
+        private fun updateReward(rewardAndVariant: Pair<Reward, Int?>):Reward {
+            val reward = rewardAndVariant.first
+
+            val updatedMinimum = rewardAndVariant.second?.let {
+                if (RewardUtils.isNoReward(reward)) it.toDouble()
+                else reward.minimum()
+            } ?: reward.minimum()
+
+            return reward.toBuilder().minimum(updatedMinimum).build()
         }
 
         private fun buttonIsGone(project: Project, reward: Reward, userCreatedProject: Boolean): Boolean {

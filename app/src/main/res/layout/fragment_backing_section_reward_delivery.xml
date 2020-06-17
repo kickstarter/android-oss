@@ -19,8 +19,8 @@
         android:paddingStart="@dimen/grid_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/pledge_delivery_delivered"
-        tools:text="@string/pledge_delivery_delivered" />
+        android:textColor="@color/ksr_dark_grey_500"
+        android:text="@string/pledge_delivery_delivered" />
 
 
     <CheckBox

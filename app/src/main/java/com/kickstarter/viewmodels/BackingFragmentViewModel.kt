@@ -17,6 +17,7 @@ import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -125,6 +126,10 @@ interface BackingFragmentViewModel {
 
         /** Emits the bonus support added to the pledge, if any **/
         fun bonusSupport(): Observable<CharSequence>
+
+        /** Emits the estimated delivery date of this reward **/
+        fun estimatedDelivery(): Observable<String>
+
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
@@ -162,6 +167,7 @@ interface BackingFragmentViewModel {
         private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val addOnsList = BehaviorSubject.create<Pair<ProjectData,List<Reward>>>()
         private val bonusSupport = BehaviorSubject.create<CharSequence>()
+        private val estimatedDelivery = BehaviorSubject.create<String>()
 
         private val apiClient = this.environment.apiClient()
         private val apolloClient = this.environment.apolloClient()
@@ -376,6 +382,16 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.bonusSupport)
 
+            val reward = this.projectDataAndReward
+                    .map { it.second }
+
+            reward
+                    .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                    .map<DateTime> { it.estimatedDeliveryOn() }
+                    .map { DateTimeUtils.estimatedDeliveryOn(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDelivery)
+
         }
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
@@ -510,5 +526,7 @@ interface BackingFragmentViewModel {
         override fun totalAmount(): Observable<CharSequence> = this.totalAmount
 
         override fun bonusSupport(): Observable<CharSequence> = this.bonusSupport
+
+        override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
     }
 }

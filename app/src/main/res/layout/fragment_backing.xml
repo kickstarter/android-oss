@@ -110,12 +110,12 @@
                         tools:visibility="visible" />
 
                     <include
-                        layout="@layout/fragment_backing_section_bonus"
                         android:id="@+id/section_bonus_support"
+                        layout="@layout/fragment_backing_section_bonus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="visible"
-                        android:layout_marginBottom="@dimen/grid_3" />
+                        android:layout_marginBottom="@dimen/grid_3"
+                        android:visibility="visible" />
 
                     <include
                         layout="@layout/fragment_backing_section_summary_total"
@@ -180,28 +180,32 @@
                         android:layout_marginTop="@dimen/grid_4"
                         android:text="@string/pledge_details_backer" />
 
+                    <TextView
+                        android:id="@+id/estimated_delivery_label_2"
+                        style="@style/CalloutPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_3"
+                        android:text="@string/Estimated_delivery"
+                        android:textColor="@color/ksr_dark_grey_500"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <include
-                        layout="@layout/fragment_backing_section_reward_delivery"
                         android:id="@+id/received_section"
+                        layout="@layout/fragment_backing_section_reward_delivery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/grid_5_half" />
 
 
                     <include
+                        android:id="@+id/delivery_disclaimer_section"
                         layout="@layout/fragment_backing_section_delivery_date_reminder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/grid_3"
                         android:layout_marginBottom="@dimen/grid_4" />
-
-<!--                    <TextView-->
-                  <!--                        style="@style/CalloutPrimaryMedium"-->
-                  <!--                        android:layout_width="wrap_content"-->
-                  <!--                        android:layout_height="wrap_content"-->
-                  <!--                        android:layout_marginTop="@dimen/grid_4"-->
-                  <!--                        android:layout_marginBottom="@dimen/grid_2"-->
-                  <!--                        android:text="@string/Selected_reward" />-->
 
                 </LinearLayout>
 
@@ -210,44 +214,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <!--        <LinearLayout-->
-                <!--          android:id="@+id/received_section"-->
-                <!--          android:layout_width="match_parent"-->
-                <!--          android:layout_height="wrap_content"-->
-                <!--          android:layout_gravity="center_vertical"-->
-                <!--          android:orientation="vertical"-->
-                <!--          android:paddingBottom="@dimen/grid_2">-->
-
-                <!--          <include-->
-                <!--            layout="@layout/horizontal_line_1dp_view"-->
-                <!--            android:layout_width="match_parent"-->
-                <!--            android:layout_height="wrap_content"-->
-                <!--            android:layout_marginBottom="@dimen/grid_2" />-->
-
-                <!--          <LinearLayout-->
-                <!--            android:layout_width="match_parent"-->
-                <!--            android:layout_height="wrap_content"-->
-                <!--            android:gravity="center_vertical"-->
-                <!--            android:orientation="horizontal">-->
-
-                <!--            <TextView-->
-                <!--              android:id="@+id/received_label"-->
-                <!--              style="@style/CalloutPrimaryMedium"-->
-                <!--              android:layout_width="0dp"-->
-                <!--              android:layout_height="wrap_content"-->
-                <!--              android:layout_weight="1"-->
-                <!--              android:text="@string/Reward_delivered" />-->
-
-                <!--            <CheckBox-->
-                <!--              android:id="@+id/mark_as_received_checkbox"-->
-                <!--              android:layout_width="wrap_content"-->
-                <!--              android:layout_height="wrap_content"-->
-                <!--              app:layout_constraintBottom_toBottomOf="parent" />-->
-                <!--          </LinearLayout>-->
-
-                <!--        </LinearLayout>-->
-
-                <!--      </LinearLayout>-->
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>

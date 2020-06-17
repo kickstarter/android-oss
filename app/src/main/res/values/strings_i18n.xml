@@ -1726,6 +1726,6 @@ saved</string>
   <string name="pledge_details_backer" formatted="false">Your pledge details</string>
   <string name="pledge_details_creator" formatted="false">Pledge details</string>
   <string name="pledge_delivery_warning" formatted="false">Remember that delivery dates are \nnot guaranteed. Delays or changes are \npossible.</string>
-  <string name="pledge_delivery_delivered" formatted="false">Estimated Delivery June 2020.\nReward delivered?</string>
+  <string name="pledge_delivery_delivered" formatted="false">Estimated delivery %{estimated_delivery}.\nReward delivered?</string>
   <string name="pledge_bonus_label" formatted="false">Bonus</string>
 </resources>

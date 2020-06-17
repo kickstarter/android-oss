@@ -1038,6 +1038,27 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.bonusAmount.assertValue(expectedCurrency(environment, backedProject, bonusAmount))
     }
 
+    @Test
+    fun testWithBonusSupportFormat() {
+        val bonusAmount = 50.0
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .bonusAmount(bonusAmount)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.bonusAmount.assertValue("$50")
+    }
+
+
     private fun backingWithStatus(@Backing.Status backingStatus: String): Backing {
         return BackingFactory.backing()
                 .toBuilder()

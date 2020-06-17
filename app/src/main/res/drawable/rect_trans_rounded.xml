@@ -8,6 +8,6 @@
         android:top="@dimen/grid_1" />
     <stroke
         android:width="1px"
-        android:color="@color/ksr_dark_grey_500" />
+        android:color="@color/ksr_dark_grey_400" />
     <corners android:radius="@dimen/grid_2" />
 </shape>

@@ -130,6 +130,9 @@ interface BackingFragmentViewModel {
         /** Emits the estimated delivery date of this reward **/
         fun estimatedDelivery(): Observable<String>
 
+        /** Emits a boolean determining if the delivery disclaimer section is visible **/
+        fun deliveryDisclaimerSectionIsGone(): Observable<Boolean>
+
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
@@ -168,6 +171,8 @@ interface BackingFragmentViewModel {
         private val addOnsList = BehaviorSubject.create<Pair<ProjectData,List<Reward>>>()
         private val bonusSupport = BehaviorSubject.create<CharSequence>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
+        private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
+        private val estimatedDeliveryLabelIsGone = BehaviorSubject.create<Boolean>()
 
         private val apiClient = this.environment.apiClient()
         private val apolloClient = this.environment.apolloClient()
@@ -392,6 +397,15 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDelivery)
 
+
+            Observable.combineLatest(this.environment.currentUser().observable(), this.projectDataAndReward) { user, projectAndReward ->
+                Pair(user, projectAndReward)
+            }.filter { ProjectUtils.userIsCreator(it.second.first.project(), it.first) }
+                    .map { true }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.deliveryDisclaimerSectionIsGone)
+
+
         }
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
@@ -528,5 +542,8 @@ interface BackingFragmentViewModel {
         override fun bonusSupport(): Observable<CharSequence> = this.bonusSupport
 
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
+
+        override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> = this.deliveryDisclaimerSectionIsGone
+
     }
 }

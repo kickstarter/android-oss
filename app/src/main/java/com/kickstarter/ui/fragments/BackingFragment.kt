@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.Log
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -209,27 +210,15 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>(){
 
                 }
 
-        this.viewModel.environment.currentUser().observable()
+        this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { user ->
-                    this.viewModel.outputs.projectDataAndReward().map { it.first }
-                            .compose(bindToLifecycle())
-                            .compose(Transformers.observeForUI())
-                            .subscribe { projectData ->
-
-                                if (ProjectUtils.userIsCreator(projectData.project(), user)) {
-                                    pledge_details_label.text = getString(R.string.pledge_details_creator)
-                                    ViewUtils.setGone(received_section, true)
-                                    ViewUtils.setGone(delivery_disclaimer_section, true)
-                                    ViewUtils.setGone(estimated_delivery_label_2, false)
-                                    estimated_delivery_label_2.setPadding(0, 0, 0, resources.getDimension(R.dimen.grid_3).toInt())
-
-                                } else {
-                                    pledge_details_label.text = getString(R.string.pledge_details_backer)
-                                }
-
-                            }
+                .subscribe {
+                    pledge_details_label.text = getString(R.string.pledge_details_creator)
+                    ViewUtils.setGone(received_section, true)
+                    ViewUtils.setGone(delivery_disclaimer_section, it)
+                    ViewUtils.setGone(estimated_delivery_label_2, false)
+                    estimated_delivery_label_2.setPadding(0, 0, 0, resources.getDimension(R.dimen.grid_3).toInt())
                 }
 
 

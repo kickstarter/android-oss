@@ -1,11 +1,16 @@
 package com.kickstarter.ui.fragments
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.util.Log
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
@@ -17,8 +22,8 @@ import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
+import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
@@ -26,13 +31,17 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_backing.*
+import kotlinx.android.synthetic.main.fragment_backing_section_bonus.*
+import kotlinx.android.synthetic.main.fragment_backing_section_delivery_date_reminder.*
+import kotlinx.android.synthetic.main.fragment_backing_section_reward_delivery.*
 import kotlinx.android.synthetic.main.fragment_backing_section_summary_total.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.reward_card_details.*
 
+
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
-class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
+class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>(){
 
     private var rewardsAndAddOnsAdapter = RewardAndAddOnsAdapter()
 
@@ -133,17 +142,22 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
         this.viewModel.outputs.projectDataAndReward()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { bindDataToRewardViewHolder(it) }
+                .subscribe {
+                    bindDataToRewardViewHolder(it)
+                }
 
         this.viewModel.outputs.receivedCheckboxChecked()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { mark_as_received_checkbox.isChecked = it }
+                .subscribe { estimated_delivery_checkbox.isChecked = it }
 
         this.viewModel.outputs.receivedSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(received_section, it) }
+                .subscribe {
+                    ViewUtils.setGone(received_section, it)
+                    ViewUtils.setGone(estimated_delivery_label_2, !it)
+                }
 
         this.viewModel.outputs.shippingAmount()
                 .compose(bindToLifecycle())
@@ -153,7 +167,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
         this.viewModel.outputs.shippingLocation()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it)  }
+                .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it) }
 
         this.viewModel.outputs.shippingSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -176,6 +190,41 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
                 .compose(Transformers.observeForUI())
                 .subscribe { populateAddOns(it) }
 
+        this.viewModel.outputs.bonusSupport()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { bonus_summary_amount.text = it.toString() }
+
+        this.viewModel.outputs.estimatedDelivery()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+
+                    estimated_delivery_label.text = viewModel.environment.ksString().format(getString(R.string.pledge_delivery_delivered), "estimated_delivery", it)
+
+                    val stringToBold = getString(R.string.rewards_info_estimated_delivery)
+                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label)
+
+                    estimated_delivery_label_2.text = "${estimated_delivery_label_2.text} $it"
+                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label_2)
+
+                }
+
+        this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    pledge_details_label.text = getString(R.string.pledge_details_creator)
+                    ViewUtils.setGone(received_section, true)
+                    ViewUtils.setGone(delivery_disclaimer_section, it)
+                    ViewUtils.setGone(estimated_delivery_label_2, false)
+                    estimated_delivery_label_2.setPadding(0, 0, 0, resources.getDimension(R.dimen.grid_3).toInt())
+                }
+
+
+        val boldPortionLength = delivery_reminder_label.text.toString().split(".").first().length
+        setBoldSpanOnTextView(boldPortionLength, delivery_reminder_label)
+
         SwipeRefresher(
                 this, backing_swipe_refresh_layout, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
         )
@@ -184,9 +233,19 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.fixPaymentMethodButtonClicked() }
 
-        RxView.clicks(mark_as_received_checkbox)
+        RxView.clicks(estimated_delivery_checkbox)
                 .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.receivedCheckboxToggled(mark_as_received_checkbox.isChecked) }
+                .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
+    }
+
+    private fun setBoldSpanOnTextView(numCharacters: Int, textView: TextView) {
+        val spannable = SpannableString(textView.text)
+        spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0, numCharacters,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        textView.text = spannable
     }
 
     fun configureWith(projectData: ProjectData) {
@@ -234,7 +293,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
     private fun setCardIssuerContentDescription(cardIssuerOrStringRes: Either<String, Int>) {
         val cardIssuer = cardIssuerOrStringRes.left()
         val stringRes = cardIssuerOrStringRes.right()
-        reward_card_logo.contentDescription = stringRes?.let { getString(it) }?: cardIssuer
+        reward_card_logo.contentDescription = stringRes?.let { getString(it) } ?: cardIssuer
     }
 
     private fun setCardLastFourText(lastFour: String) {
@@ -266,7 +325,7 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
             pledgeStatusData.projectDeadline?.let { ViewUtils.addBoldSpan(spannablePledgeStatus, it) }
 
             backer_pledge_status.text = spannablePledgeStatus
-        }?: run {
+        } ?: run {
             backer_pledge_status.text = null
         }
     }

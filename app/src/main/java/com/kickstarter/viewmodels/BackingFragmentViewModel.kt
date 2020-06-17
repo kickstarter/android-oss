@@ -17,6 +17,7 @@ import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
 import com.stripe.android.model.Card
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -122,6 +123,16 @@ interface BackingFragmentViewModel {
 
         /** Emits the total amount pledged. */
         fun totalAmount(): Observable<CharSequence>
+
+        /** Emits the bonus support added to the pledge, if any **/
+        fun bonusSupport(): Observable<CharSequence>
+
+        /** Emits the estimated delivery date of this reward **/
+        fun estimatedDelivery(): Observable<String>
+
+        /** Emits a boolean determining if the delivery disclaimer section is visible **/
+        fun deliveryDisclaimerSectionIsGone(): Observable<Boolean>
+
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
@@ -158,6 +169,10 @@ interface BackingFragmentViewModel {
         private val swipeRefresherProgressIsVisible = BehaviorSubject.create<Boolean>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
         private val addOnsList = BehaviorSubject.create<Pair<ProjectData,List<Reward>>>()
+        private val bonusSupport = BehaviorSubject.create<CharSequence>()
+        private val estimatedDelivery = BehaviorSubject.create<String>()
+        private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
+        private val estimatedDeliveryLabelIsGone = BehaviorSubject.create<Boolean>()
 
         private val apiClient = this.environment.apiClient()
         private val apolloClient = this.environment.apolloClient()
@@ -227,7 +242,7 @@ interface BackingFragmentViewModel {
                         this.shippingSummaryIsGone.onNext(it)
                     }
 
-            Observable.combineLatest(backedProject, backing) { p, b -> Pair(p, b)}
+            Observable.combineLatest(backedProject, backing) { p, b -> Pair(p, b) }
                     .map { pledgeStatusData(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -272,7 +287,9 @@ interface BackingFragmentViewModel {
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
             paymentSource
-                    .map { source -> source.expirationDate()?.let { simpleDateFormat.format(it) }?: "" }
+                    .map { source ->
+                        source.expirationDate()?.let { simpleDateFormat.format(it) } ?: ""
+                    }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardExpiration)
@@ -284,7 +301,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.cardIssuer)
 
             paymentSource
-                    .map { it.lastFour()?: "" }
+                    .map { it.lastFour() ?: "" }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardLastFour)
@@ -362,11 +379,38 @@ interface BackingFragmentViewModel {
                     .map { Pair(it, getAddOnsList(it.project())) }
                     .compose<Pair<ProjectData, List<Reward>>>(bindToLifecycle())
                     .subscribe(this.addOnsList)
+
+            backing
+                    .map { it.bonusAmount() }
+                    .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
+                    .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.bonusSupport)
+
+            val reward = this.projectDataAndReward
+                    .map { it.second }
+
+            reward
+                    .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                    .map<DateTime> { it.estimatedDeliveryOn() }
+                    .map { DateTimeUtils.estimatedDeliveryOn(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.estimatedDelivery)
+
+
+            Observable.combineLatest(this.environment.currentUser().observable(), this.projectDataAndReward) { user, projectAndReward ->
+                Pair(user, projectAndReward)
+            }.filter { ProjectUtils.userIsCreator(it.second.first.project(), it.first) }
+                    .map { true }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.deliveryDisclaimerSectionIsGone)
+
+
         }
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
             return if (it.backing() == null) {
-                this.apolloClient.getProjectBacking(it.project().slug()?:"")
+                this.apolloClient.getProjectBacking(it.project().slug() ?: "")
             } else {
                 Observable.just(it.backing())
             }
@@ -379,13 +423,13 @@ interface BackingFragmentViewModel {
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.let {
                 it.reward()
-            }?: BackingUtils.backedReward(projectData.project())
+            } ?: BackingUtils.backedReward(projectData.project())
             ?: Reward.builder().build()
 
-            return Pair(projectData,reward)
+            return Pair(projectData, reward)
         }
 
-        private fun cardIssuer(paymentSource: Backing.PaymentSource) : Either<String, Int> {
+        private fun cardIssuer(paymentSource: Backing.PaymentSource): Either<String, Int> {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
                 CreditCardPaymentType.APPLE_PAY -> Either.Right(R.string.apple_pay_content_description)
@@ -394,7 +438,7 @@ interface BackingFragmentViewModel {
             }
         }
 
-        private fun cardLogo(paymentSource: Backing.PaymentSource) : Int {
+        private fun cardLogo(paymentSource: Backing.PaymentSource): Int {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> R.drawable.google_pay_mark
                 CreditCardPaymentType.APPLE_PAY -> R.drawable.apple_pay_mark
@@ -403,7 +447,7 @@ interface BackingFragmentViewModel {
             }
         }
 
-        private fun pledgeStatusData(project: Project, backing: Backing) : PledgeStatusData {
+        private fun pledgeStatusData(project: Project, backing: Backing): PledgeStatusData {
             val statusStringRes = when (project.state()) {
                 Project.STATE_CANCELED -> R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged
                 Project.STATE_FAILED -> R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged
@@ -494,5 +538,12 @@ interface BackingFragmentViewModel {
         override fun swipeRefresherProgressIsVisible(): Observable<Boolean> = this.swipeRefresherProgressIsVisible
 
         override fun totalAmount(): Observable<CharSequence> = this.totalAmount
+
+        override fun bonusSupport(): Observable<CharSequence> = this.bonusSupport
+
+        override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
+
+        override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> = this.deliveryDisclaimerSectionIsGone
+
     }
 }

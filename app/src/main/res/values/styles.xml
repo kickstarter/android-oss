@@ -588,7 +588,7 @@
   </style>
 
   <style name="RewardSectionTitle" parent="CalloutPrimaryMedium">
-    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:textColor">@color/ksr_dark_grey_500</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
   </style>

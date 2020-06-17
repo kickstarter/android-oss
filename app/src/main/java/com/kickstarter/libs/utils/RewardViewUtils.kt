@@ -1,8 +1,10 @@
 package com.kickstarter.libs.utils
 
 import android.content.Context
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.Pair
 import androidx.annotation.StringRes
@@ -65,5 +67,21 @@ object RewardViewUtils {
         }
 
         return spannableString
+    }
+
+    /**
+     * Returns the title for an Add On ie: 1 x TITLE
+     *  [1 x] in green
+     *  TITLE regular string
+     */
+    fun styleTitleForAddOns(context: Context, title: String?, quantity: Int?): SpannableString {
+        val symbol = " x "
+        val numberGreenCharacters = quantity.toString().length + symbol.length
+        val spannable = SpannableString(quantity.toString() + symbol + title)
+        spannable.setSpan(
+                ForegroundColorSpan(context.getColor(R.color.ksr_green_500)),
+                0, numberGreenCharacters,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannable
     }
 }

@@ -18,6 +18,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
@@ -28,13 +29,12 @@ import kotlinx.android.synthetic.main.fragment_backing.*
 import kotlinx.android.synthetic.main.fragment_backing_section_summary_total.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
-import kotlinx.android.synthetic.main.item_reward.*
 import kotlinx.android.synthetic.main.reward_card_details.*
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
-class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), RewardAndAddOnsAdapter.ViewListener {
+class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(){
 
-    private var rewardsAndAddOnsAdapter = RewardAndAddOnsAdapter(this)
+    private var rewardsAndAddOnsAdapter = RewardAndAddOnsAdapter()
 
     interface BackingDelegate {
         fun refreshProject()
@@ -170,6 +170,12 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), Rewar
                 .compose(Transformers.observeForUI())
                 .subscribe { total_summary_amount.text = it }
 
+        this.viewModel.outputs.projectDataAndAddOns()
+                .filter { it.second.isNotEmpty() }
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { populateAddOns(it) }
+
         SwipeRefresher(
                 this, backing_swipe_refresh_layout, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
         )
@@ -196,7 +202,16 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), Rewar
         val reward = projectAndReward.second
 
         val projectAndRw = Pair(project, reward)
-        rewardsAndAddOnsAdapter.populateDataForRewad(projectAndRw)
+        rewardsAndAddOnsAdapter.populateDataForReward(projectAndRw)
+    }
+
+    private fun populateAddOns(projectAndAddOn: Pair<ProjectData, List<Reward>>) {
+        val project = projectAndAddOn.first
+        val addOns  = projectAndAddOn.second
+        val listData = addOns.map {
+            Pair(project, it)
+        }.toList()
+        rewardsAndAddOnsAdapter.populateDataForAddOns(listData)
     }
 
     private fun setBackerImageView(url: String) {
@@ -259,9 +274,5 @@ class BackingFragment: BaseFragment<BackingFragmentViewModel.ViewModel>(), Rewar
     private fun setupRecyclerView() {
         reward_add_on_recycler.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         reward_add_on_recycler.adapter = rewardsAndAddOnsAdapter
-    }
-
-    override fun rewardClicked(reward: Reward) {
-        // TODO in https://kickstarter.atlassian.net/browse/NT-1290
     }
 }

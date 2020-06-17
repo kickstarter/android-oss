@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/add_on_title_text_view"
+        style="@style/TextPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title_reward"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:maxLines="3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"
+        tools:text="Add on here with some title" />
+
+    <TextView
+        android:id="@+id/add_on_title_no_spannable"
+        style="@style/TextPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/title_reward"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:maxLines="3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Make a pledge without a reward"
+        tools:visibility="gone"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,9 +7,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.*
 
-class RewardAndAddOnsAdapter(private val viewListener: RewardAndAddOnsAdapter.ViewListener) : KSAdapter() {
-
-    interface ViewListener:RewardViewHolder.Delegate, AddOnViewHolder.ViewListener
+class RewardAndAddOnsAdapter() : KSAdapter() {
 
     init {
         insertSection(SECTION_REWARD_CARD, emptyList<Reward>())
@@ -17,25 +15,27 @@ class RewardAndAddOnsAdapter(private val viewListener: RewardAndAddOnsAdapter.Vi
     }
 
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()){
-        SECTION_REWARD_CARD -> R.layout.item_reward
+        SECTION_REWARD_CARD,
         SECTION_ADD_ONS_CARD -> R.layout.item_add_on
         else -> 0
     }
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.item_reward -> RewardViewHolder(view, viewListener)
-            R.layout.item_add_on -> AddOnViewHolder(view, viewListener)
+            R.layout.item_reward,
+            R.layout.item_add_on -> AddOnViewHolder(view)
             else -> EmptyViewHolder(view)
         }
     }
 
-    fun populateDataForAddOns(rewards: List<Pair<ProjectData, Reward>>) {
-        setSection(SECTION_ADD_ONS_CARD, rewards)
-        notifyDataSetChanged()
+    fun populateDataForAddOns(rewards: List<Pair<ProjectData,Reward>>) {
+        if (rewards.isNotEmpty()) {
+            setSection(SECTION_ADD_ONS_CARD, rewards)
+            notifyDataSetChanged()
+        }
     }
 
-    fun populateDataForRewad(reward: Pair<ProjectData, Reward>) {
+    fun populateDataForReward(reward: Pair<ProjectData, Reward>) {
         setSection(SECTION_REWARD_CARD, listOf(reward))
         notifyDataSetChanged()
     }

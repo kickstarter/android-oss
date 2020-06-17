@@ -50,6 +50,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledgeSuccess = TestSubscriber.create<Void>()
     private val swipeRefresherProgressIsVisible = TestSubscriber.create<Boolean>()
     private val totalAmount = TestSubscriber.create<CharSequence>()
+    private val listAddOns = TestSubscriber.create<Pair<ProjectData, List<Reward>>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingFragmentViewModel.ViewModel(environment)
@@ -78,6 +79,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.swipeRefresherProgressIsVisible().subscribe(this.swipeRefresherProgressIsVisible)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
+        this.vm.outputs.projectDataAndAddOns().subscribe(this.listAddOns)
     }
 
     @Test
@@ -980,6 +982,39 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.totalAmount.assertValue(expectedCurrency(environment, backedProject, amount))
+    }
+
+    @Test
+    fun testRewardWithAddOn() {
+        val addOns = RewardFactory.backers().toBuilder().isAddOn(true).quantity(7).build()
+        val reward = RewardFactory.reward()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .reward(reward)
+                .addOns(listOf(addOns))
+                .build()
+
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient( object :MockApolloClient() {
+                    override fun getProjectBacking(slug: String): Observable<Backing> {
+                        return Observable.just(backing)
+                    }
+                })
+                .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectDataFactory.project(backedProject)
+        this.vm.inputs.configureWith(projectData)
+
+        this.listAddOns.assertValue(Pair(projectData, listOf(addOns)))
     }
 
     private fun backingWithStatus(@Backing.Status backingStatus: String): Backing {

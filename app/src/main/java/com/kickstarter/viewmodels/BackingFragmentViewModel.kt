@@ -97,7 +97,7 @@ interface BackingFragmentViewModel {
         fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>>
 
         /** Emits the [ProjectData] and currently selected AddOns: [List<Reward>]. */
-        fun projectDataAndAddOns(): Observable<List<Reward>>
+        fun projectDataAndAddOns(): Observable<Pair<ProjectData, List<Reward>>>
 
         /** Emits a boolean that determines if received checkbox should be checked. */
         fun receivedCheckboxChecked(): Observable<Boolean>
@@ -157,7 +157,7 @@ interface BackingFragmentViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val swipeRefresherProgressIsVisible = BehaviorSubject.create<Boolean>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
-        private val addOnsList = BehaviorSubject.create<List<Reward>>()
+        private val addOnsList = BehaviorSubject.create<Pair<ProjectData,List<Reward>>>()
 
         private val apiClient = this.environment.apiClient()
         private val apolloClient = this.environment.apolloClient()
@@ -358,10 +358,9 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.swipeRefresherProgressIsVisible)
 
-            val addOns = backing
-                    .filter { it.addOns() != null }
-                    .map { it.addOns() }
-                    .compose(bindToLifecycle())
+            projectDataInput
+                    .map { Pair(it, getAddOnsList(it.project())) }
+                    .compose<Pair<ProjectData, List<Reward>>>(bindToLifecycle())
                     .subscribe(this.addOnsList)
         }
 
@@ -372,6 +371,10 @@ interface BackingFragmentViewModel {
                 Observable.just(it.backing())
             }
         }
+
+        private fun getAddOnsList(project: Project):List<Reward> = project.backing()?.addOns()?.let {
+            mutableList -> mutableList.toList()
+        } ?: emptyList()
 
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.let {
@@ -474,7 +477,7 @@ interface BackingFragmentViewModel {
 
         override fun projectDataAndReward(): Observable<Pair<ProjectData, Reward>> = this.projectDataAndReward
 
-        override fun projectDataAndAddOns(): Observable<List<Reward>> = this.addOnsList
+        override fun projectDataAndAddOns(): Observable<Pair<ProjectData, List<Reward>>> = this.addOnsList
 
         override fun receivedCheckboxChecked(): Observable<Boolean> = this.receivedCheckboxChecked
 

@@ -114,6 +114,10 @@ interface RewardViewHolderViewModel {
 
         /** Emits the reward's title when `isReward` is true.  */
         fun titleForReward(): Observable<String?>
+
+        /** Emits a boolean that determines if the minimum pledge amount should be shown **/
+        fun isMinimumPledgeAmountGone(): Observable<Boolean>
+
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
@@ -151,6 +155,7 @@ interface RewardViewHolderViewModel {
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
         private val variantSuggestedAmount = BehaviorSubject.create<Int?>()
+        private val isMinimumPledgeAmountGone = BehaviorSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -369,6 +374,10 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDelivery)
 
+            reward.map{RewardUtils.isNoReward(it)}
+                    .compose(bindToLifecycle())
+                    .subscribe(this.isMinimumPledgeAmountGone)
+
         }
 
         private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {
@@ -507,5 +516,8 @@ interface RewardViewHolderViewModel {
 
         @NonNull
         override fun titleIsGone(): Observable<Boolean> = this.titleIsGone
+
+        @NonNull
+        override fun isMinimumPledgeAmountGone(): Observable<Boolean> = this.isMinimumPledgeAmountGone
     }
 }

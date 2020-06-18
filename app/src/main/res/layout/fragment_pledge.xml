@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/pledge_content"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:background="@color/ksr_grey_300"
-  android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pledge_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ksr_grey_300"
+    android:orientation="vertical">
 
   <androidx.core.widget.NestedScrollView
     android:id="@+id/pledge_root"
@@ -25,6 +26,14 @@
       android:orientation="vertical">
 
       <include layout="@layout/fragment_pledge_section_header_reward_sumary"/>
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:animateLayoutChanges="true">
+
+
+      </RelativeLayout>
       <include layout="@layout/fragment_pledge_section_reward_summary"
           android:visibility="gone"/>
 

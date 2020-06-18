@@ -4,6 +4,8 @@
     android:layout_height="wrap_content"
     android:id="@+id/pledge_header_container"
     android:background="@color/white"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -75,10 +77,23 @@
         tools:listitem="@layout/fragment_pledge_section_header_item"
         tools:itemCount="2"/>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_3"
+        android:background="@color/ksr_grey_300"
+        android:contentDescription="@string/expand_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/arrow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:background="@drawable/ic_arrow_down"
+        android:translationY="-5dp"
+        android:importantForAccessibility="no"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_rewards_add_ons" />

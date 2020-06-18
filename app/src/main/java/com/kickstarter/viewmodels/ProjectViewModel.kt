@@ -621,7 +621,7 @@ interface ProjectViewModel {
 
             currentProject
                     .compose<Pair<Project, Int>>(combineLatestPair(fragmentStackCount))
-                    .map { if (it.second <= 0) R.drawable.pldge_header_green_button_down else R.drawable.ic_arrow_back }
+                    .map { if (it.second <= 0) R.drawable.ic_arrow_down else R.drawable.ic_arrow_back }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeToolbarNavigationIcon)

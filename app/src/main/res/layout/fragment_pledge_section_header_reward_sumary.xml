@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/pldge_header_green_button_down"
+        android:background="@drawable/pledge_header_green_button_down"
         android:importantForAccessibility="no"
         android:translationY="-5dp"
         app:layout_constraintEnd_toEndOf="parent"

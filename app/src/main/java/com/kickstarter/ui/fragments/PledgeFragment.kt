@@ -52,6 +52,8 @@ import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_footer.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_header_item.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
@@ -112,7 +114,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { pledge_estimated_delivery.text = it }
+                .subscribe {
+                    pledge_estimated_delivery.text = it
+                    pledge_estimated_delivery_date.text = it
+                }
 
         this.viewModel.outputs.estimatedDeliveryInfoIsGone()
                 .compose(bindToLifecycle())
@@ -190,7 +195,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.rewardTitle()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { reward_title.text = it }
+                .subscribe {
+                    reward_title.text = it
+                    pledge_header_item_title.text = it
+                }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())

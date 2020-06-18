@@ -44,7 +44,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/grid_1_half"
-        android:paddingTop="2dp"
         app:layout_constraintEnd_toEndOf="@+id/guideline_separator"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/pledge_header_estimated_delivery_label"

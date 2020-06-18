@@ -39,6 +39,7 @@ import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
+import com.kickstarter.ui.adapters.ExpandableHeaderAdapter
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
@@ -71,6 +72,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private lateinit var adapter: ShippingRulesAdapter
+    private var headerAdapter = ExpandableHeaderAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -82,6 +84,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         setUpCardsAdapter()
         setUpShippingAdapter()
+        setupRewardRecyclerView()
 
         pledge_amount.onChange { this.viewModel.inputs.pledgeInput(it) }
 
@@ -395,6 +398,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { pledge_footer_continue_button.isEnabled = it }
 
+        this.viewModel.outputs.titleAndAmount()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    populateHeaderItems(it)
+                }
+
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
                 pledge_root.smoothScrollTo(0, relativeTop(pledge_amount_label, pledge_root))
@@ -427,6 +437,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(pledge_footer_continue_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
+    }
+
+    private fun populateHeaderItems(titleAndAmount: Pair<String, String>) {
+        headerAdapter.populateData(titleAndAmount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -543,6 +557,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             adapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
             shipping_rules.setAdapter(adapter)
         }
+    }
+
+    private fun setupRewardRecyclerView() {
+        list_rewards_add_ons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        list_rewards_add_ons.adapter = headerAdapter
     }
 
     private fun setClickableHtml(string: String, textView: TextView) {

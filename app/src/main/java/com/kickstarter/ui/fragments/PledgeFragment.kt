@@ -52,7 +52,6 @@ import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_footer.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_item.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
@@ -111,6 +110,20 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { increase_pledge.isEnabled = it }
 
+        this.viewModel.outputs.headerSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { isNoReward ->
+                    when (isNoReward) {
+                        true -> {
+                            ViewUtils.setGone(pledge_header_container)
+                        }
+                        false -> {
+                            pledge_header_container.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -122,7 +135,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.estimatedDeliveryInfoIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(pledge_estimated_delivery_container, it) }
+                .subscribe {
+                    ViewUtils.setGone(pledge_estimated_delivery_container, it)
+                    ViewUtils.setGone(pledge_estimated_delivery_date)
+                    ViewUtils.setGone(pledge_estimated_delivery)
+                }
 
         this.viewModel.outputs.rewardSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -185,7 +202,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.projectCurrencySymbol()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setCurrencySymbols(it) }
+                .subscribe {
+                    setCurrencySymbols(it)
+                }
 
         this.viewModel.outputs.pledgeTextColor()
                 .compose(bindToLifecycle())
@@ -197,7 +216,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     reward_title.text = it
-                    pledge_header_item_title.text = it
                 }
 
         this.viewModel.outputs.cardsAndProject()
@@ -290,6 +308,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe {
                     ViewUtils.setGone(total_amount_loading_view, true)
                     total_amount.text = it
+                    pledge_header_summary_amount.text = it
                 }
 
         this.viewModel.outputs.totalAndDeadline()

@@ -59,29 +59,15 @@
         app:layout_constraintGuide_percent="0.75" />
 
     <TextView
-        android:id="@+id/pledge_header_summary_symbol"
-        style="@style/PledgeCurrencySymbol"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
-        android:gravity="end"
-        android:maxLines="1"
-        android:paddingTop="@dimen/grid_1"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/pledge_header_summary_amount"
-        app:layout_constraintStart_toEndOf="@+id/guideline_separator"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="$" />
-
-    <TextView
         android:id="@+id/pledge_header_summary_amount"
         style="@style/PledgeCurrency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
         android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/pledge_header_summary_symbol"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="40" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -111,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/ic_arrow_down"
+        android:background="@drawable/pldge_header_green_button_down"
         android:importantForAccessibility="no"
         android:translationY="-5dp"
         app:layout_constraintEnd_toEndOf="parent"

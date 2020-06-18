@@ -43,7 +43,8 @@
         style="@style/FootnoteSecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_1_half"
+        android:paddingTop="2dp"
         app:layout_constraintEnd_toEndOf="@+id/guideline_separator"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/pledge_header_estimated_delivery_label"
@@ -58,22 +59,30 @@
         app:layout_constraintGuide_percent="0.75" />
 
     <TextView
-        android:id="@+id/pledge_header_summary_amount"
-        style="@style/PledgeCurrency"
+        android:id="@+id/pledge_header_summary_symbol"
+        style="@style/PledgeCurrencySymbol"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_3"
-        android:layout_marginEnd="@dimen/grid_3"
-        android:gravity="center_vertical|end"
+        android:gravity="end"
         android:maxLines="1"
+        android:paddingTop="@dimen/grid_1"
         android:orientation="horizontal"
-        android:scrollHorizontally="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pledge_header_title"
+        app:layout_constraintEnd_toStartOf="@+id/pledge_header_summary_amount"
+        app:layout_constraintStart_toEndOf="@+id/guideline_separator"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        tools:text="$40" />
+        tools:text="$" />
+
+    <TextView
+        android:id="@+id/pledge_header_summary_amount"
+        style="@style/PledgeCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pledge_header_summary_symbol"
+        tools:text="40" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_rewards_add_ons"

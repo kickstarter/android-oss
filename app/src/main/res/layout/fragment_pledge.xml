@@ -26,14 +26,6 @@
       android:orientation="vertical">
 
       <include layout="@layout/fragment_pledge_section_header_reward_sumary"/>
-      <RelativeLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_3"
-          android:animateLayoutChanges="true">
-
-
-      </RelativeLayout>
       <include layout="@layout/fragment_pledge_section_reward_summary"
           android:visibility="gone"/>
 

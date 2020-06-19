@@ -64,6 +64,9 @@ fragment reward on Reward {
     amount {
         ... amount
     }
+    convertedAmount{
+        ... amount
+    }
 }
 
 fragment user on User {

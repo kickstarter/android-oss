@@ -12,7 +12,8 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:text="&#8226;"/>
+    android:text="&#8226;"
+    tools:ignore="HardcodedText"/>
 
   <TextView
     android:id="@+id/rewards_item_title"

@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
 import android.text.SpannableString
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R

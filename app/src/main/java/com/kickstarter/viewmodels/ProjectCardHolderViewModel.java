@@ -17,6 +17,7 @@ import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.data.Editorial;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import org.joda.time.DateTime;
@@ -235,7 +236,7 @@ public interface ProjectCardHolderViewModel {
         .subscribe(this.locationName::onNext);
 
       this.discoveryParams
-        .map(params -> params.sort() == DiscoveryParams.Sort.DISTANCE)
+        .map(params -> params.tagId() == Editorial.LIGHTS_ON.getTagId())
         .compose(combineLatestPair(this.project))
         .map(distanceSortAndProject -> distanceSortAndProject.first && ObjectUtils.isNotNull(distanceSortAndProject.second.location()))
         .map(BooleanUtils::negate)

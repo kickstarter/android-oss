@@ -236,7 +236,7 @@ public interface ProjectCardHolderViewModel {
         .subscribe(this.locationName::onNext);
 
       this.discoveryParams
-        .map(params -> params.tagId() == Editorial.LIGHTS_ON.getTagId())
+        .map(params -> shouldShowLocation(params))
         .compose(combineLatestPair(this.project))
         .map(distanceSortAndProject -> distanceSortAndProject.first && ObjectUtils.isNotNull(distanceSortAndProject.second.location()))
         .map(BooleanUtils::negate)
@@ -332,6 +332,10 @@ public interface ProjectCardHolderViewModel {
         .map(p -> ProjectUtils.metadataForProject(p) != ProjectUtils.Metadata.SAVING);
 
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
+    }
+
+    private boolean shouldShowLocation(DiscoveryParams params) {
+      return params.sort() == DiscoveryParams.Sort.MAGIC && params.tagId()!= null && params.tagId() == Editorial.LIGHTS_ON.getTagId();
     }
 
     private boolean areParamsAllOrSameCategoryAsProject(final @NonNull Pair<Category, Category> categoryPair) {

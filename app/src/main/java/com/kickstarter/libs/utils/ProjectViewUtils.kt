@@ -144,7 +144,7 @@ object ProjectViewUtils {
 
         val startOfSymbol = 0
         val endOfSymbol = currencySymbolToDisplay.length
-        spannedCurrencySymbol.setSpan(RelativeSizeSpan(.5f), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannedCurrencySymbol.setSpan(RelativeSizeSpan(.6f), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannedCurrencySymbol.setSpan(CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         val styledCurrency = if (formattedCurrency.startsWith(StringUtils.trim(currencySymbolToDisplay))) {

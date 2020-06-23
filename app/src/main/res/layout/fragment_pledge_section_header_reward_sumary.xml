@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pledge_header_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <TextView
+        android:id="@+id/pledge_header_title"
+        style="@style/Headline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_3"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@string/Your_reward"
+        app:layout_constraintEnd_toEndOf="@id/guideline_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Your reward" />
+
+    <TextView
+        android:id="@+id/pledge_header_estimated_delivery_label"
+        style="@style/FootnoteSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_4"
+        android:text="@string/Estimated_delivery"
+        app:layout_constraintBottom_toTopOf="@id/list_rewards_add_ons"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pledge_header_title"
+        tools:text="Estimated delivery" />
+
+    <TextView
+        android:id="@+id/pledge_estimated_delivery_date"
+        style="@style/FootnoteSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_1_half"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_separator"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/pledge_header_estimated_delivery_label"
+        app:layout_constraintTop_toBottomOf="@+id/pledge_header_title"
+        tools:text="December 2019" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_separator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <TextView
+        android:id="@+id/pledge_header_summary_amount"
+        style="@style/PledgeCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="40" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_rewards_add_ons"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
+        app:layout_constraintEnd_toEndOf="@id/guideline_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pledge_header_summary_amount"
+        tools:itemCount="2"
+        tools:listitem="@layout/fragment_pledge_section_header_item" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_3"
+        android:background="@color/ksr_grey_300"
+        android:contentDescription="@string/expand_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/arrow_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/pledge_header_green_button_down"
+        android:importantForAccessibility="no"
+        android:translationY="-5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_rewards_add_ons" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

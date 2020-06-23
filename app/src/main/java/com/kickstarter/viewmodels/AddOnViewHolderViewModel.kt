@@ -69,7 +69,7 @@ interface AddOnViewHolderViewModel {
      *  - No interaction with the user just displaying information
      *  - Loading in [AddOnViewHolder] -> [RewardAndAddOnsAdapter] -> [BackingFragment]
      */
-    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs{
+    class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
 
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val isAddonTitleGone = BehaviorSubject.create<Boolean>()

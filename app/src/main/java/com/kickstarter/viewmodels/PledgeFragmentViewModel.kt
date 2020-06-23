@@ -228,6 +228,12 @@ interface PledgeFragmentViewModel {
 
         /** Emits a boolean determining if the divider above the total should be hidden. */
         fun totalDividerIsGone(): Observable<Boolean>
+
+        /** Emits a boolean determining if the header whould be hidden */
+        fun headerSectionIsGone(): Observable<Boolean>
+
+        /** Emits a Pair containing reward/add-on title and the amount */
+        fun titleAndAmount(): Observable<Pair<String, String>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -299,6 +305,8 @@ interface PledgeFragmentViewModel {
         private val totalAndDeadline = BehaviorSubject.create<Pair<String, String>>()
         private val totalAndDeadlineIsVisible = BehaviorSubject.create<Void>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
+        private val headerSectionIsGone = BehaviorSubject.create<Boolean>()
+        private val titleAndAmount = BehaviorSubject.create<Pair<String, String>>()
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
@@ -356,6 +364,11 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.rewardTitle)
 
             reward
+                    .map { RewardUtils.isNoReward(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.headerSectionIsGone)
+
+            reward
                     .map { it.estimatedDeliveryOn() }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { dateTime -> dateTime?.let { DateTimeUtils.estimatedDeliveryOn(it) } }
@@ -367,10 +380,6 @@ interface PledgeFragmentViewModel {
                     .map { ObjectUtils.isNull(it.estimatedDeliveryOn()) || RewardUtils.isNoReward(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDeliveryInfoIsGone)
-
-            updatingPaymentOrUpdatingPledge
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardSummaryIsGone)
 
             //Base pledge amount
             val rewardMinimum = reward
@@ -387,6 +396,13 @@ interface PledgeFragmentViewModel {
                     .map { this.ksCurrency.format(it.first, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMinimum)
+
+            reward
+                    .filter { !RewardUtils.isNoReward(it) }
+                    .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeMinimum))
+                    .map { Pair(it.first.title()?: "", it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.titleAndAmount)
 
             project
                     .map { ProjectViewUtils.currencySymbolAndPosition(it, this.ksCurrency) }
@@ -1243,5 +1259,11 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun totalDividerIsGone(): Observable<Boolean> = this.totalDividerIsGone
+
+        @NonNull
+        override fun headerSectionIsGone(): Observable<Boolean> = this.headerSectionIsGone
+
+        @NonNull
+        override fun titleAndAmount(): Observable<Pair<String, String>> = this.titleAndAmount
     }
 }

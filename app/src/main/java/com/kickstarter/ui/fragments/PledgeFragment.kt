@@ -39,6 +39,7 @@ import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.activities.HelpActivity
 import com.kickstarter.ui.activities.LoginToutActivity
+import com.kickstarter.ui.adapters.ExpandableHeaderAdapter
 import com.kickstarter.ui.adapters.RewardCardAdapter
 import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.CardState
@@ -53,6 +54,7 @@ import kotlinx.android.synthetic.main.fragment_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_footer.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
@@ -71,6 +73,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private lateinit var adapter: ShippingRulesAdapter
+    private var headerAdapter = ExpandableHeaderAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -82,6 +85,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         setUpCardsAdapter()
         setUpShippingAdapter()
+        setupRewardRecyclerView()
 
         pledge_amount.onChange { this.viewModel.inputs.pledgeInput(it) }
 
@@ -107,6 +111,21 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { increase_pledge.isEnabled = it }
 
+        this.viewModel.outputs.headerSectionIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { isNoReward ->
+                    when (isNoReward) {
+                        true -> {
+                            ViewUtils.setGone(pledge_header_container)
+                        }
+                        false -> {
+                            pledge_header_container.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
+>>>>>>> a49ebdf91843db09ed1f7d2ca40eb287e6fcac2e
 
         this.viewModel.outputs.decreaseBonusButtonIsEnabled()
                 .compose(bindToLifecycle())
@@ -121,12 +140,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { pledge_estimated_delivery.text = it }
+                .subscribe {
+                    pledge_estimated_delivery.text = it
+                    pledge_estimated_delivery_date.text = it
+                }
 
         this.viewModel.outputs.estimatedDeliveryInfoIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(pledge_estimated_delivery_container, it) }
+                .subscribe {
+                    ViewUtils.setGone(pledge_estimated_delivery_container, it)
+                    ViewUtils.setGone(pledge_estimated_delivery_date)
+                    ViewUtils.setGone(pledge_estimated_delivery)
+                }
 
         this.viewModel.outputs.rewardSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -202,7 +228,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.projectCurrencySymbol()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setCurrencySymbols(it) }
+                .subscribe {
+                    setCurrencySymbols(it)
+                }
 
         this.viewModel.outputs.pledgeTextColor()
                 .compose(bindToLifecycle())
@@ -212,7 +240,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.rewardTitle()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { reward_title.text = it }
+                .subscribe {
+                    reward_title.text = it
+                }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
@@ -390,6 +420,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { pledge_footer_continue_button.isEnabled = it }
 
+        this.viewModel.outputs.titleAndAmount()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    populateHeaderItems(it)
+                }
+
 
         this.viewModel.outputs.isPledgeMinimumSubtitleGone()
                 .compose(observeForUI())
@@ -455,6 +492,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(pledge_footer_continue_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
+    }
+
+    private fun populateHeaderItems(titleAndAmount: Pair<String, String>) {
+        headerAdapter.populateData(titleAndAmount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -577,6 +618,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             adapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
             shipping_rules.setAdapter(adapter)
         }
+    }
+
+    private fun setupRewardRecyclerView() {
+        list_rewards_add_ons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        list_rewards_add_ons.adapter = headerAdapter
     }
 
     private fun setClickableHtml(string: String, textView: TextView) {

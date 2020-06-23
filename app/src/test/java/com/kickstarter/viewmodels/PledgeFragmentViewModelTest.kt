@@ -66,7 +66,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val pledgeSummaryIsGone = TestSubscriber<Boolean>()
     private val pledgeTextColor = TestSubscriber<Int>()
     private val projectCurrencySymbol = TestSubscriber<String>()
-    private val rewardSummaryIsGone = TestSubscriber<Boolean>()
     private val rewardTitle = TestSubscriber<String>()
     private val selectedShippingRule = TestSubscriber<ShippingRule>()
     private val shippingAmount = TestSubscriber<CharSequence>()
@@ -90,6 +89,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val totalAndDeadline = TestSubscriber<Pair<String, String>>()
     private val totalAndDeadlineIsVisible = TestSubscriber<Void>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
+    private val headerSectionIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward = RewardFactory.rewardWithShipping(),
@@ -125,7 +125,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.pledgeTextColor().subscribe(this.pledgeTextColor)
         this.vm.outputs.projectCurrencySymbol().map { StringUtils.trim(it.first.toString()) }.subscribe(this.projectCurrencySymbol)
-        this.vm.outputs.rewardSummaryIsGone().subscribe(this.rewardSummaryIsGone)
         this.vm.outputs.rewardTitle().subscribe(this.rewardTitle)
         this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
         this.vm.outputs.shippingAmount().map { normalizeCurrency(it) }.subscribe(this.shippingAmount)
@@ -149,6 +148,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.totalAndDeadline().subscribe(this.totalAndDeadline)
         this.vm.outputs.totalAndDeadlineIsVisible().subscribe(this.totalAndDeadlineIsVisible)
         this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
+        this.vm.outputs.headerSectionIsGone().subscribe(this.headerSectionIsGone)
 
         val projectData = ProjectDataFactory.project(project.toBuilder()
                 .deadline(this.deadline)
@@ -389,7 +389,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
+        this.headerSectionIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
@@ -411,7 +411,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
@@ -438,7 +437,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
+        this.headerSectionIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
@@ -461,8 +460,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
-        this.shippingRulesSectionIsGone.assertValue(true)
+        this.headerSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
 
@@ -494,7 +492,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
@@ -521,7 +518,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(true)
+        this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
@@ -554,9 +551,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(false)
-        this.rewardSummaryIsGone.assertValue(true)
+        this.headerSectionIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(false)
         this.totalDividerIsGone.assertValue(true)
 
         this.koalaTest.assertNoValues()
@@ -581,7 +577,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(true)
+        this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
@@ -686,7 +682,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
+        this.headerSectionIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
@@ -711,7 +707,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
+        this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(false)
@@ -2798,6 +2794,42 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.pledgeInput("500")
         this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
+    }
+
+    @Test
+    fun testExpandableHeaderIsVisible() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.headerSectionIsGone.assertValues(false)
+    }
+
+    @Test
+    fun testExpandableHeaderIsNoVisible() {
+        val reward = RewardFactory.noReward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.headerSectionIsGone.assertValues(true)
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject(environment: Environment, project: Project) {

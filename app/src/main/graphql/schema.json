@@ -2138,6 +2138,11 @@
             },
             {
               "kind": "OBJECT",
+              "name": "ProjectFeaturedImage",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
               "name": "Flagging",
               "ofType": null
             },
@@ -2403,6 +2408,22 @@
               "deprecationReason": null
             },
             {
+              "name": "convertedAmount",
+              "description": "Amount for claiming this reward, in the current user's chosen currency",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Money",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "description",
               "description": "A reward description.",
               "args": [],
@@ -2563,6 +2584,22 @@
                 "kind": "SCALAR",
                 "name": "Int",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "limitPerBacker",
+              "description": "Per backer reward limit.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -4015,6 +4052,30 @@
                 "kind": "OBJECT",
                 "name": "ProjectFaqConnection",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "featuredImages",
+              "description": "The project's featured images",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "ProjectFeaturedImage",
+                      "ofType": null
+                    }
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -18616,6 +18677,12 @@
               "deprecationReason": null
             },
             {
+              "name": "add_on_creator_beta_test",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "addons_in_build",
               "description": "",
               "isDeprecated": false,
@@ -19006,6 +19073,12 @@
               "deprecationReason": null
             },
             {
+              "name": "project_featured_images",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "project_header_media_carousel_hero",
               "description": "",
               "isDeprecated": false,
@@ -19055,6 +19128,12 @@
             },
             {
               "name": "se_currency_selector",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "show_posts_feed",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -23914,6 +23993,87 @@
           ],
           "inputFields": null,
           "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ProjectFeaturedImage",
+          "description": "A project's featured image",
+          "fields": [
+            {
+              "name": "altText",
+              "description": "Alt text for the image",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "image",
+              "description": "Image",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Photo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "position",
+              "description": "Position for the image",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
           "enumValues": null,
           "possibleTypes": null
         },

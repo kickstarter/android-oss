@@ -584,13 +584,13 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         }
 
         return@let Reward.builder()
-                .minimum(rewardAmount?: -1.0)
-                .description(reward.description())
-                .isAddOn(false)
-                .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
-                .shippingSingleLocation(rewardSingleLocation)
-                .id(rewardId)
-                .build()
+        .minimum(rewardAmount?: -1.0)
+        .description(reward.description())
+        .isAddOn(false)
+        .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
+        .shippingSingleLocation(rewardSingleLocation)
+        .id(rewardId)
+        .build()
     }
 
     val backerData = backingGr?.backer()?.fragments()?.user()
@@ -668,7 +668,9 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
     val rewardsList = addOns.nodes()?.map { node ->
         val rewardGr = node.fragments().reward()
         val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
+        val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
         val desc = rewardGr.description()
+        val title = rewardGr.name()
         val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
         val rewardId = decodeRelayId(rewardGr.id()) ?: -1
 
@@ -677,17 +679,19 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
         }
 
         return@map Reward.builder()
-        .minimum(amount)
-        .description(desc)
-        .estimatedDeliveryOn(estimatedDelivery)
-        .isAddOn(true)
-        .addOnsItems(items)
-        .id(rewardId)
-        .build()
+                .title(title)
+                .convertedMinimum(convertedAmount)
+                .minimum(amount)
+                .description(desc)
+                .estimatedDeliveryOn(estimatedDelivery)
+                .isAddOn(true)
+                .addOnsItems(items)
+                .id(rewardId)
+                .build()
     }
 
     rewardsList?.map {
-        var addOnQuantity = mutableMap.getOrPut(it, {1})
+        var addOnQuantity = mutableMap.getOrPut(it, {0})
         if (addOnQuantity != null) addOnQuantity += 1
 
         mutableMap.put(it, addOnQuantity)

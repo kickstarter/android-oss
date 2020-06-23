@@ -375,9 +375,13 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.swipeRefresherProgressIsVisible)
 
+            val addOns = backing
+                    .map { it.addOns()?.toList() ?: emptyList() }
+                    .compose(bindToLifecycle())
+
             projectDataInput
-                    .map { Pair(it, getAddOnsList(it.project())) }
-                    .compose<Pair<ProjectData, List<Reward>>>(bindToLifecycle())
+                    .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addOns))
+                    .compose(bindToLifecycle())
                     .subscribe(this.addOnsList)
 
             backing
@@ -415,10 +419,6 @@ interface BackingFragmentViewModel {
                 Observable.just(it.backing())
             }
         }
-
-        private fun getAddOnsList(project: Project):List<Reward> = project.backing()?.addOns()?.let {
-            mutableList -> mutableList.toList()
-        } ?: emptyList()
 
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.let {

@@ -301,7 +301,7 @@ public class ProjectCardHolderViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment());
 
     final DiscoveryParams discoveryParams = DiscoveryParams.builder()
-      .sort(DiscoveryParams.Sort.DISTANCE)
+      .tagId(557)
       .build();
     this.vm.inputs.configureWith(Pair.create(project, discoveryParams));
     this.locationContainerIsGone.assertValues(false);

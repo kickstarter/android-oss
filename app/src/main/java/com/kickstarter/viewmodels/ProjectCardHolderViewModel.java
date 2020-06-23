@@ -334,7 +334,7 @@ public interface ProjectCardHolderViewModel {
       this.setDefaultTopPadding = this.metadataViewGroupIsGone;
     }
 
-    private boolean shouldShowLocationTag(DiscoveryParams params) {
+    private boolean shouldShowLocationTag(final DiscoveryParams params) {
       return params.tagId()!= null && params.tagId() == Editorial.LIGHTS_ON.getTagId();
     }
 

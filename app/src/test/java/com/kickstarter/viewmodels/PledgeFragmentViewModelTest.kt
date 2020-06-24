@@ -2871,6 +2871,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .rewardId(reward.id())
                 .build()
 
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val environment = environmentForLoggedInUser(UserFactory.user())
+
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.PLEDGE)
+
         this.vm.inputs.bonusInput("20")
         this.totalAmount.assertValues("$50", "$70")
 

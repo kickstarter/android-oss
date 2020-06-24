@@ -9,10 +9,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
-import com.kickstarter.models.Backing
-import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
-import com.kickstarter.models.StoredCard
+import com.kickstarter.models.*
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -168,7 +165,7 @@ interface BackingFragmentViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val swipeRefresherProgressIsVisible = BehaviorSubject.create<Boolean>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
-        private val addOnsList = BehaviorSubject.create<Pair<ProjectData,List<Reward>>>()
+        private val addOnsList = BehaviorSubject.create<Pair<ProjectData, List<Reward>>>()
         private val bonusSupport = BehaviorSubject.create<CharSequence>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
@@ -429,6 +426,7 @@ interface BackingFragmentViewModel {
             return Pair(projectData, reward)
         }
 
+
         private fun cardIssuer(paymentSource: Backing.PaymentSource): Either<String, Int> {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
                 CreditCardPaymentType.ANDROID_PAY -> Either.Right(R.string.googlepay_button_content_description)
@@ -448,23 +446,49 @@ interface BackingFragmentViewModel {
         }
 
         private fun pledgeStatusData(project: Project, backing: Backing): PledgeStatusData {
-            val statusStringRes = when (project.state()) {
-                Project.STATE_CANCELED -> R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged
-                Project.STATE_FAILED -> R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged
-                else -> when (backing.status()) {
-                    Backing.STATUS_CANCELED -> R.string.You_canceled_your_pledge_for_this_project
-                    Backing.STATUS_COLLECTED -> R.string.We_collected_your_pledge_for_this_project
-                    Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
-                    Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
-                    Backing.STATUS_PLEDGED -> R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
-                    Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh
-                    else -> null
+
+            var statusStringRes: Int? = 0
+
+            environment.currentUser().loggedInUser().subscribe {
+
+                if (!ProjectUtils.userIsCreator(project, it)) {
+                    statusStringRes = when (project.state()) {
+                        Project.STATE_CANCELED -> R.string.The_creator_canceled_this_project_so_your_payment_method_was_never_charged
+                        Project.STATE_FAILED -> R.string.This_project_didnt_reach_its_funding_goal_so_your_payment_method_was_never_charged
+                        else -> when (backing.status()) {
+                            Backing.STATUS_CANCELED -> R.string.You_canceled_your_pledge_for_this_project
+                            Backing.STATUS_COLLECTED -> R.string.We_collected_your_pledge_for_this_project
+                            Backing.STATUS_DROPPED -> R.string.Your_pledge_was_dropped_because_of_payment_errors
+                            Backing.STATUS_ERRORED -> R.string.We_cant_process_your_pledge_Please_update_your_payment_method
+                            Backing.STATUS_PLEDGED -> R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline
+                            Backing.STATUS_PREAUTH -> R.string.We_re_processing_your_pledge_pull_to_refresh
+                            else -> null
+                        }
+                    }
+                } else {
+
+                    statusStringRes = when (project.state()) {
+                        Project.STATE_CANCELED -> R.string.You_canceled_this_project_so_the_backers_payment_method_was_never_charged
+                        Project.STATE_FAILED -> R.string.Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged
+                        else -> when (backing.status()) {
+                            Backing.STATUS_CANCELED -> R.string.The_backer_canceled_their_pledge_for_this_project
+                            Backing.STATUS_COLLECTED -> R.string.We_collected_the_backers_pledge_for_this_project
+                            Backing.STATUS_DROPPED -> R.string.This_pledge_was_dropped_because_of_payment_errors
+                            Backing.STATUS_ERRORED -> R.string.We_cant_process_this_pledge_because_of_a_problem_with_the_backers_payment_method
+                            Backing.STATUS_PLEDGED -> R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline
+                            Backing.STATUS_PREAUTH -> R.string.We_re_processing_this_pledge_pull_to_refresh
+                            else -> null
+                        }
+                    }
                 }
             }
 
+
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
             val pledgeTotal = backing.amount().let { this.ksCurrency.format(it, project) }
+
             return PledgeStatusData(statusStringRes, pledgeTotal, projectDeadline)
+
         }
 
         override fun configureWith(projectData: ProjectData) {

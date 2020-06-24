@@ -41,7 +41,7 @@ import kotlinx.android.synthetic.main.reward_card_details.*
 
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
-class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>(){
+class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
     private var rewardsAndAddOnsAdapter = RewardAndAddOnsAdapter()
 
@@ -266,7 +266,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>(){
 
     private fun populateAddOns(projectAndAddOn: Pair<ProjectData, List<Reward>>) {
         val project = projectAndAddOn.first
-        val addOns  = projectAndAddOn.second
+        val addOns = projectAndAddOn.second
         val listData = addOns.map {
             Pair(project, it)
         }.toList()
@@ -315,6 +315,13 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>(){
                             "total", pledgeStatusData.pledgeTotal,
                             "project_deadline", pledgeStatusData.projectDeadline)
                 }
+
+                R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline -> {
+                    ksString.format(getString(it),
+                            "total", pledgeStatusData.pledgeTotal,
+                            "project_deadline", pledgeStatusData.projectDeadline)
+                }
+
                 else -> getString(it)
             }
         }

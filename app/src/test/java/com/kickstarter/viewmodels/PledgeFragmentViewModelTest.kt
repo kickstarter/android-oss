@@ -90,6 +90,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val totalAndDeadlineIsVisible = TestSubscriber<Void>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
     private val headerSectionIsGone = TestSubscriber<Boolean>()
+    private val bonusAmount = TestSubscriber<String>()
+    private val decreaseBonusButtonIsEnabled = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward = RewardFactory.rewardWithShipping(),
@@ -149,6 +151,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.totalAndDeadlineIsVisible().subscribe(this.totalAndDeadlineIsVisible)
         this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
         this.vm.outputs.headerSectionIsGone().subscribe(this.headerSectionIsGone)
+        this.vm.outputs.bonusAmount().subscribe(this.bonusAmount)
+        this.vm.outputs.decreaseBonusButtonIsEnabled().subscribe(this.decreaseBonusButtonIsEnabled)
 
         val projectData = ProjectDataFactory.project(project.toBuilder()
                 .deadline(this.deadline)
@@ -2851,6 +2855,76 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), reward, backedProject)
 
         this.headerSectionIsGone.assertValues(true)
+    }
+
+
+    @Test
+    fun testBonusAmountIncreases_whenPlusButtonIsClicked() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(50.0)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val environment = environmentForLoggedInUser(UserFactory.user())
+
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.PLEDGE)
+
+        this.vm.inputs.increaseBonusButtonClicked()
+
+        this.bonusAmount.assertValues("0", "1")
+    }
+
+    @Test
+    fun testTotalAmountUpdates_whenBonusIsAdded() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(50.0)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val environment = environmentForLoggedInUser(UserFactory.user())
+
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.PLEDGE)
+
+        this.vm.inputs.bonusInput("20")
+        this.totalAmount.assertValues("$50", "$70")
+
+    }
+
+    @Test
+    fun testBonusMinimumIsZero_andMinusButtonIsDisabled() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(30.0)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.bonusAmount.assertValue("0")
+        this.decreaseBonusButtonIsEnabled.assertValue(false)
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject(environment: Environment, project: Project) {

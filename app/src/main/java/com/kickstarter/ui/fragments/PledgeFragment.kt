@@ -52,6 +52,7 @@ import com.stripe.android.ApiResultCallback
 import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_footer.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
@@ -88,10 +89,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         pledge_amount.onChange { this.viewModel.inputs.pledgeInput(it) }
 
-        this.viewModel.outputs.additionalPledgeAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setPlusTextView(additional_pledge_amount, it) }
+        bonus_amount.onChange { this.viewModel.inputs.bonusInput(it) }
 
         this.viewModel.outputs.additionalPledgeAmountIsGone()
                 .compose(bindToLifecycle())
@@ -126,6 +124,17 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                         }
                     }
                 }
+
+
+        this.viewModel.outputs.decreaseBonusButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { decrease_bonus.isEnabled = it }
+
+        this.viewModel.outputs.increaseBonusButtonIsEnabled()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { increase_bonus.isEnabled = it }
 
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
@@ -182,10 +191,23 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     pledge_amount.setSelection(it.length)
                 }
 
+        this.viewModel.outputs.bonusAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    bonus_amount.setText(it)
+                    bonus_amount.setSelection(it.length)
+                }
+
         this.viewModel.outputs.pledgeHint()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { pledge_amount.hint = it }
+
+        this.viewModel.outputs.bonusHint()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe{bonus_amount.hint = it}
 
         this.viewModel.outputs.pledgeMaximum()
                 .compose(bindToLifecycle())
@@ -311,7 +333,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe {
                     ViewUtils.setGone(total_amount_loading_view, true)
                     total_amount.text = it
-                    pledge_header_summary_amount.text = it
                 }
 
         this.viewModel.outputs.totalAndDeadline()
@@ -405,10 +426,39 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     populateHeaderItems(it)
                 }
 
+
+        this.viewModel.outputs.isPledgeMinimumSubtitleGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    ViewUtils.setGone(pledge_minimum, it)
+                }
+
+
+        this.viewModel.outputs.isBonusSupportSectionGone()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    ViewUtils.setGone(bonus_container, it)
+                    ViewUtils.setGone(pledge_container, !it)
+                    pledge_container.setPadding(0, resources.getDimension(R.dimen.grid_4).toInt(), 0, 0)
+
+                }
+
+
+
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
                 pledge_root.smoothScrollTo(0, relativeTop(pledge_amount_label, pledge_root))
                 pledge_amount.requestFocus()
+            }
+            false
+        }
+
+        bonus_amount.setOnTouchListener { _, _ ->
+            bonus_amount.post {
+                pledge_root.smoothScrollTo(0, relativeTop(bonus_support_label, pledge_root))
+                bonus_amount.requestFocus()
             }
             false
         }
@@ -429,6 +479,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         increase_pledge.setOnClickListener {
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
+
+        decrease_bonus.setOnClickListener { this.viewModel.inputs.decreaseBonusButtonClicked() }
+
+        increase_bonus.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
 
         RxView.clicks(pledge_footer_pledge_button)
                 .compose(bindToLifecycle())
@@ -499,9 +553,15 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         if (symbolAtStart) {
             pledge_symbol_start.text = symbol
             pledge_symbol_end.text = null
+
+            bonus_symbol_start.text = symbol
+            bonus_symbol_end.text = null
         } else {
             pledge_symbol_start.text = null
             pledge_symbol_end.text = symbol
+
+            bonus_symbol_start.text = null
+            bonus_symbol_end.text = symbol
         }
     }
 

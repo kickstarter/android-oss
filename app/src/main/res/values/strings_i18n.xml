@@ -1728,4 +1728,6 @@ saved</string>
   <string name="pledge_delivery_warning" formatted="false">Remember that delivery dates are \nnot guaranteed. Delays or changes are \npossible.</string>
   <string name="pledge_delivery_delivered" formatted="false">Estimated delivery %{estimated_delivery}.\nReward delivered?</string>
   <string name="pledge_bonus_label" formatted="false">Bonus</string>
+  <string name="bonus_support_label" formatted="false">Bonus support</string>
+  <string name="bonus_support_subtitle" formatted="false">A little extra to help bring this \nproject to life.</string>
 </resources>

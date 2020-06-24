@@ -7,7 +7,9 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:animateLayoutChanges="true"
+    android:animationCache="true">
 
     <TextView
         android:id="@+id/pledge_header_title"
@@ -72,10 +74,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_rewards_add_ons"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="1dp"
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
+        android:paddingBottom="@dimen/grid_3"
         app:layout_constraintEnd_toEndOf="@id/guideline_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pledge_header_summary_amount"
@@ -83,6 +86,7 @@
         tools:listitem="@layout/fragment_pledge_section_header_item" />
 
     <ImageView
+        android:id="@+id/header_spacing_translated_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_3"
         android:background="@color/ksr_grey_300"
@@ -92,7 +96,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/arrow_button"
+        android:id="@+id/header_arrow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

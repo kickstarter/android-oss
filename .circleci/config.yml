@@ -107,7 +107,9 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - /feature\/.*/
       - internal:
           requires:
             - build

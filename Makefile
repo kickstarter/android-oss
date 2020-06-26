@@ -63,6 +63,7 @@ sync_private_to_oss:
 internal:
 	@echo "Adding remotes..."
 	@git remote add private https://github.com/kickstarter/android-private
+	@git remote add oss https://github.com/kickstarter/android-oss
 
 	@echo "Deploying private/internal"
 

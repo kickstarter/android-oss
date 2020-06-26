@@ -72,6 +72,7 @@
         android:id="@+id/list_rewards_add_ons"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/black"
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
         app:layout_constraintEnd_toEndOf="parent"

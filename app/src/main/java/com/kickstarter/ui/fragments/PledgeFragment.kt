@@ -135,7 +135,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     pledge_estimated_delivery.text = it
-                    pledge_estimated_delivery_date.text = it
+                    pledge_header_estimated_delivery_label.text = pledge_header_estimated_delivery_label.text.toString() + " " + it
                 }
 
         this.viewModel.outputs.estimatedDeliveryInfoIsGone()
@@ -143,7 +143,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     ViewUtils.setGone(pledge_estimated_delivery_container, it)
-                    ViewUtils.setGone(pledge_estimated_delivery_date)
+                    ViewUtils.setGone(pledge_header_estimated_delivery_label)
                     ViewUtils.setGone(pledge_estimated_delivery)
                 }
 
@@ -464,7 +464,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(pledge_header_container)
-        constraintSet.constrainHeight(R.id.list_rewards_add_ons, 0)
+        constraintSet.clear(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM);
 
         TransitionManager.beginDelayedTransition(pledge_header_container)
         constraintSet.applyTo(pledge_header_container)
@@ -475,7 +475,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(pledge_header_container)
-        constraintSet.constrainHeight(R.id.list_rewards_add_ons, 1)
+        constraintSet.connect(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM, R.id.header_animation_guideline, ConstraintSet.BOTTOM)
 
         TransitionManager.beginDelayedTransition(pledge_header_container)
         constraintSet.applyTo(pledge_header_container)

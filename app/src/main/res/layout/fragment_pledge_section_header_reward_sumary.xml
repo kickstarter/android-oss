@@ -78,7 +78,6 @@
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
-        android:paddingBottom="@dimen/grid_3"
         app:layout_constraintEnd_toEndOf="@id/guideline_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pledge_header_summary_amount"

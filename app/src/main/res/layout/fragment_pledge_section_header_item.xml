@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_1"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -15,7 +16,6 @@
         android:text="@string/Your_reward"
         android:textColor="@color/ksr_dark_grey_500"
         android:layout_marginTop="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/grid_3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_separator"
         app:layout_constraintStart_toStartOf="parent"

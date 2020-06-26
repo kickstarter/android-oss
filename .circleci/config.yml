@@ -116,7 +116,9 @@ workflows:
             - test
           filters:
             branches:
-              only: internal
+              only:
+                - master
+                - /feature\/.*/
 
 experimental:
   notify:
@@ -124,3 +126,4 @@ experimental:
       only:
         - master
         - internal
+        - /feature\/.*/

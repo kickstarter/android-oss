@@ -168,7 +168,7 @@ interface BackingFragmentViewModel {
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val swipeRefresherProgressIsVisible = BehaviorSubject.create<Boolean>()
         private val totalAmount = BehaviorSubject.create<CharSequence>()
-        private val addOnsList = BehaviorSubject.create<Pair<ProjectData,List<Reward>>>()
+        private val addOnsList = BehaviorSubject.create<Pair<ProjectData, List<Reward>>>()
         private val bonusSupport = BehaviorSubject.create<CharSequence>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
@@ -262,13 +262,16 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingLocation)
 
+
             backing
-                    .map { it.amount() }
+                    .map { it.amount() + it.bonusAmount() }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
+
+
 
             backing
                     .map { it.paymentSource() }
@@ -420,6 +423,10 @@ interface BackingFragmentViewModel {
             }
         }
 
+        private fun getAddOnsList(project: Project): List<Reward> = project.backing()?.addOns()?.let { mutableList ->
+            mutableList.toList()
+        } ?: emptyList()
+
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.let {
                 it.reward()
@@ -463,8 +470,10 @@ interface BackingFragmentViewModel {
             }
 
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
-            val pledgeTotal = backing.amount().let { this.ksCurrency.format(it, project) }
-            return PledgeStatusData(statusStringRes, pledgeTotal, projectDeadline)
+            val pledgeTotal = backing.amount() + backing.bonusAmount()
+            val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
+
+            return PledgeStatusData(statusStringRes, pledgeTotalString, projectDeadline)
         }
 
         override fun configureWith(projectData: ProjectData) {

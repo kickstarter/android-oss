@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
@@ -15,6 +16,8 @@ import org.joda.time.Duration;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+
+import static com.kickstarter.libs.models.OptimizelyExperiment.Variant.*;
 
 public final class RewardUtils {
   private RewardUtils() {}
@@ -182,5 +185,25 @@ public final class RewardUtils {
       return (int) Math.floor(seconds / 60.0 / 60.0); // hours
     }
     return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
+  }
+
+  public static Double rewardAmountByVariant(final OptimizelyExperiment.Variant variant, final Reward reward) {
+    Double value = reward.minimum();
+    switch (variant) {
+      case CONTROL:
+        value = 1.0;
+        break;
+      case VARIANT_2:
+        value = 10.0;
+        break;
+      case VARIANT_3:
+        value = 20.0;
+        break;
+      case VARIANT_4:
+        value = 50.0;
+        break;
+    };
+
+    return value;
   }
 }

@@ -337,6 +337,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe {
                     ViewUtils.setGone(total_amount_loading_view, true)
                     total_amount.text = it
+                    pledge_header_summary_amount.text = it
                 }
 
         this.viewModel.outputs.totalAndDeadline()

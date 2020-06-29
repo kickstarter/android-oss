@@ -17,8 +17,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
-import static com.kickstarter.libs.models.OptimizelyExperiment.Variant.*;
-
 public final class RewardUtils {
   private RewardUtils() {}
 
@@ -187,6 +185,14 @@ public final class RewardUtils {
     return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
   }
 
+  /**
+   * Returns the amount value for each variant, being Control the original value
+   *
+   * @param variant the variant for which you want to get the value
+   * @param reward in case no known variant as save return use the current reward.minimum amount
+   *
+   * @return Double with the amount
+   */
   public static Double rewardAmountByVariant(final OptimizelyExperiment.Variant variant, final Reward reward) {
     Double value = reward.minimum();
     switch (variant) {
@@ -202,7 +208,7 @@ public final class RewardUtils {
       case VARIANT_4:
         value = 50.0;
         break;
-    };
+    }
 
     return value;
   }

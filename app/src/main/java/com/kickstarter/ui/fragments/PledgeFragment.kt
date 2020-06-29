@@ -11,7 +11,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
-import android.transition.TransitionManager
+import androidx.transition.TransitionManager
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +22,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.ChangeBounds
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
@@ -466,7 +467,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         constraintSet.clone(pledge_header_container)
         constraintSet.clear(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM);
 
-        TransitionManager.beginDelayedTransition(pledge_header_container)
+        val transition = ChangeBounds()
+        transition.duration = 100
+
+        TransitionManager.beginDelayedTransition(pledge_header_container, transition)
         constraintSet.applyTo(pledge_header_container)
     }
 
@@ -477,7 +481,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         constraintSet.clone(pledge_header_container)
         constraintSet.connect(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM, R.id.header_animation_guideline, ConstraintSet.BOTTOM)
 
-        TransitionManager.beginDelayedTransition(pledge_header_container)
+        val transition = ChangeBounds()
+        transition.duration = 100
+
+        TransitionManager.beginDelayedTransition(pledge_header_container, transition)
         constraintSet.applyTo(pledge_header_container)
     }
 

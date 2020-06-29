@@ -584,13 +584,14 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
         }
 
         return@let Reward.builder()
-        .minimum(rewardAmount?: -1.0)
-        .description(reward.description())
-        .isAddOn(false)
-        .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
-        .shippingSingleLocation(rewardSingleLocation)
-        .id(rewardId)
-        .build()
+                .title(reward.name())
+                .minimum(rewardAmount?: -1.0)
+                .description(reward.description())
+                .isAddOn(false)
+                .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
+                .shippingSingleLocation(rewardSingleLocation)
+                .id(rewardId)
+                .build()
     }
 
     val backerData = backingGr?.backer()?.fragments()?.user()

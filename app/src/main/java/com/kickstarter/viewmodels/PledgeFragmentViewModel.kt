@@ -47,6 +47,12 @@ interface PledgeFragmentViewModel {
         /** Call when user clicks the increase pledge button. */
         fun increasePledgeButtonClicked()
 
+        /** Call when user clicks the decrease bonus button. */
+        fun decreaseBonusButtonClicked()
+
+        /** Call when user clicks the increase bonus button. */
+        fun increaseBonusButtonClicked()
+
         /** Call when user clicks a url. */
         fun linkClicked(url: String)
 
@@ -58,6 +64,9 @@ interface PledgeFragmentViewModel {
 
         /** Call when the user updates the pledge amount. */
         fun pledgeInput(amount: String)
+
+        /** Call when the user updates the bonus amount. */
+        fun bonusInput(amount: String)
 
         /** Call when user clicks the pledge button. */
         fun pledgeButtonClicked()
@@ -234,6 +243,25 @@ interface PledgeFragmentViewModel {
 
         /** Emits a Pair containing reward/add-on title and the amount */
         fun titleAndAmount(): Observable<Pair<String, String>>
+
+        /** Emits a boolean determining if the minimum pledge amount subtitle should be shown */
+        fun isPledgeMinimumSubtitleGone(): Observable<Boolean>
+
+        /** Emits a boolean determining if the bonus support section is visible */
+        fun isBonusSupportSectionGone(): Observable<Boolean>
+
+        /** Emits a boolean determining if the decrease bonus button should be enabled. */
+        fun decreaseBonusButtonIsEnabled(): Observable<Boolean>
+
+        /**  Emits a boolean determining if the increase bonus button should be enabled.*/
+        fun increaseBonusButtonIsEnabled(): Observable<Boolean>
+
+        /** Emits the bonus amount string of the reward or backing. */
+        fun bonusAmount(): Observable<String>
+
+        /** Emits the hint text for the bonus amount. */
+        fun bonusHint(): Observable<String>
+
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -252,6 +280,9 @@ interface PledgeFragmentViewModel {
         private val shippingRule = PublishSubject.create<ShippingRule>()
         private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
         private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
+        private val decreaseBonusButtonClicked = PublishSubject.create<Void>()
+        private val increaseBonusButtonClicked = PublishSubject.create<Void>()
+        private val bonusInput = PublishSubject.create<String>()
 
         private val addedCard = BehaviorSubject.create<Pair<StoredCard, Project>>()
         private val additionalPledgeAmount = BehaviorSubject.create<String>()
@@ -305,8 +336,16 @@ interface PledgeFragmentViewModel {
         private val totalAndDeadline = BehaviorSubject.create<Pair<String, String>>()
         private val totalAndDeadlineIsVisible = BehaviorSubject.create<Void>()
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
+
         private val headerSectionIsGone = BehaviorSubject.create<Boolean>()
         private val titleAndAmount = BehaviorSubject.create<Pair<String, String>>()
+        private val isPledgeMinimumSubtitleGone = BehaviorSubject.create<Boolean>()
+        private val isBonusSupportSectionGone = BehaviorSubject.create<Boolean>()
+        private val bonusAmount = BehaviorSubject.create<String>()
+        private val decreaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
+        private val increaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
+        private val bonusHint = BehaviorSubject.create<String>()
+
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
@@ -345,7 +384,7 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
 
             val updatingPaymentOrUpdatingPledge = pledgeReason
-                    .map { it == PledgeReason.UPDATE_PAYMENT || it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.FIX_PLEDGE  }
+                    .map { it == PledgeReason.UPDATE_PAYMENT || it == PledgeReason.UPDATE_PLEDGE || it == PledgeReason.FIX_PLEDGE }
                     .distinctUntilChanged()
 
             val projectAndReward = project
@@ -487,6 +526,49 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeSectionIsGone)
 
+
+            // Bonus stepper action
+            val bonusMinimum = BehaviorSubject.create(0.0)
+            val bonusStepAmount = BehaviorSubject.create(1.0)
+
+            val bonusInput = Observable.merge(bonusMinimum, this.bonusInput.map { NumberUtils.parse(it) })
+                    .distinctUntilChanged()
+
+            bonusMinimum
+                    .map { NumberUtils.format(it.toInt()) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.bonusHint)
+
+            bonusInput
+                    .compose<Double>(takeWhen(this.increaseBonusButtonClicked))
+                    .compose<Pair<Double, Double>>(combineLatestPair(bonusStepAmount))
+                    .map { it.first + it.second }
+                    .map { it.toString() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.bonusInput)
+
+            bonusInput
+                    .compose<Double>(takeWhen(this.decreaseBonusButtonClicked))
+                    .compose<Pair<Double, Double>>(combineLatestPair(bonusStepAmount))
+                    .map { it.first - it.second }
+                    .map { it.toString() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.bonusInput)
+
+            bonusInput
+                    .compose<Pair<Double, Double>>(combineLatestPair(bonusMinimum))
+                    .map { max(it.first, it.second) > it.second }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.decreaseBonusButtonIsEnabled)
+
+            bonusInput
+                    .map { NumberUtils.format(it.toFloat(), NumberOptions.builder().precision(NumberUtils.precision(it, RoundingMode.HALF_UP)).build()) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.bonusAmount)
+
+
             // Shipping rules section
             val shippingRules = projectAndReward
                     .filter { RewardUtils.isShippable(it.second) }
@@ -538,11 +620,18 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
+
+            val shippingAmountPlusBonus = shippingAmount.compose<Pair<Double, Double>>(combineLatestPair(bonusInput))
+                    .compose(bindToLifecycle())
+                    .map { it.first + it.second }
+
+
             // Total pledge section
             val total = pledgeInput
-                    .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
+                    .compose<Pair<Double, Double>>(combineLatestPair(shippingAmountPlusBonus))
                     .map { it.first + it.second }
                     .distinctUntilChanged()
+
 
             total
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -1024,6 +1113,14 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackPledgeSubmitButtonClicked(it.first, it.second) }
+
+            reward
+                    .map { RewardUtils.isNoReward(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.isPledgeMinimumSubtitleGone.onNext(it)
+                        this.isBonusSupportSectionGone.onNext(it)
+                    }
         }
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {
@@ -1088,6 +1185,10 @@ interface PledgeFragmentViewModel {
 
         override fun increasePledgeButtonClicked() = this.increasePledgeButtonClicked.onNext(null)
 
+        override fun decreaseBonusButtonClicked() = this.decreaseBonusButtonClicked.onNext(null)
+
+        override fun increaseBonusButtonClicked() = this.increaseBonusButtonClicked.onNext(null)
+
         override fun linkClicked(url: String) = this.linkClicked.onNext(url)
 
         override fun miniRewardClicked() = this.miniRewardClicked.onNext(null)
@@ -1103,6 +1204,8 @@ interface PledgeFragmentViewModel {
         override fun stripeSetupResultSuccessful(@StripeIntentResult.Outcome outcome: Int) = this.stripeSetupResultSuccessful.onNext(outcome)
 
         override fun stripeSetupResultUnsuccessful(exception: Exception) = this.stripeSetupResultUnsuccessful.onNext(exception)
+
+        override fun bonusInput(amount: String) = this.bonusInput.onNext(amount)
 
         @NonNull
         override fun addedCard(): Observable<Pair<StoredCard, Project>> = this.addedCard
@@ -1265,5 +1368,23 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun titleAndAmount(): Observable<Pair<String, String>> = this.titleAndAmount
+
+        @NonNull
+        override fun isPledgeMinimumSubtitleGone(): Observable<Boolean> = this.isPledgeMinimumSubtitleGone
+
+        @NonNull
+        override fun isBonusSupportSectionGone(): Observable<Boolean> = this.isBonusSupportSectionGone
+
+        @NonNull
+        override fun bonusAmount(): Observable<String> = this.bonusAmount
+
+        @NonNull
+        override fun decreaseBonusButtonIsEnabled(): Observable<Boolean> = this.decreaseBonusButtonIsEnabled
+
+        @NonNull
+        override fun increaseBonusButtonIsEnabled(): Observable<Boolean> = this.increaseBonusButtonIsEnabled
+
+        @NonNull
+        override fun bonusHint(): Observable<String> = this.bonusHint
     }
 }

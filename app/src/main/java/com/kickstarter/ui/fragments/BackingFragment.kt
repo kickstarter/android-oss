@@ -205,7 +205,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                     val stringToBold = getString(R.string.rewards_info_estimated_delivery)
                     setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label)
 
-                    estimated_delivery_label_2.text = "${estimated_delivery_label_2.text} $it"
+                    estimated_delivery_label_2.text = "${getString(R.string.Estimated_delivery)} $it"
                     setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label_2)
 
                 }

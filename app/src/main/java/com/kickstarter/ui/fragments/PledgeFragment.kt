@@ -11,15 +11,18 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
+import androidx.transition.TransitionManager
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.ChangeBounds
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
@@ -74,6 +77,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private lateinit var adapter: ShippingRulesAdapter
     private var headerAdapter = ExpandableHeaderAdapter()
+    private var isExpanded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -141,7 +145,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     pledge_estimated_delivery.text = it
-                    pledge_estimated_delivery_date.text = it
+                    pledge_header_estimated_delivery_label.text = pledge_header_estimated_delivery_label.text.toString() + " " + it
                 }
 
         this.viewModel.outputs.estimatedDeliveryInfoIsGone()
@@ -149,7 +153,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     ViewUtils.setGone(pledge_estimated_delivery_container, it)
-                    ViewUtils.setGone(pledge_estimated_delivery_date)
+                    ViewUtils.setGone(pledge_header_estimated_delivery_label)
                     ViewUtils.setGone(pledge_estimated_delivery)
                 }
 
@@ -480,6 +484,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
 
+        header_arrow_button.setOnClickListener {
+            toggleAnimation(isExpanded)
+        }
+      
         decrease_bonus.setOnClickListener { this.viewModel.inputs.decreaseBonusButtonClicked() }
 
         increase_bonus.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
@@ -495,6 +503,43 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private fun populateHeaderItems(titleAndAmount: Pair<String, String>) {
         headerAdapter.populateData(titleAndAmount)
+    }
+
+    private fun toggleAnimation(isExpanded: Boolean) {
+        if (isExpanded)
+            collapseAnimation()
+        else
+            expandAnimation()
+
+        this.isExpanded = !isExpanded
+    }
+
+    private fun expandAnimation() {
+        header_arrow_button.animate().rotation(180f).start()
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(pledge_header_container)
+        constraintSet.clear(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM);
+
+        val transition = ChangeBounds()
+        transition.duration = 100
+
+        TransitionManager.beginDelayedTransition(pledge_header_container, transition)
+        constraintSet.applyTo(pledge_header_container)
+    }
+
+    private fun collapseAnimation() {
+        header_arrow_button.animate().rotation(0f).start()
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(pledge_header_container)
+        constraintSet.connect(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM, R.id.header_animation_guideline, ConstraintSet.BOTTOM)
+
+        val transition = ChangeBounds()
+        transition.duration = 100
+
+        TransitionManager.beginDelayedTransition(pledge_header_container, transition)
+        constraintSet.applyTo(pledge_header_container)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

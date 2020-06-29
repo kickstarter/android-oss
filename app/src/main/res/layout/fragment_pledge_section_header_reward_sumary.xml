@@ -7,7 +7,9 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:animateLayoutChanges="true"
+    android:animationCache="true">
 
     <TextView
         android:id="@+id/pledge_header_title"
@@ -28,27 +30,17 @@
         android:id="@+id/pledge_header_estimated_delivery_label"
         style="@style/FootnoteSecondary"
         android:layout_width="0dp"
+        android:maxLines="2"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/grid_3"
-        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_4"
         android:text="@string/Estimated_delivery"
-        app:layout_constraintBottom_toTopOf="@id/list_rewards_add_ons"
+        android:textColor="@color/ksr_dark_grey_500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pledge_header_title"
-        tools:text="Estimated delivery" />
-
-    <TextView
-        android:id="@+id/pledge_estimated_delivery_date"
-        style="@style/FootnoteSecondary"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/grid_1_half"
-        app:layout_constraintEnd_toEndOf="@+id/guideline_separator"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@+id/pledge_header_estimated_delivery_label"
-        app:layout_constraintTop_toBottomOf="@+id/pledge_header_title"
-        tools:text="December 2019" />
+        app:layout_constraintEnd_toStartOf="@id/guideline_separator"
+        tools:text="Estimated delivery June 2020 " />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_separator"
@@ -69,20 +61,28 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="40" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/header_animation_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="74dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_rewards_add_ons"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/grid_3"
-        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
-        app:layout_constraintEnd_toEndOf="@id/guideline_separator"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pledge_header_summary_amount"
+        app:layout_constraintTop_toBottomOf="@id/header_animation_guideline"
+        app:layout_constraintBottom_toBottomOf="@id/header_animation_guideline"
         tools:itemCount="2"
         tools:listitem="@layout/fragment_pledge_section_header_item" />
 
     <ImageView
+        android:id="@+id/header_spacing_translated_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_3"
         android:background="@color/ksr_grey_300"
@@ -92,7 +92,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/arrow_button"
+        android:id="@+id/header_arrow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

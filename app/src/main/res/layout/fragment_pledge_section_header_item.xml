@@ -2,12 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/grid_3"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        style="@style/CalloutPrimary"
         android:id="@+id/pledge_header_item_title"
+        style="@style/CalloutPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -15,11 +16,11 @@
         android:text="@string/Your_reward"
         android:textColor="@color/ksr_dark_grey_500"
         android:layout_marginTop="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/grid_3"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_separator"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text = "Committed" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Really long line here to see how it behaves with several lines" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_separator"
@@ -33,8 +34,6 @@
         style="@style/CalloutPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/grid_3"
         android:gravity="end"
         android:ellipsize="end"
         android:maxLines="2"
@@ -44,6 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/pledge_header_item_title"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/pledge_header_item_title"
         tools:text="US$40" />
 
     <ImageView

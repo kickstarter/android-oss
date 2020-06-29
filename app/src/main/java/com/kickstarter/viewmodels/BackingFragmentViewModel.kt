@@ -272,7 +272,6 @@ interface BackingFragmentViewModel {
                     .subscribe(this.totalAmount)
 
 
-
             backing
                     .map { it.paymentSource() }
                     .map { CreditCardPaymentType.safeValueOf(it?.paymentType()) }

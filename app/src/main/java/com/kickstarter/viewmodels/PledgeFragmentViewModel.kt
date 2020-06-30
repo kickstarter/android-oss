@@ -395,6 +395,8 @@ interface PledgeFragmentViewModel {
                     .map { it.first.backing() }
                     .ofType(Backing::class.java)
 
+            val backingBonusAmount = backing.map { it.bonusAmount() }
+
             // Reward summary section
             projectAndReward
                     .map { rewardTitle(it.first, it.second) }

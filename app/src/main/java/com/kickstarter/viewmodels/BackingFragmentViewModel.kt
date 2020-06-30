@@ -223,7 +223,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.pledgeDate)
 
             backing
-                    .map { it.amount() - it.shippingAmount() }
+                    .map { it.amount() - it.shippingAmount() - it.bonusAmount() }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .distinctUntilChanged()
@@ -261,7 +261,7 @@ interface BackingFragmentViewModel {
 
 
             backing
-                    .map { it.amount() + it.bonusAmount() }
+                    .map { it.amount()}
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .distinctUntilChanged()
@@ -488,7 +488,7 @@ interface BackingFragmentViewModel {
 
 
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
-            val pledgeTotal = backing.amount() + backing.bonusAmount()
+            val pledgeTotal = backing.amount()
             val pledgeTotalString = this.ksCurrency.format(pledgeTotal, project)
 
             return PledgeStatusData(statusStringRes, pledgeTotalString, projectDeadline)

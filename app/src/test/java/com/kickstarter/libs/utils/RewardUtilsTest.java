@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
@@ -304,6 +305,15 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
 
     final Reward rewardWithWorldWideShipping = RewardFactory.rewardWithShipping();
     assertEquals(Pair.create(R.string.Ships_worldwide, null), RewardUtils.shippingSummary(rewardWithWorldWideShipping));
+  }
+
+  @Test
+  public void minimumRewardAmountByVariant() {
+    final Reward noReward = RewardFactory.noReward();
+    assertEquals(1.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, noReward));
+    assertEquals(10.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_2, noReward));
+    assertEquals(20.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_3, noReward));
+    assertEquals(50.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward));
   }
 
   @Test

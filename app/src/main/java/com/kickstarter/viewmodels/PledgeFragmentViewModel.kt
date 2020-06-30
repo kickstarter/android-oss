@@ -264,6 +264,12 @@ interface PledgeFragmentViewModel {
         /** Emits the hint text for the bonus amount. */
         fun bonusHint(): Observable<String>
 
+        /** Emits if a reward is a No Reward. */
+        fun isNoReward(): Observable<Boolean>
+
+        /** Emits the title of the project for `No Reward` use case */
+        fun projectTitle(): Observable<String>
+
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -347,6 +353,8 @@ interface PledgeFragmentViewModel {
         private val decreaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val increaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val bonusHint = BehaviorSubject.create<String>()
+        private val isNoReward = BehaviorSubject.create<Boolean>()
+        private val projectTitle = BehaviorSubject.create<String>()
 
 
         private val apiClient = environment.apiClient()
@@ -417,8 +425,12 @@ interface PledgeFragmentViewModel {
 
             reward
                     .map { RewardUtils.isNoReward(it) }
+                    .filter { BooleanUtils.isTrue(it) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.headerSectionIsGone)
+                    .subscribe {
+                        this.headerSectionIsGone.onNext(it)
+                        this.isNoReward.onNext(it)
+                    }
 
             reward
                     .map { it.estimatedDeliveryOn() }
@@ -464,6 +476,11 @@ interface PledgeFragmentViewModel {
                     .map { ProjectViewUtils.currencySymbolAndPosition(it, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectCurrencySymbol)
+
+            project
+                    .map { it.name() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.projectTitle)
 
             // Pledge stepper section
             val additionalPledgeAmount = BehaviorSubject.create(0.0)
@@ -1417,5 +1434,11 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun bonusHint(): Observable<String> = this.bonusHint
+
+        @NonNull
+        override fun isNoReward(): Observable<Boolean> = this.isNoReward
+
+        @NonNull
+        override fun projectTitle(): Observable<String> = this.projectTitle
     }
 }

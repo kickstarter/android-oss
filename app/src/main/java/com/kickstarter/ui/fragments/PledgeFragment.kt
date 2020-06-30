@@ -144,7 +144,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    pledge_estimated_delivery.text = it
                     pledge_header_estimated_delivery_label.text = pledge_header_estimated_delivery_label.text.toString() + " " + it
                 }
 
@@ -152,15 +151,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    ViewUtils.setGone(pledge_estimated_delivery_container, it)
                     ViewUtils.setGone(pledge_header_estimated_delivery_label)
-                    ViewUtils.setGone(pledge_estimated_delivery)
                 }
-
-        this.viewModel.outputs.rewardSummaryIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(reward_summary, it) }
 
         this.viewModel.outputs.continueButtonIsGone()
                 .compose(bindToLifecycle())
@@ -239,13 +231,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
-
-        this.viewModel.outputs.rewardTitle()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    reward_title.text = it
-                }
 
         this.viewModel.outputs.cardsAndProject()
                 .compose(bindToLifecycle())
@@ -449,7 +434,20 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
                 }
 
+        this.viewModel.outputs.isNoReward()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    ViewUtils.setGone(pledge_header_container, it)
+                    pledge_header_container_no_reward.visibility = View.VISIBLE
+                }
 
+        this.viewModel.outputs.projectTitle()
+                .compose(observeForUI())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    pledge_header_title_no_reward.text = it
+                }
 
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {

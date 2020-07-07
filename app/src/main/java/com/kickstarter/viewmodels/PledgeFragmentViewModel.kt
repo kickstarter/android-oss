@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
 import android.text.SpannableString
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
@@ -345,6 +346,9 @@ interface PledgeFragmentViewModel {
         private val decreaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val increaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val bonusHint = BehaviorSubject.create<String>()
+        private val bonusAmountFromGraph = BehaviorSubject.create<Double>()
+        private val shippingWithOrWithoutBonus = BehaviorSubject.create<Double>()
+        private var updatePledgeInitialLoadComplete = false
 
 
         private val apiClient = environment.apiClient()
@@ -395,8 +399,6 @@ interface PledgeFragmentViewModel {
                     .map { it.first.backing() }
                     .ofType(Backing::class.java)
 
-            val backingBonusAmount = backing.map { it.bonusAmount() }
-
             // Reward summary section
             projectAndReward
                     .map { rewardTitle(it.first, it.second) }
@@ -441,7 +443,7 @@ interface PledgeFragmentViewModel {
             reward
                     .filter { !RewardUtils.isNoReward(it) }
                     .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeMinimum))
-                    .map { Pair(it.first.title()?: "", it.second) }
+                    .map { Pair(it.first.title() ?: "", it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.titleAndAmount)
 
@@ -571,6 +573,17 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.bonusAmount)
 
 
+            val backingAndPledgeReason = backing.compose<Pair<Backing, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.UPDATE_PLEDGE }
+                    .switchMap { getBacking(it.first.id().toString()) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        Log.d("PledgeFragmentViewModel", "Bonus Amount from graph ${it.bonusAmount()}")
+                        this.bonusAmountFromGraph.onNext(it.bonusAmount())
+                        this.bonusAmount.onNext(it.bonusAmount().toString())
+                    }
+
+
             // Shipping rules section
             val shippingRules = projectAndReward
                     .filter { RewardUtils.isShippable(it.second) }
@@ -628,9 +641,15 @@ interface PledgeFragmentViewModel {
                     .map { it.first + it.second }
 
 
+            val shippingBonusAndPledgeReason = Observable.combineLatest(shippingAmount, pledgeReason, bonusInput) { sb, p, b -> Triple(sb, p, b) }
+                    .compose(bindToLifecycle())
+                    .map { withOrWithoutBonus(it.second, it.first, it.third) }
+                    .subscribe(this.shippingWithOrWithoutBonus)
+
+
             // Total pledge section
             val total = pledgeInput
-                    .compose<Pair<Double, Double>>(combineLatestPair(shippingAmountPlusBonus))
+                    .compose<Pair<Double, Double>>(combineLatestPair(this.shippingWithOrWithoutBonus))
                     .map { it.first + it.second }
                     .distinctUntilChanged()
 
@@ -1124,6 +1143,28 @@ interface PledgeFragmentViewModel {
                         this.isBonusSupportSectionGone.onNext(it)
                     }
         }
+
+        private fun withOrWithoutBonus(pledgeReason: PledgeReason, shippingAmount: Double, bonusAmount: Double): Double {
+
+            return if (pledgeReason == PledgeReason.UPDATE_PLEDGE) {
+                if (!updatePledgeInitialLoadComplete) {
+                    updatePledgeInitialLoadComplete = true
+                    Log.d("PledgeFragmentViewModel", "Initial load, returning shipping amount only -> $shippingAmount")
+
+                    shippingAmount
+                } else {
+                    Log.d("PledgeFragmentViewModel", "NOT Initial load, returning shipping amount + bonus -> ${shippingAmount + bonusAmount}")
+                    shippingAmount + bonusAmount
+                }
+            } else {
+                shippingAmount + bonusAmount
+            }
+        }
+
+        private fun getBacking(backingId: String): Observable<Backing> {
+            return this.apolloClient.getBacking(backingId)
+        }
+
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {
             return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })

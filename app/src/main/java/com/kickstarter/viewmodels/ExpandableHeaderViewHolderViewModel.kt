@@ -37,19 +37,19 @@ interface ExpandableHeaderViewHolderViewModel {
 
         init {
             titleAndAmount
-                    .map { it.second}
+                    .map { it.first}
                     .compose(bindToLifecycle())
                     .subscribe(this.titleForSummary)
 
             titleAndAmount
-                    .map { it.first}
+                    .map { it.second}
                     .compose(bindToLifecycle())
                     .subscribe(this.amountForSummary)
         }
 
         override fun configureWith(titleAndAmount: Pair<String, String>) = this.titleAndAmount.onNext(titleAndAmount)
 
-        override fun amountForSummary(): Observable<String> = this.titleForSummary
-        override fun titleForSummary(): Observable<String> = this.amountForSummary
+        override fun amountForSummary(): Observable<String> = this.amountForSummary
+        override fun titleForSummary(): Observable<String> = this.titleForSummary
     }
 }

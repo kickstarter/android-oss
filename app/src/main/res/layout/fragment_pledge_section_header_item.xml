@@ -11,18 +11,17 @@
         style="@style/CalloutPrimary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginStart="@dimen/grid_3"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="@string/Your_reward"
-        android:textColor="@color/ksr_dark_grey_500"
-        android:layout_marginStart="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_3"
+        android:textColor="@color/ksr_dark_grey_500"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/pledge_header_item_amount"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Really long line here to see how it behaves adasdfasdfqwf with several lines" />
+        tools:text="Really long line here to see how it behaves with several lines" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_separator"
@@ -39,8 +38,6 @@
         android:gravity="end"
         android:ellipsize="end"
         android:maxLines="2"
-        android:text="@string/Your_reward"
-
         android:layout_marginEnd="@dimen/grid_3"
         android:textColor="@color/ksr_dark_grey_500"
         app:layout_constraintBottom_toBottomOf="parent"

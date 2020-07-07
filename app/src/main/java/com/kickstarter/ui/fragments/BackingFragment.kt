@@ -1,9 +1,11 @@
 package com.kickstarter.ui.fragments
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Log
 import android.util.Pair
@@ -201,12 +203,13 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe {
 
                     estimated_delivery_label.text = viewModel.environment.ksString().format(getString(R.string.pledge_delivery_delivered), "estimated_delivery", it)
+                    val estimatedDeliveryLabelText = estimated_delivery_label.text
 
                     val stringToBold = getString(R.string.rewards_info_estimated_delivery)
-                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label)
+                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label, resources.getColor(R.color.ksr_dark_grey_500, null))
 
                     estimated_delivery_label_2.text = "${getString(R.string.Estimated_delivery)} $it"
-                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label_2)
+                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label_2, resources.getColor(R.color.ksr_dark_grey_500, null))
 
                 }
 
@@ -223,7 +226,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
 
         val boldPortionLength = delivery_reminder_label.text.toString().split(".").first().length
-        setBoldSpanOnTextView(boldPortionLength, delivery_reminder_label)
+        setBoldSpanOnTextView(boldPortionLength, delivery_reminder_label, resources.getColor(R.color.ksr_dark_grey_500, null))
 
         SwipeRefresher(
                 this, backing_swipe_refresh_layout, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
@@ -238,8 +241,9 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
     }
 
-    private fun setBoldSpanOnTextView(numCharacters: Int, textView: TextView) {
+    private fun setBoldSpanOnTextView(numCharacters: Int, textView: TextView, spanColor: Int) {
         val spannable = SpannableString(textView.text)
+        spannable.setSpan(ForegroundColorSpan(spanColor), 0, numCharacters, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannable.setSpan(
                 StyleSpan(Typeface.BOLD),
                 0, numCharacters,

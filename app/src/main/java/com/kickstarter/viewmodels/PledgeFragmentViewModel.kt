@@ -345,6 +345,8 @@ interface PledgeFragmentViewModel {
         private val decreaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val increaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val bonusHint = BehaviorSubject.create<String>()
+        
+        // - Keep track if the bonus stepper increase/decrease has being pressed at some point
         private val bonusAmountHasChanged = BehaviorSubject.create<Boolean>()
 
         private val apiClient = environment.apiClient()
@@ -764,6 +766,13 @@ interface PledgeFragmentViewModel {
             val updatingPledge = pledgeReason
                     .map { it == PledgeReason.UPDATE_PLEDGE }
 
+            updatingPledge
+                    .filter { true }
+                    .subscribe {
+                        // - if updating pledge by default pledge button disabled
+                        this.bonusAmountHasChanged.onNext(!it)
+                    }
+
             val updatingReward = pledgeReason
                     .filter { it == PledgeReason.UPDATE_REWARD }
                     .map { true }
@@ -784,8 +793,19 @@ interface PledgeFragmentViewModel {
                     .map { it.first != it.second }
                     .startWith(false)
 
+            /**
+             * Added logic for able/disable pledge button for bonus support
+             * if PledgeReason == PLEDGE button always available
+             * if PledgeReason == UPDATE button should be available just if changes
+             * on shipping or amount or bonusAmount.
+             *
+             * For no reward the amount = bonusAmount so checking if the
+             * stepper has change at any moment and not checking just the amount
+             */
             val shippingOrAmountChanged = shippingRuleUpdated
                     .compose<Pair<Boolean, Boolean>>(combineLatestPair(amountUpdated))
+                    .map { it.first || it.second }
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.bonusAmountHasChanged))
                     .map { it.first || it.second }
                     .distinctUntilChanged()
 
@@ -806,16 +826,7 @@ interface PledgeFragmentViewModel {
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map { it.first }
 
-            backing
-                    .map { it.bonusAmount() }
-                    .compose<Pair<Double, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.UPDATE_PLEDGE }
-                    .map { it.first }
-                    .compose<Pair<Double, String>>(combineLatestPair(this.bonusAmount))
-                    .map { it.first != it.second.toDouble() }
-                    .subscribe(this.bonusAmountHasChanged)
-
-            Observable.merge(updatingReward, changeDuringUpdatingPledge, this.bonusAmountHasChanged)
+            Observable.merge(updatingReward, changeDuringUpdatingPledge)
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.pledgeButtonIsEnabled.onNext(it) }
@@ -1218,9 +1229,15 @@ interface PledgeFragmentViewModel {
 
         override fun increasePledgeButtonClicked() = this.increasePledgeButtonClicked.onNext(null)
 
-        override fun decreaseBonusButtonClicked() = this.decreaseBonusButtonClicked.onNext(null)
+        override fun decreaseBonusButtonClicked() {
+            this.bonusAmountHasChanged.onNext(true)
+            this.decreaseBonusButtonClicked.onNext(null)
+        }
 
-        override fun increaseBonusButtonClicked() = this.increaseBonusButtonClicked.onNext(null)
+        override fun increaseBonusButtonClicked() {
+            this.bonusAmountHasChanged.onNext(true)
+            this.increaseBonusButtonClicked.onNext(null)
+        }
 
         override fun linkClicked(url: String) = this.linkClicked.onNext(url)
 

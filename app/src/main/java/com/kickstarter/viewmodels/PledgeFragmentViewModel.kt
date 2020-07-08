@@ -1145,8 +1145,9 @@ interface PledgeFragmentViewModel {
             if (RewardUtils.isNoReward(reward) && pledgeReason == PledgeReason.PLEDGE)
                 totalPledgeValue = pInput + bAmount.toInt()
 
-            if (RewardUtils.isNoReward(reward) && pledgeReason == PledgeReason.UPDATE_PLEDGE)
-                totalPledgeValue = bAmount.toDouble()
+            if (RewardUtils.isNoReward(reward) && pledgeReason == PledgeReason.UPDATE_PLEDGE) {
+                totalPledgeValue = pInput
+            }
 
             return totalPledgeValue
         }

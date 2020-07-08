@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.SharedPreferences
 import android.text.SpannableString
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
@@ -346,8 +345,7 @@ interface PledgeFragmentViewModel {
         private val decreaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val increaseBonusButtonIsEnabled = BehaviorSubject.create<Boolean>()
         private val bonusHint = BehaviorSubject.create<String>()
-        private var updatePledgeInitialLoadComplete = false
-
+        private val bonusAmountHasChanged = BehaviorSubject.create<Boolean>()
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
@@ -629,18 +627,22 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
-            val total = Observable.combineLatest(reward, shippingAmount, bonusAmount, rewardMinimum){ rw, sAmount, bAmount, rMinimumAmount ->
-                        return@combineLatest if (!RewardUtils.isNoReward(rw))
-                            (sAmount + bAmount.toInt() + rMinimumAmount)
-                        else (sAmount + bAmount.toInt())
+            val total = Observable.combineLatest(reward, shippingAmount, this.bonusAmount, rewardMinimum, pledgeInput, pledgeReason){ rw, sAmount, bAmount, rMinimumAmount, pInput, pReason ->
+                        return@combineLatest getAmount(sAmount, bAmount, rMinimumAmount, rw, pInput, pReason)
                     }
                     .distinctUntilChanged()
+
+            total
+                    .compose<Pair<Double,String>>(combineLatestPair(this.bonusAmount))
+                    .map { it.first.toString() + it.second.toInt().toString()}
+                    .compose(bindToLifecycle())
 
             total
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe(this.totalAmount)
+
 
             total
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -804,10 +806,19 @@ interface PledgeFragmentViewModel {
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map { it.first }
 
-            Observable.merge(updatingReward, changeDuringUpdatingPledge)
+            backing
+                    .map { it.bonusAmount() }
+                    .compose<Pair<Double, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.UPDATE_PLEDGE }
+                    .map { it.first }
+                    .compose<Pair<Double, String>>(combineLatestPair(this.bonusAmount))
+                    .map { it.first != it.second.toDouble() }
+                    .subscribe(this.bonusAmountHasChanged)
+
+            Observable.merge(updatingReward, changeDuringUpdatingPledge, this.bonusAmountHasChanged)
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.pledgeButtonIsEnabled)
+                    .subscribe { this.pledgeButtonIsEnabled.onNext(it) }
 
             // Payment section
             pledgeReason
@@ -889,7 +900,7 @@ interface PledgeFragmentViewModel {
                     .map { it.second }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.pledgeButtonIsEnabled)
+                    .subscribe { this.pledgeButtonIsEnabled.onNext(it) }
 
             val pledgeButtonClicked = userIsLoggedIn
                     .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))
@@ -1124,6 +1135,20 @@ interface PledgeFragmentViewModel {
                         this.isPledgeMinimumSubtitleGone.onNext(it)
                         this.isBonusSupportSectionGone.onNext(it)
                     }
+        }
+
+        private fun getAmount(sAmount: Double, bAmount: String, rMinimumAmount: Double, reward: Reward, pInput: Double, pledgeReason: PledgeReason): Double {
+            var totalPledgeValue = pInput
+            if (!RewardUtils.isNoReward(reward))
+                totalPledgeValue = (sAmount + bAmount.toInt() + rMinimumAmount)
+
+            if (RewardUtils.isNoReward(reward) && pledgeReason == PledgeReason.PLEDGE)
+                totalPledgeValue = pInput + bAmount.toInt()
+
+            if (RewardUtils.isNoReward(reward) && pledgeReason == PledgeReason.UPDATE_PLEDGE)
+                totalPledgeValue = bAmount.toDouble()
+
+            return totalPledgeValue
         }
 
         private fun getBacking(backingId: String): Observable<Backing> {

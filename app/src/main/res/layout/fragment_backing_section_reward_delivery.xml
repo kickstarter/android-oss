@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="79dp"
+    android:minHeight="79dp"
     android:layout_marginStart="@dimen/grid_4"
     android:layout_marginEnd="@dimen/grid_4"
     android:background="@drawable/rect_trans_rounded"
@@ -12,14 +13,14 @@
 
     <TextView
         android:id="@+id/estimated_delivery_label"
-        style="@style/BodyPrimary"
+        style="@style/CalloutPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
         android:paddingStart="@dimen/grid_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/ksr_dark_grey_500"
+        android:textColor="@color/black"
         android:text="@string/pledge_delivery_delivered" />
 
 

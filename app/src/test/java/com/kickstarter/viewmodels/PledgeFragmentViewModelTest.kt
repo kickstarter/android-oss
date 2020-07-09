@@ -871,8 +871,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 51.0))
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0))
         this.projectCurrencySymbol.assertValue("$")
 
         this.vm.inputs.decreasePledgeButtonClicked()
@@ -894,9 +893,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 51.0),
-                expectedCurrency(environment, project, 50.0))
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0))
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
     }
 
@@ -1058,10 +1055,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 21.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 21.0), DateTimeUtils.longDate(this.deadline)))
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0))
+        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
         this.totalAndDeadlineIsVisible.assertValueCount(2)
 
         this.vm.inputs.decreasePledgeButtonClicked()
@@ -1280,13 +1275,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         assertInitialPledgeCurrencyStates_WithShipping_MXProject(environment, project)
 
         this.vm.inputs.increasePledgeButtonClicked()
-
         this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
                 expectedCurrency(environment, project, 10.0))
         this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
-                expectedConvertedCurrency(environment, project, 60.0))
+        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0))
         this.conversionTextViewIsGone.assertValues(false)
         this.decreasePledgeButtonIsEnabled.assertValues(false, true)
         this.increasePledgeButtonIsEnabled.assertValue(true)
@@ -1299,11 +1292,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 60.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 60.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(2)
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0))
+        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)))
+        this.totalAndDeadlineIsVisible.assertValueCount(1)
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
@@ -2310,7 +2301,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.pledgeInput("32.0")
+        this.vm.inputs.increasePledgeButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeButtonIsEnabled.assertValues(false, true, false)
@@ -2368,10 +2360,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.bonusInput("31")
+        this.vm.inputs.increaseBonusButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, false)
         this.pledgeProgressIsGone.assertValue(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
@@ -2379,7 +2372,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, false)
         this.pledgeProgressIsGone.assertValues(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
@@ -2738,6 +2731,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.increasePledgeButtonClicked()
         this.pledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.pledgeInput("30")

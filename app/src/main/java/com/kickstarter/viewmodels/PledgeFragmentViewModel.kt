@@ -791,8 +791,8 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Boolean>>(combineLatestPair(updatingPledge))
                     .filter { it.second }
                     .map { it.first }
-                    .compose<Pair<Double, Double>>(combineLatestPair(backingAmount))
-                    .map { it.first != it.second }
+                    .compose<Pair<Double, Backing>>(combineLatestPair(backing))
+                    .map { it.first != it.second.amount() }
                     .startWith(false)
 
             val noRewardAmountUpdated = pledgeInput
@@ -812,20 +812,10 @@ interface PledgeFragmentViewModel {
             }
                     .distinctUntilChanged()
 
-            /**
-             * Added logic for able/disable pledge button for bonus support
-             * if PledgeReason == PLEDGE button always available
-             * if PledgeReason == UPDATE button should be available just if changes
-             * on shipping or amount or bonusAmount.
-             *
-             * For no reward the amount = bonusAmount so checking if the
-             * stepper has change at any moment and not checking only the amount
-             */
-            val shippingOrAmountChanged = shippingRuleUpdated
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(amountUpdated))
-                    .map { it.first || it.second }
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.bonusAmountHasChanged))
-                    .map { it.first && it.second }
+            val shippingOrAmountChanged = Observable.combineLatest(shippingRuleUpdated, this.bonusAmountHasChanged, amountUpdated){ shippingUpdated, bHasChanged, aUpdated ->
+                return@combineLatest if (shippingUpdated) true
+                else bHasChanged && aUpdated
+            }
                     .distinctUntilChanged()
 
             val minAndMaxTotal = minimumPledge

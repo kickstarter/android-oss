@@ -1,7 +1,8 @@
 package com.kickstarter.viewmodels;
 
-import android.util.Log;
 import android.util.Pair;
+
+import androidx.annotation.NonNull;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
@@ -14,8 +15,6 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.BackingActivity;
-
-import androidx.annotation.NonNull;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;

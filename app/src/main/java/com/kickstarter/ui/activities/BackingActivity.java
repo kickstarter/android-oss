@@ -13,7 +13,7 @@ import com.kickstarter.viewmodels.BackingViewModel;
 import androidx.annotation.Nullable;
 
 @RequiresActivityViewModel(BackingViewModel.ViewModel.class)
-public final class BackingActivity extends BaseActivity<BackingViewModel.ViewModel> {
+public final class BackingActivity extends BaseActivity<BackingViewModel.ViewModel> implements BackingFragment.BackingDelegate {
 
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -23,6 +23,11 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     this.viewModel.outputs.showBackingFragment()
             .compose(bindToLifecycle())
             .subscribe(this::startBackingFragment);
+
+    this.viewModel.outputs.isRefreshing()
+            .compose(bindToLifecycle())
+            .subscribe(it -> backingFragment().isRefreshing(it));
+
   }
 
   private void startBackingFragment(final BackingWrapper backingWrapper) {
@@ -42,4 +47,12 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
     return  (BackingFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_backing);
   }
 
+  @Override
+  public void refreshProject() {
+    this.viewModel.inputs.refresh();
+  }
+
+  @Override
+  public void showFixPaymentMethod() { }
 }
+

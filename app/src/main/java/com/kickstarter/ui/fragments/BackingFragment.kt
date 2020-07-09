@@ -241,6 +241,11 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
     }
 
+
+    public fun isRefreshing(isRefreshing: Boolean) {
+        backing_swipe_refresh_layout.isRefreshing = isRefreshing
+    }
+
     private fun setBoldSpanOnTextView(numCharacters: Int, textView: TextView, spanColor: Int) {
         val spannable = SpannableString(textView.text)
         spannable.setSpan(ForegroundColorSpan(spanColor), 0, numCharacters, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

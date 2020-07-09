@@ -1,60 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/reward_summary"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:layout_gravity="center_horizontal"
-  android:layout_marginStart="@dimen/activity_horizontal_margin"
-  android:layout_marginTop="@dimen/grid_2"
-  android:layout_marginEnd="@dimen/activity_horizontal_margin"
-  android:orientation="vertical"
-  app:cardCornerRadius="@dimen/reward_card_radius"
-  app:cardElevation="0dp"
-  tools:showIn="@layout/fragment_pledge">
-
-  <LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/grid_3">
-
-    <com.google.android.flexbox.FlexboxLayout
-      android:id="@+id/pledge_estimated_delivery_container"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_1_half"
-      android:orientation="horizontal"
-      app:alignItems="center"
-      app:dividerDrawable="@drawable/divider_grid_1_half"
-      app:flexWrap="wrap"
-      app:showDivider="middle">
-
-      <TextView
-        style="@style/FootnoteSecondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Estimated_delivery" />
-
-      <TextView
-        android:id="@+id/pledge_estimated_delivery"
-        style="@style/FootnotePrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="December 2019" />
-
-    </com.google.android.flexbox.FlexboxLayout>
+    android:id="@+id/pledge_header_container_no_reward"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-      android:id="@+id/reward_title"
-      style="@style/Headline"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:ellipsize="end"
-      android:maxLines="2"
-      tools:text="Attend the Wrap Party in Sandusky, Ohio" />
+        android:id="@+id/pledge_header_title_no_reward"
+        style="@style/Headline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@string/Your_reward"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/header_no_reward_separator"
+        tools:text="Glyphonic: Lowland Hums Fourth Album" />
 
-  </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+    <ImageView
+        android:id="@+id/header_no_reward_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider_dark_grey_300_horizontal"
+        android:importantForAccessibility="no"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:layout_marginStart="@dimen/grid_3"
+        app:layout_constraintTop_toBottomOf="@+id/pledge_header_title_no_reward"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

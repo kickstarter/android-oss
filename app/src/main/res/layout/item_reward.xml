@@ -172,6 +172,14 @@
             android:layout_height="wrap_content"
             tools:text="Anywhere in the world" />
 
+          <TextView
+              android:id="@+id/reward_add_ons_available"
+              style="@style/RewardPill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/Add_ons_available"
+              tools:text="Add-ons available" />
+
         </com.google.android.flexbox.FlexboxLayout>
 
         </LinearLayout>

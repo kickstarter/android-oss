@@ -2,6 +2,7 @@ package com.kickstarter.models;
 
 import android.os.Parcelable;
 
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
@@ -36,6 +37,7 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable boolean isAddOn();
   public abstract @Nullable List<RewardsItem> addOnsItems();
   public abstract @Nullable Integer quantity();
+  public abstract @Nullable Boolean hasAddOns();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -56,6 +58,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder isAddOn(boolean __);
     public abstract Builder addOnsItems(List<RewardsItem> __);
     public abstract Builder quantity(Integer __);
+    public abstract Builder hasAddOns(Boolean __);
     public abstract Reward build();
   }
 

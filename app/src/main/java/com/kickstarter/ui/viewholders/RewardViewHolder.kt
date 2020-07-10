@@ -170,6 +170,16 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
+
+        this.viewModel.outputs.hasAddOnsAvailable()
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { hasAddOns ->
+                    if (hasAddOns) this.view.reward_add_ons_available.visibility = View.VISIBLE
+                    else ViewUtils.setGone(this.view.reward_add_ons_available, true)
+                }
+
     }
 
     override fun bindData(data: Any?) {

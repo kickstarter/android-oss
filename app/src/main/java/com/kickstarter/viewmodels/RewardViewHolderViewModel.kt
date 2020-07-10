@@ -113,6 +113,9 @@ interface RewardViewHolderViewModel {
 
         /** Emits the reward's title when `isReward` is true.  */
         fun titleForReward(): Observable<String?>
+
+        /** Emits if the reward has add-Ons available */
+        fun hasAddOnsAvailable(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
@@ -148,6 +151,7 @@ interface RewardViewHolderViewModel {
         private val titleForNoReward = BehaviorSubject.create<Int>()
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
+        private val addOnsAvailable = BehaviorSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -256,6 +260,11 @@ interface RewardViewHolderViewModel {
             reward
                     .compose(bindToLifecycle())
                     .subscribe(this.reward)
+
+            reward
+                    .map { it.hasAddOns() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addOnsAvailable)
 
             projectAndReward
                     .map { expirationDateIsGone(it.first, it.second) }
@@ -462,5 +471,8 @@ interface RewardViewHolderViewModel {
 
         @NonNull
         override fun titleIsGone(): Observable<Boolean> = this.titleIsGone
+
+        @NonNull
+        override fun hasAddOnsAvailable(): Observable<Boolean> = this.addOnsAvailable
     }
 }

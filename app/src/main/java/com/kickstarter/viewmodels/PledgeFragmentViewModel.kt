@@ -1036,8 +1036,8 @@ interface PledgeFragmentViewModel {
                     this.stripeSetupResultSuccessful.filter { it == StripeIntentResult.Outcome.SUCCEEDED })
                     .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
 
-            Observable.combineLatest<Double, Double, Checkout, CheckoutData>(shippingAmount, total, Observable.merge(successfulCheckout, successfulSCACheckout))
-            { s, t, c -> checkoutData(s, t, c) }
+            Observable.combineLatest<Double, Double, String, Checkout, CheckoutData>(shippingAmount, total, this.bonusAmount, Observable.merge(successfulCheckout, successfulSCACheckout))
+            { s, t, b, c -> checkoutData(s, t, b.toDouble(), c) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
                     .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                     .compose(bindToLifecycle())
@@ -1157,8 +1157,8 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCheckoutPaymentPageViewed(it) }
 
-            Observable.combineLatest<Double, Double, CheckoutData>(shippingAmount, total)
-            { s, t -> checkoutData(s, t, null) }
+            Observable.combineLatest<Double, Double, String, CheckoutData>(shippingAmount, total, this.bonusAmount)
+            { s, t, b -> checkoutData(s, t, b.toDouble(), null) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
                     .filter { shouldTrackPledgeSubmitButtonClicked(it.second.pledgeFlowContext()) }
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
@@ -1197,11 +1197,12 @@ interface PledgeFragmentViewModel {
             return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })
         }
 
-        private fun checkoutData(shippingAmount: Double, total: Double, checkout: Checkout?): CheckoutData {
+        private fun checkoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout?): CheckoutData {
             return CheckoutData.builder()
                     .amount(total)
                     .id(checkout?.id())
                     .paymentType(CreditCardPaymentType.CREDIT_CARD)
+                    .bonusAmount(bonusAmount)
                     .shippingAmount(shippingAmount)
                     .build()
         }

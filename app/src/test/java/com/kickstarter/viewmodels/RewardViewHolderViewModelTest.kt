@@ -771,7 +771,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testReward_HasAddOnsAvailable() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddOns(true).build())
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddons(true).build())
         this.hasAddonsAvailable.assertValue(true)
     }
 
@@ -779,7 +779,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testReward_No_HasAddOnsAvailable() {
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddOns(false).build())
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddons(false).build())
         this.hasAddonsAvailable.assertValue(false)
     }
 

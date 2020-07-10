@@ -262,7 +262,7 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.reward)
 
             reward
-                    .map { it.hasAddOns() }
+                    .map { it.hasAddons() }
                     .compose(bindToLifecycle())
                     .subscribe(this.addOnsAvailable)
 

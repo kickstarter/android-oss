@@ -36,6 +36,10 @@ public final class KoalaUtils {
         put("payment_type", checkoutData.paymentType().rawValue());
         put("revenue_in_usd_cents", Math.round(checkoutData.amount() * project.staticUsdRate() * 100));
         put("shipping_amount", checkoutData.shippingAmount());
+        if (checkoutData.bonusAmount() != null) {
+          put("bonus_amount", checkoutData.bonusAmount());
+          put("bonus_amount_usd", Math.round(checkoutData.bonusAmount() * project.staticUsdRate()));
+        }
       }
     });
 

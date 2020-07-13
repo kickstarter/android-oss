@@ -46,27 +46,5 @@
             app:layout_constraintTop_toBottomOf="@+id/backing_addons_title">
         </androidx.appcompat.widget.AppCompatTextView>
 
-        <AutoCompleteTextView
-            android:id="@+id/shipping_rules"
-            style="@style/AutocompleteStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_1"
-            android:layout_marginEnd="@dimen/grid_3"
-            android:ellipsize="end"
-            android:enabled="false"
-            android:hint="@string/Shipping"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:maxLines="1"
-            android:nextFocusDown="@id/shipping_amount"
-            android:scrollHorizontally="true"
-            android:text="@string/Loading"
-            android:textColor="@color/ksr_green_500"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/shipping_rules_label"
-            tools:text="United States" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

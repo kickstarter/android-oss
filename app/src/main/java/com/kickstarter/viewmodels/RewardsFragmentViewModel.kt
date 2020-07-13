@@ -38,6 +38,9 @@ class RewardsFragmentViewModel {
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.PledgeFragment].  */
         fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
+
+        /** Emits when we should show the [com.kickstarter.ui.fragments.BackingAddOnsFragment].  */
+        fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
@@ -49,6 +52,7 @@ class RewardsFragmentViewModel {
         private val projectData = BehaviorSubject.create<ProjectData>()
         private val rewardsCount = BehaviorSubject.create<Int>()
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -71,9 +75,17 @@ class RewardsFragmentViewModel {
 
             this.projectDataInput
                     .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
+                    .filter { !it.second.hasAddons() }
                     .map { pledgeDataAndPledgeReason(it.first, it.second) }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
+
+            this.projectDataInput
+                    .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
+                    .filter { it.second.hasAddons() }
+                    .map { pledgeDataAndPledgeReason(it.first, it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showAddOnsFragment)
 
             project
                     .map { it.rewards()?.size?: 0 }
@@ -118,5 +130,8 @@ class RewardsFragmentViewModel {
 
         @NonNull
         override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
+
+        @NonNull
+        override fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showAddOnsFragment
     }
 }

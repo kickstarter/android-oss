@@ -44,6 +44,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val titleForNoReward = TestSubscriber<Int>()
     private val titleForReward = TestSubscriber<String?>()
     private val titleIsGone = TestSubscriber<Boolean>()
+    private val hasAddonsAvailable = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardViewHolderViewModel.ViewModel(environment)
@@ -73,6 +74,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
+        this.vm.outputs.hasAddOnsAvailable().subscribe(this.hasAddonsAvailable)
     }
 
     @Test
@@ -763,6 +765,22 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.titleIsGone.assertValues(false)
         this.titleForReward.assertNoValues()
         this.titleForNoReward.assertValue(R.string.Pledge_without_a_reward)
+    }
+
+    @Test
+    fun testReward_HasAddOnsAvailable() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddons(true).build())
+        this.hasAddonsAvailable.assertValue(true)
+    }
+
+    @Test
+    fun testReward_No_HasAddOnsAvailable() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddons(false).build())
+        this.hasAddonsAvailable.assertValue(false)
     }
 
     @Test

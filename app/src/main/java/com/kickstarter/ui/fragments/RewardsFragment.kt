@@ -126,7 +126,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
             val addOnsFragment = BackingAddOnsFragment.newInstance(pledgeDataAndReason)
             this.fragmentManager?.beginTransaction()
                     ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    ?.replace(R.id.fragment_container,
+                    ?.add(R.id.fragment_container,
                             addOnsFragment,
                             BackingAddOnsFragment::class.java.simpleName)
                     ?.addToBackStack(BackingAddOnsFragment::class.java.simpleName)

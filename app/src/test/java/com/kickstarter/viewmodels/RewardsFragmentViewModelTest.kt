@@ -23,6 +23,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     private val projectData = TestSubscriber.create<ProjectData>()
     private val rewardsCount = TestSubscriber.create<Int>()
     private val showPledgeFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
+    private val showAddOnsFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardsFragmentViewModel.ViewModel(environment)
@@ -30,6 +31,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.projectData().subscribe(this.projectData)
         this.vm.outputs.rewardsCount().subscribe(this.rewardsCount)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
+        this.vm.outputs.showAddOnsFragment().subscribe(this.showAddOnsFragment)
     }
 
     @Test
@@ -77,9 +79,27 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
-        val reward = RewardFactory.reward()
+        val reward = RewardFactory.reward().toBuilder().hasAddons(false).build()
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
+                .reward(reward)
+                .projectData(ProjectDataFactory.project(project))
+                .build(), PledgeReason.PLEDGE))
+        this.showAddOnsFragment.assertNoValues()
+    }
+
+    @Test
+    fun testShowAddonsFragment_whenBackingProject() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        val reward = RewardFactory.reward().toBuilder().hasAddons(true).build()
+        this.vm.inputs.rewardClicked(reward)
+        this.showPledgeFragment.assertNoValues()
+        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
                 .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(project))

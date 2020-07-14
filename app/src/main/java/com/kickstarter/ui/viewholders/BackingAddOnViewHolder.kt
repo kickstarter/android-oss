@@ -16,19 +16,7 @@ class BackingAddOnViewHolder (private val view: View) : KSViewHolder(view) {
     private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
 
     init {
-        this.viewModel.outputs.titleForAddOn()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe{
-                    this.view.add_on_title_no_spannable.text = it
-                }
-
-        this.viewModel.outputs.description()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    this.view.add_on_description_text_view.text = it
-                }
+        // TODO: https://kickstarter.atlassian.net/browse/NT-1385
     }
 
     override fun bindData(data: Any?) {

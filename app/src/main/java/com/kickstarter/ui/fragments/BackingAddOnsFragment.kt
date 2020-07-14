@@ -47,7 +47,6 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 }
     }
 
-
     private fun populateAddOns(projectDataAndAddOnList: Pair<ProjectData, List<Reward>>) {
         val projectData = projectDataAndAddOnList.first
 

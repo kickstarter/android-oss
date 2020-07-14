@@ -56,7 +56,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_backing_addons_call_out"
             tools:itemCount="2"
-            tools:listitem="@layout/item_add_on"/>
+            tools:listitem="@layout/item_add_on_pledge"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

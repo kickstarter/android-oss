@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters
 
+import android.util.Pair
 import android.view.View
 import com.kickstarter.R
 import com.kickstarter.models.Reward
@@ -15,7 +16,7 @@ class BackingAddOnsAdapter : KSAdapter() {
     }
 
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()){
-        SECTION_BACKING_ADD_ONS_CARD -> R.layout.item_add_on
+        SECTION_BACKING_ADD_ONS_CARD -> R.layout.item_add_on_pledge
         else -> 0
     }
 
@@ -27,8 +28,10 @@ class BackingAddOnsAdapter : KSAdapter() {
     }
 
     fun populateDataForAddOns(rewards: List<Pair<ProjectData,Reward>>) {
-        setSection(SECTION_BACKING_ADD_ONS_CARD, rewards)
-        notifyDataSetChanged()
+        if (rewards.isNotEmpty()) {
+            setSection(SECTION_BACKING_ADD_ONS_CARD, rewards)
+            notifyDataSetChanged()
+        }
     }
 
     companion object {

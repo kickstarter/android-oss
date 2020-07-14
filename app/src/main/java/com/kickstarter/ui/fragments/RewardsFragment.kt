@@ -1,6 +1,7 @@
 package com.kickstarter.ui.fragments
 
 import android.os.Bundle
+import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +49,13 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { showPledgeFragment(it.first, it.second) }
+
+        this.viewModel.outputs.showAddOnsFragment()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    showAddonsFragment(it)
+                }
 
         this.viewModel.outputs.rewardsCount()
                 .compose(bindToLifecycle())
@@ -109,6 +117,19 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
                             pledgeFragment,
                             PledgeFragment::class.java.simpleName)
                     ?.addToBackStack(PledgeFragment::class.java.simpleName)
+                    ?.commit()
+        }
+    }
+
+    private fun showAddonsFragment(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) {
+        if (this.fragmentManager?.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
+            val addOnsFragment = BackingAddOnsFragment.newInstance(pledgeDataAndReason)
+            this.fragmentManager?.beginTransaction()
+                    ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                    ?.add(R.id.fragment_container,
+                            addOnsFragment,
+                            BackingAddOnsFragment::class.java.simpleName)
+                    ?.addToBackStack(BackingAddOnsFragment::class.java.simpleName)
                     ?.commit()
         }
     }

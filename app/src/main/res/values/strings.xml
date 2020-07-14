@@ -72,5 +72,6 @@
   <string name="No_thanks">No thanks</string>
   <string name="Let_s_go">Let\'s go</string>
   <string name="Add_ons_available">Add-Ons available</string>
+    <string name="customize_your_reward">Customize your reward with optional add-ons</string>
 
 </resources>

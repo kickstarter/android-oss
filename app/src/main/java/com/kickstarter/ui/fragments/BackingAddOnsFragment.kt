@@ -14,12 +14,10 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.BackingAddOnsAdapter
-import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
-import kotlinx.android.synthetic.main.fragment_backing.*
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
@@ -60,6 +58,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 }.toList()
 
         backingAddonsAdapter.populateDataForAddOns(list)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // TODO: consider changing this on the BaseFragment
+        this.viewModel.arguments(arguments)
     }
 
     private fun setupRecyclerView() {

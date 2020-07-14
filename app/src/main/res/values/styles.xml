@@ -649,6 +649,15 @@
   </style>
 
 
+  <!-- AddOns -->
+  <style name="AddOnPill" parent="FootnoteAccentMedium">
+    <item name="android:paddingTop">@dimen/grid_3_half</item>
+    <item name="android:paddingBottom">@dimen/grid_3_half</item>
+    <item name="android:paddingStart">@dimen/grid_2</item>
+    <item name="android:paddingEnd">@dimen/grid_2</item>
+    <item name="android:background">@drawable/rect_coral_alpha_6</item>
+  </style>
+
   <!-- Creator Dashboard -->
   <style name="CreatorDashboardTableRowContainer">
     <item name="android:layout_width">match_parent</item>

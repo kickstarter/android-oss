@@ -16,7 +16,7 @@
         android:paddingTop="?android:attr/actionBarSize">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/backing_addons_title"
+            android:id="@+id/fragment_backing_addons_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_3"
@@ -32,7 +32,7 @@
         </androidx.appcompat.widget.AppCompatTextView>
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/call_out"
+            android:id="@+id/fragment_backing_addons_call_out"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/grid_3"
@@ -42,8 +42,21 @@
             android:text="@string/Your_shipping_location"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backing_addons_title">
+            app:layout_constraintTop_toBottomOf="@+id/fragment_backing_addons_title">
         </androidx.appcompat.widget.AppCompatTextView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fragment_backing_addons_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_3"
+            android:layout_marginStart="@dimen/grid_3"
+            android:layout_marginTop="@dimen/grid_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_backing_addons_call_out"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_add_on"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

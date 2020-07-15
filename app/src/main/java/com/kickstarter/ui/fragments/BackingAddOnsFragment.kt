@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
+import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.adapters.BackingAddOnsAdapter
+import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
@@ -21,7 +24,7 @@ import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
-class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>() {
+class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -29,9 +32,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private val backingAddonsAdapter = BackingAddOnsAdapter()
+    private lateinit var shippingRulesAdapter: ShippingRulesAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpShippingAdapter()
         setupRecyclerView()
 
         this.viewModel.outputs.showPledgeFragment()
@@ -45,6 +50,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .subscribe {
                     populateAddOns(it)
                 }
+
+        this.viewModel.outputs.selectedShippingRule()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { fragment_backing_addons_shipping_rules.setText(it.toString()) }
     }
 
     private fun populateAddOns(projectDataAndAddOnList: Pair<ProjectData, List<Reward>>) {
@@ -62,6 +72,13 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     private fun setupRecyclerView() {
         fragment_backing_addons_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         fragment_backing_addons_list.adapter = backingAddonsAdapter
+    }
+
+    private fun setUpShippingAdapter() {
+        context?.let {
+            shippingRulesAdapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
+            fragment_backing_addons_shipping_rules.setAdapter(shippingRulesAdapter)
+        }
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
@@ -86,5 +103,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
             fragment.arguments = argument
             return fragment
         }
+    }
+
+    override fun ruleSelected(rule: ShippingRule) {
+        this.viewModel.inputs.shippingRuleSelected(rule)
+        activity?.hideKeyboard()
+        fragment_backing_addons_shipping_rules.clearFocus()
     }
 }

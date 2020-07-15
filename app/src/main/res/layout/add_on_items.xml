@@ -24,13 +24,5 @@
         tools:itemCount="3"
         tools:listitem="@layout/rewards_item_view" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/divider_dark_grey_500_horizontal"
-        android:importantForAccessibility="no"
-        app:layout_constraintTop_toBottomOf="@+id/add_on_item_recycler_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

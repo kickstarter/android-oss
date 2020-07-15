@@ -33,20 +33,32 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <include
+                    android:id="@+id/title_container"
+                    layout="@layout/add_on_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginTop="@dimen/grid_1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
                 <TextView
                     android:id="@+id/add_on_minimum_text_view"
                     style="@style/Title2Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/subheadline"
                     android:textColor="@color/ksr_green_500"
-                    android:textSize="@dimen/title_reward"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="$20" />
+                    app:layout_constraintTop_toBottomOf="@id/title_container"
+                    tools:text="$20 + $5 shipping each" />
 
                 <TextView
                     android:id="@+id/add_on_conversion_text_view"
                     style="@style/FootnotePrimaryMedium"
+                    android:textColor="@color/ksr_dark_grey_500"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/grid_1_half"
@@ -54,28 +66,6 @@
                     app:layout_constraintTop_toBottomOf="@id/add_on_minimum_text_view"
                     tools:text="About $15 USD"
                     tools:visibility="visible"/>
-
-                <include
-                    android:id="@+id/title_container"
-                    layout="@layout/add_on_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:layout_marginTop="@dimen/grid_2"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_conversion_text_view"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <include
-                    android:id="@+id/items_container"
-                    layout="@layout/add_on_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    android:layout_marginTop="@dimen/grid_5_half"
-                    app:layout_constraintTop_toBottomOf="@id/title_container"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
                     android:id="@+id/add_on_description_text_view"
@@ -86,15 +76,41 @@
                     android:layout_marginBottom="@dimen/grid_2"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/items_container"
+                    app:layout_constraintTop_toBottomOf="@id/add_on_conversion_text_view"
                     tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="18dp"
+                    android:layout_height="1dp"
+                    android:background="@drawable/divider_dark_grey_500_horizontal"
+                    android:importantForAccessibility="no"
+                    app:layout_constraintTop_toBottomOf="@+id/add_on_description_text_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+
+
+                <include
+                    android:id="@+id/items_container"
+                    layout="@layout/add_on_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginTop="@dimen/grid_5_half"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
 
                 <LinearLayout
                     android:id="@+id/pills_container"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_on_description_text_view"
-                    android:layout_marginTop="@dimen/grid_3_half"
+                    app:layout_constraintTop_toBottomOf="@id/items_container"
+                    android:layout_marginTop="18dp"
                     android:layout_height="wrap_content">
 
 

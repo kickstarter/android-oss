@@ -28,7 +28,7 @@ class BackingAddOnsFragmentViewModel {
 
     interface Outputs {
         fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
-        fun AddOnsList(): Observable<Pair<ProjectData, List<Reward>>>
+        fun addOnsList(): Observable<Pair<ProjectData, List<Reward>>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -79,6 +79,6 @@ class BackingAddOnsFragmentViewModel {
         override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
         override fun configureWith(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) = this.pledgeDataAndReason.onNext(pledgeDataAndReason)
 
-        override fun AddOnsList() = this.addOnsList
+        override fun addOnsList() = this.addOnsList
     }
 }

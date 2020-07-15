@@ -39,7 +39,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .compose(Transformers.observeForUI())
                 .subscribe { showPledgeFragment(it.first, it.second) }
 
-        this.viewModel.outputs.AddOnsList()
+        this.viewModel.outputs.addOnsList()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
@@ -57,12 +57,6 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 }.toList()
 
         backingAddonsAdapter.populateDataForAddOns(list)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // TODO: consider changing this on the BaseFragment
-        this.viewModel.arguments(arguments)
     }
 
     private fun setupRecyclerView() {

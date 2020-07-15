@@ -13,6 +13,18 @@ public final class RewardFactory {
   public static final DateTime ESTIMATED_DELIVERY = DateTime.parse("2019-03-26T19:26:09Z");
   private RewardFactory() {}
 
+  public static @NonNull Reward addOn() {
+    return reward().toBuilder()
+            .isAddOn(true)
+            .build();
+  }
+
+  public static @NonNull Reward rewardHasAddOns() {
+    return reward().toBuilder()
+            .hasAddons(true)
+            .build();
+  }
+
   public static @NonNull Reward reward() {
     final String description = "A digital download of the album and documentary.";
     return Reward.builder()

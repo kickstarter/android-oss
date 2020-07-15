@@ -5,14 +5,20 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.adapters.BackingAddOnsAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
+import kotlinx.android.synthetic.main.fragment_backing_addons.*
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
 class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>() {
@@ -22,17 +28,46 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         return inflater.inflate(R.layout.fragment_backing_addons, container, false)
     }
 
+    private val backingAddonsAdapter = BackingAddOnsAdapter()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
 
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { showPledgeFragment(it.first, it.second) }
+
+        this.viewModel.outputs.AddOnsList()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    populateAddOns(it)
+                }
     }
 
-    fun configureWith(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) {
-        this.viewModel.inputs.configureWith(pledgeDataAndReason)
+    private fun populateAddOns(projectDataAndAddOnList: Pair<ProjectData, List<Reward>>) {
+        val projectData = projectDataAndAddOnList.first
+
+        val list = projectDataAndAddOnList
+                .second
+                .map {
+                    Pair(projectData,it)
+                }.toList()
+
+        backingAddonsAdapter.populateDataForAddOns(list)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // TODO: consider changing this on the BaseFragment
+        this.viewModel.arguments(arguments)
+    }
+
+    private fun setupRecyclerView() {
+        fragment_backing_addons_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        fragment_backing_addons_list.adapter = backingAddonsAdapter
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {

@@ -33,6 +33,8 @@ interface ApolloClientType {
 
     fun getProjectBacking(slug: String): Observable<Backing>
 
+    fun getProjectAddOns(slug: String): Observable<List<Reward>>
+
     fun getStoredCards(): Observable<List<StoredCard>>
 
     fun savePaymentMethod(savePaymentMethodData: SavePaymentMethodData): Observable<StoredCard>

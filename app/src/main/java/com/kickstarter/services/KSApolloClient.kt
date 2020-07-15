@@ -301,6 +301,39 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
+    override fun getProjectAddOns(slug: String): Observable<List<Reward>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Reward>>()
+
+            this.service.query(GetProjectAddOnsQuery.builder()
+                    .slug(slug).build())
+                    .enqueue(object : ApolloCall.Callback<GetProjectAddOnsQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetProjectAddOnsQuery.Data>) {
+                            response.data()?.let {data ->
+                                Observable.just(data.project()?.addOns())
+                                        .filter { it?.nodes() != null }
+                                        .map <List<Reward>> { addOnsList -> addOnsList?.let { getAddOnsFromProject(it) }?: emptyList() }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
+       return addOnsGr.nodes()?.map {
+            rewardTransformer(it.fragments().reward())
+        }?.toList() ?: emptyList()
+    }
+
     override fun getStoredCards(): Observable<List<StoredCard>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<StoredCard>>()
@@ -667,28 +700,7 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
     val mutableMap = mutableMapOf<Reward, Int>()
 
     val rewardsList = addOns.nodes()?.map { node ->
-        val rewardGr = node.fragments().reward()
-        val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
-        val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
-        val desc = rewardGr.description()
-        val title = rewardGr.name()
-        val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
-        val rewardId = decodeRelayId(rewardGr.id()) ?: -1
-
-        val items = rewardGr.items()?.let {
-            return@let getAddonItems(it)
-        }
-
-        return@map Reward.builder()
-                .title(title)
-                .convertedMinimum(convertedAmount)
-                .minimum(amount)
-                .description(desc)
-                .estimatedDeliveryOn(estimatedDelivery)
-                .isAddOn(true)
-                .addOnsItems(items)
-                .id(rewardId)
-                .build()
+        rewardTransformer(node.fragments().reward())
     }
 
     rewardsList?.map {
@@ -699,14 +711,49 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
     }
 
     return mutableMap.map {
-        return@map it.key
+        it.key
                 .toBuilder()
                 .quantity(it.value)
                 .build()
     }.toList()
 }
 
-fun getAddonItems(items: fragment.Reward.Items): List<RewardsItem> {
+/**
+ * Transform the Reward GraphQL data structure into our own Reward data model
+ * // TODO: indicate if its for addOn or base reward for more re-usability
+ * @param fragment.reward
+ * @return Reward
+ */
+private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
+    val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val desc = rewardGr.description()
+    val title = rewardGr.name()
+    val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
+    val rewardId = decodeRelayId(rewardGr.id()) ?: -1
+
+    val items = rewardGr.items()?.let {
+        rewardItemsTransformer(it)
+    }
+
+    return Reward.builder()
+            .title(title)
+            .convertedMinimum(convertedAmount)
+            .minimum(amount)
+            .description(desc)
+            .estimatedDeliveryOn(estimatedDelivery)
+            .isAddOn(true)
+            .addOnsItems(items)
+            .id(rewardId)
+            .build()
+}
+
+/**
+ * Transform the Reward.Items GraphQL data structure into our own RewardsItems data model
+ * @param fragment.Reward.items
+ * @return List<RewardItem>
+ */
+fun rewardItemsTransformer(items: fragment.Reward.Items): List<RewardsItem> {
     val rewardItems = items.edges()?.map { edge ->
         val quantity = edge.quantity()
         val description = edge.node()?.name()

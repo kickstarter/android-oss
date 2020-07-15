@@ -4,8 +4,11 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Reward
+import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
@@ -36,6 +39,8 @@ class BackingAddOnsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val addOnsList = PublishSubject.create<Pair<ProjectData, List<Reward>>>()
 
+        private val apolloClient = this.environment.apolloClient()
+
         init {
 
             val pledgeData = arguments()
@@ -58,13 +63,16 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 
-            // TODO: Add-ons query will be added in here in exchange of the reward
-            projectData
-                    .compose<Pair<ProjectData, Reward>>(combineLatestPair(reward))
+            val addonsList = project
+                    .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        this.addOnsList.onNext(Pair(it.first, listOf(it.second, it.second)))
-                    }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .share()
+
+            projectData
+                    .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addonsList))
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addOnsList)
         }
 
         @NonNull

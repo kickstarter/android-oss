@@ -72,7 +72,7 @@
                     style="@style/BodyPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/grid_3_half"
+                    android:layout_marginTop="@dimen/grid_3"
                     android:layout_marginBottom="@dimen/grid_2"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

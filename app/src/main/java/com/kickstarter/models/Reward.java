@@ -38,6 +38,12 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable Integer quantity();
   public abstract @Nullable boolean hasAddons();
 
+  /**
+   * For Add-Ons we fetch the list of available shipping rules,
+   * this field will be available just for GraphQL, in V1 it would be empty
+   */
+  public abstract @Nullable List<ShippingRule> shippingRules();
+
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder backersCount(Integer __);
@@ -58,6 +64,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder addOnsItems(List<RewardsItem> __);
     public abstract Builder quantity(Integer __);
     public abstract Builder hasAddons(boolean __);
+    public abstract Builder shippingRules(List<ShippingRule> __);
     public abstract Reward build();
   }
 

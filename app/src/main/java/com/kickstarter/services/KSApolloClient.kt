@@ -736,6 +736,10 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
         rewardItemsTransformer(it)
     }
 
+    val shippingRules = rewardGr.shippingRules().map {
+        shippingRuleTransformer(it.fragments().shippingRule())
+    }.toList()
+
     return Reward.builder()
             .title(title)
             .convertedMinimum(convertedAmount)
@@ -745,6 +749,37 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .isAddOn(true)
             .addOnsItems(items)
             .id(rewardId)
+            .shippingRules(shippingRules)
+            .build()
+}
+
+fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
+    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
+    val location = rule.location()?.let {
+        locationTransformer(it.fragments().location())
+    }
+    val id = decodeRelayId(rule.id()) ?: -1
+
+    return ShippingRule.builder()
+            .id(id)
+            .cost(cost)
+            .location(location)
+            .build()
+}
+
+fun locationTransformer(locationGR: fragment.Location): Location {
+    val id = decodeRelayId(locationGR.id()) ?: -1
+    val country = locationGR.countryName() ?: ""
+    val displayName = locationGR.displayableName()
+    val name = locationGR.name()
+    val state = locationGR.state()
+
+    return Location.builder()
+            .id(id)
+            .country(country)
+            .displayableName(displayName)
+            .name(name)
+            .state(state)
             .build()
 }
 

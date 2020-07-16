@@ -773,7 +773,10 @@ interface ProjectViewModel {
                     .compose<ProjectData>(takeWhen(creatorInfoClicked))
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackCreatorDetailsClicked(it) }
+                    .subscribe {
+                        this.optimizely.track(CREATOR_DETAILS_CLICKED, it.first)
+                        this.lake.trackCreatorDetailsClicked(it)
+                    }
 
             fullProjectDataAndPledgeFlowContext
                     .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))

@@ -16,6 +16,14 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
 
     override fun OSVersion(): String = Build.VERSION.RELEASE
 
+    override fun track(eventKey: String, experimentData: ExperimentData) {
+        optimizelyClient().track(eventKey, userId(), attributes(experimentData, this.optimizelyEnvironment))
+    }
+
+    override fun trackRevenue(eventKey: String, experimentRevenueData: ExperimentRevenueData) {
+        optimizelyClient().track(eventKey, userId(), attributes(experimentRevenueData.experimentData, this.optimizelyEnvironment), checkoutTags(experimentRevenueData))
+    }
+
     override fun userId(): String = FirebaseInstanceId.getInstance().id
 
     override fun enabledFeatures(user: User?): List<String> {

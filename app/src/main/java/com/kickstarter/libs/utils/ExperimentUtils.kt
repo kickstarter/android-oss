@@ -4,7 +4,10 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.models.User
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
 import java.util.*
+import kotlin.math.roundToInt
 
 object ExperimentUtils {
 
@@ -21,6 +24,21 @@ object ExperimentUtils {
         )
     }
 
+    fun checkoutTags(experimentRevenueData: ExperimentRevenueData): Map<String, Any?> {
+        val amount = experimentRevenueData.checkoutData.amount()
+        val project = experimentRevenueData.pledgeData.projectData().project()
+        val fxRate = project.fxRate()
+        val paymentType = experimentRevenueData.checkoutData.paymentType()
+        val revenue = (amount * fxRate * 100).roundToInt()
+        return mapOf(
+                Pair("checkout_amount", amount),
+                Pair("checkout_payment_type", paymentType.rawValue()),
+                Pair("checkout_revenue_in_usd_cents", revenue),
+                Pair("revenue", revenue),
+                Pair("currency", project.currency())
+        )
+    }
+
     private fun getInstanceId(environment: OptimizelyEnvironment) = when (environment) {
         OptimizelyEnvironment.DEVELOPMENT -> ""
         OptimizelyEnvironment.PRODUCTION -> null
@@ -29,3 +47,4 @@ object ExperimentUtils {
 }
 
 data class ExperimentData(val user: User?, val intentRefTag: RefTag?, val cookieRefTag: RefTag?)
+data class ExperimentRevenueData(val experimentData: ExperimentData, val checkoutData: CheckoutData, val pledgeData: PledgeData)

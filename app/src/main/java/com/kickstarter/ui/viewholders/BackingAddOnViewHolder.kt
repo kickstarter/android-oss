@@ -2,14 +2,10 @@ package com.kickstarter.ui.viewholders
 
 import android.util.Pair
 import android.view.View
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
-import kotlinx.android.synthetic.main.add_on_title.view.*
-import kotlinx.android.synthetic.main.item_add_on.view.*
-import kotlinx.android.synthetic.main.item_lights_on.view.*
+import kotlinx.android.synthetic.main.item_add_on.view.add_on_description_text_view
 
 class BackingAddOnViewHolder (private val view: View) : KSViewHolder(view) {
 
@@ -17,6 +13,12 @@ class BackingAddOnViewHolder (private val view: View) : KSViewHolder(view) {
 
     init {
         // TODO: https://kickstarter.atlassian.net/browse/NT-1385
+        this.viewModel.outputs
+                .description()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.view.add_on_description_text_view.text = it
+                }
     }
 
     override fun bindData(data: Any?) {

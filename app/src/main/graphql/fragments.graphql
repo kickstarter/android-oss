@@ -67,6 +67,7 @@ fragment reward on Reward {
     convertedAmount{
         ... amount
     }
+    shippingPreference
     shippingRules {
         ... shippingRule
     }

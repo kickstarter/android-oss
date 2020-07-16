@@ -22,7 +22,7 @@ class BackingAddOnsAdapter : KSAdapter() {
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.item_add_on -> BackingAddOnViewHolder(view)
+            R.layout.item_add_on_pledge -> BackingAddOnViewHolder(view)
             else -> EmptyViewHolder(view)
         }
     }

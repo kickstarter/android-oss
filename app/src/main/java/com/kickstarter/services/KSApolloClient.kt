@@ -30,10 +30,7 @@ import com.kickstarter.services.mutations.UpdateBackingData
 import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.PublishSubject
-import type.BackingState
-import type.CreditCardPaymentType
-import type.CurrencyCode
-import type.PaymentTypes
+import type.*
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
@@ -732,6 +729,13 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
     val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
 
+    val shippingPreference = when (rewardGr.shippingPreference()) {
+        ShippingPreference.NONE -> Reward.ShippingPreference.NONE
+        ShippingPreference.RESTRICTED -> Reward.ShippingPreference.RESTRICTED
+        ShippingPreference.UNRESTRICTED -> Reward.ShippingPreference.UNRESTRICTED
+        else -> Reward.ShippingPreference.UNKNOWN
+    }
+
     val items = rewardGr.items()?.let {
         rewardItemsTransformer(it)
     }
@@ -749,6 +753,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .isAddOn(true)
             .addOnsItems(items)
             .id(rewardId)
+            .shippingPreferenceType(shippingPreference)
             .shippingRules(shippingRules)
             .build()
 }

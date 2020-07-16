@@ -2,6 +2,7 @@ package com.kickstarter.models;
 
 import android.os.Parcelable;
 
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
@@ -39,7 +40,11 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable boolean hasAddons();
 
   /**
-   * For Add-Ons we fetch the list of available shipping rules,
+   * this field will be available just for GraphQL, in V1 it would be empty
+   */
+  public abstract @Nullable ShippingPreference shippingPreferenceType();
+
+  /**
    * this field will be available just for GraphQL, in V1 it would be empty
    */
   public abstract @Nullable List<ShippingRule> shippingRules();
@@ -65,6 +70,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder quantity(Integer __);
     public abstract Builder hasAddons(boolean __);
     public abstract Builder shippingRules(List<ShippingRule> __);
+    public abstract Builder shippingPreferenceType(ShippingPreference __);
     public abstract Reward build();
   }
 
@@ -89,6 +95,22 @@ public abstract class Reward implements Parcelable, Relay {
 
   public boolean isLimited() {
     return this.limit() != null && !this.isAllGone();
+  }
+
+  public enum ShippingPreference {
+    NONE("none"),
+
+    RESTRICTED("restricted"),
+
+    UNRESTRICTED("unrestricted"),
+
+    UNKNOWN("$UNKNOWN");
+
+    private String type;
+
+    ShippingPreference(String type) {
+      this.type = type;
+    }
   }
 
   @AutoParcel

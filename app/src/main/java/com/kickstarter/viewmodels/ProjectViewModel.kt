@@ -701,6 +701,11 @@ interface ProjectViewModel {
                         this.lake.trackProjectPageViewed(dataWithStoredCookieRefTag, pledgeFlowContext)
                     }
 
+            fullProjectDataAndCurrentUser
+                    .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.optimizely.track(PROJECT_PAGE_VIEWED, it.first) }
+
             fullProjectDataAndPledgeFlowContext
                     .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
                     .filter { it.first.project().isLive && !it.first.project().isBacking }

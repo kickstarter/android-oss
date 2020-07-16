@@ -402,7 +402,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
-        this.experimentsTest.assertValue("Campaign Details Button Clicked")
+        this.experimentsTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 
     @Test
@@ -416,7 +416,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -430,7 +430,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -444,7 +444,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
-        this.experimentsTest.assertValue("Campaign Details Button Clicked")
+        this.experimentsTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 
     @Test
@@ -458,7 +458,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -472,7 +472,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -486,7 +486,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
         this.lakeTest.assertValues("Project Page Viewed", "Creator Details Clicked")
-        this.experimentsTest.assertValue("Creator Details Clicked")
+        this.experimentsTest.assertValues("Project Page Viewed", "Creator Details Clicked")
     }
 
     @Test
@@ -500,7 +500,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -514,7 +514,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -528,7 +528,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorInfoVariantClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
         this.lakeTest.assertValues("Project Page Viewed", "Creator Details Clicked")
-        this.experimentsTest.assertValue("Creator Details Clicked")
+        this.experimentsTest.assertValues("Project Page Viewed", "Creator Details Clicked")
     }
 
     @Test
@@ -542,7 +542,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorInfoVariantClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test
@@ -556,7 +556,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.creatorInfoVariantClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
         this.lakeTest.assertValue("Project Page Viewed")
-        this.experimentsTest.assertNoValues()
+        this.experimentsTest.assertValue("Project Page Viewed")
     }
 
     @Test

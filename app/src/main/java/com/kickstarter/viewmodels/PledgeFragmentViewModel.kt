@@ -5,6 +5,7 @@ import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
+import com.kickstarter.libs.CHECKOUT_PAYMENT_PAGE_VIEWED
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
@@ -328,6 +329,9 @@ interface PledgeFragmentViewModel {
 
             val projectData = pledgeData
                     .map { it.projectData() }
+
+            val fullProjectDataAndPledgeData = projectData
+                    .compose<Pair<ProjectData, PledgeData>>(combineLatestPair(pledgeData))
 
             reward
                 .map { RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, it) }
@@ -1013,6 +1017,14 @@ interface PledgeFragmentViewModel {
                     .filter { it.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCheckoutPaymentPageViewed(it) }
+
+            fullProjectDataAndPledgeData
+                    .take(1)
+                    .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                    .compose<Pair<Pair<ProjectData, PledgeData>, User?>>(combineLatestPair(this.currentUser.observable()))
+                    .map { ExperimentData(it.second, it.first.first.refTagFromIntent(), it.first.first.refTagFromCookie()) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.optimizely.track(CHECKOUT_PAYMENT_PAGE_VIEWED, it) }
 
             Observable.combineLatest<Double, Double, CheckoutData>(shippingAmount, total)
             { s, t -> checkoutData(s, t, null) }

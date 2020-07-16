@@ -402,6 +402,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
+        this.experimentsTest.assertValue("Campaign Details Button Clicked")
     }
 
     @Test
@@ -415,6 +416,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -428,6 +430,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -441,6 +444,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
+        this.experimentsTest.assertValue("Campaign Details Button Clicked")
     }
 
     @Test
@@ -454,6 +458,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -467,6 +472,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
         this.lakeTest.assertValue("Project Page Viewed")
+        this.experimentsTest.assertNoValues()
     }
 
     @Test
@@ -782,6 +788,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.goBack.assertNoValues()
         this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
         this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.experimentsTest.assertValues("Project Page Pledge Button Clicked")
     }
 
     @Test
@@ -794,6 +801,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(true, true))
         this.koalaTest.assertValues("Project Page", "Back this Project Button Clicked")
         this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.experimentsTest.assertValues("Project Page Pledge Button Clicked")
     }
 
     @Test

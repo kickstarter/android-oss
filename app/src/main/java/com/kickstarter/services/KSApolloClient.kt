@@ -758,6 +758,11 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .build()
 }
 
+/**
+ * Transform the fragment.ShippingRule GraphQL data structure into our own ShippingRules data model
+ * @param fragment.ShippingRule
+ * @return ShippingRule
+ */
 fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
     val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
     val location = rule.location()?.let {
@@ -772,6 +777,11 @@ fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
             .build()
 }
 
+/**
+ * Transform the fragment.Location GraphQL data structure into our own Location data model
+ * @param fragment.Location
+ * @return Location
+ */
 fun locationTransformer(locationGR: fragment.Location): Location {
     val id = decodeRelayId(locationGR.id()) ?: -1
     val country = locationGR.countryName() ?: ""

@@ -2,7 +2,6 @@ package com.kickstarter.models;
 
 import android.os.Parcelable;
 
-import com.kickstarter.libs.Build;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
@@ -108,7 +107,7 @@ public abstract class Reward implements Parcelable, Relay {
 
     private String type;
 
-    ShippingPreference(String type) {
+    ShippingPreference(final String type) {
       this.type = type;
     }
   }

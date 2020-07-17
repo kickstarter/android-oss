@@ -37,6 +37,7 @@ import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.LakeEvent.EDITORIAL_CARD_CLICKED;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
@@ -293,8 +295,14 @@ public interface DiscoveryFragmentViewModel {
 
       this.paramsFromActivity
         .compose(takePairWhen(this.editorialClicked))
+        .compose(combineLatestPair(this.currentUser.observable()))
         .compose(bindToLifecycle())
-        .subscribe(paramsAndEditorial -> this.lake.trackEditorialCardClicked(paramsAndEditorial.first, paramsAndEditorial.second));
+        .subscribe(paramsAndEditorial -> {
+          this.lake.trackEditorialCardClicked(paramsAndEditorial.first.first, paramsAndEditorial.first.second);
+          ExperimentData data = new ExperimentData(paramsAndEditorial.second,
+            RefTag.collection(paramsAndEditorial.first.second.getTagId()), null);
+          this.optimizely.track(EDITORIAL_CARD_CLICKED, data);
+        });
     }
 
     private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

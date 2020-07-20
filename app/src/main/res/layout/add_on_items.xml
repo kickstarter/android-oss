@@ -10,8 +10,16 @@
         style="@style/RewardSectionTitle"
         android:text="@string/rewards_info_includes"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_on_item_recycler_view" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/addon_items_container"-->
+<!--        android:orientation="vertical"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/includes_title"-->
+<!--        android:layout_marginTop="@dimen/grid_3"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"></LinearLayout>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/add_on_item_recycler_view"

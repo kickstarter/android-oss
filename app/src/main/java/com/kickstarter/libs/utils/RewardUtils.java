@@ -8,6 +8,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
+import com.kickstarter.models.ShippingRule;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;

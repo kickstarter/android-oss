@@ -103,6 +103,8 @@ public abstract class Reward implements Parcelable, Relay {
 
     UNRESTRICTED("unrestricted"),
 
+    NOSHIPPING("noShipping"),
+
     UNKNOWN("$UNKNOWN");
 
     private String type;

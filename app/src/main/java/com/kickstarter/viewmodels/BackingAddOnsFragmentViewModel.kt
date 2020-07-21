@@ -8,11 +8,9 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
@@ -51,7 +49,6 @@ class BackingAddOnsFragmentViewModel {
         private val addOnsList = PublishSubject.create<Pair<ProjectData, List<Reward>>>()
 
         private val apolloClient = this.environment.apolloClient()
-        // TODO: think about fetching addOns and selected reward on the same call to graph
         private val apiClient = environment.apiClient()
 
         init {
@@ -82,27 +79,56 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .share()
 
-            projectData
-                    .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addonsList))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.addOnsList)
-
-            val projetAndReward = project
+            val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
-
-            val shippingRules = projetAndReward
+            val shippingRules = projectAndReward
                     .filter { RewardUtils.isShippable(it.second) }
                     .distinctUntilChanged()
                     .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(Transformers.neverError()) }
                     .map { it.shippingRules() }
                     .share()
 
-            // - TODO: place holder this will change on https://kickstarter.atlassian.net/browse/NT-1387
             shippingRules
                     .map { it.first() }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRuleSelected)
+
+            Observable.combineLatest(addonsList,projectData,  this.shippingRuleSelected, reward) { list, pData, rule, rw ->
+                return@combineLatest filterAddOnsByLocation(list, pData, rule, rw)
+            }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addOnsList)
+
+        }
+
+        private fun filterAddOnsByLocation(list: List<Reward>,pData: ProjectData, rule: ShippingRule, rw: Reward): Pair<ProjectData, List<Reward>> {
+           val filteredList = when (rw.shippingPreference()){
+                Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
+                    list.filter { it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED }
+                }
+                Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
+                    list.filter { containsLocation(rule, it) }
+                }
+                else -> {
+                    if (!RewardUtils.isShippable(rw))
+                        list.filter { it.shippingPreferenceType() ==  Reward.ShippingPreference.NOSHIPPING }
+                    else emptyList()
+                }
+            }
+
+            return Pair(pData, filteredList)
+        }
+
+        private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {
+            val idLocations = reward
+                    .shippingRules()
+                    ?.map {
+                        it.location().id()
+                    }?: emptyList()
+
+            return idLocations.contains(rule.location().id())
         }
 
         // - Inputs

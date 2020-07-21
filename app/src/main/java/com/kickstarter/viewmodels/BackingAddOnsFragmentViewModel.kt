@@ -33,9 +33,17 @@ class BackingAddOnsFragmentViewModel {
     }
 
     interface Outputs {
+        /** Emits a Pair containing the projectData and the pledgeReason. */
         fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
+
+        /** Emits a Pair containing the projectData and the list for Add-ons associated to that project. */
         fun addOnsList(): Observable<Pair<ProjectData, List<Reward>>>
+
+        /** Emits the current selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
+
+        /** Emits a pair of list of shipping rules to be selected and the project. */
+        fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -44,6 +52,7 @@ class BackingAddOnsFragmentViewModel {
 
         private val pledgeDataAndReason = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingRuleSelected = PublishSubject.create<ShippingRule>()
+        private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val addOnsList = PublishSubject.create<Pair<ProjectData, List<Reward>>>()
@@ -90,11 +99,11 @@ class BackingAddOnsFragmentViewModel {
                     .share()
 
             shippingRules
-                    .map { it.first() }
+                    .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
-                    .subscribe(this.shippingRuleSelected)
+                    .subscribe(this.shippingRulesAndProject)
 
-            Observable.combineLatest(addonsList,projectData,  this.shippingRuleSelected, reward) { list, pData, rule, rw ->
+            Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) { list, pData, rule, rw ->
                 return@combineLatest filterAddOnsByLocation(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
@@ -140,5 +149,6 @@ class BackingAddOnsFragmentViewModel {
         override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
         override fun addOnsList() = this.addOnsList
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
+        override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
     }
 }

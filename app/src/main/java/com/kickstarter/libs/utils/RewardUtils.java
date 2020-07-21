@@ -88,6 +88,21 @@ public final class RewardUtils {
   }
 
   /**
+   * Returns `true` if the reward is a Digital Reward, meaning tha it has "shippingPreference": "none"
+   * if the model is a response from GraphQL or "shippingPreference": "no_shipping" if the model is
+   * a response from V1
+   * @param reward
+   * @return isDigital: true or false
+   */
+  public static boolean isDigital(final @NonNull Reward reward) {
+    boolean isDigital = reward.shippingPreferenceType() == Reward.ShippingPreference.NONE ||
+            reward.shippingPreferenceType() == Reward.ShippingPreference.NOSHIPPING &&
+            !RewardUtils.isShippable(reward);
+
+    return isDigital;
+  }
+
+  /**
    * Returns `true` if the reward has a valid expiration date.
    */
   public static boolean isTimeLimited(final @NonNull Reward reward) {

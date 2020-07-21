@@ -8,6 +8,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -59,6 +60,7 @@ class BackingAddOnsFragmentViewModel {
 
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
+        private val currentConfig = environment.currentConfig()
 
         init {
 
@@ -103,31 +105,48 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
+            shippingRules
+                    .filter { it.isNotEmpty() }
+                    .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
+                    .switchMap { defaultShippingRule(it.first) }
+                    .subscribe(this.shippingRuleSelected)
+
             Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) { list, pData, rule, rw ->
                 return@combineLatest filterAddOnsByLocation(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.addOnsList)
-
         }
 
-        private fun filterAddOnsByLocation(list: List<Reward>,pData: ProjectData, rule: ShippingRule, rw: Reward): Pair<ProjectData, List<Reward>> {
-           val filteredList = when (rw.shippingPreference()){
+        private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
+            return this.currentConfig.observable()
+                    .map { it.countryCode() }
+                    .map { countryCode ->
+                        shippingRules.firstOrNull { it.location().country() == countryCode }
+                                ?: shippingRules.first()
+                    }
+        }
+
+        private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Pair<ProjectData, List<Reward>> {
+           val filteredAddOns = when (rw.shippingPreference()){
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
-                    list.filter { it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED }
+                    addOns.filter {
+                        it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED || isDigital(it)
+                    }
                 }
                 Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
-                    list.filter { containsLocation(rule, it) }
+                    addOns.filter { containsLocation(rule, it) || isDigital(it) }
                 }
                 else -> {
-                    if (!RewardUtils.isShippable(rw))
-                        list.filter { it.shippingPreferenceType() ==  Reward.ShippingPreference.NOSHIPPING }
+                    if (isDigital(rw))
+                        addOns.filter { isDigital(it) }
                     else emptyList()
                 }
             }
 
-            return Pair(pData, filteredList)
+            return Pair(pData, filteredAddOns)
         }
 
         private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {

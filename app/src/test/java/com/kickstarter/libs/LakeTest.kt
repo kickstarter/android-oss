@@ -487,8 +487,8 @@ class LakeTest : KSRobolectricTestCase() {
 
     private fun assertOptimizelyProperties() {
         val expectedProperties = this.propertiesTest.value
-        assertEquals(OptimizelyEnvironment.STAGING.sdkKey, expectedProperties["optimizely_api_key"])
-        assertEquals(OptimizelyEnvironment.STAGING.environmentKey, expectedProperties["optimizely_environment_key"])
+        assertEquals(OptimizelyEnvironment.DEVELOPMENT.sdkKey, expectedProperties["optimizely_api_key"])
+        assertEquals(OptimizelyEnvironment.DEVELOPMENT.environmentKey, expectedProperties["optimizely_environment_key"])
         assertNotNull(expectedProperties["optimizely_experiments"])
         val experiments = expectedProperties["optimizely_experiments"] as JSONArray
         val experiment = experiments[0] as JSONObject

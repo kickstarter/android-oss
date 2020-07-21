@@ -14,8 +14,8 @@ import rx.subjects.PublishSubject
 
 
 open class MockExperimentsClientType(private val variant: OptimizelyExperiment.Variant, private val optimizelyEnvironment: OptimizelyEnvironment) : ExperimentsClientType {
-    constructor(variant: OptimizelyExperiment.Variant) : this(variant, OptimizelyEnvironment.STAGING)
-    constructor() : this(OptimizelyExperiment.Variant.CONTROL, OptimizelyEnvironment.STAGING)
+    constructor(variant: OptimizelyExperiment.Variant) : this(variant, OptimizelyEnvironment.DEVELOPMENT)
+    constructor() : this(OptimizelyExperiment.Variant.CONTROL, OptimizelyEnvironment.DEVELOPMENT)
 
     class ExperimentsEvent internal constructor(internal val eventKey: String, internal val attributes: Map<String, *>, internal val tags: Map<String, *>?)
 

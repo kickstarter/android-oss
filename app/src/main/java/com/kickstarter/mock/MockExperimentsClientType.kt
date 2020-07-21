@@ -49,10 +49,6 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
         this.experimentEvents.onNext(ExperimentsEvent(eventKey, attributes(experimentData, this.optimizelyEnvironment), null))
     }
 
-    override fun trackRevenue(eventKey: String, experimentRevenueData: ExperimentRevenueData) {
-        this.experimentEvents.onNext(ExperimentsEvent(eventKey, attributes(experimentRevenueData.experimentData, this.optimizelyEnvironment), checkoutTags(experimentRevenueData)))
-    }
-
     override fun userId(): String = "device-id"
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant = this.variant

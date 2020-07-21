@@ -16,10 +16,6 @@ interface ExperimentsClientType {
         return ExperimentUtils.attributes(experimentData, appVersion(), OSVersion(), optimizelyEnvironment)
     }
 
-    fun ExperimentsClientType.checkoutTags(experimentRevenueData: ExperimentRevenueData): Map<String, *> {
-        return ExperimentUtils.checkoutTags(experimentRevenueData)
-    }
-
     fun optimizelyProperties(experimentData: ExperimentData): Map<String, Any> {
         val experiments = JSONArray()
         val properties = mapOf("optimizely_api_key" to optimizelyEnvironment().sdkKey,
@@ -41,7 +37,6 @@ interface ExperimentsClientType {
     fun optimizelyEnvironment(): OptimizelyEnvironment
     fun OSVersion(): String
     fun track(eventKey: String, experimentData: ExperimentData)
-    fun trackRevenue(eventKey: String, experimentRevenueData: ExperimentRevenueData)
     fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String?
     fun userId() : String
     fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant?

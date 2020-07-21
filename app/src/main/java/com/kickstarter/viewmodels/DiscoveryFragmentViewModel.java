@@ -8,6 +8,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ExperimentsClientType;
 import com.kickstarter.libs.FragmentViewModel;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.LakeEvent;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
@@ -37,7 +38,6 @@ import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +45,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.LakeEvent.EDITORIAL_CARD_CLICKED;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
@@ -299,9 +298,9 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(paramsAndEditorial -> {
           this.lake.trackEditorialCardClicked(paramsAndEditorial.first.first, paramsAndEditorial.first.second);
-          ExperimentData data = new ExperimentData(paramsAndEditorial.second,
+          final ExperimentData data = new ExperimentData(paramsAndEditorial.second,
             RefTag.collection(paramsAndEditorial.first.second.getTagId()), null);
-          this.optimizely.track(EDITORIAL_CARD_CLICKED, data);
+          this.optimizely.track(LakeEvent.EDITORIAL_CARD_CLICKED, data);
         });
     }
 

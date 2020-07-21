@@ -7,7 +7,6 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import java.util.*
-import kotlin.math.roundToInt
 
 object ExperimentUtils {
 
@@ -21,21 +20,6 @@ object ExperimentUtils {
                 Pair("session_user_is_logged_in", experimentData.user != null),
                 Pair("user_backed_projects_count", experimentData.user?.backedProjectsCount() ?: 0),
                 Pair("user_country", experimentData.user?.location()?.country() ?: Locale.getDefault().country)
-        )
-    }
-
-    fun checkoutTags(experimentRevenueData: ExperimentRevenueData): Map<String, Any?> {
-        val amount = experimentRevenueData.checkoutData.amount()
-        val project = experimentRevenueData.pledgeData.projectData().project()
-        val fxRate = project.fxRate()
-        val paymentType = experimentRevenueData.checkoutData.paymentType()
-        val revenue = (amount * fxRate * 100).roundToInt()
-        return mapOf(
-                Pair("checkout_amount", amount),
-                Pair("checkout_payment_type", paymentType.rawValue()),
-                Pair("checkout_revenue_in_usd_cents", revenue),
-                Pair("revenue", revenue),
-                Pair("currency", project.currency())
         )
     }
 

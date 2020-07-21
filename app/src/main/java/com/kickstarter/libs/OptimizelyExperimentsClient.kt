@@ -21,10 +21,6 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         optimizelyClient().track(eventKey, userId(), attributes(experimentData, this.optimizelyEnvironment))
     }
 
-    override fun trackRevenue(eventKey: String, experimentRevenueData: ExperimentRevenueData) {
-        optimizelyClient().track(eventKey, userId(), attributes(experimentRevenueData.experimentData, this.optimizelyEnvironment), checkoutTags(experimentRevenueData))
-    }
-
     override fun userId(): String = FirebaseInstanceId.getInstance().id
 
     override fun enabledFeatures(user: User?): List<String> {
@@ -34,7 +30,7 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
     }
 
     override fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean {
-        return optimizelyClient().isFeatureEnabled(feature.key, userId(), attributes(experimentData, this.optimizelyEnvironment))?: false
+        return optimizelyClient().isFeatureEnabled(feature.key, userId(), attributes(experimentData, this.optimizelyEnvironment))
     }
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant {

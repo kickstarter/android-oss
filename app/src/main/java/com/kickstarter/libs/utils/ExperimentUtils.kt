@@ -4,6 +4,8 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.models.User
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
 import java.util.*
 
 object ExperimentUtils {
@@ -29,3 +31,4 @@ object ExperimentUtils {
 }
 
 data class ExperimentData(val user: User?, val intentRefTag: RefTag?, val cookieRefTag: RefTag?)
+data class ExperimentRevenueData(val experimentData: ExperimentData, val checkoutData: CheckoutData, val pledgeData: PledgeData)

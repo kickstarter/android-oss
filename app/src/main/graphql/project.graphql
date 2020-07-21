@@ -17,3 +17,13 @@ query GetProjectBacking($slug: String!) {
     }
   }
 }
+
+query GetProjectAddOns($slug: String!) {
+  project(slug: $slug) {
+    addOns {
+      nodes {
+        ... reward
+      }
+    }
+  }
+}

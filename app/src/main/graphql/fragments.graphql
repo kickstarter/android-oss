@@ -67,6 +67,20 @@ fragment reward on Reward {
     convertedAmount{
         ... amount
     }
+    shippingPreference
+    shippingRules {
+        ... shippingRule
+    }
+}
+
+fragment shippingRule on ShippingRule {
+    cost {
+        ... amount
+    }
+    id
+    location {
+        ... location
+    }
 }
 
 fragment user on User {
@@ -88,6 +102,7 @@ fragment location on Location {
     displayableName
     id
     name
+    state
 }
 
 fragment payment on CreditCard {

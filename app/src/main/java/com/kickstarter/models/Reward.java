@@ -38,6 +38,16 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable Integer quantity();
   public abstract @Nullable boolean hasAddons();
 
+  /**
+   * this field will be available just for GraphQL, in V1 it would be empty
+   */
+  public abstract @Nullable ShippingPreference shippingPreferenceType();
+
+  /**
+   * this field will be available just for GraphQL, in V1 it would be empty
+   */
+  public abstract @Nullable List<ShippingRule> shippingRules();
+
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder backersCount(Integer __);
@@ -58,6 +68,8 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder addOnsItems(List<RewardsItem> __);
     public abstract Builder quantity(Integer __);
     public abstract Builder hasAddons(boolean __);
+    public abstract Builder shippingRules(List<ShippingRule> __);
+    public abstract Builder shippingPreferenceType(ShippingPreference __);
     public abstract Reward build();
   }
 
@@ -82,6 +94,22 @@ public abstract class Reward implements Parcelable, Relay {
 
   public boolean isLimited() {
     return this.limit() != null && !this.isAllGone();
+  }
+
+  public enum ShippingPreference {
+    NONE("none"),
+
+    RESTRICTED("restricted"),
+
+    UNRESTRICTED("unrestricted"),
+
+    UNKNOWN("$UNKNOWN");
+
+    private String type;
+
+    ShippingPreference(final String type) {
+      this.type = type;
+    }
   }
 
   @AutoParcel

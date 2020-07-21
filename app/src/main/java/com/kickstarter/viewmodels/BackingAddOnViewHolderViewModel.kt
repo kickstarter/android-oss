@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
@@ -57,6 +58,9 @@ class BackingAddOnViewHolderViewModel {
         fun shippingAmountIsGone(): Observable<Boolean>
 
         fun shippingAmount(): Observable<Double>
+        fun deadlineCountdownIsGone(): Observable<Boolean>
+
+        fun deadlineCountdown(): Observable<Reward>
 
     }
 
@@ -85,6 +89,8 @@ class BackingAddOnViewHolderViewModel {
         private val backerLimit = PublishSubject.create<String>()
         private val shippingAmountIsGone = PublishSubject.create<Boolean>()
         private val shippingAmount = PublishSubject.create<Double>()
+        private val deadlineCountdown = PublishSubject.create<Reward>()
+        private val deadlineCountdownIsGone = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -146,7 +152,17 @@ class BackingAddOnViewHolderViewModel {
 
             addOn.map { it.remaining().toString() }
                     .compose(bindToLifecycle())
-                    .subscribe (this.remainingQuantity)
+                    .subscribe(this.remainingQuantity)
+
+
+            projectDataAndAddOn.map { ObjectUtils.isNotNull(it.second.endsAt()) }
+                    .compose(bindToLifecycle())
+                    .map { !it }
+                    .subscribe(this.deadlineCountdownIsGone)
+
+            projectDataAndAddOn.map { it.second }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.deadlineCountdown)
 
             //addOn.map { it.shippingRules()?.get(0)?.cost() }
 
@@ -185,5 +201,9 @@ class BackingAddOnViewHolderViewModel {
         override fun shippingAmountIsGone() = this.shippingAmountIsGone
 
         override fun shippingAmount() = this.shippingAmount
+
+        override fun deadlineCountdown() = this.deadlineCountdown
+
+        override fun deadlineCountdownIsGone() = this.deadlineCountdownIsGone
     }
 }

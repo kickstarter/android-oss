@@ -7,8 +7,11 @@ import android.text.style.StyleSpan
 import android.util.Pair
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ProjectViewUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardItemsAdapter
@@ -22,6 +25,7 @@ import kotlinx.android.synthetic.main.item_add_on_pledge.view.*
 class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
 
     private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
+    private val ksString = environment().ksString()
 
     init {
 
@@ -101,7 +105,24 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(Transformers.observeForUI())
                 .subscribe { this.view.addon_quantity_remaining.text = "$it left" }
 
+        this.viewModel.outputs.deadlineCountdownIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(this.view.addon_time_left, it) }
 
+        this.viewModel.outputs.deadlineCountdown()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { this.view.addon_time_left.text = formattedExpirationString(it)  }
+
+
+    }
+
+    private fun formattedExpirationString(@NonNull reward: Reward): String {
+        val detail = RewardUtils.deadlineCountdownDetail(reward, context(), this.ksString)
+        val value = RewardUtils.deadlineCountdownValue(reward)
+        return "$value $detail"
     }
 
     private fun setBoldSpanOnTextView(numCharacters: Int, textView: TextView) {

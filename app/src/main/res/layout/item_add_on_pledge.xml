@@ -129,8 +129,8 @@
                         style="@style/AddOnPill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         android:textColor="@color/ksr_dark_grey_500"
+                        android:visibility="gone"
                         android:layout_marginEnd="@dimen/grid_2"
                         tools:text="3 days left" />
 

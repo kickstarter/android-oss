@@ -57,7 +57,8 @@ class BackingAddOnViewHolderViewModel {
 
         fun shippingAmountIsGone(): Observable<Boolean>
 
-        fun shippingAmount(): Observable<Double>
+        fun shippingAmount(): Observable<String>
+
         fun deadlineCountdownIsGone(): Observable<Boolean>
 
         fun deadlineCountdown(): Observable<Reward>
@@ -88,7 +89,7 @@ class BackingAddOnViewHolderViewModel {
         private val remainingQuantity = PublishSubject.create<String>()
         private val backerLimit = PublishSubject.create<String>()
         private val shippingAmountIsGone = PublishSubject.create<Boolean>()
-        private val shippingAmount = PublishSubject.create<Double>()
+        private val shippingAmount = PublishSubject.create<String>()
         private val deadlineCountdown = PublishSubject.create<Reward>()
         private val deadlineCountdownIsGone = PublishSubject.create<Boolean>()
 
@@ -114,11 +115,11 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardItems)
 
-            projectDataAndAddOn.map { ProjectViewUtils.styleCurrency(it.second.minimum(), it.first.project(), this.ksCurrency) }
+            projectDataAndAddOn.map { this.ksCurrency.format(it.second.minimum(), it.first.project()) }
                     .subscribe(this.minimum)
 
 
-            projectDataAndAddOn.map { ProjectViewUtils.styleCurrency(it.second.convertedMinimum(), it.first.project(), this.ksCurrency) }
+            projectDataAndAddOn.map { this.ksCurrency.format(it.second.convertedMinimum(), it.first.project()) }
                     .subscribe(this.convertedMinimum)
 
             projectDataAndAddOn.map { it.first.project() }
@@ -136,15 +137,15 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.deadlinePillIsGone)
 
-            addOn.map { it.limit() }
-                    .map { !ObjectUtils.isNotNull(it) }
+            projectDataAndAddOn
+                    .map { !ObjectUtils.isNotNull(it.second.limit()) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.backerLimitPillIsGone }
+                    .subscribe(this.backerLimitPillIsGone)
 
-            addOn.map { it.quantity() }
-                    .map { !ObjectUtils.isNotNull(it) }
+            addOn
+                    .map { !ObjectUtils.isNotNull(it.remaining()) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.remainingQuantityPillIsGone }
+                    .subscribe(this.remainingQuantityPillIsGone)
 
             addOn.map { it.limit().toString() }
                     .compose(bindToLifecycle())
@@ -164,7 +165,14 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.deadlineCountdown)
 
-            //addOn.map { it.shippingRules()?.get(0)?.cost() }
+            addOn.map { it.shippingRules()?.isNotEmpty() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingAmountIsGone)
+
+
+//            projectDataAndAddOn.map { it.second.shippingRules()?.get(0)?.cost()?.let { it1 -> ProjectViewUtils.styleCurrency(it1, it.first.project(), this.ksCurrency).toString() } }
+//                    .compose(bindToLifecycle())
+//                    .subscribe(this.shippingAmount)
 
 
         }

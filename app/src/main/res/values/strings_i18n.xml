@@ -1730,4 +1730,5 @@ saved</string>
   <string name="pledge_bonus_label" formatted="false">Bonus</string>
   <string name="bonus_support_label" formatted="false">Bonus support</string>
   <string name="bonus_support_subtitle" formatted="false">A little extra to help bring this \nproject to life.</string>
+  <string name="add_on_shipping_amount_label" formatted="false"> + {shipping_amount} shipping each</string>
 </resources>

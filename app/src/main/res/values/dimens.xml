@@ -131,7 +131,9 @@
   <dimen name="thanks_project_photo_height">117dp</dimen>
 
   <!-- TextViews -->
-  <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>
+  <dimen name="text_view_corner_radius">@dimen/grid_1</dimen>
+
+  <dimen name="text_pill_corner_radius">@dimen/grid_1</dimen>
 
   <!-- Toolbars -->
   <dimen name="ks_toolbar_height">56dp</dimen>

@@ -67,7 +67,7 @@ public interface BackingViewModel {
               .filter(bk -> ObjectUtils.isNotNull(bk))
               .compose(neverError());
 
-      backing.compose(takeWhen(refreshBacking))
+      backing.compose(takeWhen(this.refreshBacking))
               .switchMap(backing1 -> this.apolloClient.getBacking(Long.toString(backing1.id())))
               .filter(ObjectUtils::isNotNull)
               .subscribe(it -> this.isRefreshing.onNext(false));

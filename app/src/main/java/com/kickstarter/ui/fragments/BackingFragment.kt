@@ -1,13 +1,11 @@
 package com.kickstarter.ui.fragments
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +22,6 @@ import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
@@ -239,6 +236,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         RxView.clicks(estimated_delivery_checkbox)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
+    }
+
+    public fun isRefreshing(isRefreshing: Boolean){
+        backing_swipe_refresh_layout.isRefreshing = isRefreshing
     }
 
     private fun setBoldSpanOnTextView(numCharacters: Int, textView: TextView, spanColor: Int) {

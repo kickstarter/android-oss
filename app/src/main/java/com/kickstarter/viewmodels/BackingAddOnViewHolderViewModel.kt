@@ -1,14 +1,17 @@
 package com.kickstarter.viewmodels
 
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import rx.Observable
@@ -165,16 +168,30 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.deadlineCountdown)
 
-            addOn.map { it.shippingRules()?.isNotEmpty() }
+            addOn.map { it.shippingRules()?.isEmpty() }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmountIsGone)
 
 
-//            projectDataAndAddOn.map { it.second.shippingRules()?.get(0)?.cost()?.let { it1 -> ProjectViewUtils.styleCurrency(it1, it.first.project(), this.ksCurrency).toString() } }
-//                    .compose(bindToLifecycle())
-//                    .subscribe(this.shippingAmount)
+            projectDataAndAddOn.map { getShippingCost(it.second.shippingRules(), it.first.project()) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingAmount)
 
 
+        }
+
+        private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project): String {
+
+            if (shippingRules != null) {
+                return if (shippingRules.isEmpty()) {
+                    ""
+                } else {
+                    this.ksCurrency.format(shippingRules?.get(0)?.cost()!!, project)
+
+                }
+            }
+
+            return ""
         }
 
 

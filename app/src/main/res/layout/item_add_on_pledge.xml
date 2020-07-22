@@ -63,6 +63,7 @@
                     app:layout_constraintTop_toBottomOf="@id/title_container"
                     tools:text=" + $5 shipping each"
                     android:visibility="gone"
+                    android:textSize="@dimen/subheadline"
                     android:textColor="@color/ksr_green_500"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

@@ -1,13 +1,7 @@
 package com.kickstarter.ui.viewholders
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
-import android.util.Log
 import android.util.Pair
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
@@ -62,7 +56,7 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    this.view.add_on_minimum.text = it
+                    this.view.add_on_minimum.text = "${it} "
                 }
 
         this.viewModel.outputs.conversionIsGone()
@@ -116,7 +110,9 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.shippingAmountIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.add_on_shipping_amount, it) }
+                .subscribe {
+                    ViewUtils.setGone(this.view.add_on_shipping_amount, it)
+                }
 
         this.viewModel.outputs.shippingAmount()
                 .compose(bindToLifecycle())

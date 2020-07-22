@@ -8,7 +8,6 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.RewardsItem;
-import com.kickstarter.models.ShippingRule;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -95,11 +94,9 @@ public final class RewardUtils {
    * @return isDigital: true or false
    */
   public static boolean isDigital(final @NonNull Reward reward) {
-    boolean isDigital = reward.shippingPreferenceType() == Reward.ShippingPreference.NONE ||
+    return reward.shippingPreferenceType() == Reward.ShippingPreference.NONE ||
             reward.shippingPreferenceType() == Reward.ShippingPreference.NOSHIPPING &&
             !RewardUtils.isShippable(reward);
-
-    return isDigital;
   }
 
   /**

@@ -17,6 +17,7 @@ import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import junit.framework.TestCase
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -162,17 +163,192 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
 
     @Test
     fun addOnsForRestrictedOneMatchingShippingRules() {
+        val shippingRuleAddOn = ShippingRuleFactory.germanyShippingRule()
+        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingRules(listOf(shippingRuleAddOn,shippingRuleRw ))
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .build()
+        val listAddons = listOf(addOn, addOn, addOn)
 
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .shippingRules(listOf(shippingRuleRw))
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
+                .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.addOnsList.assertValue(Pair(projectData, listAddons))
+    }
+
+    @Test
+    fun addOnsForRestrictedFilterOutNoMatching() {
+        val shippingRuleAddOn = ShippingRuleFactory.germanyShippingRule()
+        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingRules(listOf(shippingRuleRw ))
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .build()
+        val addOn2 = RewardFactory.rewardHasAddOns().toBuilder()
+                .id(11)
+                .shippingRules(listOf(shippingRuleAddOn ))
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .build()
+        val listAddons = listOf(addOn, addOn2, addOn, addOn)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .shippingRules(listOf(shippingRuleRw))
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
+                .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.vm.outputs.addOnsList().subscribe {
+            TestCase.assertEquals(it.second.size, 1)
+            val filteredAddOn = it.second.first()
+            TestCase.assertEquals(filteredAddOn, addOn2)
+        }
     }
 
     @Test
     fun addOnsForRestrictedChangeSelectedShippingRule() {
+        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingRules(listOf(shippingRuleRw ))
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .build()
+        val listAddons = listOf(addOn, addOn, addOn)
 
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .shippingRules(listOf(shippingRuleRw))
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
+                .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.addOnsList.assertValue(Pair(projectData, listAddons))
+
+        val shippingRuleAddOn = ShippingRuleFactory.germanyShippingRule()
+        this.vm.inputs.shippingRuleSelected(shippingRuleAddOn)
+
+        this.addOnsList.assertValues(Pair(projectData, listAddons),Pair(projectData, emptyList()))
     }
 
     @Test
     fun addOnsForDigitalNoShipping(){
+        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
+                .build()
+        val listAddons = listOf(addOn, addOn, addOn)
 
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase())
+                .shippingRules(listOf(shippingRuleRw))
+                .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
+                .shippingPreference(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase()) // - Reward from V1 use this field
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.addOnsList.assertValue(Pair(projectData, listAddons))
+    }
+
+    @Test
+    fun addOnsForRestrictedFilterOutForDigitalNoShipping(){
+        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
+        val addOn2 = RewardFactory.rewardHasAddOns().toBuilder()
+                .id(11)
+                .shippingRules(listOf(shippingRuleRw ))
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .build()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
+                .build()
+        val listAddons = listOf(addOn, addOn, addOn, addOn2)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase())
+                .shippingRules(listOf(shippingRuleRw))
+                .shippingPreferenceType(Reward.ShippingPreference.NONE) // - Reward from GraphQL use this field
+                .shippingPreference(Reward.ShippingPreference.NOSHIPPING.name.toLowerCase()) // - Reward from V1 use this field
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        val listAddonsFiltered = listAddons.filter { it.id() == addOn.id() }
+        this.addOnsList.assertValue(Pair(projectData, listAddonsFiltered))
     }
 
 

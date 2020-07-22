@@ -40,7 +40,7 @@ public interface SearchViewModel {
   }
 
   interface Outputs {
-    /** Emits a boolean indicating whether projects are being fetched from the API. *******/
+    /** Emits a boolean indicating whether projects are being fetched from the API. */
     Observable<Boolean> isFetchingProjects();
 
     /** Emits list of popular projects. */

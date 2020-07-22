@@ -20,6 +20,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val remainingQuantityIsGone = TestSubscriber.create<Boolean>()
     private val countdownIsGone = TestSubscriber.create<Boolean>()
     private val shippingAmountIsGone = TestSubscriber.create<Boolean>()
+    private val rewardItemsAreGone = TestSubscriber.create<Boolean>()
 
     private fun setupEnvironment(@NonNull environment: Environment ) {
         this.vm = BackingAddOnViewHolderViewModel.ViewModel(environment)
@@ -27,6 +28,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.remainingQuantityPillIsGone().subscribe(this.remainingQuantityIsGone)
         this.vm.outputs.deadlineCountdownIsGone().subscribe(this.countdownIsGone)
         this.vm.outputs.shippingAmountIsGone().subscribe(this.shippingAmountIsGone)
+        this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
     }
 
     @Test
@@ -71,6 +73,17 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.shippingAmountIsGone.assertValue(true)
 
+    }
+
+    @Test
+    fun testRewardItemsAreGone(){
+        setupEnvironment(environment())
+
+        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
+
+        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+
+        this.rewardItemsAreGone.assertValue(true)
     }
 
 }

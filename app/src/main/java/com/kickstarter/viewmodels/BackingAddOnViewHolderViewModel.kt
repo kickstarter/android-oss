@@ -6,7 +6,6 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -40,31 +39,41 @@ class BackingAddOnViewHolderViewModel {
         /** Emits the add on's converted minimum amount */
         fun convertedMinimum(): Observable<CharSequence>
 
+        /** Emits whether or not the conversion text view is visible */
         fun conversionIsGone(): Observable<Boolean>
 
+        /** Emits the conversion amount */
         fun conversion(): Observable<CharSequence>
 
+        /** Emits the reward items */
         fun rewardItems(): Observable<List<RewardsItem>>
 
-        fun deadlinePillIsGone(): Observable<Boolean>
-
+        /** Emits whether or not the remaining quantity pill is visible */
         fun remainingQuantityPillIsGone(): Observable<Boolean>
 
+        /** Emits whether or not the backer limit pill is visible */
         fun backerLimitPillIsGone(): Observable<Boolean>
 
-        fun timeRemaining(): Observable<String>
-
+        /** Emits the backer limit */
         fun backerLimit(): Observable<String>
 
+        /** Emits the remaining quantity*/
         fun remainingQuantity(): Observable<String>
 
+        /** Emits whether or not the shipping amount is visible */
         fun shippingAmountIsGone(): Observable<Boolean>
 
+        /** Emits the shipping amount */
         fun shippingAmount(): Observable<String>
 
+        /** Emits whether or not the countdown pill is gone */
         fun deadlineCountdownIsGone(): Observable<Boolean>
 
+        /** Emits the reward to be used to calculate the deadline countdown */
         fun deadlineCountdown(): Observable<Reward>
+
+        /** Emits whether or not the reward items list is gone */
+        fun rewardItemsAreGone(): Observable<Boolean>
 
     }
 
@@ -85,8 +94,6 @@ class BackingAddOnViewHolderViewModel {
         private val conversionIsGone = PublishSubject.create<Boolean>()
         private val conversion = PublishSubject.create<CharSequence>()
         private val rewardItems = PublishSubject.create<List<RewardsItem>>()
-        private val timeRemaining = PublishSubject.create<String>()
-        private val deadlinePillIsGone = PublishSubject.create<Boolean>()
         private val remainingQuantityPillIsGone = PublishSubject.create<Boolean>()
         private val backerLimitPillIsGone = PublishSubject.create<Boolean>()
         private val remainingQuantity = PublishSubject.create<String>()
@@ -95,6 +102,7 @@ class BackingAddOnViewHolderViewModel {
         private val shippingAmount = PublishSubject.create<String>()
         private val deadlineCountdown = PublishSubject.create<Reward>()
         private val deadlineCountdownIsGone = PublishSubject.create<Boolean>()
+        private val rewardItemsAreGone = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -112,6 +120,11 @@ class BackingAddOnViewHolderViewModel {
                     .map { it.description() }
                     .filter { ObjectUtils.isNotNull(it) }
                     .subscribe(this.description)
+
+            addOn.map { !RewardUtils.isItemized(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.rewardItemsAreGone)
+
 
             addOn.filter { RewardUtils.isItemized(it) }
                     .map { it.rewardsItems() }
@@ -134,11 +147,6 @@ class BackingAddOnViewHolderViewModel {
                     .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first.project(), true, RoundingMode.HALF_UP, true) }
                     .compose(bindToLifecycle())
                     .subscribe(this.conversion)
-
-            projectDataAndAddOn.map { it.first.project() }
-                    .map { ProjectUtils.isCompleted(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.deadlinePillIsGone)
 
             projectDataAndAddOn
                     .map { !ObjectUtils.isNotNull(it.second.limit()) }
@@ -211,10 +219,6 @@ class BackingAddOnViewHolderViewModel {
 
         override fun rewardItems() = this.rewardItems
 
-        override fun timeRemaining() = this.timeRemaining
-
-        override fun deadlinePillIsGone() = this.deadlinePillIsGone
-
         override fun remainingQuantityPillIsGone() = this.remainingQuantityPillIsGone
 
         override fun backerLimitPillIsGone() = this.backerLimitPillIsGone
@@ -230,5 +234,7 @@ class BackingAddOnViewHolderViewModel {
         override fun deadlineCountdown() = this.deadlineCountdown
 
         override fun deadlineCountdownIsGone() = this.deadlineCountdownIsGone
+
+        override fun rewardItemsAreGone() = this.rewardItemsAreGone
     }
 }

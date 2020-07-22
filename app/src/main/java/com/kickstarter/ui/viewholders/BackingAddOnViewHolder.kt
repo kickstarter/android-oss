@@ -33,12 +33,16 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                     this.view.add_on_description.text = it
                 }
 
+        this.viewModel.outputs.rewardItemsAreGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { ViewUtils.setGone(this.view.items_container, it) }
+
 
         this.viewModel.outputs.rewardItems()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { rewardItemAdapter.rewardsItems(it) }
-
 
         this.viewModel.outputs.titleForAddOn()
                 .compose(bindToLifecycle())
@@ -70,11 +74,6 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(Transformers.observeForUI())
                 .subscribe { this.view.add_on_conversion.text = "About $it" }
 
-
-        this.viewModel.outputs.deadlinePillIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.addon_time_left, it) }
 
         this.viewModel.outputs.backerLimitPillIsGone()
                 .compose(bindToLifecycle())

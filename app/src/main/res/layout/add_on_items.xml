@@ -10,8 +10,8 @@
         style="@style/RewardSectionTitle"
         android:text="@string/rewards_info_includes"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_on_item_recycler_view" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/add_on_item_recycler_view"
@@ -24,13 +24,5 @@
         tools:itemCount="3"
         tools:listitem="@layout/rewards_item_view" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/divider_dark_grey_500_horizontal"
-        android:importantForAccessibility="no"
-        app:layout_constraintTop_toBottomOf="@+id/add_on_item_recycler_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

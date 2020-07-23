@@ -33,7 +33,7 @@
         app:layout_constraintStart_toEndOf="@id/icon_calendar"
         android:paddingEnd="@dimen/grid_4"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/pledge_delivery_warning" />
+        android:text="@string/Remember_that_delivery_dates_are_not_guaranteed" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

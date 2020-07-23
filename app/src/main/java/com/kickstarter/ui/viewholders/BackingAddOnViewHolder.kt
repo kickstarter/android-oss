@@ -36,7 +36,10 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.rewardItemsAreGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.items_container, it) }
+                .subscribe {
+                    ViewUtils.setGone(this.view.items_container, it)
+                    ViewUtils.setGone(this.view.divider, it)
+                }
 
 
         this.viewModel.outputs.rewardItems()

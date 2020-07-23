@@ -12,6 +12,8 @@ import com.kickstarter.extensions.hideKeyboard
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.ArgumentsKey
@@ -22,6 +24,7 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
 class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate {
@@ -55,6 +58,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { fragment_backing_addons_shipping_rules.setText(it.toString()) }
+
+        this.viewModel.outputs.shippingRulesAndProject()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .filter { ObjectUtils.isNotNull(context) }
+                .subscribe { displayShippingRules(it.first, it.second) }
     }
 
     private fun populateAddOns(projectDataAndAddOnList: Pair<ProjectData, List<Reward>>) {
@@ -92,6 +101,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                     ?.addToBackStack(PledgeFragment::class.java.simpleName)
                     ?.commit()
         }
+    }
+
+    private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
+        fragment_backing_addons_shipping_rules.isEnabled = true
+        shippingRulesAdapter.populateShippingRules(shippingRules, project)
     }
 
     companion object {

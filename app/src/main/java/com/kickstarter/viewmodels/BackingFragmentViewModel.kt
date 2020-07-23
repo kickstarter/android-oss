@@ -337,7 +337,6 @@ interface BackingFragmentViewModel {
 
             backing
                     .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
-                    // combine the project, backing, and checked boolean (<<Project,Backing>, Checked>) to make client call
                     .compose(takePairWhen<Pair<Backing, Project>, Boolean>(this.receivedCheckboxToggled))
                     .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverError()) }
                     .compose(bindToLifecycle())
@@ -418,10 +417,6 @@ interface BackingFragmentViewModel {
                 Observable.just(it.backing())
             }
         }
-
-        private fun getAddOnsList(project: Project): List<Reward> = project.backing()?.addOns()?.let { mutableList ->
-            mutableList.toList()
-        } ?: emptyList()
 
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.let {

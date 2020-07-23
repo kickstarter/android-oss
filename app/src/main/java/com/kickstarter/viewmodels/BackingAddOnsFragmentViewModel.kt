@@ -8,11 +8,10 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.models.Location
+import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.services.ApolloClientType
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
@@ -35,9 +34,17 @@ class BackingAddOnsFragmentViewModel {
     }
 
     interface Outputs {
+        /** Emits a Pair containing the projectData and the pledgeReason. */
         fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
+
+        /** Emits a Pair containing the projectData and the list for Add-ons associated to that project. */
         fun addOnsList(): Observable<Pair<ProjectData, List<Reward>>>
+
+        /** Emits the current selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
+
+        /** Emits a pair of list of shipping rules to be selected and the project. */
+        fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -46,13 +53,14 @@ class BackingAddOnsFragmentViewModel {
 
         private val pledgeDataAndReason = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingRuleSelected = PublishSubject.create<ShippingRule>()
+        private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val addOnsList = PublishSubject.create<Pair<ProjectData, List<Reward>>>()
 
         private val apolloClient = this.environment.apolloClient()
-        // TODO: think about fetching addOns and selected reward on the same call to graph
         private val apiClient = environment.apiClient()
+        private val currentConfig = environment.currentConfig()
 
         init {
 
@@ -82,27 +90,73 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .share()
 
-            projectData
-                    .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addonsList))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.addOnsList)
-
-            val projetAndReward = project
+            val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
-
-            val shippingRules = projetAndReward
+            val shippingRules = projectAndReward
                     .filter { RewardUtils.isShippable(it.second) }
                     .distinctUntilChanged()
                     .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(Transformers.neverError()) }
                     .map { it.shippingRules() }
                     .share()
 
-            // - TODO: place holder this will change on https://kickstarter.atlassian.net/browse/NT-1387
             shippingRules
-                    .map { it.first() }
+                    .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
+                    .subscribe(this.shippingRulesAndProject)
+
+            shippingRules
+                    .filter { it.isNotEmpty() }
+                    .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
+                    .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
+
+            Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) { list, pData, rule, rw ->
+                return@combineLatest filterAddOnsByLocation(list, pData, rule, rw)
+            }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addOnsList)
+        }
+
+        private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
+            return this.currentConfig.observable()
+                    .map { it.countryCode() }
+                    .map { countryCode ->
+                        shippingRules.firstOrNull { it.location().country() == countryCode }
+                                ?: shippingRules.first()
+                    }
+        }
+
+        private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Pair<ProjectData, List<Reward>> {
+           val filteredAddOns = when (rw.shippingPreference()){
+                Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
+                    addOns.filter {
+                        it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED || isDigital(it)
+                    }
+                }
+                Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
+                    addOns.filter { containsLocation(rule, it) || isDigital(it) }
+                }
+                else -> {
+                    if (isDigital(rw))
+                        addOns.filter { isDigital(it) }
+                    else emptyList()
+                }
+            }
+
+            return Pair(pData, filteredAddOns)
+        }
+
+        private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {
+            val idLocations = reward
+                    .shippingRules()
+                    ?.map {
+                        it.location().id()
+                    }?: emptyList()
+
+            return idLocations.contains(rule.location().id())
         }
 
         // - Inputs
@@ -114,5 +168,6 @@ class BackingAddOnsFragmentViewModel {
         override fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showPledgeFragment
         override fun addOnsList() = this.addOnsList
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
+        override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
     }
 }

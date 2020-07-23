@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toStartOf="@id/bonus_add_symbol"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/pledge_bonus_label" />
+        android:text="@string/Bonus" />
 
     <ImageView
         android:id="@+id/bonus_add_symbol"

@@ -202,7 +202,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .compose(Transformers.observeForUI())
                 .subscribe {
 
-                    estimated_delivery_label.text = viewModel.environment.ksString().format(getString(R.string.pledge_delivery_delivered), "estimated_delivery", it)
+                    estimated_delivery_label.text = viewModel.environment.ksString().format(getString(R.string.Estimated_delivery_reward_delivered), "estimated_delivery", it)
                     val estimatedDeliveryLabelText = estimated_delivery_label.text
 
                     val stringToBold = getString(R.string.rewards_info_estimated_delivery)
@@ -217,7 +217,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    pledge_details_label.text = getString(R.string.pledge_details_creator)
+                    pledge_details_label.text = getString(R.string.Pledge_details)
                     ViewUtils.setGone(received_section, true)
                     ViewUtils.setGone(delivery_disclaimer_section, it)
                     ViewUtils.setGone(estimated_delivery_label_2, false)
@@ -225,6 +225,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 }
 
 
+        val sb = StringBuilder(delivery_reminder_label.text.toString())
+        sb.append(resources.getString(R.string.Delays_or_changes_are_possible) + " ")
+
+        delivery_reminder_label.text = sb.toString()
         val boldPortionLength = delivery_reminder_label.text.toString().split(".").first().length
         setBoldSpanOnTextView(boldPortionLength, delivery_reminder_label, resources.getColor(R.color.ksr_dark_grey_500, null))
 

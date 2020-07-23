@@ -117,7 +117,10 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    this.view.add_on_shipping_amount.text = this.ksString.format(context().getString(R.string.add_on_shipping_amount_label), "shipping_amount", it)
+                    val rewardAndShippingString = context().getString(R.string.reward_amount_plus_shipping_cost_each)
+                    val stringSections = rewardAndShippingString.split("+")
+                    val shippingString = stringSections[1]
+                    this.view.add_on_shipping_amount.text = this.ksString.format(shippingString, "shipping_amount", it)
                 }
 
 

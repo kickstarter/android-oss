@@ -4,6 +4,7 @@ import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.ExperimentRevenueData
 import com.kickstarter.libs.utils.ExperimentUtils
 import com.kickstarter.models.User
 import org.json.JSONArray
@@ -35,6 +36,7 @@ interface ExperimentsClientType {
     fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean
     fun optimizelyEnvironment(): OptimizelyEnvironment
     fun OSVersion(): String
+    fun track(eventKey: String, experimentData: ExperimentData)
     fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String?
     fun userId() : String
     fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant?

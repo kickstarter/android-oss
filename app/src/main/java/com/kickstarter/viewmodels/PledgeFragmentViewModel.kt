@@ -5,10 +5,12 @@ import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
+import com.kickstarter.libs.CHECKOUT_PAYMENT_PAGE_VIEWED
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
 import com.kickstarter.models.*
@@ -359,11 +361,13 @@ interface PledgeFragmentViewModel {
 
         private val apiClient = environment.apiClient()
         private val apolloClient = environment.apolloClient()
+        private val optimizely = environment.optimizely()
         private val cookieManager: CookieManager = environment.cookieManager()
         private val currentConfig = environment.currentConfig()
         private val currentUser = environment.currentUser()
         private val ksCurrency = environment.ksCurrency()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val variantSuggestedAmount = BehaviorSubject.create<Double>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -382,6 +386,15 @@ interface PledgeFragmentViewModel {
 
             val projectData = pledgeData
                     .map { it.projectData() }
+
+            val fullProjectDataAndPledgeData = projectData
+                    .compose<Pair<ProjectData, PledgeData>>(combineLatestPair(pledgeData))
+
+            reward
+                .map { RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(variantSuggestedAmount)
 
             val project = projectData
                     .map { it.project() }
@@ -444,11 +457,15 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeHint)
 
-            rewardMinimum
-                    .compose<Pair<Double, Project>>(combineLatestPair(project))
-                    .map { this.ksCurrency.format(it.first, it.second) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeMinimum)
+            Observable.combineLatest(rewardMinimum, variantSuggestedAmount, reward, project)
+            { rewardMinimum, variantSuggestedAmount, reward, project ->
+                if (RewardUtils.isNoReward(reward)) {
+                    return@combineLatest this.ksCurrency.format(variantSuggestedAmount, project)
+                } else return@combineLatest this.ksCurrency.format(rewardMinimum, project)
+            }
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .subscribe(this.pledgeMinimum)
 
             reward
                     .filter { !RewardUtils.isNoReward(it) }
@@ -1157,6 +1174,14 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackCheckoutPaymentPageViewed(it) }
 
+            fullProjectDataAndPledgeData
+                    .take(1)
+                    .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                    .compose<Pair<Pair<ProjectData, PledgeData>, User?>>(combineLatestPair(this.currentUser.observable()))
+                    .map { ExperimentData(it.second, it.first.first.refTagFromIntent(), it.first.first.refTagFromCookie()) }
+                    .compose(bindToLifecycle())
+                    .subscribe { this.optimizely.track(CHECKOUT_PAYMENT_PAGE_VIEWED, it) }
+
             Observable.combineLatest<Double, Double, String, CheckoutData>(shippingAmount, total, this.bonusAmount)
             { s, t, b -> checkoutData(s, t, b.toDouble(), null) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
@@ -1191,6 +1216,12 @@ interface PledgeFragmentViewModel {
 
         private fun getBacking(backingId: String): Observable<Backing> {
             return this.apolloClient.getBacking(backingId)
+        }
+
+        private fun getMinimumRewardAmount(rewardAndVariant: Pair<Reward, Double>): Double {
+            return if (RewardUtils.isNoReward(rewardAndVariant.first))
+                    rewardAndVariant.second
+                else rewardAndVariant.first.minimum()
         }
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {

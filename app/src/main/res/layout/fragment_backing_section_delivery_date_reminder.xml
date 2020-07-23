@@ -25,15 +25,17 @@
     <TextView
         android:id="@+id/delivery_reminder_label"
         style="@style/FootnoteAccent"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_1"
         android:textColor="@color/ksr_dark_grey_500"
         app:layout_constraintStart_toEndOf="@id/icon_calendar"
         android:paddingEnd="@dimen/grid_4"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/pledge_delivery_warning" />
+        android:text="@string/Remember_that_delivery_dates_are_not_guaranteed" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

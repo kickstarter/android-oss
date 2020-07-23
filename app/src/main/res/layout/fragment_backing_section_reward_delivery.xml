@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/black"
-        android:text="@string/pledge_delivery_delivered" />
+        android:text="@string/Estimated_delivery_reward_delivered" />
 
 
     <CheckBox

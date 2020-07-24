@@ -260,7 +260,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
                             response.data()?.let {data ->
                                 Observable.just(data.project()?.backing())
-                                        .map { backingObj -> createBackingObject(backingObj) }
+                                        .filter { it != null }
+                                        .map { backingObj -> backingObj?.let { createBackingObject(it) } }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()
@@ -521,16 +522,21 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     }
 }
 
-private fun createBackingObject(backingGr: GetProjectBackingQuery.Backing?): Backing {
-    val paymentGR = (backingGr?.paymentSource() as GetProjectBackingQuery.AsCreditCard)
-    val payment = Backing.PaymentSource.builder()
-            .state(paymentGR.state().toString())
-            .type(paymentGR.type().rawValue())
-            .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
-            .id(paymentGR.id())
-            .expirationDate(paymentGR.expirationDate())
-            .lastFour(paymentGR.lastFour())
-            .build()
+private fun createBackingObject(backingGr: GetProjectBackingQuery.Backing): Backing {
+    val paymentGR = backingGr?.paymentSource()
+
+    val payment = paymentGR?.let { paymentType ->
+        (paymentType as? GetProjectBackingQuery.AsCreditCard)?.let {
+            return@let Backing.PaymentSource.builder()
+                    .state(it.state().toString())
+                    .type(it.type().rawValue())
+                    .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
+                    .id(it.id())
+                    .expirationDate(it.expirationDate())
+                    .lastFour(it.lastFour())
+                    .build()
+        }
+    }
 
     val name = backingGr.backer()?.name() ?: ""
     val id = decodeRelayId(backingGr.id())?.let { it } ?: 0

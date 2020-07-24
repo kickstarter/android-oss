@@ -6,6 +6,8 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -798,6 +800,56 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
         this.titleIsGone.assertValue(false)
+        this.titleForReward.assertNoValues()
+        this.titleForNoReward.assertValue(R.string.You_pledged_without_a_reward)
+    }
+
+    @Test
+    fun testNoRewardSuggestedAmountExperimentVariant4() {
+        val environment = environment()
+                .toBuilder()
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_4))
+                .build()
+        setUpEnvironment(environment)
+
+        val noRewardBacking = BackingFactory.backing()
+                .toBuilder()
+                .reward(RewardFactory.noReward())
+                .rewardId(null)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(noRewardBacking)
+                .build()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
+
+        this.titleIsGone.assertValue(false)
+        this.minimumAmountTitle.assertValue("$50")
+        this.titleForReward.assertNoValues()
+        this.titleForNoReward.assertValue(R.string.You_pledged_without_a_reward)
+    }
+
+    @Test
+    fun testNoRewardSuggestedAmountExperimentVariant2() {
+        val environment = environment()
+                .toBuilder()
+                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
+                .build()
+        setUpEnvironment(environment)
+
+        val noRewardBacking = BackingFactory.backing()
+                .toBuilder()
+                .reward(RewardFactory.noReward())
+                .rewardId(null)
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(noRewardBacking)
+                .build()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
+
+        this.titleIsGone.assertValue(false)
+        this.minimumAmountTitle.assertValue("$10")
         this.titleForReward.assertNoValues()
         this.titleForNoReward.assertValue(R.string.You_pledged_without_a_reward)
     }

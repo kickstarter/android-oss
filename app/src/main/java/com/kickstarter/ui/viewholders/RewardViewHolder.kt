@@ -95,7 +95,7 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
         this.viewModel.outputs.shippingSummaryIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_shipping_summary, it)}
+                .subscribe { ViewUtils.setGone(this.view.reward_shipping_summary, it) }
 
         this.viewModel.outputs.minimumAmountTitle()
                 .compose(bindToLifecycle())
@@ -166,6 +166,14 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.reward_estimated_delivery_section, it) }
+
+        this.viewModel.outputs.isMinimumPledgeAmountGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(this.view.reward_conversion_text_view, it)
+                    ViewUtils.setGone(this.view.reward_minimum_text_view, it)
+                }
 
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())

@@ -37,5 +37,4 @@
         android:text="@string/Remember_that_delivery_dates_are_not_guaranteed" />
 
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

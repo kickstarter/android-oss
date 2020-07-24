@@ -5,9 +5,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.TextPaint
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
@@ -62,6 +60,7 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.view.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
@@ -576,6 +575,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
         shipping_rules.clearFocus()
+
+        if(!pledge_footer_pledge_button.isEnabled){
+            pledge_footer_pledge_button.isEnabled = true
+        }
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {
@@ -661,6 +664,21 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             adapter = ShippingRulesAdapter(it, R.layout.item_shipping_rule, arrayListOf(), this)
             shipping_rules.setAdapter(adapter)
         }
+
+        this.view?.shipping_rules?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+                if (s.toString().isNullOrBlank()) {
+                    pledge_footer_pledge_button.isEnabled = false
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
     }
 
     private fun setupRewardRecyclerView() {

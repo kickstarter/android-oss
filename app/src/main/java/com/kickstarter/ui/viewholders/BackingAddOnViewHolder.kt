@@ -25,6 +25,9 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
 
         val rewardItemAdapter = setUpItemAdapter()
 
+        setListenerForDecreaseButton()
+        setListenerForIncreaseButton()
+        setListenerForAddButton()
 
         this.viewModel.outputs
                 .description()
@@ -126,8 +129,61 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                     this.view.add_on_shipping_amount.text = this.ksString.format(shippingString, "shipping_amount", it)
                 }
 
+        this.viewModel.outputs.addButtonIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { notInitialState ->
+                    // TODO: animate this change
+                    if (!notInitialState)
+                        this.view.stepper_container_add_on.animate().alpha(0f)
+                                .withStartAction {
+                                    this.view.stepper_container_add_on.visibility = View.VISIBLE
+                                    this.view.initial_state_add_on.animate().alpha(1f).setDuration(50).start()
+                                }
+                                .withEndAction {
+                                    this.view.stepper_container_add_on.visibility = View.GONE
+                                }
+                    else
+                        this.view.initial_state_add_on.animate().alpha(0f)
+                                .withStartAction {
+                                    this.view.stepper_container_add_on.visibility = View.VISIBLE
+                                }
+                                .withEndAction {
+                                this.view.initial_state_add_on.visibility = View.GONE
+                            }
+                }
 
+        this.viewModel.outputs.quantity()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    this.view.quantity_add_on.text = it.toString()
+                }
 
+        this.viewModel.outputs.disableIncreaseButton()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    this.view.increase_quantity_add_on.isEnabled = it
+                }
+    }
+
+    private fun setListenerForAddButton() {
+        this.view.initial_state_add_on.setOnClickListener {
+            this.viewModel.inputs.addButtonPressed()
+        }
+    }
+
+    private fun setListenerForIncreaseButton() {
+        this.view.increase_quantity_add_on.setOnClickListener {
+            this.viewModel.inputs.increaseButtonPressed()
+        }
+    }
+
+    private fun setListenerForDecreaseButton() {
+        this.view.decrease_quantity_add_on.setOnClickListener {
+            this.viewModel.inputs.decreaseButtonPressed()
+        }
     }
 
     private fun formattedExpirationString(@NonNull reward: Reward): String {

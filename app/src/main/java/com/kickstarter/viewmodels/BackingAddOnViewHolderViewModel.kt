@@ -5,6 +5,9 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.models.Project
@@ -24,6 +27,15 @@ class BackingAddOnViewHolderViewModel {
          * @param AddOn  the actual addOn item loading on the ViewHolder
          */
         fun configureWith(projectDataAndAddOn: Pair<ProjectData, Reward>)
+
+        /** Emits if the decrease button has been pressed */
+        fun decreaseButtonPressed()
+
+        /** Emits if the increase button has been pressed */
+        fun increaseButtonPressed()
+
+        /** Emits if the increase button has been pressed */
+        fun addButtonPressed()
     }
 
     interface Outputs {
@@ -75,6 +87,14 @@ class BackingAddOnViewHolderViewModel {
         /** Emits whether or not the reward items list is gone */
         fun rewardItemsAreGone(): Observable<Boolean>
 
+        /** Emits if the `Add` button should be hide*/
+        fun addButtonIsGone(): Observable<Boolean>
+
+        /** Emits quantity selected*/
+        fun quantity(): Observable<Int>
+
+        /** Emits if the amount selected reach the limit available*/
+        fun disableIncreaseButton(): Observable<Boolean>
     }
 
     /**
@@ -103,6 +123,12 @@ class BackingAddOnViewHolderViewModel {
         private val deadlineCountdown = PublishSubject.create<Reward>()
         private val deadlineCountdownIsGone = PublishSubject.create<Boolean>()
         private val rewardItemsAreGone = PublishSubject.create<Boolean>()
+        private val increaseButtonPressed = PublishSubject.create<Void>()
+        private val decreaseButtonPressed = PublishSubject.create<Void>()
+        private val addButtonPressed = PublishSubject.create<Void>()
+        private val addButtonIsGone = PublishSubject.create<Boolean>()
+        private val quantity = PublishSubject.create<Int>()
+        private val disableIncreaseButton = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -124,7 +150,6 @@ class BackingAddOnViewHolderViewModel {
             addOn.map { !RewardUtils.isItemized(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardItemsAreGone)
-
 
             addOn.filter { RewardUtils.isItemized(it) }
                     .map { it.rewardsItems() }
@@ -166,7 +191,6 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.remainingQuantity)
 
-
             projectDataAndAddOn.map { ObjectUtils.isNotNull(it.second.endsAt()) }
                     .compose(bindToLifecycle())
                     .map { !it }
@@ -180,61 +204,108 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmountIsGone)
 
-
-            projectDataAndAddOn.map { getShippingCost(it.second.shippingRules(), it.first.project()) }
+            projectDataAndAddOn.map {
+                getShippingCost(it.second.shippingRules(), it.first.project())
+            }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
+            // - All the math os done using this internal val, this would be emitted to this.quantity
+            val addOnAmount = addOn
+                    .map { it?.let { it.quantity() } ?: 0 }
+
+            addOnAmount
+                    .compose<Int>(takeWhen(this.addButtonPressed))
+                    .map { increase(it) }
+                    .subscribe(this.quantity)
+
+            addOnAmount
+                    .compose<Int>(takeWhen(this.increaseButtonPressed))
+                    .map { increase(it) }
+                    .subscribe(this.quantity)
+
+            addOnAmount
+                    .compose<Int>(takeWhen(this.decreaseButtonPressed))
+                    .map { decrease(it) }
+                    .subscribe(this.quantity)
+
+
+            this.quantity
+                    .filter { it != null }
+                    .map { it > 0 }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addButtonIsGone)
+
+            this.quantity
+                    .filter { it != null }
+                    .compose<Pair<Int, String>>(combineLatestPair(this.remainingQuantity))
+                    .map { checkLiits(it.first, it.second)}
+                    .compose(bindToLifecycle())
+                    .subscribe(this.disableIncreaseButton)
 
         }
 
-        private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project): String {
+        private fun checkLiits(first: Int?, limit: String?) =
+                if (limit.isNullOrEmpty())
+                    first == 10
+                else if (first != null) first == limit.toInt()
+                else false
 
-            if (shippingRules != null) {
-                return if (shippingRules.isEmpty()) {
-                    ""
-                } else {
-                    this.ksCurrency.format(shippingRules?.get(0)?.cost()!!, project)
+        private fun decrease(amount: Int) = amount - 1
+        private fun increase(amount: Int) = amount + 1
 
+        private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project) =
+                if (shippingRules.isNullOrEmpty()) ""
+                else shippingRules?.let {
+                    // TODO: replace with the selected shipping location, add that from the fragmentViewModel some how to the data we already get in inputs.configureWith
+                    this.ksCurrency.format(it.first().cost(), project)
                 }
-            }
-
-            return ""
-        }
 
 
+        // - Inputs
         override fun configureWith(projectDataAndAddOn: Pair<ProjectData, Reward>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)
+        override fun decreaseButtonPressed() = this.decreaseButtonPressed.onNext(null)
+        override fun increaseButtonPressed() = this.increaseButtonPressed.onNext(null)
+        override fun addButtonPressed() = this.increaseButtonPressed.onNext(null)
 
-        override fun titleForAddOn() = this.title
 
-        override fun description() = this.description
+        // - Outputs
+        override fun titleForAddOn(): PublishSubject<String> = this.title
 
-        override fun minimum() = this.minimum
+        override fun description(): PublishSubject<String> = this.description
 
-        override fun convertedMinimum() = this.convertedMinimum
+        override fun minimum(): PublishSubject<CharSequence> = this.minimum
 
-        override fun conversionIsGone() = this.conversionIsGone
+        override fun convertedMinimum(): PublishSubject<CharSequence> = this.convertedMinimum
 
-        override fun conversion() = this.conversion
+        override fun conversionIsGone(): PublishSubject<Boolean> = this.conversionIsGone
 
-        override fun rewardItems() = this.rewardItems
+        override fun conversion(): PublishSubject<CharSequence> = this.conversion
 
-        override fun remainingQuantityPillIsGone() = this.remainingQuantityPillIsGone
+        override fun rewardItems(): PublishSubject<List<RewardsItem>> = this.rewardItems
 
-        override fun backerLimitPillIsGone() = this.backerLimitPillIsGone
+        override fun remainingQuantityPillIsGone(): PublishSubject<Boolean> = this.remainingQuantityPillIsGone
 
-        override fun backerLimit() = this.backerLimit
+        override fun backerLimitPillIsGone(): PublishSubject<Boolean> = this.backerLimitPillIsGone
 
-        override fun remainingQuantity() = this.remainingQuantity
+        override fun backerLimit(): PublishSubject<String> = this.backerLimit
 
-        override fun shippingAmountIsGone() = this.shippingAmountIsGone
+        override fun remainingQuantity(): PublishSubject<String> = this.remainingQuantity
 
-        override fun shippingAmount() = this.shippingAmount
+        override fun shippingAmountIsGone(): PublishSubject<Boolean> = this.shippingAmountIsGone
 
-        override fun deadlineCountdown() = this.deadlineCountdown
+        override fun shippingAmount(): PublishSubject<String> = this.shippingAmount
 
-        override fun deadlineCountdownIsGone() = this.deadlineCountdownIsGone
+        override fun deadlineCountdown(): PublishSubject<Reward> = this.deadlineCountdown
 
-        override fun rewardItemsAreGone() = this.rewardItemsAreGone
+        override fun deadlineCountdownIsGone(): PublishSubject<Boolean> = this.deadlineCountdownIsGone
+
+        override fun rewardItemsAreGone(): PublishSubject<Boolean> = this.rewardItemsAreGone
+
+        override fun addButtonIsGone(): PublishSubject<Boolean> = this.addButtonIsGone
+
+        override fun quantity(): PublishSubject<Int> = this.quantity
+
+        override fun disableIncreaseButton(): Observable<Boolean> = this.disableIncreaseButton
     }
 }

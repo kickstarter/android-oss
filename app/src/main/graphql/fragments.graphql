@@ -71,6 +71,9 @@ fragment reward on Reward {
     shippingRules {
         ... shippingRule
     }
+    remainingQuantity
+    limit
+    endsAt
 }
 
 fragment shippingRule on ShippingRule {

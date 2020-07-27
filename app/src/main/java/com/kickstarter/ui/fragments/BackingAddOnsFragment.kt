@@ -66,7 +66,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .subscribe { displayShippingRules(it.first, it.second) }
     }
 
-    private fun populateAddOns(projectDataAndAddOnList: Pair<ProjectData, List<Reward>>) {
+    private fun populateAddOns(projectDataAndAddOnList: Triple<ProjectData, List<Reward>, ShippingRule>) {
         val projectData = projectDataAndAddOnList.first
 
         val list = projectDataAndAddOnList

@@ -38,7 +38,7 @@ class BackingAddOnsFragmentViewModel {
         fun showPledgeFragment(): Observable<Pair<PledgeData, PledgeReason>>
 
         /** Emits a Pair containing the projectData and the list for Add-ons associated to that project. */
-        fun addOnsList(): Observable<Pair<ProjectData, List<Reward>>>
+        fun addOnsList(): Observable<Triple<ProjectData, List<Reward>, ShippingRule>>
 
         /** Emits the current selected shipping rule. */
         fun selectedShippingRule(): Observable<ShippingRule>
@@ -56,7 +56,7 @@ class BackingAddOnsFragmentViewModel {
         private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
-        private val addOnsList = PublishSubject.create<Pair<ProjectData, List<Reward>>>()
+        private val addOnsList = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
 
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
@@ -129,7 +129,7 @@ class BackingAddOnsFragmentViewModel {
                     }
         }
 
-        private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Pair<ProjectData, List<Reward>> {
+        private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
            val filteredAddOns = when (rw.shippingPreference()){
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
                     addOns.filter {
@@ -146,7 +146,7 @@ class BackingAddOnsFragmentViewModel {
                 }
             }
 
-            return Pair(pData, filteredAddOns)
+            return Triple(pData, filteredAddOns, rule)
         }
 
         private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {

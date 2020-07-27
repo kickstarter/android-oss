@@ -186,7 +186,13 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backerLimit)
 
-            addOn.map { it.remaining().toString() }
+            val remainingQuantityNumber = addOn
+                    .filter { ObjectUtils.isNotNull(it.remaining()) }
+                    .map { it.remaining() }
+                    .compose(bindToLifecycle())
+
+            remainingQuantityNumber
+                    .map { it.toString() }
                     .compose(bindToLifecycle())
                     .subscribe(this.remainingQuantity)
 
@@ -209,7 +215,7 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
-            // - All the math os done using this internal val, this would be emitted to this.quantity
+            // - All the math is done using this internal val, this would be emitted to this.quantity
             val addOnAmount = addOn
                     .map { it?.let { it.quantity() } ?: 0 }
                     .distinctUntilChanged()
@@ -238,20 +244,14 @@ class BackingAddOnViewHolderViewModel {
 
             this.quantity
                     .filter { it != null }
-                    .compose<Pair<Int, String>>(combineLatestPair(this.remainingQuantity))
+                    .compose<Pair<Int?, Int?>>(combineLatestPair(remainingQuantityNumber))
                     .map { checkAvailableLimit(it.first, it.second)}
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
 
         }
 
-        // TODO 10 as constant, suppose to be the limit today for add-ons
-        private fun checkAvailableLimit(first: Int?, limit: String?) =
-                when {
-                    limit.isNullOrEmpty() -> first == 10
-                    first != null && !limit.isNullOrEmpty() -> first == limit.toInt()
-                    else -> false
-                }
+        private fun checkAvailableLimit(quantity: Int?, limit: Int?) = if (quantity != null && limit != null) quantity == limit else false
 
         private fun decrease(amount: Int) = amount - 1
         private fun increase(amount: Int) = amount + 1

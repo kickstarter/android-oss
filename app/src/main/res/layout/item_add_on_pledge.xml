@@ -158,12 +158,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/grid_9_half"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pills_container"
-            tools:visibility="visible">
+            app:layout_constraintTop_toBottomOf="@+id/pills_container">
 
                 <ImageButton
                     android:id="@+id/decrease_quantity_add_on"
@@ -193,7 +191,6 @@
                     android:id="@+id/quantity_add_on"
                     android:layout_width="@dimen/grid_7"
                     android:layout_height="@dimen/grid_7"
-
                     android:gravity="center"
                     android:textStyle="bold"
                     android:background="@drawable/border_rounded_soft_grey_300"
@@ -213,12 +210,12 @@
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 android:background="@drawable/border_rounded_solid_black"
+                android:text="@string/Add"
                 style="@style/TextPrimary"
                 android:textSize="@dimen/callout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/pills_container"
-                android:text="@string/Add"
                 tools:text="Add"
                 tools:visibility="visible"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

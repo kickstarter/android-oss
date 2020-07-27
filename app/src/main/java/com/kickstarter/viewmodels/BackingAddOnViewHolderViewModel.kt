@@ -186,15 +186,11 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backerLimit)
 
-            val remainingQuantityNumber = addOn
+            addOn
                     .filter { ObjectUtils.isNotNull(it.remaining()) }
-                    .map { it.remaining() }
-                    .compose(bindToLifecycle())
-
-            remainingQuantityNumber
-                    .map { it.toString() }
-                    .compose(bindToLifecycle())
+                    .map { it.remaining().toString() }
                     .subscribe(this.remainingQuantity)
+
 
             projectDataAndAddOn.map { ObjectUtils.isNotNull(it.second.endsAt()) }
                     .compose(bindToLifecycle())
@@ -215,24 +211,23 @@ class BackingAddOnViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
 
-            // - All the math is done using this internal val, this would be emitted to this.quantity
-            val addOnAmount = addOn
+            addOn
                     .map { it?.let { it.quantity() } ?: 0 }
                     .distinctUntilChanged()
-
-            addOnAmount
-                    .compose<Int>(takeWhen(this.addButtonPressed))
-                    .map { increase(it) }
                     .subscribe(this.quantity)
 
-            addOnAmount
+            this.quantity
+                    .compose<Int>(takeWhen(this.addButtonPressed))
+                    .subscribe(this.quantity)
+
+            this.quantity
                     .compose<Int>(takeWhen(this.increaseButtonPressed))
                     .map { increase(it) }
                     .subscribe(this.quantity)
 
-            addOnAmount
+            this.quantity
                     .compose<Int>(takeWhen(this.decreaseButtonPressed))
-                    .map { decrease(it) }
+                    .map { if (it > 0 ) decrease(it) else 0}
                     .subscribe(this.quantity)
 
 
@@ -243,18 +238,16 @@ class BackingAddOnViewHolderViewModel {
                     .subscribe(this.addButtonIsGone)
 
             this.quantity
-                    .filter { it != null }
-                    .compose<Pair<Int?, Int?>>(combineLatestPair(remainingQuantityNumber))
-                    .map { checkAvailableLimit(it.first, it.second)}
+                    .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
+                    .map { (it.first == LIMIT) || (it.first == it.second.remaining()) }
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
 
+
         }
 
-        private fun checkAvailableLimit(quantity: Int?, limit: Int?) = if (quantity != null && limit != null) quantity == limit else false
-
         private fun decrease(amount: Int) = amount - 1
-        private fun increase(amount: Int) = amount + 1
+        private fun increase(amount: Int) = if(amount < LIMIT )amount + 1 else amount
 
         private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project) =
                 if (shippingRules.isNullOrEmpty()) ""
@@ -268,7 +261,10 @@ class BackingAddOnViewHolderViewModel {
         override fun configureWith(projectDataAndAddOn: Pair<ProjectData, Reward>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)
         override fun decreaseButtonPressed() = this.decreaseButtonPressed.onNext(null)
         override fun increaseButtonPressed() = this.increaseButtonPressed.onNext(null)
-        override fun addButtonPressed() = this.increaseButtonPressed.onNext(null)
+        override fun addButtonPressed() {
+            this.addButtonPressed.onNext(null)
+            this.addButtonIsGone.onNext(true)
+        }
 
 
         // - Outputs
@@ -309,5 +305,9 @@ class BackingAddOnViewHolderViewModel {
         override fun quantity(): PublishSubject<Int> = this.quantity
 
         override fun disableIncreaseButton(): Observable<Boolean> = this.disableIncreaseButton
+
+        companion object {
+            const val LIMIT = 10
+        }
     }
 }

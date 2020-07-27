@@ -132,25 +132,29 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.addButtonIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { notInitialState ->
-                    // TODO: animate this change
-                    if (!notInitialState)
-                        this.view.stepper_container_add_on.animate().alpha(0f)
-                                .withStartAction {
-                                    this.view.stepper_container_add_on.visibility = View.VISIBLE
-                                    this.view.initial_state_add_on.animate().alpha(1f).setDuration(50).start()
-                                }
-                                .withEndAction {
-                                    this.view.stepper_container_add_on.visibility = View.GONE
-                                }
-                    else
-                        this.view.initial_state_add_on.animate().alpha(0f)
-                                .withStartAction {
-                                    this.view.stepper_container_add_on.visibility = View.VISIBLE
-                                }
-                                .withEndAction {
-                                this.view.initial_state_add_on.visibility = View.GONE
-                            }
+                .subscribe { addButtonIsGone ->
+                    if (addButtonIsGone) {
+                        this.view.initial_state_add_on.animate().alpha(0f).withEndAction {
+                            this.view.initial_state_add_on.visibility = View.GONE
+                        }
+                        this.view.stepper_container_add_on.animate().alpha(1f).withEndAction {
+                            this.view.stepper_container_add_on.visibility = View.VISIBLE
+                        }
+                        this.view.initial_state_add_on.isEnabled = false
+                        this.view.decrease_quantity_add_on.isEnabled = true
+                        this.view.increase_quantity_add_on.isEnabled = true
+                    }
+                    else {
+                        this.view.initial_state_add_on.animate().alpha(1f).withEndAction {
+                            this.view.initial_state_add_on.visibility = View.VISIBLE
+                        }
+                        this.view.stepper_container_add_on.animate().alpha(0f).withEndAction {
+                            this.view.stepper_container_add_on.visibility = View.GONE
+                        }
+                        this.view.initial_state_add_on.isEnabled = true
+                        this.view.decrease_quantity_add_on.isEnabled = false
+                        this.view.increase_quantity_add_on.isEnabled = false
+                    }
                 }
 
         this.viewModel.outputs.quantity()
@@ -164,7 +168,7 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    this.view.increase_quantity_add_on.isEnabled = it
+                    this.view.increase_quantity_add_on.isEnabled = !it
                 }
     }
 

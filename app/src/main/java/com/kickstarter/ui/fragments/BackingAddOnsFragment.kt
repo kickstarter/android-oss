@@ -24,7 +24,6 @@ import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
 class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate {
@@ -68,11 +67,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
     private fun populateAddOns(projectDataAndAddOnList: Triple<ProjectData, List<Reward>, ShippingRule>) {
         val projectData = projectDataAndAddOnList.first
-
+        val selectedShippingRule = projectDataAndAddOnList.third
         val list = projectDataAndAddOnList
                 .second
                 .map {
-                    Pair(projectData,it)
+                    Triple(projectData,it, selectedShippingRule)
                 }.toList()
 
         backingAddonsAdapter.populateDataForAddOns(list)

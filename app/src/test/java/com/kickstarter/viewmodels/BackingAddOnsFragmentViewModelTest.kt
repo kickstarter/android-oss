@@ -11,6 +11,7 @@ import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
@@ -24,7 +25,7 @@ import rx.observers.TestSubscriber
 
 class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
     private lateinit var vm: BackingAddOnsFragmentViewModel.ViewModel
-    private val addOnsList = TestSubscriber.create<Pair<ProjectData, List<Reward>>>()
+    private val addOnsList = TestSubscriber.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingAddOnsFragmentViewModel.ViewModel(environment)

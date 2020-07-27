@@ -242,8 +242,6 @@ class BackingAddOnViewHolderViewModel {
                     .map { (it.first == LIMIT) || (it.first == it.second.remaining()) }
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
-
-
         }
 
         private fun decrease(amount: Int) = amount - 1

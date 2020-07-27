@@ -204,7 +204,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/initial_state_add_on"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/grid_15_half"
+                android:layout_height="@dimen/grid_7"
                 android:layout_marginTop="@dimen/grid_9_half"
                 android:gravity="center"
                 android:textStyle="bold"

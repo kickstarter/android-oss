@@ -73,6 +73,7 @@ fragment reward on Reward {
     }
     remainingQuantity
     limit
+    limitPerBacker
     endsAt
 }
 

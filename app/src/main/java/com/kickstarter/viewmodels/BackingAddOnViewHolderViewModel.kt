@@ -5,7 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSCurrency
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
@@ -213,6 +212,7 @@ class BackingAddOnViewHolderViewModel {
             // - All the math os done using this internal val, this would be emitted to this.quantity
             val addOnAmount = addOn
                     .map { it?.let { it.quantity() } ?: 0 }
+                    .distinctUntilChanged()
 
             addOnAmount
                     .compose<Int>(takeWhen(this.addButtonPressed))
@@ -239,17 +239,19 @@ class BackingAddOnViewHolderViewModel {
             this.quantity
                     .filter { it != null }
                     .compose<Pair<Int, String>>(combineLatestPair(this.remainingQuantity))
-                    .map { checkLiits(it.first, it.second)}
+                    .map { checkAvailableLimit(it.first, it.second)}
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
 
         }
 
-        private fun checkLiits(first: Int?, limit: String?) =
-                if (limit.isNullOrEmpty())
-                    first == 10
-                else if (first != null) first == limit.toInt()
-                else false
+        // TODO 10 as constant, suppose to be the limit today for add-ons
+        private fun checkAvailableLimit(first: Int?, limit: String?) =
+                when {
+                    limit.isNullOrEmpty() -> first == 10
+                    first != null && !limit.isNullOrEmpty() -> first == limit.toInt()
+                    else -> false
+                }
 
         private fun decrease(amount: Int) = amount - 1
         private fun increase(amount: Int) = amount + 1

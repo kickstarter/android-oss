@@ -264,7 +264,6 @@ class BackingAddOnViewHolderViewModel {
             this.addButtonIsGone.onNext(true)
         }
 
-
         // - Outputs
         override fun titleForAddOn(): PublishSubject<String> = this.title
 

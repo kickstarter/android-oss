@@ -45,6 +45,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits a pair of list of shipping rules to be selected and the project. */
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
+
+        /** Emits whether or not the shipping selector is visible **/
+        fun shippingSelectorIsGone(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -57,6 +60,7 @@ class BackingAddOnsFragmentViewModel {
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val addOnsList = PublishSubject.create<Pair<ProjectData, List<Reward>>>()
+        private val shippingSelectorIsGone = PublishSubject.create<Boolean>()
 
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
@@ -118,6 +122,15 @@ class BackingAddOnsFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.addOnsList)
+
+
+            reward.map { !RewardUtils.isShippable(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingSelectorIsGone)
+
+            addOnsList.map { !hasShippableAddOn(it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingSelectorIsGone)
         }
 
         private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
@@ -127,6 +140,10 @@ class BackingAddOnsFragmentViewModel {
                         shippingRules.firstOrNull { it.location().country() == countryCode }
                                 ?: shippingRules.first()
                     }
+        }
+
+        private fun hasShippableAddOn(addOns: List<Reward>): Boolean {
+           return addOns.any { RewardUtils.isShippable(it) }
         }
 
         private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Pair<ProjectData, List<Reward>> {
@@ -169,5 +186,6 @@ class BackingAddOnsFragmentViewModel {
         override fun addOnsList() = this.addOnsList
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
+        override fun shippingSelectorIsGone() = this.shippingSelectorIsGone
     }
 }

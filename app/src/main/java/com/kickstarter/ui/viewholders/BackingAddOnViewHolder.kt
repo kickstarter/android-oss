@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders
 
-import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,6 +8,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
@@ -78,7 +78,9 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.conversion()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { this.view.add_on_conversion.text = "About $it" }
+                .subscribe {
+                    this.view.add_on_conversion.text = this.ksString.format(context().getString(R.string.About_reward_amount), "reward_amount", it.toString())
+                }
 
 
         this.viewModel.outputs.backerLimitPillIsGone()
@@ -94,12 +96,17 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.backerLimit()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { this.view.addon_backer_limit.text = "Limit $it" }
+                .subscribe {
+                    this.view.addon_backer_limit.text = this.ksString.format(context().getString(R.string.limit_limit_per_backer), "limit_per_backer", it)
+                }
 
         this.viewModel.outputs.remainingQuantity()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { this.view.addon_quantity_remaining.text = "$it left" }
+                .subscribe {
+                    this.view.addon_quantity_remaining.text =
+                            this.ksString.format(context().getString(R.string.rewards_info_time_left), "time", it)
+                }
 
         this.viewModel.outputs.deadlineCountdownIsGone()
                 .compose(bindToLifecycle())
@@ -123,10 +130,12 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    val rewardAndShippingString = context().getString(R.string.reward_amount_plus_shipping_cost_each)
-                    val stringSections = rewardAndShippingString.split("+")
-                    val shippingString = stringSections[1]
-                    this.view.add_on_shipping_amount.text = this.ksString.format(shippingString, "shipping_amount", it)
+                    if  (it.isNotEmpty()) {
+                        val rewardAndShippingString = context().getString(R.string.reward_amount_plus_shipping_cost_each)
+                        val stringSections = rewardAndShippingString.split("+")
+                        val shippingString = "+" + stringSections[1]
+                        this.view.add_on_shipping_amount.text = this.ksString.format(shippingString, "shipping_cost", it)
+                    }
                 }
 
         this.viewModel.outputs.addButtonIsGone()
@@ -197,14 +206,14 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
     }
 
     override fun bindData(data: Any?) {
-        if (data is (Pair<*, *>)) {
+        if (data is (Triple<*, *, *>)) {
             if (data.second is Reward) {
-                bindAddonsList(data as Pair<ProjectData, Reward>)
+                bindAddonsList(data as Triple<ProjectData, Reward, ShippingRule>)
             }
         }
     }
 
-    private fun bindAddonsList(projectDataAndAddOn: Pair<ProjectData, Reward>) {
+    private fun bindAddonsList(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>) {
         this.viewModel.inputs.configureWith(projectDataAndAddOn)
     }
 

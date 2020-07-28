@@ -6,6 +6,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
@@ -42,7 +43,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).limit(null).build()
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.backerLimitIsGone.assertValue(true)
     }
@@ -52,7 +54,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).remaining(null).build()
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.remainingQuantityIsGone.assertValue(true)
     }
@@ -62,7 +65,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).endsAt(null).build()
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.countdownIsGone.assertValue(true)
     }
@@ -73,7 +77,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).shippingRules(emptyList<ShippingRule>()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.shippingAmountIsGone.assertValue(true)
     }
@@ -84,7 +89,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.rewardItemsAreGone.assertValue(true)
     }
@@ -95,7 +101,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.addButtonGone.assertValue(false)
         this.quantity.assertValue(0)
@@ -107,7 +114,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.vm.inputs.increaseButtonPressed()
         this.addButtonGone.assertValues(false, true)
@@ -120,7 +128,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.vm.inputs.increaseButtonPressed()
         this.vm.inputs.increaseButtonPressed()
@@ -136,7 +145,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).remaining(3).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.vm.inputs.increaseButtonPressed()
         this.vm.inputs.increaseButtonPressed()
@@ -153,7 +163,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.vm.inputs.increaseButtonPressed()
         this.vm.inputs.increaseButtonPressed()
@@ -177,7 +188,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.vm.inputs.increaseButtonPressed()
         this.vm.inputs.increaseButtonPressed()
@@ -194,7 +206,8 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
 
-        this.vm.inputs.configureWith(android.util.Pair<ProjectData, Reward>(ProjectDataFactory.project(ProjectFactory.project()), addOn))
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.vm.inputs.increaseButtonPressed()
         this.vm.inputs.increaseButtonPressed()

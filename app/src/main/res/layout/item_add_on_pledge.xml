@@ -60,7 +60,8 @@
                     android:visibility="gone"
                     app:layout_constraintStart_toEndOf="@id/add_on_minimum"
                     app:layout_constraintTop_toBottomOf="@id/title_container"
-                    tools:text=" + $5 shipping each" />
+                    tools:text=" + $5 shipping each"
+                    tools:visibility="visible"/>
 
                 <TextView
                     android:id="@+id/add_on_conversion"

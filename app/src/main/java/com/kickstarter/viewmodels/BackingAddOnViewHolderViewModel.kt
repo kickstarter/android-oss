@@ -24,8 +24,9 @@ class BackingAddOnViewHolderViewModel {
         /** Configure with the current [ProjectData] and [Reward].
          * @param projectData we get the Project for currency
          * @param AddOn  the actual addOn item loading on the ViewHolder
+         * @param selectedShippingRule the selected shipping rule
          */
-        fun configureWith(projectDataAndAddOn: Pair<ProjectData, Reward>)
+        fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>)
 
         /** Emits if the decrease button has been pressed */
         fun decreaseButtonPressed()
@@ -105,7 +106,7 @@ class BackingAddOnViewHolderViewModel {
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<BackingAddOnViewHolder>(environment), Inputs, Outputs {
 
         private val ksCurrency: KSCurrency = environment.ksCurrency()
-        private val projectDataAndAddOn = PublishSubject.create<Pair<ProjectData, Reward>>()
+        private val projectDataAndAddOn = PublishSubject.create<Triple<ProjectData, Reward, ShippingRule>>()
         private val title = PublishSubject.create<String>()
         private val description = PublishSubject.create<String>()
         private val minimum = PublishSubject.create<CharSequence>()
@@ -206,7 +207,7 @@ class BackingAddOnViewHolderViewModel {
                     .subscribe(this.shippingAmountIsGone)
 
             projectDataAndAddOn.map {
-                getShippingCost(it.second.shippingRules(), it.first.project())
+                getShippingCost(it.second.shippingRules(), it.first.project(), it.third)
             }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingAmount)
@@ -247,16 +248,21 @@ class BackingAddOnViewHolderViewModel {
         private fun decrease(amount: Int) = amount - 1
         private fun increase(amount: Int) = if(amount < LIMIT )amount + 1 else amount
 
-        private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project) =
+        private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project, selectedShippingRule: ShippingRule) =
                 if (shippingRules.isNullOrEmpty()) ""
                 else shippingRules?.let {
-                    // TODO: replace with the selected shipping location, add that from the fragmentViewModel some how to the data we already get in inputs.configureWith
-                    this.ksCurrency.format(it.first().cost(), project)
+                    var cost = 0.0
+                    it.filter {
+                        it.location().id() == selectedShippingRule.location().id()
+                    }.map {
+                        cost += it.cost()
+                    }
+                    this.ksCurrency.format(cost, project)
                 }
 
 
         // - Inputs
-        override fun configureWith(projectDataAndAddOn: Pair<ProjectData, Reward>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)
+        override fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)
         override fun decreaseButtonPressed() = this.decreaseButtonPressed.onNext(null)
         override fun increaseButtonPressed() = this.increaseButtonPressed.onNext(null)
         override fun addButtonPressed() {

@@ -31,6 +31,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
+
+        /** Call when the user updates the quantity for one add-on */
+        fun selectedAddonsQuantity(quantity: Int)
     }
 
     interface Outputs {
@@ -45,6 +48,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits a pair of list of shipping rules to be selected and the project. */
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
+
+        /** Emits the total sum of addOns selected in each item of the addOns list. */
+        fun totalSelectedAddOns(): Observable<String>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -57,6 +63,9 @@ class BackingAddOnsFragmentViewModel {
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val addOnsList = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
+        private val selectedAddOns = PublishSubject.create<Int>()
+        private val totalSelectedAddOns = PublishSubject.create<String>()
+        private var totalAmount = 0
 
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
@@ -118,6 +127,13 @@ class BackingAddOnsFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.addOnsList)
+
+            this.selectedAddOns
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        totalAmount += it
+                        this.totalSelectedAddOns.onNext(totalAmount.toString())
+                    }
         }
 
         private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
@@ -162,6 +178,7 @@ class BackingAddOnsFragmentViewModel {
         // - Inputs
         override fun configureWith(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) = this.pledgeDataAndReason.onNext(pledgeDataAndReason)
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
+        override fun selectedAddonsQuantity(quantity: Int) = this.selectedAddOns.onNext(quantity)
 
         // - Outputs
         @NonNull
@@ -169,5 +186,6 @@ class BackingAddOnsFragmentViewModel {
         override fun addOnsList() = this.addOnsList
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
+        override fun totalSelectedAddOns(): Observable<String> = this.totalSelectedAddOns
     }
 }

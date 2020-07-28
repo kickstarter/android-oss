@@ -16,10 +16,15 @@ import kotlinx.android.synthetic.main.add_on_items.view.*
 import kotlinx.android.synthetic.main.add_on_title.view.*
 import kotlinx.android.synthetic.main.item_add_on_pledge.view.*
 
-class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
+class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener) : KSViewHolder(view) {
+
+    interface ViewListener {
+        fun quantityHasChanged(quantity: Int)
+    }
 
     private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
     private val ksString = environment().ksString()
+    private val viewListener = viewListener
 
     init {
 
@@ -190,12 +195,14 @@ class BackingAddOnViewHolder(private val view: View) : KSViewHolder(view) {
     private fun setListenerForIncreaseButton() {
         this.view.increase_quantity_add_on.setOnClickListener {
             this.viewModel.inputs.increaseButtonPressed()
+            viewListener.quantityHasChanged(+1)
         }
     }
 
     private fun setListenerForDecreaseButton() {
         this.view.decrease_quantity_add_on.setOnClickListener {
             this.viewModel.inputs.decreaseButtonPressed()
+            viewListener.quantityHasChanged(-1)
         }
     }
 

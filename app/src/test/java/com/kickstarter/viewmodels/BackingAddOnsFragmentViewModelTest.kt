@@ -11,6 +11,7 @@ import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
@@ -24,7 +25,7 @@ import rx.observers.TestSubscriber
 
 class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
     private lateinit var vm: BackingAddOnsFragmentViewModel.ViewModel
-    private val addOnsList = TestSubscriber.create<Pair<ProjectData, List<Reward>>>()
+    private val addOnsList = TestSubscriber.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingAddOnsFragmentViewModel.ViewModel(environment)
@@ -89,7 +90,7 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.addOnsList.assertValue(Pair(projectData,listAddons))
+        this.addOnsList.assertValue(Triple(projectData,listAddons, shippingRule.shippingRules().first()))
     }
 
     @Test
@@ -123,7 +124,7 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.addOnsList.assertValue(Pair(projectData,listAddons))
+        this.addOnsList.assertValue(Triple(projectData,listAddons, shippingRule.shippingRules().first()))
     }
 
     @Test
@@ -158,7 +159,7 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.addOnsList.assertValue(Pair(projectData, emptyList()))
+        this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
     }
 
     @Test
@@ -193,7 +194,7 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.addOnsList.assertValue(Pair(projectData, listAddons))
+        this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
     }
 
     @Test
@@ -271,12 +272,12 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.addOnsList.assertValue(Pair(projectData, listAddons))
+        this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
 
         val shippingRuleAddOn = ShippingRuleFactory.germanyShippingRule()
         this.vm.inputs.shippingRuleSelected(shippingRuleAddOn)
 
-        this.addOnsList.assertValues(Pair(projectData, listAddons),Pair(projectData, emptyList()))
+        this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRuleRw), Triple(projectData, emptyList(), shippingRuleAddOn))
     }
 
     @Test
@@ -309,7 +310,7 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.addOnsList.assertValue(Pair(projectData, listAddons))
+        this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
     }
 
     @Test
@@ -348,7 +349,7 @@ class BackingAddOnsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         val listAddonsFiltered = listAddons.filter { it.id() == addOn.id() }
-        this.addOnsList.assertValue(Pair(projectData, listAddonsFiltered))
+        this.addOnsList.assertValue(Triple(projectData, listAddonsFiltered, shippingRuleRw))
     }
 
 

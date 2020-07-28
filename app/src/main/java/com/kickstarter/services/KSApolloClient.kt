@@ -727,6 +727,9 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
     val desc = rewardGr.description()
     val title = rewardGr.name()
     val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
+    val limit = rewardGr.limitPerBacker()
+    val remaining = rewardGr.remainingQuantity()
+    val endsAt = DateTime(rewardGr.endsAt())
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
 
     val shippingPreference = when (rewardGr.shippingPreference()) {
@@ -748,6 +751,9 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .title(title)
             .convertedMinimum(convertedAmount)
             .minimum(amount)
+            .limit(limit)
+            .remaining(remaining)
+            .endsAt(endsAt)
             .description(desc)
             .estimatedDeliveryOn(estimatedDelivery)
             .isAddOn(true)

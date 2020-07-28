@@ -8,7 +8,11 @@
     android:background="@color/ksr_grey_300"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+        <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@color/ksr_grey_300"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -84,8 +88,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_backing_addons_shipping_rules"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="2"
             tools:listitem="@layout/item_add_on_pledge"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </FrameLayout>

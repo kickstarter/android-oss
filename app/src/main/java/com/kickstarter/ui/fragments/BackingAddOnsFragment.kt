@@ -27,6 +27,7 @@ import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
 import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.*
+import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.view.*
 import rx.Observable
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
@@ -83,6 +84,10 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                     ViewUtils.setGone(fragment_backing_addons_shipping_rules, it)
                     ViewUtils.setGone(fragment_backing_addons_call_out, it)
                 }
+
+        backing_addons_footer_button.setOnClickListener {
+            this.viewModel.inputs.continueButtonPressed()
+        }
     }
 
     private fun selectProperString(totalSelected: Int): String {

@@ -2,13 +2,12 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
-import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
@@ -37,6 +36,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Call when the user updates the quantity for one add-on */
         fun selectedAddonsQuantity(quantity: Int)
+
+        /** Emits when the CTA button has been pressed */
+        fun continueButtonPressed()
     }
 
     interface Outputs {
@@ -72,6 +74,7 @@ class BackingAddOnsFragmentViewModel {
         private val addOnsList = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val selectedAddOns = PublishSubject.create<Int>()
         private val totalSelectedAddOns = PublishSubject.create<Int>()
+        private val continueButtonPressed = PublishSubject.create<Void>()
         private var totalAmount = 0
 
         private val apolloClient = this.environment.apolloClient()
@@ -147,6 +150,22 @@ class BackingAddOnsFragmentViewModel {
                     .map{ !RewardUtils.isShippable(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSelectorIsGone)
+
+            addOnsList.map { !hasShippableAddOn(it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingSelectorIsGone)
+
+            this.continueButtonPressed
+                    .compose<Pair<Void, Int>>(combineLatestPair(this.totalSelectedAddOns))
+                    .map { it.second }
+                    .compose<Pair<Int, PledgeData>>(combineLatestPair(pledgeData))
+                    .map { it.second }
+                    .compose<Pair<PledgeData, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        // TODO: add a new field on PledgeData holding listAddons: List<Reward>
+                        this.showPledgeFragment.onNext(Pair(it.first, it.second))
+                    }
         }
 
         private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
@@ -157,7 +176,13 @@ class BackingAddOnsFragmentViewModel {
                                 ?: shippingRules.first()
                     }
         }
-      
+
+
+        private fun hasShippableAddOn(addOns: List<Reward>): Boolean {
+            return addOns.any { RewardUtils.isShippable(it) }
+        }
+
+
         private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
            val filteredAddOns = when (rw.shippingPreference()){
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
@@ -192,6 +217,7 @@ class BackingAddOnsFragmentViewModel {
         override fun configureWith(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) = this.pledgeDataAndReason.onNext(pledgeDataAndReason)
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
         override fun selectedAddonsQuantity(quantity: Int) = this.selectedAddOns.onNext(quantity)
+        override fun continueButtonPressed() = this.continueButtonPressed.onNext(null)
 
         // - Outputs
         @NonNull

@@ -14,6 +14,7 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
 import kotlinx.android.synthetic.main.add_on_items.view.*
 import kotlinx.android.synthetic.main.add_on_title.view.*
+import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.view.*
 import kotlinx.android.synthetic.main.item_add_on_pledge.view.*
 
 class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener) : KSViewHolder(view) {

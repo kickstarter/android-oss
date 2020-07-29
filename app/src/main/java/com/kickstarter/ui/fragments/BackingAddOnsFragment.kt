@@ -23,18 +23,20 @@ import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
+import rx.Observable
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
-class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate {
+class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate, BackingAddOnViewHolder.ViewListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_backing_addons, container, false)
     }
 
-    private val backingAddonsAdapter = BackingAddOnsAdapter()
+    private val backingAddonsAdapter = BackingAddOnsAdapter(this)
     private lateinit var shippingRulesAdapter: ShippingRulesAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,6 +67,14 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .filter { ObjectUtils.isNotNull(context) }
                 .subscribe { displayShippingRules(it.first, it.second) }
 
+        this.viewModel.outputs.totalSelectedAddOns()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .filter { ObjectUtils.isNotNull(it) }
+                .subscribe {
+                    //TODO: use this to update the ACButton https://kickstarter.atlassian.net/browse/NT-1388
+                }
+      
         this.viewModel.outputs.shippingSelectorIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -131,5 +141,9 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
         fragment_backing_addons_shipping_rules.clearFocus()
+    }
+
+    override fun quantityHasChanged(quantity: Int) {
+        this.viewModel.inputs.selectedAddonsQuantity(quantity)
     }
 }

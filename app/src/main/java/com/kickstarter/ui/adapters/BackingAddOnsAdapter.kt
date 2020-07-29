@@ -9,7 +9,7 @@ import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 
-class BackingAddOnsAdapter : KSAdapter() {
+class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.ViewListener) : KSAdapter() {
 
     init {
         insertSection(SECTION_BACKING_ADD_ONS_CARD, emptyList<Reward>())
@@ -22,7 +22,7 @@ class BackingAddOnsAdapter : KSAdapter() {
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.item_add_on_pledge -> BackingAddOnViewHolder(view)
+            R.layout.item_add_on_pledge -> BackingAddOnViewHolder(view, viewListener)
             else -> EmptyViewHolder(view)
         }
     }

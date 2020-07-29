@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="79dp"
+    android:minHeight="79dp"
     android:layout_marginStart="@dimen/grid_4"
     android:layout_marginEnd="@dimen/grid_4"
     android:background="@drawable/rect_grey_rounded"
@@ -32,6 +33,7 @@
         android:textColor="@color/ksr_dark_grey_500"
         app:layout_constraintStart_toEndOf="@id/icon_calendar"
         android:paddingEnd="@dimen/grid_4"
+        android:paddingTop="@dimen/grid_2"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/Remember_that_delivery_dates_are_not_guaranteed" />
 

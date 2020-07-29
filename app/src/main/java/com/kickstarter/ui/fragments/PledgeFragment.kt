@@ -497,6 +497,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(pledge_footer_continue_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
+
+        this.viewModel.outputs.shippingSelectorIsGone()
+                .compose(bindToLifecycle())
+                .subscribe { this.view?.shipping_rules?.let { it1 -> ViewUtils.setGone(it1, it) } }
     }
 
     private fun populateHeaderItems(titleAndAmount: Pair<String, String>) {

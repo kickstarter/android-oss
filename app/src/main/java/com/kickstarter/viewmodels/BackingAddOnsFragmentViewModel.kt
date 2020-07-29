@@ -51,6 +51,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits the total sum of addOns selected in each item of the addOns list. */
         fun totalSelectedAddOns(): Observable<String>
+
+        /** Emits whether or not the shipping selector is visible **/
+        fun shippingSelectorIsGone(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -62,6 +65,7 @@ class BackingAddOnsFragmentViewModel {
         private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val shippingSelectorIsGone = PublishSubject.create<Boolean>()
         private val addOnsList = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val selectedAddOns = PublishSubject.create<Int>()
         private val totalSelectedAddOns = PublishSubject.create<String>()
@@ -134,6 +138,14 @@ class BackingAddOnsFragmentViewModel {
                         totalAmount += it
                         this.totalSelectedAddOns.onNext(totalAmount.toString())
                     }
+
+            reward.map { !RewardUtils.isShippable(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingSelectorIsGone)
+
+            addOnsList.map { !hasShippableAddOn(it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.shippingSelectorIsGone)
         }
 
         private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
@@ -145,6 +157,10 @@ class BackingAddOnsFragmentViewModel {
                     }
         }
 
+        private fun hasShippableAddOn(addOns: List<Reward>): Boolean {
+           return addOns.any { RewardUtils.isShippable(it) }
+        }
+      
         private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
            val filteredAddOns = when (rw.shippingPreference()){
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
@@ -187,5 +203,6 @@ class BackingAddOnsFragmentViewModel {
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
         override fun totalSelectedAddOns(): Observable<String> = this.totalSelectedAddOns
+        override fun shippingSelectorIsGone() = this.shippingSelectorIsGone
     }
 }

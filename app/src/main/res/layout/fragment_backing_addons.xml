@@ -11,7 +11,9 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never">
+        android:overScrollMode="never"
+        android:layout_marginBottom="@dimen/grid_14">
+
         <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@color/ksr_grey_300"
         android:layout_width="match_parent"
@@ -94,4 +96,5 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+    <include layout="@layout/fragment_backing_addons_section_footer" />
 </FrameLayout>

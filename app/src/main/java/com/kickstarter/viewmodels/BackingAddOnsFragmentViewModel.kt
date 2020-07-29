@@ -2,10 +2,13 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
@@ -50,7 +53,7 @@ class BackingAddOnsFragmentViewModel {
         fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>>
 
         /** Emits the total sum of addOns selected in each item of the addOns list. */
-        fun totalSelectedAddOns(): Observable<String>
+        fun totalSelectedAddOns(): Observable<Int>
 
         /** Emits whether or not the shipping selector is visible **/
         fun shippingSelectorIsGone(): Observable<Boolean>
@@ -68,12 +71,13 @@ class BackingAddOnsFragmentViewModel {
         private val shippingSelectorIsGone = PublishSubject.create<Boolean>()
         private val addOnsList = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val selectedAddOns = PublishSubject.create<Int>()
-        private val totalSelectedAddOns = PublishSubject.create<String>()
+        private val totalSelectedAddOns = PublishSubject.create<Int>()
         private var totalAmount = 0
 
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
         private val currentConfig = environment.currentConfig()
+        val ksString: KSString = this.environment.ksString()
 
         init {
 
@@ -136,14 +140,11 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         totalAmount += it
-                        this.totalSelectedAddOns.onNext(totalAmount.toString())
+                        this.totalSelectedAddOns.onNext(totalAmount)
                     }
 
-            reward.map { !RewardUtils.isShippable(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingSelectorIsGone)
-
-            addOnsList.map { !hasShippableAddOn(it.second) }
+            reward
+                    .map{ !RewardUtils.isShippable(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSelectorIsGone)
         }
@@ -155,10 +156,6 @@ class BackingAddOnsFragmentViewModel {
                         shippingRules.firstOrNull { it.location().country() == countryCode }
                                 ?: shippingRules.first()
                     }
-        }
-
-        private fun hasShippableAddOn(addOns: List<Reward>): Boolean {
-           return addOns.any { RewardUtils.isShippable(it) }
         }
       
         private fun filterAddOnsByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
@@ -202,7 +199,7 @@ class BackingAddOnsFragmentViewModel {
         override fun addOnsList() = this.addOnsList
         override fun selectedShippingRule(): Observable<ShippingRule> = this.shippingRuleSelected
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
-        override fun totalSelectedAddOns(): Observable<String> = this.totalSelectedAddOns
+        override fun totalSelectedAddOns(): Observable<Int> = this.totalSelectedAddOns
         override fun shippingSelectorIsGone() = this.shippingSelectorIsGone
     }
 }

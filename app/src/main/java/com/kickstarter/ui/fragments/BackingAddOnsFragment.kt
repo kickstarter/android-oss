@@ -13,6 +13,7 @@ import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -63,6 +64,14 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .compose(Transformers.observeForUI())
                 .filter { ObjectUtils.isNotNull(context) }
                 .subscribe { displayShippingRules(it.first, it.second) }
+
+        this.viewModel.outputs.shippingSelectorIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(fragment_backing_addons_shipping_rules, it)
+                    ViewUtils.setGone(fragment_backing_addons_call_out, it)
+                }
     }
 
     private fun populateAddOns(projectDataAndAddOnList: Triple<ProjectData, List<Reward>, ShippingRule>) {

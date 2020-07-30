@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders
 
+import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,13 +15,13 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
 import kotlinx.android.synthetic.main.add_on_items.view.*
 import kotlinx.android.synthetic.main.add_on_title.view.*
-import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.view.*
 import kotlinx.android.synthetic.main.item_add_on_pledge.view.*
 
 class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener) : KSViewHolder(view) {
 
     interface ViewListener {
         fun quantityHasChanged(quantity: Int)
+        fun quantityPerId(quantityPerId: Pair<Int, Long>)
     }
 
     private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
@@ -170,10 +171,12 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
                     }
                 }
 
-        this.viewModel.outputs.quantity()
+        this.viewModel.outputs.quantityPerId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { quantity ->
+                .subscribe { quantityPerId ->
+                    quantityPerId?.let { viewListener.quantityPerId(it) }
+                    val quantity = quantityPerId.first
                     this.view.decrease_quantity_add_on.isEnabled = (quantity != 0)
                     this.view.quantity_add_on.text = quantity.toString()
                 }

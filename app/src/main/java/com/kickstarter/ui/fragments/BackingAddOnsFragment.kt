@@ -162,4 +162,9 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     override fun quantityHasChanged(quantity: Int) {
         this.viewModel.inputs.selectedAddonsQuantity(quantity)
     }
+
+    override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
+        this.viewModel.inputs.quantityPerId(quantityPerId)
+    }
+
 }

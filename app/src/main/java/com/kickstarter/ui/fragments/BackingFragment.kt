@@ -192,22 +192,15 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.bonusSupport()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { bonus_summary_amount.text = it.toString() }
+                .subscribe { bonus_summary_amount.text = it }
 
         this.viewModel.outputs.estimatedDelivery()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-
-                    estimated_delivery_label.text = viewModel.environment.ksString().format(getString(R.string.Estimated_delivery_reward_delivered), "estimated_delivery", it)
-                    val estimatedDeliveryLabelText = estimated_delivery_label.text
-
-                    val stringToBold = getString(R.string.rewards_info_estimated_delivery)
-                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label, resources.getColor(R.color.ksr_dark_grey_500, null))
-
-                    estimated_delivery_label_2.text = "${getString(R.string.Estimated_delivery)} $it"
-                    setBoldSpanOnTextView(stringToBold.length, estimated_delivery_label_2, resources.getColor(R.color.ksr_dark_grey_500, null))
-
+                    val stringBuilder = StringBuilder(estimated_delivery_label.text)
+                    stringBuilder.append("  $it")
+                    estimated_delivery_label.text = stringBuilder.toString()
                 }
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
@@ -223,7 +216,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
 
         val sb = StringBuilder(delivery_reminder_label.text.toString())
-        sb.append(resources.getString(R.string.Delays_or_changes_are_possible) + " ")
+        sb.append(" " + resources.getString(R.string.Delays_or_changes_are_possible))
 
         delivery_reminder_label.text = sb.toString()
         val boldPortionLength = delivery_reminder_label.text.toString().split(".").first().length

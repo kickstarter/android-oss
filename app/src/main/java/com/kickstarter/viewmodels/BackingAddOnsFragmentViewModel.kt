@@ -166,13 +166,12 @@ class BackingAddOnsFragmentViewModel {
                 _, listAddOns, pledgeData, pledgeReason ->
 
                 val updatedList = updateAddOnsListQuantity(listAddOns)
-                pledgeData.toBuilder().addOns(updatedList as java.util.List<Reward>)
-                return@combineLatest Pair(pledgeData, pledgeReason)
+                val updatedPledgeData = pledgeData.toBuilder().addOns(updatedList as java.util.List<Reward>).build()
+                return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        // TODO: add a new field on PledgeData holding listAddons: List<Reward>
-                        this.showPledgeFragment.onNext(Pair(it.first, it.second))
+                        this.showPledgeFragment.onNext(it)
                     }
         }
 

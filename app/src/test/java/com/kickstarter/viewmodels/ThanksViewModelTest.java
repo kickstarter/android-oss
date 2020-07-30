@@ -30,6 +30,7 @@ import com.kickstarter.ui.data.PledgeFlowContext;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
@@ -312,7 +313,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final CheckoutData checkoutData = CheckoutDataFactory.Companion.checkoutData(3L,
             20.0, 30.0);
     final PledgeData pledgeData = PledgeData.Companion.with(PledgeFlowContext.NEW_PLEDGE,
-            ProjectDataFactory.Companion.project(project), RewardFactory.reward());
+            ProjectDataFactory.Companion.project(project), RewardFactory.reward(), Collections.emptyList());
     final Intent intent = new Intent()
             .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
             .putExtra(IntentKey.PLEDGE_DATA, pledgeData)

@@ -386,7 +386,8 @@ interface BackingFragmentViewModel {
             backing
                     .map { it.bonusAmount() }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
-                    .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
+                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.bonusSupport)
 

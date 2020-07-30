@@ -21,9 +21,9 @@ class ExpandableHeaderAdapter: KSAdapter() {
         }
     }
 
-    fun populateData(rewards: Pair<String, String>) {
+    fun populateData(rewards: List<Pair<String, String>>) {
         if (rewards != null) {
-            setSection(SECTION_REWARD_SUMMARY, listOf(rewards))
+            setSection(SECTION_REWARD_SUMMARY, rewards)
             notifyDataSetChanged()
         }
     }

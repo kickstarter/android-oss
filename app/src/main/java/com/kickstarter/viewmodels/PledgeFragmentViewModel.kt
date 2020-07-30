@@ -245,7 +245,7 @@ interface PledgeFragmentViewModel {
         fun headerSectionIsGone(): Observable<Boolean>
 
         /** Emits a Pair containing reward/add-on title and the amount */
-        fun titleAndAmount(): Observable<Pair<String, String>>
+        fun titleAndAmount(): Observable<List<Pair<String, String>>>
 
         /** Emits a boolean determining if the minimum pledge amount subtitle should be shown */
         fun isPledgeMinimumSubtitleGone(): Observable<Boolean>
@@ -350,7 +350,7 @@ interface PledgeFragmentViewModel {
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
 
         private val headerSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val titleAndAmount = BehaviorSubject.create<Pair<String, String>>()
+        private val titleAndAmount = BehaviorSubject.create<List<Pair<String, String>>>()
         private val isPledgeMinimumSubtitleGone = BehaviorSubject.create<Boolean>()
         private val isBonusSupportSectionGone = BehaviorSubject.create<Boolean>()
         private val bonusAmount = BehaviorSubject.create<String>()
@@ -476,6 +476,7 @@ interface PledgeFragmentViewModel {
                     .filter { !RewardUtils.isNoReward(it) }
                     .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeMinimum))
                     .map { Pair(it.first.title() ?: "", it.second) }
+                    .map { listOf(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.titleAndAmount)
 
@@ -1482,7 +1483,7 @@ interface PledgeFragmentViewModel {
         override fun headerSectionIsGone(): Observable<Boolean> = this.headerSectionIsGone
 
         @NonNull
-        override fun titleAndAmount(): Observable<Pair<String, String>> = this.titleAndAmount
+        override fun titleAndAmount(): Observable<List<Pair<String, String>>> = this.titleAndAmount
 
         @NonNull
         override fun isPledgeMinimumSubtitleGone(): Observable<Boolean> = this.isPledgeMinimumSubtitleGone

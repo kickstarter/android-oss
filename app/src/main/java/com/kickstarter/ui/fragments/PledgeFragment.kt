@@ -9,7 +9,6 @@ import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
-import androidx.transition.TransitionManager
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
@@ -503,7 +503,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe { this.view?.shipping_rules?.let { it1 -> ViewUtils.setGone(it1, it) } }
     }
 
-    private fun populateHeaderItems(titleAndAmount: Pair<String, String>) {
+    private fun populateHeaderItems(titleAndAmount: List<Pair<String, String>>) {
         headerAdapter.populateData(titleAndAmount)
     }
 

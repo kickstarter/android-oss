@@ -38,7 +38,7 @@
             android:layout_height="@dimen/grid_5"
             android:background="@color/transparent"
             android:backgroundTint="@color/white"
-            android:contentDescription=""
+            android:contentDescription="@null"
             android:importantForAccessibility="no"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

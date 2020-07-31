@@ -69,17 +69,17 @@
         app:layout_constraintGuide_begin="74dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_rewards_add_ons"
+        android:id="@+id/header_summary_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_animation_guideline"
-        app:layout_constraintBottom_toBottomOf="@id/header_animation_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/header_animation_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/header_animation_guideline"
         tools:itemCount="2"
-        tools:listitem="@layout/fragment_pledge_section_header_item" />
+        tools:listitem="@layout/expandable_header_item" />
 
     <ImageView
         android:id="@+id/header_spacing_translated_button"
@@ -101,6 +101,6 @@
         android:translationY="-5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/list_rewards_add_ons" />
+        app:layout_constraintTop_toBottomOf="@+id/header_summary_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

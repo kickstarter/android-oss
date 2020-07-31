@@ -12,11 +12,16 @@ class ExpandableHeaderAdapter: KSAdapter() {
         insertSection(SECTION_REWARD_SUMMARY, emptyList<Pair<String, String>>())
     }
 
-    override fun layout(sectionRow: SectionRow): Int =  R.layout.fragment_pledge_section_header_item
+    override fun layout(sectionRow: SectionRow):Int {
+        return when (sectionRow.section()) {
+            SECTION_REWARD_SUMMARY -> R.layout.expandable_header_item
+            else -> 0
+        }
+    }
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.fragment_pledge_section_header_item -> ExpandableHeaderViewHolder(view)
+            R.layout.expandable_header_item -> ExpandableHeaderViewHolder(view)
             else -> EmptyViewHolder(view)
         }
     }

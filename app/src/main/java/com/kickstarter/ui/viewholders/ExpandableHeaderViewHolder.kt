@@ -4,7 +4,7 @@ import android.util.Pair
 import android.view.View
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.ExpandableHeaderViewHolderViewModel
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_item.view.*
+import kotlinx.android.synthetic.main.expandable_header_item.view.*
 
 class ExpandableHeaderViewHolder(private val view: View) : KSViewHolder(view) {
     private var viewModel = ExpandableHeaderViewHolderViewModel.ViewModel(environment())

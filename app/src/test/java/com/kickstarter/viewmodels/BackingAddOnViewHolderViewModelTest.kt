@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
@@ -22,7 +23,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val countdownIsGone = TestSubscriber.create<Boolean>()
     private val shippingAmountIsGone = TestSubscriber.create<Boolean>()
     private val rewardItemsAreGone = TestSubscriber.create<Boolean>()
-    private val quantity = TestSubscriber.create<Int>()
+    private val quantityPerId = TestSubscriber.create<Pair<Int, Long>>()
     private val disableIncreaseButton = TestSubscriber.create<Boolean>()
     private val addButtonGone = TestSubscriber.create<Boolean>()
 
@@ -33,7 +34,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.deadlineCountdownIsGone().subscribe(this.countdownIsGone)
         this.vm.outputs.shippingAmountIsGone().subscribe(this.shippingAmountIsGone)
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
-        this.vm.outputs.quantity().subscribe(this.quantity)
+        this.vm.outputs.quantityPerId().subscribe(this.quantityPerId)
         this.vm.outputs.disableIncreaseButton().subscribe(this.disableIncreaseButton)
         this.vm.outputs.addButtonIsGone().subscribe(this.addButtonGone)
     }
@@ -105,7 +106,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
 
         this.addButtonGone.assertValue(false)
-        this.quantity.assertValue(0)
+        this.quantityPerId.assertValue(Pair(0, addOn.id()))
     }
 
     @Test
@@ -119,7 +120,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.increaseButtonPressed()
         this.addButtonGone.assertValues(false, true)
-        this.quantity.assertValues(0, 1)
+        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()))
     }
 
     @Test
@@ -136,7 +137,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.increaseButtonPressed()
 
         this.addButtonGone.assertValues(false, true, true, true)
-        this.quantity.assertValues(0, 1, 2, 3)
+        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()), Pair(2, addOn.id()), Pair(3, addOn.id()))
     }
 
     @Test
@@ -153,7 +154,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.increaseButtonPressed()
 
         this.addButtonGone.assertValues(false, true, true, true)
-        this.quantity.assertValues(0, 1, 2, 3)
+        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()), Pair(2, addOn.id()), Pair(3, addOn.id()))
         this.disableIncreaseButton.assertValues(false, false, false, true)
     }
 
@@ -178,7 +179,18 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.increaseButtonPressed()
 
         this.addButtonGone.assertValues(false, true, true, true, true, true, true, true, true, true, true)
-        this.quantity.assertValues(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        this.quantityPerId.assertValues(
+                Pair(0, addOn.id()),
+                Pair(1, addOn.id()),
+                Pair(2, addOn.id()),
+                Pair(3, addOn.id()),
+                Pair(4, addOn.id()),
+                Pair(5, addOn.id()),
+                Pair(6, addOn.id()),
+                Pair(7, addOn.id()),
+                Pair(8, addOn.id()),
+                Pair(9, addOn.id()),
+                Pair(10, addOn.id()))
         this.disableIncreaseButton.assertValues(false, false, false, false, false, false, false,false, false, false, true)
     }
 
@@ -197,7 +209,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.decreaseButtonPressed()
 
         this.addButtonGone.assertValues(false, true, true, true, true)
-        this.quantity.assertValues(0, 1, 2, 3, 2)
+        this.quantityPerId.assertValues(Pair(0, addOn.id()), Pair(1, addOn.id()), Pair(2, addOn.id()), Pair(3, addOn.id()), Pair(2, addOn.id()))
     }
 
     @Test
@@ -217,6 +229,13 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.decreaseButtonPressed()
 
         this.addButtonGone.assertValues(false, true, true, true, true, true, false)
-        this.quantity.assertValues(0, 1, 2, 3, 2, 1,0)
+        this.quantityPerId.assertValues(
+                Pair(0, addOn.id()),
+                Pair(1, addOn.id()),
+                Pair(2, addOn.id()),
+                Pair(3, addOn.id()),
+                Pair(2, addOn.id()),
+                Pair(1, addOn.id()),
+                Pair(0, addOn.id()))
     }
 }

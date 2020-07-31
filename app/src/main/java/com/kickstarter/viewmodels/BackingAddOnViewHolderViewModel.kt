@@ -90,8 +90,8 @@ class BackingAddOnViewHolderViewModel {
         /** Emits if the `Add` button should be hide*/
         fun addButtonIsGone(): Observable<Boolean>
 
-        /** Emits quantity selected*/
-        fun quantity(): Observable<Int>
+        /** Emits quantity selected for which id*/
+        fun quantityPerId(): PublishSubject<Pair<Int, Long>>
 
         /** Emits if the amount selected reach the limit available*/
         fun disableIncreaseButton(): Observable<Boolean>
@@ -129,6 +129,7 @@ class BackingAddOnViewHolderViewModel {
         private val addButtonIsGone = PublishSubject.create<Boolean>()
         private val quantity = PublishSubject.create<Int>()
         private val disableIncreaseButton = PublishSubject.create<Boolean>()
+        private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -243,6 +244,13 @@ class BackingAddOnViewHolderViewModel {
                     .map { (it.first == LIMIT) || (it.first == it.second.remaining()) }
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
+
+            this.quantity
+                    .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
+                    .map { data -> Pair(data.first, data.second.id()) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.quantityPerId)
+
         }
 
         private fun decrease(amount: Int) = amount - 1
@@ -305,7 +313,7 @@ class BackingAddOnViewHolderViewModel {
 
         override fun addButtonIsGone(): PublishSubject<Boolean> = this.addButtonIsGone
 
-        override fun quantity(): PublishSubject<Int> = this.quantity
+        override fun quantityPerId(): PublishSubject<Pair<Int, Long>> = this.quantityPerId
 
         override fun disableIncreaseButton(): Observable<Boolean> = this.disableIncreaseButton
 

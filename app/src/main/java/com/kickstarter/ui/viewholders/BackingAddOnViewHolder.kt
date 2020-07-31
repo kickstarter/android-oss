@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders
 
+import android.util.Pair
 import android.view.View
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
 
     interface ViewListener {
         fun quantityHasChanged(quantity: Int)
+        fun quantityPerId(quantityPerId: Pair<Int, Long>)
     }
 
     private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
@@ -155,7 +157,6 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
                             this.view.stepper_container_add_on.visibility = View.VISIBLE
                         }
                         this.view.initial_state_add_on.isEnabled = false
-                        this.view.decrease_quantity_add_on.isEnabled = true
                         this.view.increase_quantity_add_on.isEnabled = true
                     }
                     else {
@@ -166,16 +167,18 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
                             this.view.stepper_container_add_on.visibility = View.GONE
                         }
                         this.view.initial_state_add_on.isEnabled = true
-                        this.view.decrease_quantity_add_on.isEnabled = false
                         this.view.increase_quantity_add_on.isEnabled = false
                     }
                 }
 
-        this.viewModel.outputs.quantity()
+        this.viewModel.outputs.quantityPerId()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe {
-                    this.view.quantity_add_on.text = it.toString()
+                .subscribe { quantityPerId ->
+                    quantityPerId?.let { viewListener.quantityPerId(it) }
+                    val quantity = quantityPerId.first
+                    this.view.decrease_quantity_add_on.isEnabled = (quantity != 0)
+                    this.view.quantity_add_on.text = quantity.toString()
                 }
 
         this.viewModel.outputs.disableIncreaseButton()

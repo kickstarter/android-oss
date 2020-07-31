@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pledge_footer"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_20"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="-30dp"
+    android:elevation="2dp"
+    android:focusable="true"
+    app:cardCornerRadius="@dimen/card_container_radius"
+    tools:showIn="@layout/fragment_backing_addons">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/backing_addons_footer_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/grid_3"
+            android:layout_marginTop="@dimen/grid_3"
+            android:layout_marginEnd="@dimen/grid_3"
+            android:layout_marginBottom="@dimen/grid_3"
+            android:enabled="true"
+            android:text="@string/Skip_add_ons"
+            app:layout_constraintBottom_toTopOf="@+id/backing_addons_footer_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/Skip_add_ons" />
+
+        <ImageView
+            android:id="@+id/backing_addons_footer_placeholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/grid_5"
+            android:background="@color/transparent"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backing_addons_footer_button" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

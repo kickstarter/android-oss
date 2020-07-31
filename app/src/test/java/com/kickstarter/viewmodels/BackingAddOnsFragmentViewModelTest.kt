@@ -27,11 +27,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: BackingAddOnsFragmentViewModel.ViewModel
     private val shippingSelectorIsGone = TestSubscriber.create<Boolean>()
     private val addOnsList = TestSubscriber.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
+    private val showPledgeFragment = TestSubscriber.create<Pair<PledgeData, PledgeReason>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingAddOnsFragmentViewModel.ViewModel(environment)
         this.vm.outputs.addOnsList().subscribe(this.addOnsList)
         this.vm.outputs.shippingSelectorIsGone().subscribe(this.shippingSelectorIsGone)
+        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
     }
 
     @Test
@@ -419,6 +421,105 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.shippingSelectorIsGone.assertValues(true)
 
+    }
+
+    @Test
+    fun continueButtonPressedNoAddOnsSelected() {
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(emptyList(), ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
+
+        val rw = RewardFactory
+                .rewardHasAddOns()
+                .toBuilder()
+                .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name)
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED)
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+        val pledgeData = PledgeData.with(pledgeReason, projectData, rw)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, pledgeData)
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        val quantityPerId = Pair(0, rw.id())
+        this.vm.inputs.quantityPerId(quantityPerId)
+        this.vm.inputs.continueButtonPressed()
+
+        this.addOnsList.assertNoValues()
+        this.vm.outputs.showPledgeFragment()
+                .subscribe {
+                    TestCase.assertEquals(it.first, pledgeData)
+                    TestCase.assertEquals(it.second, pledgeReason)
+                }
+    }
+
+    @Test
+    fun continueButtonPressedAddOnsFewAddOnsSelected() {
+        val shippingRule = ShippingRulesEnvelopeFactory.shippingRules()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingRules(shippingRule.shippingRules())
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .build()
+        val listAddons = listOf(addOn, addOn.toBuilder().id(8).build(), addOn.toBuilder().id(99).build())
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
+                .shippingRules(shippingRule.shippingRules())
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+        val pledgeData = PledgeData.with(pledgeReason, projectData, rw)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+        this.addOnsList.assertValue(Triple(projectData,listAddons, shippingRule.shippingRules().first()))
+
+        val quantityPerId = Pair(0, rw.id())
+        val quantityPerIdAddOn1 = Pair(7, addOn.id())
+        val quantityPerIdAddOn2 = Pair(2, 8L)
+        val quantityPerIdAddOn3 = Pair(5, 99L)
+
+        this.vm.inputs.quantityPerId(quantityPerId)
+        this.vm.inputs.quantityPerId(quantityPerIdAddOn1)
+        this.vm.inputs.quantityPerId(quantityPerIdAddOn2)
+        this.vm.inputs.quantityPerId(quantityPerIdAddOn3)
+        this.vm.inputs.continueButtonPressed()
+
+        this.addOnsList.assertValue(Triple(projectData,listAddons, shippingRule.shippingRules().first()))
+        this.vm.outputs.showPledgeFragment()
+                .subscribe {
+                    TestCase.assertEquals(it.first, pledgeData)
+                    TestCase.assertEquals(it.second, pledgeReason)
+
+                    val selectedAddOnsList = pledgeData.addOns()
+                    TestCase.assertEquals(selectedAddOnsList, 3)
+
+                    TestCase.assertEquals(selectedAddOnsList?.first()?.id(), addOn.id())
+                    TestCase.assertEquals(selectedAddOnsList?.first()?.quantity(), 7)
+
+                    TestCase.assertEquals(selectedAddOnsList?.last()?.id(), 99)
+                    TestCase.assertEquals(selectedAddOnsList?.last()?.quantity(), 5)
+
+                }
     }
 
 

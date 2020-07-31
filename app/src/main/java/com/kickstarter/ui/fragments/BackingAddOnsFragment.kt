@@ -26,6 +26,8 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
+import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.*
+import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.view.*
 import rx.Observable
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
@@ -71,8 +73,8 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .filter { ObjectUtils.isNotNull(it) }
-                .subscribe {
-                    //TODO: use this to update the ACButton https://kickstarter.atlassian.net/browse/NT-1388
+                .subscribe { total ->
+                    backing_addons_footer_button.text = selectProperString(total)
                 }
       
         this.viewModel.outputs.shippingSelectorIsGone()
@@ -82,6 +84,20 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                     ViewUtils.setGone(fragment_backing_addons_shipping_rules, it)
                     ViewUtils.setGone(fragment_backing_addons_call_out, it)
                 }
+
+        backing_addons_footer_button.setOnClickListener {
+            this.viewModel.inputs.continueButtonPressed()
+        }
+    }
+
+    private fun selectProperString(totalSelected: Int): String {
+        val ksString = this.viewModel.environment.ksString()
+        return when {
+            totalSelected == 0 -> ksString.format(getString(R.string.Skip_add_ons),"","")
+            totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_add_ons_one),"quantity", totalSelected.toString())
+            totalSelected > 1 -> ksString.format(getString(R.string.Continue_with_quantity_add_ons_many),"quantity", totalSelected.toString())
+            else -> ""
+        }
     }
 
     private fun populateAddOns(projectDataAndAddOnList: Triple<ProjectData, List<Reward>, ShippingRule>) {
@@ -146,4 +162,9 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     override fun quantityHasChanged(quantity: Int) {
         this.viewModel.inputs.selectedAddonsQuantity(quantity)
     }
+
+    override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
+        this.viewModel.inputs.quantityPerId(quantityPerId)
+    }
+
 }

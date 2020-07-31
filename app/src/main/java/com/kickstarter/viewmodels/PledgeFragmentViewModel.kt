@@ -13,7 +13,6 @@ import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
-import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.*
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
@@ -392,6 +391,9 @@ interface PledgeFragmentViewModel {
             val projectData = pledgeData
                     .map { it.projectData() }
 
+            val addOns = pledgeData
+                    .map { it.addOns() as List<Reward> }
+
             val fullProjectDataAndPledgeData = projectData
                     .compose<Pair<ProjectData, PledgeData>>(combineLatestPair(pledgeData))
 
@@ -472,11 +474,10 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMinimum)
 
-            reward
-                    .filter { !RewardUtils.isNoReward(it) }
-                    .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeMinimum))
-                    .map { Pair(it.first.title() ?: "", it.second) }
-                    .map { listOf(it) }
+            // - TODO: the amount needs to be stylized
+            addOns
+                    .compose<Pair<List<Reward>, Reward>>(combineLatestPair(reward))
+                    .map { stylizedHeaderList(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.titleAndAmount)
 
@@ -1204,13 +1205,20 @@ interface PledgeFragmentViewModel {
                         this.isBonusSupportSectionGone.onNext(it)
                     }
 
-
-            // TODO: Replace with actually getting the addsOns list from the pledgeData object
-            val addOn = RewardFactory.addOn()
-            val addOnsList = Observable.just(listOf(addOn))
-            addOnsList.map { it.isEmpty() }
+            addOns.map { it.isEmpty() }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSelectorIsGone)
+        }
+
+        private fun stylizedHeaderList(rw: Pair<List<Reward>, Reward>): List<Pair<String, String>> {
+            val styledList =  listOf(rw.second) + rw.first
+            return styledList.map {
+                if (it.isAddOn) {
+                    Pair(it.quantity().toString() + " X " + it.title(), it.minimum().toString())
+                } else {
+                    Pair(it.title(), it.minimum().toString())
+                }
+            }
         }
 
         private fun getAmount(sAmount: Double, bAmount: String, rMinimumAmount: Double, reward: Reward, pInput: Double, pledgeReason: PledgeReason): Double {

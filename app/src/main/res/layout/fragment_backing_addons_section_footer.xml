@@ -12,7 +12,7 @@
     app:cardCornerRadius="@dimen/card_container_radius"
     tools:showIn="@layout/fragment_backing_addons">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

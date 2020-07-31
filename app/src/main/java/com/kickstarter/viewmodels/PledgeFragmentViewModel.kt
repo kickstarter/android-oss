@@ -392,6 +392,7 @@ interface PledgeFragmentViewModel {
                     .map { it.projectData() }
 
             val addOns = pledgeData
+                    .filter { !it.addOns().isNullOrEmpty() }
                     .map { it.addOns() as List<Reward> }
 
             val fullProjectDataAndPledgeData = projectData

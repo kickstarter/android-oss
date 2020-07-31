@@ -1036,6 +1036,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.scrimIsVisible.assertValue(false)
 
         this.vm.inputs.fragmentStackCount(2)
+        this.scrimIsVisible.assertValues(false)
+
+        this.vm.inputs.fragmentStackCount(3)
         this.scrimIsVisible.assertValues(false, true)
 
         this.vm.inputs.fragmentStackCount(1)

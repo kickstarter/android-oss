@@ -475,8 +475,7 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMinimum)
 
-            // - TODO: the amount needs to be stylized
-            val headerItems = addOns
+            addOns
                     .compose<Pair<List<Reward>, Reward>>(combineLatestPair(reward))
                     .map { listOf(it.second) + it.first }
                     .compose<Pair<List<Reward>, Project>>(combineLatestPair(project))

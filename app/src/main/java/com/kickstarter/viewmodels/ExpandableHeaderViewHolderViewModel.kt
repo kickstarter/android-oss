@@ -4,6 +4,8 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.ExpandableHeaderViewHolder
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -12,10 +14,9 @@ import rx.subjects.PublishSubject
 interface ExpandableHeaderViewHolderViewModel {
     interface Inputs {
         /**
-         * Initial configuration data
-         * @param Pair(amount, title)
+         * Initial configuration data with Project and Reward
          */
-        fun configureWith(titleAndAmount: Pair<String, String>)
+        fun configureWith(values: Pair<Project, Reward>)
     }
 
     interface Outputs {
@@ -28,26 +29,33 @@ interface ExpandableHeaderViewHolderViewModel {
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<ExpandableHeaderViewHolder>(environment), Inputs, Outputs {
 
-        private val titleAndAmount = PublishSubject.create<Pair<String, String>>()
-        private val titleForSummary = BehaviorSubject.create<String>()
-        private val amountForSummary = BehaviorSubject.create<String>()
+        private val projectAndReward = PublishSubject.create<Pair<Project, Reward>>()
+        private val titleForSummary = PublishSubject.create<String>()
+        private val amountForSummary = PublishSubject.create<String>()
+
+        private val ksCurrency = environment.ksCurrency()
 
         val inputs = this
         val outputs = this
 
         init {
-            titleAndAmount
-                    .map { it.first}
+            val reward = projectAndReward
+                    .map { it.second }
+
+            val project = projectAndReward
+                    .map { it.first }
+            reward
+                    .map { it.title()}
                     .compose(bindToLifecycle())
                     .subscribe(this.titleForSummary)
 
-            titleAndAmount
-                    .map { it.second}
+            projectAndReward
+                    .map { this.ksCurrency.format(it.second.minimum(), it.first)}
                     .compose(bindToLifecycle())
                     .subscribe(this.amountForSummary)
         }
 
-        override fun configureWith(titleAndAmount: Pair<String, String>) = this.titleAndAmount.onNext(titleAndAmount)
+        override fun configureWith(values: Pair<Project, Reward>) = this.projectAndReward.onNext(values)
 
         override fun amountForSummary(): Observable<String> = this.amountForSummary
         override fun titleForSummary(): Observable<String> = this.titleForSummary

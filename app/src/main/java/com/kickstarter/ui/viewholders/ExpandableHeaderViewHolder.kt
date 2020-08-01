@@ -3,8 +3,10 @@ package com.kickstarter.ui.viewholders
 import android.util.Pair
 import android.view.View
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.viewmodels.ExpandableHeaderViewHolderViewModel
-import kotlinx.android.synthetic.main.fragment_pledge_section_header_item.view.*
+import kotlinx.android.synthetic.main.expandable_header_item.view.*
 
 class ExpandableHeaderViewHolder(private val view: View) : KSViewHolder(view) {
     private var viewModel = ExpandableHeaderViewHolderViewModel.ViewModel(environment())
@@ -26,7 +28,8 @@ class ExpandableHeaderViewHolder(private val view: View) : KSViewHolder(view) {
     }
 
     override fun bindData(data: Any?) {
-        val titleAndAmount = data as? Pair<String, String> ?: Pair("","")
-        this.viewModel.configureWith(titleAndAmount)
+        (data as? Pair<Project, Reward>)?.let {
+            this.viewModel.configureWith(it)
+        }
     }
 }

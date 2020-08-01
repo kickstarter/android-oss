@@ -34,6 +34,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
@@ -408,13 +409,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { pledge_footer_continue_button.isEnabled = it }
 
-        this.viewModel.outputs.titleAndAmount()
+        this.viewModel.outputs.headerSelectedItems()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
                 .subscribe {
                     populateHeaderItems(it)
                 }
-
 
         this.viewModel.outputs.isPledgeMinimumSubtitleGone()
                 .compose(observeForUI())
@@ -422,7 +422,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe {
                     ViewUtils.setGone(pledge_minimum, it)
                 }
-
 
         this.viewModel.outputs.isBonusSupportSectionGone()
                 .compose(observeForUI())
@@ -503,8 +502,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe { this.view?.shipping_rules?.let { it1 -> ViewUtils.setGone(it1, it) } }
     }
 
-    private fun populateHeaderItems(titleAndAmount: List<Pair<String, String>>) {
-        headerAdapter.populateData(titleAndAmount)
+    private fun populateHeaderItems(selectedItems: List<Pair<Project, Reward>>) {
+        headerAdapter.populateData(selectedItems)
     }
 
     private fun toggleAnimation(isExpanded: Boolean) {
@@ -521,7 +520,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(pledge_header_container)
-        constraintSet.clear(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM);
+        constraintSet.clear(R.id.header_summary_list, ConstraintSet.BOTTOM);
 
         val transition = ChangeBounds()
         transition.duration = 100
@@ -535,7 +534,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(pledge_header_container)
-        constraintSet.connect(R.id.list_rewards_add_ons, ConstraintSet.BOTTOM, R.id.header_animation_guideline, ConstraintSet.BOTTOM)
+        constraintSet.connect(R.id.header_summary_list, ConstraintSet.BOTTOM, R.id.header_animation_guideline, ConstraintSet.BOTTOM)
 
         val transition = ChangeBounds()
         transition.duration = 100
@@ -686,8 +685,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     private fun setupRewardRecyclerView() {
-        list_rewards_add_ons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        list_rewards_add_ons.adapter = headerAdapter
+        header_summary_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        header_summary_list.adapter = headerAdapter
     }
 
     private fun setClickableHtml(string: String, textView: TextView) {

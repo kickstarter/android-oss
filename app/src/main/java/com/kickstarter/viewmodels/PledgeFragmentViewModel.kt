@@ -244,7 +244,7 @@ interface PledgeFragmentViewModel {
         fun headerSectionIsGone(): Observable<Boolean>
 
         /** Emits a Pair containing reward/add-on title and the amount */
-        fun titleAndAmount(): Observable<List<Pair<String, String>>>
+        fun headerSelectedItems(): Observable<List<Pair<Project, Reward>>>
 
         /** Emits a boolean determining if the minimum pledge amount subtitle should be shown */
         fun isPledgeMinimumSubtitleGone(): Observable<Boolean>
@@ -349,7 +349,7 @@ interface PledgeFragmentViewModel {
         private val totalDividerIsGone = BehaviorSubject.create<Boolean>()
 
         private val headerSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val titleAndAmount = BehaviorSubject.create<List<Pair<String, String>>>()
+        private val headerSelectedItems = BehaviorSubject.create<List<Pair<Project, Reward>>>()
         private val isPledgeMinimumSubtitleGone = BehaviorSubject.create<Boolean>()
         private val isBonusSupportSectionGone = BehaviorSubject.create<Boolean>()
         private val bonusAmount = BehaviorSubject.create<String>()
@@ -475,12 +475,13 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMinimum)
 
-            // - TODO: the amount needs to be stylized
             addOns
                     .compose<Pair<List<Reward>, Reward>>(combineLatestPair(reward))
-                    .map { stylizedHeaderList(it) }
+                    .map { listOf(it.second) + it.first }
+                    .compose<Pair<List<Reward>, Project>>(combineLatestPair(project))
+                    .map { joinProject(it) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.titleAndAmount)
+                    .subscribe(this.headerSelectedItems)
 
             project
                     .map { ProjectViewUtils.currencySymbolAndPosition(it, this.ksCurrency) }
@@ -1211,6 +1212,12 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.shippingSelectorIsGone)
         }
 
+        private fun joinProject(items: Pair<List<Reward>, Project>?): List<Pair<Project, Reward>> {
+            return items?.first?.map {
+                Pair(items.second, it)
+            }?: emptyList()
+        }
+
         private fun stylizedHeaderList(rw: Pair<List<Reward>, Reward>): List<Pair<String, String>> {
             val styledList =  listOf(rw.second) + rw.first
             return styledList.map {
@@ -1492,7 +1499,7 @@ interface PledgeFragmentViewModel {
         override fun headerSectionIsGone(): Observable<Boolean> = this.headerSectionIsGone
 
         @NonNull
-        override fun titleAndAmount(): Observable<List<Pair<String, String>>> = this.titleAndAmount
+        override fun headerSelectedItems(): Observable<List<Pair<Project, Reward>>> = this.headerSelectedItems
 
         @NonNull
         override fun isPledgeMinimumSubtitleGone(): Observable<Boolean> = this.isPledgeMinimumSubtitleGone

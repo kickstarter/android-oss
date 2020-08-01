@@ -34,6 +34,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.models.StoredCard
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
@@ -408,7 +409,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe { pledge_footer_continue_button.isEnabled = it }
 
-        this.viewModel.outputs.titleAndAmount()
+        this.viewModel.outputs.headerSelectedItems()
                 .compose(observeForUI())
                 .compose(bindToLifecycle())
                 .subscribe {
@@ -501,8 +502,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe { this.view?.shipping_rules?.let { it1 -> ViewUtils.setGone(it1, it) } }
     }
 
-    private fun populateHeaderItems(titleAndAmount: List<Pair<String, String>>) {
-        headerAdapter.populateData(titleAndAmount)
+    private fun populateHeaderItems(selectedItems: List<Pair<Project, Reward>>) {
+        headerAdapter.populateData(selectedItems)
     }
 
     private fun toggleAnimation(isExpanded: Boolean) {

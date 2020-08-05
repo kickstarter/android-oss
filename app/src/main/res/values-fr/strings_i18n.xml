@@ -11,6 +11,8 @@
   <string name="Add" formatted="false">Ajouter</string>
   <string name="Add_attachments" formatted="false">Ajouter des pièces jointes...</string>
   <string name="Add_new_card" formatted="false">Ajouter une autre carte</string>
+  <string name="Add_ons" formatted="false">Compléments</string>
+  <string name="Add_ons_unavailable" formatted="false">Compléments non disponibles</string>
   <string name="Alert" formatted="false">Alerte</string>
   <string name="All_Art_Projects" formatted="false">Tous les projets de la catégorie Art</string>
   <string name="All_Comics_Projects" formatted="false">Tous les projets de la catégorie Bande dessinée</string>
@@ -87,6 +89,7 @@ contributeurs</string>
   <string name="Change_email" formatted="false">Changer d\'adresse e-mail</string>
   <string name="Change_password" formatted="false">Changer de mot de passe</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
+  <string name="Change_your_shipping_location_or_skip_add_ons_to_continue" formatted="false">Changez de lieu de livraison ou ignorez les compléments pour continuer.</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Repassez plus tard pour suivre la préparation de votre exportation.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Voici quelques projets sélectionnés rien que pour vous.</string>
@@ -120,6 +123,7 @@ contributeurs</string>
   <string name="Continue_with_quantity_add_ons_other" formatted="false">Continuer avec %{quantity} compléments</string>
   <string name="Continue_with_quantity_add_ons_two" formatted="false">Continuer avec %{quantity} compléments</string>
   <string name="Continue_with_quantity_add_ons_zero" formatted="false">Continuer avec %{quantity} compléments</string>
+  <string name="Continue_with_this_reward_It_doesnt_offer_these_add_ons" formatted="false">Continuer avec cette récompense ? Les compléments suivants ne sont pas proposés :</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
@@ -543,6 +547,7 @@ n\'ont rien soutenu.</string>
   <string name="Something_catch_your_eye" formatted="false">Quelque chose a retenu votre attention ?</string>
   <string name="Something_went_wrong_and_we_were_unable_to_remove_your_payment_method_please_try_again" formatted="false">Une erreur s\'est produite et la suppression de votre moyen de payement a échoué. Veuillez réessayer.</string>
   <string name="Something_went_wrong_please_try_again" formatted="false">Un problème est survenu. Veuillez réessayer.</string>
+  <string name="Something_went_wrong_pull_to_refresh" formatted="false">Une erreur s\'est produite, faites glisser l\'écran vers le bas pour l\'actualiser.</string>
   <string name="Start_the_request" formatted="false">Commencer la préparation</string>
   <string name="Starting_soon" formatted="false">Bientôt en direct</string>
   <string name="Status" formatted="false">État :</string>
@@ -663,9 +668,11 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Yes_cancel_it" formatted="false">Oui, annuler</string>
   <string name="Yes_cancel_my_pledge" formatted="false">Oui, annuler mon engagement</string>
   <string name="Yes_change_currency" formatted="false">Oui, changer de devise</string>
+  <string name="Yes_continue" formatted="false">Oui, continuer</string>
   <string name="Yes_remove" formatted="false">Oui, supprimer</string>
   <string name="Yes_turn_off" formatted="false">Oui, désactiver</string>
   <string name="You_Launched" formatted="false">Projet lancé !</string>
+  <string name="You_backed" formatted="false">Projet soutenu</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>
   <string name="You_canceled_this_project_so_the_backers_payment_method_was_never_charged" formatted="false">Vous avez annulé ce projet, donc le moyen de paiement du contributeur n\'a pas été débité.</string>
   <string name="You_canceled_your_pledge_for_this_project" formatted="false">Vous avez annulé votre engagement.</string>

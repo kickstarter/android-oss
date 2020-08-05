@@ -27,7 +27,7 @@
             android:layout_marginEnd="@dimen/grid_3"
             android:layout_marginStart="@dimen/grid_3"
             android:layout_marginTop="@dimen/grid_2"
-            android:text="@string/customize_your_reward"
+            android:text="@string/Customize_your_reward_with_optional_addons"
             style="@style/Headline"
             android:textSize="@dimen/title_2"
             app:layout_constraintEnd_toEndOf="parent"

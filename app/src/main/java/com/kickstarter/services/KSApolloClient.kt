@@ -727,7 +727,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
     val desc = rewardGr.description()
     val title = rewardGr.name()
     val estimatedDelivery = DateTime(rewardGr.estimatedDeliveryOn())
-    val limit = rewardGr.limitPerBacker()
+    val limit = chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     val remaining = rewardGr.remainingQuantity()
     val endsAt = DateTime(rewardGr.endsAt())
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
@@ -762,6 +762,21 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .shippingPreferenceType(shippingPreference)
             .shippingRules(shippingRules)
             .build()
+}
+
+/**
+ * Choose the available limit being the smallest one, we can have limit by backer available just in add-ons
+ * or limit by reward, available in V1 and Graphql and for both add-ons and Rewards
+ * @return limit
+ */
+fun chooseLimit(limitReward: Int?, limitPerBacker: Int?): Int {
+   val limit =  limitReward?.let { it } ?: 0
+   val limitBacker = limitPerBacker?.let { it } ?: 0
+
+    return when (limit <= limitBacker) {
+        true -> limit
+        else -> limitBacker
+    }
 }
 
 /**

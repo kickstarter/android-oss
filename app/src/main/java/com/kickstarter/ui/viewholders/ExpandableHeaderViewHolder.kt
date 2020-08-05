@@ -15,7 +15,7 @@ class ExpandableHeaderViewHolder(private val view: View) : KSViewHolder(view) {
         this.viewModel.outputs.titleForSummary()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe{
+                .subscribe {
                     this.view.pledge_header_item_title.text = it
                 }
 

@@ -153,7 +153,7 @@ class BackingAddOnViewHolderViewModel {
                     .subscribe(this.rewardItemsAreGone)
 
             addOn.filter { RewardUtils.isItemized(it) }
-                    .map { it.rewardsItems() }
+                    .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardItems)
 

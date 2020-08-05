@@ -241,7 +241,7 @@ class BackingAddOnViewHolderViewModel {
 
             this.quantity
                     .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-                    .map { (it.first == LIMIT) || (it.first == it.second.remaining()) }
+                    .map { (it.first == it.second.remaining()) || (it.first == it.second.limit())}
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
 
@@ -254,7 +254,7 @@ class BackingAddOnViewHolderViewModel {
         }
 
         private fun decrease(amount: Int) = amount - 1
-        private fun increase(amount: Int) = if(amount < LIMIT )amount + 1 else amount
+        private fun increase(amount: Int) = amount + 1
 
         private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project, selectedShippingRule: ShippingRule) =
                 if (shippingRules.isNullOrEmpty()) ""
@@ -316,9 +316,5 @@ class BackingAddOnViewHolderViewModel {
         override fun quantityPerId(): PublishSubject<Pair<Int, Long>> = this.quantityPerId
 
         override fun disableIncreaseButton(): Observable<Boolean> = this.disableIncreaseButton
-
-        companion object {
-            const val LIMIT = 10
-        }
     }
 }

@@ -235,8 +235,4 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
         itemRecyclerView.layoutManager = LinearLayoutManager(context())
         return rewardItemAdapter
     }
-
-    companion object {
-        const val DURATION = 200L
-    }
 }

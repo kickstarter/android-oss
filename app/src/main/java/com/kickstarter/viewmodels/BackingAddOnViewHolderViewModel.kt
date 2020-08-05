@@ -220,6 +220,7 @@ class BackingAddOnViewHolderViewModel {
 
             this.quantity
                     .compose<Int>(takeWhen(this.addButtonPressed))
+                    .map { increase(it) }
                     .subscribe(this.quantity)
 
             this.quantity

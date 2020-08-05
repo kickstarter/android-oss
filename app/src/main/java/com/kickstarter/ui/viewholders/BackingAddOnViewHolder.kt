@@ -150,20 +150,20 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
                 .compose(Transformers.observeForUI())
                 .subscribe { addButtonIsGone ->
                     if (addButtonIsGone) {
-                        this.view.initial_state_add_on.animate().alpha(0f).withEndAction {
+                        this.view.initial_state_add_on.animate().alpha(0f).setDuration(DURATION).withEndAction {
                             this.view.initial_state_add_on.visibility = View.GONE
                         }
-                        this.view.stepper_container_add_on.animate().alpha(1f).withEndAction {
+                        this.view.stepper_container_add_on.animate().alpha(1f).setDuration(DURATION).withEndAction {
                             this.view.stepper_container_add_on.visibility = View.VISIBLE
                         }
                         this.view.initial_state_add_on.isEnabled = false
                         this.view.increase_quantity_add_on.isEnabled = true
                     }
                     else {
-                        this.view.initial_state_add_on.animate().alpha(1f).withEndAction {
+                        this.view.initial_state_add_on.animate().alpha(1f).setDuration(DURATION).withEndAction {
                             this.view.initial_state_add_on.visibility = View.VISIBLE
                         }
-                        this.view.stepper_container_add_on.animate().alpha(0f).withEndAction {
+                        this.view.stepper_container_add_on.animate().alpha(0f).setDuration(DURATION).withEndAction {
                             this.view.stepper_container_add_on.visibility = View.GONE
                         }
                         this.view.initial_state_add_on.isEnabled = true
@@ -192,6 +192,7 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
     private fun setListenerForAddButton() {
         this.view.initial_state_add_on.setOnClickListener {
             this.viewModel.inputs.addButtonPressed()
+            viewListener.quantityHasChanged(+1)
         }
     }
 
@@ -233,5 +234,9 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
         itemRecyclerView.adapter = rewardItemAdapter
         itemRecyclerView.layoutManager = LinearLayoutManager(context())
         return rewardItemAdapter
+    }
+
+    companion object {
+        const val DURATION = 200L
     }
 }

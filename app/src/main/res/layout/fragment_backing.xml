@@ -204,12 +204,12 @@
                         layout="@layout/fragment_backing_section_delivery_date_reminder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/grid_3"
-                        android:layout_marginBottom="@dimen/grid_3" />
+                        android:layout_marginTop="@dimen/grid_3" />
 
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="@dimen/grid_3"
                     android:id="@+id/reward_add_on_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

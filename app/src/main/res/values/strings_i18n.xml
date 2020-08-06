@@ -184,7 +184,6 @@ Please tap to retry.</string>
   <string name="Estimated_delivery" formatted="false">Estimated delivery</string>
   <string name="Estimated_delivery_colon" formatted="false">Estimated delivery:</string>
   <string name="Estimated_delivery_of" formatted="false">Estimated delivery of</string>
-  <string name="Estimated_delivery_reward_delivered" formatted="false">Estimated delivery %{estimated_delivery} Reward delivered?</string>
   <string name="Expands_subcategories" formatted="false">Expands subcategories.</string>
   <string name="Expiration" formatted="false">Expiration</string>
   <string name="Expired_date_at_time" formatted="false">Expired %{date} at %{time}</string>

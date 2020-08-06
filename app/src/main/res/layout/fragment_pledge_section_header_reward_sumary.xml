@@ -33,7 +33,6 @@
         android:maxLines="2"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/grid_3"
-        android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_4"
         android:text="@string/Estimated_delivery"
         android:textColor="@color/ksr_dark_grey_500"

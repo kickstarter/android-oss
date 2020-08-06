@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="79dp"
-    android:minHeight="79dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/grid_4"
     android:layout_marginEnd="@dimen/grid_4"
     android:background="@drawable/rect_grey_rounded"
@@ -13,30 +12,30 @@
     <ImageView
         android:id="@+id/icon_calendar"
         android:background="@drawable/ic_calendar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:contentDescription="@null"
         android:importantForAccessibility="no"
         android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/delivery_reminder_label"
         style="@style/FootnoteAccent"
-        android:layout_width="300dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_2"
         android:layout_marginStart="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_2"
         android:textColor="@color/ksr_dark_grey_500"
-        app:layout_constraintStart_toEndOf="@id/icon_calendar"
-        android:paddingEnd="@dimen/grid_4"
-        android:paddingTop="@dimen/grid_2"
+        app:layout_constraintStart_toEndOf="@+id/icon_calendar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/Remember_that_delivery_dates_are_not_guaranteed" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -205,7 +205,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/grid_3"
-                        android:layout_marginBottom="@dimen/grid_4" />
+                        android:layout_marginBottom="@dimen/grid_3" />
 
                 </LinearLayout>
 

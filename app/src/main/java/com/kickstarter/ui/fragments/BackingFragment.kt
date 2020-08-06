@@ -1,9 +1,11 @@
 package com.kickstarter.ui.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Pair
@@ -198,9 +200,9 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    val stringBuilder = StringBuilder(estimated_delivery_label.text)
-                    stringBuilder.append("  $it")
-                    estimated_delivery_label.text = stringBuilder.toString()
+                    val totalCaracters = estimated_delivery_label.text.length
+                    estimated_delivery_label.text = estimated_delivery_label.text.toString() +" "+ it
+                    setBoldSpanOnTextView(totalCaracters, estimated_delivery_label, resources.getColor(R.color.ksr_dark_grey_500, null))
                 }
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
@@ -235,7 +237,17 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
     }
 
-    public fun isRefreshing(isRefreshing: Boolean){
+    private fun stylizedString(first: String, second: String): CharSequence {
+        val spannableStringSecond = SpannableString(second)
+
+        spannableStringSecond.setSpan(
+                ForegroundColorSpan(resources.getColor(R.color.ksr_soft_black, null)),
+                0, second.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // - To set Color
+        return "$first spannableStringSecond"
+    }
+
+    fun isRefreshing(isRefreshing: Boolean){
         backing_swipe_refresh_layout.isRefreshing = isRefreshing
     }
 

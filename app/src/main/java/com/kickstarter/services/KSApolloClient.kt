@@ -717,7 +717,6 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
 
 /**
  * Transform the Reward GraphQL data structure into our own Reward data model
- * // TODO: indicate if its for addOn or base reward for more re-usability
  * @param fragment.reward
  * @return Reward
  */
@@ -770,8 +769,11 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
  * @return limit
  */
 fun chooseLimit(limitReward: Int?, limitPerBacker: Int?): Int {
-   val limit =  limitReward?.let { it } ?: 0
-   val limitBacker = limitPerBacker?.let { it } ?: 0
+   var limit =  limitReward?.let { it } ?: -1
+   var limitBacker = limitPerBacker?.let { it } ?: -1
+
+    if (limit < 0) limit = limitBacker
+    if (limitBacker < 0) limitBacker = limit
 
     return when (limit <= limitBacker) {
         true -> limit

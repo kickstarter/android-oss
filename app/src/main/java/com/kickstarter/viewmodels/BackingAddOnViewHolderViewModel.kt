@@ -153,7 +153,7 @@ class BackingAddOnViewHolderViewModel {
                     .subscribe(this.rewardItemsAreGone)
 
             addOn.filter { RewardUtils.isItemized(it) }
-                    .map { it.rewardsItems() }
+                    .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardItems)
 
@@ -220,6 +220,7 @@ class BackingAddOnViewHolderViewModel {
 
             this.quantity
                     .compose<Int>(takeWhen(this.addButtonPressed))
+                    .map { increase(it) }
                     .subscribe(this.quantity)
 
             this.quantity
@@ -241,7 +242,7 @@ class BackingAddOnViewHolderViewModel {
 
             this.quantity
                     .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-                    .map { (it.first == LIMIT) || (it.first == it.second.remaining()) }
+                    .map { (it.first == it.second.remaining()) || (it.first == it.second.limit())}
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
 
@@ -254,7 +255,7 @@ class BackingAddOnViewHolderViewModel {
         }
 
         private fun decrease(amount: Int) = amount - 1
-        private fun increase(amount: Int) = if(amount < LIMIT )amount + 1 else amount
+        private fun increase(amount: Int) = amount + 1
 
         private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project, selectedShippingRule: ShippingRule) =
                 if (shippingRules.isNullOrEmpty()) ""
@@ -316,9 +317,5 @@ class BackingAddOnViewHolderViewModel {
         override fun quantityPerId(): PublishSubject<Pair<Int, Long>> = this.quantityPerId
 
         override fun disableIncreaseButton(): Observable<Boolean> = this.disableIncreaseButton
-
-        companion object {
-            const val LIMIT = 10
-        }
     }
 }

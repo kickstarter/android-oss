@@ -73,6 +73,22 @@ public final class RewardFactory {
       .build();
   }
 
+  public static @NonNull Reward itemizedAddOn() {
+    final long rewardId = IdFactory.id();
+
+    return reward().toBuilder()
+            .id(rewardId)
+            .isAddOn(true)
+            .addOnsItems(
+                    Arrays.asList(
+                            RewardsItemFactory.rewardsItem().toBuilder()
+                                    .rewardId(rewardId)
+                                    .build()
+                    )
+            )
+            .build();
+  }
+
   public static @NonNull Reward limited() {
     return reward().toBuilder()
       .limit(10)

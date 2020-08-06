@@ -56,7 +56,7 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testRewardAndAddOnWithItems() {
         setUpEnvironment(environment())
 
-        val reward = RewardFactory.itemized().toBuilder().quantity(1).isAddOn(true).build()
+        val reward = RewardFactory.itemizedAddOn().toBuilder().quantity(1).build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
         val title = reward.title()?.let { it } ?: ""
@@ -65,7 +65,7 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         this.titleForAddOn.assertValue(Pair(title, quantity))
         this.titleForReward.assertNoValues()
         this.quantityIsGone.assertNoValues()
-        this.rewardItems.assertValue(reward.rewardsItems())
+        this.rewardItems.assertValue(reward.addOnsItems())
         this.rewardItemsAreGone.assertValue(false)
         this.descriptionForReward.assertValue(reward.description())
     }

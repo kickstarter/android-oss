@@ -141,7 +141,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun increaseStepperDisable_WhenLimitReached() {
+    fun increaseStepperDisable_WhenLimitPerRewardReached() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).remaining(3).rewardsItems(emptyList()).build()
@@ -159,10 +159,10 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun increaseStepperDisable_WhenLimitReached_Constant() {
+    fun increaseStepperDisable_WhenLimitPerBackingReached() {
         setupEnvironment(environment())
 
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
+        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).limit(10).rewardsItems(emptyList()).build()
 
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))

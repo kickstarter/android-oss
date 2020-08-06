@@ -482,7 +482,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
             this.viewModel.inputs.increasePledgeButtonClicked()
         }
 
-        header_arrow_button.setOnClickListener {
+        pledge_header_container.setOnClickListener {
             toggleAnimation(isExpanded)
         }
       

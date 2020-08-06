@@ -150,24 +150,10 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
                 .compose(Transformers.observeForUI())
                 .subscribe { addButtonIsGone ->
                     if (addButtonIsGone) {
-                        this.view.initial_state_add_on.animate().alpha(0f).withEndAction {
-                            this.view.initial_state_add_on.visibility = View.GONE
-                        }
-                        this.view.stepper_container_add_on.animate().alpha(1f).withEndAction {
-                            this.view.stepper_container_add_on.visibility = View.VISIBLE
-                        }
-                        this.view.initial_state_add_on.isEnabled = false
-                        this.view.increase_quantity_add_on.isEnabled = true
+                        showStepper()
                     }
                     else {
-                        this.view.initial_state_add_on.animate().alpha(1f).withEndAction {
-                            this.view.initial_state_add_on.visibility = View.VISIBLE
-                        }
-                        this.view.stepper_container_add_on.animate().alpha(0f).withEndAction {
-                            this.view.stepper_container_add_on.visibility = View.GONE
-                        }
-                        this.view.initial_state_add_on.isEnabled = true
-                        this.view.increase_quantity_add_on.isEnabled = false
+                        hideStepper()
                     }
                 }
 
@@ -189,9 +175,24 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
                 }
     }
 
+    private fun hideStepper() {
+        this.view.initial_state_add_on.visibility = View.VISIBLE
+        this.view.stepper_container_add_on.visibility = View.GONE
+        this.view.initial_state_add_on.isEnabled = true
+        this.view.increase_quantity_add_on.isEnabled = false
+    }
+
+    private fun showStepper() {
+        this.view.initial_state_add_on.visibility = View.GONE
+        this.view.stepper_container_add_on.visibility = View.VISIBLE
+        this.view.initial_state_add_on.isEnabled = false
+        this.view.increase_quantity_add_on.isEnabled = true
+    }
+
     private fun setListenerForAddButton() {
         this.view.initial_state_add_on.setOnClickListener {
             this.viewModel.inputs.addButtonPressed()
+            viewListener.quantityHasChanged(+1)
         }
     }
 

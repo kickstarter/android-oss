@@ -1,11 +1,9 @@
 package com.kickstarter.ui.fragments
 
-import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Pair
@@ -202,12 +200,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    val totalCaracters = estimated_delivery_label.text.length
-                    val totalCaracters2 = estimated_delivery_label_2.text.length
-                    estimated_delivery_label.text = estimated_delivery_label.text.toString() +" "+ it
-                    estimated_delivery_label_2.text = estimated_delivery_label_2.text.toString() +" "+ it
-                    setBoldSpanOnTextView(totalCaracters, estimated_delivery_label, resources.getColor(R.color.ksr_dark_grey_500, null))
-                    setBoldSpanOnTextView(totalCaracters2, estimated_delivery_label_2, resources.getColor(R.color.ksr_dark_grey_500, null))
+                    stylizedTextViews(it)
                 }
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
@@ -239,6 +232,15 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         RxView.clicks(estimated_delivery_checkbox)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
+    }
+
+    private fun stylizedTextViews(it: String) {
+        val totalCharacters = estimated_delivery_label.text.length
+        val totalCharacters2 = estimated_delivery_label_2.text.length
+        estimated_delivery_label.text = estimated_delivery_label.text.toString() + " " + it
+        estimated_delivery_label_2.text = estimated_delivery_label_2.text.toString() + " " + it
+        setBoldSpanOnTextView(totalCharacters, estimated_delivery_label, resources.getColor(R.color.ksr_dark_grey_500, null))
+        setBoldSpanOnTextView(totalCharacters2, estimated_delivery_label_2, resources.getColor(R.color.ksr_dark_grey_500, null))
     }
 
     fun isRefreshing(isRefreshing: Boolean){

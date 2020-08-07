@@ -443,6 +443,10 @@
     <item name="android:textSize">@dimen/footnote</item>
   </style>
 
+  <style name="FootnoteAccentBig" parent="TextAccent">
+    <item name="android:textSize">@dimen/subheadline</item>
+  </style>
+
   <style name="FootnoteAccentMedium" parent="FootnoteAccent">
     <item name="android:textStyle">bold</item>
   </style>

@@ -187,6 +187,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.projectDataAndAddOns()
                 .filter { it.second.isNotEmpty() }
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { populateAddOns(it) }
@@ -197,12 +198,16 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe { bonus_summary_amount.text = it }
 
         this.viewModel.outputs.estimatedDelivery()
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
                     val totalCaracters = estimated_delivery_label.text.length
+                    val totalCaracters2 = estimated_delivery_label_2.text.length
                     estimated_delivery_label.text = estimated_delivery_label.text.toString() +" "+ it
+                    estimated_delivery_label_2.text = estimated_delivery_label_2.text.toString() +" "+ it
                     setBoldSpanOnTextView(totalCaracters, estimated_delivery_label, resources.getColor(R.color.ksr_dark_grey_500, null))
+                    setBoldSpanOnTextView(totalCaracters2, estimated_delivery_label_2, resources.getColor(R.color.ksr_dark_grey_500, null))
                 }
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
@@ -213,7 +218,6 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                     ViewUtils.setGone(received_section, true)
                     ViewUtils.setGone(delivery_disclaimer_section, it)
                     ViewUtils.setGone(estimated_delivery_label_2, false)
-                    estimated_delivery_label_2.setPadding(0, 0, 0, resources.getDimension(R.dimen.grid_3).toInt())
                 }
 
 
@@ -235,16 +239,6 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         RxView.clicks(estimated_delivery_checkbox)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
-    }
-
-    private fun stylizedString(first: String, second: String): CharSequence {
-        val spannableStringSecond = SpannableString(second)
-
-        spannableStringSecond.setSpan(
-                ForegroundColorSpan(resources.getColor(R.color.ksr_soft_black, null)),
-                0, second.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) // - To set Color
-        return "$first spannableStringSecond"
     }
 
     fun isRefreshing(isRefreshing: Boolean){

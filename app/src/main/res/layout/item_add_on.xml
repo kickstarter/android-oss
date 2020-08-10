@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_2"
-    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_3"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 

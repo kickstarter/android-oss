@@ -2,46 +2,46 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="79dp"
-    android:minHeight="79dp"
-    android:layout_marginStart="@dimen/grid_4"
-    android:layout_marginEnd="@dimen/grid_4"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/grid_3"
+    android:layout_marginEnd="@dimen/grid_3"
     android:background="@drawable/rect_trans_rounded"
     app:cardElevation="0dp">
-
 
     <TextView
         android:id="@+id/estimated_delivery_label"
         style="@style/CalloutPrimary"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/grid_1"
-        android:paddingStart="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_2"
+        android:text="@string/Estimated_delivery"
+        android:textColor="@color/ksr_soft_black"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toStartOf="@+id/estimated_delivery_checkbox"
         app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/ksr_dark_grey_500"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/Estimated_delivery" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/reward_delivered"
         style="@style/CalloutPrimary"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_2"
         android:layout_marginTop="@dimen/grid_1_half"
-        android:paddingStart="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:text="@string/Reward_delivered"
+        android:textColor="@color/ksr_soft_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/estimated_delivery_checkbox"
         app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/ksr_dark_grey_500"
-        app:layout_constraintTop_toBottomOf="@id/estimated_delivery_label"
-        android:text="@string/Reward_delivered" />
-
+        app:layout_constraintTop_toBottomOf="@id/estimated_delivery_label" />
 
     <CheckBox
         android:id="@+id/estimated_delivery_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="@dimen/grid_9_half"
+        android:layout_height="@dimen/grid_4"
+        android:layout_marginEnd="@dimen/grid_2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/reward_delivered"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -94,11 +94,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val decreaseBonusButtonIsEnabled = TestSubscriber<Boolean>()
     private val isNoReward = TestSubscriber<Boolean>()
     private val projectTitle = TestSubscriber<String>()
+    private val rewardAndAddOns = TestSubscriber<List<Reward>>()
+    private val headerSelectedItems = TestSubscriber<List<Pair<Project, Reward>>>()
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward = RewardFactory.rewardWithShipping(),
                                  project: Project = ProjectFactory.project(),
-                                 pledgeReason: PledgeReason = PledgeReason.PLEDGE) {
+                                 pledgeReason: PledgeReason = PledgeReason.PLEDGE,
+                                 addOns: java.util.List<Reward>? = null) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
         this.vm.outputs.addedCard().subscribe(this.addedCard)
@@ -157,13 +160,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.decreaseBonusButtonIsEnabled().subscribe(this.decreaseBonusButtonIsEnabled)
         this.vm.outputs.isNoReward().subscribe(this.isNoReward)
         this.vm.outputs.projectTitle().subscribe(this.projectTitle)
+        this.vm.outputs.rewardAndAddOns().subscribe(this.rewardAndAddOns)
+        this.vm.outputs.headerSelectedItems().subscribe(this.headerSelectedItems)
+
 
         val projectData = ProjectDataFactory.project(project.toBuilder()
                 .deadline(this.deadline)
                 .build())
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward, addOns))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
         this.vm.arguments(bundle)
     }
@@ -2865,6 +2871,28 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.bonusAmount.assertValue("0")
         this.decreaseBonusButtonIsEnabled.assertValue(false)
+    }
+
+    @Test
+    fun testRewardPlusAddons_inHeader() {
+        val reward = RewardFactory.rewardHasAddOns()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2).build()
+        val listAddOns = listOf(addOn, addOn, addOn) as java.util.List<Reward>?
+
+        setUpEnvironment(environment(), reward, project, addOns = listAddOns)
+
+        this.rewardAndAddOns.assertValue(listOf(reward, addOn, addOn, addOn))
+        this.headerSelectedItems.assertValue(listOf(
+                Pair(project, reward),
+                Pair(project, addOn),
+                Pair(project, addOn),
+                Pair(project, addOn)
+        ))
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject(environment: Environment, project: Project) {

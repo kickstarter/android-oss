@@ -129,7 +129,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                     }
                 }
 
-
         this.viewModel.outputs.decreaseBonusButtonIsEnabled()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())

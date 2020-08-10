@@ -72,6 +72,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .paymentSourceId(createBackingData.paymentSourceId)
                     .locationId(createBackingData.locationId?.let { it })
                     .rewardId(createBackingData.reward?.let { encodeRelayId(it) })
+                    .rewardIds(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                     .refParam(createBackingData.refTag?.tag())
                     .build()
 
@@ -89,6 +90,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             }
 
                             val checkoutPayload = response.data()?.createBacking()?.checkout()
+
+                            // TODO: Add new status field to backing model
                             val backing = Checkout.Backing.builder()
                                     .clientSecret(checkoutPayload?.backing()?.clientSecret())
                                     .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)

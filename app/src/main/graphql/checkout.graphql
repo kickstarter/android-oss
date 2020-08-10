@@ -1,10 +1,11 @@
-mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!, $paymentSourceId: String!, $locationId: String, $rewardId: ID, $refParam: String) {
-  createBacking(input: {projectId: $projectId, amount: $amount, paymentType: $paymentType, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardId: $rewardId, refParam: $refParam}) {
+mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!, $paymentSourceId: String!, $locationId: String, $rewardId: ID, $rewardIds: [ID!], $refParam: String) {
+  createBacking(input: {projectId: $projectId, amount: $amount, paymentType: $paymentType, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardId: $rewardId, rewardIds: $rewardIds, refParam: $refParam}) {
     checkout {
       id
       backing {
         clientSecret
         requiresAction
+        status
       }
     }
   }

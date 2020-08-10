@@ -998,24 +998,6 @@ interface PledgeFragmentViewModel {
 
             val paymentMethodId: Observable<String> = selectedCardAndPosition.map { it.first.id() }
 
-            /*val createBackingNotification = Observable.combineLatest(project,
-                    total.map { it.toString() },
-                    paymentMethodId,
-                    locationId,
-                    selectedReward,
-                    cookieRefTag)
-            { p, a, id, l, r, c -> CreateBackingData(p, a, id, l, r, c) }
-                    .compose<CreateBackingData>(takeWhen(pledgeButtonClicked))
-                    .switchMap {
-                        this.apolloClient.createBacking(it)
-                                .doOnSubscribe {
-                                    this.pledgeProgressIsGone.onNext(false)
-                                    this.pledgeButtonIsEnabled.onNext(false)
-                                }
-                                .materialize()
-                    }
-                    .share()*/
-
             val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },
                     paymentMethodId,

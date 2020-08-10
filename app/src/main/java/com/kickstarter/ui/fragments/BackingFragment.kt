@@ -185,6 +185,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
         this.viewModel.outputs.projectDataAndAddOns()
                 .filter { it.second.isNotEmpty() }
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { populateAddOns(it) }
@@ -195,12 +196,11 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe { bonus_summary_amount.text = it }
 
         this.viewModel.outputs.estimatedDelivery()
+                .distinctUntilChanged()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    val stringBuilder = StringBuilder(estimated_delivery_label.text)
-                    stringBuilder.append("  $it")
-                    estimated_delivery_label.text = stringBuilder.toString()
+                    stylizedTextViews(it)
                 }
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
@@ -211,7 +211,6 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                     ViewUtils.setGone(received_section, true)
                     ViewUtils.setGone(delivery_disclaimer_section, it)
                     ViewUtils.setGone(estimated_delivery_label_2, false)
-                    estimated_delivery_label_2.setPadding(0, 0, 0, resources.getDimension(R.dimen.grid_3).toInt())
                 }
 
 
@@ -235,7 +234,16 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe { this.viewModel.inputs.receivedCheckboxToggled(estimated_delivery_checkbox.isChecked) }
     }
 
-    public fun isRefreshing(isRefreshing: Boolean){
+    private fun stylizedTextViews(it: String) {
+        val totalCharacters = estimated_delivery_label.text.length
+        val totalCharacters2 = estimated_delivery_label_2.text.length
+        estimated_delivery_label.text = estimated_delivery_label.text.toString() + " " + it
+        estimated_delivery_label_2.text = estimated_delivery_label_2.text.toString() + " " + it
+        setBoldSpanOnTextView(totalCharacters, estimated_delivery_label, resources.getColor(R.color.ksr_dark_grey_500, null))
+        setBoldSpanOnTextView(totalCharacters2, estimated_delivery_label_2, resources.getColor(R.color.ksr_dark_grey_500, null))
+    }
+
+    fun isRefreshing(isRefreshing: Boolean){
         backing_swipe_refresh_layout.isRefreshing = isRefreshing
     }
 

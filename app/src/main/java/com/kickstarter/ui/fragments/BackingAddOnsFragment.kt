@@ -27,8 +27,6 @@ import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
 import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.*
-import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.view.*
-import rx.Observable
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
 class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate, BackingAddOnViewHolder.ViewListener {
@@ -125,16 +123,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
-        if (this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
-            val pledgeFragment = PledgeFragment.newInstance(pledgeData, pledgeReason)
-            this.fragmentManager?.beginTransaction()
-                    ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    ?.add(R.id.fragment_container,
-                            pledgeFragment,
-                            PledgeFragment::class.java.simpleName)
-                    ?.addToBackStack(PledgeFragment::class.java.simpleName)
-                    ?.commit()
-        }
+        fragmentManager
+                ?.beginTransaction()
+                ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                ?.add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
+                ?.addToBackStack(NewCardFragment::class.java.simpleName)
+                ?.commit()
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {

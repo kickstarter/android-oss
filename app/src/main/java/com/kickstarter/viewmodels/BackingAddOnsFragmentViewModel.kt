@@ -105,10 +105,6 @@ class BackingAddOnsFragmentViewModel {
             val reward = pledgeData
                     .map { it.reward() }
 
-            this.pledgeDataAndReason
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showPledgeFragment)
-
             val addonsList = project
                     .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }
                     .compose(bindToLifecycle())
@@ -162,11 +158,14 @@ class BackingAddOnsFragmentViewModel {
                         updateQuantityById(it)
                     }
 
-            Observable.combineLatest(this.continueButtonPressed, addonsList, pledgeData, pledgeReason) {
-                _, listAddOns, pledgeData, pledgeReason ->
+            Observable.combineLatest(this.continueButtonPressed, addonsList, pledgeData, pledgeReason, this.shippingRuleSelected) {
+                _, listAddOns, pledgeData, pledgeReason, shippingRule ->
 
                 val updatedList = updateAddOnsListQuantity(listAddOns)
-                val updatedPledgeData = pledgeData.toBuilder().addOns(updatedList as java.util.List<Reward>).build()
+                val updatedPledgeData = pledgeData.toBuilder()
+                        .addOns(updatedList as java.util.List<Reward>)
+                        .shippingRule(shippingRule)
+                        .build()
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
                     .compose(bindToLifecycle())

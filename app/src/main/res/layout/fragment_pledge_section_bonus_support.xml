@@ -15,10 +15,9 @@
     <TextView
         android:id="@+id/bonus_support_label"
         style="@style/CalloutPrimaryMedium"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Bonus_support"
-        app:layout_constraintBottom_toTopOf="@id/bonus_support_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,10 +25,10 @@
 
     <TextView
         android:id="@+id/bonus_support_subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
         android:text="@string/A_little_extra_to_help"
-        app:layout_constraintBottom_toTopOf="@id/decrease_bonus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,15 +38,14 @@
         android:id="@+id/decrease_bonus"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_1"
         android:background="@drawable/bg_decrease"
         android:backgroundTint="@color/white_enabled_gray_disabled"
         android:contentDescription="@string/Decrease_pledge"
         android:src="@drawable/ic_remove"
         android:tint="@color/green_enabled_dark_grey_disabled"
-        app:layout_constraintBottom_toBottomOf="@id/bonus_container"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bonus_support_subtitle" />
+        app:layout_constraintTop_toTopOf="@id/bonus_amount_container"
+        app:layout_constraintBottom_toBottomOf="@id/bonus_amount_container"/>
 
     <ImageButton
         android:id="@+id/increase_bonus"

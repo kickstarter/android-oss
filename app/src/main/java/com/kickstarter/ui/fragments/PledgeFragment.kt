@@ -302,7 +302,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe {
                     ViewUtils.setGone(shipping_rules_row, it)
-                    ViewUtils.setGone(shipping_rules_row_static, !it)
+                }
+
+        this.viewModel.outputs.shippingRuleStaticIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(shipping_rules_row_static, it)
                 }
 
         this.viewModel.outputs.shippingSummaryIsGone()

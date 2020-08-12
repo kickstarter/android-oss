@@ -272,6 +272,9 @@ interface PledgeFragmentViewModel {
 
         /** Emits the selected reward + addOns list*/
         fun rewardAndAddOns(): Observable<List<Reward>>
+
+        /** Emits if the static shipping selection area should be gone*/
+        fun shippingRuleStaticIsGone(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<PledgeFragment>(environment), Inputs, Outputs {
@@ -395,7 +398,6 @@ interface PledgeFragmentViewModel {
 
             val selectedShippingRule = pledgeData
                     .map { it.shippingRule() }
-                    .filter { ObjectUtils.isNotNull(it) }
 
             val projectData = pledgeData
                     .map { it.projectData() }
@@ -403,24 +405,18 @@ interface PledgeFragmentViewModel {
             val addOns = pledgeData
                     .map { if(it.addOns().isNullOrEmpty()) emptyList() else it.addOns() as List<Reward>}
 
+            // TODO - Document + unit test for each logic
             selectedShippingRule
-                    .compose<Pair<ShippingRule, Reward>>(combineLatestPair(this.selectedReward))
-                    .filter { ObjectUtils.isNotNull(it.first) && it.second.hasAddons()}
+                    .compose<Pair<ShippingRule, List<Reward>>>(combineLatestPair(this.rewardAndAddOns))
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.shippingRule.onNext(it.first)
-                        if (!RewardUtils.isShippable(it.second) || RewardUtils.isDigital(it.second)) {
-                            this.shippingRulesSectionIsGone.onNext(true)
-                            this.shippingRuleStaticIsGone.onNext(true)
-                        }
-
-                        if (it.second.hasAddons() && RewardUtils.isShippable(it.second)) {
-                            this.shippingRulesSectionIsGone.onNext(true)
-                            this.shippingRuleStaticIsGone.onNext(false)
-                        }
-
-                        if (!it.second.hasAddons() && RewardUtils.isShippable(it.second)) {
-                            this.shippingRulesSectionIsGone.onNext(false)
+                        val selectedRw = it.second.first()
+                        if (ObjectUtils.isNotNull(it.first)) {
+                            this.shippingRule.onNext(it.first)
+                            this.shippingRulesSectionIsGone.onNext(selectedRw.hasAddons())
+                            this.shippingRuleStaticIsGone.onNext(!selectedRw.hasAddons())
+                        } else {
+                            this.shippingRulesSectionIsGone.onNext(!RewardUtils.isShippable(selectedRw))
                             this.shippingRuleStaticIsGone.onNext(true)
                         }
                     }
@@ -700,10 +696,10 @@ interface PledgeFragmentViewModel {
 
             updatingPayment
                     .compose<Pair<Boolean, Reward>>(combineLatestPair(this.selectedReward))
-                    .map { it.first || !RewardUtils.isShippable(it.second) }
+                    .filter { it.first == true }
                     .compose(bindToLifecycle())
                     .subscribe{
-                        this.shippingRulesSectionIsGone.onNext(it)
+                        this.shippingRulesSectionIsGone.onNext(!RewardUtils.isShippable(it.second))
                     }
 
             val total = Observable.combineLatest(rewardAndAddOns, shippingRule, this.bonusAmount, rewardMinimum, pledgeInput, pledgeReason) { rw, selectedShipping, bAmount, rMinimumAmount, pInput, pReason ->
@@ -1563,5 +1559,8 @@ interface PledgeFragmentViewModel {
 
         @NonNull
         override fun rewardAndAddOns(): Observable<List<Reward>> = this.rewardAndAddOns
+
+        @NonNull
+        override fun shippingRuleStaticIsGone(): Observable<Boolean> = this.shippingRuleStaticIsGone
     }
 }

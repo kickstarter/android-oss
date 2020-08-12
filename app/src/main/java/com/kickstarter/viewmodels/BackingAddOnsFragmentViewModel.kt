@@ -162,10 +162,16 @@ class BackingAddOnsFragmentViewModel {
                 _, listAddOns, pledgeData, pledgeReason, shippingRule ->
 
                 val updatedList = updateAddOnsListQuantity(listAddOns)
-                val updatedPledgeData = pledgeData.toBuilder()
-                        .addOns(updatedList as java.util.List<Reward>)
-                        .shippingRule(shippingRule)
-                        .build()
+                var updatedPledgeData: PledgeData
+                updatedPledgeData = if (updatedList.isNotEmpty()) {
+                    pledgeData.toBuilder()
+                            .addOns(updatedList as java.util.List<Reward>)
+                            .shippingRule(shippingRule)
+                            .build()
+                } else {
+                    pledgeData.toBuilder()
+                            .build()
+                }
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
                     .compose(bindToLifecycle())
@@ -180,7 +186,7 @@ class BackingAddOnsFragmentViewModel {
             this.selectedAmount
                     .filter { it.value > 0 }
                     .forEach { selectedAddOn ->
-                        val item = listAddOns.filter { it.id() == selectedAddOn.key }.first()
+                        val item = listAddOns.first { it.id() == selectedAddOn.key }
                         updatedList.add(item.toBuilder().quantity(selectedAddOn.value).build())
             }
 

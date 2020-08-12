@@ -295,7 +295,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .filter { ObjectUtils.isNotNull(context) }
-                .subscribe { displayShippingRules(it.first, it.second) }
+                .subscribe {
+                    displayShippingRules(it.first, it.second)
+                }
 
         this.viewModel.outputs.shippingRulesSectionIsGone()
                 .compose(bindToLifecycle())

@@ -208,19 +208,22 @@ public final class RewardUtils {
    */
   public static Double rewardAmountByVariant(final OptimizelyExperiment.Variant variant, final Reward reward) {
     Double value = reward.minimum();
-    switch (variant) {
-      case CONTROL:
-        value = 1.0;
-        break;
-      case VARIANT_2:
-        value = 10.0;
-        break;
-      case VARIANT_3:
-        value = 20.0;
-        break;
-      case VARIANT_4:
-        value = 50.0;
-        break;
+
+    if (isNoReward(reward)) {
+      switch (variant) {
+        case CONTROL:
+          value = 1.0;
+          break;
+        case VARIANT_2:
+          value = 10.0;
+          break;
+        case VARIANT_3:
+          value = 20.0;
+          break;
+        case VARIANT_4:
+          value = 50.0;
+          break;
+      }
     }
 
     return value;

@@ -331,6 +331,7 @@ interface PledgeFragmentViewModel {
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingRulesAndProject = BehaviorSubject.create<Pair<List<ShippingRule>, Project>>()
         private val shippingRulesSectionIsGone = BehaviorSubject.create<Boolean>()
+        // - when having add-ons the shipping location is an static field, no changes allowed in there
         private val shippingRuleStaticIsGone = BehaviorSubject.create<Boolean>()
         private val shippingSummaryAmount = BehaviorSubject.create<CharSequence>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
@@ -717,12 +718,13 @@ interface PledgeFragmentViewModel {
                         this.shippingAmount.onNext(ProjectViewUtils.styleCurrency(it.first.cost(), it.second, this.ksCurrency))
                     }
 
+            // - When updating payment, shipping location area should always be gone
             updatingPayment
                     .compose<Pair<Boolean, Reward>>(combineLatestPair(this.selectedReward))
-                    .filter { it.first == true }
+                    .filter { it.first == true && RewardUtils.isShippable(it.second)}
                     .compose(bindToLifecycle())
-                    .subscribe{
-                        this.shippingRulesSectionIsGone.onNext(!RewardUtils.isShippable(it.second))
+                    .subscribe {
+                        this.shippingRulesSectionIsGone.onNext(true )
                     }
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location

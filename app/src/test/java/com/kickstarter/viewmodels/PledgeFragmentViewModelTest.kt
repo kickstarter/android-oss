@@ -595,7 +595,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(true)
         this.headerSectionIsGone.assertValue(true)
-        this.shippingRulesSectionIsGone.assertValues(true, true)
+        this.shippingRulesSectionIsGone.assertValues(true)
         this.selectedShippingRule.assertNoValues()
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
@@ -674,7 +674,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeMaximumIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.shippingRulesSectionIsGone.assertValues(true, true)
+        this.shippingRulesSectionIsGone.assertValues(true)
         this.selectedShippingRule.assertNoValues()
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
@@ -1053,10 +1053,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.shippingAmount.assertNoValues()
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0), expectedCurrency(environment, project, 21.0))
+        this.pledgeHint.assertValue("20")
+        this.totalAndDeadline.assertValues(
+                Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
+                Pair(expectedCurrency(environment, project, 21.0), DateTimeUtils.longDate(this.deadline)))
+        this.totalAndDeadlineIsVisible.assertValueCount(2)
 
         this.vm.inputs.decreasePledgeButtonClicked()
 
@@ -1076,11 +1079,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeMaximumIsGone.assertValues(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(1)
+        this.shippingAmount.assertNoValues()
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0), expectedCurrency(environment, project, 21.0), expectedCurrency(environment, project, 20.0))
+        this.totalAndDeadline.assertValues(
+                Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
+                Pair(expectedCurrency(environment, project, 21.0), DateTimeUtils.longDate(this.deadline)),
+                Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline))
+        )
+        this.totalAndDeadlineIsVisible.assertValueCount(3)
     }
 
     @Test
@@ -1111,7 +1117,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
+        this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0))
         this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
         this.totalAndDeadlineIsVisible.assertValueCount(1)
@@ -2942,7 +2948,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
+        this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0))
         this.totalAndDeadline.assertValue(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
         this.totalAndDeadlineIsVisible.assertValueCount(1)

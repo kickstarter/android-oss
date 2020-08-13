@@ -595,7 +595,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(true)
         this.headerSectionIsGone.assertValue(true)
-        this.shippingRulesSectionIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValues(true, true)
+        this.selectedShippingRule.assertNoValues()
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
 
@@ -673,7 +674,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeMaximumIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.shippingRulesSectionIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValues(true, true)
+        this.selectedShippingRule.assertNoValues()
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
 
@@ -1550,6 +1552,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
         this.vm.inputs.cardSelected(StoredCardFactory.visa(), 0)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.vm.inputs.pledgeButtonClicked()
 
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2729,15 +2732,15 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.selectedShippingRule.assertValue(backingShippingRule)
+        this.selectedShippingRule.assertValues(backingShippingRule, backingShippingRule)
         this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
-        this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule)
+        this.selectedShippingRule.assertValues(backingShippingRule, backingShippingRule, germanyShippingRule)
         this.pledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.shippingRuleSelected(backingShippingRule)
-        this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule, backingShippingRule)
+        this.selectedShippingRule.assertValues(backingShippingRule, backingShippingRule, germanyShippingRule, backingShippingRule)
         this.pledgeButtonIsEnabled.assertValues(false, true, false)
 
         this.vm.inputs.bonusInput("500")

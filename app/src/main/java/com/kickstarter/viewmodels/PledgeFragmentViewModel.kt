@@ -377,7 +377,7 @@ interface PledgeFragmentViewModel {
         private val shippingRuleUpdated = BehaviorSubject.create<Boolean>(false)
         private val selectedReward = BehaviorSubject.create<Reward>()
         private val rewardAndAddOns = BehaviorSubject.create<List<Reward>>()
-        private val shippingAmountSelectedRw = PublishSubject.create<Double>()
+        private val shippingAmountSelectedRw = BehaviorSubject.create<Double>(0.0)
 
         val inputs: Inputs = this
         val outputs: Outputs = this

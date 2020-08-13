@@ -886,6 +886,7 @@ interface PledgeFragmentViewModel {
 
             this.shippingRule
                     .map { it.location().displayableName() }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummaryLocation)
 
@@ -924,9 +925,14 @@ interface PledgeFragmentViewModel {
             }
                     .distinctUntilChanged()
 
+            Observable.combineLatest(this.shippingRule, this.defaultShippingLocation) { rule, dfRule ->
+                    return@combineLatest rule.id() != dfRule.id()
+            }
+                    .distinctUntilChanged()
+                    .subscribe(this.shippingRuleUpdated)
+
             val shippingOrAmountChanged = Observable.combineLatest(shippingRuleUpdated, this.bonusAmountHasChanged, amountUpdated, pledgeReason) { shippingUpdated, bHasChanged, aUpdated, pReason ->
-                return@combineLatest if (shippingUpdated || pReason == PledgeReason.PLEDGE) true
-                else bHasChanged && aUpdated
+                return@combineLatest hasBeenUpdated(shippingUpdated, pReason, bHasChanged, aUpdated)
             }
                     .distinctUntilChanged()
 
@@ -1279,6 +1285,17 @@ interface PledgeFragmentViewModel {
                     }
         }
 
+        private fun hasBeenUpdated(shippingUpdated: Boolean, pReason: PledgeReason?, bHasChanged: Boolean, aUpdated: Boolean):Boolean {
+            var updated = false
+
+            if (pReason == PledgeReason.PLEDGE) updated = true
+            else if (pReason == PledgeReason.UPDATE_PLEDGE) {
+                updated = (bHasChanged && aUpdated) || shippingUpdated
+            }
+
+            return updated
+        }
+
         private fun hasSelectedAddons(itemsList: List<Reward>) = itemsList.size > 1
 
         private fun joinProject(items: Pair<List<Reward>, Project>?): List<Pair<Project, Reward>> {
@@ -1393,10 +1410,7 @@ interface PledgeFragmentViewModel {
 
         override fun pledgeButtonClicked() = this.pledgeButtonClicked.onNext(null)
 
-        override fun shippingRuleSelected(shippingRule: ShippingRule) {
-            this.shippingRule.onNext(shippingRule)
-            this.shippingRuleUpdated.onNext(true)
-        }
+        override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRule.onNext(shippingRule)
 
         override fun stripeSetupResultSuccessful(@StripeIntentResult.Outcome outcome: Int) = this.stripeSetupResultSuccessful.onNext(outcome)
 

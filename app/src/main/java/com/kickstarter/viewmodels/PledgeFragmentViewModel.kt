@@ -725,17 +725,18 @@ interface PledgeFragmentViewModel {
                         this.shippingRulesSectionIsGone.onNext(!RewardUtils.isShippable(it.second))
                     }
 
-            // - Calculate total for Rewards + AddOns without Shipping
-            val totalRw = Observable.combineLatest(rewardAndAddOns, this.shippingRule, this.bonusAmount, pledgeInput, pledgeReason) { rw, selectedShipping, bAmount, pInput, pReason ->
-                return@combineLatest getAmount(selectedShipping, bAmount, rw, pInput, pReason)
+            // - Calculate total for Reward || Rewards + AddOns with Shipping location
+            val totalRw = Observable.combineLatest(rewardAndAddOns, this.shippingRule, this.bonusAmount, pledgeReason) { rw, selectedShipping, bAmount, pReason ->
+                return@combineLatest getAmount(selectedShipping, bAmount, rw, pReason)
             }
                     .distinctUntilChanged()
 
             // - Calculate total for No Reward || Reward without shipping
-            val totalNR = Observable.combineLatest(pledgeInput, this.bonusAmount, pledgeReason) { pInput, bAmount, pReason ->
-                return@combineLatest pInput + bAmount.toDouble()
+            val totalNR = Observable.combineLatest(this.selectedReward, pledgeInput, this.bonusAmount, pledgeReason) {rw,  pInput, bAmount, pReason ->
+                return@combineLatest Pair(RewardUtils.isShippable(rw), pInput + bAmount.toDouble())
             }
-                    .filter { ObjectUtils.isNotNull(it) }
+                    .filter { !it.first }
+                    .map { it.second }
                     .distinctUntilChanged()
 
             val total = Observable.merge(totalNR, totalRw)
@@ -1289,13 +1290,13 @@ interface PledgeFragmentViewModel {
             return joinedList.toList()
         }
 
-        private fun getAmount(selectedShipping: ShippingRule, bAmount: String, rewardsList: List<Reward>, pInput: Double, pledgeReason: PledgeReason): Double {
+        private fun getAmount(selectedShipping: ShippingRule, bAmount: String, rewardsList: List<Reward>, pledgeReason: PledgeReason): Double {
             val hasAddOns = hasSelectedAddons(rewardsList)
-            var totalPledgeValue = pInput
             val sAmountSelectedRw = selectedShipping.cost()
             val reward = rewardsList.first()
             var addOnsShippingCost = 0.0
             var addOnsCost = 0.0
+            var totalPledgeValue = 0.0
 
             // - it mean we have addOns calculate the shipping amount for them and the cost, using the cost for the matching rule with the selected location
             if (hasAddOns) {
@@ -1309,8 +1310,10 @@ interface PledgeFragmentViewModel {
                 }
             }
 
-            if (!RewardUtils.isNoReward(reward) && !hasAddOns)
-                totalPledgeValue = (sAmountSelectedRw + bAmount.toInt() + reward.minimum())
+            totalPledgeValue = if (RewardUtils.isShippable(reward) && !hasAddOns)
+                (sAmountSelectedRw + bAmount.toInt() + reward.minimum())
+            else
+                (sAmountSelectedRw + addOnsCost + addOnsShippingCost + reward.minimum() + bAmount.toInt())
 
             return totalPledgeValue
         }

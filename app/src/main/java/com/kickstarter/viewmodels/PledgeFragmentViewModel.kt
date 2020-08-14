@@ -1110,7 +1110,7 @@ interface PledgeFragmentViewModel {
             val updateBackingNotification = Observable.combineLatest(backingToUpdate,
                     totalString,
                     locationId,
-                    this.rewardAndAddOns,
+                    extendedListForCheckOut,
                     optionalPaymentMethodId)
             { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
                     .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))
@@ -1357,10 +1357,6 @@ interface PledgeFragmentViewModel {
                 (sAmountSelectedRw + addOnsCost + addOnsShippingCost + reward.minimum() + bAmount.toInt())
 
             return totalPledgeValue
-        }
-
-        private fun getBacking(backingId: String): Observable<Backing> {
-            return this.apolloClient.getBacking(backingId)
         }
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {

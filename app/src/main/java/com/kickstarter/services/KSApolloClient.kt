@@ -71,7 +71,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
                     .paymentSourceId(createBackingData.paymentSourceId)
                     .locationId(createBackingData.locationId?.let { it })
-                    .rewardId(createBackingData.reward?.let { encodeRelayId(it) })
                     .rewardIds(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                     .refParam(createBackingData.refTag?.tag())
                     .build()
@@ -459,7 +458,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .backingId(encodeRelayId(updateBackingData.backing))
                     .amount(updateBackingData.amount.toString())
                     .locationId(updateBackingData.locationId)
-                    .rewardId(updateBackingData.reward?.let { encodeRelayId(it) })
+                    .rewardIds(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                     .paymentSourceId(updateBackingData.paymentSourceId)
                     .build()
 

@@ -1107,7 +1107,7 @@ interface PledgeFragmentViewModel {
             val updateBackingNotification = Observable.combineLatest(backingToUpdate,
                     totalString,
                     locationId,
-                    this.selectedReward,
+                    this.rewardAndAddOns,
                     optionalPaymentMethodId)
             { b, a, l, r, p -> UpdateBackingData(b, a, l, r, p) }
                     .compose<UpdateBackingData>(takeWhen(Observable.merge(updatePledgeClick, updatePaymentClick, fixPaymentClick)))

@@ -96,6 +96,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val projectTitle = TestSubscriber<String>()
     private val rewardAndAddOns = TestSubscriber<List<Reward>>()
     private val headerSelectedItems = TestSubscriber<List<Pair<Project, Reward>>>()
+    private val shippingRuleStaticIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward = RewardFactory.rewardWithShipping(),
@@ -162,6 +163,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectTitle().subscribe(this.projectTitle)
         this.vm.outputs.rewardAndAddOns().subscribe(this.rewardAndAddOns)
         this.vm.outputs.headerSelectedItems().subscribe(this.headerSelectedItems)
+        this.vm.outputs.shippingRuleStaticIsGone().subscribe(this.shippingRuleStaticIsGone)
 
 
         val projectData = ProjectDataFactory.project(project.toBuilder()
@@ -169,7 +171,13 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build())
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward, addOns))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(
+                PledgeFlowContext.forPledgeReason(pledgeReason),
+                projectData,
+                reward,
+                addOns,
+                ShippingRuleFactory.usShippingRule()))
+
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
         this.vm.arguments(bundle)
     }
@@ -2372,20 +2380,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
-    /*
+    /* FIX in https://kickstarter.atlassian.net/browse/NT-1462
     @Test
     fun testShowUpdatePledgeSuccess_whenRequiresAction_isSuccessful_unsuccessfulOutcome() {
-        val reward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(30.0)
-                .reward(reward)
-                .rewardId(reward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
 
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
@@ -2395,16 +2393,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
+        setUpEnvironment(environment, testData.reward, testData.project, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.bonusInput("31")
         this.vm.inputs.increaseBonusButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeProgressIsGone.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
@@ -2443,7 +2441,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.bonusInput("31")
         this.vm.inputs.increaseBonusButtonClicked()
         this.pledgeButtonIsEnabled.assertValues(false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeProgressIsGone.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
@@ -2814,6 +2812,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), reward, backedProject)
 
         this.headerSectionIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValue(true)
+        this.shippingRuleStaticIsGone.assertValue(true)
         this.isNoReward.assertValue(true)
         this.projectTitle.assertValue(backedProject.name())
     }
@@ -2837,7 +2837,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
 
-    @Test
+    @Test // TODO: Review
     fun testBonusAmountIncreases_whenPlusButtonIsClicked() {
         val reward = RewardFactory.reward()
         val backing = BackingFactory.backing()
@@ -2861,30 +2861,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.bonusAmount.assertValues("0", "1")
     }
 
-    /*
+
     @Test
     fun testTotalAmountUpdates_whenBonusIsAdded() {
-        val reward = RewardFactory.reward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(50.0)
-                .reward(reward)
-                .rewardId(reward.id())
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
 
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        val environment = environmentForLoggedInUser(UserFactory.user())
-
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.PLEDGE)
+        setUpEnvironment(environment(), testData.reward, testData.project, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.bonusInput("20")
         this.vm.inputs.increaseBonusButtonClicked()
-        this.totalAmount.assertValues("$50", "$70")
-    }*/
+        this.totalAmount.assertValues("$50","$70", "$71")
+        this.bonusAmount.assertValues("0", "20", "21")
+    }
 
     @Test
     fun testBonusMinimumIsZero_andMinusButtonIsDisabled() {
@@ -2896,7 +2884,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .rewardId(reward.id())
                 .build()
 
-        val backedProject = ProjectFactory.backedProject()
+        val backedProject = ProjectFactory.project()
                 .toBuilder()
                 .backing(backing)
                 .build()
@@ -2909,7 +2897,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testRewardPlusAddons_inHeader() {
-        val reward = RewardFactory.rewardHasAddOns()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .build()
         val project = ProjectFactory.project()
                 .toBuilder()
                 .rewards(listOf(reward))
@@ -2920,6 +2910,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, project, addOns = listAddOns)
 
+        this.shippingRuleStaticIsGone.assertValue(false)
+        this.shippingRulesSectionIsGone.assertValue(true)
         this.rewardAndAddOns.assertValue(listOf(reward, addOn, addOn, addOn))
         this.headerSelectedItems.assertValue(listOf(
                 Pair(project, reward),
@@ -2927,6 +2919,145 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 Pair(project, addOn),
                 Pair(project, addOn)
         ))
+    }
+
+    @Test
+    fun total_whenShippableAddOns() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .build()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()))
+                .build()
+        val listAddOns = listOf(addOn, addOn, addOn) as java.util.List<Reward>
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, project, addOns = listAddOns)
+
+        this.vm.inputs.shippingRuleSelected(shipRule)
+
+        this.totalAmount.assertValue("$290")
+    }
+
+    @Test
+    fun total_whenShippableAddOns_differentShippingCost() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .minimum(50.0)
+                .build()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+        // - total rw = 50 + 30 = 80
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
+                .minimum(9.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(5.0)
+                        .build()
+                ))
+                .build()
+        // - total a1 = (9 + 5) * 2 = 28
+
+        val addOn2 = RewardFactory.itemizedAddOn().toBuilder().quantity(4)
+                .minimum(11.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(3.0)
+                        .build()
+                ))
+                .build()
+        // total a2 = (11 + 3) * 4 = 56
+
+        val addOn3 = RewardFactory.itemizedAddOn().toBuilder().quantity(10)
+                .minimum(15.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(10.0)
+                        .build()
+                ))
+                .build()
+        // total a3 = (15 + 10) * 10 = 250
+
+        val listAddOns = listOf(addOn, addOn2, addOn3) as java.util.List<Reward>
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, project, addOns = listAddOns)
+
+        this.vm.inputs.shippingRuleSelected(shipRule)
+
+        this.totalAmount.assertValues("$414")
+    }
+
+    @Test
+    fun total_whenShippableAddOns_differentShippingCost_AndBonus() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .minimum(50.0)
+                .build()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+        // - total rw = 50 + 30 = 80
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
+                .minimum(9.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(5.0)
+                        .build()
+                ))
+                .build()
+        // - total a1 = (9 + 5) * 2 = 28
+
+        val addOn2 = RewardFactory.itemizedAddOn().toBuilder().quantity(4)
+                .minimum(11.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(3.0)
+                        .build()
+                ))
+                .build()
+        // total a2 = (11 + 3) * 4 = 56
+
+        val addOn3 = RewardFactory.itemizedAddOn().toBuilder().quantity(10)
+                .minimum(15.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(10.0)
+                        .build()
+                ))
+                .build()
+        // total a3 = (15 + 10) * 10 = 250
+
+        val listAddOns = listOf(addOn, addOn2, addOn3) as java.util.List<Reward>
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, project, addOns = listAddOns)
+
+        this.vm.inputs.shippingRuleSelected(shipRule)
+        this.vm.inputs.bonusInput("123")
+        this.vm.inputs.increaseBonusButtonClicked()
+        this.vm.inputs.increaseBonusButtonClicked()
+        this.vm.inputs.increaseBonusButtonClicked()
+
+        this.totalAmount.assertValues(
+                "$414",
+                "$537",
+                "$538",
+                "$539",
+                "$540")
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject(environment: Environment, project: Project) {

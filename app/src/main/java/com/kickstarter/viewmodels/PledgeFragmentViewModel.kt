@@ -379,6 +379,8 @@ interface PledgeFragmentViewModel {
         private val selectedReward = BehaviorSubject.create<Reward>()
         private val rewardAndAddOns = BehaviorSubject.create<List<Reward>>()
         private val shippingAmountSelectedRw = BehaviorSubject.create<Double>(0.0)
+        private val totalNR = PublishSubject.create<Double>()
+        private val totalRw = PublishSubject.create<Double>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -439,7 +441,6 @@ interface PledgeFragmentViewModel {
             val projectRewardAndAddOns = project
                     .compose<Pair<Project, List<Reward>>>(combineLatestPair(rewardAndAddOns))
 
-            // TODO - Document + unit test for each logic
             preSelectedShippingRule
                     .compose<Pair<ShippingRule, List<Reward>>>(combineLatestPair(this.rewardAndAddOns))
                     .compose(bindToLifecycle())
@@ -657,14 +658,6 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.bonusAmount)
 
-            backing.compose<Pair<Backing, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.UPDATE_PLEDGE }
-                    .switchMap { getBacking(it.first.id().toString()) }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.bonusAmount.onNext(it.bonusAmount().toInt().toString())
-                    }
-
             Observable.merge(this.decreaseBonusButtonClicked, this.decreasePledgeButtonClicked, this.increaseBonusButtonClicked, this.increasePledgeButtonClicked)
                     .distinctUntilChanged()
                     .subscribe {
@@ -728,22 +721,27 @@ interface PledgeFragmentViewModel {
                     }
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location
-            val totalRw = Observable.combineLatest(rewardAndAddOns, this.shippingRule, this.bonusAmount, pledgeReason) { rw, selectedShipping, bAmount, pReason ->
+            Observable.combineLatest(rewardAndAddOns, this.shippingRule, this.bonusAmount, pledgeReason) { rw, selectedShipping, bAmount, pReason ->
                 return@combineLatest getAmount(selectedShipping, bAmount, rw, pReason)
             }
                     .distinctUntilChanged()
+                    .subscribe(totalRw)
 
             // - Calculate total for No Reward || Reward without shipping
-            val totalNR = Observable.combineLatest(this.selectedReward, pledgeInput, this.bonusAmount, pledgeReason) {rw,  pInput, bAmount, pReason ->
+            Observable.combineLatest(this.selectedReward, pledgeInput, this.bonusAmount, pledgeReason) {rw,  pInput, bAmount, pReason ->
                 return@combineLatest Pair(RewardUtils.isShippable(rw), pInput + bAmount.toDouble())
             }
                     .filter { !it.first }
                     .map { it.second }
                     .distinctUntilChanged()
+                    .subscribe(totalNR)
 
-            val total = Observable.merge(totalNR, totalRw)
+            val total = this.selectedReward
+                    .switchMap {
+                        if (RewardUtils.isShippable(it) && !RewardUtils.isDigital(it)) totalRw
+                        else totalNR
+                    }
                     .distinctUntilChanged()
-                    .filter { ObjectUtils.isNotNull(it) }
 
             total
                     .compose<Pair<Double, String>>(combineLatestPair(this.bonusAmount))

@@ -1062,11 +1062,14 @@ interface PledgeFragmentViewModel {
 
             val paymentMethodId: Observable<String> = selectedCardAndPosition.map { it.first.id() }
 
+            val extendedListForCheckOut = rewardAndAddOns
+                    .map { extendAddOns(it) }
+
             val createBackingNotification = Observable.combineLatest(project,
                     total.map { it.toString() },
                     paymentMethodId,
                     locationId,
-                    rewardAndAddOns,
+                    extendedListForCheckOut,
                     cookieRefTag)
             { p, a, id, l, r, c ->
                 CreateBackingData(p, a, id, l, rewardsIds = r, refTag = c)
@@ -1281,6 +1284,27 @@ interface PledgeFragmentViewModel {
                         this.isPledgeMinimumSubtitleGone.onNext(it)
                         this.isBonusSupportSectionGone.onNext(it)
                     }
+        }
+
+        /** For the checkout we need to send a list repeating as much addOns items
+         * as the user has selected:
+         * User selection [R, 2xa, 3xb]
+         * Checkout data  [R, a, a, b, b, b]
+        */
+        private fun extendAddOns(flattenedList:List<Reward>): List<Reward> {
+            val mutableList = mutableListOf<Reward>()
+
+            flattenedList.map {
+                if (!it.isAddOn) mutableList.add(it)
+                else {
+                    val q = it.quantity() ?: 1
+                    for (i in 1..q) {
+                        mutableList.add(it)
+                    }
+                }
+            }
+
+            return mutableList.toList()
         }
 
         private fun hasBeenUpdated(shippingUpdated: Boolean, pReason: PledgeReason?, bHasChanged: Boolean, aUpdated: Boolean):Boolean {

@@ -78,6 +78,7 @@ public final class RewardFactory {
 
     return reward().toBuilder()
             .id(rewardId)
+            .minimum(10)
             .isAddOn(true)
             .addOnsItems(
                     Arrays.asList(

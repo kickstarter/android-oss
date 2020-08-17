@@ -60,8 +60,10 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_suma
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_rules
+import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.view.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.view.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
@@ -128,7 +130,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                         }
                     }
                 }
-
 
         this.viewModel.outputs.decreaseBonusButtonIsEnabled()
                 .compose(bindToLifecycle())
@@ -265,7 +266,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.selectedShippingRule()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { shipping_rules.setText(it.toString()) }
+                .subscribe {
+                    shipping_rules.setText(it.toString())
+                    shipping_rules_static.text = it.toString()
+                }
 
         this.viewModel.outputs.shippingAmount()
                 .compose(bindToLifecycle())
@@ -273,6 +277,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe {
                     ViewUtils.setGone(shipping_amount_loading_view, true)
                     setPlusTextView(shipping_amount, it)
+                    setPlusTextView(shipping_amount_static, it)
                 }
 
         this.viewModel.outputs.shippingSummaryAmount()
@@ -289,12 +294,23 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .filter { ObjectUtils.isNotNull(context) }
-                .subscribe { displayShippingRules(it.first, it.second) }
+                .subscribe {
+                    displayShippingRules(it.first, it.second)
+                }
 
         this.viewModel.outputs.shippingRulesSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(shipping_rules_row, it) }
+                .subscribe {
+                    ViewUtils.setGone(shipping_rules_row, it)
+                }
+
+        this.viewModel.outputs.shippingRuleStaticIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(shipping_rules_row_static, it)
+                }
 
         this.viewModel.outputs.shippingSummaryIsGone()
                 .compose(bindToLifecycle())
@@ -496,10 +512,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         RxView.clicks(pledge_footer_continue_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.continueButtonClicked() }
-
-        this.viewModel.outputs.shippingSelectorIsGone()
-                .compose(bindToLifecycle())
-                .subscribe { this.view?.shipping_rules?.let { it1 -> ViewUtils.setGone(it1, it) } }
     }
 
     private fun populateHeaderItems(selectedItems: List<Pair<Project, Reward>>) {
@@ -759,7 +771,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     }
 
     companion object {
-
         fun newInstance(pledgeData: PledgeData, pledgeReason: PledgeReason): PledgeFragment {
             val fragment = PledgeFragment()
             val argument = Bundle()

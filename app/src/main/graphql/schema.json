@@ -4761,22 +4761,6 @@
               "deprecationReason": null
             },
             {
-              "name": "projectSummary",
-              "description": "A list of responses that summarize the project.",
-              "args": [],
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ProjectSummary",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "recommendations",
               "description": "",
               "args": [],
@@ -10508,7 +10492,19 @@
           "interfaces": null,
           "enumValues": [
             {
+              "name": "GR",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "PL",
+              "description": "",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SI",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -10850,18 +10846,6 @@
               "deprecationReason": null
             },
             {
-              "name": "new_campaign_nav_desktop",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "new_campaign_nav_mobile",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "new_project_build_additional_owners",
               "description": "",
               "isDeprecated": false,
@@ -10929,12 +10913,6 @@
             },
             {
               "name": "project_prelaunch_summaries",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "project_summary",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -18916,78 +18894,6 @@
         },
         {
           "kind": "OBJECT",
-          "name": "ProjectSummary",
-          "description": "",
-          "fields": [
-            {
-              "name": "question",
-              "description": "A question prompt for the creator to summarize their project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "ProjectSummaryQuestion",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "response",
-              "description": "Response to a question prompt that summarizes the project",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "ProjectSummaryQuestion",
-          "description": "Question prompts for the creator to summarize their project",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "WHAT_IS_THE_PROJECT",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WHAT_WILL_YOU_DO_WITH_THE_MONEY",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WHO_ARE_YOU",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
           "name": "Recommendations",
           "description": "Score and model from recommendations engine if a project was fetched via recommendations.",
           "fields": [
@@ -26249,12 +26155,6 @@
               "deprecationReason": null
             },
             {
-              "name": "el",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "es",
               "description": "",
               "isDeprecated": false,
@@ -26274,18 +26174,6 @@
             },
             {
               "name": "ja",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pl",
-              "description": "",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "sl",
               "description": "",
               "isDeprecated": false,
               "deprecationReason": null
@@ -32723,11 +32611,29 @@
             },
             {
               "name": "rewardId",
-              "description": "Relay encoded Reward ID - legacy",
+              "description": "Relay encoded Reward ID - legacy - mutually exclusive with reward_ids",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
                 "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "rewardIds",
+              "description": "List of Relay encoded Reward/Add-on IDs - mutually exclusive with reward_id",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
               },
               "defaultValue": null
             }
@@ -41804,24 +41710,6 @@
               "defaultValue": null
             },
             {
-              "name": "projectSummary",
-              "description": "",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "ProjectSummaryInput",
-                    "ofType": null
-                  }
-                }
-              },
-              "defaultValue": null
-            },
-            {
               "name": "risks",
               "description": "",
               "type": {
@@ -41899,45 +41787,6 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INPUT_OBJECT",
-          "name": "ProjectSummaryInput",
-          "description": "A summary for a project.",
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "question",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "ProjectSummaryQuestion",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null
-            },
-            {
-              "name": "response",
-              "description": "",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
                   "ofType": null
                 }
               },

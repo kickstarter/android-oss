@@ -36,7 +36,11 @@
                 android:paddingStart="@dimen/activity_vertical_margin"
                 android:paddingEnd="@dimen/activity_vertical_margin">
 
-                <include layout="@layout/fragment_pledge_section_shipping" />
+                <include layout="@layout/fragment_pledge_section_shipping"
+                    android:id="@+id/shipping_rules_row_static" />
+
+                <include layout="@layout/fragment_pledge_section_editable_shipping"
+                    android:id="@+id/shipping_rules_row"/>
 
                 <include layout="@layout/fragment_pledge_section_pledge_amount" />
 

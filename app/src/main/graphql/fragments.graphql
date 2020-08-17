@@ -34,6 +34,10 @@ fragment backing on Backing {
             ... reward
         }
     }
+
+    clientSecret
+    requiresAction
+    status
 }
 
 fragment project on Project {

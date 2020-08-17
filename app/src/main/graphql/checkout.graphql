@@ -1,5 +1,5 @@
-mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!, $paymentSourceId: String!, $locationId: String, $rewardId: ID, $rewardIds: [ID!], $refParam: String) {
-  createBacking(input: {projectId: $projectId, amount: $amount, paymentType: $paymentType, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardId: $rewardId, rewardIds: $rewardIds, refParam: $refParam}) {
+mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!, $paymentSourceId: String!, $locationId: String, $rewardIds: [ID!], $refParam: String) {
+  createBacking(input: {projectId: $projectId, amount: $amount, paymentType: $paymentType, paymentSourceId: $paymentSourceId, locationId: $locationId, rewardIds: $rewardIds, refParam: $refParam}) {
     checkout {
       id
       backing {
@@ -19,13 +19,14 @@ mutation CancelBacking($backingId: ID!, $note: String) {
   }
 }
 
-mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String, $rewardId: ID, $paymentSourceId: String)  {
-  updateBacking(input: { id: $backingId, amount: $amount, locationId: $locationId, rewardId: $rewardId, paymentSourceId: $paymentSourceId}) {
+mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String,$rewardIds: [ID!], $paymentSourceId: String)  {
+  updateBacking(input: { id: $backingId, amount: $amount, locationId: $locationId, rewardIds: $rewardIds, paymentSourceId: $paymentSourceId}) {
     checkout {
       id
       backing {
         clientSecret
         requiresAction
+        status
       }
     }
   }

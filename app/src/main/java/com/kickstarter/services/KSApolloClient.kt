@@ -71,7 +71,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
                     .paymentSourceId(createBackingData.paymentSourceId)
                     .locationId(createBackingData.locationId?.let { it })
-                    .rewardId(createBackingData.reward?.let { encodeRelayId(it) })
                     .rewardIds(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                     .refParam(createBackingData.refTag?.tag())
                     .build()
@@ -459,7 +458,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .backingId(encodeRelayId(updateBackingData.backing))
                     .amount(updateBackingData.amount.toString())
                     .locationId(updateBackingData.locationId)
-                    .rewardId(updateBackingData.reward?.let { encodeRelayId(it) })
+                    .rewardIds(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                     .paymentSourceId(updateBackingData.paymentSourceId)
                     .build()
 
@@ -697,25 +696,19 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
  * and we need to transform it in : D(5),C(1),E(2)
  */
 fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
-    val mutableMap = mutableMapOf<Reward, Int>()
 
     val rewardsList = addOns.nodes()?.map { node ->
         rewardTransformer(node.fragments().reward())
     }
 
-    rewardsList?.map {
-        var addOnQuantity = mutableMap.getOrPut(it, {0})
-        if (addOnQuantity != null) addOnQuantity += 1
+    val mapHolder = mutableMapOf<Long, Reward>()
 
-        mutableMap.put(it, addOnQuantity)
+    rewardsList?.forEach {
+        val q = mapHolder[it.id()]?.quantity()?:0
+        mapHolder[it.id()] = it.toBuilder().quantity(q + 1).build()
     }
 
-    return mutableMap.map {
-        it.key
-                .toBuilder()
-                .quantity(it.value)
-                .build()
-    }.toList()
+    return mapHolder.values.toList()
 }
 
 /**

@@ -401,14 +401,19 @@ interface PledgeFragmentViewModel {
                         this.selectedReward.onNext(it)
                     }
 
-            val preSelectedShippingRule = pledgeData
-                    .map { it.shippingRule() }
-
             val projectData = pledgeData
                     .map { it.projectData() }
 
             val project = projectData
                     .map { it.project() }
+
+            // Shipping rules section
+            val shippingRules = project
+                    .compose<Pair<Project, Reward>>(combineLatestPair(this.selectedReward))
+                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError()) }
+                    .map { it.shippingRules() }
+                    .distinctUntilChanged()
+                    .share()
 
             val pledgeReason = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -431,6 +436,20 @@ interface PledgeFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it.backing()) }
                     .map { requireNotNull(it.backing()) }
 
+            val backingShippingRule = backing
+                    .filter { ObjectUtils.isNotNull(it.locationId()) }
+                    .map { requireNotNull(it.locationId()) }
+                    .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
+                    .map { shippingInfo ->
+                        selectedShippingRule(shippingInfo)
+                    }
+
+            val initShippingRule = pledgeData
+                    .map { it.shippingRule() }
+
+            val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule)
+                    .distinctUntilChanged()
+
             backing
                     .map { requireNotNull(it.addOns()) }
                     .compose<Pair<List<Reward>, Reward>>(combineLatestPair(this.selectedReward))
@@ -440,6 +459,11 @@ interface PledgeFragmentViewModel {
                         updatedList.add(0, it.second)
                         this.rewardAndAddOns.onNext(updatedList.toList())
                     }
+
+            backing
+                    .compose<Pair<Backing, Reward>>(combineLatestPair(this.selectedReward))
+                    .compose(bindToLifecycle())
+                    .filter { it.first != null  && it.second != null }
 
             backing
                     .map { it.bonusAmount() }
@@ -453,6 +477,9 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<ProjectData, Reward>>(combineLatestPair(this.selectedReward))
 
             this.selectedReward
+                    .compose<Pair<Reward, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE }
+                    .map { it.first }
                     .compose<Pair<Reward, List<Reward>>>(combineLatestPair(addOns))
                     .map {
                         joinRewardAndAddOns(it.first, it.second)
@@ -463,16 +490,14 @@ interface PledgeFragmentViewModel {
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(this.selectedReward))
 
-            val projectRewardAndAddOns = project
-                    .compose<Pair<Project, List<Reward>>>(combineLatestPair(rewardAndAddOns))
-
             preSelectedShippingRule
                     .compose<Pair<ShippingRule, List<Reward>>>(combineLatestPair(this.rewardAndAddOns))
                     .compose(bindToLifecycle())
                     .subscribe {
                         val selectedRw = it.second.first()
-                        if (ObjectUtils.isNotNull(it.first) && hasSelectedAddons(it.second)) {
-                            this.defaultShippingLocation.onNext(it.first)
+                        if (ObjectUtils.isNotNull(it.first)) this.shippingRule.onNext(it.first)
+
+                        if (hasSelectedAddons(it.second)) {
                             this.shippingRulesSectionIsGone.onNext(selectedRw.hasAddons())
                             this.shippingRuleStaticIsGone.onNext(!selectedRw.hasAddons())
                         } else {
@@ -542,7 +567,7 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMinimum)
 
-            rewardAndAddOns
+            this.rewardAndAddOns
                     .compose<Pair<List<Reward>, Project>>(combineLatestPair(project))
                     .map { joinProject(it) }
                     .compose(bindToLifecycle())
@@ -684,14 +709,6 @@ interface PledgeFragmentViewModel {
                         this.bonusAmountHasChanged.onNext(true)
                     }
 
-            // Shipping rules section
-            val shippingRules = projectRewardAndAddOns
-                    .filter { !hasSelectedAddons(it.second) && RewardUtils.isShippable(it.second.first()) }
-                    .distinctUntilChanged()
-                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second.first()).compose(neverError()) }
-                    .map { it.shippingRules() }
-                    .share()
-
             val rulesAndProject = shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
 
@@ -699,36 +716,34 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-            // TODO: evaluate if the pledgeReason is necessary
-            Observable.combineLatest(shippingRules, this.currentConfig.observable(), pledgeReason, rewardAndAddOns) { rules, config, reason, rwAddOns ->
+            Observable.combineLatest(shippingRules, this.currentConfig.observable(), rewardAndAddOns) { rules, config, rwAddOns ->
                 return@combineLatest rules.first { (!hasSelectedAddons(rwAddOns)) && (it.location().country() == config.countryCode()) }
             }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.defaultShippingLocation.onNext(it)
-                    }
-
-            this.defaultShippingLocation
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingRule.onNext(it)
-                    }
-
-            shippingRules
-                    .filter { it.isNotEmpty() }
-                    .compose<Pair<List<ShippingRule>, Backing>>(combineLatestPair(backing))
-                    .switchMap { backingShippingRule(it.first, it.second) }
-                    .filter { it != null }
-                    .subscribe(this.shippingRule)
-
-            Observable.merge(this.defaultShippingLocation, this.shippingRule)
+                    .compose<Pair<ShippingRule, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE }
+                    .map { it.first }
                     .compose<Pair<ShippingRule, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
                     .subscribe {
-                        shippingAmountSelectedRw.onNext(it.first.cost())
+                        this.shippingRule.onNext(it.first)
+                        this.shippingAmountSelectedRw.onNext(it.first.cost())
                         this.shippingAmount.onNext(ProjectViewUtils.styleCurrency(it.first.cost(), it.second, this.ksCurrency))
+                    }
+
+            val backingShippingAmount = backing
+                    .map { it.shippingAmount() }
+
+            Observable.combineLatest(this.shippingRule, pledgeReason, backingShippingAmount, this.selectedReward) {rule, reason, bShippingAmount, rw ->
+                return@combineLatest getShippingAmount(rule, reason, bShippingAmount, rw)
+            }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .compose(bindToLifecycle())
+                    .distinctUntilChanged()
+                    .subscribe {
+                        shippingAmountSelectedRw.onNext(it.first)
+                        this.shippingAmount.onNext(ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency))
                     }
 
             // - When updating payment, shipping location area should always be gone
@@ -749,7 +764,7 @@ interface PledgeFragmentViewModel {
 
             // - Calculate total for No Reward || Reward without shipping
             Observable.combineLatest(this.selectedReward, pledgeInput, this.bonusAmount, pledgeReason) {rw,  pInput, bAmount, pReason ->
-                return@combineLatest Pair(RewardUtils.isShippable(rw), getAmountForNoShipping(pReason, pInput, bAmount.toDouble()))
+                return@combineLatest Pair(RewardUtils.isShippable(rw), getAmountForNoShipping(rw, pInput, bAmount.toDouble(), pReason))
             }
                     .filter { !it.first }
                     .map { it.second }
@@ -943,7 +958,7 @@ interface PledgeFragmentViewModel {
             }
                     .distinctUntilChanged()
 
-            Observable.combineLatest(this.shippingRule, this.defaultShippingLocation) { rule, dfRule ->
+            Observable.combineLatest(this.shippingRule, backingShippingRule) { rule, dfRule ->
                     return@combineLatest rule.id() != dfRule.id()
             }
                     .distinctUntilChanged()
@@ -1306,10 +1321,33 @@ interface PledgeFragmentViewModel {
                     }
         }
 
-        private fun getAmountForNoShipping(pReason: PledgeReason, pInput: Double, bAmount: Double) = when (pReason) {
-                PledgeReason.PLEDGE -> (pInput + bAmount.toInt())
-                else -> pInput
+        private fun getShippingAmount(rule: ShippingRule, reason: PledgeReason, bShippingAmount: Float, rw:Reward): Double {
+            var shipAmount = rule.cost()
+
+            if (reason != PledgeReason.PLEDGE && rw.hasAddons() && RewardUtils.isShippable(rw)) {
+                shipAmount = bShippingAmount.toDouble()
             }
+
+            return shipAmount
+        }
+
+        private fun selectedShippingRule(shippingInfo: Pair<Long, List<ShippingRule>>):ShippingRule =
+                requireNotNull(shippingInfo.second.first { it.location().id() == shippingInfo.first })
+
+        private fun getAmountForNoShipping(reward: Reward, pInput: Double, bAmount: Double, pReason: PledgeReason): Double {
+            var amount = pInput
+
+            if (RewardUtils.isNoReward(reward) && pReason != PledgeReason.PLEDGE)
+                amount = pInput
+            else if (!RewardUtils.isNoReward(reward) && pReason != PledgeReason.PLEDGE) {
+                amount = reward.minimum() + bAmount
+            }
+            else if (!RewardUtils.isShippable(reward)) {
+                amount = pInput + bAmount
+            }
+
+            return amount
+        }
 
         /** For the checkout we need to send a list repeating as much addOns items
          * as the user has selected:

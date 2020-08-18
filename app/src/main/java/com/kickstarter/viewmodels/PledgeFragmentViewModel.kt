@@ -431,7 +431,7 @@ interface PledgeFragmentViewModel {
 
             val backing = projectData
                     .compose<Pair<ProjectData, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.UPDATE_PLEDGE }
+                    .filter { it.second != PledgeReason.PLEDGE }
                     .map { it.first }
                     .filter { ObjectUtils.isNotNull(it.backing()) }
                     .map { requireNotNull(it.backing()) }
@@ -451,6 +451,7 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
 
             backing
+                    .filter { ObjectUtils.isNotNull(it.addOns()) }
                     .map { requireNotNull(it.addOns()) }
                     .compose<Pair<List<Reward>, Reward>>(combineLatestPair(this.selectedReward))
                     .compose(bindToLifecycle())
@@ -478,7 +479,7 @@ interface PledgeFragmentViewModel {
 
             this.selectedReward
                     .compose<Pair<Reward, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE }
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
                     .map { it.first }
                     .compose<Pair<Reward, List<Reward>>>(combineLatestPair(addOns))
                     .map {
@@ -722,7 +723,7 @@ interface PledgeFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
                     .compose<Pair<ShippingRule, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE }
+                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
                     .map { it.first }
                     .compose<Pair<ShippingRule, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
@@ -1324,7 +1325,7 @@ interface PledgeFragmentViewModel {
         private fun getShippingAmount(rule: ShippingRule, reason: PledgeReason, bShippingAmount: Float, rw:Reward): Double {
             var shipAmount = rule.cost()
 
-            if (reason != PledgeReason.PLEDGE && rw.hasAddons() && RewardUtils.isShippable(rw)) {
+            if ((reason != PledgeReason.PLEDGE || reason != PledgeReason.UPDATE_REWARD ) && rw.hasAddons() && RewardUtils.isShippable(rw)) {
                 shipAmount = bShippingAmount.toDouble()
             }
 
@@ -1420,10 +1421,6 @@ interface PledgeFragmentViewModel {
                 (sAmountSelectedRw + addOnsCost + addOnsShippingCost + reward.minimum() + bAmount.toInt())
 
             return totalPledgeValue
-        }
-
-        private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {
-            return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })
         }
 
         private fun checkoutData(shippingAmount: Double, total: Double, bonusAmount: Double?, checkout: Checkout?): CheckoutData {

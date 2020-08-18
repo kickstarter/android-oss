@@ -424,6 +424,31 @@ interface PledgeFragmentViewModel {
             val addOns = pledgeData
                     .map { if(it.addOns().isNullOrEmpty()) emptyList() else it.addOns() as List<Reward>}
 
+            val backing = projectData
+                    .compose<Pair<ProjectData, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.UPDATE_PLEDGE }
+                    .map { it.first }
+                    .filter { ObjectUtils.isNotNull(it.backing()) }
+                    .map { requireNotNull(it.backing()) }
+
+            backing
+                    .map { requireNotNull(it.addOns()) }
+                    .compose<Pair<List<Reward>, Reward>>(combineLatestPair(this.selectedReward))
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        val updatedList = it.first.toMutableList()
+                        updatedList.add(0, it.second)
+                        this.rewardAndAddOns.onNext(updatedList.toList())
+                    }
+
+            backing
+                    .map { it.bonusAmount() }
+                    .filter { it > 0 }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.bonusAmount.onNext(it.toString())
+                    }
+
             val projectDataAndReward = projectData
                     .compose<Pair<ProjectData, Reward>>(combineLatestPair(this.selectedReward))
 
@@ -470,11 +495,6 @@ interface PledgeFragmentViewModel {
 
             val fullProjectDataAndPledgeData = projectData
                     .compose<Pair<ProjectData, PledgeData>>(combineLatestPair(pledgeData))
-
-            val backing = projectAndReward
-                    .filter { BackingUtils.isBacked(it.first, it.second) }
-                    .map { it.first.backing() }
-                    .ofType(Backing::class.java)
 
             // Reward summary section
             projectAndReward
@@ -683,11 +703,11 @@ interface PledgeFragmentViewModel {
             Observable.combineLatest(shippingRules, this.currentConfig.observable(), pledgeReason, rewardAndAddOns) { rules, config, reason, rwAddOns ->
                 return@combineLatest rules.first { (!hasSelectedAddons(rwAddOns)) && (it.location().country() == config.countryCode()) }
             }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        it?.let {
-                            this.defaultShippingLocation.onNext(it)
-                        }
+                        this.defaultShippingLocation.onNext(it)
                     }
 
             this.defaultShippingLocation
@@ -729,7 +749,7 @@ interface PledgeFragmentViewModel {
 
             // - Calculate total for No Reward || Reward without shipping
             Observable.combineLatest(this.selectedReward, pledgeInput, this.bonusAmount, pledgeReason) {rw,  pInput, bAmount, pReason ->
-                return@combineLatest Pair(RewardUtils.isShippable(rw), pInput + bAmount.toDouble())
+                return@combineLatest Pair(RewardUtils.isShippable(rw), getAmountForNoShipping(pReason, pInput, bAmount.toDouble()))
             }
                     .filter { !it.first }
                     .map { it.second }
@@ -1285,6 +1305,11 @@ interface PledgeFragmentViewModel {
                         this.isBonusSupportSectionGone.onNext(it)
                     }
         }
+
+        private fun getAmountForNoShipping(pReason: PledgeReason, pInput: Double, bAmount: Double) = when (pReason) {
+                PledgeReason.PLEDGE -> (pInput + bAmount.toInt())
+                else -> pInput
+            }
 
         /** For the checkout we need to send a list repeating as much addOns items
          * as the user has selected:

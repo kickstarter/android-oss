@@ -226,6 +226,7 @@ interface ProjectViewModel {
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val apolloClient = environment.apolloClient()
 
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val blurbVariantClicked = PublishSubject.create<Void>()
@@ -540,6 +541,11 @@ interface ProjectViewModel {
             val backedProject = currentProject
                     .filter { it.isBacking }
 
+            val backing = backedProject
+                    .switchMap {
+                        this.apolloClient.getProjectBacking(it.slug()?: "")
+                    }
+
             backedProject
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
                     .filter { BooleanUtils.isTrue(it.backing()?.cancelable()?: false) }
@@ -559,7 +565,12 @@ interface ProjectViewModel {
                     .subscribe(this.startMessagesActivity)
 
             val projectDataAndBackedReward = projectData
-                    .map { pD -> BackingUtils.backedReward(pD.project())?.let { Pair(pD, it) } }
+                    .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                    .map { pD ->
+                        BackingUtils.backedReward(pD.first.project())?.let {
+                            Pair(pD.first.toBuilder().backing(pD.second).build(), it)
+                        }
+                    }
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))

@@ -410,6 +410,7 @@ interface PledgeFragmentViewModel {
             // Shipping rules section
             val shippingRules = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(this.selectedReward))
+                    .filter { RewardUtils.isShippable(it.second) }
                     .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError()) }
                     .map { it.shippingRules() }
                     .distinctUntilChanged()
@@ -437,8 +438,11 @@ interface PledgeFragmentViewModel {
                     .map { requireNotNull(it.backing()) }
 
             val backingShippingRule = backing
-                    .filter { ObjectUtils.isNotNull(it.locationId()) }
-                    .map { requireNotNull(it.locationId()) }
+                    .compose<Pair<Backing, Reward>>(combineLatestPair(this.selectedReward))
+                    .filter {
+                        RewardUtils.isShippable(it.second) && ObjectUtils.isNotNull(it.first.locationId())
+                    }
+                    .map { requireNotNull(it.first.locationId()) }
                     .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
                     .map { shippingInfo ->
                         selectedShippingRule(shippingInfo)

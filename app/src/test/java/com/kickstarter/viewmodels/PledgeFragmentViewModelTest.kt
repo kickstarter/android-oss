@@ -165,8 +165,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.headerSelectedItems().subscribe(this.headerSelectedItems)
         this.vm.outputs.shippingRuleStaticIsGone().subscribe(this.shippingRuleStaticIsGone)
 
-
-        val projectData = ProjectDataFactory.project(project.toBuilder()
+        val projectData = project.backing()?.let {
+            return@let ProjectData.builder()
+                    .project(project)
+                    .backing(it)
+                    .build()
+        } ?: ProjectDataFactory.project(project.toBuilder()
                 .deadline(this.deadline)
                 .build())
 
@@ -596,17 +600,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.continueButtonIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonCTA.assertValue(R.string.Confirm)
-        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertNoValues()
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(true)
         this.pledgeSummaryIsGone.assertValue(true)
         this.headerSectionIsGone.assertValue(true)
-        this.shippingRulesSectionIsGone.assertValues(true)
+        this.shippingRulesSectionIsGone.assertNoValues()
         this.selectedShippingRule.assertNoValues()
         this.shippingSummaryIsGone.assertValue(true)
         this.totalDividerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()

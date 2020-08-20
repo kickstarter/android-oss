@@ -288,7 +288,6 @@ interface PledgeFragmentViewModel {
         private val pledgeButtonClicked = PublishSubject.create<Void>()
         private val pledgeInput = PublishSubject.create<String>()
         private val shippingRule = BehaviorSubject.create<ShippingRule>()
-        private val defaultShippingLocation = BehaviorSubject.create<ShippingRule>()
         private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
         private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
         private val decreaseBonusButtonClicked = PublishSubject.create<Void>()
@@ -379,6 +378,11 @@ interface PledgeFragmentViewModel {
         private val totalNR = PublishSubject.create<Double>()
         private val totalRw = PublishSubject.create<Double>()
 
+        // - Flag to know if the shipping location should be the default one,
+        // - meaning we don't have shipping location selected yet
+        // - (Reward shipable without addOns in new pledge or updating pledge)
+        private val shouldLoadDefaultLocation = PublishSubject.create<Boolean>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -434,6 +438,12 @@ interface PledgeFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it.backing()) }
                     .map { requireNotNull(it.backing()) }
 
+            backing
+                    .map { it.locationId() == null }
+                    .subscribe {
+                        this.shouldLoadDefaultLocation.onNext(it)
+                    }
+
             val backingShippingRule = backing
                     .compose<Pair<Backing, Reward>>(combineLatestPair(this.selectedReward))
                     .filter {
@@ -446,7 +456,13 @@ interface PledgeFragmentViewModel {
                     }
 
             val initShippingRule = pledgeData
-                    .map { it.shippingRule() }
+                    .map {
+                        it.shippingRule()
+                    }
+
+            pledgeData
+                    .map { it.shippingRule() == null }
+                    .subscribe { this.shouldLoadDefaultLocation.onNext(it) }
 
             val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule)
                     .distinctUntilChanged()
@@ -718,8 +734,8 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-            Observable.combineLatest(shippingRules, this.currentConfig.observable()) { rules, config ->
-                return@combineLatest defaultConfigShippingRule(rules, config)
+            Observable.combineLatest(shippingRules, this.currentConfig.observable(), shouldLoadDefaultLocation) { rules, config, isDefault ->
+                return@combineLatest if(isDefault) defaultConfigShippingRule(rules, config) else null
             }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
@@ -1338,8 +1354,14 @@ interface PledgeFragmentViewModel {
                     }
         }
 
+        /**
+         *  Choose the correct shipping location in case of a just Reward Selected
+         *  - If any location available for a reward matches our default configuration select that
+         *  - In case no matching between our default and the locations available for a reward
+         *  just select the fist one available.
+         */
         private fun defaultConfigShippingRule(rules: MutableList<ShippingRule>, config: Config) =
-                rules.firstOrNull { it.location().country() == config.countryCode() }
+                rules.firstOrNull { it.location().country() == config.countryCode() }?.let { it }?: rules.first()
 
         private fun getShippingAmount(rule: ShippingRule, reason: PledgeReason, bShippingAmount: Float? = null, listRw:List<Reward>): Double {
             val rw = listRw.first()

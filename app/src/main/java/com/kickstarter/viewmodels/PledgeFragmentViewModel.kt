@@ -5,10 +5,7 @@ import android.text.SpannableString
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
-import com.kickstarter.libs.CHECKOUT_PAYMENT_PAGE_VIEWED
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.NumberOptions
+import com.kickstarter.libs.*
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.*
@@ -721,8 +718,8 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-            Observable.combineLatest(shippingRules, this.currentConfig.observable(), rewardAndAddOns) { rules, config, rwAddOns ->
-                return@combineLatest rules.first { (!hasSelectedAddons(rwAddOns)) && (it.location().country() == config.countryCode()) }
+            Observable.combineLatest(shippingRules, this.currentConfig.observable()) { rules, config ->
+                return@combineLatest defaultConfigShippingRule(rules, config)
             }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
@@ -733,15 +730,30 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.shippingRule.onNext(it.first)
-                        this.shippingAmountSelectedRw.onNext(it.first.cost())
-                        this.shippingAmount.onNext(ProjectViewUtils.styleCurrency(it.first.cost(), it.second, this.ksCurrency))
                     }
 
             val backingShippingAmount = backing
                     .map { it.shippingAmount() }
 
-            Observable.combineLatest(this.shippingRule, pledgeReason, backingShippingAmount, this.selectedReward) {rule, reason, bShippingAmount, rw ->
-                return@combineLatest getShippingAmount(rule, reason, bShippingAmount, rw)
+            // - Shipping amount when backing
+            Observable.combineLatest(this.shippingRule, pledgeReason, backingShippingAmount, rewardAndAddOns) {rule, reason, bShippingAmount, listRw ->
+                return@combineLatest getShippingAmount(rule, reason, bShippingAmount, listRw)
+            }
+                    .compose<Pair<Double, Project>>(combineLatestPair(project))
+                    .compose(bindToLifecycle())
+                    .distinctUntilChanged()
+                    .subscribe {
+                        shippingAmountSelectedRw.onNext(it.first)
+                        this.shippingAmount.onNext(ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency))
+                    }
+
+            val newPledge = pledgeReason
+                    .filter { it == PledgeReason.PLEDGE || it == PledgeReason.UPDATE_REWARD }
+                    .map { it }
+
+            // - Shipping amount when no backing
+            Observable.combineLatest(this.shippingRule, newPledge, rewardAndAddOns) {rule, reason, listRw ->
+                return@combineLatest getShippingAmount(rule, reason, listRw = listRw)
             }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
@@ -1326,14 +1338,34 @@ interface PledgeFragmentViewModel {
                     }
         }
 
-        private fun getShippingAmount(rule: ShippingRule, reason: PledgeReason, bShippingAmount: Float, rw:Reward): Double {
-            var shipAmount = rule.cost()
+        private fun defaultConfigShippingRule(rules: MutableList<ShippingRule>, config: Config) =
+                rules.firstOrNull { it.location().country() == config.countryCode() }
 
-            if ((reason != PledgeReason.PLEDGE || reason != PledgeReason.UPDATE_REWARD ) && rw.hasAddons() && RewardUtils.isShippable(rw)) {
-                shipAmount = bShippingAmount.toDouble()
+        private fun getShippingAmount(rule: ShippingRule, reason: PledgeReason, bShippingAmount: Float? = null, listRw:List<Reward>): Double {
+            val rw = listRw.first()
+
+            return when(reason) {
+                PledgeReason.UPDATE_REWARD,
+                PledgeReason.PLEDGE -> if (rw.hasAddons()) shippingCostForAddOns(listRw, rule) + rule.cost()  else rule.cost()
+                PledgeReason.FIX_PLEDGE,
+                PledgeReason.UPDATE_PAYMENT,
+                PledgeReason.UPDATE_PLEDGE -> bShippingAmount?.toDouble()?: rule.cost()
+            }
+        }
+
+        private fun shippingCostForAddOns(listRw: List<Reward>, selectedRule: ShippingRule): Double {
+            var shippingCost = 0.0
+            listRw.filter {
+                it.isAddOn
+            }.map { rw ->
+                rw.shippingRules()?.filter { rule ->
+                    rule.location().id() == selectedRule.location().id()
+                }?.map { rule ->
+                    shippingCost += rule.cost() * (rw.quantity() ?: 1)
+                }
             }
 
-            return shipAmount
+            return shippingCost
         }
 
         private fun selectedShippingRule(shippingInfo: Pair<Long, List<ShippingRule>>):ShippingRule =

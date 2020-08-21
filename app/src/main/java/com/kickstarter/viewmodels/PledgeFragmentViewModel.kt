@@ -468,8 +468,7 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
 
             backing
-                    .filter { ObjectUtils.isNotNull(it.addOns()) }
-                    .map { requireNotNull(it.addOns()) }
+                    .map { if (it.addOns().isNullOrEmpty()) emptyList() else requireNotNull(it.addOns()) }
                     .compose<Pair<List<Reward>, Reward>>(combineLatestPair(this.selectedReward))
                     .compose(bindToLifecycle())
                     .subscribe {

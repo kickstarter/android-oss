@@ -820,7 +820,9 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.totalAmount)
+                    .subscribe {
+                        this.totalAmount.onNext(it)
+                    }
 
             total
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -1022,7 +1024,9 @@ interface PledgeFragmentViewModel {
             Observable.merge(updatingReward, changeDuringUpdatingPledge)
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe { this.pledgeButtonIsEnabled.onNext(it) }
+                    .subscribe {
+                        this.pledgeButtonIsEnabled.onNext(it)
+                    }
 
             // Payment section
             pledgeReason
@@ -1104,7 +1108,9 @@ interface PledgeFragmentViewModel {
                     .map { it.second }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe { this.pledgeButtonIsEnabled.onNext(it) }
+                    .subscribe {
+                        this.pledgeButtonIsEnabled.onNext(it)
+                    }
 
             val pledgeButtonClicked = userIsLoggedIn
                     .compose<Pair<Boolean, PledgeReason>>(combineLatestPair(pledgeReason))

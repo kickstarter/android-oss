@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.Scheduler;
-import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 

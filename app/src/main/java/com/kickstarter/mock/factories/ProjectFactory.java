@@ -10,7 +10,6 @@ import org.joda.time.DateTimeZone;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;

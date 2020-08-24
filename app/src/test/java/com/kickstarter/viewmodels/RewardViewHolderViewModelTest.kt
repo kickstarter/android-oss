@@ -189,6 +189,17 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testButtonEnabled_whenProjectIsLive_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+        val rw = RewardFactory.rewardHasAddOns()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project), rw)
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
+    }
+
+    @Test
     fun testButtonDisabled_whenProjectIsLiveAndBacked_Unavailable_Add_Ons() {
         setUpEnvironment(environment())
 

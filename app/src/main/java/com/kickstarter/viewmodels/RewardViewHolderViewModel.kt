@@ -416,7 +416,7 @@ interface RewardViewHolderViewModel {
             }?.let { true } ?: false
 
            return when {
-               isSelectable(project, rw) && !rw.hasAddons() -> true
+               isSelectable(project, rw) && backing == null -> true
                isSelectable(project, rw) && backing != null && !hasBackedAddOns(project) -> true
                BackingUtils.isBacked(project, rw) &&
                        RewardUtils.isAvailable(project, rw) &&

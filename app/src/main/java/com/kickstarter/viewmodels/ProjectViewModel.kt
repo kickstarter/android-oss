@@ -527,7 +527,8 @@ interface ProjectViewModel {
             { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
 
             projectData
-                    .filter { it.project().hasRewards() }
+                    .filter { it.project().hasRewards() && !it.project().isBacking }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.updateFragments)
 
@@ -545,6 +546,18 @@ interface ProjectViewModel {
                     .switchMap {
                         this.apolloClient.getProjectBacking(it.slug()?: "")
                     }
+
+            // - Update fragments with the backing data
+            projectData
+                    .filter { it.project().hasRewards() && it.project().isBacking }
+                    .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                    .map {
+                        val updatedProject = it.first.project().toBuilder().backing(it.second).build()
+                        projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
+                    }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.updateFragments)
 
             backedProject
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))

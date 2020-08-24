@@ -29,8 +29,8 @@ object RewardViewUtils {
 
         return when {
             BackingUtils.isBacked(project, reward) && !hasAddOnsSelected -> R.string.Selected
-            RewardUtils.isAvailable(project, reward) && !hasAddOnsSelected -> R.string.Select
-            reward.hasAddons() && hasAddOnsSelected && !hasUnavailableAddOn -> R.string.Continue
+            !BackingUtils.isBacked(project, reward) && RewardUtils.isAvailable(project, reward) -> R.string.Select
+            BackingUtils.isBacked(project, reward) && reward.hasAddons() && hasAddOnsSelected && !hasUnavailableAddOn -> R.string.Continue
             else -> R.string.No_longer_available
         }
     }

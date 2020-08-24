@@ -47,6 +47,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val titleForReward = TestSubscriber<String?>()
     private val titleIsGone = TestSubscriber<Boolean>()
     private val hasAddonsAvailable = TestSubscriber<Boolean>()
+    private val selectedRewardTagIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardViewHolderViewModel.ViewModel(environment)
@@ -77,6 +78,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
         this.vm.outputs.hasAddOnsAvailable().subscribe(this.hasAddonsAvailable)
+        this.vm.outputs.selectedRewardTagIsGone().subscribe(this.selectedRewardTagIsGone)
     }
 
     @Test
@@ -162,6 +164,34 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 ?: RewardFactory.reward())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.Selected)
+    }
+
+    @Test
+    fun testYouBackedTagVisible_whenProjectIsLiveAndBacked_backedReward() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()
+                ?: RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testYouBackedTagGone_whenProjectIsLiveAndBacked() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject),  RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testYouBackedTagGone_whenNoBackedProject() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project),  RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(true)
     }
 
     @Test

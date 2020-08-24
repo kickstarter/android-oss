@@ -120,6 +120,9 @@ interface RewardViewHolderViewModel {
 
         /** Emits a boolean that determines if the minimum pledge amount should be shown **/
         fun isMinimumPledgeAmountGone(): Observable<Boolean>
+
+        /** Emits a boolean that determines if the selected reward Tag should be shown **/
+        fun selectedRewardTagIsGone(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
@@ -159,6 +162,7 @@ interface RewardViewHolderViewModel {
         private val addOnsAvailable = BehaviorSubject.create<Boolean>()
         private val variantSuggestedAmount = BehaviorSubject.create<Int?>()
         private val isMinimumPledgeAmountGone = BehaviorSubject.create<Boolean>()
+        private val selectedRewardTagIsGone = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -324,6 +328,13 @@ interface RewardViewHolderViewModel {
                     }
                     .compose(bindToLifecycle())
                     .subscribe(this.titleForNoReward)
+
+            projectAndReward
+                    .map { BackingUtils.isBacked(it.first, it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe{
+                        this.selectedRewardTagIsGone.onNext(!it)
+                    }
 
             reward
                     .filter { RewardUtils.isReward(it) }
@@ -528,6 +539,10 @@ interface RewardViewHolderViewModel {
         @NonNull
         override fun hasAddOnsAvailable(): Observable<Boolean> = this.addOnsAvailable
 
+        @NonNull
         override fun isMinimumPledgeAmountGone(): Observable<Boolean> = this.isMinimumPledgeAmountGone
+
+        @NonNull
+        override fun selectedRewardTagIsGone(): Observable<Boolean> = this.selectedRewardTagIsGone
     }
 }

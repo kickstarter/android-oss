@@ -156,7 +156,40 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_backedReward() {
+    fun testButtonCTA_whenProjectIsLiveAndBacked_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonCTA.assertValuesAndClear(R.string.Continue)
+    }
+
+    @Test
+    fun testButtonEnabled_whenProjectIsLiveAndBacked_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
+    }
+
+    @Test
+    fun testButtonDisabled_whenProjectIsLiveAndBacked_Unavailable_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOnsLimitReached()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(false)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_AvailableAddOns() {
         setUpEnvironment(environment())
 
         val backedLiveProject = ProjectFactory.backedProject()
@@ -579,18 +612,18 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // A backed reward from a live project should not be enabled.
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false)
 
         // A backed reward from an ended project should not be enabled.
         val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject), backedSuccessfulProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false)
 
         // A reward with its limit reached should not be enabled.
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.limitReached())
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false, true, false)
     }
 
     @Test

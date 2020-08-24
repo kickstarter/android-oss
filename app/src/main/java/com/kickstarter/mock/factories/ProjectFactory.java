@@ -8,7 +8,10 @@ import com.kickstarter.models.User;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import type.CreditCardTypes;
@@ -90,6 +93,76 @@ public final class ProjectFactory {
       .backing(backing)
       .isBacking(true)
       .build();
+  }
+
+  public static @NonNull Project backedProjectWithAddOnsLimitReached() {
+    final Project project = project();
+
+    final Reward reward = RewardFactory.reward().toBuilder().hasAddons(true).build();
+    final Reward add1 = RewardFactory.addOn()
+            .toBuilder()
+            .remaining(0)
+            .limit(0)
+            .quantity(1)
+            .build();
+
+    final List<Reward> addOns = new ArrayList<Reward>();
+    addOns.add(add1);
+
+    final Backing backing = Backing.builder()
+            .amount(10.0f)
+            .backerId(IdFactory.id())
+            .addOns(addOns)
+            .cancelable(true)
+            .id(IdFactory.id())
+            .sequence(1)
+            .reward(reward)
+            .rewardId(reward.id())
+            .paymentSource(PaymentSourceFactory.Companion.visa())
+            .pledgedAt(DateTime.now())
+            .projectId(project.id())
+            .shippingAmount(0.0f)
+            .status(Backing.STATUS_PLEDGED)
+            .build();
+
+    return project
+            .toBuilder()
+            .backing(backing)
+            .isBacking(true)
+            .build();
+  }
+
+  public static @NonNull Project backedProjectWithAddOns() {
+    final Project project = project();
+
+    final Reward reward = RewardFactory.reward().toBuilder().hasAddons(true).build();
+    final Reward add1 = RewardFactory.addOn();
+
+    final List<Reward> addOns = new ArrayList<Reward>();
+    addOns.add(add1);
+    addOns.add(add1);
+
+    final Backing backing = Backing.builder()
+            .amount(10.0f)
+            .backerId(IdFactory.id())
+            .addOns(addOns)
+            .cancelable(true)
+            .id(IdFactory.id())
+            .sequence(1)
+            .reward(reward)
+            .rewardId(reward.id())
+            .paymentSource(PaymentSourceFactory.Companion.visa())
+            .pledgedAt(DateTime.now())
+            .projectId(project.id())
+            .shippingAmount(0.0f)
+            .status(Backing.STATUS_PLEDGED)
+            .build();
+
+    return project
+            .toBuilder()
+            .backing(backing)
+            .isBacking(true)
+            .build();
   }
 
 

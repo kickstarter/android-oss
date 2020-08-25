@@ -103,8 +103,8 @@ interface RewardViewHolderViewModel {
         /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
         fun shippingSummaryIsGone(): Observable<Boolean>
 
-        /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
-        fun showPledgeFragment(): Observable<Pair<Project, Reward>>
+        /** Show [com.kickstarter.ui.fragments.PledgeFragment] || [com.kickstarter.ui.fragments.BackingAddOnsFragment]  with the project's reward selected.  */
+        fun showFragment(): Observable<Pair<Project, Reward>>
 
         /** Emits `true` if the title should be hidden, `false` otherwise.  */
         fun titleIsGone(): Observable<Boolean>
@@ -155,7 +155,7 @@ interface RewardViewHolderViewModel {
         private val rewardItemsAreGone = BehaviorSubject.create<Boolean>()
         private val shippingSummary = BehaviorSubject.create<Pair<Int, String?>>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
-        private val showPledgeFragment = PublishSubject.create<Pair<Project, Reward>>()
+        private val showFragment = PublishSubject.create<Pair<Project, Reward>>()
         private val titleForNoReward = BehaviorSubject.create<Int>()
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
@@ -303,10 +303,9 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.endDateSectionIsGone)
 
             projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
-                    .subscribe(this.showPledgeFragment)
+                    .subscribe(this.showFragment)
 
             projectAndReward
                     .filter { isSelectable(it.first, it.second) && it.first.isLive }
@@ -416,12 +415,12 @@ interface RewardViewHolderViewModel {
             }?.let { true } ?: false
 
            return when {
-               isSelectable(project, rw) && backing == null -> true
                isSelectable(project, rw) && backing != null && !hasBackedAddOns(project) -> true
                BackingUtils.isBacked(project, rw) &&
                        RewardUtils.isAvailable(project, rw) &&
                        backing != null && hasBackedAddOns(project) &&
                        !hasUnavailableAddOn -> true
+               isSelectable(project, rw) -> true
                else -> false
            }
         }
@@ -554,7 +553,7 @@ interface RewardViewHolderViewModel {
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
         @NonNull
-        override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment
+        override fun showFragment(): Observable<Pair<Project, Reward>> = this.showFragment
 
         @NonNull
         override fun titleForNoReward(): Observable<Int> = this.titleForNoReward

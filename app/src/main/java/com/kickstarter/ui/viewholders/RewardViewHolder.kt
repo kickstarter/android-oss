@@ -137,7 +137,7 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.reward_title_text_view, it) }
 
-        this.viewModel.outputs.showPledgeFragment()
+        this.viewModel.outputs.showFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.delegate?.rewardClicked(it.second) }

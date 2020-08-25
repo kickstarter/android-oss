@@ -73,7 +73,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
         this.vm.outputs.shippingSummary().subscribe(this.shippingSummary)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
-        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
+        this.vm.outputs.showFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)

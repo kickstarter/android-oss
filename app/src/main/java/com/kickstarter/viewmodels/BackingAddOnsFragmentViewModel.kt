@@ -10,6 +10,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -105,11 +106,10 @@ class BackingAddOnsFragmentViewModel {
             val reward = pledgeData
                     .map { it.reward() }
 
-            val addonsList = project
-                    .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }
-                    .compose(bindToLifecycle())
+            val backing = projectData
+                    .map { getBackingFromProjectData(it) }
                     .filter { ObjectUtils.isNotNull(it) }
-                    .share()
+                    .map { requireNotNull(it) }
 
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -121,6 +121,39 @@ class BackingAddOnsFragmentViewModel {
                     .map { it.shippingRules() }
                     .share()
 
+            val backingShippingRule = backing
+                    .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
+                    .map {
+                        it.second.first { rule ->
+                            rule.location().id() == it.first.locationId()
+                        }
+                    }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+
+            backingShippingRule
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.shippingRuleSelected.onNext(it)
+                    }
+
+            val addOnsFromBacking = backing
+                    .map { it.addOns()?.toList() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+
+            val addOnsFromGraph = project
+                    .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }
+                    .compose(bindToLifecycle())
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .share()
+
+           val combinedList = addOnsFromBacking
+                   .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
+                   .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
+
+            val addonsList = Observable.merge(addOnsFromGraph, combinedList)
+
             shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
@@ -129,7 +162,7 @@ class BackingAddOnsFragmentViewModel {
             shippingRules
                     .filter { it.isNotEmpty() }
                     .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD }
+                    .filter { it.second == PledgeReason.PLEDGE }
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
@@ -179,6 +212,21 @@ class BackingAddOnsFragmentViewModel {
                         this.showPledgeFragment.onNext(it)
                     }
         }
+
+        private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>):List<Reward> {
+            return graphList
+                    .map { graphAddOn ->
+                        modifyOrSelect(backingList, graphAddOn)
+                    }
+        }
+
+        private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
+            return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
+                it
+            } ?: graphAddOn
+        }
+
+        private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing() ?: pData?.backing()
 
         private fun updateAddOnsListQuantity(listAddOns: List<Reward>): List<Reward> {
             val updatedList = mutableListOf<Reward>()

@@ -160,5 +160,4 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
         this.viewModel.inputs.quantityPerId(quantityPerId)
     }
-
 }

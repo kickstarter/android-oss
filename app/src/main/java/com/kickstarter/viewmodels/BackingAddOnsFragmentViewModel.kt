@@ -232,7 +232,7 @@ class BackingAddOnsFragmentViewModel {
                 }
             }
 
-            return Triple(pData, emptyList(), rule)
+            return Triple(pData, filteredAddOns, rule)
         }
 
         private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {

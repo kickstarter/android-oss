@@ -2,8 +2,6 @@ package com.kickstarter.ui.adapters
 
 import android.view.View
 import com.kickstarter.R
-import com.kickstarter.libs.utils.DiffUtils
-import com.kickstarter.models.Empty
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
@@ -34,10 +32,8 @@ class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.View
     }
 
     fun populateDataForAddOns(rewards: List<Triple<ProjectData, Reward, ShippingRule>>) {
-        if (rewards.isNotEmpty()) {
-            setSection(SECTION_BACKING_ADD_ONS_CARD, rewards)
-            notifyDataSetChanged()
-        }
+        setSection(SECTION_BACKING_ADD_ONS_CARD, rewards)
+        notifyDataSetChanged()
     }
 
     fun showEmptyState(){

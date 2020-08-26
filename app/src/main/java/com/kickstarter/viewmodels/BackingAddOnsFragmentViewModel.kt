@@ -154,6 +154,18 @@ class BackingAddOnsFragmentViewModel {
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
 
+            // - Update the total selected addOns with the selected amount from the backing
+            addonsList
+                    .compose<Pair<List<Reward>, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.UPDATE_REWARD }
+                    .map { it.first }
+                    .subscribe {
+                        it.map { addOn ->
+                            totalAmount += addOn.quantity() ?: 0
+                            this.totalSelectedAddOns.onNext(totalAmount)
+                        }
+                    }
+
             shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
@@ -173,6 +185,7 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.addOnsList)
 
+            // - Called when the stepper increase/decrase pressed updating the total quantity
             this.selectedAddOns
                     .compose(bindToLifecycle())
                     .subscribe {
@@ -222,7 +235,9 @@ class BackingAddOnsFragmentViewModel {
 
         private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
-                it
+                val update = Pair(it.quantity()?: 0 , it.id())
+                updateQuantityById(update)
+                return@let it
             } ?: graphAddOn
         }
 

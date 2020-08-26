@@ -308,8 +308,8 @@ class BackingAddOnsFragmentViewModel {
 
             val updatedQuantity = filteredAddOns
                     .map {
-                        val amount = this.currentSelection[it.id()] ?: 0
-                        return@map it.toBuilder().quantity(amount).build()
+                        val amount = this.currentSelection[it.id()] ?: -1
+                        return@map  if (amount == -1 ) it else it.toBuilder().quantity(amount).build()
                     }
 
             return Triple(pData, updatedQuantity, rule)

@@ -145,8 +145,8 @@ class BackingAddOnsFragmentViewModel {
                     .subscribe(this.addOnsList)
 
             this.addOnsList
-                    .map { it.second.isEmpty()}
-                    .filter {it == true}
+                    .map { it.second.isEmpty() }
+                    .filter { it == true }
                     .subscribe(this.isEmptyState)
 
             this.selectedAddOns
@@ -232,7 +232,7 @@ class BackingAddOnsFragmentViewModel {
                 }
             }
 
-            return Triple(pData, filteredAddOns, rule)
+            return Triple(pData, emptyList(), rule)
         }
 
         private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {

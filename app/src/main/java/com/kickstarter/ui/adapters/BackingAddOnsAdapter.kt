@@ -15,7 +15,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.ViewListener) : KSAdapter() {
 
     init {
-        insertSection(SECTION_NO_ADD_ONS_AVAILABLE, emptyList<Any>())
+        insertSection(SECTION_NO_ADD_ONS_AVAILABLE, emptyList<Boolean>())
         insertSection(SECTION_BACKING_ADD_ONS_CARD, emptyList<Reward>())
     }
 
@@ -41,7 +41,7 @@ class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.View
     }
 
     fun showEmptyState(){
-        setSection(SECTION_NO_ADD_ONS_AVAILABLE, listOf(Empty.get()))
+        setSection(SECTION_NO_ADD_ONS_AVAILABLE, listOf(true))
         notifyDataSetChanged()
     }
 

@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters
 
 import android.view.View
 import com.kickstarter.R
+import com.kickstarter.libs.utils.DiffUtils
 import com.kickstarter.models.Empty
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule

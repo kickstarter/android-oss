@@ -526,16 +526,74 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun emptyState_whenNoAddOnsForShippingRule_shouldShowEmptyViewState() {
-        // TODO: set up environment with no matching shipping rules
-        this.vm.isEmptyState().assertValue(true)
-        this.vm.outputs.addOnsList().assertNoValues()
+        val shippingRuleAddOn = ShippingRuleFactory.germanyShippingRule()
+        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingRules(listOf(shippingRuleAddOn, shippingRuleAddOn, shippingRuleAddOn))
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+                .build()
+        val listAddons = listOf(addOn, addOn, addOn)
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .shippingRules(listOf(shippingRuleRw))
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+                .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
+        this.isEmptyState.assertValue(true)
     }
 
     @Test
     fun emptyState_whenMatchingShippingRule_ShouldNotShowEmptyState() {
-        // TODO: set up environment with matching shipping rules
-        this.vm.isEmptyState().noValues()
+        val shippingRuleAddOn = ShippingRuleFactory.usShippingRule()
+        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingRules(listOf(shippingRuleAddOn, shippingRuleAddOn, shippingRuleAddOn))
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+                .build()
+        val listAddons = listOf(addOn, addOn, addOn)
 
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .shippingRules(listOf(shippingRuleRw))
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
+                .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
+        this.isEmptyState.assertNoValues();
     }
 
     private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfig): Environment {

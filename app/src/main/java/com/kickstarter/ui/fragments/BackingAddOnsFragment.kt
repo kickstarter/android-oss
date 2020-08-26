@@ -82,6 +82,12 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                     ViewUtils.setGone(fragment_backing_addons_shipping_rules, it)
                     ViewUtils.setGone(fragment_backing_addons_call_out, it)
                 }
+        this.viewModel.outputs.isEnabledCTAButton()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    backing_addons_footer_button.isEnabled = it
+                }
 
         backing_addons_footer_button.setOnClickListener {
             this.viewModel.inputs.continueButtonPressed()

@@ -22,177 +22,193 @@
       app:cardElevation="0dp">
 
       <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/grid_3">
-
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+          <TextView
+              android:id="@+id/reward_selected_reward_tag"
+              android:layout_width="wrap_content"
+              android:layout_height="@dimen/grid_11_half"
+              android:background="@drawable/ic_container"
+              android:gravity="center"
+              android:text="@string/You_backed"
+              android:textColor="@color/white"
+              android:textSize="@dimen/subheadline"
+              android:paddingLeft="@dimen/grid_3"
+              android:paddingRight="@dimen/grid_3"/>
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:focusable="true"
-          android:orientation="vertical">
+          android:orientation="vertical"
+          android:padding="@dimen/grid_3">
 
-          <TextView
-            android:id="@+id/reward_minimum_text_view"
-            style="@style/Title2Medium"
-            android:layout_width="wrap_content"
+          <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/ksr_green_500"
-            android:textSize="@dimen/title_reward"
-            tools:text="$20" />
+            android:focusable="true"
+            android:orientation="vertical">
 
-          <TextView
-            android:id="@+id/reward_conversion_text_view"
-            style="@style/FootnotePrimaryMedium"
-            android:layout_width="wrap_content"
+            <TextView
+              android:id="@+id/reward_minimum_text_view"
+              style="@style/Title2Medium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/ksr_green_500"
+              android:textSize="@dimen/title_reward"
+              tools:text="$20" />
+
+            <TextView
+              android:id="@+id/reward_conversion_text_view"
+              style="@style/FootnotePrimaryMedium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/ksr_green_500"
+              tools:text="About $15 USD" />
+
+            <TextView
+              android:id="@+id/reward_title_text_view"
+              style="@style/TextPrimary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/grid_2"
+              android:textSize="@dimen/title_reward"
+              android:textStyle="bold"
+              tools:text="Make a pledge without a reward" />
+
+            <TextView
+              style="@style/RewardPill"
+              android:id="@+id/reward_backers_count"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/grid_3"
+              tools:text="327 backers" />
+
+            <LinearLayout
+              android:id="@+id/reward_description_container"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+              <TextView
+                style="@style/RewardSectionTitle"
+                android:layout_marginTop="@dimen/grid_3"
+                android:text="@string/Description" />
+
+              <TextView
+                android:id="@+id/reward_description_text_view"
+                style="@style/BodyPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/grid_1"
+                tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+            </LinearLayout>
+
+          </LinearLayout>
+
+          <LinearLayout
+            android:id="@+id/rewards_item_section"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/ksr_green_500"
-            tools:text="About $15 USD" />
+            android:layout_marginTop="@dimen/grid_3"
+            android:focusable="true"
+            android:orientation="vertical">
 
-          <TextView
-            android:id="@+id/reward_title_text_view"
-            style="@style/TextPrimary"
-            android:layout_width="wrap_content"
+            <TextView
+              style="@style/RewardSectionTitle"
+              android:text="@string/rewards_info_includes" />
+
+            <androidx.recyclerview.widget.RecyclerView
+              android:id="@+id/rewards_item_recycler_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:nestedScrollingEnabled="false"
+              android:overScrollMode="never"
+              tools:itemCount="3"
+              tools:listitem="@layout/rewards_item_view" />
+
+          </LinearLayout>
+
+          <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_2"
-            android:textSize="@dimen/title_reward"
-            android:textStyle="bold"
-            tools:text="Make a pledge without a reward" />
+            android:focusable="true"
+            android:orientation="vertical">
 
-          <TextView
-            style="@style/RewardPill"
-            android:id="@+id/reward_backers_count"
+            <LinearLayout
+              android:id="@+id/reward_estimated_delivery_section"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+              <TextView
+                style="@style/RewardSectionTitle"
+                android:layout_marginTop="@dimen/grid_3"
+                android:text="@string/Estimated_delivery" />
+
+              <TextView
+                android:id="@+id/reward_estimated_delivery"
+                style="@style/BodyPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/grid_1"
+                tools:text="December 2019" />
+            </LinearLayout>
+
+          <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/reward_limit_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/grid_3"
-            tools:text="327 backers" />
-
-          <LinearLayout
-            android:id="@+id/reward_description_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              style="@style/RewardSectionTitle"
-              android:layout_marginTop="@dimen/grid_3"
-              android:text="@string/Description" />
-
-            <TextView
-              android:id="@+id/reward_description_text_view"
-              style="@style/BodyPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/grid_1"
-              tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
-          </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-          android:id="@+id/rewards_item_section"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_3"
-          android:focusable="true"
-          android:orientation="vertical">
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:showDivider="middle"
+            app:dividerDrawable="@drawable/divider_grid_1"
+            app:flexWrap="wrap"
+            tools:visibility="visible">
 
           <TextView
-            style="@style/RewardSectionTitle"
-            android:text="@string/rewards_info_includes" />
-
-          <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rewards_item_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"
-            tools:itemCount="3"
-            tools:listitem="@layout/rewards_item_view" />
-
-        </LinearLayout>
-
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:focusable="true"
-          android:orientation="vertical">
-
-          <LinearLayout
-            android:id="@+id/reward_estimated_delivery_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-              style="@style/RewardSectionTitle"
-              android:layout_marginTop="@dimen/grid_3"
-              android:text="@string/Estimated_delivery" />
-
-            <TextView
-              android:id="@+id/reward_estimated_delivery"
-              style="@style/BodyPrimary"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/grid_1"
-              tools:text="December 2019" />
-          </LinearLayout>
-
-        <com.google.android.flexbox.FlexboxLayout
-          android:id="@+id/reward_limit_container"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_3"
-          android:orientation="horizontal"
-          android:visibility="gone"
-          app:showDivider="middle"
-          app:dividerDrawable="@drawable/divider_grid_1"
-          app:flexWrap="wrap"
-          tools:visibility="visible">
-
-        <TextView
-            android:id="@+id/reward_ending_text_view"
-            style="@style/RewardPill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="3 days left" />
-
-          <TextView
-            android:id="@+id/reward_remaining_text_view"
-            style="@style/RewardPill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="30 left" />
-
-          <TextView
-            android:id="@+id/reward_shipping_summary"
-            style="@style/RewardPill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Anywhere in the world" />
-
-          <TextView
-              android:id="@+id/reward_add_ons_available"
+              android:id="@+id/reward_ending_text_view"
               style="@style/RewardPill"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:text="@string/Add_ons"
-              tools:text="Add-ons available" />
+              tools:text="3 days left" />
 
-        </com.google.android.flexbox.FlexboxLayout>
+            <TextView
+              android:id="@+id/reward_remaining_text_view"
+              style="@style/RewardPill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="30 left" />
+
+            <TextView
+              android:id="@+id/reward_shipping_summary"
+              style="@style/RewardPill"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              tools:text="Anywhere in the world" />
+
+            <TextView
+                android:id="@+id/reward_add_ons_available"
+                style="@style/RewardPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Add_ons"
+                tools:text="Add-ons available" />
+
+          </com.google.android.flexbox.FlexboxLayout>
+
+          </LinearLayout>
+
+          <com.google.android.material.button.MaterialButton
+            android:id="@+id/reward_button_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/grid_3"
+            android:focusable="false"
+            android:visibility="invisible"
+            tools:text="Pledge $10 or more" />
 
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-          android:id="@+id/reward_button_placeholder"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_3"
-          android:focusable="false"
-          android:visibility="invisible"
-          tools:text="Pledge $10 or more" />
-
       </LinearLayout>
 
     </androidx.cardview.widget.CardView>

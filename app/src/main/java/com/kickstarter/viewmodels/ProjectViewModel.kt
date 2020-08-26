@@ -226,6 +226,7 @@ interface ProjectViewModel {
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val apolloClient = environment.apolloClient()
 
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val blurbVariantClicked = PublishSubject.create<Void>()
@@ -526,7 +527,8 @@ interface ProjectViewModel {
             { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
 
             projectData
-                    .filter { it.project().hasRewards() }
+                    .filter { it.project().hasRewards() && !it.project().isBacking }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.updateFragments)
 
@@ -539,6 +541,23 @@ interface ProjectViewModel {
 
             val backedProject = currentProject
                     .filter { it.isBacking }
+
+            val backing = backedProject
+                    .switchMap {
+                        this.apolloClient.getProjectBacking(it.slug()?: "")
+                    }
+
+            // - Update fragments with the backing data
+            projectData
+                    .filter { it.project().hasRewards() && it.project().isBacking }
+                    .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                    .map {
+                        val updatedProject = it.first.project().toBuilder().backing(it.second).build()
+                        projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
+                    }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe(this.updateFragments)
 
             backedProject
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
@@ -559,7 +578,12 @@ interface ProjectViewModel {
                     .subscribe(this.startMessagesActivity)
 
             val projectDataAndBackedReward = projectData
-                    .map { pD -> BackingUtils.backedReward(pD.project())?.let { Pair(pD, it) } }
+                    .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                    .map { pD ->
+                        BackingUtils.backedReward(pD.first.project())?.let {
+                            Pair(pD.first.toBuilder().backing(pD.second).build(), it)
+                        }
+                    }
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))

@@ -188,6 +188,14 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
                     else ViewUtils.setGone(this.view.reward_add_ons_available, true)
                 }
 
+        this.viewModel.outputs.selectedRewardTagIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { isGone ->
+                    if (!isGone) this.view.reward_selected_reward_tag.visibility = View.VISIBLE
+                    else ViewUtils.setGone(this.view.reward_selected_reward_tag, true)
+                }
+
     }
 
     override fun bindData(data: Any?) {

@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.item_add_on_pledge.view.*
 class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener) : KSViewHolder(view) {
 
     interface ViewListener {
-        fun quantityHasChanged(quantity: Int)
         fun quantityPerId(quantityPerId: Pair<Int, Long>)
     }
 
@@ -50,7 +49,6 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
                     ViewUtils.setGone(this.view.items_container, it)
                     ViewUtils.setGone(this.view.divider, it)
                 }
-
 
         this.viewModel.outputs.rewardItems()
                 .compose(bindToLifecycle())
@@ -192,21 +190,18 @@ class BackingAddOnViewHolder(private val view: View, viewListener: ViewListener)
     private fun setListenerForAddButton() {
         this.view.initial_state_add_on.setOnClickListener {
             this.viewModel.inputs.addButtonPressed()
-            viewListener.quantityHasChanged(+1)
         }
     }
 
     private fun setListenerForIncreaseButton() {
         this.view.increase_quantity_add_on.setOnClickListener {
             this.viewModel.inputs.increaseButtonPressed()
-            viewListener.quantityHasChanged(+1)
         }
     }
 
     private fun setListenerForDecreaseButton() {
         this.view.decrease_quantity_add_on.setOnClickListener {
             this.viewModel.inputs.decreaseButtonPressed()
-            viewListener.quantityHasChanged(-1)
         }
     }
 

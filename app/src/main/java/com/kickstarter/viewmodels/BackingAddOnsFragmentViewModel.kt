@@ -35,9 +35,6 @@ class BackingAddOnsFragmentViewModel {
         /** Call when user selects a shipping location. */
         fun shippingRuleSelected(shippingRule: ShippingRule)
 
-        /** Call when the user updates the quantity for one add-on */
-        fun selectedAddonsQuantity(quantity: Int)
-
         /** Emits when the CTA button has been pressed */
         fun continueButtonPressed()
 
@@ -76,10 +73,8 @@ class BackingAddOnsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingSelectorIsGone = PublishSubject.create<Boolean>()
         private val addOnsList = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
-        private val selectedAddOns = PublishSubject.create<Int>()
         private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val continueButtonPressed = BehaviorSubject.create<Void>()
-        private var totalAmount = 0
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val selectedAmount: MutableMap<Long, Int> = mutableMapOf()
 
@@ -153,18 +148,7 @@ class BackingAddOnsFragmentViewModel {
                    .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
-
-            // - Update the total selected addOns with the selected amount from the backing
-            addonsList
-                    .compose<Pair<List<Reward>, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.UPDATE_REWARD }
-                    .map { it.first }
-                    .subscribe {
-                        it.map { addOn ->
-                            totalAmount += addOn.quantity() ?: 0
-                            this.totalSelectedAddOns.onNext(totalAmount)
-                        }
-                    }
+                    .map { it }
 
             shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
@@ -185,23 +169,17 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.addOnsList)
 
-            // - Called when the stepper increase/decrase pressed updating the total quantity
-            this.selectedAddOns
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        totalAmount += it
-                        this.totalSelectedAddOns.onNext(totalAmount)
-                    }
-
             reward
                     .map{ !RewardUtils.isShippable(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSelectorIsGone)
 
             this.quantityPerId
+                    .compose<Pair<Pair<Int, Long>, Triple<ProjectData, List<Reward>, ShippingRule>>>(combineLatestPair(this.addOnsList))
                     .compose(bindToLifecycle())
                     .subscribe {
-                        updateQuantityById(it)
+                        updateQuantityById(it.first)
+                        this.totalSelectedAddOns.onNext(calculateTotal(it.second.second))
                     }
 
             Observable.combineLatest(this.continueButtonPressed, addonsList, pledgeData, pledgeReason, this.shippingRuleSelected) {
@@ -224,6 +202,12 @@ class BackingAddOnsFragmentViewModel {
                     .subscribe {
                         this.showPledgeFragment.onNext(it)
                     }
+        }
+
+        private fun calculateTotal(list: List<Reward>): Int {
+            var total = 0
+            list.map { total += this.selectedAmount[it.id()]?: 0 }
+            return total
         }
 
         private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>):List<Reward> {
@@ -302,7 +286,6 @@ class BackingAddOnsFragmentViewModel {
         // - Inputs
         override fun configureWith(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) = this.pledgeDataAndReason.onNext(pledgeDataAndReason)
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
-        override fun selectedAddonsQuantity(quantity: Int) = this.selectedAddOns.onNext(quantity)
         override fun continueButtonPressed() = this.continueButtonPressed.onNext(null)
         override fun quantityPerId(quantityPerId: Pair<Int, Long>) = this.quantityPerId.onNext(quantityPerId)
 

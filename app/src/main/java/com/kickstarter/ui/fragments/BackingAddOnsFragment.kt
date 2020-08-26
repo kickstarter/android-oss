@@ -74,7 +74,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .subscribe { total ->
                     backing_addons_footer_button.text = selectProperString(total)
                 }
-      
+
         this.viewModel.outputs.shippingSelectorIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -151,10 +151,6 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         this.viewModel.inputs.shippingRuleSelected(rule)
         activity?.hideKeyboard()
         fragment_backing_addons_shipping_rules.clearFocus()
-    }
-
-    override fun quantityHasChanged(quantity: Int) {
-        this.viewModel.inputs.selectedAddonsQuantity(quantity)
     }
 
     override fun quantityPerId(quantityPerId: Pair<Int, Long>) {

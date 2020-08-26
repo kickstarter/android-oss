@@ -28,12 +28,14 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     private val shippingSelectorIsGone = TestSubscriber.create<Boolean>()
     private val addOnsList = TestSubscriber.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
     private val showPledgeFragment = TestSubscriber.create<Pair<PledgeData, PledgeReason>>()
+    private val isEmptyState = TestSubscriber.create<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingAddOnsFragmentViewModel.ViewModel(environment)
         this.vm.outputs.addOnsList().subscribe(this.addOnsList)
         this.vm.outputs.shippingSelectorIsGone().subscribe(this.shippingSelectorIsGone)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
+        this.vm.outputs.isEmptyState().subscribe(this.isEmptyState)
     }
 
     @Test
@@ -522,6 +524,19 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 }
     }
 
+    @Test
+    fun emptyState_whenNoAddOnsForShippingRule_shouldShowEmptyViewState() {
+        // TODO: set up environment with no matching shipping rules
+        this.vm.isEmptyState().assertValue(true)
+        this.vm.outputs.addOnsList().assertNoValues()
+    }
+
+    @Test
+    fun emptyState_whenMatchingShippingRule_ShouldNotShowEmptyState() {
+        // TODO: set up environment with matching shipping rules
+        this.vm.isEmptyState().noValues()
+
+    }
 
     private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfig): Environment {
 

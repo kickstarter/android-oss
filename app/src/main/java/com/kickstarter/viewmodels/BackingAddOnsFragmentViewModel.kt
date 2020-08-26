@@ -62,6 +62,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits whether or not the shipping selector is visible **/
         fun shippingSelectorIsGone(): Observable<Boolean>
+
+        /** Emits whether or not the empty state should be shown **/
+        fun isEmptyState(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -75,6 +78,7 @@ class BackingAddOnsFragmentViewModel {
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingSelectorIsGone = PublishSubject.create<Boolean>()
         private val addOnsList = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
+        private val isEmptyState = PublishSubject.create<Boolean>()
         private val selectedAddOns = PublishSubject.create<Int>()
         private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val continueButtonPressed = BehaviorSubject.create<Void>()
@@ -139,6 +143,11 @@ class BackingAddOnsFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.addOnsList)
+
+            this.addOnsList
+                    .map { it.second.isEmpty()}
+                    .filter {it == true}
+                    .subscribe(this.isEmptyState)
 
             this.selectedAddOns
                     .compose(bindToLifecycle())
@@ -251,5 +260,6 @@ class BackingAddOnsFragmentViewModel {
         override fun shippingRulesAndProject(): Observable<Pair<List<ShippingRule>, Project>> = this.shippingRulesAndProject
         override fun totalSelectedAddOns(): Observable<Int> = this.totalSelectedAddOns
         override fun shippingSelectorIsGone(): PublishSubject<Boolean> = this.shippingSelectorIsGone
+        override fun isEmptyState(): Observable<Boolean> = this.isEmptyState
     }
 }

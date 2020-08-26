@@ -56,6 +56,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                     populateAddOns(it)
                 }
 
+        this.viewModel.outputs.isEmptyState()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {showEmptyState()}
+
         this.viewModel.outputs.selectedShippingRule()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -74,7 +79,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .subscribe { total ->
                     backing_addons_footer_button.text = selectProperString(total)
                 }
-      
+
         this.viewModel.outputs.shippingSelectorIsGone()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -108,6 +113,10 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 }.toList()
 
         backingAddonsAdapter.populateDataForAddOns(list)
+    }
+
+    private fun showEmptyState() {
+        backingAddonsAdapter.showEmptyState();
     }
 
     private fun setupRecyclerView() {

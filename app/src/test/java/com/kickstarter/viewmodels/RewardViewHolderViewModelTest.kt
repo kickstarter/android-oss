@@ -47,6 +47,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val titleForReward = TestSubscriber<String?>()
     private val titleIsGone = TestSubscriber<Boolean>()
     private val hasAddonsAvailable = TestSubscriber<Boolean>()
+    private val selectedRewardTagIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardViewHolderViewModel.ViewModel(environment)
@@ -77,6 +78,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
         this.vm.outputs.hasAddOnsAvailable().subscribe(this.hasAddonsAvailable)
+        this.vm.outputs.selectedRewardTagIsGone().subscribe(this.selectedRewardTagIsGone)
     }
 
     @Test
@@ -154,7 +156,62 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_backedReward() {
+    fun testButtonCTA_whenProjectIsLiveAndBacked_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonCTA.assertValuesAndClear(R.string.Continue)
+    }
+
+    @Test
+    fun testButtonCTA_whenProjectIsLiveAndBacked_Other_Reward() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = RewardFactory.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), rw)
+        this.buttonIsGone.assertValue(false)
+        this.buttonCTA.assertValuesAndClear(R.string.Select)
+    }
+
+    @Test
+    fun testButtonEnabled_whenProjectIsLiveAndBacked_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
+    }
+
+    @Test
+    fun testButtonEnabled_whenProjectIsLive_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+        val rw = RewardFactory.rewardHasAddOns()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project), rw)
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
+    }
+
+    @Test
+    fun testButtonDisabled_whenProjectIsLiveAndBacked_Unavailable_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOnsLimitReached()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(false)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_AvailableAddOns() {
         setUpEnvironment(environment())
 
         val backedLiveProject = ProjectFactory.backedProject()
@@ -162,6 +219,34 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 ?: RewardFactory.reward())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.Selected)
+    }
+
+    @Test
+    fun testYouBackedTagVisible_whenProjectIsLiveAndBacked_backedReward() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()
+                ?: RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testYouBackedTagGone_whenProjectIsLiveAndBacked() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject),  RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testYouBackedTagGone_whenNoBackedProject() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project),  RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(true)
     }
 
     @Test
@@ -549,18 +634,18 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // A backed reward from a live project should not be enabled.
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false)
 
         // A backed reward from an ended project should not be enabled.
         val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject), backedSuccessfulProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false)
 
         // A reward with its limit reached should not be enabled.
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.limitReached())
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false, true, false)
     }
 
     @Test

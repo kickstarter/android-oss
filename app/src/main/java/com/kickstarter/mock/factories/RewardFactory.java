@@ -16,6 +16,7 @@ public final class RewardFactory {
   public static @NonNull Reward addOn() {
     return reward().toBuilder()
             .isAddOn(true)
+            .limit(10)
             .build();
   }
 

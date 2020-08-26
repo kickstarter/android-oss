@@ -213,7 +213,9 @@ interface RewardViewHolderViewModel {
                     .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.buttonCTA)
+                    .subscribe {
+                        this.buttonCTA.onNext(it)
+                    }
 
             projectAndReward
                     .map { it.first }
@@ -250,11 +252,13 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.descriptionIsGone)
 
-            this.projectDataAndReward
-                    .map { isSelectable(it.first.project(), it.second) }
+            projectAndReward
+                    .map { buttonEnabledCases(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.buttonIsEnabled)
+                    .subscribe {
+                        this.buttonIsEnabled.onNext(it)
+                    }
 
             projectAndReward
                     .map { it.first.isLive && RewardUtils.isLimited(it.second) }
@@ -399,6 +403,29 @@ interface RewardViewHolderViewModel {
 
         }
 
+        /**
+         * Use cases for enabling/disabling the Button
+         * - If the selected reward has no addOns the CTA button will be enable if available
+         * - Enabled if the previously selected base reward has available add-ons
+         * - If the previously selected base reward has no available add-ons, the CTA button on the base reward would be disabled
+        */
+        private fun buttonEnabledCases(project: Project, rw: Reward):Boolean {
+            val backing = project.backing()
+            val hasUnavailableAddOn:Boolean = project.backing()?.addOns()?.firstOrNull {
+                !RewardUtils.isAvailable(project, it)
+            }?.let { true } ?: false
+
+           return when {
+               isSelectable(project, rw) && backing == null -> true
+               isSelectable(project, rw) && backing != null && !hasBackedAddOns(project) -> true
+               BackingUtils.isBacked(project, rw) &&
+                       RewardUtils.isAvailable(project, rw) &&
+                       backing != null && hasBackedAddOns(project) &&
+                       !hasUnavailableAddOn -> true
+               else -> false
+           }
+        }
+
         private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {
                 OptimizelyExperiment.Variant.CONTROL -> 1
                 OptimizelyExperiment.Variant.VARIANT_2 -> 10
@@ -441,6 +468,8 @@ interface RewardViewHolderViewModel {
                 else -> true
             }
         }
+
+        private fun hasBackedAddOns(project: Project) = !project.backing()?.addOns().isNullOrEmpty()
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
             if (BackingUtils.isBacked(project, reward)) {

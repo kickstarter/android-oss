@@ -414,15 +414,15 @@ interface RewardViewHolderViewModel {
                 !RewardUtils.isAvailable(project, it)
             }?.let { true } ?: false
 
-           return when {
-               isSelectable(project, rw) && backing != null && !hasBackedAddOns(project) -> true
-               BackingUtils.isBacked(project, rw) &&
-                       RewardUtils.isAvailable(project, rw) &&
-                       backing != null && hasBackedAddOns(project) &&
-                       !hasUnavailableAddOn -> true
-               isSelectable(project, rw) -> true
-               else -> false
-           }
+            return when {
+                isSelectable(project, rw) && backing == null -> true
+                isSelectable(project, rw) && backing != null && !hasBackedAddOns(project) -> true
+                BackingUtils.isBacked(project, rw) &&
+                        RewardUtils.isAvailable(project, rw) &&
+                        backing != null && hasBackedAddOns(project) &&
+                        !hasUnavailableAddOn -> true
+                else -> false
+            }
         }
 
         private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {

@@ -303,6 +303,7 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.endDateSectionIsGone)
 
             projectAndReward
+                    .filter { !it.second.hasAddons() && isSelectable(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.showFragment)

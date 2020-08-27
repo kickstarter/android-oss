@@ -903,11 +903,15 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMaximumIsGone)
 
+            val threadshold = total
+                    .compose<Pair<Double, Double>>(combineLatestPair(bonusInput))
+                    .map { it.first - it.second }
+
             pledgeMaximum
                     .compose<Pair<Double, Boolean>>(combineLatestPair(pledgeMaximumIsGone))
                     .filter { !it.second }
                     .map { it.first }
-                    .compose<Pair<Double, Double>>(combineLatestPair(bonusInput))
+                    .compose<Pair<Double, Double>>(combineLatestPair(threadshold))
                     .map { it.first - it.second }
                     .filter { it > 0  }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))

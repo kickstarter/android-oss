@@ -36,8 +36,8 @@ class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.View
         notifyDataSetChanged()
     }
 
-    fun showEmptyState(){
-        setSection(SECTION_NO_ADD_ONS_AVAILABLE, listOf(true))
+    fun showEmptyState(list: List<Boolean>){
+        setSection(SECTION_NO_ADD_ONS_AVAILABLE, list)
         notifyDataSetChanged()
     }
 

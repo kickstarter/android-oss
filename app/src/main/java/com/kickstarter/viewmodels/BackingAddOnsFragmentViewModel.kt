@@ -146,7 +146,6 @@ class BackingAddOnsFragmentViewModel {
 
             this.addOnsList
                     .map { it.second.isEmpty() }
-                    .filter { it == true }
                     .subscribe(this.isEmptyState)
 
             this.selectedAddOns

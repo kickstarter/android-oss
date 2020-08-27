@@ -593,7 +593,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
-        this.isEmptyState.assertNoValues();
+        this.isEmptyState.assertValue(false);
     }
 
     private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfig): Environment {

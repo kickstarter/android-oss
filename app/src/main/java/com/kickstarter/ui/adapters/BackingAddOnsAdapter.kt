@@ -6,7 +6,6 @@ import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
-import com.kickstarter.ui.viewholders.BackingEmptyAddOnViewHolder
 import com.kickstarter.ui.viewholders.EmptyViewHolder
 import com.kickstarter.ui.viewholders.KSViewHolder
 
@@ -25,7 +24,7 @@ class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.View
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
-            R.layout.item_empty_add_on -> BackingEmptyAddOnViewHolder(view)
+            R.layout.item_empty_add_on -> EmptyViewHolder(view)
             R.layout.item_add_on_pledge -> BackingAddOnViewHolder(view, viewListener)
             else -> EmptyViewHolder(view)
         }

@@ -9,6 +9,7 @@
         android:id="@+id/add_on_unavailable_icon"
         android:layout_width="0dp"
         android:layout_height="@dimen/grid_5"
+        android:contentDescription="@null"
         android:gravity="center"
         android:layout_marginBottom="@dimen/grid_1"
         android:src="@drawable/ic_globe_america"

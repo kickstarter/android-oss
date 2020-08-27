@@ -153,15 +153,6 @@ class BackingAddOnsFragmentViewModel {
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
 
-            val updatedQuantityList = addonsList
-                    .compose<Pair<List<Reward>, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .map {
-                        if ( it.second == PledgeReason.UPDATE_PLEDGE)
-                            updateAddOnsListQuantity(it.first)
-                        else
-                            it.first
-                    }
-
             shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
@@ -174,7 +165,8 @@ class BackingAddOnsFragmentViewModel {
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
-            Observable.combineLatest(updatedQuantityList, projectData, this.shippingRuleSelected, reward) { list, pData, rule, rw ->
+            Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw ,
+                _ ->
                 return@combineLatest filterByLocationAndUpdateQuantity(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
@@ -189,14 +181,15 @@ class BackingAddOnsFragmentViewModel {
             this.quantityPerId
                     .compose<Pair<Pair<Int, Long>, Triple<ProjectData, List<Reward>, ShippingRule>>>(combineLatestPair(this.addOnsListFiltered))
                     .compose(bindToLifecycle())
+                    .distinctUntilChanged()
                     .subscribe {
                         updateQuantityById(it.first)
                         this.totalSelectedAddOns.onNext(calculateTotal(it.second.second))
                     }
 
-            val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId) {
-                backedRule, backedList, actualRule, _->
-                return@combineLatest isDiferentLocation(backedRule, actualRule) || isDifferentSelection(backedList)
+            val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId.startWith(Pair(-1,-1L))) {
+                backedRule, backedList, actualRule,_  ->
+                return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList)
             }
                     .distinctUntilChanged()
 
@@ -237,7 +230,7 @@ class BackingAddOnsFragmentViewModel {
             return backedSelection != this.currentSelection
         }
 
-        private fun isDiferentLocation(backedRule: ShippingRule, actualRule: ShippingRule) =
+        private fun isDifferentLocation(backedRule: ShippingRule, actualRule: ShippingRule) =
                 backedRule.location().id() != actualRule.location().id()
 
         private fun calculateTotal(list: List<Reward>): Int {
@@ -256,25 +249,13 @@ class BackingAddOnsFragmentViewModel {
         private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
                 val update = Pair(it.quantity()?: 0 , it.id())
-                updateQuantityById(update)
+                if (update.first > 0 )
+                    updateQuantityById(update)
                 return@let it
             } ?: graphAddOn
         }
 
         private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing() ?: pData?.backing()
-
-        private fun updateAddOnsListQuantity(listAddOns: List<Reward>): List<Reward> {
-            val updatedList = mutableListOf<Reward>()
-
-            this.currentSelection
-                    .filter { it.value > 0 }
-                    .forEach { selectedAddOn ->
-                        val item = listAddOns.first { it.id() == selectedAddOn.key }
-                        updatedList.add(item.toBuilder().quantity(selectedAddOn.value).build())
-            }
-
-            return updatedList.toList()
-        }
 
         private fun updateQuantityById(it: Pair<Int, Long>) {
             this.currentSelection[it.second] = it.first

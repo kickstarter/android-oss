@@ -44,7 +44,7 @@
       android:id="@+id/pledge_toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/transparent"
+      android:background="@color/ksr_grey_300"
       android:focusableInTouchMode="true"
       app:navigationContentDescription="@string/View_project"
       app:navigationIcon="@drawable/ic_arrow_down" />

@@ -152,7 +152,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bonus_container"
+        app:layout_constraintTop_toBottomOf="@+id/bonus_amount_container"
         tools:text="The maximum pledge is $10,000."
         tools:visibility="visible" />
 

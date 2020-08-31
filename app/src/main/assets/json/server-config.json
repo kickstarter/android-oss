@@ -120,13 +120,13 @@
       "Continue_to_payment": "Continue to payment",
       "Continue_to_update_pledge": "Continue to update pledge",
       "Continue_with_Facebook": "Continue with Facebook",
-      "Continue_with_quantity_add_ons": {
-        "zero": "Continue with %{quantity} add-ons",
-        "one": "Continue with %{quantity} add-on",
-        "two": "Continue with %{quantity} add-ons",
-        "few": "Continue with %{quantity} add-ons",
-        "many": "Continue with %{quantity} add-ons",
-        "other": "Continue with %{quantity} add-ons"
+      "Continue_with_quantity_count_add_ons": {
+        "zero": "Continue with %{quantity_count} add-ons",
+        "one": "Continue with %{quantity_count} add-on",
+        "two": "Continue with %{quantity_count} add-ons",
+        "few": "Continue with %{quantity_count} add-ons",
+        "many": "Continue with %{quantity_count} add-ons",
+        "other": "Continue with %{quantity_count} add-ons"
       },
       "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Couldn't add attachment",
@@ -2484,13 +2484,13 @@
       "Continue_to_payment": "Weiter zur Zahlung",
       "Continue_to_update_pledge": "Weiter zu Beitrag aktualisieren",
       "Continue_with_Facebook": "Weiter mit Facebook",
-      "Continue_with_quantity_add_ons": {
-        "zero": "Weiter mit %{quantity} Add-ons",
-        "one": "Weiter mit %{quantity} Add-on",
-        "two": "Weiter mit %{quantity} Add-ons",
-        "few": "Weiter mit %{quantity} Add-ons",
-        "many": "Weiter mit %{quantity} Add-ons",
-        "other": "Weiter mit %{quantity} Add-ons"
+      "Continue_with_quantity_count_add_ons": {
+        "zero": "Weiter mit %{quantity_count} Add-ons",
+        "one": "Weiter mit %{quantity_count} Add-on",
+        "two": "Weiter mit %{quantity_count} Add-ons",
+        "few": "Weiter mit %{quantity_count} Add-ons",
+        "many": "Weiter mit %{quantity_count} Add-ons",
+        "other": "Weiter mit %{quantity_count} Add-ons"
       },
       "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Anhang konnte nicht hinzugefügt werden",
@@ -4727,6 +4727,14 @@
         "cancel": "Abbrechen",
         "upgrade": "Aktualisierung"
       },
+      "Continue_with_quantity_add_ons": {
+        "zero": "Weiter mit %{quantity} Add-ons",
+        "one": "Weiter mit %{quantity} Add-on",
+        "two": "Weiter mit %{quantity} Add-ons",
+        "few": "Weiter mit %{quantity} Add-ons",
+        "many": "Weiter mit %{quantity} Add-ons",
+        "other": "Weiter mit %{quantity} Add-ons"
+      },
       "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Weiter mit dieser Belohnung? Die folgenden Add-Ons werden dafür nicht angeboten:"
     },
     "es": {
@@ -4849,13 +4857,13 @@
       "Continue_to_payment": "Continuar a pago",
       "Continue_to_update_pledge": "Continuar a Actualizar contribución",
       "Continue_with_Facebook": "Continuar con Facebook",
-      "Continue_with_quantity_add_ons": {
-        "zero": "Continuar con %{quantity} complementos",
-        "one": "Continuar con %{quantity} complemento",
-        "two": "Continuar con %{quantity} complementos",
-        "few": "Continuar con %{quantity} complementos",
-        "many": "Continuar con %{quantity} complementos",
-        "other": "Continuar con %{quantity} complementos"
+      "Continue_with_quantity_count_add_ons": {
+        "zero": "Continuar con %{quantity_count} complementos",
+        "one": "Continuar con %{quantity_count} complemento",
+        "two": "Continuar con %{quantity_count} complementos",
+        "few": "Continuar con %{quantity_count} complementos",
+        "many": "Continuar con %{quantity_count} complementos",
+        "other": "Continuar con %{quantity_count} complementos"
       },
       "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "¿Continuar con esta recompensa? Es posible que no ofrezca algunos o todos tus complementos.",
       "Couldnt_add_attachment": "No se pudo añadir el anexo",
@@ -7092,6 +7100,14 @@
         "cancel": "Cancelar",
         "upgrade": "Actualizar"
       },
+      "Continue_with_quantity_add_ons": {
+        "zero": "Continuar con %{quantity} complementos",
+        "one": "Continuar con %{quantity} complemento",
+        "two": "Continuar con %{quantity} complementos",
+        "few": "Continuar con %{quantity} complementos",
+        "many": "Continuar con %{quantity} complementos",
+        "other": "Continuar con %{quantity} complementos"
+      },
       "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "¿Continuar con esta recompensa? No ofrece estos complementos:"
     },
     "fr": {
@@ -7214,13 +7230,13 @@
       "Continue_to_payment": "Continuer vers le paiement",
       "Continue_to_update_pledge": "Continuer la modification de mon engagement",
       "Continue_with_Facebook": "Continuer avec Facebook",
-      "Continue_with_quantity_add_ons": {
-        "zero": "Continuer avec %{quantity} compléments",
-        "one": "Continuer avec %{quantity} complément",
-        "two": "Continuer avec %{quantity} compléments",
-        "few": "Continuer avec %{quantity} compléments",
-        "many": "Continuer avec %{quantity} compléments",
-        "other": "Continuer avec %{quantity} compléments"
+      "Continue_with_quantity_count_add_ons": {
+        "zero": "Continuer avec %{quantity_count} compléments",
+        "one": "Continuer avec %{quantity_count} complément",
+        "two": "Continuer avec %{quantity_count} compléments",
+        "few": "Continuer avec %{quantity_count} compléments",
+        "many": "Continuer avec %{quantity_count} compléments",
+        "other": "Continuer avec %{quantity_count} compléments"
       },
       "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continuer avec cette récompense ? Vos compléments pourraient ne pas tous être disponibles.",
       "Couldnt_add_attachment": "Impossible d'ajouter la pièce jointe",
@@ -9457,6 +9473,14 @@
         "cancel": "Annuler",
         "upgrade": "Mise à jour"
       },
+      "Continue_with_quantity_add_ons": {
+        "zero": "Continuer avec %{quantity} compléments",
+        "one": "Continuer avec %{quantity} complément",
+        "two": "Continuer avec %{quantity} compléments",
+        "few": "Continuer avec %{quantity} compléments",
+        "many": "Continuer avec %{quantity} compléments",
+        "other": "Continuer avec %{quantity} compléments"
+      },
       "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Continuer avec cette récompense ? Les compléments suivants ne sont pas proposés :"
     },
     "it": {
@@ -9579,13 +9603,13 @@
       "Continue_to_payment": "Continue to payment",
       "Continue_to_update_pledge": "Continue to update pledge",
       "Continue_with_Facebook": "Continue with Facebook",
-      "Continue_with_quantity_add_ons": {
-        "zero": "Continue with %{quantity} add-ons",
-        "one": "Continue with %{quantity} add-on",
-        "two": "Continue with %{quantity} add-ons",
-        "few": "Continue with %{quantity} add-ons",
-        "many": "Continue with %{quantity} add-ons",
-        "other": "Continue with %{quantity} add-ons"
+      "Continue_with_quantity_count_add_ons": {
+        "zero": "Continue with %{quantity_count} add-ons",
+        "one": "Continue with %{quantity_count} add-on",
+        "two": "Continue with %{quantity_count} add-ons",
+        "few": "Continue with %{quantity_count} add-ons",
+        "many": "Continue with %{quantity_count} add-ons",
+        "other": "Continue with %{quantity_count} add-ons"
       },
       "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Couldn't add attachment",
@@ -11943,13 +11967,13 @@
       "Continue_to_payment": "支払いを続ける",
       "Continue_to_update_pledge": "プレッジをアップデート",
       "Continue_with_Facebook": "Facebook で続行する",
-      "Continue_with_quantity_add_ons": {
-        "zero": "%{quantity} 個のアドオンで続行する",
-        "one": "%{quantity} 個のアドオンで続行する",
-        "two": "%{quantity} 個のアドオンで続行する",
-        "few": "%{quantity} 個のアドオンで続行する",
-        "many": "%{quantity} 個のアドオンで続行する",
-        "other": "%{quantity} 個のアドオンで続行する"
+      "Continue_with_quantity_count_add_ons": {
+        "zero": "%{quantity_count} 個のアドオンで続行する",
+        "one": "%{quantity_count} 個のアドオンで続行する",
+        "two": "%{quantity_count} 個のアドオンで続行する",
+        "few": "%{quantity_count} 個のアドオンで続行する",
+        "many": "%{quantity_count} 個のアドオンで続行する",
+        "other": "%{quantity_count} 個のアドオンで続行する"
       },
       "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "このリワードで続行しますか？このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。",
       "Couldnt_add_attachment": "添付ファイルを追加できませんでした",
@@ -14186,6 +14210,14 @@
         "cancel": "キャンセル",
         "upgrade": "アップグレード"
       },
+      "Continue_with_quantity_add_ons": {
+        "zero": "%{quantity} 個のアドオンで続行する",
+        "one": "%{quantity} 個のアドオンで続行する",
+        "two": "%{quantity} 個のアドオンで続行する",
+        "few": "%{quantity} 個のアドオンで続行する",
+        "many": "%{quantity} 個のアドオンで続行する",
+        "other": "%{quantity} 個のアドオンで続行する"
+      },
       "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "このリワードで続行しますか？このリワードでは以下のアドオン (追加リワード) は提供されません："
     },
     "zh": {
@@ -14308,13 +14340,13 @@
       "Continue_to_payment": "Continue to payment",
       "Continue_to_update_pledge": "Continue to update pledge",
       "Continue_with_Facebook": "Continue with Facebook",
-      "Continue_with_quantity_add_ons": {
-        "zero": "Continue with %{quantity} add-ons",
-        "one": "Continue with %{quantity} add-on",
-        "two": "Continue with %{quantity} add-ons",
-        "few": "Continue with %{quantity} add-ons",
-        "many": "Continue with %{quantity} add-ons",
-        "other": "Continue with %{quantity} add-ons"
+      "Continue_with_quantity_count_add_ons": {
+        "zero": "Continue with %{quantity_count} add-ons",
+        "one": "Continue with %{quantity_count} add-on",
+        "two": "Continue with %{quantity_count} add-ons",
+        "few": "Continue with %{quantity_count} add-ons",
+        "many": "Continue with %{quantity_count} add-ons",
+        "other": "Continue with %{quantity_count} add-ons"
       },
       "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Couldn't add attachment",

@@ -117,12 +117,12 @@ contributeurs</string>
   <string name="Continue_to_payment" formatted="false">Continuer vers le paiement</string>
   <string name="Continue_to_update_pledge" formatted="false">Continuer la modification de mon engagement</string>
   <string name="Continue_with_Facebook" formatted="false">Continuer avec Facebook</string>
-  <string name="Continue_with_quantity_add_ons_few" formatted="false">Continuer avec %{quantity} compléments</string>
-  <string name="Continue_with_quantity_add_ons_many" formatted="false">Continuer avec %{quantity} compléments</string>
-  <string name="Continue_with_quantity_add_ons_one" formatted="false">Continuer avec %{quantity} complément</string>
-  <string name="Continue_with_quantity_add_ons_other" formatted="false">Continuer avec %{quantity} compléments</string>
-  <string name="Continue_with_quantity_add_ons_two" formatted="false">Continuer avec %{quantity} compléments</string>
-  <string name="Continue_with_quantity_add_ons_zero" formatted="false">Continuer avec %{quantity} compléments</string>
+  <string name="Continue_with_quantity_count_add_ons_few" formatted="false">Continuer avec %{quantity_count} compléments</string>
+  <string name="Continue_with_quantity_count_add_ons_many" formatted="false">Continuer avec %{quantity_count} compléments</string>
+  <string name="Continue_with_quantity_count_add_ons_one" formatted="false">Continuer avec %{quantity_count} complément</string>
+  <string name="Continue_with_quantity_count_add_ons_other" formatted="false">Continuer avec %{quantity_count} compléments</string>
+  <string name="Continue_with_quantity_count_add_ons_two" formatted="false">Continuer avec %{quantity_count} compléments</string>
+  <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continuer avec %{quantity_count} compléments</string>
   <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">Continuer avec cette récompense ? Vos compléments pourraient ne pas tous être disponibles.</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>

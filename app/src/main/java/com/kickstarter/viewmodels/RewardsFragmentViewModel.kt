@@ -41,6 +41,9 @@ class RewardsFragmentViewModel {
 
         /** Emits when we should show the [com.kickstarter.ui.fragments.BackingAddOnsFragment].  */
         fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>>
+
+        /** Emits if we have to show the alert in case any AddOns selection could be lost. */
+        fun showAlert(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
@@ -53,6 +56,7 @@ class RewardsFragmentViewModel {
         private val rewardsCount = BehaviorSubject.create<Int>()
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showAddOnsFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val showAlert = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -80,12 +84,22 @@ class RewardsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 
-            this.projectDataInput
+            val pledgeDataAndReasonWithAddOns = this.projectDataInput
                     .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
                     .filter { it.second.hasAddons() }
                     .map { pledgeDataAndPledgeReason(it.first, it.second) }
+
+            pledgeDataAndReasonWithAddOns
+                    .filter { it.second == PledgeReason.PLEDGE }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showAddOnsFragment)
+                    .subscribe{
+                        this.showAddOnsFragment.onNext(it)
+                    }
+
+            pledgeDataAndReasonWithAddOns
+                    .filter { it.second == PledgeReason.UPDATE_REWARD }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showAlert)
 
             project
                     .map { it.rewards()?.size?: 0 }
@@ -133,5 +147,8 @@ class RewardsFragmentViewModel {
 
         @NonNull
         override fun showAddOnsFragment(): Observable<Pair<PledgeData, PledgeReason>> = this.showAddOnsFragment
+
+        @NonNull
+        override fun showAlert(): Observable<Pair<PledgeData, PledgeReason>> = this.showAlert
     }
 }

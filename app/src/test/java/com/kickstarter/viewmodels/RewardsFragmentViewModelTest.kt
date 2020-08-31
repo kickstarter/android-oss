@@ -24,6 +24,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     private val rewardsCount = TestSubscriber.create<Int>()
     private val showPledgeFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
     private val showAddOnsFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
+    private val showAlert = TestSubscriber<Pair<PledgeData, PledgeReason>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardsFragmentViewModel.ViewModel(environment)
@@ -32,6 +33,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.rewardsCount().subscribe(this.rewardsCount)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.showAddOnsFragment().subscribe(this.showAddOnsFragment)
+        this.vm.outputs.showAlert().subscribe(this.showAlert)
     }
 
     @Test
@@ -90,20 +92,29 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowAddonsFragment_whenBackingProject() {
-        val project = ProjectFactory.project()
+    fun testShowAlert_whenBackingProject() {
+        val reward = RewardFactory.reward().toBuilder().hasAddons(true).build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .reward(reward)
+                        .rewardId(reward.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
         setUpEnvironment(environment())
 
-        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
-        val reward = RewardFactory.reward().toBuilder().hasAddons(true).build()
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertNoValues()
-        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
+        this.showAddOnsFragment.assertNoValues()
+        this.showAlert.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
                 .reward(reward)
-                .projectData(ProjectDataFactory.project(project))
-                .build(), PledgeReason.PLEDGE))
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_REWARD))
     }
 
     @Test

@@ -253,7 +253,7 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.descriptionIsGone)
 
             projectAndReward
-                    .map { buttonEnabledCases(it.first, it.second) }
+                    .map { shouldContinueFlow(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe {
@@ -303,13 +303,13 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.endDateSectionIsGone)
 
             projectAndReward
-                    .filter { !it.second.hasAddons() && isSelectable(it.first, it.second) && it.first.isLive }
+                    .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe(this.showFragment)
 
             projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
+                    .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Pair<Project, Reward>, Int>>(combineLatestPair(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
@@ -404,24 +404,22 @@ interface RewardViewHolderViewModel {
         }
 
         /**
-         * Use cases for enabling/disabling the Button
+         * Use cases for enabling/disabling access to launch the next fragment
          * - If the selected reward has no addOns the CTA button will be enable if available
          * - Enabled if the previously selected base reward has available add-ons
          * - If the previously selected base reward has no available add-ons, the CTA button on the base reward would be disabled
         */
-        private fun buttonEnabledCases(project: Project, rw: Reward):Boolean {
-            val backing = project.backing()
+        private fun shouldContinueFlow(project: Project, rw: Reward):Boolean {
+            val hasAddOns = rw.hasAddons()
             val hasUnavailableAddOn:Boolean = project.backing()?.addOns()?.firstOrNull {
                 !RewardUtils.isAvailable(project, it)
             }?.let { true } ?: false
+            val isRwAvailable = RewardUtils.isAvailable(project, rw)
 
             return when {
-                isSelectable(project, rw) && backing == null -> true
-                isSelectable(project, rw) && backing != null && !hasBackedAddOns(project) -> true
-                BackingUtils.isBacked(project, rw) &&
-                        RewardUtils.isAvailable(project, rw) &&
-                        backing != null && hasBackedAddOns(project) &&
-                        !hasUnavailableAddOn -> true
+                isSelectable(project, rw) && !hasAddOns -> true
+                hasAddOns && isSelectable(project, rw) -> true
+                hasAddOns && hasBackedAddOns(project) && isRwAvailable && !hasUnavailableAddOn -> true
                 else -> false
             }
         }

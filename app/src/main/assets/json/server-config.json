@@ -128,7 +128,7 @@
         "many": "Continue with %{quantity} add-ons",
         "other": "Continue with %{quantity} add-ons"
       },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Continue with this reward? It doesn’t offer these add-ons:",
+      "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Couldn't add attachment",
       "Couldnt_open_live_stream_Try_again_later": "Couldn‘t open live stream. Try again later.",
       "Couldnt_remove_attachment": "Couldn't remove attachment",
@@ -201,6 +201,7 @@
       "Email_unverified": "This email address is unverified.",
       "Ending_in_last_four": "Ending in %{last_four}",
       "Ending_soon": "Ending Soon",
+      "Enter_an_amount_less_than_max_pledge": "Enter an amount less than %{max_pledge}.",
       "Expands_subcategories": "Expands subcategories.",
       "Estimated_delivery": "Estimated delivery",
       "Estimated_delivery_colon": "Estimated delivery:",
@@ -2491,7 +2492,7 @@
         "many": "Weiter mit %{quantity} Add-ons",
         "other": "Weiter mit %{quantity} Add-ons"
       },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Weiter mit dieser Belohnung? Die folgenden Add-Ons werden dafür nicht angeboten:",
+      "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Anhang konnte nicht hinzugefügt werden",
       "Couldnt_open_live_stream_Try_again_later": "Live-Stream konnte nicht geöffnet werden. Bitte versuche es später noch einmal.",
       "Couldnt_remove_attachment": "Anhang konnte nicht entfernt werden",
@@ -2564,6 +2565,7 @@
       "Email_unverified": "Diese E-Mail-Adresse wurde noch nicht verifiziert.",
       "Ending_in_last_four": "Endet auf %{last_four}",
       "Ending_soon": "Endet bald",
+      "Enter_an_amount_less_than_max_pledge": "Gib einen Betrag unter %{max_pledge} ein.",
       "Expands_subcategories": "Erweitert die Anzeige der Unterkategorien.",
       "Estimated_delivery": "Voraussichtliche Lieferung:",
       "Estimated_delivery_colon": "Voraussichtliche Lieferung:",
@@ -4724,7 +4726,8 @@
         "message": "Du scheinst eine sehr alte Version der App zu benutzen. Um fortzufahren, installiere bitte die neueste Version aus dem App Store.",
         "cancel": "Abbrechen",
         "upgrade": "Aktualisierung"
-      }
+      },
+      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Weiter mit dieser Belohnung? Die folgenden Add-Ons werden dafür nicht angeboten:"
     },
     "es": {
       "A_little_extra_to_help": "Algo extra para ayudar a que este proyecto se pueda realizar.",
@@ -4854,7 +4857,7 @@
         "many": "Continuar con %{quantity} complementos",
         "other": "Continuar con %{quantity} complementos"
       },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "¿Continuar con esta recompensa? No ofrece estos complementos:",
+      "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "¿Continuar con esta recompensa? Es posible que no ofrezca algunos o todos tus complementos.",
       "Couldnt_add_attachment": "No se pudo añadir el anexo",
       "Couldnt_open_live_stream_Try_again_later": "No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.",
       "Couldnt_remove_attachment": "No se pudo remover el anexo",
@@ -4927,6 +4930,7 @@
       "Email_unverified": "Esta dirección de correo electrónico no está verificada.",
       "Ending_in_last_four": "Número que termina en %{last_four}",
       "Ending_soon": "Finaliza pronto",
+      "Enter_an_amount_less_than_max_pledge": "Ingresa una cantidad inferior a %{max_pledge}.",
       "Expands_subcategories": "Muestra más subcategorías.",
       "Estimated_delivery": "Entrega estimada:",
       "Estimated_delivery_colon": "Entrega estimada:",
@@ -7087,7 +7091,8 @@
         "message": "Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.",
         "cancel": "Cancelar",
         "upgrade": "Actualizar"
-      }
+      },
+      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "¿Continuar con esta recompensa? No ofrece estos complementos:"
     },
     "fr": {
       "A_little_extra_to_help": "Du soutien supplémentaire pour faire vivre ce projet.",
@@ -7217,7 +7222,7 @@
         "many": "Continuer avec %{quantity} compléments",
         "other": "Continuer avec %{quantity} compléments"
       },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Continuer avec cette récompense ? Les compléments suivants ne sont pas proposés :",
+      "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continuer avec cette récompense ? Vos compléments pourraient ne pas tous être disponibles.",
       "Couldnt_add_attachment": "Impossible d'ajouter la pièce jointe",
       "Couldnt_open_live_stream_Try_again_later": "Impossible d'ouvrir la diffusion en direct. Veuillez réessayer plus tard.",
       "Couldnt_remove_attachment": "Impossible de supprimer la pièce jointe",
@@ -7290,6 +7295,7 @@
       "Email_unverified": "Adresse e-mail non vérifiée.",
       "Ending_in_last_four": "Finissant par %{last_four}",
       "Ending_soon": "Campagnes bientôt terminées",
+      "Enter_an_amount_less_than_max_pledge": "Veuillez saisir un montant inférieur à %{max_pledge}.",
       "Expands_subcategories": "Développe les sous-catégories.",
       "Estimated_delivery": "Livraison prévue :",
       "Estimated_delivery_colon": "Livraison prévue :",
@@ -9450,7 +9456,8 @@
         "message": "On dirait que vous utilisez une ancienne version de l'application. Veuillez la mettre à jour depuis l'App Store pour continuer à l'utiliser.",
         "cancel": "Annuler",
         "upgrade": "Mise à jour"
-      }
+      },
+      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Continuer avec cette récompense ? Les compléments suivants ne sont pas proposés :"
     },
     "it": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -9580,7 +9587,7 @@
         "many": "Continue with %{quantity} add-ons",
         "other": "Continue with %{quantity} add-ons"
       },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Continue with this reward? It doesn’t offer these add-ons:",
+      "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Couldn't add attachment",
       "Couldnt_open_live_stream_Try_again_later": "Couldn‘t open live stream. Try again later.",
       "Couldnt_remove_attachment": "Couldn't remove attachment",
@@ -9653,6 +9660,7 @@
       "Email_unverified": "This email address is unverified.",
       "Ending_in_last_four": "Ending in %{last_four}",
       "Ending_soon": "Ending Soon",
+      "Enter_an_amount_less_than_max_pledge": "Enter an amount less than %{max_pledge}.",
       "Expands_subcategories": "Expands subcategories.",
       "Estimated_delivery": "Estimated delivery",
       "Estimated_delivery_colon": "Estimated delivery:",
@@ -11943,7 +11951,7 @@
         "many": "%{quantity} 個のアドオンで続行する",
         "other": "%{quantity} 個のアドオンで続行する"
       },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "このリワードで続行しますか？このリワードでは以下のアドオン (追加リワード) は提供されません：",
+      "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "このリワードで続行しますか？このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。",
       "Couldnt_add_attachment": "添付ファイルを追加できませんでした",
       "Couldnt_open_live_stream_Try_again_later": "ライブ配信を開けませんでした。後ほどお試しください。",
       "Couldnt_remove_attachment": "添付ファイルを削除できませんでした",
@@ -12016,6 +12024,7 @@
       "Email_unverified": "このメールアドレスは認証されていません。",
       "Ending_in_last_four": "下の桁が%{last_four} の番号",
       "Ending_soon": "終了直前",
+      "Enter_an_amount_less_than_max_pledge": "%{max_pledge} 以下の額を入力してください。",
       "Expands_subcategories": "サブカテゴリーを表示",
       "Estimated_delivery": "配達予定",
       "Estimated_delivery_colon": "配達予定:",
@@ -14176,7 +14185,8 @@
         "message": "引き続き利用するにはApp Storeからアプリのバージョンを更新してください。",
         "cancel": "キャンセル",
         "upgrade": "アップグレード"
-      }
+      },
+      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "このリワードで続行しますか？このリワードでは以下のアドオン (追加リワード) は提供されません："
     },
     "zh": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -14306,7 +14316,7 @@
         "many": "Continue with %{quantity} add-ons",
         "other": "Continue with %{quantity} add-ons"
       },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Continue with this reward? It doesn’t offer these add-ons:",
+      "Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons": "Continue with this reward? It may not offer some or all of your add-ons.",
       "Couldnt_add_attachment": "Couldn't add attachment",
       "Couldnt_open_live_stream_Try_again_later": "Couldn‘t open live stream. Try again later.",
       "Couldnt_remove_attachment": "Couldn't remove attachment",
@@ -14379,6 +14389,7 @@
       "Email_unverified": "This email address is unverified.",
       "Ending_in_last_four": "Ending in %{last_four}",
       "Ending_soon": "Ending Soon",
+      "Enter_an_amount_less_than_max_pledge": "Enter an amount less than %{max_pledge}.",
       "Expands_subcategories": "Expands subcategories.",
       "Estimated_delivery": "Estimated delivery",
       "Estimated_delivery_colon": "Estimated delivery:",

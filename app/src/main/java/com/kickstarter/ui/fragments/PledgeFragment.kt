@@ -204,7 +204,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.bonusHint()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe{bonus_amount.hint = it}
+                .subscribe{ bonus_amount.hint = it }
 
         this.viewModel.outputs.pledgeMaximum()
                 .compose(bindToLifecycle())
@@ -214,7 +214,10 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeMaximumIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setInvisible(pledge_maximum, it) }
+                .subscribe {
+                    ViewUtils.setInvisible(pledge_maximum, it)
+                    ViewUtils.setInvisible(bonus_maximum, it)
+                }
 
         this.viewModel.outputs.pledgeMinimum()
                 .compose(bindToLifecycle())
@@ -645,7 +648,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private fun setPledgeMaximumText(maximumAmount: String) {
         val ksString = this.viewModel.environment.ksString()
-        pledge_maximum.text = ksString.format(getString(R.string.The_maximum_pledge_is_max_pledge), "max_pledge", maximumAmount)
+        pledge_maximum.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
+        bonus_maximum.text = ksString.format(getString(R.string.Enter_an_amount_less_than_max_pledge), "max_pledge", maximumAmount)
     }
 
     private fun setPledgeMinimumText(minimumAmount: String) {

@@ -123,7 +123,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Continue_with_quantity_add_ons_other" formatted="false">Weiter mit %{quantity} Add-ons</string>
   <string name="Continue_with_quantity_add_ons_two" formatted="false">Weiter mit %{quantity} Add-ons</string>
   <string name="Continue_with_quantity_add_ons_zero" formatted="false">Weiter mit %{quantity} Add-ons</string>
-  <string name="Continue_with_this_reward_It_doesnt_offer_these_add_ons" formatted="false">Weiter mit dieser Belohnung? Die folgenden Add-Ons werden dafür nicht angeboten:</string>
+  <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">Continue with this reward? It may not offer some or all of your add-ons.</string>
   <string name="Couldnt_add_attachment" formatted="false">Anhang konnte nicht hinzugefügt werden</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Live-Stream konnte nicht geöffnet werden. Bitte versuche es später noch einmal.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Anhang konnte nicht entfernt werden</string>
@@ -185,6 +185,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Email_unverified" formatted="false">Diese E-Mail-Adresse wurde noch nicht verifiziert.</string>
   <string name="Ending_in_last_four" formatted="false">Endet auf %{last_four}</string>
   <string name="Ending_soon" formatted="false">Endet bald</string>
+  <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Gib einen Betrag unter %{max_pledge} ein.</string>
   <string name="Estimated_delivery" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Estimated_delivery_colon" formatted="false">Voraussichtliche Lieferung:</string>
   <string name="Estimated_delivery_of" formatted="false">Voraussichtliches Lieferdatum</string>

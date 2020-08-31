@@ -796,7 +796,7 @@ interface PledgeFragmentViewModel {
 
             // - Calculate total for No Reward || Reward without shipping
             Observable.combineLatest(this.selectedReward, pledgeInput, this.bonusAmount, pledgeReason) {rw,  pInput, bAmount, pReason ->
-                return@combineLatest Pair(RewardUtils.isShippable(rw), getAmountForNoShipping(rw, pInput, bAmount.toDouble(), pReason))
+                return@combineLatest Pair(RewardUtils.isShippable(rw), getAmountForNoShipping(rw, pInput, NumberUtils.parse(bAmount), pReason))
             }
                     .filter { !it.first }
                     .map { it.second }
@@ -892,7 +892,7 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.pledgeTextColor)
 
             val pledgeMaximumIsGone = pledgeMaximum
-                    .compose<Pair<Double, Double>>(combineLatestPair(pledgeInput))
+                    .compose<Pair<Double, Double>>(combineLatestPair(total))
                     .map { it.first >= it.second }
                     .distinctUntilChanged()
 
@@ -903,12 +903,24 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeMaximumIsGone)
 
+            val threadshold = total
+                    .compose<Pair<Double, Double>>(combineLatestPair(bonusInput))
+                    .map { it.first - it.second }
+
             pledgeMaximum
+                    .compose<Pair<Double, Boolean>>(combineLatestPair(pledgeMaximumIsGone))
+                    .filter { !it.second }
+                    .map { it.first }
+                    .compose<Pair<Double, Double>>(combineLatestPair(threadshold))
+                    .map { it.first - it.second }
+                    .filter { it > 0  }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.pledgeMaximum)
+                    .subscribe {
+                        this.pledgeMaximum.onNext(it)
+                    }
 
             val stepAndMaxPledge = stepAmount
                     .map { it.toDouble() }
@@ -1214,7 +1226,7 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Any, PledgeReason>>(combineLatestPair(pledgeReason))
 
             Observable.combineLatest<Double, Double, String, Checkout, CheckoutData>(shippingAmountSelectedRw, total, this.bonusAmount, Observable.merge(successfulCheckout, successfulSCACheckout))
-            { s, t, b, c -> checkoutData(s, t, b.toDouble(), c) }
+            { s, t, b, c -> checkoutData(s, t, NumberUtils.parse(b), c) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
                     .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                     .compose(bindToLifecycle())
@@ -1343,7 +1355,7 @@ interface PledgeFragmentViewModel {
                     .subscribe { this.optimizely.track(CHECKOUT_PAYMENT_PAGE_VIEWED, it) }
 
             Observable.combineLatest<Double, Double, String, CheckoutData>(shippingAmountSelectedRw, total, this.bonusAmount)
-            { s, t, b -> checkoutData(s, t, b.toDouble(), null) }
+            { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null) }
                     .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
                     .filter { shouldTrackPledgeSubmitButtonClicked(it.second.pledgeFlowContext()) }
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
@@ -1462,6 +1474,7 @@ interface PledgeFragmentViewModel {
             val hasAddOns = hasSelectedAddons(rewardsList)
             val sAmountSelectedRw = selectedShipping.cost()
             val reward = rewardsList.first()
+            val extraAmount = NumberUtils.parse(bAmount)
             var addOnsShippingCost = 0.0
             var addOnsCost = 0.0
             var totalPledgeValue = 0.0
@@ -1479,9 +1492,9 @@ interface PledgeFragmentViewModel {
             }
 
             totalPledgeValue = if (RewardUtils.isShippable(reward) && !hasAddOns)
-                (sAmountSelectedRw + bAmount.toInt() + reward.minimum())
+                (sAmountSelectedRw + NumberUtils.parse(bAmount) + reward.minimum())
             else
-                (sAmountSelectedRw + addOnsCost + addOnsShippingCost + reward.minimum() + bAmount.toInt())
+                (sAmountSelectedRw + addOnsCost + addOnsShippingCost + reward.minimum() + extraAmount)
 
             return totalPledgeValue
         }

@@ -121,7 +121,7 @@
   <string name="Continue_with_quantity_add_ons_other" formatted="false">%{quantity} 個のアドオンで続行する</string>
   <string name="Continue_with_quantity_add_ons_two" formatted="false">%{quantity} 個のアドオンで続行する</string>
   <string name="Continue_with_quantity_add_ons_zero" formatted="false">%{quantity} 個のアドオンで続行する</string>
-  <string name="Continue_with_this_reward_It_doesnt_offer_these_add_ons" formatted="false">このリワードで続行しますか？このリワードでは以下のアドオン (追加リワード) は提供されません：</string>
+  <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">このリワードで続行しますか？このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。</string>
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">ライブ配信を開けませんでした。後ほどお試しください。</string>
   <string name="Couldnt_remove_attachment" formatted="false">添付ファイルを削除できませんでした</string>
@@ -183,6 +183,7 @@
   <string name="Email_unverified" formatted="false">このメールアドレスは認証されていません。</string>
   <string name="Ending_in_last_four" formatted="false">下の桁が%{last_four} の番号</string>
   <string name="Ending_soon" formatted="false">終了直前</string>
+  <string name="Enter_an_amount_less_than_max_pledge" formatted="false">%{max_pledge} 以下の額を入力してください。</string>
   <string name="Estimated_delivery" formatted="false">配達予定</string>
   <string name="Estimated_delivery_colon" formatted="false">配達予定:</string>
   <string name="Estimated_delivery_of" formatted="false">配送予定日</string>

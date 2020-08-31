@@ -123,7 +123,7 @@ contributeurs</string>
   <string name="Continue_with_quantity_add_ons_other" formatted="false">Continuer avec %{quantity} compléments</string>
   <string name="Continue_with_quantity_add_ons_two" formatted="false">Continuer avec %{quantity} compléments</string>
   <string name="Continue_with_quantity_add_ons_zero" formatted="false">Continuer avec %{quantity} compléments</string>
-  <string name="Continue_with_this_reward_It_doesnt_offer_these_add_ons" formatted="false">Continuer avec cette récompense ? Les compléments suivants ne sont pas proposés :</string>
+  <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">Continuer avec cette récompense ? Vos compléments pourraient ne pas tous être disponibles.</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
@@ -185,6 +185,7 @@ contributeurs</string>
   <string name="Email_unverified" formatted="false">Adresse e-mail non vérifiée.</string>
   <string name="Ending_in_last_four" formatted="false">Finissant par %{last_four}</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
+  <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Veuillez saisir un montant inférieur à %{max_pledge}.</string>
   <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
   <string name="Estimated_delivery_colon" formatted="false">Livraison prévue :</string>
   <string name="Estimated_delivery_of" formatted="false">Livraison prévue le</string>

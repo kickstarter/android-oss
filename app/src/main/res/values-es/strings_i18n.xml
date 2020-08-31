@@ -123,7 +123,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Continue_with_quantity_add_ons_other" formatted="false">Continuar con %{quantity} complementos</string>
   <string name="Continue_with_quantity_add_ons_two" formatted="false">Continuar con %{quantity} complementos</string>
   <string name="Continue_with_quantity_add_ons_zero" formatted="false">Continuar con %{quantity} complementos</string>
-  <string name="Continue_with_this_reward_It_doesnt_offer_these_add_ons" formatted="false">¿Continuar con esta recompensa? No ofrece estos complementos:</string>
+  <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">¿Continuar con esta recompensa? Es posible que no ofrezca algunos o todos tus complementos.</string>
   <string name="Couldnt_add_attachment" formatted="false">No se pudo añadir el anexo</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.</string>
   <string name="Couldnt_remove_attachment" formatted="false">No se pudo remover el anexo</string>
@@ -185,6 +185,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Email_unverified" formatted="false">Esta dirección de correo electrónico no está verificada.</string>
   <string name="Ending_in_last_four" formatted="false">Número que termina en %{last_four}</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
+  <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Ingresa una cantidad inferior a %{max_pledge}.</string>
   <string name="Estimated_delivery" formatted="false">Entrega estimada:</string>
   <string name="Estimated_delivery_colon" formatted="false">Entrega estimada:</string>
   <string name="Estimated_delivery_of" formatted="false">Entrega estimada de</string>

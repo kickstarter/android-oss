@@ -56,6 +56,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                     populateAddOns(it)
                 }
 
+        this.viewModel.outputs.isEmptyState()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showEmptyState(it) }
+
         this.viewModel.outputs.selectedShippingRule()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
@@ -116,9 +121,17 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         backingAddonsAdapter.populateDataForAddOns(list)
     }
 
+    private fun showEmptyState(isEmptyState: Boolean) {
+        if (isEmptyState) {
+            backingAddonsAdapter.showEmptyState(listOf(true))
+        } else {
+            backingAddonsAdapter.showEmptyState(emptyList())
+        }
+    }
+
     private fun setupRecyclerView() {
-        fragment_backing_addons_list.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        fragment_backing_addons_list.adapter = backingAddonsAdapter
+        fragment_select_addons_recycler.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        fragment_select_addons_recycler.adapter = backingAddonsAdapter
     }
 
     private fun setUpShippingAdapter() {

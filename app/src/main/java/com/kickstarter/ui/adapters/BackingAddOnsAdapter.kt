@@ -12,29 +12,36 @@ import com.kickstarter.ui.viewholders.KSViewHolder
 class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.ViewListener) : KSAdapter() {
 
     init {
+        insertSection(SECTION_NO_ADD_ONS_AVAILABLE, emptyList<Boolean>())
         insertSection(SECTION_BACKING_ADD_ONS_CARD, emptyList<Reward>())
     }
 
     override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()){
         SECTION_BACKING_ADD_ONS_CARD -> R.layout.item_add_on_pledge
+        SECTION_NO_ADD_ONS_AVAILABLE -> R.layout.item_empty_add_on
         else -> 0
     }
 
     override fun viewHolder(layout: Int, view: View): KSViewHolder {
         return when(layout) {
+            R.layout.item_empty_add_on -> EmptyViewHolder(view)
             R.layout.item_add_on_pledge -> BackingAddOnViewHolder(view, viewListener)
             else -> EmptyViewHolder(view)
         }
     }
 
     fun populateDataForAddOns(rewards: List<Triple<ProjectData, Reward, ShippingRule>>) {
-        if (rewards.isNotEmpty()) {
-            setSection(SECTION_BACKING_ADD_ONS_CARD, rewards)
-            notifyDataSetChanged()
-        }
+        setSection(SECTION_BACKING_ADD_ONS_CARD, rewards)
+        notifyDataSetChanged()
+    }
+
+    fun showEmptyState(list: List<Boolean>){
+        setSection(SECTION_NO_ADD_ONS_AVAILABLE, list)
+        notifyDataSetChanged()
     }
 
     companion object {
-        private const val SECTION_BACKING_ADD_ONS_CARD = 0
+        private const val SECTION_NO_ADD_ONS_AVAILABLE = 0
+        private const val SECTION_BACKING_ADD_ONS_CARD = 1
     }
 }

@@ -27,6 +27,8 @@ import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
 import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.*
+import kotlinx.android.synthetic.main.fragment_rewards.*
+import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
 class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewModel>(), ShippingRulesAdapter.Delegate, BackingAddOnViewHolder.ViewListener {
@@ -51,6 +53,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
         this.viewModel.outputs.addOnsList()
                 .compose(bindToLifecycle())
+                .throttleWithTimeout(50,TimeUnit.MILLISECONDS)
                 .compose(Transformers.observeForUI())
                 .subscribe {
                     populateAddOns(it)
@@ -122,11 +125,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun showEmptyState(isEmptyState: Boolean) {
-        if (isEmptyState) {
-            backingAddonsAdapter.showEmptyState(listOf(true))
-        } else {
-            backingAddonsAdapter.showEmptyState(emptyList())
-        }
+        backingAddonsAdapter.showEmptyState(isEmptyState)
     }
 
     private fun setupRecyclerView() {
@@ -174,5 +173,10 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
     override fun quantityPerId(quantityPerId: Pair<Int, Long>) {
         this.viewModel.inputs.quantityPerId(quantityPerId)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        fragment_select_addons_recycler?.adapter = null
     }
 }

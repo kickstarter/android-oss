@@ -169,16 +169,22 @@ class BackingAddOnsFragmentViewModel {
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
-            Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw ,
+            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw ,
                 _ ->
                 return@combineLatest filterByLocationAndUpdateQuantity(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
+
+            filteredAddOns
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
                     .subscribe(this.addOnsListFiltered)
 
-            this.addOnsListFiltered
+            filteredAddOns
                     .map { it.second.isEmpty() }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
                     .subscribe(this.isEmptyState)
 
             reward

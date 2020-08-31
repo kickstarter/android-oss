@@ -10,9 +10,10 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/grid_5"
         android:contentDescription="@null"
+        android:importantForAccessibility="no"
         android:gravity="center"
         android:layout_marginBottom="@dimen/grid_1"
-        android:src="@drawable/ic_globe_america"
+        android:src="@drawable/ic_icon__globe_america"
         app:layout_constraintBottom_toTopOf="@id/add_on_unavailable_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>

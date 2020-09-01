@@ -95,14 +95,9 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     // Clearing search terms brings back popular projects.
     this.vm.inputs.search("");
+
     this.searchProjectsPresent.assertValues(false, true, false, true, false);
     this.popularProjectsPresent.assertValues(true, false, true);
-    this.koalaTest.assertValues(
-      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
-      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
-      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
-      KoalaEvent.CLEARED_SEARCH_TERM);
-    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded", "Search Results Loaded");
   }
 
   @Test
@@ -125,15 +120,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.searchProjectsPresent.assertValues(false, true);
 
     this.vm.inputs.nextPage();
-
     this.searchProjectsPresent.assertValues(false, true);
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.koalaTest.assertValues(
-      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
-      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
-    );
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded");
   }
 
   @Test

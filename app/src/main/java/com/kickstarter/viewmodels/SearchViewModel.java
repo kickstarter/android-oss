@@ -128,7 +128,7 @@ public interface SearchViewModel {
       query
         .compose(takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
-        .observeOn(Schedulers.computation())
+        .observeOn(Schedulers.io())
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
 
@@ -136,7 +136,7 @@ public interface SearchViewModel {
         .compose(takePairWhen(pageCount))
         .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
         .map(paramsAndPageCount -> paramsAndPageCount.first)
-        .observeOn(Schedulers.computation())
+        .observeOn(Schedulers.io())
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackSearchResultsLoaded);
 

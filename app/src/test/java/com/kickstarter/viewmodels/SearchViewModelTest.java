@@ -86,16 +86,12 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     // Typing more search terms doesn't emit more values
     this.vm.inputs.search("hello world!");
     this.searchProjectsPresent.assertValues(false, true);
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
     this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed", "Search Results Loaded");
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertValues(false, true, false, true);
-    this.koalaTest.assertValues(
-      KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY,
-      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY,
-      KoalaEvent.LOADED_SEARCH_RESULTS, KoalaEvent.DISCOVER_SEARCH_RESULTS_LEGACY
-    );
 
     // Clearing search terms brings back popular projects.
     this.vm.inputs.search("");

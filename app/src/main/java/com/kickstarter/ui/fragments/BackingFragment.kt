@@ -210,7 +210,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                     pledge_details_label.text = getString(R.string.Pledge_details)
                     ViewUtils.setGone(received_section, true)
                     ViewUtils.setGone(delivery_disclaimer_section, it)
-                    ViewUtils.setGone(estimated_delivery_label_2, false)
+                    ViewUtils.setGone(estimated_delivery_label_2, true)
                 }
 
 

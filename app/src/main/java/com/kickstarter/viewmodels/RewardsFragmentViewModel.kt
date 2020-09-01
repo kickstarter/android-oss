@@ -77,6 +77,11 @@ class RewardsFragmentViewModel {
             val project = this.projectDataInput
                     .map { it.project() }
 
+            val backedReward = project
+                    .map { it.backing()?.reward() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+
             val backedAddOns = project
                     .map { it?.backing()?.addOns() }
                     .filter { ObjectUtils.isNotNull(it) }
@@ -100,6 +105,13 @@ class RewardsFragmentViewModel {
 
             pledgeDataAndReason
                     .filter { it.second == PledgeReason.PLEDGE}
+                    .compose(bindToLifecycle())
+                    .subscribe(this.showPledgeFragment)
+
+            pledgeDataAndReason
+                    .compose<Pair<Pair<PledgeData, PledgeReason>, Reward>>(combineLatestPair(backedReward))
+                    .filter { !it.second.hasAddons() }
+                    .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 

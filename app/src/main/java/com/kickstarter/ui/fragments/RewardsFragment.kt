@@ -87,9 +87,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
                     .setCancelable(false)
                     .setTitle(getString(R.string.Continue_with_this_reward))
                     .setMessage(getString(R.string.It_might_not_offer_some_or))
-                    .setNegativeButton(R.string.No_go_back) { _, _ ->
-                    }
-                    .setPositiveButton(R.string.Yes_continue) { _, _ ->
+                    .setNegativeButton("             ${getString(R.string.No_go_back)}") { _, _ -> {} }
+                    .setPositiveButton("             ${getString(R.string.Yes_continue)}") { _, _ ->
                         this.viewModel.inputs.alertButtonPressed()
                     }.create()
         }

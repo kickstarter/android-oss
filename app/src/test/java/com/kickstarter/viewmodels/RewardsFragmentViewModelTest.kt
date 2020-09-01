@@ -92,7 +92,7 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowAlert_whenBackingProject() {
+    fun testShowAlert_whenBackingProject_withAddOns() {
         val reward = RewardFactory.reward().toBuilder().hasAddons(true).build()
         val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
@@ -111,6 +111,13 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.showPledgeFragment.assertNoValues()
         this.showAddOnsFragment.assertNoValues()
         this.showAlert.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                .reward(reward)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_REWARD))
+        this.vm.inputs.alertButtonPressed()
+        this.showPledgeFragment.assertNoValues()
+        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
                 .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(backedProject))

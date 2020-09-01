@@ -123,7 +123,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Continue_with_quantity_count_add_ons_other" formatted="false">Continuar con %{quantity_count} complementos</string>
   <string name="Continue_with_quantity_count_add_ons_two" formatted="false">Continuar con %{quantity_count} complementos</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continuar con %{quantity_count} complementos</string>
-  <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">¿Continuar con esta recompensa? Es posible que no ofrezca algunos o todos tus complementos.</string>
+  <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
   <string name="Couldnt_add_attachment" formatted="false">No se pudo añadir el anexo</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.</string>
   <string name="Couldnt_remove_attachment" formatted="false">No se pudo remover el anexo</string>
@@ -288,6 +288,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Info" formatted="false">Información</string>
   <string name="Introduce_yourself" formatted="false">Preséntate</string>
   <string name="Introducing_Lights_On" formatted="false">Presentamos "Seguimos activos"</string>
+  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">It may not offer some or all of your add-ons.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es una plataforma para dar vida a proyectos creativos.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Es una forma de dar vida a proyectos creativos.&lt;a href="%{trust_link}">Más información sobre las responsabilidades&lt;/a></string>

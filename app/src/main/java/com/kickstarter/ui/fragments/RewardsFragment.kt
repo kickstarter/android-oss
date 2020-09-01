@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
@@ -27,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_rewards.*
 class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), RewardsAdapter.Delegate {
 
     private var rewardsAdapter = RewardsAdapter(this)
+    private lateinit var dialog: AlertDialog
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -36,6 +36,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        createDialog()
 
         this.viewModel.outputs.projectData()
                 .compose(bindToLifecycle())
@@ -50,12 +51,16 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showPledgeFragment(it.first, it.second) }
+                .subscribe {
+                    dialog.dismiss()
+                    showPledgeFragment(it.first, it.second)
+                }
 
         this.viewModel.outputs.showAddOnsFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
+                    dialog.dismiss()
                     showAddonsFragment(it)
                 }
 
@@ -67,8 +72,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         this.viewModel.outputs.showAlert()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { 
-                    showAlert(it) 
+                .subscribe {
+                    showAlert()
                 }
 
         context?.apply {
@@ -76,19 +81,23 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         }
     }
 
-    private fun showAlert(data: Pair<PledgeData, PledgeReason>?) {
+    private fun createDialog() {
         context?.let { context ->
-            MaterialAlertDialogBuilder(context, R.style.AlertDialog)
-                .setCancelable(false)
-                .setTitle(getString(R.string.Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons))
-                .setNegativeButton(R.string.No_go_back) { _, _ ->
-                }
-                .setPositiveButton(R.string.Yes_continue) { _, _ ->
-                    data?.let { showAddonsFragment(it) }
-                }
-                .create()
-                .show()
+            dialog = AlertDialog.Builder(context, R.style.AlertDialog)
+                    .setCancelable(false)
+                    .setTitle(getString(R.string.Continue_with_this_reward))
+                    .setMessage(getString(R.string.It_might_not_offer_some_or))
+                    .setNegativeButton(R.string.No_go_back) { _, _ ->
+                    }
+                    .setPositiveButton(R.string.Yes_continue) { _, _ ->
+                        this.viewModel.inputs.alertButtonPressed()
+                    }.create()
         }
+    }
+
+    private fun showAlert() {
+        dialog.create()
+        dialog.show()
     }
 
     private fun scrollToReward(position: Int) {

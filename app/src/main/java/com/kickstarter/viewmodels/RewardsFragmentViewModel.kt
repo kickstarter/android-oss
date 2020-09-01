@@ -5,7 +5,10 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BackingUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
@@ -24,6 +27,9 @@ class RewardsFragmentViewModel {
 
         /** Call when a reward is clicked.  */
         fun rewardClicked(reward: Reward)
+
+        /** Call when the Alert button has been pressed  */
+        fun alertButtonPressed()
     }
 
     interface Outputs {
@@ -50,6 +56,7 @@ class RewardsFragmentViewModel {
 
         private val projectDataInput = PublishSubject.create<ProjectData>()
         private val rewardClicked = PublishSubject.create<Reward>()
+        private val alertButtonPressed = PublishSubject.create<Void>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
         private val projectData = BehaviorSubject.create<ProjectData>()
@@ -70,6 +77,14 @@ class RewardsFragmentViewModel {
             val project = this.projectDataInput
                     .map { it.project() }
 
+            val backedAddOns = project
+                    .map { it?.backing()?.addOns() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+
+            val hasAddOnsBacked = backedAddOns
+                    .map { it.isNotEmpty() }
+
             project
                     .filter { it.isBacking }
                     .map { indexOfBackedReward(it) }
@@ -77,13 +92,28 @@ class RewardsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backedRewardPosition)
 
-            this.projectDataInput
+            // - If the selected Reward do not have AddOns
+            val pledgeDataAndReason = this.projectDataInput
                     .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
                     .filter { !it.second.hasAddons() }
                     .map { pledgeDataAndPledgeReason(it.first, it.second) }
+
+            pledgeDataAndReason
+                    .filter { it.second == PledgeReason.PLEDGE}
                     .compose(bindToLifecycle())
                     .subscribe(this.showPledgeFragment)
 
+            pledgeDataAndReason
+                    .filter { it.second == PledgeReason.UPDATE_REWARD }
+                    .compose<Pair<Pair<PledgeData, PledgeReason>, Boolean>>(combineLatestPair(hasAddOnsBacked))
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        if (!it.second && !it.first.first.reward().hasAddons())
+                            this.showPledgeFragment.onNext(it.first)
+                        else this.showAlert.onNext(it.first)
+                    }
+
+            // - If the selected Reward have AddOns
             val pledgeDataAndReasonWithAddOns = this.projectDataInput
                     .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
                     .filter { it.second.hasAddons() }
@@ -92,7 +122,7 @@ class RewardsFragmentViewModel {
             pledgeDataAndReasonWithAddOns
                     .filter { it.second == PledgeReason.PLEDGE }
                     .compose(bindToLifecycle())
-                    .subscribe{
+                    .subscribe {
                         this.showAddOnsFragment.onNext(it)
                     }
 
@@ -105,6 +135,15 @@ class RewardsFragmentViewModel {
                     .map { it.rewards()?.size?: 0 }
                     .compose(bindToLifecycle())
                     .subscribe(this.rewardsCount)
+
+            this.showAlert
+                    .compose<Pair<PledgeData, PledgeReason>>(takeWhen(alertButtonPressed))
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        if (it.first.reward().hasAddons())
+                            this.showAddOnsFragment.onNext(it)
+                        else this.showPledgeFragment.onNext(it)
+                    }
         }
 
         private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
@@ -132,6 +171,8 @@ class RewardsFragmentViewModel {
         override fun rewardClicked(reward: Reward) {
             this.rewardClicked.onNext(reward)
         }
+
+        override fun alertButtonPressed() = this.alertButtonPressed.onNext(null)
 
         @NonNull
         override fun backedRewardPosition(): Observable<Int> = this.backedRewardPosition

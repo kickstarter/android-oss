@@ -96,6 +96,25 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testDigitalReward_withAddOns_showAddOnsTag() {
+        setUpEnvironment(environment())
+
+        // - Digital reward
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .shippingPreference("unrestricted")
+                .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
+                .hasAddons(true)
+                .backersCount(30)
+                .build()
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
+
+        this.hasAddonsAvailable.assertValue(true)
+        this.limitContainerIsGone.assertValue(false)
+    }
+
+    @Test
     fun testBackersCount_whenReward_withNoBackers() {
         setUpEnvironment(environment())
 

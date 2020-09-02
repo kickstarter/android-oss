@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.Scheduler;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -127,6 +128,7 @@ public interface SearchViewModel {
       query
         .compose(takePairWhen(pageCount))
         .filter(qp -> StringUtils.isPresent(qp.first))
+        .observeOn(Schedulers.io())
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
 
@@ -134,6 +136,7 @@ public interface SearchViewModel {
         .compose(takePairWhen(pageCount))
         .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
         .map(paramsAndPageCount -> paramsAndPageCount.first)
+        .observeOn(Schedulers.io())
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackSearchResultsLoaded);
 

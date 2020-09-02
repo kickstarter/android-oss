@@ -28,6 +28,25 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
     private lateinit var ksString: KSString
 
+    private val supportedCurrencies: List<CurrencyCode> by lazy {
+        arrayListOf(
+                CurrencyCode.AUD,
+                CurrencyCode.CAD,
+                CurrencyCode.CHF,
+                CurrencyCode.DKK,
+                CurrencyCode.EUR,
+                CurrencyCode.GBP,
+                CurrencyCode.HKD,
+                CurrencyCode.JPY,
+                CurrencyCode.MXN,
+                CurrencyCode.NOK,
+                CurrencyCode.NZD,
+                CurrencyCode.SEK,
+                CurrencyCode.SGD,
+                CurrencyCode.USD
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account)
@@ -85,12 +104,12 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
 
     private fun getListOfCurrencies(): List<String> {
         val strings = arrayListOf<String>()
-        for (currency in CurrencyCode.values()) {
+        for (currency in supportedCurrencies) {
             strings.add(getStringForCurrencyCode(currency))
         }
-        return strings.filter { it != CurrencyCode.`$UNKNOWN`.rawValue() }
+        return strings
     }
-
+    
     private fun getStringForCurrencyCode(currency: CurrencyCode): String {
         return when (currency) {
             CurrencyCode.AUD -> getString(R.string.Currency_AUD)
@@ -107,7 +126,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             CurrencyCode.SEK -> getString(R.string.Currency_SEK)
             CurrencyCode.SGD -> getString(R.string.Currency_SGD)
             CurrencyCode.USD -> getString(R.string.Currency_USD)
-            else -> CurrencyCode.`$UNKNOWN`.rawValue()
+            else -> currency.rawValue()
         }
     }
 
@@ -130,8 +149,9 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
     }
 
     private fun setSpinnerSelection(currencyCode: String) {
-        currentCurrencySelection = CurrencyCode.safeValueOf(currencyCode)
-        currency_spinner.setSelection(currentCurrencySelection!!.ordinal)
+        val selectedCurrencyCode = CurrencyCode.safeValueOf(currencyCode)
+        currentCurrencySelection = selectedCurrencyCode
+        currency_spinner.setSelection(supportedCurrencies.indexOf(selectedCurrencyCode))
     }
 
     private fun setUpSpinner() {
@@ -143,9 +163,11 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long) {
-                if (currentCurrencySelection != null && currentCurrencySelection!!.ordinal != postion) {
-                    newCurrencySelection = CurrencyCode.values()[postion]
-                    lazyFollowingOptOutConfirmationDialog().show()
+                currentCurrencySelection?.let {
+                    if (supportedCurrencies.indexOf(it) != postion) {
+                        newCurrencySelection = supportedCurrencies[postion]
+                        lazyFollowingOptOutConfirmationDialog().show()
+                    }
                 }
             }
         }

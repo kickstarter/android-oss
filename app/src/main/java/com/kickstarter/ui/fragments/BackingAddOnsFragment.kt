@@ -106,8 +106,8 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         val ksString = this.viewModel.environment.ksString()
         return when {
             totalSelected == 0 -> ksString.format(getString(R.string.Skip_add_ons),"","")
-            totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_add_ons_one),"quantity", totalSelected.toString())
-            totalSelected > 1 -> ksString.format(getString(R.string.Continue_with_quantity_add_ons_many),"quantity", totalSelected.toString())
+            totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_one),"quantity_count", totalSelected.toString())
+            totalSelected > 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_many),"quantity_count", totalSelected.toString())
             else -> ""
         }
     }

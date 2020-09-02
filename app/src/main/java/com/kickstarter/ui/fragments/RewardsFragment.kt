@@ -95,7 +95,6 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     private fun showAlert() {
-        dialog.create()
         dialog.show()
     }
 

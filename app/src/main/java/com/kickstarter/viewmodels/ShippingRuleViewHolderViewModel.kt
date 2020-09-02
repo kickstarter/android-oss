@@ -29,15 +29,13 @@ interface ShippingRuleViewHolderViewModel {
 
         private val shippingRuleText = BehaviorSubject.create<String>()
 
-        private val ksCurrency = this.environment.ksCurrency()
-
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
             this.shippingRuleAndProject
                     .filter { ObjectUtils.isNotNull(it.first) }
-                    .map { formattedString(it.first, it.second) }
+                    .map { it.first.location().displayableName() }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRuleText)
         }
@@ -45,14 +43,5 @@ interface ShippingRuleViewHolderViewModel {
         override fun configureWith(shippingRule: ShippingRule, project: Project) = this.shippingRuleAndProject.onNext(Pair.create(shippingRule, project))
 
         override fun shippingRuleText(): Observable<String> = this.shippingRuleText
-
-        private fun formattedString(shippingRule: ShippingRule, project: Project): String {
-            val displayableName = shippingRule.location().displayableName()
-            val cost = shippingRule.cost()
-
-            val formattedCost = this.ksCurrency.format(cost, project)
-
-            return "$displayableName $formattedCost"
-        }
     }
 }

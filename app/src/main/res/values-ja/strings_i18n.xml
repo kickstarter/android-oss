@@ -115,13 +115,13 @@
   <string name="Continue_to_payment" formatted="false">支払いを続ける</string>
   <string name="Continue_to_update_pledge" formatted="false">プレッジをアップデート</string>
   <string name="Continue_with_Facebook" formatted="false">Facebook で続行する</string>
-  <string name="Continue_with_quantity_add_ons_few" formatted="false">%{quantity} 個のアドオンで続行する</string>
-  <string name="Continue_with_quantity_add_ons_many" formatted="false">%{quantity} 個のアドオンで続行する</string>
-  <string name="Continue_with_quantity_add_ons_one" formatted="false">%{quantity} 個のアドオンで続行する</string>
-  <string name="Continue_with_quantity_add_ons_other" formatted="false">%{quantity} 個のアドオンで続行する</string>
-  <string name="Continue_with_quantity_add_ons_two" formatted="false">%{quantity} 個のアドオンで続行する</string>
-  <string name="Continue_with_quantity_add_ons_zero" formatted="false">%{quantity} 個のアドオンで続行する</string>
-  <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">このリワードで続行しますか？このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。</string>
+  <string name="Continue_with_quantity_count_add_ons_few" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
+  <string name="Continue_with_quantity_count_add_ons_many" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
+  <string name="Continue_with_quantity_count_add_ons_one" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
+  <string name="Continue_with_quantity_count_add_ons_other" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
+  <string name="Continue_with_quantity_count_add_ons_two" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
+  <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
+  <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">ライブ配信を開けませんでした。後ほどお試しください。</string>
   <string name="Couldnt_remove_attachment" formatted="false">添付ファイルを削除できませんでした</string>
@@ -285,6 +285,7 @@
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="Introducing_Lights_On" formatted="false">新企画「Lights On」</string>
+  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">It may not offer some or all of your add-ons.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトを実現するためのプラットフォームです。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">クリエイティブなプロジェクトに生命を吹き込む場です。&lt;a href="%{trust_link}">アカウンタビリティについて詳しくみる。&lt;/a></string>

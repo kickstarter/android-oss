@@ -366,8 +366,8 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummaryIsGone)
 
-            Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone)
-            { endDateGone, remainingGone, shippingGone -> endDateGone && remainingGone && shippingGone }
+            Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone, this.addOnsAvailable)
+            { endDateGone, remainingGone, shippingGone, addOnsAvailable -> endDateGone && remainingGone && shippingGone && !addOnsAvailable }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.limitContainerIsGone)

@@ -117,13 +117,13 @@ Please tap to retry.</string>
   <string name="Continue_to_payment" formatted="false">Continue to payment</string>
   <string name="Continue_to_update_pledge" formatted="false">Continue to update pledge</string>
   <string name="Continue_with_Facebook" formatted="false">Continue with Facebook</string>
-  <string name="Continue_with_quantity_add_ons_few" formatted="false">Continue with %{quantity} add-ons</string>
-  <string name="Continue_with_quantity_add_ons_many" formatted="false">Continue with %{quantity} add-ons</string>
-  <string name="Continue_with_quantity_add_ons_one" formatted="false">Continue with %{quantity} add-on</string>
-  <string name="Continue_with_quantity_add_ons_other" formatted="false">Continue with %{quantity} add-ons</string>
-  <string name="Continue_with_quantity_add_ons_two" formatted="false">Continue with %{quantity} add-ons</string>
-  <string name="Continue_with_quantity_add_ons_zero" formatted="false">Continue with %{quantity} add-ons</string>
-  <string name="Continue_with_this_reward_It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">Continue with this reward? It may not offer some or all of your add-ons.</string>
+  <string name="Continue_with_quantity_count_add_ons_few" formatted="false">Continue with %{quantity_count} add-ons</string>
+  <string name="Continue_with_quantity_count_add_ons_many" formatted="false">Continue with %{quantity_count} add-ons</string>
+  <string name="Continue_with_quantity_count_add_ons_one" formatted="false">Continue with %{quantity_count} add-on</string>
+  <string name="Continue_with_quantity_count_add_ons_other" formatted="false">Continue with %{quantity_count} add-ons</string>
+  <string name="Continue_with_quantity_count_add_ons_two" formatted="false">Continue with %{quantity_count} add-ons</string>
+  <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continue with %{quantity_count} add-ons</string>
+  <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
   <string name="Couldnt_add_attachment" formatted="false">Couldn\'t add attachment</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Couldn‘t open live stream. Try again later.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Couldn\'t remove attachment</string>
@@ -287,6 +287,7 @@ Please tap to retry.</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Introduce yourself</string>
   <string name="Introducing_Lights_On" formatted="false">Introducing Lights On</string>
+  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">It may not offer some or all of your add-ons.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">It may take up to 24 hours to collect your data. When it’s ready, we’ll send instructions to download your data to the email associated with this account. If you don’t hear from us, come back here to try again.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">It\'s a way to bring creative projects to life.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">It\'s a way to bring creative projects to life. &lt;a href="%{trust_link}">Learn more about accountability&lt;/a></string>

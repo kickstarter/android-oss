@@ -75,7 +75,9 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
         this.viewModel.outputs.limitContainerIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_limit_container, it) }
+                .subscribe {
+                    ViewUtils.setGone(this.view.reward_limit_container, it)
+                }
 
         this.viewModel.outputs.remaining()
                 .compose(bindToLifecycle())
@@ -183,9 +185,8 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
                 .filter { ObjectUtils.isNotNull(it) }
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { hasAddOns ->
-                    if (hasAddOns) this.view.reward_add_ons_available.visibility = View.VISIBLE
-                    else ViewUtils.setGone(this.view.reward_add_ons_available, true)
+                .subscribe {
+                    ViewUtils.setGone(this.view.reward_add_ons_available, !it)
                 }
 
         this.viewModel.outputs.selectedRewardTagIsGone()

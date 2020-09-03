@@ -27,5 +27,13 @@ class ShippingRuleFactory private constructor() {
                     .location(LocationFactory.mexico())
                     .build()
         }
+
+        fun emptyShippingRule(): ShippingRule {
+            return ShippingRule.builder()
+                    .id(-1L)
+                    .location(LocationFactory.empty())
+                    .cost(-1.0)
+                    .build()
+        }
     }
 }

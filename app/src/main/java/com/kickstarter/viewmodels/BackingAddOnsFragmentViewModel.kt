@@ -7,6 +7,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isShippable
@@ -231,17 +232,18 @@ class BackingAddOnsFragmentViewModel {
                         this.isEnabledCTAButton.onNext(it)
                     }
 
-            Observable.combineLatest(this.continueButtonPressed, this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
-                _, listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
+            // - Update pledgeData and reason each time there is a change (location, quantity of addons, filtered by location, refreshed ...)
+            val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
+                listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
                 val finalList = listAddOns.second
 
-                val updatedPledgeData = when {
-                    isDigital(rw) && finalList.isNotEmpty() -> {
+                val updatedPledgeData = when(finalList.isNotEmpty()) {
+                    isDigital(rw) -> {
                         pledgeData.toBuilder()
                                 .addOns(finalList as java.util.List<Reward>)
                                 .build()
                     }
-                    isShippable(rw) && finalList.isEmpty() -> {
+                    isShippable(rw) -> {
                         pledgeData.toBuilder()
                                 .addOns(finalList as java.util.List<Reward>)
                                 .shippingRule(shippingRule)
@@ -255,6 +257,10 @@ class BackingAddOnsFragmentViewModel {
 
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
+                    .distinctUntilChanged()
+
+            updatedPledgeDataAndReason
+                    .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.continueButtonPressed))
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.showPledgeFragment.onNext(it)

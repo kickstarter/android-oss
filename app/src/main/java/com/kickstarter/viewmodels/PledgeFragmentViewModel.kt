@@ -470,11 +470,19 @@ interface PledgeFragmentViewModel {
                     }
 
             pledgeData
-                    .map { it.shippingRule() == null }
+                    .map { it.shippingRule() == null && RewardUtils.isShippable(it.reward())}
                     .subscribe { this.shouldLoadDefaultLocation.onNext(it) }
 
             val preSelectedShippingRule = Observable.merge(initShippingRule, backingShippingRule)
                     .distinctUntilChanged()
+
+            preSelectedShippingRule
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.shippingRule.onNext(it)
+                    }
 
             backing
                     .map { if (it.addOns().isNullOrEmpty()) emptyList() else requireNotNull(it.addOns()) }
@@ -515,23 +523,6 @@ interface PledgeFragmentViewModel {
 
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(this.selectedReward))
-
-            // - Update visibility for shippingRules
-            preSelectedShippingRule
-                    .compose<Pair<ShippingRule, List<Reward>>>(combineLatestPair(this.rewardAndAddOns))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        val selectedRw = it.second.first()
-                        if (ObjectUtils.isNotNull(it.first)) this.shippingRule.onNext(it.first)
-
-                        if (hasSelectedAddons(it.second)) {
-                            this.shippingRulesSectionIsGone.onNext(selectedRw.hasAddons())
-                            this.shippingRuleStaticIsGone.onNext(!selectedRw.hasAddons())
-                        } else {
-                            this.shippingRulesSectionIsGone.onNext(!RewardUtils.isShippable(selectedRw))
-                            this.shippingRuleStaticIsGone.onNext(true)
-                        }
-                    }
 
             Observable.combineLatest(projectDataAndReward, this.currentUser.observable())
             { data, user ->
@@ -1375,52 +1366,91 @@ interface PledgeFragmentViewModel {
             // - Screen configuration (Different configurations in depending on: PledgeReason, Reward type, Shipping, AddOns selection)
             this.selectedReward
                     .compose<Pair<Reward, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE || it.second == PledgeReason.UPDATE_REWARD}
-                    .map { it.first }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.pledgeSummaryIsGone.onNext(true)
-                        if (!RewardUtils.isNoReward(it)) {
-                            this.headerSectionIsGone.onNext(false)
-                            this.isBonusSupportSectionGone.onNext(false)
-                            this.pledgeSectionIsGone.onNext(true)
-                        } else {
-                            this.pledgeSectionIsGone.onNext(false)
-                            this.isPledgeMinimumSubtitleGone.onNext(true)
-                            this.headerSectionIsGone.onNext(true)
-                            this.isNoReward.onNext(true)
-                            this.isBonusSupportSectionGone.onNext(true)
+                        when(it.second) {
+                            PledgeReason.PLEDGE,
+                            PledgeReason.UPDATE_REWARD -> {
+                                this.pledgeSummaryIsGone.onNext(true)
+                                if (!RewardUtils.isNoReward(it.first)) {
+                                    this.headerSectionIsGone.onNext(false)
+                                    this.isBonusSupportSectionGone.onNext(false)
+                                    this.pledgeSectionIsGone.onNext(true)
+                                } else {
+                                    this.pledgeSectionIsGone.onNext(false)
+                                    this.isPledgeMinimumSubtitleGone.onNext(true)
+                                    this.headerSectionIsGone.onNext(true)
+                                    this.isNoReward.onNext(true)
+                                    this.isBonusSupportSectionGone.onNext(true)
+                                }
+                            }
+                            PledgeReason.UPDATE_PAYMENT,
+                            PledgeReason.FIX_PLEDGE -> {
+                                this.headerSectionIsGone.onNext(true)
+
+                                if (RewardUtils.isNoReward(it.first)) {
+                                    this.pledgeSummaryIsGone.onNext(true)
+                                    this.shippingSummaryIsGone.onNext(true)
+                                    this.bonusSummaryIsGone.onNext(true)
+                                } else {
+                                    this.shippingSummaryIsGone.onNext(!RewardUtils.isShippable(it.first))
+                                    this.pledgeSummaryIsGone.onNext(false)
+                                }
+                            }
                         }
                     }
 
-            pledgeReason
-                    .filter { it == PledgeReason.UPDATE_PAYMENT || it == PledgeReason.FIX_PLEDGE }
+            // - Update visibility for shippingRules sections
+            val shouldHideShippingSections = Observable.combineLatest(this.rewardAndAddOns, pledgeReason) { rwAndAddOns, reason ->
+                return@combineLatest shippingRulesSectionShouldHide(rwAndAddOns, reason)
+            }
+
+            shouldHideShippingSections
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.isBonusSupportSectionGone.onNext(true)
-                        this.headerSectionIsGone.onNext(true)
-                        this.shippingRulesSectionIsGone.onNext(true)
-                        this.shippingRuleStaticIsGone.onNext(true)
-                        this.pledgeSummaryIsGone.onNext(false)
+                        this.shippingRulesSectionIsGone.onNext(it.first)
+                        this.shippingRuleStaticIsGone.onNext(it.second)
                     }
 
             pledgeReason
-                    .filter { it == PledgeReason.UPDATE_PLEDGE }
                     .compose<Pair<PledgeReason, Backing>>(combineLatestPair(backing))
                     .compose(bindToLifecycle())
                     .subscribe {
-                        val hasBonus = it.second.bonusAmount() >= 0
-                        val shippableReward = it.second.reward()?.let { rw ->  RewardUtils.isShippable(rw) } ?: false
-                        val hasAddOns = it.second.addOns()?.isNotEmpty() ?: false
+                        val hasBonus = it.second.bonusAmount() > 0
                         val isNoReward = it.second.reward() == null && hasBonus
 
-                        this.isBonusSupportSectionGone.onNext(!(hasBonus && !isNoReward)) // has bonus, sections is not gone
-                        this.pledgeSectionIsGone.onNext(!isNoReward)
-                        this.headerSectionIsGone.onNext(true)
-                        this.shippingRulesSectionIsGone.onNext(!(shippableReward && !hasAddOns)) // shippable no addons
-                        this.shippingRuleStaticIsGone.onNext(!(shippableReward && hasAddOns)) // shippable and addOns
-                        this.pledgeSummaryIsGone.onNext(isNoReward) // Gone if No reward, Show if regular reward
+                        when(it.first) {
+                            PledgeReason.UPDATE_PLEDGE -> {
+                                this.isBonusSupportSectionGone.onNext(isNoReward) // has bonus, sections is not gone
+                                this.pledgeSectionIsGone.onNext(!isNoReward)
+                                this.headerSectionIsGone.onNext(true)
+                                this.pledgeSummaryIsGone.onNext(true) // Gone if No reward, Show if regular reward
+                            }
+                            PledgeReason.UPDATE_PAYMENT,
+                            PledgeReason.FIX_PLEDGE -> {
+                                if (!isNoReward)
+                                    this.bonusSummaryIsGone.onNext(!hasBonus)
+                            }
+                        }
                     }
+        }
+
+        /**
+         *  Logic to hide/show the shipping location sections
+         *  @return Pair.first ShippingRulesSection -> This section shows/Hide the shippingSelector for shippable rewards without addOns
+         *  @return Pair.second ShippingRulesStaticSection -> this section shows/hides the textview showing the current shipping location
+         */
+        private fun shippingRulesSectionShouldHide(rewardAndAddOns: List<Reward>, reason: PledgeReason): Pair<Boolean, Boolean> {
+            var hideFlags = Pair(true, true)
+            val rw = rewardAndAddOns.first()
+
+            if (reason == PledgeReason.PLEDGE || reason == PledgeReason.UPDATE_REWARD || reason == PledgeReason.UPDATE_PLEDGE ) {
+                val showSelector = !hasSelectedAddons(rewardAndAddOns) && RewardUtils.isShippable(rw)
+                val showStaticInfo = hasSelectedAddons(rewardAndAddOns) && RewardUtils.isShippable(rw)
+                hideFlags = Pair (!showSelector, !showStaticInfo)
+            }
+
+            return hideFlags
         }
 
         /**

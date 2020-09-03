@@ -150,7 +150,8 @@ class BackingAddOnsFragmentViewModel {
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
-                    .map { isDigital(it) }
+                    .filter { isDigital(it) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.shippingRuleSelected.onNext(ShippingRuleFactory.emptyShippingRule())
@@ -217,7 +218,7 @@ class BackingAddOnsFragmentViewModel {
                         this.totalSelectedAddOns.onNext(calculateTotal(it.second.second))
                     }
 
-            // - TODO: - Add the also a check to the base reward, for the CHANGE REWARD flow (same addOns, same location, different base reward)
+            // - this.quantityPerId.startWith(Pair(-1,-1L) because we need to trigger this validation everytime the AddOns selection changes
             val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId.startWith(Pair(-1,-1L))) {
                 backedRule, backedList, actualRule,_  ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList)

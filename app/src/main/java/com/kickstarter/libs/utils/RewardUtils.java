@@ -17,8 +17,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
-import static com.kickstarter.models.Reward.SHIPPING_TYPE_NO_SHIPPING;
-
 public final class RewardUtils {
   private RewardUtils() {}
 
@@ -86,7 +84,7 @@ public final class RewardUtils {
    */
   public static boolean isShippable(final @NonNull Reward reward) {
     final String shippingType = reward.shippingType();
-    return shippingType != null && !SHIPPING_TYPE_NO_SHIPPING.equals(shippingType);
+    return shippingType != null && !Reward.SHIPPING_TYPE_NO_SHIPPING.equals(shippingType);
   }
 
   /**
@@ -97,7 +95,7 @@ public final class RewardUtils {
    * @return isDigital: true or false
    */
   public static boolean isDigital(final @NonNull Reward reward) {
-    final Boolean isDigitalV1 = reward.shippingType() != null && reward.shippingType().equalsIgnoreCase(SHIPPING_TYPE_NO_SHIPPING);
+    final Boolean isDigitalV1 = reward.shippingType() != null && reward.shippingType().equalsIgnoreCase(Reward.SHIPPING_TYPE_NO_SHIPPING);
 
     return (reward.shippingPreferenceType() == Reward.ShippingPreference.NONE ||
             reward.shippingPreferenceType() == Reward.ShippingPreference.NOSHIPPING ||

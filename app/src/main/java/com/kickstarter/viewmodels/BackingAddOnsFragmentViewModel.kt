@@ -7,6 +7,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isShippable
@@ -82,7 +83,7 @@ class BackingAddOnsFragmentViewModel {
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
         private val totalSelectedAddOns = BehaviorSubject.create(0)
-        private val continueButtonPressed = BehaviorSubject.create<Boolean>()
+        private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection: MutableMap<Long, Int> = mutableMapOf()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
@@ -236,17 +237,20 @@ class BackingAddOnsFragmentViewModel {
                         this.isEnabledCTAButton.onNext(it)
                     }
 
-            val pledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
+            // - Update pledgeData and reason each time there is a change (location, quantity of addons, filtered by location, refreshed ...)
+            val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
                 listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
-                val finalList = listAddOns.second
+                val finalList = listAddOns.second.filter { addOn ->
+                    addOn.quantity()?.let { it > 0 }?: false
+                }
 
-                val updatedPledgeData = when {
-                    isDigital(rw) && finalList.isNotEmpty() -> {
+                val updatedPledgeData = when(finalList.isNotEmpty()) {
+                    isDigital(rw) -> {
                         pledgeData.toBuilder()
                                 .addOns(finalList as java.util.List<Reward>)
                                 .build()
                     }
-                    isShippable(rw) && finalList.isEmpty() -> {
+                    isShippable(rw) -> {
                         pledgeData.toBuilder()
                                 .addOns(finalList as java.util.List<Reward>)
                                 .shippingRule(shippingRule)
@@ -260,14 +264,12 @@ class BackingAddOnsFragmentViewModel {
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
 
-            this.continueButtonPressed
-                    .compose<Pair<Boolean, Pair<PledgeData, PledgeReason>>>(combineLatestPair(pledgeDataAndReason))
-                    .filter { it.first }
+            updatedPledgeDataAndReason
+                    .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.continueButtonPressed))
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.lake.trackAddOnsContinueButtonClicked(it.second.first)
-                        continueButtonPressed.onNext(false)
-                        this.showPledgeFragment.onNext(it.second)
+                        this.lake.trackAddOnsContinueButtonClicked(it.first)
+                        this.showPledgeFragment.onNext(it)
                     }
         }
 
@@ -360,7 +362,7 @@ class BackingAddOnsFragmentViewModel {
         // - Inputs
         override fun configureWith(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) = this.pledgeDataAndReason.onNext(pledgeDataAndReason)
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
-        override fun continueButtonPressed() = this.continueButtonPressed.onNext(true)
+        override fun continueButtonPressed() = this.continueButtonPressed.onNext(null)
         override fun quantityPerId(quantityPerId: Pair<Int, Long>) = this.quantityPerId.onNext(quantityPerId)
 
         // - Outputs

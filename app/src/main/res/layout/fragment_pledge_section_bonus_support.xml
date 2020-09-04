@@ -8,8 +8,10 @@
     android:layout_marginBottom="@dimen/grid_3"
     android:animateLayoutChanges="true"
     android:focusable="true"
+    android:visibility="gone"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    tools:visibility="visible"
     tools:showIn="@layout/fragment_pledge">
 
     <TextView

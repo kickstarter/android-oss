@@ -50,6 +50,8 @@
 
                 <include layout="@layout/fragment_pledge_section_summary_shipping" />
 
+                <include layout="@layout/fragment_pledge_section_summary_bonus"/>
+
                 <include
                     android:id="@+id/divider_total"
                     layout="@layout/horizontal_line_1dp_view" />

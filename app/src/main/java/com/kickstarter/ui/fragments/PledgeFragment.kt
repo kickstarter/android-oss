@@ -64,6 +64,7 @@ import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.
 import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_rules
 import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.view.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_summary_bonus.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_total.*
@@ -120,15 +121,8 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.headerSectionIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { isNoReward ->
-                    when (isNoReward) {
-                        true -> {
-                            ViewUtils.setGone(pledge_header_container)
-                        }
-                        false -> {
-                            pledge_header_container.visibility = View.VISIBLE
-                        }
-                    }
+                .subscribe {
+                    ViewUtils.setGone(pledge_header_container, it)
                 }
 
         this.viewModel.outputs.decreaseBonusButtonIsEnabled()
@@ -194,6 +188,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe {
                     bonus_amount.setText(it)
                     bonus_amount.setSelection(it.length)
+                    bonus_summary_amount.text = it
                 }
 
         this.viewModel.outputs.pledgeHint()
@@ -325,6 +320,16 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { pledge_summary_amount.text = it }
 
+        this.viewModel.outputs.bonusSummaryIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { ViewUtils.setGone(bonus_summary, it) }
+
+        this.viewModel.outputs.bonusSummaryAmount()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { bonus_summary_amount.text = it }
+
         this.viewModel.outputs.pledgeSummaryIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -447,9 +452,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .subscribe {
                     ViewUtils.setGone(bonus_container, it)
-                    ViewUtils.setGone(pledge_container, !it)
                     pledge_container.setPadding(0, resources.getDimension(R.dimen.grid_4).toInt(), 0, 0)
-
                 }
 
         this.viewModel.outputs.isNoReward()

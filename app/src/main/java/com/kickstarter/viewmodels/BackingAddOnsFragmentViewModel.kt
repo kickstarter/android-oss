@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
@@ -42,6 +43,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits the quantity per AddOn Id selected */
         fun quantityPerId(quantityPerId: Pair<Int, Long>)
+
+        /**Envoked when the retry button on the addon error alert dialog is pressed */
+        fun retryButtonPressed()
     }
 
     interface Outputs {
@@ -68,32 +72,47 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits whether or not the empty state should be shown **/
         fun isEmptyState(): Observable<Boolean>
+
+        /**Emits an alert dialog when add-ons request results in error **/
+        fun showErrorDialog(): Observable<Boolean>
+
+        /** Emits arguments from the arguments observable **/
+        fun getArguments(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
         val inputs = this
         val outputs = this
 
-        private val pledgeDataAndReason = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val shippingRules = PublishSubject.create<List<ShippingRule>>()
+        private val addOnsFromGraph = PublishSubject.create<List<Reward>>()
+        private var pledgeDataAndReason = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingRuleSelected = PublishSubject.create<ShippingRule>()
         private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
 
+        private val projectAndReward: Observable<Pair<Project, Reward>>
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingSelectorIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
+        private val showErrorDialog = PublishSubject.create<Boolean>()
         private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection: MutableMap<Long, Int> = mutableMapOf()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
-
+        private val getArguments = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
         private val currentConfig = environment.currentConfig()
         val ksString: KSString = this.environment.ksString()
 
         init {
+
+//            arguments()
+//                    .map{Pair<PledgeData, PledgeReason>(it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData?, it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason)
+//                    .compose(bindToLifecycle())
+//                    .subscribe(this.getArguments)
 
             val pledgeData = arguments()
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
@@ -106,6 +125,9 @@ class BackingAddOnsFragmentViewModel {
 
             val pledgeReason = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
+
+//            getArguments
+//                    .compose(Observable.combineLatest(pledgeData, pledgeReason))
 
             val projectData = pledgeData
                     .map { it.projectData() }
@@ -128,15 +150,18 @@ class BackingAddOnsFragmentViewModel {
 
             val reward = Observable.merge(rewardPledge, backingReward)
 
-            val projectAndReward = project
+            projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
-            val shippingRules = projectAndReward
-                    .filter { isShippable(it.second) }
-                    .distinctUntilChanged()
-                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(Transformers.neverError()) }
-                    .map { it.shippingRules() }
-                    .share()
+            loadShippingRulesAndAddons()
+
+//            val shippingRules = projectAndReward
+//                    .filter { RewardUtils.isShippable(it.second) }
+//                    .distinctUntilChanged()
+//                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(neverError()).doOnError{showErrorDialog.onNext(true)}
+//                    }
+//                    .map { it.shippingRules() }
+//                    .share()
 
             val backingShippingRule = backing
                     .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
@@ -168,11 +193,11 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
-            val addOnsFromGraph = project
-                    .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }
-                    .compose(bindToLifecycle())
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .share()
+//            val addOnsFromGraph = project
+//                    .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "").doOnError{showErrorDialog.onNext(true)} }
+//                    .compose(bindToLifecycle())
+//                    .filter { ObjectUtils.isNotNull(it) }
+//                    .share()
 
             val combinedList = addOnsFromBacking
                    .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
@@ -273,6 +298,26 @@ class BackingAddOnsFragmentViewModel {
                     }
         }
 
+        private fun loadShippingRulesAndAddons() {
+            projectAndReward
+                    .filter { isShippable(it.second) }
+                    .distinctUntilChanged()
+                    .switchMap<ShippingRulesEnvelope> {
+                        this.apiClient.fetchShippingRules(it.first, it.second).doOnError {
+                            // TODO: Send message to the fragment
+                            Log.d("HELLOWORLD", "API ERROR")
+                        }
+                    }
+                    .map { it.shippingRules() }
+                    .subscribe(shippingRules)
+
+            projectAndReward
+                    .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.first.slug()?.let { it }?: "") }
+                    .compose(bindToLifecycle())
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .subscribe(addOnsFromGraph)
+        }
+
         private fun isDifferentSelection(backedList: List<Reward>): Boolean {
             val backedSelection: MutableMap<Long, Int> = mutableMapOf()
                     backedList
@@ -364,6 +409,7 @@ class BackingAddOnsFragmentViewModel {
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
         override fun continueButtonPressed() = this.continueButtonPressed.onNext(null)
         override fun quantityPerId(quantityPerId: Pair<Int, Long>) = this.quantityPerId.onNext(quantityPerId)
+        override fun retryButtonPressed() {}
 
         // - Outputs
         @NonNull
@@ -375,5 +421,7 @@ class BackingAddOnsFragmentViewModel {
         override fun shippingSelectorIsGone(): Observable<Boolean> = this.shippingSelectorIsGone
         override fun isEnabledCTAButton(): Observable<Boolean> = this.isEnabledCTAButton
         override fun isEmptyState(): Observable<Boolean> = this.isEmptyState
+        override fun showErrorDialog(): Observable<Boolean> = this.showErrorDialog
+        override fun getArguments(): Observable<Pair<PledgeData, PledgeReason>> = this.getArguments
     }
 }

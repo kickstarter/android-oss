@@ -99,6 +99,11 @@ class BackingAddOnsFragmentViewModel {
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
                     .ofType(PledgeData::class.java)
 
+            pledgeData
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.lake.trackAddOnsPageViewed(it) }
+
             val pledgeReason = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
 
@@ -235,7 +240,9 @@ class BackingAddOnsFragmentViewModel {
             // - Update pledgeData and reason each time there is a change (location, quantity of addons, filtered by location, refreshed ...)
             val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
                 listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
-                val finalList = listAddOns.second
+                val finalList = listAddOns.second.filter { addOn ->
+                    addOn.quantity()?.let { it > 0 }?: false
+                }
 
                 val updatedPledgeData = when(finalList.isNotEmpty()) {
                     isDigital(rw) -> {
@@ -254,15 +261,14 @@ class BackingAddOnsFragmentViewModel {
                                 .build()
                     }
                 }
-
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
-                    .distinctUntilChanged()
 
             updatedPledgeDataAndReason
                     .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.continueButtonPressed))
                     .compose(bindToLifecycle())
                     .subscribe {
+                        this.lake.trackAddOnsContinueButtonClicked(it.first)
                         this.showPledgeFragment.onNext(it)
                     }
         }

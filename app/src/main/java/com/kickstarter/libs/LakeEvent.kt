@@ -21,6 +21,8 @@ const val PLEDGE_SUBMIT_BUTTON_CLICKED = "Pledge Submit Button Clicked"
 const val PROJECT_PAGE_PLEDGE_BUTTON_CLICKED = "Project Page Pledge Button Clicked"
 const val SELECT_REWARD_BUTTON_CLICKED = "Select Reward Button Clicked"
 const val THANKS_PAGE_VIEWED = "Thanks Page Viewed"
+const val ADD_ONS_PAGE_VIEWED = "Add-Ons Page Viewed"
+const val ADD_ONS_CONTINUED_BUTTON_CLICKED = "Add-Ons Continue Button Clicked"
 // endregion
 
 // region Manage a Pledge

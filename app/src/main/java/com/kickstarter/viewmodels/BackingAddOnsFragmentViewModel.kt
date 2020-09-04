@@ -82,7 +82,7 @@ class BackingAddOnsFragmentViewModel {
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
         private val totalSelectedAddOns = BehaviorSubject.create(0)
-        private val continueButtonPressed = BehaviorSubject.create<Void>()
+        private val continueButtonPressed = BehaviorSubject.create<Boolean>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection: MutableMap<Long, Int> = mutableMapOf()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
@@ -97,6 +97,11 @@ class BackingAddOnsFragmentViewModel {
             val pledgeData = arguments()
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
                     .ofType(PledgeData::class.java)
+
+            pledgeData
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.lake.trackAddOnsPageViewed(it) }
 
             val pledgeReason = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -231,8 +236,8 @@ class BackingAddOnsFragmentViewModel {
                         this.isEnabledCTAButton.onNext(it)
                     }
 
-            Observable.combineLatest(this.continueButtonPressed, this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
-                _, listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
+            val pledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
+                listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
                 val finalList = listAddOns.second
 
                 val updatedPledgeData = when {
@@ -252,12 +257,17 @@ class BackingAddOnsFragmentViewModel {
                                 .build()
                     }
                 }
-
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
+
+            this.continueButtonPressed
+                    .compose<Pair<Boolean, Pair<PledgeData, PledgeReason>>>(combineLatestPair(pledgeDataAndReason))
+                    .filter { it.first }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.showPledgeFragment.onNext(it)
+                        this.lake.trackAddOnsContinueButtonClicked(it.second.first)
+                        continueButtonPressed.onNext(false)
+                        this.showPledgeFragment.onNext(it.second)
                     }
         }
 
@@ -350,7 +360,7 @@ class BackingAddOnsFragmentViewModel {
         // - Inputs
         override fun configureWith(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) = this.pledgeDataAndReason.onNext(pledgeDataAndReason)
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
-        override fun continueButtonPressed() = this.continueButtonPressed.onNext(null)
+        override fun continueButtonPressed() = this.continueButtonPressed.onNext(true)
         override fun quantityPerId(quantityPerId: Pair<Int, Long>) = this.quantityPerId.onNext(quantityPerId)
 
         // - Outputs

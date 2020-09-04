@@ -174,6 +174,13 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(observeForUI())
                 .subscribe { updatePledgeCardState(it) }
 
+        this.viewModel.outputs.pledgeAmountHeader()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    pledge_header_summary_amount.text = it
+                }
+
         this.viewModel.outputs.pledgeAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
@@ -204,7 +211,9 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         this.viewModel.outputs.pledgeMaximum()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { setPledgeMaximumText(it) }
+                .subscribe {
+                    setPledgeMaximumText(it)
+                }
 
         this.viewModel.outputs.pledgeMaximumIsGone()
                 .compose(bindToLifecycle())
@@ -346,7 +355,6 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .subscribe {
                     ViewUtils.setGone(total_amount_loading_view, true)
                     total_amount.text = it
-                    pledge_header_summary_amount.text = it
                 }
 
         this.viewModel.outputs.totalAndDeadline()

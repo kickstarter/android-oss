@@ -99,6 +99,11 @@ class BackingAddOnsFragmentViewModel {
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
                     .ofType(PledgeData::class.java)
 
+            pledgeData
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .subscribe { this.lake.trackAddOnsPageViewed(it) }
+
             val pledgeReason = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
 
@@ -256,15 +261,14 @@ class BackingAddOnsFragmentViewModel {
                                 .build()
                     }
                 }
-
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
-                    .distinctUntilChanged()
 
             updatedPledgeDataAndReason
                     .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.continueButtonPressed))
                     .compose(bindToLifecycle())
                     .subscribe {
+                        this.lake.trackAddOnsContinueButtonClicked(it.first)
                         this.showPledgeFragment.onNext(it)
                     }
         }

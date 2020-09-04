@@ -68,6 +68,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), ShippingRuleFactory.emptyShippingRule()))
         this.isEmptyState.assertValue(true)
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -101,6 +103,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
         this.addOnsList.assertValue(Triple(projectData,listAddons, shippingRule.shippingRules().first()))
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -134,6 +138,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
         this.addOnsList.assertValue(Triple(projectData,listAddons, shippingRule.shippingRules().first()))
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -171,6 +177,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -206,6 +214,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -250,6 +260,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
             val filteredAddOn = it.second.first()
             TestCase.assertEquals(filteredAddOn, addOn2)
         }
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -290,6 +302,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.shippingRuleSelected(shippingRuleAddOn)
 
         this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRuleRw), Triple(projectData, emptyList(), shippingRuleAddOn))
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -325,6 +339,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, ShippingRuleFactory.emptyShippingRule()))
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -359,6 +375,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.shippingSelectorIsGone.assertValues(true)
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
 
@@ -392,6 +410,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.shippingSelectorIsGone.assertValues(true)
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -429,6 +449,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     TestCase.assertEquals(it.first, pledgeData)
                     TestCase.assertEquals(it.second, pledgeReason)
                 }
+
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
     }
 
     @Test
@@ -503,6 +525,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     TestCase.assertEquals(selectedAddOnsList?.last()?.id(), 99)
                     TestCase.assertEquals(selectedAddOnsList?.last()?.quantity(), 5)
                 }
+
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
     }
 
     @Test
@@ -555,6 +579,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.isEnabledButton.assertValue(false)
         this.addOnsList.assertValue(Triple(projectData,combinedList, shippingRule.shippingRules().first()))
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -624,6 +650,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 .subscribe {
                     TestCase.assertEquals(it.first.addOns(), updateList)
                 }
+
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
     }
 
     @Test
@@ -661,6 +689,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.addOnsList.assertValue(Triple(projectData, emptyList(), shippingRuleRw))
         this.isEmptyState.assertValue(true)
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
@@ -696,7 +726,9 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.addOnsList.assertValue(Triple(projectData, listAddons, shippingRuleRw))
-        this.isEmptyState.assertValue(false);
+        this.isEmptyState.assertValue(false)
+
+        this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfig): Environment {

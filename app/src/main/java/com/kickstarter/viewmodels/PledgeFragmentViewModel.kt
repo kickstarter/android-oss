@@ -933,16 +933,6 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.totalDividerIsGone)
 
-            updatingPayment
-                    .map { BooleanUtils.negate(it) }
-                    .compose<Pair<Boolean, Reward>>(combineLatestPair(this.selectedReward))
-                    .map { it.first || !RewardUtils.isShippable(it.second) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingSummaryIsGone.onNext(it)
-                    }
-
             backing
                     .map { it.shippingAmount().toDouble() }
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
@@ -959,7 +949,6 @@ interface PledgeFragmentViewModel {
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.bonusSummaryIsGone.onNext(false)
                         this.bonusSummaryAmount.onNext(it)
                     }
 

@@ -876,22 +876,15 @@ interface PledgeFragmentViewModel {
                     .map { it.maxPledge.toDouble() }
                     .distinctUntilChanged()
 
-            /*pledgeMaximumIsGone
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(updatingPayment))
-                    .filter { BooleanUtils.isFalse(it.second) }
-                    .map { it.first }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeMaximumIsGone)*/
-
             val threshold = pledgeAmountHeader
                     .compose<Pair<Double, Double>>(combineLatestPair(shippingAmount))
                     .map { it.first + it.second }
                     .distinctUntilChanged()
 
-            val selectedPledge = Observable.merge(threshold, variantSuggestedAmount)
+            val selectedPledgeAmount = Observable.merge(pledgeAmountHeader, threshold, variantSuggestedAmount)
 
             val pledgeMaximum = currencyMaximum
-                    .compose<Pair<Double, Double>>(combineLatestPair(selectedPledge))
+                    .compose<Pair<Double, Double>>(combineLatestPair(selectedPledgeAmount))
                     .map { it.first - it.second }
 
             // TODO: pledge amount instead of bonusAmount in case of RewardNoreward
@@ -1038,6 +1031,7 @@ interface PledgeFragmentViewModel {
                     .filter { BooleanUtils.isTrue(it.second) }
                     .map { it.first }
 
+            // - Enable/Disable button with shipping
             Observable.merge(updatingReward, changeDuringUpdatingPledge)
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())

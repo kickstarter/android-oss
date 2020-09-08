@@ -662,9 +662,6 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
 
             pledgeInput
-                    .map { it }
-
-            pledgeInput
                     .compose<Double>(takeWhen(this.increasePledgeButtonClicked))
                     .compose<Pair<Double, Int>>(combineLatestPair(stepAmount))
                     .map { it.first + it.second }
@@ -809,7 +806,6 @@ interface PledgeFragmentViewModel {
                     .filter { RewardUtils.isShippable(it) }
                     .map { it }
 
-
             val isDigitalRw = this.selectedReward
                     .filter { RewardUtils.isDigital(it) }
                     .map { it }
@@ -887,7 +883,6 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Double>>(combineLatestPair(selectedPledgeAmount))
                     .map { it.first - it.second }
 
-            // TODO: pledge amount instead of bonusAmount in case of RewardNoreward
             val pledgeMaximumIsGone = pledgeMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(total))
                     .map { it.first > it.second }

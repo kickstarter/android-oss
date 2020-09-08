@@ -137,7 +137,6 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.inputs.rewardClicked(rewarda)
         this.showPledgeFragment.assertNoValues()
         this.showAddOnsFragment.assertNoValues()
-        this.showAlert.assertNoValues()
         this.showAlert.assertValue(Pair(PledgeData.builder()
                 .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
                 .reward(rewarda)

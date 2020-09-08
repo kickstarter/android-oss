@@ -113,20 +113,13 @@ class BackingAddOnsFragmentViewModel {
             val project = projectData
                     .map { it.project() }
 
-            val rewardPledge = pledgeData
+            val reward = pledgeData
                     .map { it.reward() }
 
             val backing = projectData
                     .map { getBackingFromProjectData(it) }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
-
-            val backingReward = backing
-                    .map { it.reward() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-
-            val reward = Observable.merge(rewardPledge, backingReward)
 
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -167,6 +160,7 @@ class BackingAddOnsFragmentViewModel {
                     .map { it.addOns()?.toList() }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
+                    .share()
 
             val addOnsFromGraph = project
                     .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }
@@ -325,11 +319,15 @@ class BackingAddOnsFragmentViewModel {
 
         private fun filterByLocationAndUpdateQuantity(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
            val filteredAddOns = when (rw.shippingPreference()){
+                Reward.ShippingPreference.UNRESTRICTED.name,
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
                     addOns.filter {
-                        it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED || isDigital(it)
+                        (it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED ) ||
+                                containsLocation(rule, it) ||
+                                isDigital(it)
                     }
                 }
+                Reward.ShippingPreference.RESTRICTED.name,
                 Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
                     addOns.filter { containsLocation(rule, it) || isDigital(it) }
                 }

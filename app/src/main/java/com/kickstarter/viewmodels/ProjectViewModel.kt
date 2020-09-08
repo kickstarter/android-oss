@@ -546,6 +546,9 @@ interface ProjectViewModel {
                     .switchMap {
                         this.apolloClient.getProjectBacking(it.slug()?: "")
                     }
+                    .compose(neverError())
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .share()
 
             // - Update fragments with the backing data
             projectData

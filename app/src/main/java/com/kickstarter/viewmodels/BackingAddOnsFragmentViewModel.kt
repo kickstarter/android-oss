@@ -154,7 +154,6 @@ class BackingAddOnsFragmentViewModel {
                     .map { it.addOns()?.toList() }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
-                    .share()
 
             val addOnsFromGraph = project
                     .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }

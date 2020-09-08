@@ -824,8 +824,8 @@ interface PledgeFragmentViewModel {
             // - Calculate total for NoReward
             val totalNR = this.selectedReward
                     .filter { RewardUtils.isNoReward(it) }
-                    .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeInput))
-                    .map { NumberUtils.parse(it.second) }
+                    .compose<Pair<Reward, String>>(combineLatestPair(this.pledgeInput.startWith("")))
+                    .map { if(it.second.isNotEmpty()) NumberUtils.parse(it.second) else it.first.minimum()}
 
             // - Calculate total for DigitalRewards || DigitalReward + DigitalAddOns
             val totalDigital = Observable.combineLatest(isDigitalRw, pledgeAmountHeader, this.bonusAmount, pledgeReason)
@@ -1507,17 +1507,6 @@ interface PledgeFragmentViewModel {
 
         private fun selectedShippingRule(shippingInfo: Pair<Long, List<ShippingRule>>): ShippingRule =
                 requireNotNull(shippingInfo.second.first { it.location().id() == shippingInfo.first })
-
-        /**
-         * Calculate the total amount for pledges without Shipping Location
-         * @return Amount for NoReward
-         */
-        private fun getAmountForNoReward(variantAmount: Double, pInputAmount: Double, reason: PledgeReason) = when(reason) {
-                PledgeReason.PLEDGE -> pInputAmount
-                PledgeReason.UPDATE_PLEDGE,
-                PledgeReason.UPDATE_REWARD -> pInputAmount
-                else -> 0.0
-            }
 
         /** For the checkout we need to send a list repeating as much addOns items
          * as the user has selected:

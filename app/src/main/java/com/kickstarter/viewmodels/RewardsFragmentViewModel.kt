@@ -9,6 +9,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
@@ -82,6 +83,10 @@ class RewardsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
+            val backedNoReward = project
+                    .filter { it.backing() != null && it.backing()?.reward() == null }
+                    .map { RewardFactory.noReward() }
+
             val backedAddOns = project
                     .map { it?.backing()?.addOns() }
                     .filter { ObjectUtils.isNotNull(it) }
@@ -97,7 +102,7 @@ class RewardsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backedRewardPosition)
 
-            // - If the selected Reward do not have AddOns
+            // - If the selected Reward to update to do not have AddOns
             val pledgeDataAndReason = this.projectDataInput
                     .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
                     .filter { !it.second.hasAddons() }
@@ -138,10 +143,26 @@ class RewardsFragmentViewModel {
                         this.showAddOnsFragment.onNext(it)
                     }
 
+            val shouldShowAlert = pledgeDataAndReasonWithAddOns
+                    .filter { it.second == PledgeReason.UPDATE_REWARD }
+                    .map { it.first }
+                    .compose<Pair<PledgeData, Reward>>(combineLatestPair(backedReward))
+                    .map { differentShippingTypes(it.first.reward(), it.second) }
+
+            // - In case choosing a reward with AddOns, from a NoReward Reward
             pledgeDataAndReasonWithAddOns
                     .filter { it.second == PledgeReason.UPDATE_REWARD }
+                    .compose<Pair<Pair<PledgeData, PledgeReason>, Reward>>(combineLatestPair(backedNoReward))
+                    .map { it.first }
+                    .subscribe(this.showAddOnsFragment)
+
+            pledgeDataAndReasonWithAddOns
+                    .compose<Pair<Pair<PledgeData, PledgeReason>, Boolean>>(combineLatestPair(shouldShowAlert))
                     .compose(bindToLifecycle())
-                    .subscribe(this.showAlert)
+                    .subscribe { data ->
+                        if (data.second) this.showAlert.onNext(data.first)
+                        else this.showAddOnsFragment.onNext(data.first)
+                    }
 
             project
                     .map { it.rewards()?.size?: 0 }
@@ -157,6 +178,12 @@ class RewardsFragmentViewModel {
                         else this.showPledgeFragment.onNext(it)
                     }
         }
+
+        private fun differentShippingTypes(newRW: Reward, backedRW: Reward): Boolean =
+                if (newRW.id() == backedRW.id())  false
+                else {
+                    newRW.shippingType()?.toLowerCase() ?: "" != backedRW.shippingType()?.toLowerCase() ?: ""
+                }
 
         private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
             val pledgeReason = if (projectData.project().isBacking) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE

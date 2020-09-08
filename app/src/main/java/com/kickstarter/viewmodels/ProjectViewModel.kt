@@ -545,8 +545,16 @@ interface ProjectViewModel {
             val backing = backedProject
                     .switchMap {
                         this.apolloClient.getProjectBacking(it.slug()?: "")
+                                .doOnSubscribe {
+                                    progressBarIsGone.onNext(false)
+                                }
+                                .doAfterTerminate {
+                                    progressBarIsGone.onNext(true)
+                                }
+                                .materialize()
                     }
                     .compose(neverError())
+                    .compose(values())
                     .filter { ObjectUtils.isNotNull(it) }
                     .share()
 

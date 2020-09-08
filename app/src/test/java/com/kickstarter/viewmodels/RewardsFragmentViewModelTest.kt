@@ -92,8 +92,8 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShowAlert_whenBackingProject_withAddOns() {
-        val reward = RewardFactory.reward().toBuilder().hasAddons(true).build()
+    fun testShowAlert_whenBackingProject_withAddOns_sameReward() {
+        val reward = RewardFactory.rewardWithShipping().toBuilder().hasAddons(true).build()
         val backedProject = ProjectFactory.backedProject()
                 .toBuilder()
                 .backing(BackingFactory.backing()
@@ -109,19 +109,51 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertNoValues()
-        this.showAddOnsFragment.assertNoValues()
-        this.showAlert.assertValue(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                .reward(reward)
-                .projectData(ProjectDataFactory.project(backedProject))
-                .build(), PledgeReason.UPDATE_REWARD))
-        this.vm.inputs.alertButtonPressed()
-        this.showPledgeFragment.assertNoValues()
         this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
                 .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(backedProject))
                 .build(), PledgeReason.UPDATE_REWARD))
+        this.showAlert.assertNoValues()
+    }
+
+    @Test
+    fun testShowAlert_whenBackingProject_withAddOns_otherReward() {
+        val rewarda = RewardFactory.rewardWithShipping().toBuilder().id(4).hasAddons(true).build()
+        val rewardb = RewardFactory.rewardHasAddOns().toBuilder().id(2).hasAddons(true).build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .reward(rewardb)
+                        .rewardId(rewardb.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), rewarda, rewardb))
+                .build()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.vm.inputs.rewardClicked(rewarda)
+        this.showPledgeFragment.assertNoValues()
+        this.showAddOnsFragment.assertNoValues()
+        this.showAlert.assertNoValues()
+        this.vm.inputs.alertButtonPressed()
+        this.showPledgeFragment.assertNoValues()
+        this.showAddOnsFragment.assertNoValues()
+        this.showAlert.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                .reward(rewarda)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_REWARD))
+
+        this.vm.inputs.alertButtonPressed()
+        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                .reward(rewarda)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_REWARD))
+        this.showPledgeFragment.assertNoValues()
     }
 
     @Test

@@ -141,12 +141,6 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
-            backingShippingRule
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingRuleSelected.onNext(it)
-                    }
-
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
                     .filter { isDigital(it) }
@@ -182,7 +176,6 @@ class BackingAddOnsFragmentViewModel {
             shippingRules
                     .filter { it.isNotEmpty() }
                     .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE }
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 

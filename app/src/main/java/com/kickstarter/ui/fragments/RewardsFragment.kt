@@ -95,7 +95,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     private fun showAlert() {
-        dialog.show()
+        if (this.isVisible)
+            dialog.show()
     }
 
     private fun scrollToReward(position: Int) {

@@ -690,7 +690,7 @@ interface ProjectViewModel {
 
             this.fragmentStackCount
                     .compose<Pair<Int, Project>>(combineLatestPair(currentProject))
-                    .map { if (it.second.isBacking) it.first > 3 else it.first > 2}
+                    .map { if (it.second.isBacking) it.first > 4 else it.first > 3 }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.scrimIsVisible)

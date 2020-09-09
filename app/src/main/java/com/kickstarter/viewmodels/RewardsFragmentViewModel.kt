@@ -179,11 +179,12 @@ class RewardsFragmentViewModel {
                     }
         }
 
-        private fun differentShippingTypes(newRW: Reward, backedRW: Reward): Boolean =
-                if (newRW.id() == backedRW.id())  false
-                else {
-                    newRW.shippingType()?.toLowerCase() ?: "" != backedRW.shippingType()?.toLowerCase() ?: ""
-                }
+        private fun differentShippingTypes(newRW: Reward, backedRW: Reward): Boolean {
+            return if (newRW.id() == backedRW.id()) false
+            else {
+                newRW.shippingType()?.toLowerCase() ?: "" != backedRW.shippingType()?.toLowerCase() ?: ""
+            }
+        }
 
         private fun pledgeDataAndPledgeReason(projectData: ProjectData, reward: Reward): Pair<PledgeData, PledgeReason> {
             val pledgeReason = if (projectData.project().isBacking) PledgeReason.UPDATE_REWARD else PledgeReason.PLEDGE

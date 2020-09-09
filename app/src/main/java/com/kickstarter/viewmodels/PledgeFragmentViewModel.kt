@@ -652,7 +652,7 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
 
             val backingAmountRW = backing
-                    .filter { it.reward()?.let { rw -> !RewardUtils.isNoReward(rw) }?: false }
+                    .filter { it.reward()?.let { rw -> !RewardUtils.isNoReward(rw) } ?: false }
                     .map { it.amount() - it.shippingAmount() - it.bonusAmount()}
                     .distinctUntilChanged()
 
@@ -767,7 +767,8 @@ interface PledgeFragmentViewModel {
             val backingShippingAmount = backing
                     .map { it.shippingAmount() }
 
-            val shippingAmountWhenBacking = Observable.combineLatest(this.shippingRule, pledgeReason, backingShippingAmount, rewardAndAddOns) {rule, reason, bShippingAmount, listRw ->
+            val shippingAmountWhenBacking = Observable.combineLatest(this.shippingRule, pledgeReason, backingShippingAmount, rewardAndAddOns)
+            { rule, reason, bShippingAmount, listRw ->
                 return@combineLatest getShippingAmount(rule, reason, bShippingAmount, listRw)
             }
                     .distinctUntilChanged()
@@ -777,7 +778,8 @@ interface PledgeFragmentViewModel {
                     .map { it }
 
             // - Shipping amount when no backing
-            val shippingAmountNewPledge = Observable.combineLatest(this.shippingRule, newPledge, rewardAndAddOns) {rule, reason, listRw ->
+            val shippingAmountNewPledge = Observable.combineLatest(this.shippingRule, newPledge, rewardAndAddOns)
+            { rule, reason, listRw ->
                 return@combineLatest getShippingAmount(rule, reason, listRw = listRw)
             }
                     .distinctUntilChanged()
@@ -804,11 +806,9 @@ interface PledgeFragmentViewModel {
 
             val isRewardWithShipping = this.selectedReward
                     .filter { RewardUtils.isShippable(it) }
-                    .map { it }
 
             val isDigitalRw = this.selectedReward
                     .filter { RewardUtils.isDigital(it) }
-                    .map { it }
 
             // - Calculate total for Reward || Rewards + AddOns with Shipping location
             val totalWShipping = Observable.combineLatest(isRewardWithShipping, pledgeAmountHeader, shippingAmount, this.bonusAmount, pledgeReason) {

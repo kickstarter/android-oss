@@ -46,7 +46,6 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         super.onViewCreated(view, savedInstanceState)
         setUpShippingAdapter()
         setupRecyclerView()
-
         setupErrorDialog()
 
         this.viewModel.outputs.showPledgeFragment()
@@ -122,7 +121,9 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun showErrorDialog() {
-        errorDialog.show()
+        if (!errorDialog.isShowing) {
+            errorDialog.show()
+        }
     }
 
     private fun dismissErrorDialog() {
@@ -165,24 +166,13 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 ?.addToBackStack(NewCardFragment::class.java.simpleName)
                 ?.commit()
     }
-//
-//    private fun setupErrorDialog(pledgeData: PledgeData, pledgeReason: PledgeReason) {
-//        context?.let { context ->
-//            errorDialog = AlertDialog.Builder(context, R.style.AlertDialog)
-//                    .setCancelable(false)
-//                    .setTitle(getString(R.string.Something_went_wrong_please_try_again))
-//                    .setPositiveButton("             ${getString(R.string.Retry)}") { _, _ -> this.viewModel.inputs.configureWith(this.viewModel.arguments()) }
-//                    .setNegativeButton("             ${getString(R.string.close_alert)}") { _, _ -> dismissErrorDialog()}
-//                    .create()
-//        }
-//    }
 
     private fun setupErrorDialog() {
         context?.let { context ->
             errorDialog = AlertDialog.Builder(context, R.style.AlertDialog)
                     .setCancelable(false)
                     .setTitle(getString(R.string.Something_went_wrong_please_try_again))
-                    .setPositiveButton("             ${getString(R.string.Retry)}") { _, _ -> {} }
+                    .setPositiveButton("             ${getString(R.string.Retry)}") { _, _ -> this.viewModel.inputs.retryButtonPressed() }
                     .setNegativeButton("             ${getString(R.string.close_alert)}") { _, _ -> dismissErrorDialog()}
                     .create()
         }

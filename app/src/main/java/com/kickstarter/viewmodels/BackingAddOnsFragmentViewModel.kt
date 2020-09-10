@@ -113,20 +113,13 @@ class BackingAddOnsFragmentViewModel {
             val project = projectData
                     .map { it.project() }
 
-            val rewardPledge = pledgeData
+            val reward = pledgeData
                     .map { it.reward() }
 
             val backing = projectData
                     .map { getBackingFromProjectData(it) }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
-
-            val backingReward = backing
-                    .map { it.reward() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-
-            val reward = Observable.merge(rewardPledge, backingReward)
 
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
@@ -147,12 +140,6 @@ class BackingAddOnsFragmentViewModel {
                     }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
-
-            backingShippingRule
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingRuleSelected.onNext(it)
-                    }
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
@@ -188,7 +175,6 @@ class BackingAddOnsFragmentViewModel {
             shippingRules
                     .filter { it.isNotEmpty() }
                     .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE }
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
@@ -241,7 +227,7 @@ class BackingAddOnsFragmentViewModel {
             val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
                 listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
                 val finalList = listAddOns.second.filter { addOn ->
-                    addOn.quantity()?.let { it > 0 }?: false
+                    addOn.quantity()?.let { it > 0 } ?: false
                 }
 
                 val updatedPledgeData = when(finalList.isNotEmpty()) {
@@ -325,11 +311,15 @@ class BackingAddOnsFragmentViewModel {
 
         private fun filterByLocationAndUpdateQuantity(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
            val filteredAddOns = when (rw.shippingPreference()){
+                Reward.ShippingPreference.UNRESTRICTED.name,
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
                     addOns.filter {
-                        it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED || isDigital(it)
+                        (it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED ) ||
+                                containsLocation(rule, it) ||
+                                isDigital(it)
                     }
                 }
+                Reward.ShippingPreference.RESTRICTED.name,
                 Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
                     addOns.filter { containsLocation(rule, it) || isDigital(it) }
                 }

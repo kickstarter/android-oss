@@ -545,17 +545,27 @@ interface ProjectViewModel {
             val backing = backedProject
                     .switchMap {
                         this.apolloClient.getProjectBacking(it.slug()?: "")
+                                .doOnSubscribe {
+                                    progressBarIsGone.onNext(false)
+                                }
+                                .doAfterTerminate {
+                                    progressBarIsGone.onNext(true)
+                                }
+                                .materialize()
                     }
+                    .compose(neverError())
+                    .compose(values())
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .share()
 
             // - Update fragments with the backing data
             projectData
-                    .filter { it.project().hasRewards() && it.project().isBacking }
+                    .filter { it.project().hasRewards() }
                     .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                     .map {
                         val updatedProject = it.first.project().toBuilder().backing(it.second).build()
                         projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
                     }
-                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.updateFragments)
 
@@ -680,7 +690,7 @@ interface ProjectViewModel {
 
             this.fragmentStackCount
                     .compose<Pair<Int, Project>>(combineLatestPair(currentProject))
-                    .map { if (it.second.isBacking) it.first > 3 else it.first > 3}
+                    .map { if (it.second.isBacking) it.first > 4 else it.first > 3 }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.scrimIsVisible)

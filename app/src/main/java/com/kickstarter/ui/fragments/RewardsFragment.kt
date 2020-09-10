@@ -95,7 +95,8 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     private fun showAlert() {
-        dialog.show()
+        if (this.isVisible)
+            dialog.show()
     }
 
     private fun scrollToReward(position: Int) {
@@ -140,7 +141,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
-        if (this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
+        if (this.isVisible && this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
             val pledgeFragment = PledgeFragment.newInstance(pledgeData, pledgeReason)
             this.fragmentManager?.beginTransaction()
                     ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
@@ -153,7 +154,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     private fun showAddonsFragment(pledgeDataAndReason: Pair<PledgeData, PledgeReason>) {
-        if (this.fragmentManager?.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
+        if (this.isVisible && this.fragmentManager?.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
             val addOnsFragment = BackingAddOnsFragment.newInstance(pledgeDataAndReason)
             this.fragmentManager?.beginTransaction()
                     ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)

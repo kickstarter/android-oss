@@ -1388,6 +1388,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 ProjectDataFactory.project(refreshedProject))
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject),
+                ProjectDataFactory.project(refreshedProject),
                 ProjectDataFactory.project(refreshedProject))
     }
 
@@ -1413,6 +1414,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 ProjectDataFactory.project(refreshedProject))
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject),
+                ProjectDataFactory.project(refreshedProject),
                 ProjectDataFactory.project(refreshedProject))
     }
 

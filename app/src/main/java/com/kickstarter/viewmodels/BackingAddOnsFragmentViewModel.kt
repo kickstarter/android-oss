@@ -90,13 +90,13 @@ class BackingAddOnsFragmentViewModel {
         private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
 
         private val projectAndReward: Observable<Pair<Project, Reward>>
-        private val retryButtonPressed = PublishSubject.create<Void>()
+        private val retryButtonPressed = BehaviorSubject.create<Boolean>()
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingSelectorIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
-        private val showErrorDialog = PublishSubject.create<Boolean>()
+        private val showErrorDialog = BehaviorSubject.create<Boolean>()
         private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
@@ -268,15 +268,28 @@ class BackingAddOnsFragmentViewModel {
                     }
 
             /// Added
+            Observable.combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
+                return@combineLatest this.apiClient.fetchShippingRules(projectAndReward.first, projectAndReward.second).doOnError {
+                    // TODO: Send message to the fragment
+                    Log.d("HELLOWORLD", "API ERROR")
+                    this.showErrorDialog.onNext(true)
+                }.onErrorResumeNext(Observable.empty())
+            }.compose(values())
+                    .map { it.shippingRules() }
+                    .compose(bindToLifecycle())
+                    .subscribe(shippingRules)
+
+
+
             projectAndReward
                     .compose<Pair<Project, Reward>>(takeWhen(this.retryButtonPressed))
                     .compose(bindToLifecycle())
                     .switchMap<ShippingRulesEnvelope> {
-                        this.apiClient.fetchShippingRules(it.first, it.second).doOnCompleted {
+                        this.apiClient.fetchShippingRules(it.first, it.second).doOnError {
                             // TODO: Send message to the fragment
                             Log.d("HELLOWORLD", "API ERROR")
                             this.showErrorDialog.onNext(true)
-                        }
+                        }.onErrorResumeNext(Observable.empty())
                     }
                     .map { it.shippingRules() }
                     .subscribe(shippingRules)
@@ -285,11 +298,11 @@ class BackingAddOnsFragmentViewModel {
                     .compose<Pair<Project, Reward>>(takeWhen(this.retryButtonPressed))
                     .compose(bindToLifecycle())
                     .switchMap {
-                        this.apolloClient.getProjectAddOns(it.first.slug()?.let { it }?: "").doOnCompleted {
+                        this.apolloClient.getProjectAddOns(it.first.slug()?.let { it }?: "").doOnError {
                             // TODO: Send message to the fragment
                             Log.d("HELLOWORLD", "API ERROR")
                             this.showErrorDialog.onNext(true)
-                        }
+                        }.onErrorResumeNext(Observable.empty())
                     }
                     .filter { ObjectUtils.isNotNull(it) }
                     .subscribe(addOnsFromGraph)
@@ -390,7 +403,7 @@ class BackingAddOnsFragmentViewModel {
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
         override fun continueButtonPressed() = this.continueButtonPressed.onNext(null)
         override fun quantityPerId(quantityPerId: Pair<Int, Long>) = this.quantityPerId.onNext(quantityPerId)
-        override fun retryButtonPressed() = this.retryButtonPressed.onNext(null)
+        override fun retryButtonPressed() = this.retryButtonPressed.onNext(true)
 
         // - Outputs
         @NonNull

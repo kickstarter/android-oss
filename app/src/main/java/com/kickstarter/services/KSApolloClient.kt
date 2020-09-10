@@ -606,24 +606,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val shippingAmount = backingGr?.shippingAmount()?.fragments()
 
     val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
-        val rewardId = decodeRelayId(reward.id()) ?: -1
-        val rewardAmount = reward.amount().fragments().amount().amount()?.toDouble()
-        val rewardSingleLocation = location?.let { location ->
-            return@let Reward.SingleLocation.builder()
-                    .localizedName(location.displayableName())
-                    .id(decodeRelayId(location.id())?:-1)
-                    .build()
-        }
-
-        return@let Reward.builder()
-                .title(reward.name())
-                .minimum(rewardAmount?: -1.0)
-                .description(reward.description())
-                .isAddOn(false)
-                .estimatedDeliveryOn(DateTime(reward.estimatedDeliveryOn()))
-                .shippingSingleLocation(rewardSingleLocation)
-                .id(rewardId)
-                .build()
+            return@let rewardTransformer(reward)
     }
 
     val backerData = backingGr?.backer()?.fragments()?.user()
@@ -754,7 +737,9 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .isAddOn(true)
             .addOnsItems(items)
             .id(rewardId)
+            .shippingPreference(shippingPreference.name)
             .shippingPreferenceType(shippingPreference)
+            .shippingType(shippingPreference.name)
             .shippingRules(shippingRules)
             .build()
 }

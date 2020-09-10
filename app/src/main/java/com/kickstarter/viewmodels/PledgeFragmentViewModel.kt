@@ -296,7 +296,7 @@ interface PledgeFragmentViewModel {
         private val newCardButtonClicked = PublishSubject.create<Void>()
         private val pledgeButtonClicked = PublishSubject.create<Void>()
         private val pledgeInput = PublishSubject.create<String>()
-        private val shippingRule = PublishSubject.create<ShippingRule>()
+        private val shippingRule = BehaviorSubject.create<ShippingRule>()
         private val stripeSetupResultSuccessful = PublishSubject.create<Int>()
         private val stripeSetupResultUnsuccessful = PublishSubject.create<Exception>()
         private val decreaseBonusButtonClicked = PublishSubject.create<Void>()

@@ -84,7 +84,8 @@ public final class RewardUtils {
    */
   public static boolean isShippable(final @NonNull Reward reward) {
     final String shippingType = reward.shippingType();
-    return shippingType != null && !Reward.SHIPPING_TYPE_NO_SHIPPING.equals(shippingType);
+    final boolean no_shipping_types = reward.shippingPreferenceType() == Reward.ShippingPreference.NONE;
+    return shippingType != null && !(Reward.SHIPPING_TYPE_NO_SHIPPING.equals(shippingType) || no_shipping_types);
   }
 
   /**

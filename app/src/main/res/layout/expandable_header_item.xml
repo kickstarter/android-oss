@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.80" />
+        app:layout_constraintGuide_percent="0.70" />
 
     <TextView
         android:id="@+id/pledge_header_item_amount"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:gravity="end"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:layout_marginEnd="@dimen/grid_3"
         android:textColor="@color/ksr_dark_grey_500"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +45,7 @@
         app:layout_constraintStart_toEndOf="@+id/guideline_separator"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBaseline_toBaselineOf="@+id/pledge_header_item_title"
-        tools:text="US$40" />
+        tools:text="US$40000000" />
 
     <ImageView
         android:id="@+id/imageView"

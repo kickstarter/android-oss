@@ -735,25 +735,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun errorState_whenErrorReturned_shouldShowErrorAlertDialog() {
-        val shippingRuleRw = ShippingRuleFactory.usShippingRule()
-        val shippingRuleAddOn = ShippingRuleFactory.usShippingRule()
-        val addOn = RewardFactory.addOn().toBuilder()
-                .shippingRules(listOf(shippingRuleAddOn, shippingRuleAddOn, shippingRuleAddOn))
-                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
-                .build()
-        val listAddons = listOf(addOn, addOn, addOn)
         val config = ConfigFactory.configForUSUser()
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)
-        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelope.builder().shippingRules(listOf(shippingRuleRw)).build(), currentConfig))
 
-        buildEnvironmentWithError(currentConfig)
+        setUpEnvironment(buildEnvironmentWithError(currentConfig))
 
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
-                .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
-                .shippingRules(listOf(shippingRuleRw))
-                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED)
-                .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
                 .build()
 
         val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
@@ -765,7 +753,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.vm.showErrorDialog().subscribe{ TestCase.assertTrue(it ) }
+        // Two values -> two failed network calls
+        this.showErrorDialog.assertValues(true, true)
     }
 
     private fun buildEnvironmentWithError(currentConfig: MockCurrentConfig): Environment {

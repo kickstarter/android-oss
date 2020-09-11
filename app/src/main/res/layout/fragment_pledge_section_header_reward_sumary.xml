@@ -51,14 +51,16 @@
     <TextView
         android:id="@+id/pledge_header_summary_amount"
         style="@style/PledgeCurrency"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
         android:maxLines="1"
+        android:gravity="end"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/pledge_header_title"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="40" />
+        tools:text="4000" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/header_animation_guideline"

@@ -43,7 +43,7 @@ class BackingAddOnsFragmentViewModel {
         /** Emits the quantity per AddOn Id selected */
         fun quantityPerId(quantityPerId: Pair<Int, Long>)
 
-        /**Envoked when the retry button on the addon error alert dialog is pressed */
+        /**Envoked when the retry button on the addOn Error alert dialog is pressed */
         fun retryButtonPressed()
     }
 
@@ -74,9 +74,6 @@ class BackingAddOnsFragmentViewModel {
 
         /**Emits an alert dialog when add-ons request results in error **/
         fun showErrorDialog(): Observable<Boolean>
-
-        /** Emits arguments from the arguments observable **/
-        fun getArguments(): Observable<Pair<PledgeData, PledgeReason>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
@@ -102,7 +99,6 @@ class BackingAddOnsFragmentViewModel {
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection: MutableMap<Long, Int> = mutableMapOf()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
-        private val getArguments = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
         private val currentConfig = environment.currentConfig()
@@ -171,8 +167,8 @@ class BackingAddOnsFragmentViewModel {
                     .map { requireNotNull(it) }
 
             val combinedList = addOnsFromBacking
-                   .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
-                   .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
+                    .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
+                    .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
 
@@ -187,8 +183,8 @@ class BackingAddOnsFragmentViewModel {
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
-            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw ,
-                _ ->
+            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,
+                                                                                                                                                  _ ->
                 return@combineLatest filterByLocationAndUpdateQuantity(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
@@ -206,7 +202,7 @@ class BackingAddOnsFragmentViewModel {
                     .subscribe(this.isEmptyState)
 
             reward
-                    .map{ !isShippable(it) }
+                    .map { !isShippable(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSelectorIsGone)
 
@@ -220,8 +216,7 @@ class BackingAddOnsFragmentViewModel {
                     }
 
             // - this.quantityPerId.startWith(Pair(-1,-1L) because we need to trigger this validation everytime the AddOns selection changes
-            val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId.startWith(Pair(-1,-1L))) {
-                backedRule, backedList, actualRule,_  ->
+            val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId.startWith(Pair(-1, -1L))) { backedRule, backedList, actualRule, _ ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList)
             }
                     .distinctUntilChanged()
@@ -233,13 +228,12 @@ class BackingAddOnsFragmentViewModel {
                     }
 
             // - Update pledgeData and reason each time there is a change (location, quantity of addons, filtered by location, refreshed ...)
-            val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
-                listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
+            val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) { listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
                 val finalList = listAddOns.second.filter { addOn ->
                     addOn.quantity()?.let { it > 0 } ?: false
                 }
 
-                val updatedPledgeData = when(finalList.isNotEmpty()) {
+                val updatedPledgeData = when (finalList.isNotEmpty()) {
                     isDigital(rw) -> {
                         pledgeData.toBuilder()
                                 .addOns(finalList as java.util.List<Reward>)
@@ -251,7 +245,7 @@ class BackingAddOnsFragmentViewModel {
                                 .shippingRule(shippingRule)
                                 .build()
                     }
-                    else ->  {
+                    else -> {
                         pledgeData.toBuilder()
                                 .build()
                     }
@@ -267,19 +261,17 @@ class BackingAddOnsFragmentViewModel {
                         this.showPledgeFragment.onNext(it)
                     }
 
-            /// Added
-            Observable.combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
-                return@combineLatest this.apiClient.fetchShippingRules(projectAndReward.first, projectAndReward.second).doOnError {
-                    // TODO: Send message to the fragment
-                    Log.d("HELLOWORLD", "API ERROR")
-                    this.showErrorDialog.onNext(true)
-                }.onErrorResumeNext(Observable.empty())
-            }.compose(values())
+            Observable
+                    .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
+                        return@combineLatest this.apiClient
+                                .fetchShippingRules(projectAndReward.first, projectAndReward.second)
+                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .onErrorResumeNext(Observable.empty())
+                    }
+                    .switchMap { it }
                     .map { it.shippingRules() }
                     .compose(bindToLifecycle())
                     .subscribe(shippingRules)
-
-
 
             projectAndReward
                     .compose<Pair<Project, Reward>>(takeWhen(this.retryButtonPressed))
@@ -310,7 +302,7 @@ class BackingAddOnsFragmentViewModel {
 
         private fun isDifferentSelection(backedList: List<Reward>): Boolean {
             val backedSelection: MutableMap<Long, Int> = mutableMapOf()
-                    backedList
+            backedList
                     .map {
                         backedSelection.put(it.id(), it.quantity() ?: 0)
                     }
@@ -323,11 +315,11 @@ class BackingAddOnsFragmentViewModel {
 
         private fun calculateTotal(list: List<Reward>): Int {
             var total = 0
-            list.map { total += this.currentSelection[it.id()]?: 0 }
+            list.map { total += this.currentSelection[it.id()] ?: 0 }
             return total
         }
 
-        private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>):List<Reward> {
+        private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>): List<Reward> {
             return graphList
                     .map { graphAddOn ->
                         modifyOrSelect(backingList, graphAddOn)
@@ -336,14 +328,15 @@ class BackingAddOnsFragmentViewModel {
 
         private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
-                val update = Pair(it.quantity()?: 0 , it.id())
-                if (update.first > 0 )
+                val update = Pair(it.quantity() ?: 0, it.id())
+                if (update.first > 0)
                     updateQuantityById(update)
                 return@let it
             } ?: graphAddOn
         }
 
-        private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing() ?: pData?.backing()
+        private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing()
+                ?: pData?.backing()
 
         private fun updateQuantityById(it: Pair<Int, Long>) {
             this.currentSelection[it.second] = it.first
@@ -382,7 +375,7 @@ class BackingAddOnsFragmentViewModel {
             val updatedQuantity = filteredAddOns
                     .map {
                         val amount = this.currentSelection[it.id()] ?: -1
-                        return@map  if (amount == -1 ) it else it.toBuilder().quantity(amount).build()
+                        return@map if (amount == -1) it else it.toBuilder().quantity(amount).build()
                     }
 
             return Triple(pData, updatedQuantity, rule)
@@ -393,7 +386,7 @@ class BackingAddOnsFragmentViewModel {
                     .shippingRules()
                     ?.map {
                         it.location().id()
-                    }?: emptyList()
+                    } ?: emptyList()
 
             return idLocations.contains(rule.location().id())
         }
@@ -416,6 +409,5 @@ class BackingAddOnsFragmentViewModel {
         override fun isEnabledCTAButton(): Observable<Boolean> = this.isEnabledCTAButton
         override fun isEmptyState(): Observable<Boolean> = this.isEmptyState
         override fun showErrorDialog(): Observable<Boolean> = this.showErrorDialog
-        override fun getArguments(): Observable<Pair<PledgeData, PledgeReason>> = this.getArguments
     }
 }

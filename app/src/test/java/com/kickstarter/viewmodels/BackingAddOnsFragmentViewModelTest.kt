@@ -765,7 +765,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.showErrorDialog.assertValue(true)
+        this.vm.showErrorDialog().subscribe{ TestCase.assertTrue(it ) }
     }
 
     private fun buildEnvironmentWithError(currentConfig: MockCurrentConfig): Environment {

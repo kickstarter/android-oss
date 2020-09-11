@@ -563,7 +563,10 @@ interface ProjectViewModel {
                     .filter { it.project().hasRewards() }
                     .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
                     .map {
-                        val updatedProject = it.first.project().toBuilder().backing(it.second).build()
+                        val updatedProject = if (it.first.project().isBacking)
+                            it.first.project().toBuilder().backing(it.second).build()
+                        else it.first.project()
+
                         projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
                     }
                     .compose(bindToLifecycle())

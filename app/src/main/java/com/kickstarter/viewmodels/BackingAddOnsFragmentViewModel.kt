@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
@@ -386,7 +385,7 @@ class BackingAddOnsFragmentViewModel {
                     .shippingRules()
                     ?.map {
                         it.location().id()
-                    } ?: emptyList()
+                    }?: emptyList()
 
             return idLocations.contains(rule.location().id())
         }

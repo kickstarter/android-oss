@@ -122,8 +122,6 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     }
 
     private fun showErrorDialog() {
-        Log.d("HELLOWORLD", "SHOW Error")
-
         if (!errorDialog.isShowing) {
             errorDialog.show()
         }

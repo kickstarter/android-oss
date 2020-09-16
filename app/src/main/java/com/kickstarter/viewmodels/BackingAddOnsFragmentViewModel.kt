@@ -272,29 +272,14 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(shippingRules)
 
-            projectAndReward
-                    .compose<Pair<Project, Reward>>(takeWhen(this.retryButtonPressed))
-                    .compose(bindToLifecycle())
-                    .switchMap<ShippingRulesEnvelope> {
-                        this.apiClient.fetchShippingRules(it.first, it.second).doOnError {
-                            // TODO: Send message to the fragment
-                            Log.d("HELLOWORLD", "API ERROR")
-                            this.showErrorDialog.onNext(true)
-                        }.onErrorResumeNext(Observable.empty())
+            Observable
+                    .combineLatest(this.retryButtonPressed.startWith(false), project) { _, pj ->
+                        return@combineLatest this.apolloClient
+                                .getProjectAddOns(pj.slug()?.let { it } ?: "")
+                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .onErrorResumeNext(Observable.empty())
                     }
-                    .map { it.shippingRules() }
-                    .subscribe(shippingRules)
-
-            projectAndReward
-                    .compose<Pair<Project, Reward>>(takeWhen(this.retryButtonPressed))
-                    .compose(bindToLifecycle())
-                    .switchMap {
-                        this.apolloClient.getProjectAddOns(it.first.slug()?.let { it }?: "").doOnError {
-                            // TODO: Send message to the fragment
-                            Log.d("HELLOWORLD", "API ERROR")
-                            this.showErrorDialog.onNext(true)
-                        }.onErrorResumeNext(Observable.empty())
-                    }
+                    .switchMap { it }
                     .filter { ObjectUtils.isNotNull(it) }
                     .subscribe(addOnsFromGraph)
         }

@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
@@ -15,7 +16,6 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
@@ -151,6 +151,12 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
+            backingShippingRule
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.shippingRuleSelected.onNext(it)
+                    }
+
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
                     .filter { isDigital(it) }
@@ -171,7 +177,6 @@ class BackingAddOnsFragmentViewModel {
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
 
-
             shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
@@ -180,6 +185,7 @@ class BackingAddOnsFragmentViewModel {
             shippingRules
                     .filter { it.isNotEmpty() }
                     .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .filter { it.second == PledgeReason.PLEDGE }
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
@@ -283,7 +289,6 @@ class BackingAddOnsFragmentViewModel {
                         this.lake.trackAddOnsContinueButtonClicked(it.first)
                         this.showPledgeFragment.onNext(it)
                     }
-
         }
 
         private fun isDifferentSelection(backedList: List<Reward>): Boolean {
@@ -338,16 +343,12 @@ class BackingAddOnsFragmentViewModel {
         }
 
         private fun filterByLocationAndUpdateQuantity(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
-           val filteredAddOns = when (rw.shippingPreference()){
-                Reward.ShippingPreference.UNRESTRICTED.name,
+            val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
                     addOns.filter {
-                        (it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED ) ||
-                                containsLocation(rule, it) ||
-                                isDigital(it)
+                        it.shippingPreferenceType() == Reward.ShippingPreference.UNRESTRICTED || isDigital(it)
                     }
                 }
-                Reward.ShippingPreference.RESTRICTED.name,
                 Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
                     addOns.filter { containsLocation(rule, it) || isDigital(it) }
                 }
@@ -372,7 +373,7 @@ class BackingAddOnsFragmentViewModel {
                     .shippingRules()
                     ?.map {
                         it.location().id()
-                    }?: emptyList()
+                    } ?: emptyList()
 
             return idLocations.contains(rule.location().id())
         }

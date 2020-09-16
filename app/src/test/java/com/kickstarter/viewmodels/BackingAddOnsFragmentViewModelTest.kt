@@ -322,7 +322,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig))
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
 
         // - Digital Reward
         val rw = RewardFactory.rewardHasAddOns().toBuilder()

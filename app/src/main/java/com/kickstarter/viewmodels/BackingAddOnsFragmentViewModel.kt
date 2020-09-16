@@ -171,6 +171,7 @@ class BackingAddOnsFragmentViewModel {
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
 
+
             shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
                     .compose(bindToLifecycle())
@@ -181,6 +182,29 @@ class BackingAddOnsFragmentViewModel {
                     .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
+
+            Observable
+                    .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
+                        return@combineLatest this.apiClient
+                                .fetchShippingRules(projectAndReward.first, projectAndReward.second)
+                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .onErrorResumeNext(Observable.empty())
+                    }
+                    .switchMap { it }
+                    .map { it.shippingRules() }
+                    .compose(bindToLifecycle())
+                    .subscribe(shippingRules)
+
+            Observable
+                    .combineLatest(this.retryButtonPressed.startWith(false), project) { _, pj ->
+                        return@combineLatest this.apolloClient
+                                .getProjectAddOns(pj.slug()?.let { it } ?: "")
+                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .onErrorResumeNext(Observable.empty())
+                    }
+                    .switchMap { it }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .subscribe(addOnsFromGraph)
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,
                                                                                                                                                   _ ->
@@ -260,28 +284,6 @@ class BackingAddOnsFragmentViewModel {
                         this.showPledgeFragment.onNext(it)
                     }
 
-            Observable
-                    .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
-                        return@combineLatest this.apiClient
-                                .fetchShippingRules(projectAndReward.first, projectAndReward.second)
-                                .doOnError { this.showErrorDialog.onNext(true) }
-                                .onErrorResumeNext(Observable.empty())
-                    }
-                    .switchMap { it }
-                    .map { it.shippingRules() }
-                    .compose(bindToLifecycle())
-                    .subscribe(shippingRules)
-
-            Observable
-                    .combineLatest(this.retryButtonPressed.startWith(false), project) { _, pj ->
-                        return@combineLatest this.apolloClient
-                                .getProjectAddOns(pj.slug()?.let { it } ?: "")
-                                .doOnError { this.showErrorDialog.onNext(true) }
-                                .onErrorResumeNext(Observable.empty())
-                    }
-                    .switchMap { it }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .subscribe(addOnsFromGraph)
         }
 
         private fun isDifferentSelection(backedList: List<Reward>): Boolean {

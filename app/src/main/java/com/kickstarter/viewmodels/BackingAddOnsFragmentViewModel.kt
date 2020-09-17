@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
@@ -42,7 +41,7 @@ class BackingAddOnsFragmentViewModel {
         /** Emits the quantity per AddOn Id selected */
         fun quantityPerId(quantityPerId: Pair<Int, Long>)
 
-        /**Envoked when the retry button on the addOn Error alert dialog is pressed */
+        /** Invoked when the retry button on the add-on Error alert dialog is pressed */
         fun retryButtonPressed()
     }
 
@@ -71,7 +70,7 @@ class BackingAddOnsFragmentViewModel {
         /** Emits whether or not the empty state should be shown **/
         fun isEmptyState(): Observable<Boolean>
 
-        /**Emits an alert dialog when add-ons request results in error **/
+        /** Emits an alert dialog when add-ons request results in error **/
         fun showErrorDialog(): Observable<Boolean>
     }
 
@@ -185,7 +184,6 @@ class BackingAddOnsFragmentViewModel {
             shippingRules
                     .filter { it.isNotEmpty() }
                     .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.PLEDGE }
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
@@ -344,11 +342,13 @@ class BackingAddOnsFragmentViewModel {
 
         private fun filterByLocationAndUpdateQuantity(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
             val filteredAddOns = when (rw.shippingPreference()) {
+                Reward.ShippingPreference.UNRESTRICTED.name,
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
                     addOns.filter {
-                        it.shippingPreferenceType() == Reward.ShippingPreference.UNRESTRICTED || isDigital(it)
+                        it.shippingPreferenceType() == Reward.ShippingPreference.UNRESTRICTED || containsLocation(rule, it) || isDigital(it)
                     }
                 }
+                Reward.ShippingPreference.RESTRICTED.name,
                 Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
                     addOns.filter { containsLocation(rule, it) || isDigital(it) }
                 }

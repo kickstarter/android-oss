@@ -5,7 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
@@ -16,7 +15,6 @@ import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
-import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
@@ -42,6 +40,9 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits the quantity per AddOn Id selected */
         fun quantityPerId(quantityPerId: Pair<Int, Long>)
+
+        /** Invoked when the retry button on the add-on Error alert dialog is pressed */
+        fun retryButtonPressed()
     }
 
     interface Outputs {
@@ -68,26 +69,34 @@ class BackingAddOnsFragmentViewModel {
 
         /** Emits whether or not the empty state should be shown **/
         fun isEmptyState(): Observable<Boolean>
+
+        /** Emits an alert dialog when add-ons request results in error **/
+        fun showErrorDialog(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingAddOnsFragment>(environment), Outputs, Inputs {
         val inputs = this
         val outputs = this
 
-        private val pledgeDataAndReason = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
+        private val shippingRules = PublishSubject.create<List<ShippingRule>>()
+        private val addOnsFromGraph = PublishSubject.create<List<Reward>>()
+        private var pledgeDataAndReason = BehaviorSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingRuleSelected = PublishSubject.create<ShippingRule>()
         private val shippingRulesAndProject = PublishSubject.create<Pair<List<ShippingRule>, Project>>()
+
+        private val projectAndReward: Observable<Pair<Project, Reward>>
+        private val retryButtonPressed = BehaviorSubject.create<Boolean>()
 
         private val showPledgeFragment = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val shippingSelectorIsGone = BehaviorSubject.create<Boolean>()
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
+        private val showErrorDialog = BehaviorSubject.create<Boolean>()
         private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val continueButtonPressed = BehaviorSubject.create<Void>()
         private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
         private val currentSelection: MutableMap<Long, Int> = mutableMapOf()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
-
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
         private val currentConfig = environment.currentConfig()
@@ -113,7 +122,7 @@ class BackingAddOnsFragmentViewModel {
             val project = projectData
                     .map { it.project() }
 
-            val reward = pledgeData
+            val rewardPledge = pledgeData
                     .map { it.reward() }
 
             val backing = projectData
@@ -121,15 +130,15 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
-            val projectAndReward = project
-                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
+            val backingReward = backing
+                    .map { it.reward() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
 
-            val shippingRules = projectAndReward
-                    .filter { isShippable(it.second) }
-                    .distinctUntilChanged()
-                    .switchMap<ShippingRulesEnvelope> { this.apiClient.fetchShippingRules(it.first, it.second).compose(Transformers.neverError()) }
-                    .map { it.shippingRules() }
-                    .share()
+            val reward = Observable.merge(rewardPledge, backingReward)
+
+            projectAndReward = project
+                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
             val backingShippingRule = backing
                     .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
@@ -140,6 +149,12 @@ class BackingAddOnsFragmentViewModel {
                     }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
+
+            backingShippingRule
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.shippingRuleSelected.onNext(it)
+                    }
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
@@ -155,15 +170,9 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
-            val addOnsFromGraph = project
-                    .switchMap { pj -> this.apolloClient.getProjectAddOns(pj.slug()?.let { it }?: "") }
-                    .compose(bindToLifecycle())
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .share()
-
             val combinedList = addOnsFromBacking
-                   .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
-                   .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
+                    .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
+                    .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
 
@@ -178,8 +187,31 @@ class BackingAddOnsFragmentViewModel {
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 
-            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw ,
-                _ ->
+            Observable
+                    .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
+                        return@combineLatest this.apiClient
+                                .fetchShippingRules(projectAndReward.first, projectAndReward.second)
+                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .onErrorResumeNext(Observable.empty())
+                    }
+                    .switchMap { it }
+                    .map { it.shippingRules() }
+                    .compose(bindToLifecycle())
+                    .subscribe(shippingRules)
+
+            Observable
+                    .combineLatest(this.retryButtonPressed.startWith(false), project) { _, pj ->
+                        return@combineLatest this.apolloClient
+                                .getProjectAddOns(pj.slug()?.let { it } ?: "")
+                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .onErrorResumeNext(Observable.empty())
+                    }
+                    .switchMap { it }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .subscribe(addOnsFromGraph)
+
+            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,
+                                                                                                                                                  _ ->
                 return@combineLatest filterByLocationAndUpdateQuantity(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
@@ -197,7 +229,7 @@ class BackingAddOnsFragmentViewModel {
                     .subscribe(this.isEmptyState)
 
             reward
-                    .map{ !isShippable(it) }
+                    .map { !isShippable(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSelectorIsGone)
 
@@ -211,8 +243,7 @@ class BackingAddOnsFragmentViewModel {
                     }
 
             // - this.quantityPerId.startWith(Pair(-1,-1L) because we need to trigger this validation everytime the AddOns selection changes
-            val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId.startWith(Pair(-1,-1L))) {
-                backedRule, backedList, actualRule,_  ->
+            val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId.startWith(Pair(-1, -1L))) { backedRule, backedList, actualRule, _ ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList)
             }
                     .distinctUntilChanged()
@@ -224,13 +255,12 @@ class BackingAddOnsFragmentViewModel {
                     }
 
             // - Update pledgeData and reason each time there is a change (location, quantity of addons, filtered by location, refreshed ...)
-            val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) {
-                listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
+            val updatedPledgeDataAndReason = Observable.combineLatest(this.addOnsListFiltered, pledgeData, pledgeReason, reward, this.shippingRuleSelected) { listAddOns, pledgeData, pledgeReason, rw, shippingRule ->
                 val finalList = listAddOns.second.filter { addOn ->
                     addOn.quantity()?.let { it > 0 } ?: false
                 }
 
-                val updatedPledgeData = when(finalList.isNotEmpty()) {
+                val updatedPledgeData = when (finalList.isNotEmpty()) {
                     isDigital(rw) -> {
                         pledgeData.toBuilder()
                                 .addOns(finalList as java.util.List<Reward>)
@@ -242,7 +272,7 @@ class BackingAddOnsFragmentViewModel {
                                 .shippingRule(shippingRule)
                                 .build()
                     }
-                    else ->  {
+                    else -> {
                         pledgeData.toBuilder()
                                 .build()
                     }
@@ -261,7 +291,7 @@ class BackingAddOnsFragmentViewModel {
 
         private fun isDifferentSelection(backedList: List<Reward>): Boolean {
             val backedSelection: MutableMap<Long, Int> = mutableMapOf()
-                    backedList
+            backedList
                     .map {
                         backedSelection.put(it.id(), it.quantity() ?: 0)
                     }
@@ -274,11 +304,11 @@ class BackingAddOnsFragmentViewModel {
 
         private fun calculateTotal(list: List<Reward>): Int {
             var total = 0
-            list.map { total += this.currentSelection[it.id()]?: 0 }
+            list.map { total += this.currentSelection[it.id()] ?: 0 }
             return total
         }
 
-        private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>):List<Reward> {
+        private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>): List<Reward> {
             return graphList
                     .map { graphAddOn ->
                         modifyOrSelect(backingList, graphAddOn)
@@ -287,14 +317,15 @@ class BackingAddOnsFragmentViewModel {
 
         private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
-                val update = Pair(it.quantity()?: 0 , it.id())
-                if (update.first > 0 )
+                val update = Pair(it.quantity() ?: 0, it.id())
+                if (update.first > 0)
                     updateQuantityById(update)
                 return@let it
             } ?: graphAddOn
         }
 
-        private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing() ?: pData?.backing()
+        private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing()
+                ?: pData?.backing()
 
         private fun updateQuantityById(it: Pair<Int, Long>) {
             this.currentSelection[it.second] = it.first
@@ -310,13 +341,11 @@ class BackingAddOnsFragmentViewModel {
         }
 
         private fun filterByLocationAndUpdateQuantity(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
-           val filteredAddOns = when (rw.shippingPreference()){
+            val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.name,
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
                     addOns.filter {
-                        (it.shippingPreferenceType() ==  Reward.ShippingPreference.UNRESTRICTED ) ||
-                                containsLocation(rule, it) ||
-                                isDigital(it)
+                        it.shippingPreferenceType() == Reward.ShippingPreference.UNRESTRICTED || containsLocation(rule, it) || isDigital(it)
                     }
                 }
                 Reward.ShippingPreference.RESTRICTED.name,
@@ -333,7 +362,7 @@ class BackingAddOnsFragmentViewModel {
             val updatedQuantity = filteredAddOns
                     .map {
                         val amount = this.currentSelection[it.id()] ?: -1
-                        return@map  if (amount == -1 ) it else it.toBuilder().quantity(amount).build()
+                        return@map if (amount == -1) it else it.toBuilder().quantity(amount).build()
                     }
 
             return Triple(pData, updatedQuantity, rule)
@@ -344,7 +373,7 @@ class BackingAddOnsFragmentViewModel {
                     .shippingRules()
                     ?.map {
                         it.location().id()
-                    }?: emptyList()
+                    } ?: emptyList()
 
             return idLocations.contains(rule.location().id())
         }
@@ -354,6 +383,7 @@ class BackingAddOnsFragmentViewModel {
         override fun shippingRuleSelected(shippingRule: ShippingRule) = this.shippingRuleSelected.onNext(shippingRule)
         override fun continueButtonPressed() = this.continueButtonPressed.onNext(null)
         override fun quantityPerId(quantityPerId: Pair<Int, Long>) = this.quantityPerId.onNext(quantityPerId)
+        override fun retryButtonPressed() = this.retryButtonPressed.onNext(true)
 
         // - Outputs
         @NonNull
@@ -365,5 +395,6 @@ class BackingAddOnsFragmentViewModel {
         override fun shippingSelectorIsGone(): Observable<Boolean> = this.shippingSelectorIsGone
         override fun isEnabledCTAButton(): Observable<Boolean> = this.isEnabledCTAButton
         override fun isEmptyState(): Observable<Boolean> = this.isEmptyState
+        override fun showErrorDialog(): Observable<Boolean> = this.showErrorDialog
     }
 }

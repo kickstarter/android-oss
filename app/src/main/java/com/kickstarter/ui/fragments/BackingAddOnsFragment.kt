@@ -5,6 +5,7 @@ import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
@@ -27,7 +28,6 @@ import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
 import kotlinx.android.synthetic.main.fragment_backing_addons_section_footer.*
-import kotlinx.android.synthetic.main.fragment_rewards.*
 import java.util.concurrent.TimeUnit
 
 @RequiresFragmentViewModel(BackingAddOnsFragmentViewModel.ViewModel::class)
@@ -40,11 +40,13 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
     private val backingAddonsAdapter = BackingAddOnsAdapter(this)
     private lateinit var shippingRulesAdapter: ShippingRulesAdapter
+    private lateinit var errorDialog: AlertDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpShippingAdapter()
         setupRecyclerView()
+        setupErrorDialog()
 
         this.viewModel.outputs.showPledgeFragment()
                 .compose(bindToLifecycle())
@@ -53,7 +55,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
         this.viewModel.outputs.addOnsList()
                 .compose(bindToLifecycle())
-                .throttleWithTimeout(50,TimeUnit.MILLISECONDS)
+                .throttleWithTimeout(50, TimeUnit.MILLISECONDS)
                 .compose(Transformers.observeForUI())
                 .subscribe {
                     populateAddOns(it)
@@ -68,6 +70,11 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { fragment_backing_addons_shipping_rules.setText(it.toString()) }
+
+        this.viewModel.outputs.showErrorDialog()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showErrorDialog() }
 
         this.viewModel.outputs.shippingRulesAndProject()
                 .compose(bindToLifecycle())
@@ -113,13 +120,23 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         }
     }
 
+    private fun showErrorDialog() {
+        if (!errorDialog.isShowing) {
+            errorDialog.show()
+        }
+    }
+
+    private fun dismissErrorDialog() {
+        errorDialog.dismiss()
+    }
+
     private fun populateAddOns(projectDataAndAddOnList: Triple<ProjectData, List<Reward>, ShippingRule>) {
         val projectData = projectDataAndAddOnList.first
         val selectedShippingRule = projectDataAndAddOnList.third
         val list = projectDataAndAddOnList
                 .second
                 .map {
-                    Triple(projectData,it, selectedShippingRule)
+                    Triple(projectData, it, selectedShippingRule)
                 }.toList()
 
         backingAddonsAdapter.populateDataForAddOns(list)
@@ -148,6 +165,18 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                 ?.add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
                 ?.addToBackStack(NewCardFragment::class.java.simpleName)
                 ?.commit()
+    }
+
+    private fun setupErrorDialog() {
+        context?.let { context ->
+            errorDialog = AlertDialog.Builder(context, R.style.AlertDialog)
+                    .setCancelable(false)
+                    .setTitle(getString(R.string.Something_went_wrong_please_try_again))
+                    .setPositiveButton("                     ${getString(R.string.Retry)}") { _, _ ->
+                        this.viewModel.inputs.retryButtonPressed() }
+                    .setNegativeButton("                     ${getString(R.string.close_alert)}") { _, _ -> dismissErrorDialog()}
+                    .create()
+        }
     }
 
     private fun displayShippingRules(shippingRules: List<ShippingRule>, project: Project) {

@@ -31,6 +31,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     private val isEnabledButton = TestSubscriber.create<Boolean>()
     private val totalSelectedAddOns = TestSubscriber.create<Int>()
     private val isEmptyState = TestSubscriber.create<Boolean>()
+    private val showErrorDialog = TestSubscriber.create<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingAddOnsFragmentViewModel.ViewModel(environment)
@@ -40,6 +41,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.isEnabledCTAButton().subscribe(this.isEnabledButton)
         this.vm.outputs.totalSelectedAddOns().subscribe(this.totalSelectedAddOns)
         this.vm.outputs.isEmptyState().subscribe(this.isEmptyState)
+        this.vm.outputs.showErrorDialog().subscribe(this.showErrorDialog)
     }
 
     @Test
@@ -320,7 +322,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)
 
-        setUpEnvironment(buildEnvironmentWith(listAddons, currentConfig))
+        setUpEnvironment(buildEnvironmentWith(listAddons, ShippingRulesEnvelopeFactory.emptyShippingRules(), currentConfig))
 
         // - Digital Reward
         val rw = RewardFactory.rewardHasAddOns().toBuilder()
@@ -731,8 +733,49 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
-    private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfig): Environment {
+    @Test
+    fun errorState_whenErrorReturned_shouldShowErrorAlertDialog() {
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
 
+        setUpEnvironment(buildEnvironmentWithError(currentConfig))
+
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .build()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
+        val projectData = ProjectDataFactory.project(project, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
+        this.vm.arguments(bundle)
+
+        // Two values -> two failed network calls
+        this.showErrorDialog.assertValues(true, true)
+    }
+
+    private fun buildEnvironmentWithError(currentConfig: MockCurrentConfig): Environment {
+
+        return environment()
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun getProjectAddOns(slug: String): Observable<List<Reward>> {
+                        return Observable.error(ApiExceptionFactory.badRequestException())
+                    }
+                })
+                .apiClient(object : MockApiClient() {
+                    override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
+                        return Observable.error(ApiExceptionFactory.badRequestException())
+                    }
+                })
+                .currentConfig(currentConfig)
+                .build()
+    }
+
+    private fun buildEnvironmentWith(addOns: List<Reward>, shippingRule: ShippingRulesEnvelope, currentConfig: MockCurrentConfig): Environment {
         return environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {

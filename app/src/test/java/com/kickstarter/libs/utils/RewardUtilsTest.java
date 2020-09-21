@@ -315,6 +315,7 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
     assertEquals(20.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_3, noReward, 1));
     assertEquals(50.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward, 1));
     assertEquals(10.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, noReward, 10));
+    assertEquals(100.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward, 100));
   }
 
   @Test

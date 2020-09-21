@@ -202,14 +202,16 @@ public final class RewardUtils {
   }
 
   /**
-   * Returns the amount value for each variant, being Control the original value
+   * Returns the amount value for each variant, being Control the original value, and the minimum
+   * the minPledge defined by country
    *
    * @param variant the variant for which you want to get the value
    * @param reward in case no known variant as save return use the current reward.minimum amount
+   * @param minPledge defined by country
    *
    * @return Double with the amount
    */
-  public static Double rewardAmountByVariant(final OptimizelyExperiment.Variant variant, final Reward reward) {
+  public static Double rewardAmountByVariant(final OptimizelyExperiment.Variant variant, final Reward reward, final Integer minPledge) {
     Double value = reward.minimum();
 
     if (isNoReward(reward)) {
@@ -229,6 +231,6 @@ public final class RewardUtils {
       }
     }
 
-    return value;
+    return value < minPledge ? minPledge : value;
   }
 }

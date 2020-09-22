@@ -393,6 +393,7 @@ interface PledgeFragmentViewModel {
         // - Use case: (Reward shippable without addOns in new pledge or updating pledge with restricted location)
         private val shouldLoadDefaultLocation = PublishSubject.create<Boolean>()
         private val pledgeAmountHeader = BehaviorSubject.create<CharSequence>()
+        private val stepperAmount = 1
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -539,11 +540,17 @@ interface PledgeFragmentViewModel {
             val projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(this.selectedReward))
 
-            Observable.combineLatest(projectDataAndReward, this.currentUser.observable())
-            { data, user ->
+            val country = project
+                    .map { Country.findByCurrencyCode(it.currency()) }
+                    .filter { it != null }
+                    .distinctUntilChanged()
+                    .ofType(Country::class.java)
+
+            Observable.combineLatest(projectDataAndReward, this.currentUser.observable(), country)
+            { data, user, c ->
                 val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
                 val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
-                RewardUtils.rewardAmountByVariant(variant, data.second)
+                RewardUtils.rewardAmountByVariant(variant, data.second, c.minPledge)
             }
                     .compose<Pair<Double, Reward>>(combineLatestPair(this.selectedReward))
                     .filter { RewardUtils.isNoReward(it.second) }
@@ -618,11 +625,6 @@ interface PledgeFragmentViewModel {
             val additionalAmountOrZero = additionalPledgeAmount
                     .map { max(0.0, it) }
 
-            val country = project
-                    .map { Country.findByCurrencyCode(it.currency()) }
-                    .filter { it != null }
-                    .distinctUntilChanged()
-                    .ofType(Country::class.java)
 
             val stepAmount = country
                     .map { it.minPledge }
@@ -663,16 +665,14 @@ interface PledgeFragmentViewModel {
 
             pledgeInput
                     .compose<Double>(takeWhen(this.increasePledgeButtonClicked))
-                    .compose<Pair<Double, Int>>(combineLatestPair(stepAmount))
-                    .map { it.first + it.second }
+                    .map { it + this.stepperAmount }
                     .map { it.toString() }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeInput)
 
             pledgeInput
                     .compose<Double>(takeWhen(this.decreasePledgeButtonClicked))
-                    .compose<Pair<Double, Int>>(combineLatestPair(stepAmount))
-                    .map { it.first - it.second }
+                    .map { it - this.stepperAmount }
                     .map { it.toString() }
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeInput)

@@ -181,6 +181,7 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.backerName() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.backerName)
 

@@ -10,7 +10,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
 import auto.parcel.AutoParcel;
@@ -38,16 +37,6 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable List<RewardsItem> addOnsItems();
   public abstract @Nullable Integer quantity();
   public abstract @Nullable boolean hasAddons();
-
-  /**
-   * This field will be available just for GraphQL, in V1 it would be null
-   * A Reward is available when:
-   * - Limit has not been reached
-   * - ExpireData has not been reached
-   *
-   * @return true is the Reward is available
-   */
-  public abstract @Nullable boolean isAvailable();
 
   /**
    * this field will be available just for GraphQL, in V1 it would be empty
@@ -81,7 +70,6 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder hasAddons(boolean __);
     public abstract Builder shippingRules(List<ShippingRule> __);
     public abstract Builder shippingPreferenceType(ShippingPreference __);
-    public abstract Builder isAvailable(boolean __);
     public abstract Reward build();
   }
 

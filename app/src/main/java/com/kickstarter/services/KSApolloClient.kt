@@ -709,7 +709,6 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
     val remaining = rewardGr.remainingQuantity()
     val endsAt = rewardGr.endsAt()?.let { DateTime(it) } ?: null
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
-    val available = rewardGr.available()
 
     val shippingPreference = when (rewardGr.shippingPreference()) {
         ShippingPreference.NONE -> Reward.ShippingPreference.NONE
@@ -742,7 +741,6 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .shippingPreferenceType(shippingPreference)
             .shippingType(shippingPreference.name)
             .shippingRules(shippingRules)
-            .isAvailable(available)
             .build()
 }
 

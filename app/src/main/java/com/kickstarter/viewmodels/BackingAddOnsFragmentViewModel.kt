@@ -208,9 +208,6 @@ class BackingAddOnsFragmentViewModel {
                     }
                     .switchMap { it }
                     .filter { ObjectUtils.isNotNull(it) }
-                    .map { listAddOns ->
-                        listAddOns.filter{ it.isAvailable }
-                    }
                     .subscribe(addOnsFromGraph)
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,

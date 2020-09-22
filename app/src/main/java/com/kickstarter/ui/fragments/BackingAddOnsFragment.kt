@@ -172,9 +172,9 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
             errorDialog = AlertDialog.Builder(context, R.style.AlertDialog)
                     .setCancelable(false)
                     .setTitle(getString(R.string.Something_went_wrong_please_try_again))
-                    .setPositiveButton("                     ${getString(R.string.Retry)}") { _, _ ->
+                    .setPositiveButton(getString(R.string.Retry)) { _, _ ->
                         this.viewModel.inputs.retryButtonPressed() }
-                    .setNegativeButton("                     ${getString(R.string.close_alert)}") { _, _ -> dismissErrorDialog()}
+                    .setNegativeButton(getString(R.string.close_alert)) { _, _ -> dismissErrorDialog()}
                     .create()
         }
     }

@@ -51,6 +51,7 @@ fragment reward on Reward {
     backersCount
     description
     estimatedDeliveryOn
+    available
     items {
         edges {
             quantity

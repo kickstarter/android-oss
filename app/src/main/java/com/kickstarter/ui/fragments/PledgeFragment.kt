@@ -152,8 +152,12 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    pledge_amount.setText(it)
-                    pledge_amount.setSelection(it.length)
+                    var string = it
+                    if (string.length >= 13) {
+                        string = string.substring(0, 12)
+                    }
+                    pledge_amount.setText(string)
+                    pledge_amount.setSelection(string.length)
                 }
 
         this.viewModel.outputs.pledgeHint()

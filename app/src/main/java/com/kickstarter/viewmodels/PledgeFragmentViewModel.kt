@@ -883,9 +883,9 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<Double, Double>>(combineLatestPair(selectedPledgeAmount))
                     .map { it.first - it.second }
 
-            val pledgeMaximumIsGone = pledgeMaximum
+            val pledgeMaximumIsGone = currencyMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(total))
-                    .map { it.first > it.second }
+                    .map { it.first >= it.second }
                     .distinctUntilChanged()
 
             pledgeMaximumIsGone
@@ -896,8 +896,6 @@ interface PledgeFragmentViewModel {
                     }
 
             pledgeMaximum
-                    .compose<Pair<Double, Boolean>>(combineLatestPair(pledgeMaximumIsGone))
-                    .map { it.first }
                     .distinctUntilChanged()
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }

@@ -446,9 +446,9 @@ interface PledgeFragmentViewModel {
             val backing = projectData
                     .compose<Pair<ProjectData, PledgeReason>>(combineLatestPair(pledgeReason))
                     .filter { it.second != PledgeReason.PLEDGE }
-                    .map { it.first }
-                    .filter { ObjectUtils.isNotNull(it.backing()) }
-                    .map { requireNotNull(it.backing()) }
+                    .map { it.first.backing() ?: it.first.project().backing() }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
 
             backing
                     .map { it.locationId() == null }

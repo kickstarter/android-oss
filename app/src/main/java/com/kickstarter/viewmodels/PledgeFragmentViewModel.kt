@@ -881,7 +881,8 @@ interface PledgeFragmentViewModel {
 
             val pledgeMaximum = currencyMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(selectedPledgeAmount))
-                    .map { it.first - it.second }
+                    .compose<Pair<Pair<Double, Double>, Reward>>(combineLatestPair(this.selectedReward))
+                    .map { if (RewardUtils.isNoReward(it.second)) it.first.first else it.first.first - it.first.second }
 
             val pledgeMaximumIsGone = currencyMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(total))

@@ -8,6 +8,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -218,7 +219,6 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .subscribe {
                         addOnsFromGraph.onNext(it)
-                        this.shippingSelectorIsGone.onNext(false)
                     }
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,

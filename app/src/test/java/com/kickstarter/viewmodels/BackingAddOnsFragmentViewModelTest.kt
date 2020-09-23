@@ -376,7 +376,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.shippingSelectorIsGone.assertValues(true)
+        this.shippingSelectorIsGone.assertValues(false, true)
 
         this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
@@ -411,7 +411,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
         this.vm.arguments(bundle)
 
-        this.shippingSelectorIsGone.assertValues(true)
+        this.shippingSelectorIsGone.assertValues(false, true)
 
         this.lakeTest.assertValue("Add-Ons Page Viewed")
     }

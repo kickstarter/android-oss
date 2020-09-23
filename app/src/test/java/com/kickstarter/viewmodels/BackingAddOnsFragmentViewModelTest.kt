@@ -696,7 +696,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun emptyState_whenMatchingShippingRule_ShouldNotShowEmptyState() {
+    fun emptyState_whenMatchingShippingRule_shouldNotShowEmptyState() {
         val shippingRuleAddOn = ShippingRuleFactory.usShippingRule()
         val shippingRuleRw = ShippingRuleFactory.usShippingRule()
         val addOn = RewardFactory.addOn().toBuilder()
@@ -734,7 +734,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun errorState_whenErrorReturned_shouldShowErrorAlertDialog() {
+    fun errorState_whenErrorReturned_shouldShowErrorAlertDialogAndHideShippingSelector() {
         val config = ConfigFactory.configForUSUser()
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)
@@ -755,6 +755,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Two values -> two failed network calls
         this.showErrorDialog.assertValues(true, true)
+        this.shippingSelectorIsGone.assertValues(true, true, true)
     }
 
     private fun buildEnvironmentWithError(currentConfig: MockCurrentConfig): Environment {

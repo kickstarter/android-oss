@@ -671,10 +671,10 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryIsGone_whenLocationId_isNull() {
+    fun testPledgeSummaryIsGone_whenReward_isNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .locationId(null)
+                .reward(null)
                 .build()
 
 
@@ -689,10 +689,10 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryIsGone_whenLocationId_isNotNull() {
+    fun testPledgeSummaryIsGone_whenReward_isNotNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .locationId(4L)
+                .reward(RewardFactory.rewardWithShipping())
                 .build()
 
         val environment = environment()

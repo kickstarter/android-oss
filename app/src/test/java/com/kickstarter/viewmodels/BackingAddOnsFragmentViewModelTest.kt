@@ -696,7 +696,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun emptyState_whenMatchingShippingRule_ShouldNotShowEmptyState() {
+    fun emptyState_whenMatchingShippingRule_shouldNotShowEmptyState() {
         val shippingRuleAddOn = ShippingRuleFactory.usShippingRule()
         val shippingRuleRw = ShippingRuleFactory.usShippingRule()
         val addOn = RewardFactory.addOn().toBuilder()
@@ -734,7 +734,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun errorState_whenErrorReturned_shouldShowErrorAlertDialog() {
+    fun errorState_whenErrorReturned_shouldShowErrorAlertDialogAndHideShippingSelector() {
         val config = ConfigFactory.configForUSUser()
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)
@@ -755,42 +755,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
 
         // Two values -> two failed network calls
         this.showErrorDialog.assertValues(true, true)
-    }
-
-    fun addOnsList_whenUnavailable_FilteredOut() {
-        val shippingRule = ShippingRulesEnvelopeFactory.shippingRules()
-        val addOn = RewardFactory.addOn().toBuilder()
-                .shippingRules(shippingRule.shippingRules())
-                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-                .build()
-
-        val addOns2 = addOn.toBuilder().isAvailable(false).build()
-        val listAddons = listOf(addOn, addOns2, addOn)
-
-        val config = ConfigFactory.configForUSUser()
-        val currentConfig = MockCurrentConfig()
-        currentConfig.config(config)
-
-        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
-
-        val rw = RewardFactory.rewardHasAddOns().toBuilder()
-                .shippingType(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase())
-                .shippingRules(shippingRule.shippingRules())
-                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
-                .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
-                .build()
-
-        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
-        val projectData = ProjectDataFactory.project(project, null, null)
-        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.PLEDGE)
-
-        val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
-        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.PLEDGE)
-        this.vm.arguments(bundle)
-
-        val filteredList = listOf(addOn, addOn)
-        this.addOnsList.assertValue(Triple(projectData,filteredList, shippingRule.shippingRules().first()))
+        this.shippingSelectorIsGone.assertValues(true, true, true)
     }
 
     private fun buildEnvironmentWithError(currentConfig: MockCurrentConfig): Environment {

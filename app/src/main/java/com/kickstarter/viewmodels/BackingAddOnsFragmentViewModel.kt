@@ -191,27 +191,35 @@ class BackingAddOnsFragmentViewModel {
                     .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
                         return@combineLatest this.apiClient
                                 .fetchShippingRules(projectAndReward.first, projectAndReward.second)
-                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .doOnError {
+                                    this.showErrorDialog.onNext(true)
+                                    this.shippingSelectorIsGone.onNext(true)
+                    }
                                 .onErrorResumeNext(Observable.empty())
                     }
                     .switchMap { it }
                     .map { it.shippingRules() }
                     .compose(bindToLifecycle())
-                    .subscribe(shippingRules)
+                    .subscribe {
+                        shippingRules.onNext(it)
+                        this.shippingSelectorIsGone.onNext(false)
+                    }
 
             Observable
                     .combineLatest(this.retryButtonPressed.startWith(false), project) { _, pj ->
                         return@combineLatest this.apolloClient
                                 .getProjectAddOns(pj.slug()?.let { it } ?: "")
-                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .doOnError {
+                                    this.showErrorDialog.onNext(true)
+                                    this.shippingSelectorIsGone.onNext(true)}
                                 .onErrorResumeNext(Observable.empty())
                     }
                     .switchMap { it }
                     .filter { ObjectUtils.isNotNull(it) }
-                    .map { listAddOns ->
-                        listAddOns.filter{ it.isAvailable }
+                    .subscribe {
+                        addOnsFromGraph.onNext(it)
+                        this.shippingSelectorIsGone.onNext(false)
                     }
-                    .subscribe(addOnsFromGraph)
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,
                                                                                                                                                   _ ->

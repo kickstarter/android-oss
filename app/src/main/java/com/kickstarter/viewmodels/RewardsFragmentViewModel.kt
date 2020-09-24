@@ -83,6 +83,7 @@ class RewardsFragmentViewModel {
                     .map { it.backing()?.let { backing -> getReward(backing) } }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
+                    .distinctUntilChanged()
 
             project
                     .filter { it.isBacking }

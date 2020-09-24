@@ -1417,7 +1417,7 @@ interface PledgeFragmentViewModel {
                                 this.isBonusSupportSectionGone.onNext(isNoReward) // has bonus, sections is not gone
                                 this.pledgeSectionIsGone.onNext(!isNoReward)
                                 this.headerSectionIsGone.onNext(true)
-                                this.pledgeSummaryIsGone.onNext(true) // Gone if No reward, Show if regular reward
+                                this.pledgeSummaryIsGone.onNext(isNoReward) // Gone if No reward, Show if regular reward
                             }
                             PledgeReason.UPDATE_PAYMENT,
                             PledgeReason.FIX_PLEDGE -> {

@@ -56,7 +56,7 @@ class RewardsFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
 
         private val projectDataInput = PublishSubject.create<ProjectData>()
-        private var rewardClicked = PublishSubject.create<Pair<Reward, Boolean>>()
+        private val rewardClicked = BehaviorSubject.create<Pair<Reward, Boolean>>()
         private val alertButtonPressed = PublishSubject.create<Void>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()

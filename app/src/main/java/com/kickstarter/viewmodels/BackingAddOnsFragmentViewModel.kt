@@ -8,6 +8,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -191,19 +192,27 @@ class BackingAddOnsFragmentViewModel {
                     .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
                         return@combineLatest this.apiClient
                                 .fetchShippingRules(projectAndReward.first, projectAndReward.second)
-                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .doOnError {
+                                    this.showErrorDialog.onNext(true)
+                                    this.shippingSelectorIsGone.onNext(true)
+                    }
                                 .onErrorResumeNext(Observable.empty())
                     }
                     .switchMap { it }
                     .map { it.shippingRules() }
                     .compose(bindToLifecycle())
-                    .subscribe(shippingRules)
+                    .subscribe {
+                        shippingRules.onNext(it)
+                        this.shippingSelectorIsGone.onNext(false)
+                    }
 
             Observable
                     .combineLatest(this.retryButtonPressed.startWith(false), project) { _, pj ->
                         return@combineLatest this.apolloClient
                                 .getProjectAddOns(pj.slug()?.let { it } ?: "")
-                                .doOnError { this.showErrorDialog.onNext(true) }
+                                .doOnError {
+                                    this.showErrorDialog.onNext(true)
+                                    this.shippingSelectorIsGone.onNext(true)}
                                 .onErrorResumeNext(Observable.empty())
                     }
                     .switchMap { it }

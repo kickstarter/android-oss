@@ -4,7 +4,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -85,25 +84,7 @@ class RewardsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backedRewardPosition)
 
-            val pledgeDataAndReason = this.projectDataInput
-                    .compose<Pair<ProjectData, Pair<Reward, Boolean>>>(Transformers.takePairWhen(this.rewardClicked))
-                    .map { pledgeDataAndPledgeReason(it.first, it.second.first) }
-                    .distinctUntilChanged()
-
-            pledgeDataAndReason
-                    .filter { it.second == PledgeReason.PLEDGE}
-                    .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.rewardClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        val rw = it.first.reward()
-
-                        if (rw.hasAddons())
-                            this.showAddOnsFragment.onNext(it)
-                        else
-                            this.showPledgeFragment.onNext(it)
-                    }
-
-            subscribeRewardClickedForUpdateReward()
+            subscribeRewardClicked()
 
             project
                     .map { it.rewards()?.size?: 0 }
@@ -120,7 +101,7 @@ class RewardsFragmentViewModel {
                     }
         }
 
-        private fun subscribeRewardClickedForUpdateReward() {
+        private fun subscribeRewardClicked() {
             val project = this.projectDataInput
                     .map { it.project() }
 
@@ -130,6 +111,34 @@ class RewardsFragmentViewModel {
                     .map { requireNotNull(it) }
 
             val defaultRewardClicked = Pair(Reward.builder().id(0).minimum(0.0).build(), false)
+
+            Observable
+                    .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput) { rewardPair, projectData ->
+                        if (!rewardPair.second) {
+                            return@combineLatest null
+                        } else {
+                            return@combineLatest pledgeDataAndPledgeReason(projectData, rewardPair.first)
+                        }
+                    }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        val pledgeAndData = it
+                        val newRw = it.first.reward()
+                        val reason = it.second
+
+                        when(reason) {
+                            PledgeReason.PLEDGE -> {
+                                if (newRw.hasAddons())
+                                    this.showAddOnsFragment.onNext(pledgeAndData)
+                                else
+                                    this.showPledgeFragment.onNext(pledgeAndData)
+                            }
+                        }
+                        this.rewardClicked.onNext(defaultRewardClicked)
+                    }
+
             Observable
                     .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput, backedReward) { rewardPair, projectData, backedReward ->
                         if (!rewardPair.second) {
@@ -152,8 +161,9 @@ class RewardsFragmentViewModel {
                                 if (prevRw.hasAddons() && !newRw.hasAddons())
                                     this.showAlert.onNext(pledgeAndData)
 
-                                if (!prevRw.hasAddons() && !newRw.hasAddons())
+                                if (!prevRw.hasAddons() && !newRw.hasAddons()) {
                                     this.showPledgeFragment.onNext(pledgeAndData)
+                                }
 
                                 if (prevRw.hasAddons() && newRw.hasAddons()) {
                                     if (differentShippingTypes(prevRw, newRw)) this.showAlert.onNext(it.first)

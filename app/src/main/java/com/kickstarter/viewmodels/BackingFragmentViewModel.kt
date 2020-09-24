@@ -235,8 +235,15 @@ interface BackingFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.pledgeSummaryIsGone.onNext(it)
                         this.shippingSummaryIsGone.onNext(it)
+                    }
+
+            backing
+                    .map { ObjectUtils.isNull(it.reward()) }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.pledgeSummaryIsGone.onNext(it)
                     }
 
             Observable.combineLatest(backedProject, backing, environment.currentUser().loggedInUser()) { p, b, user -> Triple(p, b, user) }

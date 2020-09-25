@@ -4,8 +4,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -57,7 +55,7 @@ class RewardsFragmentViewModel {
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<RewardsFragment>(environment), Inputs, Outputs {
 
         private val projectDataInput = PublishSubject.create<ProjectData>()
-        private val rewardClicked = PublishSubject.create<Reward>()
+        private val rewardClicked = PublishSubject.create<Pair<Reward, Boolean>>()
         private val alertButtonPressed = PublishSubject.create<Void>()
 
         private val backedRewardPosition = PublishSubject.create<Int>()
@@ -78,13 +76,7 @@ class RewardsFragmentViewModel {
 
             val project = this.projectDataInput
                     .map { it.project() }
-
-            val backedReward = project
-                    .map { it.backing()?.let { backing -> getReward(backing) } }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-                    .distinctUntilChanged()
-
+            
             project
                     .filter { it.isBacking }
                     .map { indexOfBackedReward(it) }
@@ -92,27 +84,50 @@ class RewardsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.backedRewardPosition)
 
-            val pledgeDataAndReason = this.projectDataInput
-                    .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
-                    .map { pledgeDataAndPledgeReason(it.first, it.second) }
+            val backedReward = project
+                    .map { it.backing()?.let { backing -> getReward(backing) } }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
 
-            pledgeDataAndReason
-                    .filter { it.second == PledgeReason.PLEDGE}
-                    .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.rewardClicked))
+            val defaultRewardClicked = Pair(Reward.builder().id(0).minimum(0.0).build(), false)
+
+            Observable
+                    .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput) { rewardPair, projectData ->
+                        if (!rewardPair.second) {
+                            return@combineLatest null
+                        } else {
+                            return@combineLatest pledgeDataAndPledgeReason(projectData, rewardPair.first)
+                        }
+                    }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        val rw = it.first.reward()
+                        val pledgeAndData = it
+                        val newRw = it.first.reward()
+                        val reason = it.second
 
-                        if (rw.hasAddons())
-                            this.showAddOnsFragment.onNext(it)
-                        else
-                            this.showPledgeFragment.onNext(it)
-
+                        when(reason) {
+                            PledgeReason.PLEDGE -> {
+                                if (newRw.hasAddons())
+                                    this.showAddOnsFragment.onNext(pledgeAndData)
+                                else
+                                    this.showPledgeFragment.onNext(pledgeAndData)
+                            }
+                        }
+                        this.rewardClicked.onNext(defaultRewardClicked)
                     }
 
-            pledgeDataAndReason
-                    .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.rewardClicked))
-                    .compose<Pair<Pair<PledgeData, PledgeReason>, Reward>>(combineLatestPair(backedReward))
+            Observable
+                    .combineLatest(this.rewardClicked.startWith(defaultRewardClicked), this.projectDataInput, backedReward) { rewardPair, projectData, backedReward ->
+                        if (!rewardPair.second) {
+                            return@combineLatest null
+                        } else {
+                            return@combineLatest Pair(pledgeDataAndPledgeReason(projectData, rewardPair.first), backedReward)
+                        }
+                    }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe {
                         val pledgeAndData = it.first
@@ -138,6 +153,7 @@ class RewardsFragmentViewModel {
                                 }
                             }
                         }
+                        this.rewardClicked.onNext(defaultRewardClicked)
                     }
 
             project
@@ -192,7 +208,7 @@ class RewardsFragmentViewModel {
         }
 
         override fun rewardClicked(reward: Reward) {
-            this.rewardClicked.onNext(reward)
+            this.rewardClicked.onNext(Pair(reward, true))
         }
 
         override fun alertButtonPressed() = this.alertButtonPressed.onNext(null)

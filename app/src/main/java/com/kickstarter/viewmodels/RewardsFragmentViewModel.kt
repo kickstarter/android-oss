@@ -95,7 +95,6 @@ class RewardsFragmentViewModel {
             val pledgeDataAndReason = this.projectDataInput
                     .compose<Pair<ProjectData, Reward>>(Transformers.takePairWhen(this.rewardClicked))
                     .map { pledgeDataAndPledgeReason(it.first, it.second) }
-                    .distinctUntilChanged()
 
             pledgeDataAndReason
                     .filter { it.second == PledgeReason.PLEDGE}

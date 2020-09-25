@@ -119,6 +119,7 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     override fun onDetach() {
         super.onDetach()
         rewards_recycler?.adapter = null
+        this.viewModel = null
     }
 
     override fun rewardClicked(reward: Reward) {

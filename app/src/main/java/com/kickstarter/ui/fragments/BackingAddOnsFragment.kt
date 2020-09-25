@@ -208,5 +208,6 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     override fun onDetach() {
         super.onDetach()
         fragment_select_addons_recycler?.adapter = null
+        this.viewModel = null
     }
 }

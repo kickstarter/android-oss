@@ -355,7 +355,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
     override fun onDetach() {
         super.onDetach()
-        reward_add_on_recycler.adapter = null
+        reward_add_on_recycler?.adapter = null
         this.viewModel = null
     }
 }

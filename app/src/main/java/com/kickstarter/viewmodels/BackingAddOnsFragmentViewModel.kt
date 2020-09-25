@@ -288,23 +288,19 @@ class BackingAddOnsFragmentViewModel {
                     addOn.quantity()?.let { it > 0 } ?: false
                 }
 
-                val updatedPledgeData = when (finalList.isNotEmpty()) {
-                    isDigital(rw) -> {
-                        pledgeData.toBuilder()
-                                .addOns(finalList as java.util.List<Reward>)
+                val updatedPledgeData = if (finalList.isNotEmpty()) {
+                        if (isShippable(rw) && !isDigital(rw)) {
+                            pledgeData.toBuilder()
+                                    .addOns(finalList as java.util.List<Reward>)
+                                    .shippingRule(shippingRule)
+                                    .build()
+                        } else pledgeData.toBuilder()
                                 .build()
                     }
-                    isShippable(rw) -> {
-                        pledgeData.toBuilder()
-                                .addOns(finalList as java.util.List<Reward>)
-                                .shippingRule(shippingRule)
-                                .build()
-                    }
-                    else -> {
+                    else {
                         pledgeData.toBuilder()
                                 .build()
                     }
-                }
                 return@combineLatest Pair(updatedPledgeData, pledgeReason)
             }
 

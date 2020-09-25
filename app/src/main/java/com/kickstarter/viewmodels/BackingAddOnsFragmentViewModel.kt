@@ -295,6 +295,7 @@ class BackingAddOnsFragmentViewModel {
                                     .shippingRule(shippingRule)
                                     .build()
                         } else pledgeData.toBuilder()
+                                .addOns(finalList as java.util.List<Reward>)
                                 .build()
                     }
                     else {

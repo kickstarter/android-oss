@@ -135,6 +135,17 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
+            val isSameReward = rewardPledge
+                    .compose<Pair<Reward, Reward>>(combineLatestPair(backingReward))
+                    .map { it.first.id() == it.second.id() }
+
+            isSameReward
+                    .filter { !it }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.currentSelection.clear()
+                    }
+
             val reward = Observable.merge(rewardPledge, backingReward)
 
             projectAndReward = project
@@ -158,14 +169,18 @@ class BackingAddOnsFragmentViewModel {
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
-                    .filter { isDigital(it) }
+                    .filter { isDigital(it) || !isShippable(it)}
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe {
+                        this.shippingSelectorIsGone.onNext(true)
                         this.shippingRuleSelected.onNext(ShippingRuleFactory.emptyShippingRule())
                     }
 
             val addOnsFromBacking = backing
+                    .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
+                    .filter { it.second }
+                    .map { it.first }
                     .map { it.addOns()?.toList() }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
@@ -205,7 +220,6 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         shippingRules.onNext(it)
-                        this.shippingSelectorIsGone.onNext(false)
                     }
 
             Observable
@@ -241,11 +255,6 @@ class BackingAddOnsFragmentViewModel {
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.isEmptyState)
-
-            reward
-                    .map { !isShippable(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingSelectorIsGone)
 
             this.quantityPerId
                     .compose<Pair<Pair<Int, Long>, Triple<ProjectData, List<Reward>, ShippingRule>>>(combineLatestPair(this.addOnsListFiltered))

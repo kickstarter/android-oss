@@ -352,4 +352,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         reward_add_on_recycler.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         reward_add_on_recycler.adapter = rewardsAndAddOnsAdapter
     }
+
+    override fun onDetach() {
+        super.onDetach()
+        reward_add_on_recycler?.adapter = null
+        this.viewModel = null
+    }
 }

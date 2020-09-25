@@ -589,6 +589,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         super.onDetach()
         cards_recycler?.adapter = null
         header_summary_list?.adapter = null
+        this.viewModel = null
     }
 
     override fun addNewCardButtonClicked() {

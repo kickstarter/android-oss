@@ -8,7 +8,6 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -170,12 +169,15 @@ class BackingAddOnsFragmentViewModel {
                     .map { it.addOns()?.toList() }
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
+                    .distinctUntilChanged()
 
             val combinedList = addOnsFromBacking
                     .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
                     .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
+                    .distinctUntilChanged()
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
+                    .distinctUntilChanged()
 
             shippingRules
                     .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
@@ -253,9 +255,14 @@ class BackingAddOnsFragmentViewModel {
                         updateQuantityById(it.first)
                         this.totalSelectedAddOns.onNext(calculateTotal(it.second.second))
                     }
-
-            // - this.quantityPerId.startWith(Pair(-1,-1L) because we need to trigger this validation everytime the AddOns selection changes
-            val isButtonEnabled = Observable.combineLatest(backingShippingRule, addOnsFromBacking, this.shippingRuleSelected, this.quantityPerId.startWith(Pair(-1, -1L))) { backedRule, backedList, actualRule, _ ->
+            // - .startWith(Pair(-1,-1L) because we need to trigger this validation everytime the AddOns selection changes
+            // - .startWith(ShippingRuleFactory.emptyShippingRule()) because we need to trigger this validation every time the AddOns selection changes for digital rewards as well
+            val isButtonEnabled = Observable.combineLatest(
+                    backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
+                    addOnsFromBacking,
+                    this.shippingRuleSelected,
+                    this.quantityPerId.startWith(Pair(0, 0L))) {
+                backedRule, backedList, actualRule, _  ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList)
             }
                     .distinctUntilChanged()
@@ -301,14 +308,36 @@ class BackingAddOnsFragmentViewModel {
                     }
         }
 
+        /**
+         *  Extract the ID:quantity from the original baked AddOns list
+         *  in case the ID's of those addOns and the quantity are the same
+         *  as the current selected ones the selection is the same as the
+         *  backed one.
+         *
+         *  @param backedList -> addOns list from backing object
+         *  @return Boolean -> true in case different selection or new item selected false otherwise
+         */
         private fun isDifferentSelection(backedList: List<Reward>): Boolean {
+
             val backedSelection: MutableMap<Long, Int> = mutableMapOf()
             backedList
                     .map {
                         backedSelection.put(it.id(), it.quantity() ?: 0)
                     }
 
-            return backedSelection != this.currentSelection
+            val isBackedItemList = this.currentSelection.map { item ->
+                if (backedSelection.containsKey(item.key)) backedSelection[item.key] == item.value
+                else false
+            }
+
+            val isNewItemSelected = this.currentSelection.map { item ->
+                if (!backedSelection.containsKey(item.key)) item.value > 0
+                else false
+            }.any { it }
+
+            val sameSelection = isBackedItemList.filter { it }.size == backedSelection.size
+
+            return !sameSelection || isNewItemSelected
         }
 
         private fun isDifferentLocation(backedRule: ShippingRule, actualRule: ShippingRule) =

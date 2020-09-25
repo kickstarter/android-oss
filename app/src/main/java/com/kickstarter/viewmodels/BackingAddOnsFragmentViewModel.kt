@@ -169,7 +169,7 @@ class BackingAddOnsFragmentViewModel {
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
-                    .filter { isDigital(it) || !isShippable(it)}
+                    .filter { isDigital(it) || !isShippable(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe {

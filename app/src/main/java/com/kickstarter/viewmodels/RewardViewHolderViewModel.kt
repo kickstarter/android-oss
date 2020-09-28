@@ -406,20 +406,16 @@ interface RewardViewHolderViewModel {
         /**
          * Use cases for enabling/disabling access to launch the next fragment
          * - If the selected reward has no addOns the CTA button will be enable if available
-         * - Enabled if the previously selected base reward has available add-ons
-         * - If the previously selected base reward has no available add-ons, the CTA button on the base reward would be disabled
+         * - If the previously selected reward has addOns but not BackedAddOns CTA button available is reward available
+         * - If the previously selected reward has add-ons and has Backed addOns, CTA button available (they still can update the addOns selection)
         */
         private fun shouldContinueFlow(project: Project, rw: Reward):Boolean {
             val hasAddOns = rw.hasAddons()
-            val hasUnavailableAddOn:Boolean = project.backing()?.addOns()?.firstOrNull {
-                !RewardUtils.isAvailable(project, it)
-            }?.let { true } ?: false
-            val isRwAvailable = RewardUtils.isAvailable(project, rw)
 
             return when {
                 isSelectable(project, rw) && !hasAddOns -> true
-                hasAddOns && isSelectable(project, rw) -> true
-                hasAddOns && hasBackedAddOns(project) && isRwAvailable && !hasUnavailableAddOn -> true
+                hasAddOns && !hasBackedAddOns(project) && RewardUtils.isAvailable(project, rw) -> true
+                hasAddOns && hasBackedAddOns(project) -> true
                 else -> false
             }
         }

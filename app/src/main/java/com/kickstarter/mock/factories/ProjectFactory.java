@@ -94,10 +94,10 @@ public final class ProjectFactory {
       .build();
   }
 
-  public static @NonNull Project backedProjectWithAddOnsLimitReached() {
+  public static @NonNull Project backedProjectWithRewardAndAddOnsLimitReached() {
     final Project project = project();
 
-    final Reward reward = RewardFactory.reward().toBuilder().hasAddons(true).build();
+    final Reward reward = RewardFactory.reward().toBuilder().hasAddons(true).limit(10).build();
     final Reward add1 = RewardFactory.addOn()
             .toBuilder()
             .remaining(0)

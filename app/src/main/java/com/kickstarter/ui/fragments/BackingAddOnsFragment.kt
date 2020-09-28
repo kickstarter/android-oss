@@ -174,7 +174,7 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
                     .setTitle(getString(R.string.Something_went_wrong_please_try_again))
                     .setPositiveButton(getString(R.string.Retry)) { _, _ ->
                         this.viewModel.inputs.retryButtonPressed() }
-                    .setNegativeButton(getString(R.string.close_alert)) { _, _ -> dismissErrorDialog()}
+                    .setNegativeButton(getString(R.string.general_navigation_buttons_close)) { _, _ -> dismissErrorDialog()}
                     .create()
         }
     }

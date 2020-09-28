@@ -96,7 +96,6 @@ backers</string>
   <string name="Check_your_payment_details" formatted="false">Check your payment details</string>
   <string name="Choose_another_reward" formatted="false">Choose another reward</string>
   <string name="Chooses_location_for_shipping" formatted="false">Chooses %{location} for shipping.</string>
-  <string name="close_alert" formatted="false">Close</string>
   <string name="Close_live_stream" formatted="false">Close live stream</string>
   <string name="Close_project" formatted="false">Close project</string>
   <string name="Closes_filters" formatted="false">Closes filters.</string>

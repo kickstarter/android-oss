@@ -879,7 +879,7 @@ interface PledgeFragmentViewModel {
 
             val selectedPledgeAmount = Observable.merge(pledgeAmountHeader, threshold, variantSuggestedAmount)
 
-            val pledgeMaximum = currencyMaximum
+            val bonusSupportMaximum = currencyMaximum
                     .compose<Pair<Double, Double>>(combineLatestPair(selectedPledgeAmount))
                     .compose<Pair<Pair<Double, Double>, Reward>>(combineLatestPair(this.selectedReward))
                     .map { if (RewardUtils.isNoReward(it.second)) it.first.first else it.first.first - it.first.second }
@@ -896,7 +896,7 @@ interface PledgeFragmentViewModel {
                         this.pledgeMaximumIsGone.onNext(it)
                     }
 
-            pledgeMaximum
+            bonusSupportMaximum
                     .distinctUntilChanged()
                     .compose<Pair<Double, Project>>(combineLatestPair(project))
                     .map { this.ksCurrency.format(it.first, it.second, RoundingMode.HALF_UP) }
@@ -906,7 +906,7 @@ interface PledgeFragmentViewModel {
                     }
 
             val minAndMaxPledge = rewardMinimum
-                    .compose<Pair<Double, Double>>(combineLatestPair(pledgeMaximum))
+                    .compose<Pair<Double, Double>>(combineLatestPair(currencyMaximum))
 
             pledgeInput
                     .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))
@@ -918,7 +918,7 @@ interface PledgeFragmentViewModel {
 
             val stepAndMaxPledge = stepAmount
                     .map { it.toDouble() }
-                    .compose<Pair<Double, Double>>(combineLatestPair(pledgeMaximum))
+                    .compose<Pair<Double, Double>>(combineLatestPair(currencyMaximum))
 
             pledgeInput
                     .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(stepAndMaxPledge))

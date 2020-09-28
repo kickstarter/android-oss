@@ -146,7 +146,14 @@ class BackingAddOnsFragmentViewModel {
                         this.currentSelection.clear()
                     }
 
-            val reward = Observable.merge(rewardPledge, backingReward)
+            val filteredBackingReward = backingReward
+                    .compose<Pair<Reward, Boolean>>(combineLatestPair(isSameReward))
+                    .filter { it.second }
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+                    .map { it.first }
+
+            val reward = Observable.merge(rewardPledge, filteredBackingReward)
 
             projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))

@@ -242,7 +242,7 @@ class BackingAddOnViewHolderViewModel {
 
             this.quantity
                     .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-                    .map { (it.first == it.second.remaining()) || (it.first == it.second.limit())}
+                    .map { maxLimitReached(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.disableIncreaseButton)
 
@@ -253,6 +253,21 @@ class BackingAddOnViewHolderViewModel {
                     .subscribe(this.quantityPerId)
 
         }
+
+        /**
+         * If the addOns is available check maxLimit will be hitting either the limit or the remaining
+         * if the addOns is not available, maxLimit will be the current selected quantity for that addOn
+         * allowing the user to modify the already backed amount just to decrease it.
+         * @param Pair(selectedQuantity, addOn)
+         * @return true -> limit for that addOn reached
+         *         false -> still available to choose more
+         */
+        private fun maxLimitReached(qPerAddOn: Pair<Int, Reward>): Boolean =
+                if (qPerAddOn.second.isAvailable)
+                    (qPerAddOn.second.remaining()?.let { qPerAddOn.first == it } ?: false) ||
+                            (qPerAddOn.first == qPerAddOn.second.limit())
+                else qPerAddOn.first == qPerAddOn.second.quantity()
+
 
         private fun decrease(amount: Int) = amount - 1
         private fun increase(amount: Int) = amount + 1

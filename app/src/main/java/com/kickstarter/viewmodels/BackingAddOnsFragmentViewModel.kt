@@ -199,6 +199,7 @@ class BackingAddOnsFragmentViewModel {
                     .distinctUntilChanged()
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
+                    .map { filterOutUnAvailableExceptIfBacked(it) }
                     .distinctUntilChanged()
 
             shippingRules
@@ -240,9 +241,6 @@ class BackingAddOnsFragmentViewModel {
                     }
                     .switchMap { it }
                     .filter { ObjectUtils.isNotNull(it) }
-                    .map { listAddOns ->
-                        listAddOns.filter{ it.isAvailable }
-                    }
                     .subscribe(addOnsFromGraph)
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,
@@ -322,6 +320,23 @@ class BackingAddOnsFragmentViewModel {
         }
 
         /**
+         *  In case selecting the same reward, if any of the addOns is unavailable
+         *  but has been backed do not filter out that addOn and allow to modify the
+         *  selection.
+         *
+         *  In case selecting another reward, filter out the unavailable ones
+         *
+         *  @param combinedList -> combinedList of Graph addOns and backed ones
+         *  @return List<Reward> -> filtered list depending on availability and if
+         *  the addOns was backed
+         */
+        private fun filterOutUnAvailableExceptIfBacked(combinedList: List<Reward>): List<Reward> {
+            return combinedList.filter {
+                addOn ->  addOn.quantity()?.let { it > 0 } ?: addOn.isAvailable
+            }
+        }
+
+        /**
          *  Extract the ID:quantity from the original baked AddOns list
          *  in case the ID's of those addOns and the quantity are the same
          *  as the current selected ones the selection is the same as the
@@ -371,11 +386,8 @@ class BackingAddOnsFragmentViewModel {
 
         private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
-                val update = Pair(it.quantity() ?: 0, it.id())
-                if (update.first > 0)
-                    updateQuantityById(update)
                 return@let it
-            } ?: graphAddOn
+            }?: graphAddOn
         }
 
         private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing()

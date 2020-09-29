@@ -123,7 +123,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Continue_with_quantity_count_add_ons_other" formatted="false">Weiter mit %{quantity_count} Add-ons</string>
   <string name="Continue_with_quantity_count_add_ons_two" formatted="false">Weiter mit %{quantity_count} Add-ons</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Weiter mit %{quantity_count} Add-ons</string>
-  <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
+  <string name="Continue_with_this_reward" formatted="false">Weiter mit dieser Belohnung?</string>
   <string name="Couldnt_add_attachment" formatted="false">Anhang konnte nicht hinzugefügt werden</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Live-Stream konnte nicht geöffnet werden. Bitte versuche es später noch einmal.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Anhang konnte nicht entfernt werden</string>
@@ -151,6 +151,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Currency_MXN" formatted="false">$ Mexikanischer Peso (MXN)</string>
   <string name="Currency_NOK" formatted="false">kr Norwegische Krone (NOK)</string>
   <string name="Currency_NZD" formatted="false">$ Neuseeland-Dollar (NZD)</string>
+  <string name="Currency_PLN" formatted="false">zł Polnishcer Złoty (PLN)</string>
   <string name="Currency_SEK" formatted="false">kr Schwedische Krone (SEK)</string>
   <string name="Currency_SGD" formatted="false">$ Singapur-Dollar (SGD)</string>
   <string name="Currency_USD" formatted="false">$ US-Dollar (USD)</string>
@@ -287,7 +288,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Stelle dich vor</string>
   <string name="Introducing_Lights_On" formatted="false">Wir stellen vor: Lights On</string>
-  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">It may not offer some or all of your add-ons.</string>
+  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">Einige oder alle deiner Add-Ons werden dafür eventuell nicht angeboten.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Es ist eine Plattform, um kreative Projekte zu verwirklichen. &lt;a href="%{trust_link}">Hier findest du mehr Info zur Rechenschaftspflicht&lt;/a></string>
@@ -700,6 +701,7 @@ Bitte versuche es später noch einmal.</string>
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">Dein Projekt hat das Finanzierungsziel leider nicht erreicht. Daher wurde die Zahlungsmethode des Unterstützers nicht belastet.</string>
   <string name="Your_reward" formatted="false">Deine Belohnung</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Deine Belohnung&lt;/b> wird voraussichtlich im %{delivery_date} geliefert</string>
+  <string name="Your_selection" formatted="false">Deine Auswahl</string>
   <string name="Your_shipping_destination" formatted="false">Dein Versandziel</string>
   <string name="Your_shipping_location" formatted="false">Dein Versand-Standort</string>
   <string name="Youre_a_backer" formatted="false">Du unterstützt das Projekt!</string>

@@ -157,6 +157,7 @@
       "Currency_MXN": "$ Mexican Peso (MXN)",
       "Currency_NOK": "kr Norwegian Krone (NOK)",
       "Currency_NZD": "$ New Zealand Dollar (NZD)",
+      "Currency_PLN": "zł Polish Złoty (PLN)",
       "Currency_SEK": "kr Swedish Krona (SEK)",
       "Currency_SGD": "$ Singapore Dollar (SGD)",
       "Currency_USD": "$ US Dollar (USD)",
@@ -803,6 +804,7 @@
       "Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged": "Your project didn’t reach its funding goal, so the backer’s payment method was never charged.",
       "Your_reward": "Your reward",
       "Your_reward_estimated_for_delivery_in_date": "<b>Your reward</b> estimated for delivery in %{delivery_date}",
+      "Your_selection": "Your selection",
       "Your_shipping_destination": "Your shipping destination",
       "Your_shipping_location": "Your shipping location",
       "Youre_a_backer": "You’re a backer!",
@@ -2493,7 +2495,7 @@
         "many": "Weiter mit %{quantity_count} Add-ons",
         "other": "Weiter mit %{quantity_count} Add-ons"
       },
-      "Continue_with_this_reward": "Continue with this reward?",
+      "Continue_with_this_reward": "Weiter mit dieser Belohnung?",
       "Couldnt_add_attachment": "Anhang konnte nicht hinzugefügt werden",
       "Couldnt_open_live_stream_Try_again_later": "Live-Stream konnte nicht geöffnet werden. Bitte versuche es später noch einmal.",
       "Couldnt_remove_attachment": "Anhang konnte nicht entfernt werden",
@@ -2522,6 +2524,7 @@
       "Currency_MXN": "$ Mexikanischer Peso (MXN)",
       "Currency_NOK": "kr Norwegische Krone (NOK)",
       "Currency_NZD": "$ Neuseeland-Dollar (NZD)",
+      "Currency_PLN": "zł Polnishcer Złoty (PLN)",
       "Currency_SEK": "kr Schwedische Krone (SEK)",
       "Currency_SGD": "$ Singapur-Dollar (SGD)",
       "Currency_USD": "$ US-Dollar (USD)",
@@ -2680,7 +2683,7 @@
       "Info": "Info",
       "Introduce_yourself": "Stelle dich vor",
       "Introducing_Lights_On": "Wir stellen vor: Lights On",
-      "It_may_not_offer_some_or_all_of_your_add_ons": "It may not offer some or all of your add-ons.",
+      "It_may_not_offer_some_or_all_of_your_add_ons": "Einige oder alle deiner Add-Ons werden dafür eventuell nicht angeboten.",
       "It_may_take_up_to_24_hours_to_collect_your_data": "Die Zusammenstellung deiner Daten kann bis zu 24 Stunden dauern. Sobald sie zum Download bereitstehen, werden wir dir eine Anleitung dazu per E-Mail schicken. Solltest du nichts von uns hören, versuche es von hier aus noch einmal.",
       "Its_a_way_to_bring_creative_projects_to_life": "Es ist eine Plattform, um kreative Projekte ins Leben zu rufen.",
       "Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability": "Es ist eine Plattform, um kreative Projekte zu verwirklichen. <a href=\"%{trust_link}\">Hier findest du mehr Info zur Rechenschaftspflicht</a>",
@@ -3168,6 +3171,7 @@
       "Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged": "Dein Projekt hat das Finanzierungsziel leider nicht erreicht. Daher wurde die Zahlungsmethode des Unterstützers nicht belastet.",
       "Your_reward": "Deine Belohnung",
       "Your_reward_estimated_for_delivery_in_date": "<b>Deine Belohnung</b> wird voraussichtlich im %{delivery_date} geliefert",
+      "Your_selection": "Deine Auswahl",
       "Your_shipping_destination": "Dein Versandziel",
       "Your_shipping_location": "Dein Versand-Standort",
       "Youre_a_backer": "Du unterstützt das Projekt!",
@@ -4728,16 +4732,7 @@
         "message": "Du scheinst eine sehr alte Version der App zu benutzen. Um fortzufahren, installiere bitte die neueste Version aus dem App Store.",
         "cancel": "Abbrechen",
         "upgrade": "Aktualisierung"
-      },
-      "Continue_with_quantity_add_ons": {
-        "zero": "Weiter mit %{quantity} Add-ons",
-        "one": "Weiter mit %{quantity} Add-on",
-        "two": "Weiter mit %{quantity} Add-ons",
-        "few": "Weiter mit %{quantity} Add-ons",
-        "many": "Weiter mit %{quantity} Add-ons",
-        "other": "Weiter mit %{quantity} Add-ons"
-      },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Weiter mit dieser Belohnung? Die folgenden Add-Ons werden dafür nicht angeboten:"
+      }
     },
     "es": {
       "A_little_extra_to_help": "Algo extra para ayudar a que este proyecto se pueda realizar.",
@@ -4867,7 +4862,7 @@
         "many": "Continuar con %{quantity_count} complementos",
         "other": "Continuar con %{quantity_count} complementos"
       },
-      "Continue_with_this_reward": "Continue with this reward?",
+      "Continue_with_this_reward": "¿Continuar con esta recompensa?",
       "Couldnt_add_attachment": "No se pudo añadir el anexo",
       "Couldnt_open_live_stream_Try_again_later": "No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.",
       "Couldnt_remove_attachment": "No se pudo remover el anexo",
@@ -4896,6 +4891,7 @@
       "Currency_MXN": "$ Peso mexicano (MXN)",
       "Currency_NOK": "kr Corona noruega (NOK)",
       "Currency_NZD": "$ Dólar de Nueva Zelanda (NZD)",
+      "Currency_PLN": "Złoty polaco - zł (PLN)",
       "Currency_SEK": "kr Corona sueca (SEK)",
       "Currency_SGD": "$ Dólar de Singapur (SGD)",
       "Currency_USD": "$ Dólar estadounidense (USD)",
@@ -5054,7 +5050,7 @@
       "Info": "Información",
       "Introduce_yourself": "Preséntate",
       "Introducing_Lights_On": "Presentamos \"Seguimos activos\"",
-      "It_may_not_offer_some_or_all_of_your_add_ons": "It may not offer some or all of your add-ons.",
+      "It_may_not_offer_some_or_all_of_your_add_ons": "Es posible que no ofrezca algunos o todos tus complementos.",
       "It_may_take_up_to_24_hours_to_collect_your_data": "Puede demorar hasta 24 horas recopilar tus datos. Cuando estén listos, te enviaremos instrucciones para descargar tus datos al correo electrónico asociado con esta cuenta. Si no recibes noticias nuestras, vuelve aquí e inténtalo de nuevo.",
       "Its_a_way_to_bring_creative_projects_to_life": "Es una plataforma para dar vida a proyectos creativos.",
       "Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability": "Es una forma de dar vida a proyectos creativos.<a href=\"%{trust_link}\">Más información sobre las responsabilidades</a>",
@@ -5542,6 +5538,7 @@
       "Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged": "Tu proyecto no alcanzó su meta de financiamiento, así que no se realizó ningún cargo al método de pago del patrocinador.",
       "Your_reward": "Tu recompensa",
       "Your_reward_estimated_for_delivery_in_date": "<b>Tu recompensa</b> estimada para entregarse en %{delivery_date}",
+      "Your_selection": "Tu selección",
       "Your_shipping_destination": "Tu destino de envío",
       "Your_shipping_location": "Tu ubicación de envío",
       "Youre_a_backer": "¡Eres un patrocinador!",
@@ -7102,16 +7099,7 @@
         "message": "Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.",
         "cancel": "Cancelar",
         "upgrade": "Actualizar"
-      },
-      "Continue_with_quantity_add_ons": {
-        "zero": "Continuar con %{quantity} complementos",
-        "one": "Continuar con %{quantity} complemento",
-        "two": "Continuar con %{quantity} complementos",
-        "few": "Continuar con %{quantity} complementos",
-        "many": "Continuar con %{quantity} complementos",
-        "other": "Continuar con %{quantity} complementos"
-      },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "¿Continuar con esta recompensa? No ofrece estos complementos:"
+      }
     },
     "fr": {
       "A_little_extra_to_help": "Du soutien supplémentaire pour faire vivre ce projet.",
@@ -7241,7 +7229,7 @@
         "many": "Continuer avec %{quantity_count} compléments",
         "other": "Continuer avec %{quantity_count} compléments"
       },
-      "Continue_with_this_reward": "Continue with this reward?",
+      "Continue_with_this_reward": "Continuer avec cette récompense ?",
       "Couldnt_add_attachment": "Impossible d'ajouter la pièce jointe",
       "Couldnt_open_live_stream_Try_again_later": "Impossible d'ouvrir la diffusion en direct. Veuillez réessayer plus tard.",
       "Couldnt_remove_attachment": "Impossible de supprimer la pièce jointe",
@@ -7266,10 +7254,11 @@
       "Currency_DKK": "Couronne danoise – kr (DKK)",
       "Currency_GBP": "Livre sterling – £ (GBP)",
       "Currency_HKD": "Dollar de Hong Kong – $ (HKD)",
-      "Currency_JPY": "Yen – ¥ (JPY)",
+      "Currency_JPY": "Yen japonais – ¥ (JPY)",
       "Currency_MXN": "Pesos mexicain – $ (MXN)",
       "Currency_NOK": "Couronne norvégienne – kr (NOK)",
       "Currency_NZD": "Dollar néo-zélandais – $ (NZD)",
+      "Currency_PLN": "Złoty polonais – zł (PLN)",
       "Currency_SEK": "Couronne suédoise – kr (SEK)",
       "Currency_SGD": "Dollar singapourien – $ (SGD)",
       "Currency_USD": "Dollar américain – $ (USD)",
@@ -7428,7 +7417,7 @@
       "Info": "Info",
       "Introduce_yourself": "Présentez-vous ici.",
       "Introducing_Lights_On": "Voici Lueurs d'espoir",
-      "It_may_not_offer_some_or_all_of_your_add_ons": "It may not offer some or all of your add-ons.",
+      "It_may_not_offer_some_or_all_of_your_add_ons": "Une partie ou la totalité des compléments pourraient être indisponibles.",
       "It_may_take_up_to_24_hours_to_collect_your_data": "La préparation de vos données personnelles peut prendre jusqu'à 24 heures. Nous vous enverrons des instructions de téléchargement à l'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.",
       "Its_a_way_to_bring_creative_projects_to_life": "C'est un outil qui permet de donner vie à des projets créatifs.",
       "Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability": "Notre plateforme est un moyen de faire vivre des projets créatifs. <a href=\"%{trust_link}\">En savoir plus sur la notion de responsabilité</a>",
@@ -7916,6 +7905,7 @@
       "Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged": "L'objectif de financement de votre projet n'a pas été atteint, donc le moyen de paiement du contributeur n'a pas été débité.",
       "Your_reward": "Votre récompense",
       "Your_reward_estimated_for_delivery_in_date": "<b>Votre récompense</b> prévue pour %{delivery_date}",
+      "Your_selection": "Votre sélection",
       "Your_shipping_destination": "Destination d'expédition",
       "Your_shipping_location": "Votre destination de livraison",
       "Youre_a_backer": "Vous êtes contributeur !",
@@ -9476,16 +9466,7 @@
         "message": "On dirait que vous utilisez une ancienne version de l'application. Veuillez la mettre à jour depuis l'App Store pour continuer à l'utiliser.",
         "cancel": "Annuler",
         "upgrade": "Mise à jour"
-      },
-      "Continue_with_quantity_add_ons": {
-        "zero": "Continuer avec %{quantity} compléments",
-        "one": "Continuer avec %{quantity} complément",
-        "two": "Continuer avec %{quantity} compléments",
-        "few": "Continuer avec %{quantity} compléments",
-        "many": "Continuer avec %{quantity} compléments",
-        "other": "Continuer avec %{quantity} compléments"
-      },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "Continuer avec cette récompense ? Les compléments suivants ne sont pas proposés :"
+      }
     },
     "it": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -9644,6 +9625,7 @@
       "Currency_MXN": "$ Mexican Peso (MXN)",
       "Currency_NOK": "kr Norwegian Krone (NOK)",
       "Currency_NZD": "$ New Zealand Dollar (NZD)",
+      "Currency_PLN": "zł Polish Złoty (PLN)",
       "Currency_SEK": "kr Swedish Krona (SEK)",
       "Currency_SGD": "$ Singapore Dollar (SGD)",
       "Currency_USD": "$ US Dollar (USD)",
@@ -10290,6 +10272,7 @@
       "Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged": "Your project didn’t reach its funding goal, so the backer’s payment method was never charged.",
       "Your_reward": "Your reward",
       "Your_reward_estimated_for_delivery_in_date": "<b>Your reward</b> estimated for delivery in %{delivery_date}",
+      "Your_selection": "Your selection",
       "Your_shipping_destination": "Your shipping destination",
       "Your_shipping_location": "Your shipping location",
       "Youre_a_backer": "You’re a backer!",
@@ -11980,7 +11963,7 @@
         "many": "%{quantity_count} 個のアドオンで続行する",
         "other": "%{quantity_count} 個のアドオンで続行する"
       },
-      "Continue_with_this_reward": "Continue with this reward?",
+      "Continue_with_this_reward": "このリワードで続けますか？",
       "Couldnt_add_attachment": "添付ファイルを追加できませんでした",
       "Couldnt_open_live_stream_Try_again_later": "ライブ配信を開けませんでした。後ほどお試しください。",
       "Couldnt_remove_attachment": "添付ファイルを削除できませんでした",
@@ -12009,6 +11992,7 @@
       "Currency_MXN": "$ メキシコペソ (MXN)",
       "Currency_NOK": "kr ノルウェークローネ (NOK)",
       "Currency_NZD": "$ ニュージーランドドル (NZD)",
+      "Currency_PLN": "zł ポーランド通貨ズウォティ(PLN)",
       "Currency_SEK": "kr スウェーデンクローナ (SEK)",
       "Currency_SGD": "$ シンガポールドル (SGD)",
       "Currency_USD": "$ 米ドル (USD)",
@@ -12167,7 +12151,7 @@
       "Info": "インフォメーション",
       "Introduce_yourself": "自己紹介",
       "Introducing_Lights_On": "新企画「Lights On」",
-      "It_may_not_offer_some_or_all_of_your_add_ons": "It may not offer some or all of your add-ons.",
+      "It_may_not_offer_some_or_all_of_your_add_ons": "このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。",
       "It_may_take_up_to_24_hours_to_collect_your_data": "データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。",
       "Its_a_way_to_bring_creative_projects_to_life": "クリエイティブなプロジェクトを実現するためのプラットフォームです。",
       "Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability": "クリエイティブなプロジェクトに生命を吹き込む場です。<a href=\"%{trust_link}\">アカウンタビリティについて詳しくみる。</a>",
@@ -12655,6 +12639,7 @@
       "Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged": "あなたのプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。",
       "Your_reward": "リワード",
       "Your_reward_estimated_for_delivery_in_date": "<b>リワード</b>の配送予定日は%{delivery_date}",
+      "Your_selection": "選択内容",
       "Your_shipping_destination": "配送地域",
       "Your_shipping_location": "配送地域",
       "Youre_a_backer": "バッカーになりました！",
@@ -14215,16 +14200,7 @@
         "message": "引き続き利用するにはApp Storeからアプリのバージョンを更新してください。",
         "cancel": "キャンセル",
         "upgrade": "アップグレード"
-      },
-      "Continue_with_quantity_add_ons": {
-        "zero": "%{quantity} 個のアドオンで続行する",
-        "one": "%{quantity} 個のアドオンで続行する",
-        "two": "%{quantity} 個のアドオンで続行する",
-        "few": "%{quantity} 個のアドオンで続行する",
-        "many": "%{quantity} 個のアドオンで続行する",
-        "other": "%{quantity} 個のアドオンで続行する"
-      },
-      "Continue_with_this_reward_It_doesnt_offer_these_add_ons": "このリワードで続行しますか？このリワードでは以下のアドオン (追加リワード) は提供されません："
+      }
     },
     "zh": {
       "A_little_extra_to_help": "A little extra to help bring this project to life.",
@@ -14383,6 +14359,7 @@
       "Currency_MXN": "$ Mexican Peso (MXN)",
       "Currency_NOK": "kr Norwegian Krone (NOK)",
       "Currency_NZD": "$ New Zealand Dollar (NZD)",
+      "Currency_PLN": "zł Polish Złoty (PLN)",
       "Currency_SEK": "kr Swedish Krona (SEK)",
       "Currency_SGD": "$ Singapore Dollar (SGD)",
       "Currency_USD": "$ US Dollar (USD)",
@@ -15029,6 +15006,7 @@
       "Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged": "Your project didn’t reach its funding goal, so the backer’s payment method was never charged.",
       "Your_reward": "Your reward",
       "Your_reward_estimated_for_delivery_in_date": "<b>Your reward</b> estimated for delivery in %{delivery_date}",
+      "Your_selection": "Your selection",
       "Your_shipping_destination": "Your shipping destination",
       "Your_shipping_location": "Your shipping location",
       "Youre_a_backer": "You’re a backer!",
@@ -16697,6 +16675,14 @@
       "trailing_code": false
     },
     {
+      "name": "GR",
+      "max_pledge": null,
+      "min_pledge": null,
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
+    },
+    {
       "name": "HK",
       "max_pledge": null,
       "min_pledge": null,
@@ -16769,12 +16755,28 @@
       "trailing_code": true
     },
     {
+      "name": "PL",
+      "max_pledge": null,
+      "min_pledge": null,
+      "currency_code": "PLN",
+      "currency_symbol": "zł",
+      "trailing_code": true
+    },
+    {
       "name": "SE",
       "max_pledge": null,
       "min_pledge": null,
       "currency_code": "SEK",
       "currency_symbol": "kr",
       "trailing_code": true
+    },
+    {
+      "name": "SI",
+      "max_pledge": null,
+      "min_pledge": null,
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
     },
     {
       "name": "SG",

@@ -151,6 +151,7 @@ Please tap to retry.</string>
   <string name="Currency_MXN" formatted="false">$ Mexican Peso (MXN)</string>
   <string name="Currency_NOK" formatted="false">kr Norwegian Krone (NOK)</string>
   <string name="Currency_NZD" formatted="false">$ New Zealand Dollar (NZD)</string>
+  <string name="Currency_PLN" formatted="false">zł Polish Złoty (PLN)</string>
   <string name="Currency_SEK" formatted="false">kr Swedish Krona (SEK)</string>
   <string name="Currency_SGD" formatted="false">$ Singapore Dollar (SGD)</string>
   <string name="Currency_USD" formatted="false">$ US Dollar (USD)</string>
@@ -704,6 +705,7 @@ Please try again later.</string>
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">Your project didn’t reach its funding goal, so the backer’s payment method was never charged.</string>
   <string name="Your_reward" formatted="false">Your reward</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Your reward&lt;/b> estimated for delivery in %{delivery_date}</string>
+  <string name="Your_selection" formatted="false">Your selection</string>
   <string name="Your_shipping_destination" formatted="false">Your shipping destination</string>
   <string name="Your_shipping_location" formatted="false">Your shipping location</string>
   <string name="Youre_a_backer" formatted="false">You’re a backer!</string>

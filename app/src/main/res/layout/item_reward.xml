@@ -31,7 +31,7 @@
               android:layout_height="@dimen/grid_11_half"
               android:background="@drawable/ic_container"
               android:gravity="center"
-              android:text="@string/You_backed"
+              android:text="@string/Your_selection"
               android:textColor="@color/white"
               android:textSize="@dimen/subheadline"
               android:paddingLeft="@dimen/grid_3"

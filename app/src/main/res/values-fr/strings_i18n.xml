@@ -123,7 +123,7 @@ contributeurs</string>
   <string name="Continue_with_quantity_count_add_ons_other" formatted="false">Continuer avec %{quantity_count} compléments</string>
   <string name="Continue_with_quantity_count_add_ons_two" formatted="false">Continuer avec %{quantity_count} compléments</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">Continuer avec %{quantity_count} compléments</string>
-  <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
+  <string name="Continue_with_this_reward" formatted="false">Continuer avec cette récompense ?</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
@@ -147,10 +147,11 @@ contributeurs</string>
   <string name="Currency_EUR" formatted="false">Euro – € (EUR)</string>
   <string name="Currency_GBP" formatted="false">Livre sterling – £ (GBP)</string>
   <string name="Currency_HKD" formatted="false">Dollar de Hong Kong – $ (HKD)</string>
-  <string name="Currency_JPY" formatted="false">Yen – ¥ (JPY)</string>
+  <string name="Currency_JPY" formatted="false">Yen japonais – ¥ (JPY)</string>
   <string name="Currency_MXN" formatted="false">Pesos mexicain – $ (MXN)</string>
   <string name="Currency_NOK" formatted="false">Couronne norvégienne – kr (NOK)</string>
   <string name="Currency_NZD" formatted="false">Dollar néo-zélandais – $ (NZD)</string>
+  <string name="Currency_PLN" formatted="false">Złoty polonais – zł (PLN)</string>
   <string name="Currency_SEK" formatted="false">Couronne suédoise – kr (SEK)</string>
   <string name="Currency_SGD" formatted="false">Dollar singapourien – $ (SGD)</string>
   <string name="Currency_USD" formatted="false">Dollar américain – $ (USD)</string>
@@ -287,7 +288,7 @@ contributeurs</string>
   <string name="Info" formatted="false">Info</string>
   <string name="Introduce_yourself" formatted="false">Présentez-vous ici.</string>
   <string name="Introducing_Lights_On" formatted="false">Voici Lueurs d\'espoir</string>
-  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">It may not offer some or all of your add-ons.</string>
+  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">Une partie ou la totalité des compléments pourraient être indisponibles.</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">La préparation de vos données personnelles peut prendre jusqu\'à 24 heures. Nous vous enverrons des instructions de téléchargement à l\'adresse e-mail associée à ce compte une fois que tout sera prêt. Si vous ne recevez rien, revenez ici pour réessayer.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">C\'est un outil qui permet de donner vie à des projets créatifs.</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">Notre plateforme est un moyen de faire vivre des projets créatifs. &lt;a href="%{trust_link}">En savoir plus sur la notion de responsabilité&lt;/a></string>
@@ -701,6 +702,7 @@ Veuillez réessayer ultérieurement.</string>
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">L\'objectif de financement de votre projet n\'a pas été atteint, donc le moyen de paiement du contributeur n\'a pas été débité.</string>
   <string name="Your_reward" formatted="false">Votre récompense</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>Votre récompense&lt;/b> prévue pour %{delivery_date}</string>
+  <string name="Your_selection" formatted="false">Votre sélection</string>
   <string name="Your_shipping_destination" formatted="false">Destination d\'expédition</string>
   <string name="Your_shipping_location" formatted="false">Votre destination de livraison</string>
   <string name="Youre_a_backer" formatted="false">Vous êtes contributeur !</string>

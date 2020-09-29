@@ -121,7 +121,7 @@
   <string name="Continue_with_quantity_count_add_ons_other" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
   <string name="Continue_with_quantity_count_add_ons_two" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
   <string name="Continue_with_quantity_count_add_ons_zero" formatted="false">%{quantity_count} 個のアドオンで続行する</string>
-  <string name="Continue_with_this_reward" formatted="false">Continue with this reward?</string>
+  <string name="Continue_with_this_reward" formatted="false">このリワードで続けますか？</string>
   <string name="Couldnt_add_attachment" formatted="false">添付ファイルを追加できませんでした</string>
   <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">ライブ配信を開けませんでした。後ほどお試しください。</string>
   <string name="Couldnt_remove_attachment" formatted="false">添付ファイルを削除できませんでした</string>
@@ -149,6 +149,7 @@
   <string name="Currency_MXN" formatted="false">$ メキシコペソ (MXN)</string>
   <string name="Currency_NOK" formatted="false">kr ノルウェークローネ (NOK)</string>
   <string name="Currency_NZD" formatted="false">$ ニュージーランドドル (NZD)</string>
+  <string name="Currency_PLN" formatted="false">zł ポーランド通貨ズウォティ(PLN)</string>
   <string name="Currency_SEK" formatted="false">kr スウェーデンクローナ (SEK)</string>
   <string name="Currency_SGD" formatted="false">$ シンガポールドル (SGD)</string>
   <string name="Currency_USD" formatted="false">$ 米ドル (USD)</string>
@@ -285,7 +286,7 @@
   <string name="Info" formatted="false">インフォメーション</string>
   <string name="Introduce_yourself" formatted="false">自己紹介</string>
   <string name="Introducing_Lights_On" formatted="false">新企画「Lights On」</string>
-  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">It may not offer some or all of your add-ons.</string>
+  <string name="It_may_not_offer_some_or_all_of_your_add_ons" formatted="false">このリワードでは、アドオン (追加リワード）の一部または全てが提供されない場合があります。</string>
   <string name="It_may_take_up_to_24_hours_to_collect_your_data" formatted="false">データの収集には最大で24時間かかる場合があります。ダウンロードの準備が整いましたら、このアカウントに登録されているメールアドレス宛てにデータのダウンロード手順が記載されたメールをお送りします。メールが届かなかった場合には、お手数ですがこちらに戻って再試行してください。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life" formatted="false">クリエイティブなプロジェクトを実現するためのプラットフォームです。</string>
   <string name="Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability" formatted="false">クリエイティブなプロジェクトに生命を吹き込む場です。&lt;a href="%{trust_link}">アカウンタビリティについて詳しくみる。&lt;/a></string>
@@ -699,6 +700,7 @@
   <string name="Your_project_didnt_reach_its_funding_goal_so_the_backers_payment_method_was_never_charged" formatted="false">あなたのプロジェクトはファンディングゴールに到達しなかったため、お支払い方法への請求は行われませんでした。</string>
   <string name="Your_reward" formatted="false">リワード</string>
   <string name="Your_reward_estimated_for_delivery_in_date" formatted="false">&lt;b>リワード&lt;/b>の配送予定日は%{delivery_date}</string>
+  <string name="Your_selection" formatted="false">選択内容</string>
   <string name="Your_shipping_destination" formatted="false">配送地域</string>
   <string name="Your_shipping_location" formatted="false">配送地域</string>
   <string name="Youre_a_backer" formatted="false">バッカーになりました！</string>

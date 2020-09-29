@@ -219,7 +219,7 @@ class BackingAddOnsFragmentViewModel {
                                 .doOnError {
                                     this.showErrorDialog.onNext(true)
                                     this.shippingSelectorIsGone.onNext(true)
-                    }
+                                }
                                 .onErrorResumeNext(Observable.empty())
                     }
                     .switchMap { it }

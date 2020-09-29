@@ -17,20 +17,18 @@ import com.kickstarter.models.Reward
 import java.math.RoundingMode
 
 object RewardViewUtils {
+
     /**
      * Returns the string resource ID of the rewards button based on project and reward status.
      */
     @StringRes
     fun pledgeButtonText(project: Project, reward: Reward): Int {
         val hasAddOnsSelected = project.backing()?.addOns()?.isNotEmpty() ?: false
-        val hasUnavailableAddOn:Boolean = project.backing()?.addOns()?.firstOrNull {
-            !RewardUtils.isAvailable(project, it)
-        }?.let { true } ?: false
 
         return when {
             BackingUtils.isBacked(project, reward) && !hasAddOnsSelected -> R.string.Selected
             !BackingUtils.isBacked(project, reward) && RewardUtils.isAvailable(project, reward) -> R.string.Select
-            BackingUtils.isBacked(project, reward) && reward.hasAddons() && hasAddOnsSelected && !hasUnavailableAddOn -> R.string.Continue
+            BackingUtils.isBacked(project, reward) && reward.hasAddons() && hasAddOnsSelected -> R.string.Continue
             else -> R.string.No_longer_available
         }
     }

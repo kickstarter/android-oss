@@ -401,8 +401,9 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.rewardSummaryIsGone)
 
             //Base pledge amount
-            val rewardMinimum = country
-                    .map { it.minPledge.toDouble() }
+            val rewardMinimum = reward
+                    .compose<Pair<Reward, Country>>(combineLatestPair(country))
+                    .map { getMinimumPledge(it.first, it.second) }
                     .distinctUntilChanged()
 
             rewardMinimum
@@ -1043,6 +1044,9 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackPledgeSubmitButtonClicked(it.first, it.second) }
         }
+
+        private fun getMinimumPledge(rw: Reward, country: Country) =
+                if (RewardUtils.isNoReward(rw)) country.minPledge.toDouble() else rw.minimum()
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {
             return Observable.just(shippingRules.firstOrNull { it.location().id() == backing.locationId() })

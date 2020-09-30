@@ -310,10 +310,13 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
   @Test
   public void minimumRewardAmountByVariant() {
     final Reward noReward = RewardFactory.noReward();
-    assertEquals(1.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, noReward));
-    assertEquals(10.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_2, noReward));
-    assertEquals(20.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_3, noReward));
-    assertEquals(50.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward));
+    assertEquals(1.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, noReward, 1));
+    assertEquals(10.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_2, noReward, 1));
+    assertEquals(20.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_3, noReward, 1));
+    assertEquals(50.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward, 1));
+    assertEquals(10.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, noReward, 10));
+    assertEquals(100.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward, 100));
+    assertEquals(5.0, RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.VARIANT_4, noReward, 5));
   }
 
   @Test

@@ -324,23 +324,38 @@ interface PledgeFragmentViewModel {
                     .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
                     .ofType(PledgeData::class.java)
 
-            val reward = pledgeData
-                    .map { it.reward() }
-
             val projectData = pledgeData
                     .map { it.projectData() }
 
             val fullProjectDataAndPledgeData = projectData
                     .compose<Pair<ProjectData, PledgeData>>(combineLatestPair(pledgeData))
 
-            reward
-                .map { RewardUtils.rewardAmountByVariant(OptimizelyExperiment.Variant.CONTROL, it) }
-                .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .subscribe(variantSuggestedAmount)
-
             val project = projectData
                     .map { it.project() }
+
+            val country = project
+                    .map { Country.findByCurrencyCode(it.currency()) }
+                    .filter { it != null }
+                    .distinctUntilChanged()
+                    .ofType(Country::class.java)
+
+            val reward = pledgeData
+                    .map { it.reward() }
+
+            val projectDataAndReward = projectData
+                    .compose<Pair<ProjectData, Reward>>(combineLatestPair(reward))
+
+            Observable.combineLatest(projectDataAndReward, this.currentUser.observable(), country) {
+                data, user, c ->
+                    val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
+                    val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
+                    RewardUtils.rewardAmountByVariant(variant, data.second, c.minPledge)
+            }
+                    .distinctUntilChanged()
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        variantSuggestedAmount.onNext(it)
+                    }
 
             val pledgeReason = arguments()
                     .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
@@ -386,8 +401,8 @@ interface PledgeFragmentViewModel {
                     .subscribe(this.rewardSummaryIsGone)
 
             //Base pledge amount
-            val rewardMinimum = reward
-                    .map { it.minimum() }
+            val rewardMinimum = country
+                    .map { it.minPledge.toDouble() }
                     .distinctUntilChanged()
 
             rewardMinimum
@@ -415,12 +430,6 @@ interface PledgeFragmentViewModel {
 
             val additionalAmountOrZero = additionalPledgeAmount
                     .map { max(0.0, it) }
-
-            val country = project
-                    .map { Country.findByCurrencyCode(it.currency()) }
-                    .filter { it != null }
-                    .distinctUntilChanged()
-                    .ofType(Country::class.java)
 
             val stepAmount = country
                     .map { it.minPledge }
@@ -1033,12 +1042,6 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackPledgeSubmitButtonClicked(it.first, it.second) }
-        }
-
-        private fun getMinimumRewardAmount(rewardAndVariant: Pair<Reward, Double>): Double {
-            return if (RewardUtils.isNoReward(rewardAndVariant.first))
-                    rewardAndVariant.second
-                else rewardAndVariant.first.minimum()
         }
 
         private fun backingShippingRule(shippingRules: List<ShippingRule>, backing: Backing): Observable<ShippingRule> {

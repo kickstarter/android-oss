@@ -22,7 +22,7 @@ enum class Country(val countryCode: String, val currencyCode: String, val curren
     NL("NL", "EUR", "€", 1, 8_500, false),
     NO("NO", "NOK", "kr", 5, 80_000, true),
     NZ("NZ", "NZD", "$", 1, 14_000, true),
-    PL("PL", "PLN", "zł", 5, 37_250, true),
+    PL("PL", "PLN", "zł", 5, 37_250, false),
     SE("SE", "SEK", "kr", 5, 85_000, true),
     SI("SI", "EUR", "€", 1, 8_500, false),
     SG("SG", "SGD", "$", 2, 13_000, true),

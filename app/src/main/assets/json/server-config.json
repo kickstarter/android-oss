@@ -16760,7 +16760,7 @@
       "min_pledge": null,
       "currency_code": "PLN",
       "currency_symbol": "zł",
-      "trailing_code": true
+      "trailing_code": false
     },
     {
       "name": "SE",

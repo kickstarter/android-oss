@@ -386,6 +386,9 @@ class BackingAddOnsFragmentViewModel {
 
         private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
+                val update = Pair(it.quantity() ?: 0, it.id())
+                if (update.first > 0)
+                    updateQuantityById(update)
                 return@let it
             }?: graphAddOn
         }

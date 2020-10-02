@@ -625,7 +625,6 @@ interface PledgeFragmentViewModel {
             val additionalAmountOrZero = additionalPledgeAmount
                     .map { max(0.0, it) }
 
-
             val stepAmount = country
                     .map { it.minPledge }
 

@@ -40,6 +40,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
                 CurrencyCode.JPY,
                 CurrencyCode.MXN,
                 CurrencyCode.NOK,
+                CurrencyCode.PLN,
                 CurrencyCode.NZD,
                 CurrencyCode.SEK,
                 CurrencyCode.SGD,
@@ -123,6 +124,7 @@ class AccountActivity : BaseActivity<AccountViewModel.ViewModel>() {
             CurrencyCode.MXN -> getString(R.string.Currency_MXN)
             CurrencyCode.NOK -> getString(R.string.Currency_NOK)
             CurrencyCode.NZD -> getString(R.string.Currency_NZD)
+            CurrencyCode.PLN -> getString(R.string.Currency_PLN)
             CurrencyCode.SEK -> getString(R.string.Currency_SEK)
             CurrencyCode.SGD -> getString(R.string.Currency_SGD)
             CurrencyCode.USD -> getString(R.string.Currency_USD)

@@ -51,7 +51,6 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     private lateinit var rewardSingleShippingLocation: Reward
     private lateinit var rewardWithAddons : Reward
 
-
     @Before
     fun setUpTests() {
         context = context()
@@ -66,7 +65,6 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         rewardWorldWideShipping = RewardFactory.rewardWithShipping()
         rewardSingleShippingLocation = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
         rewardWithAddons = RewardFactory.rewardHasAddOns()
-
     }
 
     @Test

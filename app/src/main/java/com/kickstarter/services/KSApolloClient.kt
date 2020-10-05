@@ -92,8 +92,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                             // TODO: Add new status field to backing model
                             val backing = Checkout.Backing.builder()
-                                    .clientSecret(checkoutPayload?.backing()?.clientSecret())
-                                    .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
+                                    .clientSecret(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.clientSecret())
+                                    .requiresAction(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.requiresAction()?: false)
                                     .build()
 
                             ps.onNext(Checkout.builder()
@@ -476,8 +476,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                             val checkoutPayload = response.data()?.updateBacking()?.checkout()
                             val backing = Checkout.Backing.builder()
-                                    .clientSecret(checkoutPayload?.backing()?.clientSecret())
-                                    .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
+                                    .clientSecret(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.clientSecret())
+                                    .requiresAction(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.requiresAction()?: false)
                                     .build()
 
                             ps.onNext(Checkout.builder()

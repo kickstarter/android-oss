@@ -11,7 +11,7 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.apollographql.apollo.ApolloClient;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -640,7 +640,7 @@ public final class ApplicationModule {
 
     optimizelyManager.initialize(context, null, optimizely -> {
       if (!optimizely.isValid()) {
-        Crashlytics.logException(new Throwable("Optimizely failed to initialize."));
+        FirebaseCrashlytics.getInstance().recordException(new Throwable("Optimizely failed to initialize."));
       } else {
         if (build.isDebug()) {
           Log.d(ApplicationModule.class.getSimpleName(), "🔮 Optimizely successfully initialized.");

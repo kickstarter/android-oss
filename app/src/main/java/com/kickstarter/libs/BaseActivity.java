@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Pair;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -121,7 +121,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     this.back
       .compose(bindUntilEvent(ActivityEvent.STOP))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> goBack(), Crashlytics::logException);
+      .subscribe(__ -> goBack(), FirebaseCrashlytics.getInstance()::recordException);
 
     ConnectivityReceiver.setConnectivityReceiverListener(this);
   }

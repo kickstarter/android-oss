@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.BuildConfig
 import com.kickstarter.libs.utils.ExceptionUtils
 import com.kickstarter.ui.viewholders.KSViewHolder
@@ -101,7 +101,7 @@ abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter
                 ExceptionUtils.rethrowAsRuntimeException(e)
             } else {
                 // TODO: alter the exception message to say we are just reporting it and it's not a real crash.
-                Crashlytics.logException(e)
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
 

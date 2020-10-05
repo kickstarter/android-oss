@@ -3,7 +3,7 @@ package com.kickstarter.services.firebase
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kickstarter.KSApplication
@@ -37,13 +37,13 @@ class UnregisterTokenWorker(@ApplicationContext applicationContext: Context, pri
         if (this.build.isDebug) {
             Timber.d(successMessage)
         }
-        Crashlytics.log(successMessage)
+        FirebaseCrashlytics.getInstance().log(successMessage)
     }
 
     private fun logError(ioException: IOException) {
         if (this.build.isDebug) {
             Timber.e(ioException.localizedMessage)
         }
-        Crashlytics.logException(ioException)
+        FirebaseCrashlytics.getInstance().recordException(ioException)
     }
 }

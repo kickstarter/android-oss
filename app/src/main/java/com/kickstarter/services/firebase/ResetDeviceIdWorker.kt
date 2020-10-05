@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.Build
@@ -38,14 +38,14 @@ class ResetDeviceIdWorker(@ApplicationContext applicationContext: Context, param
         if (this.build.isDebug) {
             Timber.d(successMessage)
         }
-        Crashlytics.log(successMessage)
+        FirebaseCrashlytics.getInstance().log(successMessage)
     }
 
     private fun logError(ioException: IOException) {
         if (this.build.isDebug) {
             Timber.e(ioException.localizedMessage)
         }
-        Crashlytics.logException(ioException)
+        FirebaseCrashlytics.getInstance().recordException(ioException)
     }
 
     companion object {

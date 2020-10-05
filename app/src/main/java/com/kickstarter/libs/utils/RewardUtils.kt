@@ -164,7 +164,11 @@ object RewardUtils {
             Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS -> Pair.create(R.string.Limited_shipping, null)
             Reward.SHIPPING_TYPE_SINGLE_LOCATION -> {
                 val location = reward.shippingSingleLocation()
-                return location?.localizedName()?.let { Pair.create(R.string.location_name_only, it)} ?: Pair.create(R.string.Limited_shipping, "")
+                return if (ObjectUtils.isNotNull(location)) {
+                    Pair.create(R.string.location_name_only, location!!.localizedName())
+                } else {
+                    Pair.create(R.string.Limited_shipping, null)
+                }
             }
             else -> null
         }

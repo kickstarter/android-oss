@@ -219,7 +219,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun issLimitReached_whenLimitSetAndRemainingIsZero_returnTrue() {
+    fun isLimitReached_whenLimitSetAndRemainingIsZero_returnTrue() {
         reward = RewardFactory.reward().toBuilder()
                 .limit(100)
                 .remaining(0)

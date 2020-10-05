@@ -18,7 +18,7 @@ public final class BackingUtils {
 
     final Long rewardId = backing.rewardId();
     if (rewardId == null) {
-      return RewardUtils.isNoReward(reward);
+      return RewardUtils.INSTANCE.isNoReward(reward);
     }
 
     return rewardId == reward.id();
@@ -36,7 +36,7 @@ public final class BackingUtils {
     if (reward == null) {
       return false;
     }
-    return RewardUtils.isShippable(reward);
+    return RewardUtils.INSTANCE.isShippable(reward);
   }
 
   public static @Nullable Reward backedReward(final @NonNull Project project) {

@@ -81,7 +81,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownDetailWithDaysLeft() {
+    fun deadlineCountdownDetail_whenDaysLeft_returnsDayToGoString() {
         currentDate.addDays(31)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -90,7 +90,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownDetailWithHoursLeft() {
+    fun deadlineCountdownDetail_whenHoursLeft_returnsHoursToGoString() {
         currentDate.addHours(3)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -99,7 +99,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownDetailWithSecondsLeft() {
+    fun deadlineCountdownDetail_whenSecondsLeft_returnsSecondsToGoString() {
         currentDate.addSeconds(3)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -108,7 +108,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownUnitWithDaysLeft() {
+    fun deadlineCountdownUnit_whenDaysLeft_returnsDays() {
         currentDate.addDays(31)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -117,7 +117,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownUnitWithHoursLeft() {
+    fun deadlineCountdownUnit_whenHoursLeft_returnsHours() {
         currentDate.addHours(3)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -126,7 +126,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownUnitWithMinutesLeft() {
+    fun deadlineCountdownUnit_whenMinutesLeft_returnsMinutes() {
         currentDate.addMinutes(3)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -135,7 +135,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownUnitWithSecondsLeft() {
+    fun deadlineCountdownUnit_whenSecondsLeft_returnsSecs() {
         currentDate.addSeconds(30)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -144,7 +144,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownValueWithMinutesLeft() {
+    fun deadlineCountdownValue_whenMinutesLeft_returnsNumberOfMinutes() {
         currentDate.addSeconds(300)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -153,7 +153,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownValueWithHoursLeft() {
+    fun deadlineCountdownValue_whenHoursLeft_returnsNumberOfHours() {
         currentDate.addSeconds(3600)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -162,7 +162,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownValueWithDaysLeft() {
+    fun deadlineCountdownValue_whenDaysLeft_returnsNumberOfDays() {
         currentDate.addSeconds(86400)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -171,7 +171,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testDeadlineCountdownValueWithSecondsLeft() {
+    fun deadlineCountdownValue_whenSecondsLeft_returnsNumberOfSeconds() {
         currentDate.addSeconds(30)
         reward = RewardFactory.reward().toBuilder()
                 .endsAt(currentDate.toDateTime())
@@ -186,32 +186,41 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testIsLimited() {
+    fun isLimited_whenRemainingGreaterThanZeroAndLimitNotNull_returnsTrue() {
         reward = RewardFactory.reward().toBuilder()
                 .remaining(5)
                 .limit(10)
                 .build()
         assertTrue(isLimited(reward))
-        reward = RewardFactory.reward().toBuilder()
-                .remaining(0)
-                .limit(10)
-                .build()
-        assertFalse(isLimited(reward))
-        reward = RewardFactory.reward().toBuilder()
-                .remaining(null)
-                .limit(null)
-                .build()
-        assertFalse(isLimited(reward))
     }
+
+        @Test
+        fun isLimited_whenRemainingZeroAndLimitNotNull_returnFalse() {
+            reward = RewardFactory.reward().toBuilder()
+                    .remaining(0)
+                    .limit(10)
+                    .build()
+            assertFalse(isLimited(reward))
+        }
+
+        @Test
+        fun isLimited_whenLimitAndRemainingNull_returnFalse() {
+            reward = RewardFactory.reward().toBuilder()
+                    .remaining(null)
+                    .limit(null)
+                    .build()
+            assertFalse(isLimited(reward))
+        }
 
     @Test
     fun testIsItemized() {
         assertFalse(isItemized(reward))
         assertTrue(isItemized(RewardFactory.itemized()))
+        assertTrue(isItemized(RewardFactory.itemizedAddOn()))
     }
 
     @Test
-    fun testIsLimitReachedWhenLimitSetAndRemainingIsZero() {
+    fun issLimitReached_whenLimitSetAndRemainingIsZero_returnTrue() {
         reward = RewardFactory.reward().toBuilder()
                 .limit(100)
                 .remaining(0)
@@ -220,7 +229,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testIsLimitNotReachedWhenLimitSetButRemainingIsNull() {
+    fun isLimitReached_whenLimitSetButRemainingIsNull_returnFalse() {
         reward = RewardFactory.reward().toBuilder()
                 .limit(100)
                 .build()
@@ -228,7 +237,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testIsLimitReachedWhenRemainingIsGreaterThanZero() {
+    fun isLimitReached_whenRemainingIsGreaterThanZero_returnFalse() {
         reward = RewardFactory.reward().toBuilder()
                 .limit(100)
                 .remaining(50)
@@ -268,13 +277,17 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testIsExpired() {
+    fun isExpired_whenEndsAtPastDate_returnsTrue() {
         assertFalse(isExpired(reward))
         reward = RewardFactory.reward()
                 .toBuilder()
                 .endsAt(DateTime.now().minusDays(2))
                 .build()
         assertTrue(isExpired(reward))
+    }
+
+    @Test
+    fun isExpired_whenEndsAtFutureDate_returnsFalse() {
         reward = RewardFactory.reward()
                 .toBuilder()
                 .endsAt(DateTime.now().plusDays(2))

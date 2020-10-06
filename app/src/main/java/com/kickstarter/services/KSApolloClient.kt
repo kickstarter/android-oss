@@ -696,7 +696,7 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
 
 /**
  * Transform the Reward GraphQL data structure into our own Reward data model
- * @param fragment.reward
+ * @param fragment.reward rewardGr
  * @return Reward
  */
 private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
@@ -708,6 +708,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
     val limit = chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     val remaining = rewardGr.remainingQuantity()
     val endsAt = rewardGr.endsAt()?.let { DateTime(it) } ?: null
+    val startsAt = rewardGr.startsAt()?.let { DateTime(it) } ?: null
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
     val available = rewardGr.available()
 
@@ -733,6 +734,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
             .limit(limit)
             .remaining(remaining)
             .endsAt(endsAt)
+            .startsAt(startsAt)
             .description(desc)
             .estimatedDeliveryOn(estimatedDelivery)
             .isAddOn(true)

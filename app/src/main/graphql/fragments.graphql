@@ -81,6 +81,7 @@ fragment reward on Reward {
     remainingQuantity
     limit
     limitPerBacker
+    startsAt
     endsAt
 }
 

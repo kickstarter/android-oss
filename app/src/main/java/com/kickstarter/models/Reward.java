@@ -37,6 +37,7 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable List<RewardsItem> addOnsItems();
   public abstract @Nullable Integer quantity();
   public abstract @Nullable boolean hasAddons();
+  public abstract @Nullable DateTime startsAt();
 
   /**
    * This field will be available just for GraphQL, in V1 it would be null
@@ -64,6 +65,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder convertedMinimum(double __);
     public abstract Builder description(String __);
     public abstract Builder endsAt(DateTime __);
+    public abstract Builder startsAt(DateTime __);
     public abstract Builder id(long __);
     public abstract Builder limit(Integer __);
     public abstract Builder minimum(double __);

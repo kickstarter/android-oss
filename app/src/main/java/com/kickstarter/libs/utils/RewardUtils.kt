@@ -17,20 +17,14 @@ object RewardUtils {
     /**
      * Returns `true` if the reward has backers, `false` otherwise.
      */
-    fun hasBackers(reward: Reward): Boolean {
-        return IntegerUtils.isNonZero(reward.backersCount())
-    }
+    fun hasBackers(reward: Reward) = IntegerUtils.isNonZero(reward.backersCount())
 
-    fun isAvailable(project: Project, reward: Reward): Boolean {
-        return project.isLive && !isLimitReached(reward) && !isExpired(reward)
-    }
+    fun isAvailable(project: Project, reward: Reward) = project.isLive && !isLimitReached(reward) && !isExpired(reward)
 
     /**
      * Returns `true` if the reward has expired.
      */
-    fun isExpired(reward: Reward): Boolean {
-        return isTimeLimited(reward) && reward.endsAt()!!.isBeforeNow
-    }
+    fun isExpired(reward: Reward) = isTimeLimited(reward) && reward.endsAt()?.let {it.isBeforeNow} ?: false
 
     /**
      * Returns `true` if the reward has items, `false` otherwise.
@@ -43,9 +37,7 @@ object RewardUtils {
     /**
      * Returns `true` if the reward has a limit set, and the limit has not been reached, `false` otherwise.
      */
-    fun isLimited(reward: Reward): Boolean {
-        return reward.limit() != null && !isLimitReached(reward)
-    }
+    fun isLimited(reward: Reward) = reward.limit() != null && !isLimitReached(reward)
 
     /**
      * Returns `true` if the reward's limit has been reached, `false` otherwise.
@@ -59,16 +51,12 @@ object RewardUtils {
      * Returns `true` if the reward is considered the 'non-reward' option, i.e. the reward is the option
      * backers select when they want to pledge to a project without selecting a particular reward.
      */
-    fun isNoReward(reward: Reward): Boolean {
-        return reward.id() == 0L
-    }
+    fun isNoReward(reward: Reward) = reward.id() == 0L
 
     /**
      * Returns `true` if the reward is a specific reward for a project, i.e. it is not the 'no-reward' option.
      */
-    fun isReward(reward: Reward): Boolean {
-        return !isNoReward(reward)
-    }
+    fun isReward(reward: Reward) = !isNoReward(reward)
 
     /**
      * Returns `true` if the reward has shipping enabled, `false` otherwise.
@@ -97,18 +85,17 @@ object RewardUtils {
      */
     fun isTimeLimited(reward: Reward): Boolean {
 //         TODO: 2019-06-14 remove epoch check after Garrow fixes `current` bug in backend
-        return reward.endsAt() != null && !DateTimeUtils.isEpoch(reward.endsAt()!!)
+        return reward.endsAt() != null && reward.endsAt()?.let {!DateTimeUtils.isEpoch(it)} ?: false
     }
 
     /**
      * Returns unit of time remaining in a readable string, e.g. `days to go`, `hours to go`.
      */
-    fun deadlineCountdownDetail(reward: Reward, context: Context,
-                                ksString: KSString): String {
-        return ksString.format(context.getString(R.string.discovery_baseball_card_time_left_to_go),
-                "time_left", deadlineCountdownUnit(reward, context)
-        )
-    }
+    fun deadlineCountdownDetail(reward: Reward, context: Context, ksString: KSString) =
+            ksString.format(
+                    context.getString(R.string.discovery_baseball_card_time_left_to_go),
+                    "time_left", deadlineCountdownUnit(reward, context)
+            )
 
     /**
      * Returns the most appropriate unit for the time remaining until the reward
@@ -146,11 +133,7 @@ object RewardUtils {
             Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS -> Pair.create(R.string.Limited_shipping, null)
             Reward.SHIPPING_TYPE_SINGLE_LOCATION -> {
                 val location = reward.shippingSingleLocation()
-                return if (ObjectUtils.isNotNull(location)) {
-                    Pair.create(R.string.location_name_only, location!!.localizedName())
-                } else {
-                    Pair.create(R.string.Limited_shipping, null)
-                }
+                return Pair.create(R.string.location_name_only, location?.localizedName().let { it } ?: "")
             }
             else -> null
         }
@@ -161,10 +144,7 @@ object RewardUtils {
      * reward has already finished.
      */
     //TODO
-    fun timeInSecondsUntilDeadline(reward: Reward): Long {
-        return max(0L,
-                Duration(DateTime(), reward.endsAt()).standardSeconds)
-    }
+    fun timeInSecondsUntilDeadline(reward: Reward) = max(0L, Duration(DateTime(), reward.endsAt()).standardSeconds)
 
     /**
      * Returns time remaining until reward reaches deadline in either seconds,

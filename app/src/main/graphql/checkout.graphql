@@ -3,9 +3,7 @@ mutation CreateBacking($projectId: ID!, $amount: String!, $paymentType: String!,
     checkout {
       id
       backing {
-        clientSecret
-        requiresAction
-        status
+        ... checkoutBacking
       }
     }
   }
@@ -24,9 +22,7 @@ mutation UpdateBacking($backingId: ID!, $amount: String, $locationId: String,$re
     checkout {
       id
       backing {
-        clientSecret
-        requiresAction
-        status
+        ... checkoutBacking
       }
     }
   }

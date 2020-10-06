@@ -34,7 +34,9 @@ fragment backing on Backing {
             ... reward
         }
     }
+}
 
+fragment checkoutBacking on Backing {
     clientSecret
     requiresAction
     status

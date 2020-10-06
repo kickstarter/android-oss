@@ -411,11 +411,13 @@ interface RewardViewHolderViewModel {
         */
         private fun shouldContinueFlow(project: Project, rw: Reward):Boolean {
             val hasAddOns = rw.hasAddons()
+            val backedRwId = project.backing()?.rewardId()
+            val selectingOtherRw = backedRwId != rw.id()
 
             return when {
-                isSelectable(project, rw) && !hasAddOns -> true
-                hasAddOns && !hasBackedAddOns(project) && RewardUtils.isAvailable(project, rw) -> true
-                hasAddOns && hasBackedAddOns(project) -> true
+                !hasAddOns && isSelectable(project, rw) -> true
+                hasAddOns && selectingOtherRw && RewardUtils.isAvailable(project, rw) -> true
+                hasAddOns && hasBackedAddOns(project) && !selectingOtherRw && project.isLive -> true
                 else -> false
             }
         }

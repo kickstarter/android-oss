@@ -12,6 +12,12 @@ class RewardViewUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeButtonText() {
+
+        // - Selected reward with addOns if choosing same reward always available unless project ended
+        val project = ProjectFactory.backedProjectWithRewardAndAddOnsLimitReached()
+        val rw = project.backing()?.reward() ?: RewardFactory.noReward()
+        assertEquals(R.string.Continue, RewardViewUtils.pledgeButtonText(project, rw))
+
         assertEquals(R.string.Select, RewardViewUtils.pledgeButtonText(ProjectFactory.project(), RewardFactory.reward()))
         assertEquals(R.string.No_longer_available, RewardViewUtils.pledgeButtonText(ProjectFactory.project(), RewardFactory.ended()))
         assertEquals(R.string.No_longer_available, RewardViewUtils.pledgeButtonText(ProjectFactory.project(), RewardFactory.limitReached()))

@@ -144,7 +144,11 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     fun increaseStepperDisable_WhenLimitPerRewardReached() {
         setupEnvironment(environment())
 
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).remaining(3).rewardsItems(emptyList()).build()
+        val addOn = RewardFactory.reward().toBuilder()
+                .isAddOn(true)
+                .isAvailable(true)
+                .remaining(3)
+                .rewardsItems(emptyList()).build()
 
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
@@ -159,10 +163,33 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun increaseStepperDisable_WhenAddOnUnavailable() {
+        setupEnvironment(environment())
+
+        val addOn = RewardFactory.reward().toBuilder()
+                .isAddOn(true)
+                .isAvailable(false)
+                .remaining(3)
+                .quantity(2)
+                .rewardsItems(emptyList()).build()
+
+        val shippingRule = ShippingRuleFactory.usShippingRule()
+        this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
+
+        this.quantityPerId.assertValue(Pair(2, addOn.id()))
+
+        this.disableIncreaseButton.assertValues(true)
+    }
+
+    @Test
     fun increaseStepperDisable_WhenLimitPerBackingReached() {
         setupEnvironment(environment())
 
-        val addOn = RewardFactory.reward().toBuilder().isAddOn(true).limit(10).rewardsItems(emptyList()).build()
+        val addOn = RewardFactory.reward().toBuilder()
+                .isAvailable(true)
+                .isAddOn(true)
+                .limit(10)
+                .rewardsItems(emptyList()).build()
 
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))

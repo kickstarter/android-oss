@@ -28,14 +28,31 @@ public final class RewardUtils {
   }
 
   public static boolean isAvailable(final @NonNull Project project, final @NonNull Reward reward) {
-    return project.isLive() && !RewardUtils.isLimitReached(reward) && !RewardUtils.isExpired(reward);
+    return project.isLive() && !RewardUtils.isLimitReached(reward) && !RewardUtils.isExpired(reward) && hasStarted(reward);
   }
 
   /**
    * Returns `true` if the reward has expired.
    */
   public static boolean isExpired(final @NonNull Reward reward) {
-    return isTimeLimited(reward) && reward.endsAt().isBeforeNow();
+    return isTimeLimitedEnd(reward) && reward.endsAt().isBeforeNow();
+  }
+
+  /**
+   * Returns `true` if the reward has started or not limited by starting time
+   * - > @return true if reward.startsAt == null
+   * - > @return false if reward.startAt < now
+   * - > @return true if reward.startAt >= now
+   */
+  public static boolean hasStarted(final @NonNull Reward reward) {
+    return isTimeLimitedStart(reward) ? (!reward.startsAt().isAfterNow() || reward.startsAt().isEqualNow()) : true;
+  }
+
+  /**
+   * Returns `true` if the reward has a valid expiration date on Starting date.
+   */
+  public static boolean isTimeLimitedStart(final @NonNull Reward reward) {
+    return reward.startsAt() != null && !DateTimeUtils.isEpoch(reward.startsAt());
   }
 
   /**
@@ -104,9 +121,9 @@ public final class RewardUtils {
   }
 
   /**
-   * Returns `true` if the reward has a valid expiration date.
+   * Returns `true` if the reward has a valid expiration date on Ending date.
    */
-  public static boolean isTimeLimited(final @NonNull Reward reward) {
+  public static boolean isTimeLimitedEnd(final @NonNull Reward reward) {
     // TODO: 2019-06-14 remove epoch check after Garrow fixes `current` bug in backend
     return reward.endsAt() != null && !DateTimeUtils.isEpoch(reward.endsAt());
   }

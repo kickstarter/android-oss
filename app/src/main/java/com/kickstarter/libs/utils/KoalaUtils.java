@@ -160,7 +160,7 @@ public final class KoalaUtils {
         put("estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
         put("has_items", RewardUtils.isItemized(reward));
         put("id", reward.id());
-        put("is_limited_time", RewardUtils.isTimeLimited(reward));
+        put("is_limited_time", RewardUtils.isTimeLimitedEnd(reward));
         put("is_limited_quantity", reward.limit() != null);
         put("minimum", reward.minimum());
         put("shipping_enabled", RewardUtils.isShippable(reward));

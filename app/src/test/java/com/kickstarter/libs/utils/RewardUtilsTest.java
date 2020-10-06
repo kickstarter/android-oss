@@ -10,6 +10,7 @@ import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
 import org.joda.time.DateTime;
@@ -267,8 +268,8 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void isTimeLimited() {
-    assertFalse(RewardUtils.isTimeLimited(RewardFactory.reward()));
-    assertTrue(RewardUtils.isTimeLimited(RewardFactory.endingSoon()));
+    assertFalse(RewardUtils.isTimeLimitedEnd(RewardFactory.reward()));
+    assertTrue(RewardUtils.isTimeLimitedEnd(RewardFactory.endingSoon()));
   }
 
   @Test
@@ -305,6 +306,32 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
 
     final Reward rewardWithWorldWideShipping = RewardFactory.rewardWithShipping();
     assertEquals(Pair.create(R.string.Ships_worldwide, null), RewardUtils.shippingSummary(rewardWithWorldWideShipping));
+  }
+
+  @Test
+  public void testRewardTimeLimitedStartIsAvailable() {
+    final Project isLiveProject = ProjectFactory.project();
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now()).build();
+    assertEquals(true, RewardUtils.hasStarted(rewardLimitedByStart));
+    assertEquals(true, RewardUtils.isAvailable(isLiveProject, rewardLimitedByStart));
+  }
+
+  @Test
+  public void testRewardNotTimeLimitedStartIsAvailable() {
+    final Project isLiveProject = ProjectFactory.project();
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns().toBuilder().build();
+    assertEquals(false, RewardUtils.isTimeLimitedStart(rewardLimitedByStart));
+    assertEquals(true, RewardUtils.hasStarted(rewardLimitedByStart));
+    assertEquals(true, RewardUtils.isAvailable(isLiveProject, rewardLimitedByStart));
+  }
+
+  @Test
+  public void testRewardTimeLimitedStartInFutureUnavailable() {
+    final Project isLiveProject = ProjectFactory.project();
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now().plusDays(1)).build();
+    assertEquals(true, RewardUtils.isTimeLimitedStart(rewardLimitedByStart));
+    assertEquals(false, RewardUtils.hasStarted(rewardLimitedByStart));
+    assertEquals(false, RewardUtils.isAvailable(isLiveProject, rewardLimitedByStart));
   }
 
   @Test

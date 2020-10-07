@@ -50,6 +50,17 @@ public final class RewardUtils {
   }
 
   /**
+   * Returns `true` if the reward is in a valid time range
+   * @return  true if the reward is just limited one one end and that time validation is true
+   * @return  false if the reward is just limited one one end and that time validation is false
+   * @return  true if the reward is limited at both ends and validation is correct
+   * @return  false if the reward is limited at both ends and validation is false
+   */
+  public static boolean isValidTimeRange(final  @NonNull Reward reward) {
+    return RewardUtils.hasStarted(reward) && !RewardUtils.isExpired(reward);
+  }
+
+  /**
    * Returns `true` if the reward has a valid expiration date on Starting date.
    */
   public static boolean isTimeLimitedStart(final @NonNull Reward reward) {

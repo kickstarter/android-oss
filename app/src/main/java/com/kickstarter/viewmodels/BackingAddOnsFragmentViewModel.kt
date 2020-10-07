@@ -244,8 +244,8 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .subscribe(addOnsFromGraph)
 
-            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,
-                                                                                                                                                  _ ->
+            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) {
+                list, pData, rule, rw, _ ->
                 return@combineLatest filterByLocationAndUpdateQuantity(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
@@ -430,20 +430,12 @@ class BackingAddOnsFragmentViewModel {
                 }
             }
 
-            val updatedQuantity = updateQuantityIfCurrentlySelected(filteredAddOns)
+            val updatedQuantity = filteredAddOns.map {
+                val amount = this.currentSelection[it.id()] ?: -1
+                return@map if (amount == -1) it else it.toBuilder().quantity(amount).build()
+            }
 
-            val filteredStaredAddOns = updatedQuantity.filter { RewardUtils.isValidTimeRange(it) }
-
-            return Triple(pData, filteredStaredAddOns, rule)
-        }
-
-        /**
-         *  In case the addOn item is currently selected, or previously backed,
-         *  @retrun List<Reward> the list with each item quantity updated
-         */
-        private fun updateQuantityIfCurrentlySelected(filteredAddOns: List<Reward>) = filteredAddOns.map {
-            val amount = this.currentSelection[it.id()] ?: -1
-            return@map if (amount == -1) it else it.toBuilder().quantity(amount).build()
+            return Triple(pData, updatedQuantity, rule)
         }
 
         private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {

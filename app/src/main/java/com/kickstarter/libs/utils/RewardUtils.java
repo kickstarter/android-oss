@@ -28,7 +28,7 @@ public final class RewardUtils {
   }
 
   public static boolean isAvailable(final @NonNull Project project, final @NonNull Reward reward) {
-    return project.isLive() && !RewardUtils.isLimitReached(reward) && !RewardUtils.isExpired(reward) && hasStarted(reward);
+    return project.isLive() && !RewardUtils.isLimitReached(reward) && !RewardUtils.isExpired(reward);
   }
 
   /**
@@ -39,7 +39,8 @@ public final class RewardUtils {
   }
 
   /**
-   * Returns `true` if the reward has started or not limited by starting time
+   * Returns `true` if the reward has started or not limited by starting time.
+   * A reward not limited os starting time should be considered as a reward that has started.
    * - > @return true if reward.startsAt == null
    * - > @return false if reward.startAt < now
    * - > @return true if reward.startAt >= now

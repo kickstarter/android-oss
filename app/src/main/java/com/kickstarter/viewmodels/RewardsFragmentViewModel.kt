@@ -7,6 +7,7 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -71,10 +72,11 @@ class RewardsFragmentViewModel {
         init {
 
             this.projectDataInput
+                    .map { filterOutNotStartedRewards(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.projectData)
 
-            val project = this.projectDataInput
+            val project = this.projectData
                     .map { it.project() }
             
             project
@@ -169,6 +171,14 @@ class RewardsFragmentViewModel {
                             this.showAddOnsFragment.onNext(it)
                         else this.showPledgeFragment.onNext(it)
                     }
+        }
+
+        private fun filterOutNotStartedRewards(pData: ProjectData): ProjectData {
+            val rewards = pData.project().rewards()?.filter { RewardUtils.hasStarted(it) }
+            val modifiedProject = pData.project().toBuilder().rewards(rewards).build()
+            return pData.toBuilder()
+                    .project(modifiedProject)
+                    .build()
         }
 
         private fun getReward(backingObj: Backing): Reward {

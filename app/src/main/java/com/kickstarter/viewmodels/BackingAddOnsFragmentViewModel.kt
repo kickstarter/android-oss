@@ -147,6 +147,7 @@ class BackingAddOnsFragmentViewModel {
                         this.currentSelection.clear()
                     }
 
+            // - If changing rewards do not emmit the backing information
             val filteredBackingReward = backingReward
                     .compose<Pair<Reward, Boolean>>(combineLatestPair(isSameReward))
                     .filter { it.second }
@@ -159,7 +160,11 @@ class BackingAddOnsFragmentViewModel {
             projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
+            // - If changing rewards do not emmit the backing information
             val backingShippingRule = backing
+                    .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
+                    .filter { it.second }
+                    .map { it.first }
                     .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
                     .map {
                         it.second.first { rule ->

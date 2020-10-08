@@ -75,8 +75,10 @@ fragment reward on Reward {
         ... amount
     }
     shippingPreference
-    shippingRules {
-        ... shippingRule
+    shippingRulesExpanded {
+        nodes {
+            ... shippingRule
+        }
     }
     remainingQuantity
     limit

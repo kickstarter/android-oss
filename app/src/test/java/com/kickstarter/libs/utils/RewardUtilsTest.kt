@@ -34,19 +34,10 @@ import java.util.Date
 
 class RewardUtilsTest : KSRobolectricTestCase() {
 
-    private val DAYS_TO_GO = "days to go"
-    private val HOURS_TO_GO = "hours to go"
-    private val SECS_TO_GO = "secs to go"
-    private val DAYS = "days"
-    private val HOURS = "hours"
-    private val MINS = "mins"
-    private val SECS = "secs"
-    private val COUNTRY_NIGERIA = "Nigeria"
-
-    private lateinit var context : Context
-    private lateinit var ksString : KSString
-    private lateinit var date : Date
-    private lateinit var currentDate : MutableDateTime
+    private lateinit var context: Context
+    private lateinit var ksString: KSString
+    private lateinit var date: Date
+    private lateinit var currentDate: MutableDateTime
     private lateinit var reward: Reward
     private lateinit var noReward: Reward
     private lateinit var rewardEnded: Reward
@@ -194,23 +185,23 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         assertTrue(isLimited(reward))
     }
 
-        @Test
-        fun isLimited_whenRemainingZeroAndLimitNotNull_returnFalse() {
-            reward = RewardFactory.reward().toBuilder()
-                    .remaining(0)
-                    .limit(10)
-                    .build()
-            assertFalse(isLimited(reward))
-        }
+    @Test
+    fun isLimited_whenRemainingZeroAndLimitNotNull_returnFalse() {
+        reward = RewardFactory.reward().toBuilder()
+                .remaining(0)
+                .limit(10)
+                .build()
+        assertFalse(isLimited(reward))
+    }
 
-        @Test
-        fun isLimited_whenLimitAndRemainingNull_returnFalse() {
-            reward = RewardFactory.reward().toBuilder()
-                    .remaining(null)
-                    .limit(null)
-                    .build()
-            assertFalse(isLimited(reward))
-        }
+    @Test
+    fun isLimited_whenLimitAndRemainingNull_returnFalse() {
+        reward = RewardFactory.reward().toBuilder()
+                .remaining(null)
+                .limit(null)
+                .build()
+        assertFalse(isLimited(reward))
+    }
 
     @Test
     fun testIsItemized() {
@@ -308,7 +299,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
                 .build()
         assertNull(shippingSummary(rewardWithNullShipping))
         assertNull(shippingSummary(reward))
-        assertEquals(Pair.create(R.string.Limited_shipping, ""),  shippingSummary(rewardWithNullLocation))
+        assertEquals(Pair.create(R.string.Limited_shipping, ""), shippingSummary(rewardWithNullLocation))
         assertEquals(Pair.create<Int, Any?>(R.string.Limited_shipping, null), shippingSummary(rewardMultipleShippingLocation))
         assertEquals(Pair.create(R.string.location_name_only, COUNTRY_NIGERIA), shippingSummary(rewardSingleShippingLocation))
         assertEquals(Pair.create<Int, Any?>(R.string.Ships_worldwide, null), shippingSummary(rewardWorldWideShipping))
@@ -330,5 +321,16 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         reward = RewardFactory.reward().toBuilder().endsAt(currentDate.toDateTime()).build()
         val timeInSecondsUntilDeadline = timeInSecondsUntilDeadline(reward)
         assertEquals(timeInSecondsUntilDeadline, 120)
+    }
+
+    companion object {
+        private val DAYS_TO_GO = "days to go"
+        private val HOURS_TO_GO = "hours to go"
+        private val SECS_TO_GO = "secs to go"
+        private val DAYS = "days"
+        private val HOURS = "hours"
+        private val MINS = "mins"
+        private val SECS = "secs"
+        private val COUNTRY_NIGERIA = "Nigeria"
     }
 }

@@ -723,9 +723,9 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
         rewardItemsTransformer(it)
     }
 
-    val shippingRules = rewardGr.shippingRules().map {
+    val shippingRules = rewardGr.shippingRulesExpanded()?.nodes()?.map {
         shippingRuleTransformer(it.fragments().shippingRule())
-    }.toList()
+    }?.toList()
 
     return Reward.builder()
             .title(title)

@@ -324,13 +324,13 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     }
 
     companion object {
-        private val DAYS_TO_GO = "days to go"
-        private val HOURS_TO_GO = "hours to go"
-        private val SECS_TO_GO = "secs to go"
-        private val DAYS = "days"
-        private val HOURS = "hours"
-        private val MINS = "mins"
-        private val SECS = "secs"
-        private val COUNTRY_NIGERIA = "Nigeria"
+        private const val DAYS_TO_GO = "days to go"
+        private const val HOURS_TO_GO = "hours to go"
+        private const val SECS_TO_GO = "secs to go"
+        private const val DAYS = "days"
+        private const val HOURS = "hours"
+        private const val MINS = "mins"
+        private const val SECS = "secs"
+        private const val COUNTRY_NIGERIA = "Nigeria"
     }
 }

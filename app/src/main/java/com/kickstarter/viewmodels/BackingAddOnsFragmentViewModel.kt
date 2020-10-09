@@ -159,7 +159,11 @@ class BackingAddOnsFragmentViewModel {
             projectAndReward = project
                     .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
+            // - If changing rewards do not emmit the backing information
             val backingShippingRule = backing
+                    .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
+                    .filter { it.second }
+                    .map { it.first }
                     .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
                     .map {
                         it.second.first { rule ->
@@ -210,7 +214,8 @@ class BackingAddOnsFragmentViewModel {
 
             shippingRules
                     .filter { it.isNotEmpty() }
-                    .compose<Pair<List<ShippingRule>, PledgeReason>>(combineLatestPair(pledgeReason))
+                    .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
+                    .filter { !isDigital(it.second) && isShippable(it.second) }
                     .switchMap { defaultShippingRule(it.first) }
                     .subscribe(this.shippingRuleSelected)
 

@@ -8,6 +8,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.RewardUtils.isDigital
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.mock.factories.ShippingRuleFactory
@@ -199,7 +200,7 @@ class BackingAddOnsFragmentViewModel {
                     .distinctUntilChanged()
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
-                    .map { filterOutUnAvailableExceptIfBacked(it) }
+                    .map { filterOutUnAvailableOrEndedExceptIfBacked(it) }
                     .distinctUntilChanged()
 
             shippingRules
@@ -243,8 +244,8 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .subscribe(addOnsFromGraph)
 
-            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) { list, pData, rule, rw,
-                                                                                                                                                  _ ->
+            val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward, this.totalSelectedAddOns) {
+                list, pData, rule, rw, _ ->
                 return@combineLatest filterByLocationAndUpdateQuantity(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
@@ -269,6 +270,7 @@ class BackingAddOnsFragmentViewModel {
                         updateQuantityById(it.first)
                         this.totalSelectedAddOns.onNext(calculateTotal(it.second.second))
                     }
+
             // - .startWith(Pair(-1,-1L) because we need to trigger this validation everytime the AddOns selection changes
             // - .startWith(ShippingRuleFactory.emptyShippingRule()) because we need to trigger this validation every time the AddOns selection changes for digital rewards as well
             val isButtonEnabled = Observable.combineLatest(
@@ -320,19 +322,19 @@ class BackingAddOnsFragmentViewModel {
         }
 
         /**
-         *  In case selecting the same reward, if any of the addOns is unavailable
-         *  but has been backed do not filter out that addOn and allow to modify the
-         *  selection.
+         *  In case selecting the same reward, if any of the addOns is unavailable or
+         *  has an invalid time range but has been backed do NOT filter out that addOn
+         *  and allow to modify the selection.
          *
-         *  In case selecting another reward, filter out the unavailable ones
+         *  In case selecting another reward or new pledge, filter out the unavailable/invalid time range ones
          *
          *  @param combinedList -> combinedList of Graph addOns and backed ones
-         *  @return List<Reward> -> filtered list depending on availability and if
-         *  the addOns was backed
+         *  @return List<Reward> -> filtered list depending on availability and time range if new pledge
+         *  @return List<Reward> -> not filtered if the addOn item was previously backed
          */
-        private fun filterOutUnAvailableExceptIfBacked(combinedList: List<Reward>): List<Reward> {
-            return combinedList.filter {
-                addOn ->  addOn.quantity()?.let { it > 0 } ?: addOn.isAvailable
+        private fun filterOutUnAvailableOrEndedExceptIfBacked(combinedList: List<Reward>): List<Reward> {
+            return combinedList.filter { addOn ->
+                addOn.quantity()?.let { it > 0 } ?: (addOn.isAvailable && RewardUtils.isValidTimeRange(addOn))
             }
         }
 
@@ -428,11 +430,10 @@ class BackingAddOnsFragmentViewModel {
                 }
             }
 
-            val updatedQuantity = filteredAddOns
-                    .map {
-                        val amount = this.currentSelection[it.id()] ?: -1
-                        return@map if (amount == -1) it else it.toBuilder().quantity(amount).build()
-                    }
+            val updatedQuantity = filteredAddOns.map {
+                val amount = this.currentSelection[it.id()] ?: -1
+                return@map if (amount == -1) it else it.toBuilder().quantity(amount).build()
+            }
 
             return Triple(pData, updatedQuantity, rule)
         }

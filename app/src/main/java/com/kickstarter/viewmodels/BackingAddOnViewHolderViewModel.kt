@@ -255,15 +255,17 @@ class BackingAddOnViewHolderViewModel {
         }
 
         /**
-         * If the addOns is available check maxLimit will be hitting either the limit or the remaining
-         * if the addOns is not available, maxLimit will be the current selected quantity for that addOn
+         * If the addOns is available and within a valid time range
+         * maxLimit will be hitting either the limit or the remaining
+         * if the addOns is not available, maxLimit will be the current selected quantity
          * allowing the user to modify the already backed amount just to decrease it.
+         *
          * @param Pair(selectedQuantity, addOn)
-         * @return true -> limit for that addOn reached
+         * @return true -> limit for that addOn reached and addOns is in valid timeRange
          *         false -> still available to choose more
          */
         private fun maxLimitReached(qPerAddOn: Pair<Int, Reward>): Boolean =
-                if (qPerAddOn.second.isAvailable)
+                if (qPerAddOn.second.isAvailable && RewardUtils.isValidTimeRange(qPerAddOn.second))
                     (qPerAddOn.second.remaining()?.let { qPerAddOn.first == it } ?: false) ||
                             (qPerAddOn.first == qPerAddOn.second.limit())
                 else qPerAddOn.first == qPerAddOn.second.quantity()

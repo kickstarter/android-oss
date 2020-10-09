@@ -417,10 +417,13 @@ interface RewardViewHolderViewModel {
             return when {
                 !hasAddOns && isSelectable(project, rw) -> true
                 hasAddOns && selectingOtherRw && RewardUtils.isAvailable(project, rw) -> true
-                hasAddOns && hasBackedAddOns(project) && !selectingOtherRw && project.isLive -> true
+                isUpdatingSameRewardWithBackedAddOns(hasAddOns, project, selectingOtherRw, rw) -> true
                 else -> false
             }
         }
+
+        private fun isUpdatingSameRewardWithBackedAddOns(hasAddOns: Boolean, project: Project, selectingOtherRw: Boolean, rw: Reward) =
+                hasAddOns && hasBackedAddOns(project) && !selectingOtherRw && RewardUtils.hasStarted(rw) && project.isLive
 
         private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {
                 OptimizelyExperiment.Variant.CONTROL -> 1
@@ -460,7 +463,7 @@ interface RewardViewHolderViewModel {
         private fun expirationDateIsGone(project: Project, reward: Reward): Boolean {
             return when {
                 !project.isLive -> true
-                RewardUtils.isTimeLimited(reward) -> RewardUtils.isExpired(reward)
+                RewardUtils.isTimeLimitedEnd(reward) -> RewardUtils.isExpired(reward)
                 else -> true
             }
         }

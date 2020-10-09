@@ -9,10 +9,12 @@ import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -166,6 +168,29 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(project))
                 .build(), PledgeReason.UPDATE_REWARD))
+    }
+
+    @Test
+    fun testFilterOutRewards_whenRewardNotStarted() {
+        val rwNotLimitedStart = RewardFactory.reward()
+        val rwLimitedStartNotStartedYet = rwNotLimitedStart.toBuilder().startsAt(DateTime.now().plusDays(1)).build()
+        val rwLimitedStartStarted = rwNotLimitedStart.toBuilder().startsAt(DateTime.now()).build()
+
+        val rewards = listOf<Reward>(rwNotLimitedStart, rwLimitedStartNotStartedYet, rwLimitedStartStarted)
+
+        val project = ProjectFactory.project().toBuilder().rewards(rewards).build()
+
+        setUpEnvironment(environment())
+        // - We configure the viewModel with a project that has rewards not started yet
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        val filteredList = listOf(rwNotLimitedStart, rwLimitedStartStarted)
+        val projWithFilteredRewards = project.toBuilder().rewards(filteredList).build()
+        val modifiedPData = ProjectData.builder().project(projWithFilteredRewards).build()
+
+        // - We check that the viewModel has filtered out the rewards not started yet
+        this.projectData.assertValue(modifiedPData)
+        this.rewardsCount.assertValue(2)
     }
 
     @Test

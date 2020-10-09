@@ -10,6 +10,7 @@ import com.kickstarter.libs.models.OptimizelyExperiment;
 import com.kickstarter.mock.factories.LocationFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.RewardFactory;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
 import org.joda.time.DateTime;
@@ -267,8 +268,8 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void isTimeLimited() {
-    assertFalse(RewardUtils.isTimeLimited(RewardFactory.reward()));
-    assertTrue(RewardUtils.isTimeLimited(RewardFactory.endingSoon()));
+    assertFalse(RewardUtils.isTimeLimitedEnd(RewardFactory.reward()));
+    assertTrue(RewardUtils.isTimeLimitedEnd(RewardFactory.endingSoon()));
   }
 
   @Test
@@ -305,6 +306,85 @@ public final class RewardUtilsTest extends KSRobolectricTestCase {
 
     final Reward rewardWithWorldWideShipping = RewardFactory.rewardWithShipping();
     assertEquals(Pair.create(R.string.Ships_worldwide, null), RewardUtils.shippingSummary(rewardWithWorldWideShipping));
+  }
+
+  @Test
+  public void testRewardTimeLimitedStart_hasStarted() {
+    final Project isLiveProject = ProjectFactory.project();
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now()).build();
+    assertEquals(true, RewardUtils.hasStarted(rewardLimitedByStart));
+    assertEquals(true, RewardUtils.isAvailable(isLiveProject, rewardLimitedByStart));
+  }
+
+  @Test
+  public void testRewardNotTimeLimitedStart_hasStarted() {
+    // - A reward not limited os starting time should be considered as a reward that has started
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns();
+    assertEquals(false, RewardUtils.isTimeLimitedStart(rewardLimitedByStart));
+    assertEquals(true, RewardUtils.hasStarted(rewardLimitedByStart));
+  }
+
+  @Test
+  public void testRewardTimeLimitedStart_hasNotStarted() {
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now().plusDays(1)).build();
+    assertEquals(true, RewardUtils.isTimeLimitedStart(rewardLimitedByStart));
+    assertEquals(false, RewardUtils.hasStarted(rewardLimitedByStart));
+  }
+
+  @Test
+  public void testRewardTimeLimitedEnd_hasEnded() {
+    final Reward rewardExpired = RewardFactory.rewardHasAddOns().toBuilder().endsAt(DateTime.now().minusDays(1)).build();
+    assertEquals(true, RewardUtils.isExpired(rewardExpired));
+    assertEquals(false, RewardUtils.isValidTimeRange(rewardExpired));
+  }
+
+  @Test
+  public void testValidTimeRage_limitedStart_hasNotStarted() {
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now().plusDays(1)).build();
+    assertEquals(false, RewardUtils.isValidTimeRange(rewardLimitedByStart));
+  }
+
+  @Test
+  public void testValidTimeRage_limitedStart_hasStarted() {
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now()).build();
+    assertEquals(true, RewardUtils.isValidTimeRange(rewardLimitedByStart));
+  }
+
+  @Test
+  public void testValidTimeRage_limitedEnd_hasNotEnded() {
+    final Reward rewardLimitedByEnd = RewardFactory.rewardHasAddOns().toBuilder().endsAt(DateTime.now().plusDays(1)).build();
+    assertEquals(false, RewardUtils.isExpired(rewardLimitedByEnd));
+    assertEquals(true, RewardUtils.isValidTimeRange(rewardLimitedByEnd));
+  }
+
+  @Test
+  public void testValidTimeRange_limitedStartEnd_isValid() {
+    final Reward rewardLimitedBoth = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now()).endsAt(DateTime.now().plusDays(1)).build();
+    assertEquals(false, RewardUtils.isExpired(rewardLimitedBoth));
+    assertEquals(true, RewardUtils.hasStarted(rewardLimitedBoth));
+    assertEquals(true, RewardUtils.isValidTimeRange(rewardLimitedBoth));
+  }
+
+  @Test
+  public void testValidTimeRange_limitedStartEnd_isInvalid() {
+    final Reward rewardLimitedBoth = RewardFactory.rewardHasAddOns().toBuilder().startsAt(DateTime.now().plusDays(1)).endsAt(DateTime.now().plusDays(2)).build();
+    assertEquals(false, RewardUtils.isExpired(rewardLimitedBoth));
+    assertEquals(false, RewardUtils.hasStarted(rewardLimitedBoth));
+    assertEquals(false, RewardUtils.isValidTimeRange(rewardLimitedBoth));
+  }
+
+  @Test
+  public void testValidTimeRange_NotLimited_isValid() {
+    final Reward rewardLimitedBoth = RewardFactory.rewardHasAddOns();
+    assertEquals(false, RewardUtils.isExpired(rewardLimitedBoth));
+    assertEquals(true, RewardUtils.hasStarted(rewardLimitedBoth));
+    assertEquals(true, RewardUtils.isValidTimeRange(rewardLimitedBoth));
+  }
+
+  @Test
+  public void testValidTimeRage_NotLimitedStart_hasStarted() {
+    final Reward rewardLimitedByStart = RewardFactory.rewardHasAddOns();
+    assertEquals(true, RewardUtils.isValidTimeRange(rewardLimitedByStart));
   }
 
   @Test

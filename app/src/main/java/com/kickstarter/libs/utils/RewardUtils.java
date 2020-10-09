@@ -35,7 +35,36 @@ public final class RewardUtils {
    * Returns `true` if the reward has expired.
    */
   public static boolean isExpired(final @NonNull Reward reward) {
-    return isTimeLimited(reward) && reward.endsAt().isBeforeNow();
+    return isTimeLimitedEnd(reward) && reward.endsAt().isBeforeNow();
+  }
+
+  /**
+   * Returns `true` if the reward has started or not limited by starting time.
+   * A reward not limited os starting time should be considered as a reward that has started.
+   * - > @return true if reward.startsAt == null
+   * - > @return false if reward.startAt < now
+   * - > @return true if reward.startAt >= now
+   */
+  public static boolean hasStarted(final @NonNull Reward reward) {
+    return isTimeLimitedStart(reward) ? (!reward.startsAt().isAfterNow() || reward.startsAt().isEqualNow()) : true;
+  }
+
+  /**
+   * Returns `true` if the reward is in a valid time range
+   * @return  true if the reward is just limited one one end and that time validation is true
+   * @return  false if the reward is just limited one one end and that time validation is false
+   * @return  true if the reward is limited at both ends and validation is correct
+   * @return  false if the reward is limited at both ends and validation is false
+   */
+  public static boolean isValidTimeRange(final  @NonNull Reward reward) {
+    return RewardUtils.hasStarted(reward) && !RewardUtils.isExpired(reward);
+  }
+
+  /**
+   * Returns `true` if the reward has a valid expiration date on Starting date.
+   */
+  public static boolean isTimeLimitedStart(final @NonNull Reward reward) {
+    return reward.startsAt() != null && !DateTimeUtils.isEpoch(reward.startsAt());
   }
 
   /**
@@ -104,9 +133,9 @@ public final class RewardUtils {
   }
 
   /**
-   * Returns `true` if the reward has a valid expiration date.
+   * Returns `true` if the reward has a valid expiration date on Ending date.
    */
-  public static boolean isTimeLimited(final @NonNull Reward reward) {
+  public static boolean isTimeLimitedEnd(final @NonNull Reward reward) {
     // TODO: 2019-06-14 remove epoch check after Garrow fixes `current` bug in backend
     return reward.endsAt() != null && !DateTimeUtils.isEpoch(reward.endsAt());
   }

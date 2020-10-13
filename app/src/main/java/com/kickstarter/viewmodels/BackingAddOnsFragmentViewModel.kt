@@ -288,7 +288,7 @@ class BackingAddOnsFragmentViewModel {
                     this.currentSelection,
                     this.quantityPerId
             ) {
-                backedRule, backedList, actualRule, currentSelection ->
+                backedRule, backedList, actualRule, currentSelection, _ ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList, currentSelection)
             }
                     .distinctUntilChanged()

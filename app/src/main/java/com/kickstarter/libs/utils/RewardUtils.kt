@@ -34,8 +34,9 @@ object RewardUtils {
      * - > @return true if reward.startAt >= now
      */
     fun hasStarted(reward: Reward): Boolean {
-        val startsAt = reward.startsAt()?.let {reward.startsAt()}
-        return if (isTimeLimitedStart(reward)) startsAt?.isAfterNow?.let { !it } ?: false || startsAt?.isEqualNow?.let { it } ?: false else true
+        val isAfterNow = reward.startsAt()?.isAfterNow ?: false
+        val isEqualNow = reward.startsAt()?.isEqualNow ?: false
+        return if (isTimeLimitedStart(reward)) !isAfterNow || isEqualNow else true
     }
 
     /**
@@ -53,8 +54,7 @@ object RewardUtils {
      * Returns `true` if the reward has a valid expiration date on Starting date.
      */
     fun isTimeLimitedStart(reward: Reward): Boolean {
-        return reward.startsAt() != null
-                && (reward.startsAt()?.let { !DateTimeUtils.isEpoch(it) } ?: false);
+        return reward.startsAt()?.let { !DateTimeUtils.isEpoch(it) } ?: false
     }
 
     /**
@@ -164,11 +164,7 @@ object RewardUtils {
             Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS -> Pair.create(R.string.Limited_shipping, null)
             Reward.SHIPPING_TYPE_SINGLE_LOCATION -> {
                 val location = reward.shippingSingleLocation()
-                return if (ObjectUtils.isNotNull(location)) {
-                    Pair.create(R.string.location_name_only, location!!.localizedName())
-                } else {
-                    Pair.create(R.string.Limited_shipping, null)
-                }
+                return location?.localizedName()?.let { Pair.create(R.string.location_name_only, it)} ?: Pair.create(R.string.Limited_shipping, "")
             }
             else -> null
         }

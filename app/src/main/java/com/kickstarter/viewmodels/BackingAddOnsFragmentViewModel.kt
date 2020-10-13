@@ -93,15 +93,17 @@ class BackingAddOnsFragmentViewModel {
         private val addOnsListFiltered = PublishSubject.create<Triple<ProjectData, List<Reward>, ShippingRule>>()
         private val isEmptyState = PublishSubject.create<Boolean>()
         private val showErrorDialog = BehaviorSubject.create<Boolean>()
-        private val totalSelectedAddOns = BehaviorSubject.create(0)
         private val continueButtonPressed = BehaviorSubject.create<Void>()
-        private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
-        private val currentSelection: MutableMap<Long, Int> = mutableMapOf()
         private val isEnabledCTAButton = BehaviorSubject.create<Boolean>()
         private val apolloClient = this.environment.apolloClient()
         private val apiClient = environment.apiClient()
         private val currentConfig = environment.currentConfig()
         val ksString: KSString = this.environment.ksString()
+
+        // - Current addOns selection
+        private val totalSelectedAddOns = BehaviorSubject.create(0)
+        private val quantityPerId = PublishSubject.create<Pair<Int, Long>>()
+        private val currentSelectionObservable = BehaviorSubject.create(mutableMapOf<Long, Int>())
 
         init {
 
@@ -144,7 +146,7 @@ class BackingAddOnsFragmentViewModel {
                     .filter { !it }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.currentSelection.clear()
+                        this.currentSelectionObservable.value?.clear()
                     }
 
             val filteredBackingReward = backingReward
@@ -273,18 +275,19 @@ class BackingAddOnsFragmentViewModel {
                     .distinctUntilChanged()
                     .subscribe {
                         updateQuantityById(it.first)
-                        this.totalSelectedAddOns.onNext(calculateTotal(it.second.second))
+                        calculateTotal(it.second.second)
                     }
 
-            // - .startWith(Pair(-1,-1L) because we need to trigger this validation everytime the AddOns selection changes
             // - .startWith(ShippingRuleFactory.emptyShippingRule()) because we need to trigger this validation every time the AddOns selection changes for digital rewards as well
             val isButtonEnabled = Observable.combineLatest(
                     backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
                     addOnsFromBacking,
                     this.shippingRuleSelected,
-                    this.quantityPerId.startWith(Pair(0, 0L))) {
-                backedRule, backedList, actualRule, _  ->
-                return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList)
+                    this.currentSelectionObservable,
+                    this.quantityPerId
+            ) {
+                backedRule, backedList, actualRule, currentSelection, _  ->
+                return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList, currentSelection)
             }
                     .distinctUntilChanged()
 
@@ -350,9 +353,11 @@ class BackingAddOnsFragmentViewModel {
          *  backed one.
          *
          *  @param backedList -> addOns list from backing object
+         *  @param currentSelection -> map holding addOns selection, on first load if backed addOns
+         *  will hold the id and amount by id.
          *  @return Boolean -> true in case different selection or new item selected false otherwise
          */
-        private fun isDifferentSelection(backedList: List<Reward>): Boolean {
+        private fun isDifferentSelection(backedList: List<Reward>, currentSelection: MutableMap<Long, Int>): Boolean {
 
             val backedSelection: MutableMap<Long, Int> = mutableMapOf()
             backedList
@@ -360,12 +365,12 @@ class BackingAddOnsFragmentViewModel {
                         backedSelection.put(it.id(), it.quantity() ?: 0)
                     }
 
-            val isBackedItemList = this.currentSelection.map { item ->
+            val isBackedItemList = currentSelection.map { item ->
                 if (backedSelection.containsKey(item.key)) backedSelection[item.key] == item.value
                 else false
             }
 
-            val isNewItemSelected = this.currentSelection.map { item ->
+            val isNewItemSelected = currentSelection.map { item ->
                 if (!backedSelection.containsKey(item.key)) item.value > 0
                 else false
             }.any { it }
@@ -378,11 +383,14 @@ class BackingAddOnsFragmentViewModel {
         private fun isDifferentLocation(backedRule: ShippingRule, actualRule: ShippingRule) =
                 backedRule.location().id() != actualRule.location().id()
 
-        private fun calculateTotal(list: List<Reward>): Int {
-            var total = 0
-            list.map { total += this.currentSelection[it.id()] ?: 0 }
-            return total
-        }
+        private fun calculateTotal(list: List<Reward>) =
+            this.currentSelectionObservable
+                    .take(1)
+                    .subscribe { map ->
+                        var total = 0
+                        list.map { total += map[it.id()] ?: 0 }
+                        this.totalSelectedAddOns.onNext(total)
+                    }
 
         private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>): List<Reward> {
             return graphList
@@ -393,9 +401,6 @@ class BackingAddOnsFragmentViewModel {
 
         private fun modifyOrSelect(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
-                val update = Pair(it.quantity() ?: 0, it.id())
-                if (update.first > 0)
-                    updateQuantityById(update)
                 return@let it
             }?: graphAddOn
         }
@@ -403,9 +408,13 @@ class BackingAddOnsFragmentViewModel {
         private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing()
                 ?: pData?.backing()
 
-        private fun updateQuantityById(it: Pair<Int, Long>) {
-            this.currentSelection[it.second] = it.first
-        }
+        private fun updateQuantityById(updated: Pair<Int, Long>) =
+            this.currentSelectionObservable
+                    .take(1)
+                    .subscribe { selection ->
+                        selection[updated.second] = updated.first
+                    }
+
 
         private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
             return this.currentConfig.observable()
@@ -416,6 +425,7 @@ class BackingAddOnsFragmentViewModel {
                     }
         }
 
+        // TODO: this logic will disappear, once the backed provide us a query to filter by locationID
         private fun filterByLocationAndUpdateQuantity(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
             val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.name,
@@ -435,12 +445,7 @@ class BackingAddOnsFragmentViewModel {
                 }
             }
 
-            val updatedQuantity = filteredAddOns.map {
-                val amount = this.currentSelection[it.id()] ?: -1
-                return@map if (amount == -1) it else it.toBuilder().quantity(amount).build()
-            }
-
-            return Triple(pData, updatedQuantity, rule)
+            return Triple(pData, filteredAddOns, rule)
         }
 
         private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {

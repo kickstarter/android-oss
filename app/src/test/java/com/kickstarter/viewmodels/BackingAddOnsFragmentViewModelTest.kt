@@ -549,7 +549,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
                 .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
                 .build()
-        val project = ProjectFactory.project()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
 
         // -Build the backing with location and list of AddOns
         val backing = BackingFactory.backing(project, UserFactory.user(), rw)
@@ -559,7 +560,6 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 .addOns(listAddonsBacked)
                 .build()
         val backedProject = project.toBuilder()
-                .rewards(listOf(rw))
                 .backing(backing)
                 .build()
 
@@ -570,13 +570,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
-        // - input from user or ViewHolder building the item with that quantity when updating pledge
-        this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
-        this.vm.inputs.quantityPerId(Pair(3, addOn3.id()))
         this.vm.arguments(bundle)
+        // - input from ViewHolder when building the item with the backed info
+        this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
+        this.vm.inputs.quantityPerId(Pair(1, addOn3.id()))
 
         this.isEnabledButton.assertValues(true, false)
-        this.addOnsList.assertValue(Triple(projectData,combinedList, shippingRule.shippingRules().first()))
+        this.addOnsList.assertValue(Triple(projectData, combinedList, shippingRule.shippingRules().first()))
 
         this.lakeTest.assertValue("Add-Ons Page Viewed")
     }

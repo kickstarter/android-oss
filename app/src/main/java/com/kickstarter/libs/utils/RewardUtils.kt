@@ -24,7 +24,38 @@ object RewardUtils {
     /**
      * Returns `true` if the reward has expired.
      */
-    fun isExpired(reward: Reward) = isTimeLimited(reward) && reward.endsAt()?.let {it.isBeforeNow} ?: false
+    fun isExpired(reward: Reward) = isTimeLimitedEnd(reward) && reward.endsAt()?.let {it.isBeforeNow} ?: false
+
+    /**
+     * Returns `true` if the reward has started or not limited by starting time.
+     * A reward not limited os starting time should be considered as a reward that has started.
+     * - > @return true if reward.startsAt == null
+     * - > @return false if reward.startAt < now
+     * - > @return true if reward.startAt >= now
+     */
+    fun hasStarted(reward: Reward): Boolean {
+        val startsAt = reward.startsAt()?.let {reward.startsAt()}
+        return if (isTimeLimitedStart(reward)) startsAt?.isAfterNow?.let { !it } ?: false || startsAt?.isEqualNow?.let { it } ?: false else true
+    }
+
+    /**
+     * Returns `true` if the reward is in a valid time range
+     * @return  true if the reward is just limited one one end and that time validation is true
+     * @return  false if the reward is just limited one one end and that time validation is false
+     * @return  true if the reward is limited at both ends and validation is correct
+     * @return  false if the reward is limited at both ends and validation is false
+     */
+    fun isValidTimeRange(reward: Reward): Boolean {
+        return hasStarted(reward) && !isExpired(reward);
+    }
+
+    /**
+     * Returns `true` if the reward has a valid expiration date on Starting date.
+     */
+    fun isTimeLimitedStart(reward: Reward): Boolean {
+        return reward.startsAt() != null
+                && (reward.startsAt()?.let { !DateTimeUtils.isEpoch(it) } ?: false);
+    }
 
     /**
      * Returns `true` if the reward has items, `false` otherwise.
@@ -81,9 +112,9 @@ object RewardUtils {
     }
 
     /**
-     * Returns `true` if the reward has a valid expiration date.
+     * Returns `true` if the reward has a valid expiration date on Ending date.
      */
-    fun isTimeLimited(reward: Reward): Boolean {
+    fun isTimeLimitedEnd(reward: Reward): Boolean {
 //         TODO: 2019-06-14 remove epoch check after Garrow fixes `current` bug in backend
         return reward.endsAt() != null && reward.endsAt()?.let {!DateTimeUtils.isEpoch(it)} ?: false
     }

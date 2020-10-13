@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownDetail
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownUnit
 import com.kickstarter.libs.utils.RewardUtils.deadlineCountdownValue
 import com.kickstarter.libs.utils.RewardUtils.hasBackers
+import com.kickstarter.libs.utils.RewardUtils.hasStarted
 import com.kickstarter.libs.utils.RewardUtils.isAvailable
 import com.kickstarter.libs.utils.RewardUtils.isExpired
 import com.kickstarter.libs.utils.RewardUtils.isItemized
@@ -18,7 +19,9 @@ import com.kickstarter.libs.utils.RewardUtils.isLimited
 import com.kickstarter.libs.utils.RewardUtils.isNoReward
 import com.kickstarter.libs.utils.RewardUtils.isReward
 import com.kickstarter.libs.utils.RewardUtils.isShippable
-import com.kickstarter.libs.utils.RewardUtils.isTimeLimited
+import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
+import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedStart
+import com.kickstarter.libs.utils.RewardUtils.isValidTimeRange
 import com.kickstarter.libs.utils.RewardUtils.rewardAmountByVariant
 import com.kickstarter.libs.utils.RewardUtils.shippingSummary
 import com.kickstarter.libs.utils.RewardUtils.timeInSecondsUntilDeadline
@@ -30,7 +33,8 @@ import org.joda.time.DateTime
 import org.joda.time.MutableDateTime
 import org.junit.Before
 import org.junit.Test
-import java.util.Date
+import java.util.*
+import com.kickstarter.models.Project;
 
 class RewardUtilsTest : KSRobolectricTestCase() {
 
@@ -45,6 +49,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     private lateinit var rewardMultipleShippingLocation: Reward
     private lateinit var rewardWorldWideShipping: Reward
     private lateinit var rewardSingleShippingLocation: Reward
+    private lateinit var rewardWithAddons : Reward
+
 
     @Before
     fun setUpTests() {
@@ -59,6 +65,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         rewardMultipleShippingLocation = RewardFactory.multipleLocationShipping()
         rewardWorldWideShipping = RewardFactory.rewardWithShipping()
         rewardSingleShippingLocation = RewardFactory.singleLocationShipping(LocationFactory.nigeria().displayableName())
+        rewardWithAddons = RewardFactory.rewardHasAddOns()
+
     }
 
     @Test
@@ -263,8 +271,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
 
     @Test
     fun isTimeLimited() {
-        assertFalse(isTimeLimited(reward))
-        assertTrue(isTimeLimited(RewardFactory.endingSoon()))
+        assertFalse(isTimeLimitedEnd(reward))
+        assertTrue(isTimeLimitedEnd(RewardFactory.endingSoon()))
     }
 
     @Test
@@ -303,6 +311,108 @@ class RewardUtilsTest : KSRobolectricTestCase() {
         assertEquals(Pair.create<Int, Any?>(R.string.Limited_shipping, null), shippingSummary(rewardMultipleShippingLocation))
         assertEquals(Pair.create(R.string.location_name_only, COUNTRY_NIGERIA), shippingSummary(rewardSingleShippingLocation))
         assertEquals(Pair.create<Int, Any?>(R.string.Ships_worldwide, null), shippingSummary(rewardWorldWideShipping))
+    }
+
+    @Test
+    fun testRewardTimeLimitedStart_hasStarted() {
+        val isLiveProject: Project = ProjectFactory.project()
+        val rewardLimitedByStart = rewardWithAddons.toBuilder().startsAt(DateTime.now()).build()
+        assertEquals(true, hasStarted(rewardLimitedByStart))
+        assertEquals(true, isAvailable(isLiveProject, rewardLimitedByStart))
+    }
+
+    @Test
+    fun testRewardNotTimeLimitedStart_hasStarted() {
+        // - A reward not limited os starting time should be considered as a reward that has started
+        assertEquals(false, isTimeLimitedStart(rewardWithAddons))
+        assertEquals(true, hasStarted(rewardWithAddons))
+    }
+
+    @Test
+    fun testRewardTimeLimitedStart_hasNotStarted() {
+        val rewardLimitedByStart =
+                rewardWithAddons
+                        .toBuilder()
+                        .startsAt(DateTime.now().plusDays(1))
+                        .build()
+        assertEquals(true, isTimeLimitedStart(rewardLimitedByStart))
+        assertEquals(false, hasStarted(rewardLimitedByStart))
+    }
+
+    @Test
+    fun testRewardTimeLimitedEnd_hasEnded() {
+        val rewardExpired =
+                rewardWithAddons
+                        .toBuilder()
+                        .endsAt(DateTime.now().minusDays(1))
+                        .build()
+        assertEquals(true, isExpired(rewardExpired))
+        assertEquals(false, isValidTimeRange(rewardExpired))
+    }
+
+    @Test
+    fun testValidTimeRage_limitedStart_hasNotStarted() {
+        val rewardLimitedByStart =
+                rewardWithAddons
+                        .toBuilder()
+                        .startsAt(DateTime.now().plusDays(1))
+                        .build()
+        assertEquals(false, isValidTimeRange(rewardLimitedByStart))
+    }
+
+    @Test
+    fun testValidTimeRage_limitedStart_hasStarted() {
+        val rewardLimitedByStart = rewardWithAddons.toBuilder().startsAt(DateTime.now()).build()
+        assertEquals(true, isValidTimeRange(rewardLimitedByStart))
+    }
+
+    @Test
+    fun testValidTimeRage_limitedEnd_hasNotEnded() {
+        val rewardLimitedByEnd =
+                rewardWithAddons
+                        .toBuilder()
+                        .endsAt(DateTime.now().plusDays(1))
+                        .build()
+        assertEquals(false, isExpired(rewardLimitedByEnd))
+        assertEquals(true, isValidTimeRange(rewardLimitedByEnd))
+    }
+
+    @Test
+    fun testValidTimeRange_limitedStartEnd_isValid() {
+        val rewardLimitedBoth =
+                rewardWithAddons
+                        .toBuilder()
+                        .startsAt(DateTime.now())
+                        .endsAt(DateTime.now().plusDays(1))
+                        .build()
+        assertEquals(false, isExpired(rewardLimitedBoth))
+        assertEquals(true, hasStarted(rewardLimitedBoth))
+        assertEquals(true, isValidTimeRange(rewardLimitedBoth))
+    }
+
+    @Test
+    fun testValidTimeRange_limitedStartEnd_isInvalid() {
+        val rewardLimitedBoth =
+                rewardWithAddons
+                        .toBuilder()
+                        .startsAt(DateTime.now().plusDays(1))
+                        .endsAt(DateTime.now().plusDays(2))
+                        .build()
+        assertEquals(false, isExpired(rewardLimitedBoth))
+        assertEquals(false, hasStarted(rewardLimitedBoth))
+        assertEquals(false, isValidTimeRange(rewardLimitedBoth))
+    }
+
+    @Test
+    fun isValidTimeRage_whenNotLimited_isValid() {
+        assertEquals(false, isExpired(rewardWithAddons))
+        assertEquals(true, hasStarted(rewardWithAddons))
+        assertEquals(true, isValidTimeRange(rewardWithAddons))
+    }
+
+    @Test
+    fun isValidTimeRage_whenStartNotLimited_returnsTrue() {
+        assertEquals(true, isValidTimeRange(rewardWithAddons))
     }
 
     @Test

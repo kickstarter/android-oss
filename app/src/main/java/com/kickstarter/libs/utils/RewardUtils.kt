@@ -218,3 +218,4 @@ object RewardUtils {
         return if (value < minPledge) minPledge.toDouble() else value
     }
 }
+

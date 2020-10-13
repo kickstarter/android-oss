@@ -285,7 +285,7 @@ class BackingAddOnsFragmentViewModel {
                     backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
                     addOnsFromBacking,
                     this.shippingRuleSelected,
-                    this.currentSelection,
+                    this.currentSelection.take(1),
                     this.quantityPerId
             ) {
                 backedRule, backedList, actualRule, currentSelection, _ ->
@@ -305,7 +305,7 @@ class BackingAddOnsFragmentViewModel {
                     pledgeReason,
                     reward,
                     this.shippingRuleSelected,
-                    this.currentSelection,
+                    this.currentSelection.take(1),
                     this.continueButtonPressed)
 
             updatedPledgeDataAndReason

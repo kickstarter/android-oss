@@ -255,7 +255,7 @@ class BackingAddOnsFragmentViewModel {
             // TODO: this observable will disappear once the filter query is ready https://kickstarter.atlassian.net/browse/CT-649
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) {
                 list, pData, rule, rw ->
-                return@combineLatest filterByLocationAndUpdateQuantity(list, pData, rule, rw)
+                return@combineLatest filterByLocation(list, pData, rule, rw)
             }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -288,7 +288,7 @@ class BackingAddOnsFragmentViewModel {
                     this.currentSelection,
                     this.quantityPerId
             ) {
-                backedRule, backedList, actualRule, currentSelection, _  ->
+                backedRule, backedList, actualRule, currentSelection ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList, currentSelection)
             }
                     .distinctUntilChanged()
@@ -336,6 +336,7 @@ class BackingAddOnsFragmentViewModel {
         ): Observable<Pair<PledgeData, PledgeReason>> {
             return Observable.combineLatest(filteredList, pledgeData, pledgeReason, reward, shippingRule, currentSelection, continueButtonPressed) {
                 listAddOns, pledgeData, pledgeReason, rw, shippingRule, currentSelection, _ ->
+
                 val updatedList = updateQuantity(listAddOns.second, currentSelection)
                 val selectedAddOns = getSelectedAddOns(updatedList)
 
@@ -496,7 +497,7 @@ class BackingAddOnsFragmentViewModel {
         }
 
         // TODO: this logic will disappear, once the backed provide us a query to filter by locationID
-        private fun filterByLocationAndUpdateQuantity(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
+        private fun filterByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
             val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.name,
                 Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {

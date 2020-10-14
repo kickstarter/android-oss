@@ -824,7 +824,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
                 .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), rewardWithShipping)
-        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null))
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, ""))
         this.shippingSummaryIsGone.assertValues(false)
     }
 

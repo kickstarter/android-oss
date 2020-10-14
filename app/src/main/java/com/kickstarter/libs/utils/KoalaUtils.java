@@ -158,12 +158,12 @@ public final class KoalaUtils {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
-        put("has_items", RewardUtils.isItemized(reward));
+        put("has_items", RewardUtils.INSTANCE.isItemized(reward));
         put("id", reward.id());
-        put("is_limited_time", RewardUtils.isTimeLimitedEnd(reward));
+        put("is_limited_time", RewardUtils.INSTANCE.isTimeLimitedEnd(reward));
         put("is_limited_quantity", reward.limit() != null);
         put("minimum", reward.minimum());
-        put("shipping_enabled", RewardUtils.isShippable(reward));
+        put("shipping_enabled", RewardUtils.INSTANCE.isShippable(reward));
         put("shipping_preference", reward.shippingPreference());
         put("title", reward.title());
       }

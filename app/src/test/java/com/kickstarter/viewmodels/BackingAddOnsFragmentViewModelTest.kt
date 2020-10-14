@@ -499,35 +499,26 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.quantityPerId(quantityPerIdAddOn1)
         this.vm.inputs.quantityPerId(quantityPerIdAddOn2)
         this.vm.inputs.quantityPerId(quantityPerIdAddOn3)
-        this.vm.inputs.continueButtonPressed()
 
         // - Comparison purposes the quantity of the add-ons has been updated in the previous vm.input.quantityPerId
-        val listAddons1 = listOf(addOn.toBuilder().quantity(7).build(), addOn2, addOn3)
-        val listAddons2 = listOf(addOn.toBuilder().quantity(7).build(), addOn2.toBuilder().quantity(2).build(), addOn3)
-        val listAddons3 = listOf(addOn.toBuilder().quantity(7).build(),
+        val listAddonsToCheck = listOf(addOn.toBuilder().quantity(7).build(),
                 addOn2.toBuilder().quantity(2).build(),
                 addOn3.toBuilder().quantity(5).build())
 
-        this.addOnsList.assertValues(
-                Triple(projectData,listAddons, shippingRule.shippingRules().first()),
-                Triple(projectData,listAddons1, shippingRule.shippingRules().first()),
-                Triple(projectData,listAddons2, shippingRule.shippingRules().first()),
-                Triple(projectData,listAddons3, shippingRule.shippingRules().first()))
+        this.addOnsList.assertValues(Triple(projectData,listAddons, shippingRule.shippingRules().first()))
+        this.totalSelectedAddOns.assertValues(0, 7, 9, 14)
 
+        this.vm.inputs.continueButtonPressed()
+        // - value only when updating pledge
         this.isEnabledButton.assertNoValues()
+
         this.vm.outputs.showPledgeFragment()
                 .subscribe {
                     TestCase.assertEquals(it.first, pledgeData)
                     TestCase.assertEquals(it.second, pledgeReason)
 
                     val selectedAddOnsList = pledgeData.addOns()
-                    TestCase.assertEquals(selectedAddOnsList, 3)
-
-                    TestCase.assertEquals(selectedAddOnsList?.first()?.id(), addOn.id())
-                    TestCase.assertEquals(selectedAddOnsList?.first()?.quantity(), 7)
-
-                    TestCase.assertEquals(selectedAddOnsList?.last()?.id(), 99)
-                    TestCase.assertEquals(selectedAddOnsList?.last()?.quantity(), 5)
+                    TestCase.assertEquals(selectedAddOnsList, listAddonsToCheck)
                 }
 
         this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
@@ -558,7 +549,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
                 .shippingPreference(Reward.ShippingPreference.UNRESTRICTED.name.toLowerCase()) // - Reward from V1 use this field
                 .build()
-        val project = ProjectFactory.project()
+
+        val project = ProjectFactory.project().toBuilder().rewards(listOf(rw)).build()
 
         // -Build the backing with location and list of AddOns
         val backing = BackingFactory.backing(project, UserFactory.user(), rw)
@@ -568,7 +560,6 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                 .addOns(listAddonsBacked)
                 .build()
         val backedProject = project.toBuilder()
-                .rewards(listOf(rw))
                 .backing(backing)
                 .build()
 
@@ -580,15 +571,18 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
         this.vm.arguments(bundle)
+        // - input from ViewHolder when building the item with the backed info
+        this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
+        this.vm.inputs.quantityPerId(Pair(1, addOn3.id()))
 
-        this.isEnabledButton.assertValue(false)
-        this.addOnsList.assertValue(Triple(projectData,combinedList, shippingRule.shippingRules().first()))
+        this.isEnabledButton.assertValues(true, false)
+        this.addOnsList.assertValue(Triple(projectData, combinedList, shippingRule.shippingRules().first()))
 
         this.lakeTest.assertValue("Add-Ons Page Viewed")
     }
 
     @Test
-    fun givenBackedAddOns_whenUpdatingRewardReasonIncreaseQuantity_EnabledButtonAndResultList() {
+    fun givenBackedAddOns_whenUpdatingRewardIncreaseQuantity_EnabledButtonAndResultList() {
         val shippingRule = ShippingRulesEnvelopeFactory.shippingRules()
 
         val addOn = RewardFactory.addOn().toBuilder()
@@ -637,21 +631,19 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
 
         this.vm.arguments(bundle)
-
-        val updateList = listOf(addOn, addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(7).build())
         this.vm.inputs.quantityPerId(Pair(7, addOn3.id()))
-        this.vm.inputs.continueButtonPressed()
+        this.vm.inputs.quantityPerId(Pair(2, addOn2.id()))
 
-        this.isEnabledButton.assertValues(false, true)
-        this.addOnsList.assertValues(
-                Triple(projectData,combinedList, shippingRule.shippingRules().first()),
-                Triple(projectData,updateList, shippingRule.shippingRules().first())
-        )
+        this.isEnabledButton.assertValues(true)
+        this.addOnsList.assertValues(Triple(projectData,combinedList, shippingRule.shippingRules().first()))
 
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
-        this.totalSelectedAddOns.assertValues(0, 9, 9)
+        this.totalSelectedAddOns.assertValues(0, 7, 9)
+
+        this.vm.inputs.continueButtonPressed()
         this.vm.outputs.showPledgeFragment()
                 .subscribe {
+                    val updateList = listOf(addOn, addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(7).build())
                     TestCase.assertEquals(it.first.addOns(), updateList)
                 }
 

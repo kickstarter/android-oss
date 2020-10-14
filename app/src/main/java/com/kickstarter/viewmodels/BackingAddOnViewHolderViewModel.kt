@@ -249,8 +249,8 @@ class BackingAddOnViewHolderViewModel {
             this.quantity
                     .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
                     .map { data -> Pair(data.first, data.second.id()) }
-                    .distinctUntilChanged { item1, item2 ->
-                        item1.first == item2.first && item1.second == item2.second
+                    .distinctUntilChanged { quantityPerId1, quantityPerId2 ->
+                        quantityPerId1.first == quantityPerId2.first && quantityPerId1.second == quantityPerId2.second
                     }
                     .compose(bindToLifecycle())
                     .subscribe(this.quantityPerId)

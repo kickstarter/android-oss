@@ -18,10 +18,15 @@ query GetProjectBacking($slug: String!) {
   }
 }
 
-query GetProjectAddOns($slug: String!) {
+query GetProjectAddOns($slug: String!, $locationId: ID!) {
   project(slug: $slug) {
     addOns {
       nodes {
+        shippingRulesExpanded(forLocation: $locationId) {
+          nodes {
+            ... shippingRule
+          }
+        }
         ... reward
       }
     }

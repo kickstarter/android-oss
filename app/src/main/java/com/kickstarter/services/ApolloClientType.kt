@@ -33,7 +33,7 @@ interface ApolloClientType {
 
     fun getProjectBacking(slug: String): Observable<Backing>
 
-    fun getProjectAddOns(slug: String): Observable<List<Reward>>
+    fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>>
 
     fun getStoredCards(): Observable<List<StoredCard>>
 

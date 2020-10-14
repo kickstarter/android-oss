@@ -75,11 +75,6 @@ fragment reward on Reward {
         ... amount
     }
     shippingPreference
-    shippingRulesExpanded {
-        nodes {
-            ... shippingRule
-        }
-    }
     remainingQuantity
     limit
     limitPerBacker
@@ -91,7 +86,6 @@ fragment shippingRule on ShippingRule {
     cost {
         ... amount
     }
-    id
     location {
         ... location
     }
@@ -106,17 +100,13 @@ fragment user on User {
 fragment amount on Money {
     amount
     currency
-    symbol
 }
 
 fragment location on Location {
     county
-    countryName
-    discoverUrl
     displayableName
     id
     name
-    state
 }
 
 fragment payment on CreditCard {

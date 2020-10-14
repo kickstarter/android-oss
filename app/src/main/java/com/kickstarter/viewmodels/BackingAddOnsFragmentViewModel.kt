@@ -238,11 +238,14 @@ class BackingAddOnsFragmentViewModel {
                         shippingRules.onNext(it)
                     }
 
-            // TODO: add to the observable the shippingRuleSelected observable to use the new query -> https://kickstarter.atlassian.net/browse/CT-649
             Observable
-                    .combineLatest(this.retryButtonPressed.startWith(false), project) { _, pj ->
+                    .combineLatest(this.retryButtonPressed.startWith(false), project, this.shippingRuleSelected) {
+                        _, pj, shipRule ->
+
+                        val projectSlug = pj.slug() ?: ""
+                        val location = shipRule.location()
                         return@combineLatest this.apolloClient
-                                .getProjectAddOns(pj.slug()?.let { it } ?: "")
+                                .getProjectAddOns(projectSlug, location)
                                 .doOnError {
                                     this.showErrorDialog.onNext(true)
                                     this.shippingSelectorIsGone.onNext(true)}
@@ -252,7 +255,6 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .subscribe(addOnsFromGraph)
 
-            // TODO: this observable will disappear once the filter query is ready https://kickstarter.atlassian.net/browse/CT-649
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) {
                 list, pData, rule, rw ->
                 return@combineLatest filterByLocation(list, pData, rule, rw)
@@ -466,13 +468,19 @@ class BackingAddOnsFragmentViewModel {
         private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>): List<Reward> {
             return graphList
                     .map { graphAddOn ->
-                        swapIfBacked(backingList, graphAddOn)
+                        modifyIfBacked(backingList, graphAddOn)
                     }
         }
 
-        private fun swapIfBacked(backingList: List<Reward>, graphAddOn: Reward): Reward {
+        /**
+         *  If the addOn is previously backed, return the backedAddOn containing
+         *  in the field quantity the amount of backed addOns.
+         *  Modify it to hold the shippingRules from the graphAddOn, that information
+         *  is not available in backing -> addOns graphQL schema.
+         */
+        private fun modifyIfBacked(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
-                return@let it
+                return@let it.toBuilder().shippingRules(graphAddOn.shippingRules()).build()
             }?: graphAddOn
         }
 
@@ -496,7 +504,6 @@ class BackingAddOnsFragmentViewModel {
                     }
         }
 
-        // TODO: this logic will disappear, once the backed provide us a query to filter by locationID
         private fun filterByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
             val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.name,

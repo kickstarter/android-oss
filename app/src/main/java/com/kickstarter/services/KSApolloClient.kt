@@ -278,7 +278,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<Backing>()
 
             this.service.query(GetProjectBackingQuery.builder()
-                    .slug(slug).build())
+                    .slug(slug)
+                    .build())
                     .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
                         override fun onFailure(e: ApolloException) {
                             ps.onError(e)
@@ -300,12 +301,14 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun getProjectAddOns(slug: String): Observable<List<Reward>> {
+    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
 
             this.service.query(GetProjectAddOnsQuery.builder()
-                    .slug(slug).build())
+                    .slug(slug)
+                    .locationId(encodeRelayId(location))
+                    .build())
                     .enqueue(object : ApolloCall.Callback<GetProjectAddOnsQuery.Data>() {
                         override fun onFailure(e: ApolloException) {
                             ps.onError(e)
@@ -329,7 +332,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
     private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
        return addOnsGr.nodes()?.map {
-            rewardTransformer(it.fragments().reward())
+           val shippingRulesGr = it.shippingRulesExpanded()?.nodes()?.map { it.fragments().shippingRule() } ?: emptyList()
+           rewardTransformer(it.fragments().reward(), shippingRulesGr)
         }?.toList() ?: emptyList()
     }
 
@@ -699,7 +703,7 @@ fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
  * @param fragment.reward rewardGr
  * @return Reward
  */
-private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
+private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: List<fragment.ShippingRule> = emptyList()): Reward {
     val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
     val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
@@ -723,9 +727,10 @@ private fun rewardTransformer(rewardGr: fragment.Reward): Reward {
         rewardItemsTransformer(it)
     }
 
-    val shippingRules = rewardGr.shippingRulesExpanded()?.nodes()?.map {
-        shippingRuleTransformer(it.fragments().shippingRule())
-    }?.toList()
+    val shippingRules = shippingRulesExpanded.map {
+        shippingRuleTransformer(it)
+    }
+
 
     return Reward.builder()
             .title(title)
@@ -776,10 +781,8 @@ fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
     val location = rule.location()?.let {
         locationTransformer(it.fragments().location())
     }
-    val id = decodeRelayId(rule.id()) ?: -1
 
     return ShippingRule.builder()
-            .id(id)
             .cost(cost)
             .location(location)
             .build()
@@ -792,17 +795,15 @@ fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
  */
 fun locationTransformer(locationGR: fragment.Location): Location {
     val id = decodeRelayId(locationGR.id()) ?: -1
-    val country = locationGR.countryName() ?: ""
+    val country = locationGR.county() ?: ""
     val displayName = locationGR.displayableName()
     val name = locationGR.name()
-    val state = locationGR.state()
 
     return Location.builder()
             .id(id)
             .country(country)
             .displayableName(displayName)
             .name(name)
-            .state(state)
             .build()
 }
 

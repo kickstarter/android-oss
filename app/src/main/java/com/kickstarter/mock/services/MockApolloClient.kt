@@ -23,7 +23,7 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(BackingFactory.backing())
     }
 
-    override fun getProjectAddOns(slug: String): Observable<List<Reward>> {
+    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
         val reward = RewardFactory.reward().toBuilder().isAddOn(true).quantity(2).build()
         return Observable.just(listOf(reward, reward))
     }

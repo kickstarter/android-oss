@@ -9,7 +9,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class Location implements Parcelable {
+public abstract class Location implements Parcelable, Relay {
   public abstract long id();
   public abstract @Nullable String city();
   public abstract String country();

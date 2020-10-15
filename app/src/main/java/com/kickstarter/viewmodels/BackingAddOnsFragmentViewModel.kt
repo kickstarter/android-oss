@@ -504,6 +504,7 @@ class BackingAddOnsFragmentViewModel {
                     }
         }
 
+        // - This will disappear when the query is ready in the backend [CT-649]
         private fun filterByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
             val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.name,

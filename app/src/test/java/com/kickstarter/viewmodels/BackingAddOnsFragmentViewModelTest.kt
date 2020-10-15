@@ -9,6 +9,7 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.Location
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
@@ -931,7 +932,7 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         return environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun getProjectAddOns(slug: String): Observable<List<Reward>> {
+                    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
                         return Observable.error(ApiExceptionFactory.badRequestException())
                     }
                 })
@@ -948,26 +949,13 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         return environment()
                 .toBuilder()
                 .apolloClient(object : MockApolloClient() {
-                    override fun getProjectAddOns(slug: String): Observable<List<Reward>> {
+                    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
                         return Observable.just(addOns)
                     }
                 })
                 .apiClient(object : MockApiClient() {
                     override fun fetchShippingRules(project: Project, reward: Reward): Observable<ShippingRulesEnvelope> {
                         return Observable.just(shippingRule)
-                    }
-                })
-                .currentConfig(currentConfig)
-                .build()
-    }
-
-    private fun buildEnvironmentWith(addOns: List<Reward>, currentConfig: MockCurrentConfig): Environment {
-
-        return environment()
-                .toBuilder()
-                .apolloClient(object : MockApolloClient() {
-                    override fun getProjectAddOns(slug: String): Observable<List<Reward>> {
-                        return Observable.just(addOns)
                     }
                 })
                 .currentConfig(currentConfig)

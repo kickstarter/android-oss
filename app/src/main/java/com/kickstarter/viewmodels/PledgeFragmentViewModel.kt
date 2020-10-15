@@ -481,6 +481,8 @@ interface PledgeFragmentViewModel {
                     .distinctUntilChanged()
 
             preSelectedShippingRule
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.shippingRule.onNext(it)
@@ -1429,7 +1431,7 @@ interface PledgeFragmentViewModel {
          * Determine if the user has backed addOns
          */
         private fun hasBackedAddOns(it: Pair<Backing, Reward>) =
-                it.first.addOns()?.isNotEmpty() ?: false
+                it.second.hasAddons() && it.first.addOns()?.isNotEmpty() ?: false
 
         private fun getAmountDigital(pledgeAmount: Double, bAmount: Double, pReason: PledgeReason) = pledgeAmount + bAmount
 

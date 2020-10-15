@@ -21,6 +21,7 @@
                 android:id="@+id/add_on_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
                 android:padding="@dimen/grid_3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -202,23 +203,24 @@
                         tools:text="1" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/initial_state_add_on"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/grid_7"
                     android:layout_marginTop="@dimen/grid_9_half"
                     android:gravity="center"
-                    android:textStyle="bold"
+                    android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:background="@drawable/border_rounded_solid_black"
                     android:text="@string/Add"
-                    style="@style/TextPrimary"
+                    style="@style/TextAppearance.AppCompat.Button"
                     android:textSize="@dimen/callout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pills_container"
                     tools:text="Add"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible"
+                    android:elevation="@dimen/grid_8"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

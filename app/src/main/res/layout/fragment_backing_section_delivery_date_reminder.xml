@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/grid_4"
+    android:layout_marginEnd="@dimen/grid_4"
+    android:background="@drawable/rect_grey_rounded"
+    app:cardElevation="0dp">
+
+
+    <ImageView
+        android:id="@+id/icon_calendar"
+        android:background="@drawable/ic_calendar"
+        android:scaleType="centerInside"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/delivery_reminder_label"
+        style="@style/FootnoteAccentBig"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="2sp"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_4"
+        android:layout_marginStart="@dimen/grid_7_half"
+        android:textColor="@color/ksr_dark_grey_500"
+        app:layout_constraintStart_toEndOf="@+id/icon_calendar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/Remember_that_delivery_dates_are_not_guaranteed" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,18 +10,18 @@ import com.kickstarter.libs.qualifiers.AutoGson
 abstract class ShippingRule : Parcelable {
     @Nullable abstract fun  id(): Long?
     abstract fun cost(): Double
-    abstract fun location(): Location
+    @Nullable abstract fun location(): Location
 
     @AutoParcel.Builder
     abstract class Builder {
         abstract fun id(id: Long?): Builder
         abstract fun cost(cost: Double): Builder
-        abstract fun location(location: Location): Builder
+        abstract fun location(location: Location?): Builder
         abstract fun build(): ShippingRule
     }
 
     override fun toString(): String {
-        return location().displayableName()
+        return location()?.displayableName() ?: ""
     }
 
     abstract fun toBuilder(): Builder

@@ -10,7 +10,7 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 @AutoGson
 public abstract class Item implements Parcelable {
-  public abstract float amount();
+  public abstract @Nullable float amount();
   public abstract @Nullable String description();
   public abstract long id();
   public abstract String name();

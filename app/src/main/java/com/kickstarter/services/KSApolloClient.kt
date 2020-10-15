@@ -27,12 +27,10 @@ import com.kickstarter.models.*
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
+import org.joda.time.DateTime
 import rx.Observable
 import rx.subjects.PublishSubject
-import type.BackingState
-import type.CreditCardPaymentType
-import type.CurrencyCode
-import type.PaymentTypes
+import type.*
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 
@@ -73,7 +71,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .paymentType(PaymentTypes.CREDIT_CARD.rawValue())
                     .paymentSourceId(createBackingData.paymentSourceId)
                     .locationId(createBackingData.locationId?.let { it })
-                    .rewardId(createBackingData.reward?.let { encodeRelayId(it) })
+                    .rewardIds(createBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                     .refParam(createBackingData.refTag?.tag())
                     .build()
 
@@ -91,9 +89,11 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             }
 
                             val checkoutPayload = response.data()?.createBacking()?.checkout()
+
+                            // TODO: Add new status field to backing model
                             val backing = Checkout.Backing.builder()
-                                    .clientSecret(checkoutPayload?.backing()?.clientSecret())
-                                    .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
+                                    .clientSecret(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.clientSecret())
+                                    .requiresAction(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.requiresAction()?: false)
                                     .build()
 
                             ps.onNext(Checkout.builder()
@@ -101,6 +101,34 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                                     .backing(backing)
                                     .build())
                             ps.onCompleted()
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    override fun getBacking(backingId: String): Observable<Backing> {
+        return Observable.defer {
+            val ps = PublishSubject.create<Backing>()
+
+            this.service.query(GetBackingQuery.builder()
+                    .backingId(backingId).build())
+                    .enqueue(object : ApolloCall.Callback<GetBackingQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetBackingQuery.Data>) {
+                            response.data()?.let {data ->
+                                Observable.just(data.backing())
+                                        .filter { it?.fragments()?.backing() != null }
+                                        .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
+                                        .filter { ObjectUtils.isNotNull(it) }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
                         }
                     })
             return@defer ps
@@ -149,7 +177,6 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                             ps.onNext(response.data())
                             ps.onCompleted()
                         }
-
                     })
             return@defer ps
         }
@@ -251,7 +278,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
             val ps = PublishSubject.create<Backing>()
 
             this.service.query(GetProjectBackingQuery.builder()
-                    .slug(slug).build())
+                    .slug(slug)
+                    .build())
                     .enqueue(object : ApolloCall.Callback<GetProjectBackingQuery.Data>() {
                         override fun onFailure(e: ApolloException) {
                             ps.onError(e)
@@ -260,8 +288,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
                             response.data()?.let {data ->
                                 Observable.just(data.project()?.backing())
-                                        .filter { it != null }
-                                        .map { backingObj -> backingObj?.let { createBackingObject(it) } }
+                                        .filter { it?.fragments()?.backing() != null }
+                                        .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
                                         .subscribe {
                                             ps.onNext(it)
                                             ps.onCompleted()
@@ -271,6 +299,42 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     })
             return@defer ps
         }
+    }
+
+    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
+        return Observable.defer {
+            val ps = PublishSubject.create<List<Reward>>()
+
+            this.service.query(GetProjectAddOnsQuery.builder()
+                    .slug(slug)
+                    .locationId(encodeRelayId(location))
+                    .build())
+                    .enqueue(object : ApolloCall.Callback<GetProjectAddOnsQuery.Data>() {
+                        override fun onFailure(e: ApolloException) {
+                            ps.onError(e)
+                        }
+
+                        override fun onResponse(response: Response<GetProjectAddOnsQuery.Data>) {
+                            response.data()?.let {data ->
+                                Observable.just(data.project()?.addOns())
+                                        .filter { it?.nodes() != null }
+                                        .map <List<Reward>> { addOnsList -> addOnsList?.let { getAddOnsFromProject(it) }?: emptyList() }
+                                        .subscribe {
+                                            ps.onNext(it)
+                                            ps.onCompleted()
+                                        }
+                            }
+                        }
+                    })
+            return@defer ps
+        }
+    }
+
+    private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
+       return addOnsGr.nodes()?.map {
+           val shippingRulesGr = it.shippingRulesExpanded()?.nodes()?.map { it.fragments().shippingRule() } ?: emptyList()
+           rewardTransformer(it.fragments().reward(), shippingRulesGr)
+        }?.toList() ?: emptyList()
     }
 
     override fun getStoredCards(): Observable<List<StoredCard>> {
@@ -398,7 +462,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                     .backingId(encodeRelayId(updateBackingData.backing))
                     .amount(updateBackingData.amount.toString())
                     .locationId(updateBackingData.locationId)
-                    .rewardId(updateBackingData.reward?.let { encodeRelayId(it) })
+                    .rewardIds(updateBackingData.rewardsIds?.let { list -> list.map { encodeRelayId(it) } })
                     .paymentSourceId(updateBackingData.paymentSourceId)
                     .build()
 
@@ -416,8 +480,8 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                             val checkoutPayload = response.data()?.updateBacking()?.checkout()
                             val backing = Checkout.Backing.builder()
-                                    .clientSecret(checkoutPayload?.backing()?.clientSecret())
-                                    .requiresAction(checkoutPayload?.backing()?.requiresAction()?: false)
+                                    .clientSecret(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.clientSecret())
+                                    .requiresAction(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.requiresAction()?: false)
                                     .build()
 
                             ps.onNext(Checkout.builder()
@@ -522,43 +586,66 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     }
 }
 
-private fun createBackingObject(backingGr: GetProjectBackingQuery.Backing): Backing {
-    val paymentGR = backingGr?.paymentSource()
-
-    val payment = paymentGR?.let { paymentType ->
-        (paymentType as? GetProjectBackingQuery.AsCreditCard)?.let {
-            return@let Backing.PaymentSource.builder()
-                    .state(it.state().toString())
-                    .type(it.type().rawValue())
-                    .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
-                    .id(it.id())
-                    .expirationDate(it.expirationDate())
-                    .lastFour(it.lastFour())
-                    .build()
-        }
+private fun createBackingObject(backingGr: fragment.Backing?): Backing {
+    val payment = backingGr?.paymentSource()?.fragments()?.payment()?.let { payment ->
+        Backing.PaymentSource.builder()
+                .state(payment.state().toString())
+                .type(payment.type().rawValue())
+                .paymentType(CreditCardPaymentType.CREDIT_CARD.rawValue())
+                .id(payment.id())
+                .expirationDate(payment.expirationDate())
+                .lastFour(payment.lastFour())
+                .build()
     }
 
-    val name = backingGr.backer()?.name() ?: ""
-    val id = decodeRelayId(backingGr.id())?.let { it } ?: 0
-    val locationId = decodeRelayId(backingGr.location()?.id())
-    val projectId = decodeRelayId(backingGr.id()) ?: 0
-    val backerId= decodeRelayId(backingGr.backer()?.id()) ?: 0
+    val addOns = backingGr?.addOns()?.let {
+        return@let getAddOnsList(it)
+    }
+
+    val id = decodeRelayId(backingGr?.id())?.let { it } ?: 0
+
+    val location = backingGr?.location()?.fragments()?.location()
+    val locationId = decodeRelayId(location?.id())
+    val projectId = decodeRelayId(backingGr?.project()?.fragments()?.project()?.id()) ?: -1
+    val shippingAmount = backingGr?.shippingAmount()?.fragments()
+
+    val reward = backingGr?.reward()?.fragments()?.reward()?.let { reward ->
+            return@let rewardTransformer(reward)
+    }
+
+    val backerData = backingGr?.backer()?.fragments()?.user()
+    val nameBacker = backerData?.name()
+    val backerId= decodeRelayId(backerData?.id()) ?: -1
+    val avatar = Avatar.builder()
+            .medium(backerData?.imageUrl())
+            .build()
+
+    val backer = User.builder()
+            .id(backerId)
+            .name(nameBacker)
+            .avatar(avatar)
+            .build()
 
     return Backing.builder()
-            .amount(backingGr.amount().amount().toString().toDouble())
+            .amount(backingGr?.amount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
+            .bonusAmount(backingGr?.bonusAmount()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0)
             .paymentSource(payment)
             .backerId(backerId)
-            .backerUrl(backingGr.backer()?.imageUrl())
-            .backerName(name)
+            .backerUrl(backerData?.imageUrl())
+            .backerName(nameBacker)
+            .backer(backer)
             .id(id)
+            .reward(reward)
+            .addOns(addOns)
+            .rewardId(reward?.id())
             .locationId(locationId)
-            .locationName(backingGr.location()?.displayableName())
-            .pledgedAt(backingGr.pledgedOn())
+            .locationName(location?.displayableName())
+            .pledgedAt(backingGr?.pledgedOn())
             .projectId(projectId)
-            .sequence(backingGr.sequence()?.toLong() ?: 0)
-            .shippingAmount(backingGr.shippingAmount()?.amount().toString().toFloat())
-            .status(backingGr.status().rawValue())
-            .cancelable(backingGr.cancelable())
+            .sequence(backingGr?.sequence()?.toLong() ?: 0)
+            .shippingAmount(shippingAmount?.amount()?.amount()?.toFloat() ?: 0f)
+            .status(backingGr?.status()?.rawValue())
+            .cancelable(backingGr?.cancelable() ?: false)
             .build()
 }
 
@@ -589,4 +676,166 @@ private fun <T : Any?> handleResponse(it: T, ps: PublishSubject<T>) {
             ps.onCompleted()
         }
     }
+}
+
+/**
+ * For addOns we receive this kind of data structure :[D, D, D, D, D, C, E, E]
+ * and we need to transform it in : D(5),C(1),E(2)
+ */
+fun getAddOnsList(addOns: fragment.Backing.AddOns): List<Reward> {
+
+    val rewardsList = addOns.nodes()?.map { node ->
+        rewardTransformer(node.fragments().reward())
+    }
+
+    val mapHolder = mutableMapOf<Long, Reward>()
+
+    rewardsList?.forEach {
+        val q = mapHolder[it.id()]?.quantity()?:0
+        mapHolder[it.id()] = it.toBuilder().quantity(q + 1).build()
+    }
+
+    return mapHolder.values.toList()
+}
+
+/**
+ * Transform the Reward GraphQL data structure into our own Reward data model
+ * @param fragment.reward rewardGr
+ * @return Reward
+ */
+private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: List<fragment.ShippingRule> = emptyList()): Reward {
+    val amount = rewardGr.amount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
+    val desc = rewardGr.description()
+    val title = rewardGr.name()
+    val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) } ?: null
+    val limit = chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
+    val remaining = rewardGr.remainingQuantity()
+    val endsAt = rewardGr.endsAt()?.let { DateTime(it) } ?: null
+    val startsAt = rewardGr.startsAt()?.let { DateTime(it) } ?: null
+    val rewardId = decodeRelayId(rewardGr.id()) ?: -1
+    val available = rewardGr.available()
+
+    val shippingPreference = when (rewardGr.shippingPreference()) {
+        ShippingPreference.NONE -> Reward.ShippingPreference.NONE
+        ShippingPreference.RESTRICTED -> Reward.ShippingPreference.RESTRICTED
+        ShippingPreference.UNRESTRICTED -> Reward.ShippingPreference.UNRESTRICTED
+        else -> Reward.ShippingPreference.UNKNOWN
+    }
+
+    val items = rewardGr.items()?.let {
+        rewardItemsTransformer(it)
+    }
+
+    val shippingRules = shippingRulesExpanded.map {
+        shippingRuleTransformer(it)
+    }
+
+
+    return Reward.builder()
+            .title(title)
+            .convertedMinimum(convertedAmount)
+            .minimum(amount)
+            .limit(limit)
+            .remaining(remaining)
+            .endsAt(endsAt)
+            .startsAt(startsAt)
+            .description(desc)
+            .estimatedDeliveryOn(estimatedDelivery)
+            .isAddOn(true)
+            .addOnsItems(items)
+            .id(rewardId)
+            .shippingPreference(shippingPreference.name)
+            .shippingPreferenceType(shippingPreference)
+            .shippingType(shippingPreference.name)
+            .shippingRules(shippingRules)
+            .isAvailable(available)
+            .build()
+}
+
+/**
+ * Choose the available limit being the smallest one, we can have limit by backer available just in add-ons
+ * or limit by reward, available in V1 and Graphql and for both add-ons and Rewards
+ * @return limit
+ */
+fun chooseLimit(limitReward: Int?, limitPerBacker: Int?): Int {
+   var limit =  limitReward?.let { it } ?: -1
+   var limitBacker = limitPerBacker?.let { it } ?: -1
+
+    if (limit < 0) limit = limitBacker
+    if (limitBacker < 0) limitBacker = limit
+
+    return when (limit <= limitBacker) {
+        true -> limit
+        else -> limitBacker
+    }
+}
+
+/**
+ * Transform the fragment.ShippingRule GraphQL data structure into our own ShippingRules data model
+ * @param fragment.ShippingRule
+ * @return ShippingRule
+ */
+fun shippingRuleTransformer(rule: fragment.ShippingRule): ShippingRule {
+    val cost = rule.cost()?.fragments()?.amount()?.amount()?.toDouble() ?: 0.0
+    val location = rule.location()?.let {
+        locationTransformer(it.fragments().location())
+    }
+
+    return ShippingRule.builder()
+            .cost(cost)
+            .location(location)
+            .build()
+}
+
+/**
+ * Transform the fragment.Location GraphQL data structure into our own Location data model
+ * @param fragment.Location
+ * @return Location
+ */
+fun locationTransformer(locationGR: fragment.Location): Location {
+    val id = decodeRelayId(locationGR.id()) ?: -1
+    val country = locationGR.county() ?: ""
+    val displayName = locationGR.displayableName()
+    val name = locationGR.name()
+
+    return Location.builder()
+            .id(id)
+            .country(country)
+            .displayableName(displayName)
+            .name(name)
+            .build()
+}
+
+/**
+ * Transform the Reward.Items GraphQL data structure into our own RewardsItems data model
+ * @param fragment.Reward.items
+ * @return List<RewardItem>
+ */
+fun rewardItemsTransformer(items: fragment.Reward.Items): List<RewardsItem> {
+    val rewardItems = items.edges()?.map { edge ->
+        val quantity = edge.quantity()
+        val description = edge.node()?.name()
+        val hasBackers = edge.node()?.hasBackers() ?: false
+        val id = decodeRelayId(edge.node()?.id()) ?: -1
+        val projectId = decodeRelayId(edge.node()?.project()?.id()) ?: -1
+        val name = edge.node()?.name() ?: ""
+
+        val item = Item.builder()
+                .name(name)
+                .description(description)
+                .id(id)
+                .projectId(projectId)
+                .build()
+
+        return@map RewardsItem.builder()
+                .id(id)
+                .itemId(item.id())
+                .item(item)
+                .rewardId(0) // - Discrepancy between V1 and Graph, the Graph object do not have the rewardID
+                .hasBackers(hasBackers)
+                .quantity(quantity)
+                .build()
+    } ?: emptyList()
+    return rewardItems.toList()
 }

@@ -36,6 +36,10 @@ public final class KoalaUtils {
         put("payment_type", checkoutData.paymentType().rawValue());
         put("revenue_in_usd_cents", Math.round(checkoutData.amount() * project.staticUsdRate() * 100));
         put("shipping_amount", checkoutData.shippingAmount());
+        if (checkoutData.bonusAmount() != null) {
+          put("bonus_amount", checkoutData.bonusAmount());
+          put("bonus_amount_usd", Math.round(checkoutData.bonusAmount() * project.staticUsdRate()));
+        }
       }
     });
 
@@ -154,12 +158,12 @@ public final class KoalaUtils {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("estimated_delivery_on", reward.estimatedDeliveryOn() != null ? reward.estimatedDeliveryOn().getMillis() / 1000 : null);
-        put("has_items", RewardUtils.isItemized(reward));
+        put("has_items", RewardUtils.INSTANCE.isItemized(reward));
         put("id", reward.id());
-        put("is_limited_time", RewardUtils.isTimeLimited(reward));
+        put("is_limited_time", RewardUtils.INSTANCE.isTimeLimitedEnd(reward));
         put("is_limited_quantity", reward.limit() != null);
         put("minimum", reward.minimum());
-        put("shipping_enabled", RewardUtils.isShippable(reward));
+        put("shipping_enabled", RewardUtils.INSTANCE.isShippable(reward));
         put("shipping_preference", reward.shippingPreference());
         put("title", reward.title());
       }

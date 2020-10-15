@@ -34,6 +34,7 @@
   <color name="ksr_text_green_700">@color/ksr_green_700</color>
   <color name="white">@android:color/white</color>
   <color name="transparent">@android:color/transparent</color>
+  <color name="kds_celebrate_100">#FFF2EC</color>
 
   <!-- KDS  -->
   <color name="trust_700">#0A007D</color>

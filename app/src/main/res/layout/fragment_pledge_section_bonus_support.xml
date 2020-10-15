@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bonus_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_3"
+    android:animateLayoutChanges="true"
+    android:focusable="true"
+    android:visibility="gone"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    tools:visibility="visible"
+    tools:showIn="@layout/fragment_pledge">
+
+    <TextView
+        android:id="@+id/bonus_support_label"
+        style="@style/CalloutPrimaryMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Bonus_support"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bonus_support_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:text="@string/A_little_extra_to_help"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bonus_support_label" />
+
+    <ImageButton
+        android:id="@+id/decrease_bonus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_decrease"
+        android:backgroundTint="@color/white_enabled_gray_disabled"
+        android:contentDescription="@string/Decrease_pledge"
+        android:src="@drawable/ic_remove"
+        android:tint="@color/green_enabled_dark_grey_disabled"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bonus_amount_container"
+        app:layout_constraintBottom_toBottomOf="@id/bonus_amount_container"/>
+
+    <ImageButton
+        android:id="@+id/increase_bonus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_increase"
+        android:backgroundTint="@color/white_enabled_gray_disabled"
+        android:contentDescription="@string/Increase_pledge"
+        android:src="@drawable/ic_add"
+        android:tint="@color/green_enabled_dark_grey_disabled"
+        app:layout_constraintBottom_toBottomOf="@id/decrease_bonus"
+        app:layout_constraintStart_toEndOf="@id/decrease_bonus"
+        app:layout_constraintTop_toTopOf="@id/decrease_bonus" />
+
+    <LinearLayout
+        android:id="@+id/additional_bonus_amount_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:animateLayoutChanges="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/bonus_amount_container"
+        app:layout_constraintEnd_toStartOf="@id/bonus_amount_container"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/increase_bonus"
+        app:layout_constraintTop_toBottomOf="@id/bonus_support_subtitle">
+
+        <ImageView
+            android:id="@+id/bonus_plus_icon"
+            android:layout_width="@dimen/grid_3"
+            android:layout_height="@dimen/grid_3"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_add"
+            android:tint="@color/ksr_dark_grey_400" />
+
+        <TextView
+            android:id="@+id/additional_bonus_amount"
+            style="@style/PledgeCurrencySecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/headline"
+            tools:text="$20" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bonus_amount_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:background="@drawable/rect_white_rounded"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/bonus_maximum"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/additional_bonus_amount_container"
+        app:layout_constraintTop_toBottomOf="@id/bonus_support_subtitle">
+
+        <TextView
+            android:id="@+id/bonus_symbol_start"
+            style="@style/PledgeCurrencyInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            tools:text="$" />
+
+        <EditText
+            android:id="@+id/bonus_amount"
+            style="@style/PledgeCurrencyInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:maxLength="13"
+            tools:ignore="LabelFor"
+            tools:targetApi="o"
+            tools:text="20" />
+
+        <TextView
+            android:id="@+id/bonus_symbol_end"
+            style="@style/PledgeCurrencyInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="$" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bonus_maximum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:gravity="end"
+        android:textColor="@color/ksr_red_400"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bonus_amount_container"
+        tools:text="The maximum pledge is $10,000."
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,10 +9,12 @@ import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -23,6 +25,8 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     private val projectData = TestSubscriber.create<ProjectData>()
     private val rewardsCount = TestSubscriber.create<Int>()
     private val showPledgeFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
+    private val showAddOnsFragment = TestSubscriber<Pair<PledgeData, PledgeReason>>()
+    private val showAlert = TestSubscriber<Pair<PledgeData, PledgeReason>>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardsFragmentViewModel.ViewModel(environment)
@@ -30,6 +34,8 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.projectData().subscribe(this.projectData)
         this.vm.outputs.rewardsCount().subscribe(this.rewardsCount)
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
+        this.vm.outputs.showAddOnsFragment().subscribe(this.showAddOnsFragment)
+        this.vm.outputs.showAlert().subscribe(this.showAlert)
     }
 
     @Test
@@ -77,13 +83,75 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
-        val reward = RewardFactory.reward()
+        val reward = RewardFactory.reward().toBuilder().hasAddons(false).build()
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
                 .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(project))
                 .build(), PledgeReason.PLEDGE))
+        this.showAddOnsFragment.assertNoValues()
+    }
+
+    @Test
+    fun testShowAlert_whenBackingProject_withAddOns_sameReward() {
+        val reward = RewardFactory.rewardWithShipping().toBuilder().hasAddons(true).build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .reward(reward)
+                        .rewardId(reward.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.vm.inputs.rewardClicked(reward)
+        this.showPledgeFragment.assertNoValues()
+        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                .reward(reward)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_REWARD))
+        this.showAlert.assertNoValues()
+    }
+
+    @Test
+    fun testShowAlert_whenBackingProject_withAddOns_otherReward() {
+        val rewarda = RewardFactory.rewardWithShipping().toBuilder().id(4).hasAddons(true).build()
+        val rewardb = RewardFactory.rewardHasAddOns().toBuilder().id(2).hasAddons(true).build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .reward(rewardb)
+                        .rewardId(rewardb.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), rewarda, rewardb))
+                .build()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.vm.inputs.rewardClicked(rewarda)
+        this.showPledgeFragment.assertNoValues()
+        this.showAddOnsFragment.assertNoValues()
+        this.showAlert.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                .reward(rewarda)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_REWARD))
+
+        this.vm.inputs.alertButtonPressed()
+        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                .reward(rewarda)
+                .projectData(ProjectDataFactory.project(backedProject))
+                .build(), PledgeReason.UPDATE_REWARD))
+        this.showPledgeFragment.assertNoValues()
     }
 
     @Test
@@ -100,6 +168,29 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(project))
                 .build(), PledgeReason.UPDATE_REWARD))
+    }
+
+    @Test
+    fun testFilterOutRewards_whenRewardNotStarted() {
+        val rwNotLimitedStart = RewardFactory.reward()
+        val rwLimitedStartNotStartedYet = rwNotLimitedStart.toBuilder().startsAt(DateTime.now().plusDays(1)).build()
+        val rwLimitedStartStarted = rwNotLimitedStart.toBuilder().startsAt(DateTime.now()).build()
+
+        val rewards = listOf<Reward>(rwNotLimitedStart, rwLimitedStartNotStartedYet, rwLimitedStartStarted)
+
+        val project = ProjectFactory.project().toBuilder().rewards(rewards).build()
+
+        setUpEnvironment(environment())
+        // - We configure the viewModel with a project that has rewards not started yet
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        val filteredList = listOf(rwNotLimitedStart, rwLimitedStartStarted)
+        val projWithFilteredRewards = project.toBuilder().rewards(filteredList).build()
+        val modifiedPData = ProjectData.builder().project(projWithFilteredRewards).build()
+
+        // - We check that the viewModel has filtered out the rewards not started yet
+        this.projectData.assertValue(modifiedPData)
+        this.rewardsCount.assertValue(2)
     }
 
     @Test

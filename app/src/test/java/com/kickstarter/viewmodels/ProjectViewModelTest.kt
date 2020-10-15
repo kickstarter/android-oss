@@ -1036,10 +1036,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.scrimIsVisible.assertValue(false)
 
         this.vm.inputs.fragmentStackCount(2)
-        this.scrimIsVisible.assertValues(false, true)
+        this.scrimIsVisible.assertValues(false)
+
+        this.vm.inputs.fragmentStackCount(3)
+        this.scrimIsVisible.assertValues(false)
 
         this.vm.inputs.fragmentStackCount(1)
-        this.scrimIsVisible.assertValues(false, true, false)
+        this.scrimIsVisible.assertValues(false)
     }
 
     @Test
@@ -1057,10 +1060,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.scrimIsVisible.assertValues(false)
 
         this.vm.inputs.fragmentStackCount(3)
-        this.scrimIsVisible.assertValues(false, true)
+        this.scrimIsVisible.assertValues(false)
 
         this.vm.inputs.fragmentStackCount(2)
-        this.scrimIsVisible.assertValues(false, true, false)
+        this.scrimIsVisible.assertValues(false)
     }
 
     @Test
@@ -1277,6 +1280,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.lakeTest.assertValue("Project Page Viewed")
     }
 
+    // TODO this will be fixed in https://kickstarter.atlassian.net/browse/NT-1390
+    /*
     @Test
     fun testShowUpdatePledge_whenFixingPaymentMethod() {
         setUpEnvironment(environment())
@@ -1359,7 +1364,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build(), PledgeReason.UPDATE_PAYMENT))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
-    }
+    }*/
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {
@@ -1383,6 +1388,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 ProjectDataFactory.project(refreshedProject))
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject),
+                ProjectDataFactory.project(refreshedProject),
                 ProjectDataFactory.project(refreshedProject))
     }
 
@@ -1408,6 +1414,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 ProjectDataFactory.project(refreshedProject))
         this.showUpdatePledgeSuccess.assertValueCount(1)
         this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject),
+                ProjectDataFactory.project(refreshedProject),
                 ProjectDataFactory.project(refreshedProject))
     }
 

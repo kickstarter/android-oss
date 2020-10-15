@@ -443,6 +443,10 @@
     <item name="android:textSize">@dimen/footnote</item>
   </style>
 
+  <style name="FootnoteAccentBig" parent="TextAccent">
+    <item name="android:textSize">@dimen/subheadline</item>
+  </style>
+
   <style name="FootnoteAccentMedium" parent="FootnoteAccent">
     <item name="android:textStyle">bold</item>
   </style>
@@ -512,6 +516,11 @@
     <item name="android:textSize">@dimen/subheadline</item>
   </style>
 
+  <style name="SubheadlineSanSerif" parent="TextPrimary">
+    <item name="android:textSize">@dimen/subheadline</item>
+    <item name="android:fontFamily">@string/font_family_sans_serif</item>
+  </style>
+
   <style name="SubheadlineMedium" parent="Subheadline">
     <item name="android:textStyle">bold</item>
   </style>
@@ -568,6 +577,10 @@
     <item name="android:textSize">@dimen/title_1</item>
   </style>
 
+  <style name="PledgeCurrencySymbol" parent="TextPrimary">
+    <item name="android:textSize">@dimen/headline</item>
+  </style>
+
   <style name="PledgeCurrencySecondary" parent="PledgeCurrency">
     <item name="android:textColor">@color/ksr_dark_grey_500</item>
   </style>
@@ -588,7 +601,7 @@
   </style>
 
   <style name="RewardSectionTitle" parent="CalloutPrimaryMedium">
-    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:textColor">@color/ksr_dark_grey_500</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
   </style>
@@ -644,6 +657,15 @@
     <item name="android:background">@drawable/rect_green_alpha_6</item>
   </style>
 
+
+  <!-- AddOns -->
+  <style name="AddOnPill" parent="FootnoteAccentMedium">
+    <item name="android:paddingTop">@dimen/grid_3_half</item>
+    <item name="android:paddingBottom">@dimen/grid_3_half</item>
+    <item name="android:paddingStart">@dimen/grid_2</item>
+    <item name="android:paddingEnd">@dimen/grid_2</item>
+    <item name="android:background">@drawable/rect_coral_alpha_6</item>
+  </style>
 
   <!-- Creator Dashboard -->
   <style name="CreatorDashboardTableRowContainer">

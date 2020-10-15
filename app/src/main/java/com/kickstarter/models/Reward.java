@@ -20,7 +20,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.isZero;
 @AutoParcel
 public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable Integer backersCount();
-  public abstract double convertedMinimum();
+  public abstract @Nullable double convertedMinimum();
   public abstract @Nullable String description();
   public abstract @Nullable DateTime endsAt();
   public abstract long id();
@@ -33,6 +33,31 @@ public abstract class Reward implements Parcelable, Relay {
   public abstract @Nullable SingleLocation shippingSingleLocation();
   public abstract @Nullable @ShippingType String shippingType();
   public abstract @Nullable String title();
+  public abstract @Nullable boolean isAddOn();
+  public abstract @Nullable List<RewardsItem> addOnsItems();
+  public abstract @Nullable Integer quantity();
+  public abstract @Nullable boolean hasAddons();
+  public abstract @Nullable DateTime startsAt();
+
+  /**
+   * This field will be available just for GraphQL, in V1 it would be null
+   * A Reward is available when:
+   * - Limit has not been reached
+   * - ExpireData has not been reached
+   *
+   * @return true is the Reward is available
+   */
+  public abstract @Nullable boolean isAvailable();
+
+  /**
+   * this field will be available just for GraphQL, in V1 it would be empty
+   */
+  public abstract @Nullable ShippingPreference shippingPreferenceType();
+
+  /**
+   * this field will be available just for GraphQL, in V1 it would be empty
+   */
+  public abstract @Nullable List<ShippingRule> shippingRules();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -40,6 +65,7 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder convertedMinimum(double __);
     public abstract Builder description(String __);
     public abstract Builder endsAt(DateTime __);
+    public abstract Builder startsAt(DateTime __);
     public abstract Builder id(long __);
     public abstract Builder limit(Integer __);
     public abstract Builder minimum(double __);
@@ -50,6 +76,13 @@ public abstract class Reward implements Parcelable, Relay {
     public abstract Builder shippingSingleLocation(SingleLocation __);
     public abstract Builder shippingType(@ShippingType String __);
     public abstract Builder title(String __);
+    public abstract Builder isAddOn(boolean __);
+    public abstract Builder addOnsItems(List<RewardsItem> __);
+    public abstract Builder quantity(Integer __);
+    public abstract Builder hasAddons(boolean __);
+    public abstract Builder shippingRules(List<ShippingRule> __);
+    public abstract Builder shippingPreferenceType(ShippingPreference __);
+    public abstract Builder isAvailable(boolean __);
     public abstract Reward build();
   }
 
@@ -74,6 +107,24 @@ public abstract class Reward implements Parcelable, Relay {
 
   public boolean isLimited() {
     return this.limit() != null && !this.isAllGone();
+  }
+
+  public enum ShippingPreference {
+    NONE("none"),
+
+    RESTRICTED("restricted"),
+
+    UNRESTRICTED("unrestricted"),
+
+    NOSHIPPING(SHIPPING_TYPE_NO_SHIPPING),
+
+    UNKNOWN("$UNKNOWN");
+
+    private String type;
+
+    ShippingPreference(final String type) {
+      this.type = type;
+    }
   }
 
   @AutoParcel

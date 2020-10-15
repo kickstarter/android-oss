@@ -46,6 +46,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     private val titleForNoReward = TestSubscriber<Int>()
     private val titleForReward = TestSubscriber<String?>()
     private val titleIsGone = TestSubscriber<Boolean>()
+    private val hasAddonsAvailable = TestSubscriber<Boolean>()
+    private val selectedRewardTagIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = RewardViewHolderViewModel.ViewModel(environment)
@@ -71,10 +73,12 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.rewardItemsAreGone().subscribe(this.rewardItemsAreGone)
         this.vm.outputs.shippingSummary().subscribe(this.shippingSummary)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
-        this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
+        this.vm.outputs.showFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.titleForNoReward().subscribe(this.titleForNoReward)
         this.vm.outputs.titleForReward().subscribe(this.titleForReward)
         this.vm.outputs.titleIsGone().subscribe(this.titleIsGone)
+        this.vm.outputs.hasAddOnsAvailable().subscribe(this.hasAddonsAvailable)
+        this.vm.outputs.selectedRewardTagIsGone().subscribe(this.selectedRewardTagIsGone)
     }
 
     @Test
@@ -89,6 +93,25 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.backersCount.assertValue(30)
         this.backersCountIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testDigitalReward_withAddOns_showAddOnsTag() {
+        setUpEnvironment(environment())
+
+        // - Digital reward
+        val reward = RewardFactory.reward()
+                .toBuilder()
+                .shippingPreference("unrestricted")
+                .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
+                .hasAddons(true)
+                .backersCount(30)
+                .build()
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
+
+        this.hasAddonsAvailable.assertValue(true)
+        this.limitContainerIsGone.assertValue(false)
     }
 
     @Test
@@ -152,7 +175,62 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_backedReward() {
+    fun testButtonCTA_whenProjectIsLiveAndBacked_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonCTA.assertValuesAndClear(R.string.Continue)
+    }
+
+    @Test
+    fun testButtonCTA_whenProjectIsLiveAndBacked_Other_Reward() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = RewardFactory.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), rw)
+        this.buttonIsGone.assertValue(false)
+        this.buttonCTA.assertValuesAndClear(R.string.Select)
+    }
+
+    @Test
+    fun testButtonEnabled_whenProjectIsLiveAndBacked_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithAddOns()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
+    }
+
+    @Test
+    fun testButtonEnabled_whenProjectIsLive_Available_Add_Ons() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+        val rw = RewardFactory.rewardHasAddOns()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project), rw)
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
+    }
+
+    @Test
+    fun testButtonEnabled_whenProjectIsLiveAndBacked_BackedAddOns() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProjectWithRewardAndAddOnsLimitReached()
+        val rw = backedLiveProject.backing()?.reward()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), requireNotNull(rw))
+        this.buttonIsGone.assertValue(false)
+        this.buttonIsEnabled.assertValue(true)
+    }
+
+    @Test
+    fun testButtonUIOutputs_whenProjectIsLiveAndBacked_AvailableAddOns() {
         setUpEnvironment(environment())
 
         val backedLiveProject = ProjectFactory.backedProject()
@@ -160,6 +238,34 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 ?: RewardFactory.reward())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.Selected)
+    }
+
+    @Test
+    fun testYouBackedTagVisible_whenProjectIsLiveAndBacked_backedReward() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()
+                ?: RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testYouBackedTagGone_whenProjectIsLiveAndBacked() {
+        setUpEnvironment(environment())
+
+        val backedLiveProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject),  RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testYouBackedTagGone_whenNoBackedProject() {
+        setUpEnvironment(environment())
+
+        val project = ProjectFactory.project()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project),  RewardFactory.reward())
+        this.selectedRewardTagIsGone.assertValue(true)
     }
 
     @Test
@@ -547,18 +653,18 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // A backed reward from a live project should not be enabled.
         val backedLiveProject = ProjectFactory.backedProject()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false)
 
         // A backed reward from an ended project should not be enabled.
         val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder()
                 .state(Project.STATE_SUCCESSFUL)
                 .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject), backedSuccessfulProject.backing()?.reward()!!)
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false)
 
         // A reward with its limit reached should not be enabled.
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.limitReached())
-        this.buttonIsEnabled.assertValues(true, false)
+        this.buttonIsEnabled.assertValues(true, false, true, false, true, false)
     }
 
     @Test
@@ -718,7 +824,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
                 .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
                 .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), rewardWithShipping)
-        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, null))
+        this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, ""))
         this.shippingSummaryIsGone.assertValues(false)
     }
 
@@ -765,6 +871,22 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.titleIsGone.assertValues(false)
         this.titleForReward.assertNoValues()
         this.titleForNoReward.assertValue(R.string.Pledge_without_a_reward)
+    }
+
+    @Test
+    fun testReward_HasAddOnsAvailable() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddons(true).build())
+        this.hasAddonsAvailable.assertValue(true)
+    }
+
+    @Test
+    fun testReward_No_HasAddOnsAvailable() {
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.reward().toBuilder().hasAddons(false).build())
+        this.hasAddonsAvailable.assertValue(false)
     }
 
     @Test

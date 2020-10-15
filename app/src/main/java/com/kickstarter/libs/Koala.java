@@ -740,6 +740,18 @@ public final class Koala {
 
     this.client.track(LakeEvent.FIX_PLEDGE_BUTTON_CLICKED, props);
   }
+
+  public void trackAddOnsPageViewed(final @NonNull PledgeData pledgeData) {
+    final Map<String, Object> props = KoalaUtils.pledgeDataProperties(pledgeData, this.client.loggedInUser());
+
+    this.client.track(LakeEvent.ADD_ONS_PAGE_VIEWED, props);
+  }
+
+  public void trackAddOnsContinueButtonClicked(final @NonNull PledgeData pledgeData) {
+    final Map<String, Object> props = KoalaUtils.pledgeDataProperties(pledgeData, this.client.loggedInUser());
+
+    this.client.track(LakeEvent.ADD_ONS_CONTINUED_BUTTON_CLICKED, props);
+  }
   //endregion
 
   //region Log In or Signup

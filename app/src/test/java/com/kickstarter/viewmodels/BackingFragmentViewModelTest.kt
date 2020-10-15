@@ -4,8 +4,10 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
+import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApolloClient
@@ -15,6 +17,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.model.Card
+import junit.framework.TestCase
 import org.joda.time.DateTime
 import org.junit.Test
 import rx.Observable
@@ -49,6 +52,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     private val showUpdatePledgeSuccess = TestSubscriber.create<Void>()
     private val swipeRefresherProgressIsVisible = TestSubscriber.create<Boolean>()
     private val totalAmount = TestSubscriber.create<CharSequence>()
+    private val listAddOns = TestSubscriber.create<Pair<ProjectData, List<Reward>>>()
+    private val bonusAmount = TestSubscriber.create<CharSequence>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingFragmentViewModel.ViewModel(environment)
@@ -77,6 +82,8 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showUpdatePledgeSuccess().subscribe(this.showUpdatePledgeSuccess)
         this.vm.outputs.swipeRefresherProgressIsVisible().subscribe(this.swipeRefresherProgressIsVisible)
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
+        this.vm.outputs.projectDataAndAddOns().subscribe(this.listAddOns)
+        this.vm.outputs.bonusSupport().map { it.toString() }.subscribe(this.bonusAmount)
     }
 
     @Test
@@ -494,6 +501,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
 
         val environment = environment()
                 .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .apolloClient(mockApolloClientForBacking(backing))
                 .build()
         setUpEnvironment(environment)
@@ -517,6 +525,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(mockApolloClientForBacking(backing))
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -538,6 +547,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(mockApolloClientForBacking(backing))
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -560,6 +570,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(mockApolloClientForBacking(backing))
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -582,6 +593,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(mockApolloClientForBacking(backing))
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -604,6 +616,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(mockApolloClientForBacking(backing))
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -625,6 +638,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(mockApolloClientForBacking(backing))
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -646,6 +660,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
                 .toBuilder()
                 .apolloClient(mockApolloClientForBacking(backing))
+                .currentUser(MockCurrentUser(UserFactory.user()))
                 .build()
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -656,10 +671,10 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryIsGone_whenLocationId_isNull() {
+    fun testPledgeSummaryIsGone_whenReward_isNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .locationId(null)
+                .reward(null)
                 .build()
 
 
@@ -674,10 +689,10 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeSummaryIsGone_whenLocationId_isNotNull() {
+    fun testPledgeSummaryIsGone_whenReward_isNotNull() {
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .locationId(4L)
+                .reward(RewardFactory.rewardWithShipping())
                 .build()
 
         val environment = environment()
@@ -712,6 +727,67 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         val projectData = ProjectDataFactory.project(backedProject)
         this.vm.inputs.configureWith(projectData)
         this.projectDataAndReward.assertValue(Pair(projectData, reward))
+    }
+
+    @Test
+    fun testProjectAndRewardAsCreator() {
+        val reward = RewardFactory.reward()
+        val backer = UserFactory.user()
+
+        val backing = BackingFactory.backing(backer)
+                .toBuilder()
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+
+        val creator = UserFactory
+                .creator()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .backing(backing)
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectData.builder()
+                .project(project)
+                .backing(backing)
+                .user(creator)
+                .build()
+
+        this.vm.inputs.configureWith(projectData)
+        this.vm.outputs.projectDataAndReward()
+                .subscribe {
+                    TestCase.assertEquals(it.first, projectData)
+                    TestCase.assertEquals(it.second, reward)
+                }
+    }
+
+    @Test
+    fun testProjectAndRewardNoCreatorNoBacker() {
+        val reward = RewardFactory.reward()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectDataFactory.project(project)
+
+        this.vm.inputs.configureWith(projectData)
+        this.projectDataAndReward.assertNoValues()
     }
 
     @Test
@@ -919,6 +995,79 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.totalAmount.assertValue(expectedCurrency(environment, backedProject, amount))
     }
+
+    @Test
+    fun testRewardWithAddOn() {
+        val addOns = RewardFactory.backers().toBuilder().isAddOn(true).quantity(7).build()
+        val reward = RewardFactory.reward()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .reward(reward)
+                .addOns(listOf(addOns))
+                .build()
+
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun getProjectBacking(slug: String): Observable<Backing> {
+                        return Observable.just(backing)
+                    }
+                })
+                .build()
+        setUpEnvironment(environment)
+
+        val projectData = ProjectDataFactory.project(backedProject)
+        this.vm.inputs.configureWith(projectData)
+
+        this.listAddOns.assertValue(Pair(projectData, listOf(addOns)))
+    }
+
+    fun testWithBonusSupport() {
+        val bonusAmount = 5.0
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .bonusAmount(bonusAmount)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.bonusAmount.assertValue(expectedCurrency(environment, backedProject, bonusAmount))
+    }
+
+    @Test
+    fun testWithBonusSupportFormat() {
+        val bonusAmount = 50.0
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .bonusAmount(bonusAmount)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+
+        val backedProject = ProjectFactory.backedProject()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
+
+        this.bonusAmount.assertValue("$50")
+    }
+
 
     private fun backingWithStatus(@Backing.Status backingStatus: String): Backing {
         return BackingFactory.backing()

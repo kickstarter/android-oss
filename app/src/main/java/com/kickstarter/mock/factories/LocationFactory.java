@@ -62,4 +62,14 @@ public final class LocationFactory {
       .expandedCountry("United States")
       .build();
   }
+
+  public static @NonNull Location empty() {
+    return Location.builder()
+            .id(-1L)
+            .displayableName("")
+            .name("")
+            .country("")
+            .expandedCountry("")
+            .build();
+  }
 }

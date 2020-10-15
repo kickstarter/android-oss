@@ -23,12 +23,21 @@ open class MockApolloClient : ApolloClientType {
         return Observable.just(BackingFactory.backing())
     }
 
+    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
+        val reward = RewardFactory.reward().toBuilder().isAddOn(true).quantity(2).build()
+        return Observable.just(listOf(reward, reward))
+    }
+
     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
         return Observable.just(true)
     }
 
     override fun createBacking(createBackingData: CreateBackingData): Observable<Checkout> {
         return Observable.just(CheckoutFactory.requiresAction(false))
+    }
+
+    override fun getBacking(backingId: String): Observable<Backing> {
+        return Observable.just(BackingFactory.backing())
     }
 
     override fun clearUnseenActivity(): Observable<Int> {

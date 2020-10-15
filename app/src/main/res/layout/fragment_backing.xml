@@ -1,225 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/backing_root"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:background="@color/ksr_grey_300"
-  android:clickable="true"
-  android:focusable="true"
-  android:paddingTop="?android:attr/actionBarSize">
-
-  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    android:id="@+id/backing_swipe_refresh_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/backing_root"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@color/ksr_grey_300"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingTop="?android:attr/actionBarSize">
 
-    <androidx.core.widget.NestedScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:fillViewport="true"
-      android:overScrollMode="never"
-      android:scrollbars="none">
-
-      <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/backing_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="@dimen/grid_3"
-        android:layout_marginEnd="@dimen/grid_3"
-        android:paddingBottom="@dimen/grid_4">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_4"
-          android:orientation="vertical">
-
-          <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="@dimen/grid_4"
-            android:orientation="horizontal">
-
-            <ImageView
-              android:id="@+id/backing_avatar"
-              android:layout_width="@dimen/grid_9"
-              android:layout_height="@dimen/grid_9"
-              android:focusable="false"
-              android:importantForAccessibility="no"
-              tools:background="@color/ksr_cobalt_500" />
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
             <LinearLayout
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_marginStart="@dimen/grid_2"
-              android:layout_weight="1"
-              android:orientation="vertical">
-
-              <TextView
-                android:id="@+id/backer_name"
-                style="@style/CalloutPrimaryMedium"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Nathan Squid" />
+                android:layout_marginStart="@dimen/grid_3"
+                android:layout_marginEnd="@dimen/grid_3"
+                android:orientation="vertical">
 
-              <TextView
-                android:id="@+id/backer_number"
-                style="@style/FootnotePrimaryMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="@string/backer_modal_backer_number" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/grid_4"
+                    android:orientation="vertical">
 
-              <TextView
-                android:id="@+id/backing_date"
-                style="@style/FootnoteSecondary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="As of January 1, 2019" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="@dimen/grid_4"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/backing_avatar"
+                            android:layout_width="@dimen/grid_9"
+                            android:layout_height="@dimen/grid_9"
+                            android:focusable="false"
+                            android:importantForAccessibility="no"
+                            tools:background="@color/ksr_cobalt_500" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/grid_2"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/backer_name"
+                                style="@style/CalloutPrimaryMedium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="Nathan Squid" />
+
+                            <TextView
+                                android:id="@+id/backer_number"
+                                style="@style/FootnotePrimaryMedium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="@string/backer_modal_backer_number" />
+
+                            <TextView
+                                android:id="@+id/backing_date"
+                                style="@style/FootnoteSecondary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:text="As of January 1, 2019" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/backer_pledge_status"
+                        style="@style/BodyPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_4"
+                        android:background="@color/ksr_grey_400"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/grid_4"
+                        android:paddingTop="@dimen/grid_2"
+                        android:paddingEnd="@dimen/grid_4"
+                        android:paddingBottom="@dimen/grid_2"
+                        tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
+
+                    <include
+                        layout="@layout/fragment_pledge_section_summary_pledge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_3"
+                        android:visibility="visible" />
+
+                    <include
+                        layout="@layout/fragment_pledge_section_summary_shipping"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_3"
+                        tools:visibility="visible" />
+
+                    <include
+                        android:id="@+id/section_bonus_support"
+                        layout="@layout/fragment_backing_section_bonus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_3"
+                        android:visibility="visible" />
+
+                    <include
+                        layout="@layout/fragment_backing_section_summary_total"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_4" />
+
+                    <include layout="@layout/horizontal_line_1dp_view" />
+
+
+                    <LinearLayout
+                        android:id="@+id/payment_method"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/grid_1"
+                        android:focusable="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/CalloutPrimaryMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/grid_4"
+                            android:layout_marginBottom="@dimen/grid_3"
+                            android:text="@string/Payment_method" />
+
+                        <include
+                            layout="@layout/reward_card_details"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/grid_3" />
+
+                        <TextView
+                            android:id="@+id/fix_payment_method_message"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/grid_2"
+                            android:text="@string/We_cant_process_your_pledge_Please_update_your_payment_method"
+                            android:textColor="@color/ksr_red_400"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/fix_payment_method_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/grid_3"
+                            android:backgroundTint="@color/button_pledge_error"
+                            android:text="@string/Fix"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
+                        <include layout="@layout/horizontal_line_1dp_view" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/pledge_details_label"
+                        style="@style/CalloutPrimaryMedium"
+                        android:textColor="@color/ksr_soft_black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_4"
+                        android:text="@string/Your_pledge_details" />
+
+                    <TextView
+                        android:id="@+id/estimated_delivery_label_2"
+                        style="@style/CalloutPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_3"
+                        android:text="@string/Estimated_delivery"
+                        android:textColor="@color/ksr_soft_black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <include
+                        android:id="@+id/received_section"
+                        layout="@layout/fragment_backing_section_reward_delivery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_5_half" />
+
+                    <include
+                        android:id="@+id/delivery_disclaimer_section"
+                        layout="@layout/fragment_backing_section_delivery_date_reminder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/grid_3" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="@dimen/grid_3"
+                    android:id="@+id/reward_add_on_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/item_add_on"
+                    tools:itemCount="2"/>
+
             </LinearLayout>
-          </LinearLayout>
 
-          <TextView
-            android:id="@+id/backer_pledge_status"
-            style="@style/BodyPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_4"
-            android:background="@color/ksr_grey_400"
-            android:gravity="center"
-            android:paddingStart="@dimen/grid_4"
-            android:paddingTop="@dimen/grid_2"
-            android:paddingEnd="@dimen/grid_4"
-            android:paddingBottom="@dimen/grid_2"
-            tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
+        </androidx.core.widget.NestedScrollView>
 
-          <include
-            layout="@layout/fragment_pledge_section_summary_pledge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_3"
-            android:visibility="visible" />
-
-          <include
-            layout="@layout/fragment_pledge_section_summary_shipping"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_3"
-            tools:visibility="visible" />
-
-          <include
-            layout="@layout/fragment_backing_section_summary_total"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_4" />
-
-          <include layout="@layout/horizontal_line_1dp_view" />
-
-          <LinearLayout
-            android:id="@+id/payment_method"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_1"
-            android:focusable="true"
-            android:orientation="vertical">
-
-            <TextView
-              style="@style/CalloutPrimaryMedium"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/grid_4"
-              android:layout_marginBottom="@dimen/grid_3"
-              android:text="@string/Payment_method" />
-
-            <include
-              layout="@layout/reward_card_details"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/grid_3" />
-
-            <TextView
-              android:id="@+id/fix_payment_method_message"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/grid_2"
-              android:text="@string/We_cant_process_your_pledge_Please_update_your_payment_method"
-              android:textColor="@color/ksr_red_400"
-              android:visibility="gone"
-              tools:visibility="visible" />
-
-            <com.google.android.material.button.MaterialButton
-              android:id="@+id/fix_payment_method_button"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/grid_3"
-              android:backgroundTint="@color/button_pledge_error"
-              android:text="@string/Fix"
-              android:visibility="gone"
-              tools:visibility="visible" />
-
-            <include layout="@layout/horizontal_line_1dp_view" />
-
-          </LinearLayout>
-
-          <TextView
-            style="@style/CalloutPrimaryMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_4"
-            android:layout_marginBottom="@dimen/grid_2"
-            android:text="@string/Selected_reward" />
-
-        </LinearLayout>
-
-        <include
-          layout="@layout/item_reward"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_4"/>
-
-        <LinearLayout
-          android:id="@+id/received_section"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:orientation="vertical"
-          android:paddingBottom="@dimen/grid_2">
-
-          <include
-            layout="@layout/horizontal_line_1dp_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_2" />
-
-          <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-              android:id="@+id/received_label"
-              style="@style/CalloutPrimaryMedium"
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/Reward_delivered" />
-
-            <CheckBox
-              android:id="@+id/mark_as_received_checkbox"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              app:layout_constraintBottom_toBottomOf="parent" />
-          </LinearLayout>
-
-        </LinearLayout>
-
-      </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
-  </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

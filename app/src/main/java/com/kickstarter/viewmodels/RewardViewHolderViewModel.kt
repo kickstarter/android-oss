@@ -103,8 +103,8 @@ interface RewardViewHolderViewModel {
         /** Returns `true` if the shipping summary should be hidden, `false` otherwise.  */
         fun shippingSummaryIsGone(): Observable<Boolean>
 
-        /** Show [com.kickstarter.ui.fragments.PledgeFragment] with the project's reward selected.  */
-        fun showPledgeFragment(): Observable<Pair<Project, Reward>>
+        /** Show [com.kickstarter.ui.fragments.PledgeFragment] || [com.kickstarter.ui.fragments.BackingAddOnsFragment]  with the project's reward selected.  */
+        fun showFragment(): Observable<Pair<Project, Reward>>
 
         /** Emits `true` if the title should be hidden, `false` otherwise.  */
         fun titleIsGone(): Observable<Boolean>
@@ -115,9 +115,14 @@ interface RewardViewHolderViewModel {
         /** Emits the reward's title when `isReward` is true.  */
         fun titleForReward(): Observable<String?>
 
+        /** Emits if the reward has add-Ons available */
+        fun hasAddOnsAvailable(): Observable<Boolean>
+
         /** Emits a boolean that determines if the minimum pledge amount should be shown **/
         fun isMinimumPledgeAmountGone(): Observable<Boolean>
 
+        /** Emits a boolean that determines if the selected reward Tag should be shown **/
+        fun selectedRewardTagIsGone(): Observable<Boolean>
     }
 
     class ViewModel(@NonNull environment: Environment) : ActivityViewModel<RewardViewHolder>(environment), Inputs, Outputs {
@@ -150,12 +155,14 @@ interface RewardViewHolderViewModel {
         private val rewardItemsAreGone = BehaviorSubject.create<Boolean>()
         private val shippingSummary = BehaviorSubject.create<Pair<Int, String?>>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
-        private val showPledgeFragment = PublishSubject.create<Pair<Project, Reward>>()
+        private val showFragment = PublishSubject.create<Pair<Project, Reward>>()
         private val titleForNoReward = BehaviorSubject.create<Int>()
         private val titleForReward = BehaviorSubject.create<String?>()
         private val titleIsGone = BehaviorSubject.create<Boolean>()
+        private val addOnsAvailable = BehaviorSubject.create<Boolean>()
         private val variantSuggestedAmount = BehaviorSubject.create<Int?>()
         private val isMinimumPledgeAmountGone = BehaviorSubject.create<Boolean>()
+        private val selectedRewardTagIsGone = PublishSubject.create<Boolean>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -206,7 +213,9 @@ interface RewardViewHolderViewModel {
                     .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.buttonCTA)
+                    .subscribe {
+                        this.buttonCTA.onNext(it)
+                    }
 
             projectAndReward
                     .map { it.first }
@@ -243,11 +252,13 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.descriptionIsGone)
 
-            this.projectDataAndReward
-                    .map { isSelectable(it.first.project(), it.second) }
+            projectAndReward
+                    .map { shouldContinueFlow(it.first, it.second) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe(this.buttonIsEnabled)
+                    .subscribe {
+                        this.buttonIsEnabled.onNext(it)
+                    }
 
             projectAndReward
                     .map { it.first.isLive && RewardUtils.isLimited(it.second) }
@@ -280,6 +291,11 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.reward)
 
+            reward
+                    .map { it.hasAddons() }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.addOnsAvailable)
+
             projectAndReward
                     .map { expirationDateIsGone(it.first, it.second) }
                     .distinctUntilChanged()
@@ -287,13 +303,13 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.endDateSectionIsGone)
 
             projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
+                    .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
                     .compose(bindToLifecycle())
-                    .subscribe(this.showPledgeFragment)
+                    .subscribe(this.showFragment)
 
             projectAndReward
-                    .filter { isSelectable(it.first, it.second) && it.first.isLive }
+                    .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
                     .compose<Pair<Pair<Project, Reward>, Int>>(combineLatestPair(this.rewardClicked))
                     .compose(bindToLifecycle())
                     .subscribe { this.koala.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
@@ -316,6 +332,13 @@ interface RewardViewHolderViewModel {
                     }
                     .compose(bindToLifecycle())
                     .subscribe(this.titleForNoReward)
+
+            projectAndReward
+                    .map { BackingUtils.isBacked(it.first, it.second) }
+                    .compose(bindToLifecycle())
+                    .subscribe{
+                        this.selectedRewardTagIsGone.onNext(!it)
+                    }
 
             reward
                     .filter { RewardUtils.isReward(it) }
@@ -343,8 +366,8 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingSummaryIsGone)
 
-            Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone)
-            { endDateGone, remainingGone, shippingGone -> endDateGone && remainingGone && shippingGone }
+            Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone, this.addOnsAvailable)
+            { endDateGone, remainingGone, shippingGone, addOnsAvailable -> endDateGone && remainingGone && shippingGone && !addOnsAvailable }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.limitContainerIsGone)
@@ -379,6 +402,28 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.isMinimumPledgeAmountGone)
 
         }
+
+        /**
+         * Use cases for enabling/disabling access to launch the next fragment
+         * - If the selected reward has no addOns the CTA button will be enable if available
+         * - If the previously selected reward has addOns but not BackedAddOns CTA button available is reward available
+         * - If the previously selected reward has add-ons and has Backed addOns, CTA button available (they still can update the addOns selection)
+        */
+        private fun shouldContinueFlow(project: Project, rw: Reward):Boolean {
+            val hasAddOns = rw.hasAddons()
+            val backedRwId = project.backing()?.rewardId()
+            val selectingOtherRw = backedRwId != rw.id()
+
+            return when {
+                !hasAddOns && isSelectable(project, rw) -> true
+                hasAddOns && selectingOtherRw && RewardUtils.isAvailable(project, rw) -> true
+                isUpdatingSameRewardWithBackedAddOns(hasAddOns, project, selectingOtherRw, rw) -> true
+                else -> false
+            }
+        }
+
+        private fun isUpdatingSameRewardWithBackedAddOns(hasAddOns: Boolean, project: Project, selectingOtherRw: Boolean, rw: Reward) =
+                hasAddOns && hasBackedAddOns(project) && !selectingOtherRw && RewardUtils.hasStarted(rw) && project.isLive
 
         private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {
                 OptimizelyExperiment.Variant.CONTROL -> 1
@@ -418,10 +463,12 @@ interface RewardViewHolderViewModel {
         private fun expirationDateIsGone(project: Project, reward: Reward): Boolean {
             return when {
                 !project.isLive -> true
-                RewardUtils.isTimeLimited(reward) -> RewardUtils.isExpired(reward)
+                RewardUtils.isTimeLimitedEnd(reward) -> RewardUtils.isExpired(reward)
                 else -> true
             }
         }
+
+        private fun hasBackedAddOns(project: Project) = !project.backing()?.addOns().isNullOrEmpty()
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
             if (BackingUtils.isBacked(project, reward)) {
@@ -506,7 +553,7 @@ interface RewardViewHolderViewModel {
         override fun shippingSummaryIsGone(): Observable<Boolean> = this.shippingSummaryIsGone
 
         @NonNull
-        override fun showPledgeFragment(): Observable<Pair<Project, Reward>> = this.showPledgeFragment
+        override fun showFragment(): Observable<Pair<Project, Reward>> = this.showFragment
 
         @NonNull
         override fun titleForNoReward(): Observable<Int> = this.titleForNoReward
@@ -518,6 +565,12 @@ interface RewardViewHolderViewModel {
         override fun titleIsGone(): Observable<Boolean> = this.titleIsGone
 
         @NonNull
+        override fun hasAddOnsAvailable(): Observable<Boolean> = this.addOnsAvailable
+
+        @NonNull
         override fun isMinimumPledgeAmountGone(): Observable<Boolean> = this.isMinimumPledgeAmountGone
+
+        @NonNull
+        override fun selectedRewardTagIsGone(): Observable<Boolean> = this.selectedRewardTagIsGone
     }
 }

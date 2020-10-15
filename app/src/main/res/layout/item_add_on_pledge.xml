@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/add_on_reward_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+            android:id="@+id/add_on_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:cardCornerRadius="@dimen/reward_card_radius"
+            app:cardElevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/add_on_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:padding="@dimen/grid_3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <include
+                    android:id="@+id/title_container"
+                    layout="@layout/add_on_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/grid_1"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/add_on_minimum"
+                    style="@style/Title2Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/ksr_green_500"
+                    android:textSize="@dimen/subheadline"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title_container"
+                    tools:text="$20" />
+
+                <TextView
+                    android:id="@+id/add_on_shipping_amount"
+                    style="=@style/Title2Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/ksr_green_500"
+                    android:textSize="@dimen/subheadline"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toEndOf="@id/add_on_minimum"
+                    app:layout_constraintTop_toBottomOf="@id/title_container"
+                    tools:text=" + $5 shipping each"
+                    tools:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/add_on_conversion"
+                    style="@style/FootnotePrimaryMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/grid_1_half"
+                    android:textColor="@color/ksr_dark_grey_500"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_on_minimum"
+                    tools:text="About $15 USD"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/add_on_description"
+                    style="@style/BodyPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/grid_3"
+                    android:layout_marginBottom="@dimen/grid_2"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_on_conversion"
+                    tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/divider_dark_grey_500_horizontal"
+                    android:importantForAccessibility="no"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/add_on_description" />
+
+
+                <include
+                    android:id="@+id/items_container"
+                    layout="@layout/add_on_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/grid_5_half"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider" />
+
+                <LinearLayout
+                    android:id="@+id/pills_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/items_container"
+                    tools:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/addon_time_left"
+                        style="@style/AddOnPill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/grid_2"
+                        android:textColor="@color/ksr_dark_grey_500"
+                        android:visibility="gone"
+                        tools:text="3 days left"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/addon_quantity_remaining"
+                        style="@style/AddOnPill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/grid_2"
+                        android:textColor="@color/ksr_dark_grey_500"
+                        android:visibility="gone"
+                        tools:text="30 left"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/addon_backer_limit"
+                        style="@style/AddOnPill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/ksr_dark_grey_500"
+                        android:visibility="gone"
+                        tools:text="Limit 4"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/stepper_container_add_on"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/grid_9_half"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pills_container">
+
+                    <ImageButton
+                        android:id="@+id/decrease_quantity_add_on"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_decrease"
+                        android:backgroundTint="@color/soft_grey_enabled_drak_gray_disabled"
+                        android:contentDescription="@string/Decrease_pledge"
+                        android:src="@drawable/ic_remove"
+                        android:tint="@color/green_enabled_dark_grey_disabled"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <ImageButton
+                        android:id="@+id/increase_quantity_add_on"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_increase"
+                        android:contentDescription="@string/Increase_pledge"
+                        android:backgroundTint="@color/soft_grey_enabled_drak_gray_disabled"
+                        android:src="@drawable/ic_add"
+                        android:tint="@color/green_enabled_dark_grey_disabled"
+                        app:layout_constraintStart_toEndOf="@id/decrease_quantity_add_on"
+                        app:layout_constraintTop_toTopOf="@+id/decrease_quantity_add_on" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/quantity_add_on"
+                        android:layout_width="@dimen/grid_7"
+                        android:layout_height="@dimen/grid_7"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:background="@drawable/border_rounded_soft_grey_300"
+                        style="@style/TextPrimary"
+                        android:textSize="@dimen/callout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/increase_quantity_add_on"
+                        tools:text="1" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/initial_state_add_on"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/grid_7"
+                    android:layout_marginTop="@dimen/grid_9_half"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:background="@drawable/border_rounded_solid_black"
+                    android:text="@string/Add"
+                    style="@style/TextAppearance.AppCompat.Button"
+                    android:textSize="@dimen/callout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pills_container"
+                    tools:text="Add"
+                    tools:visibility="visible"
+                    android:elevation="@dimen/grid_8"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

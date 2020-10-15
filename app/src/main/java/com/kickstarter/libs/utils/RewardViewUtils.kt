@@ -1,8 +1,10 @@
 package com.kickstarter.libs.utils
 
 import android.content.Context
+import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.Pair
 import androidx.annotation.StringRes
@@ -15,14 +17,18 @@ import com.kickstarter.models.Reward
 import java.math.RoundingMode
 
 object RewardViewUtils {
+
     /**
      * Returns the string resource ID of the rewards button based on project and reward status.
      */
     @StringRes
     fun pledgeButtonText(project: Project, reward: Reward): Int {
+        val hasAddOnsSelected = project.backing()?.addOns()?.isNotEmpty() ?: false
+
         return when {
-            BackingUtils.isBacked(project, reward) -> R.string.Selected
-            RewardUtils.isAvailable(project, reward) -> R.string.Select
+            BackingUtils.isBacked(project, reward) && !hasAddOnsSelected -> R.string.Selected
+            !BackingUtils.isBacked(project, reward) && RewardUtils.isAvailable(project, reward) -> R.string.Select
+            BackingUtils.isBacked(project, reward) && reward.hasAddons() && hasAddOnsSelected -> R.string.Continue
             else -> R.string.No_longer_available
         }
     }
@@ -65,5 +71,21 @@ object RewardViewUtils {
         }
 
         return spannableString
+    }
+
+    /**
+     * Returns the title for an Add On ie: 1 x TITLE
+     *  [1 x] in green
+     *  TITLE regular string
+     */
+    fun styleTitleForAddOns(context: Context, title: String?, quantity: Int?): SpannableString {
+        val symbol = " x "
+        val numberGreenCharacters = quantity.toString().length + symbol.length
+        val spannable = SpannableString(quantity.toString() + symbol + title)
+        spannable.setSpan(
+                ForegroundColorSpan(context.getColor(R.color.ksr_green_500)),
+                0, numberGreenCharacters,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannable
     }
 }

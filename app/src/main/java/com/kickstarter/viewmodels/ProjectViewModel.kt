@@ -226,6 +226,7 @@ interface ProjectViewModel {
         private val ksCurrency: KSCurrency = environment.ksCurrency()
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
+        private val apolloClient = environment.apolloClient()
 
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val blurbVariantClicked = PublishSubject.create<Void>()
@@ -526,7 +527,8 @@ interface ProjectViewModel {
             { refTagFromIntent, refTagFromCookie, project -> projectData(refTagFromIntent, refTagFromCookie, project) }
 
             projectData
-                    .filter { it.project().hasRewards() }
+                    .filter { it.project().hasRewards() && !it.project().isBacking }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.updateFragments)
 
@@ -539,6 +541,36 @@ interface ProjectViewModel {
 
             val backedProject = currentProject
                     .filter { it.isBacking }
+
+            val backing = backedProject
+                    .switchMap {
+                        this.apolloClient.getProjectBacking(it.slug()?: "")
+                                .doOnSubscribe {
+                                    progressBarIsGone.onNext(false)
+                                }
+                                .doAfterTerminate {
+                                    progressBarIsGone.onNext(true)
+                                }
+                                .materialize()
+                    }
+                    .compose(neverError())
+                    .compose(values())
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .share()
+
+            // - Update fragments with the backing data
+            projectData
+                    .filter { it.project().hasRewards() }
+                    .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                    .map {
+                        val updatedProject = if (it.first.project().isBacking)
+                            it.first.project().toBuilder().backing(it.second).build()
+                        else it.first.project()
+
+                        projectData(it.first.refTagFromIntent(), it.first.refTagFromCookie(), updatedProject)
+                    }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.updateFragments)
 
             backedProject
                     .compose<Project>(takeWhen(this.cancelPledgeClicked))
@@ -559,7 +591,12 @@ interface ProjectViewModel {
                     .subscribe(this.startMessagesActivity)
 
             val projectDataAndBackedReward = projectData
-                    .map { pD -> BackingUtils.backedReward(pD.project())?.let { Pair(pD, it) } }
+                    .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
+                    .map { pD ->
+                        BackingUtils.backedReward(pD.first.project())?.let {
+                            Pair(pD.first.toBuilder().backing(pD.second).build(), it)
+                        }
+                    }
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
@@ -656,7 +693,7 @@ interface ProjectViewModel {
 
             this.fragmentStackCount
                     .compose<Pair<Int, Project>>(combineLatestPair(currentProject))
-                    .map { if (it.second.isBacking) it.first > 2 else it.first > 1}
+                    .map { if (it.second.isBacking) it.first > 4 else it.first > 3 }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.scrimIsVisible)

@@ -75,7 +75,9 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
         this.viewModel.outputs.limitContainerIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_limit_container, it) }
+                .subscribe {
+                    ViewUtils.setGone(this.view.reward_limit_container, it)
+                }
 
         this.viewModel.outputs.remaining()
                 .compose(bindToLifecycle())
@@ -137,7 +139,7 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
                 .compose(observeForUI())
                 .subscribe { ViewUtils.setGone(this.view.reward_title_text_view, it) }
 
-        this.viewModel.outputs.showPledgeFragment()
+        this.viewModel.outputs.showFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe { this.delegate?.rewardClicked(it.second) }
@@ -178,6 +180,23 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
         RxView.clicks(this.view.reward_pledge_button)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
+
+        this.viewModel.outputs.hasAddOnsAvailable()
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(this.view.reward_add_ons_available, !it)
+                }
+
+        this.viewModel.outputs.selectedRewardTagIsGone()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { isGone ->
+                    if (!isGone) this.view.reward_selected_reward_tag.visibility = View.VISIBLE
+                    else ViewUtils.setGone(this.view.reward_selected_reward_tag, true)
+                }
+
     }
 
     override fun bindData(data: Any?) {

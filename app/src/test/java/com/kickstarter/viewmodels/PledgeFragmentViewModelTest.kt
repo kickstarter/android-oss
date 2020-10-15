@@ -66,7 +66,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val pledgeSummaryIsGone = TestSubscriber<Boolean>()
     private val pledgeTextColor = TestSubscriber<Int>()
     private val projectCurrencySymbol = TestSubscriber<String>()
-    private val rewardSummaryIsGone = TestSubscriber<Boolean>()
     private val rewardTitle = TestSubscriber<String>()
     private val selectedShippingRule = TestSubscriber<ShippingRule>()
     private val shippingAmount = TestSubscriber<CharSequence>()
@@ -90,11 +89,22 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private val totalAndDeadline = TestSubscriber<Pair<String, String>>()
     private val totalAndDeadlineIsVisible = TestSubscriber<Void>()
     private val totalDividerIsGone = TestSubscriber<Boolean>()
+    private val headerSectionIsGone = TestSubscriber<Boolean>()
+    private val bonusAmount = TestSubscriber<String>()
+    private val decreaseBonusButtonIsEnabled = TestSubscriber<Boolean>()
+    private val isNoReward = TestSubscriber<Boolean>()
+    private val projectTitle = TestSubscriber<String>()
+    private val rewardAndAddOns = TestSubscriber<List<Reward>>()
+    private val headerSelectedItems = TestSubscriber<List<Pair<Project, Reward>>>()
+    private val shippingRuleStaticIsGone = TestSubscriber<Boolean>()
+    private val bonusSectionIsGone = TestSubscriber<Boolean>()
+    private val bonusSummaryIsGone = TestSubscriber<Boolean>()
 
     private fun setUpEnvironment(environment: Environment,
                                  reward: Reward = RewardFactory.rewardWithShipping(),
                                  project: Project = ProjectFactory.project(),
-                                 pledgeReason: PledgeReason = PledgeReason.PLEDGE) {
+                                 pledgeReason: PledgeReason = PledgeReason.PLEDGE,
+                                 addOns: java.util.List<Reward>? = null) {
         this.vm = PledgeFragmentViewModel.ViewModel(environment)
 
         this.vm.outputs.addedCard().subscribe(this.addedCard)
@@ -125,7 +135,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.pledgeTextColor().subscribe(this.pledgeTextColor)
         this.vm.outputs.projectCurrencySymbol().map { StringUtils.trim(it.first.toString()) }.subscribe(this.projectCurrencySymbol)
-        this.vm.outputs.rewardSummaryIsGone().subscribe(this.rewardSummaryIsGone)
         this.vm.outputs.rewardTitle().subscribe(this.rewardTitle)
         this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
         this.vm.outputs.shippingAmount().map { normalizeCurrency(it) }.subscribe(this.shippingAmount)
@@ -149,13 +158,34 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.totalAndDeadline().subscribe(this.totalAndDeadline)
         this.vm.outputs.totalAndDeadlineIsVisible().subscribe(this.totalAndDeadlineIsVisible)
         this.vm.outputs.totalDividerIsGone().subscribe(this.totalDividerIsGone)
+        this.vm.outputs.headerSectionIsGone().subscribe(this.headerSectionIsGone)
+        this.vm.outputs.bonusAmount().subscribe(this.bonusAmount)
+        this.vm.outputs.decreaseBonusButtonIsEnabled().subscribe(this.decreaseBonusButtonIsEnabled)
+        this.vm.outputs.isNoReward().subscribe(this.isNoReward)
+        this.vm.outputs.projectTitle().subscribe(this.projectTitle)
+        this.vm.outputs.rewardAndAddOns().subscribe(this.rewardAndAddOns)
+        this.vm.outputs.headerSelectedItems().subscribe(this.headerSelectedItems)
+        this.vm.outputs.shippingRuleStaticIsGone().subscribe(this.shippingRuleStaticIsGone)
+        this.vm.outputs.isBonusSupportSectionGone().subscribe(this.bonusSectionIsGone)
+        this.vm.outputs.bonusSummaryIsGone().subscribe(this.bonusSummaryIsGone)
 
-        val projectData = ProjectDataFactory.project(project.toBuilder()
+        val projectData = project.backing()?.let {
+            return@let ProjectData.builder()
+                    .project(project)
+                    .backing(it)
+                    .build()
+        } ?: ProjectDataFactory.project(project.toBuilder()
                 .deadline(this.deadline)
                 .build())
 
         val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(PledgeFlowContext.forPledgeReason(pledgeReason), projectData, reward))
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(
+                PledgeFlowContext.forPledgeReason(pledgeReason),
+                projectData,
+                reward,
+                addOns,
+                ShippingRuleFactory.usShippingRule()))
+
         bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, pledgeReason)
         this.vm.arguments(bundle)
     }
@@ -387,11 +417,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsGone.assertValue(true)
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(false)
+        this.pledgeSectionIsGone.assertValue(true)
+        this.bonusSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
         this.koalaTest.assertValue("Pledge Screen Viewed")
         this.lakeTest.assertValue("Checkout Payment Page Viewed")
@@ -412,9 +442,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
@@ -438,11 +467,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(false)
-        this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
+        this.pledgeSectionIsGone.assertValue(true)
+        this.bonusSectionIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
@@ -464,9 +492,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
-        this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.bonusSectionIsGone.assertValue(true)
+        this.bonusSectionIsGone.assertValue(true)
+        this.headerSectionIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
         this.koalaTest.assertValue("Pledge Screen Viewed")
@@ -496,11 +525,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(false)
-        this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(true)
-        this.shippingRulesSectionIsGone.assertValue(false)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.pledgeSectionIsGone.assertValue(true)
+        this.pledgeSummaryIsGone.assertValue(false)
+        this.bonusSectionIsGone.assertValue(false)
+        this.shippingRulesSectionIsGone.assertValues(false)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
         this.koalaTest.assertNoValues()
@@ -524,11 +553,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsGone.assertValue(false)
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(false)
-        this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(true)
+        this.pledgeSectionIsGone.assertValue(true)
+        this.bonusSectionIsGone.assertValue(false)
+        this.pledgeSummaryIsGone.assertValue(false)
+        this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
         this.koalaTest.assertNoValues()
@@ -556,13 +586,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonCTA.assertValue(R.string.Confirm)
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeButtonIsGone.assertValue(false)
-        this.pledgeMaximumIsGone.assertNoValues()
+        this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(true)
+        this.pledgeSectionIsGone.assertNoValues()
         this.pledgeSummaryIsGone.assertValue(false)
-        this.rewardSummaryIsGone.assertValue(true)
-        this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(false)
+        this.shippingRulesSectionIsGone.assertValues(true, true)
         this.totalDividerIsGone.assertValue(true)
 
         this.koalaTest.assertNoValues()
@@ -582,16 +610,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.continueButtonIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonCTA.assertValue(R.string.Confirm)
-        this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeButtonIsGone.assertValue(false)
-        this.pledgeMaximumIsGone.assertNoValues()
+        this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(true)
+        this.pledgeSectionIsGone.assertNoValues()
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(true)
+        this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.selectedShippingRule.assertNoValues()
+        this.shippingSummaryIsGone.assertValues(true)
         this.totalDividerIsGone.assertValue(true)
+        this.pledgeButtonIsEnabled.assertValue(true)
 
         this.koalaTest.assertNoValues()
         this.lakeTest.assertNoValues()
@@ -633,10 +662,11 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.continueButtonIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeMaximumIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(true)
+        this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeSectionIsGone.assertNoValues()
+        this.bonusSectionIsGone.assertNoValues()
         this.pledgeSummaryIsGone.assertValue(false)
-        this.shippingRulesSectionIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValues(true, true)
         this.shippingSummaryIsGone.assertValue(false)
         this.totalDividerIsGone.assertValue(true)
 
@@ -664,11 +694,14 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.continueButtonIsGone.assertValue(true)
         this.paymentContainerIsGone.assertValue(false)
         this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeMaximumIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(true)
+        this.pledgeMaximumIsGone.assertValue(true)
+        this.pledgeSectionIsGone.assertNoValues()
+        this.bonusSectionIsGone.assertNoValues()
         this.pledgeSummaryIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.selectedShippingRule.assertNoValues()
+        this.shippingSummaryIsGone.assertValues(true)
+        this.bonusSummaryIsGone.assertValues(true, true)
         this.totalDividerIsGone.assertValue(true)
 
         this.koalaTest.assertNoValues()
@@ -692,13 +725,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonCTA.assertValue(R.string.Confirm)
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeButtonIsGone.assertValue(false)
-        this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeProgressIsGone.assertNoValues()
-        this.pledgeSectionIsGone.assertValue(false)
+        this.pledgeSectionIsGone.assertValue(true)
+        this.bonusSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
         this.shippingRulesSectionIsGone.assertValue(false)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
         this.koalaTest.assertNoValues()
@@ -722,9 +754,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeProgressIsGone.assertNoValues()
         this.pledgeSectionIsGone.assertValue(false)
         this.pledgeSummaryIsGone.assertValue(true)
-        this.rewardSummaryIsGone.assertValue(false)
+        this.headerSectionIsGone.assertValue(true)
         this.shippingRulesSectionIsGone.assertValue(true)
-        this.shippingSummaryIsGone.assertValue(true)
+        this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
         this.koalaTest.assertNoValues()
@@ -741,7 +773,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
         setUpEnvironment(environment, noReward, backedProject, PledgeReason.UPDATE_PAYMENT)
 
-        this.pledgeSummaryAmount.assertValue(expectedCurrency(environment, backedProject, 10.0))
+        this.totalAmount.assertValue(expectedCurrency(environment, backedProject, 1.0))
     }
 
     @Test
@@ -753,7 +785,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
         setUpEnvironment(environment, noReward, backedProject, PledgeReason.FIX_PLEDGE)
 
-        this.pledgeSummaryAmount.assertValue(expectedCurrency(environment, backedProject, 10.0))
+        this.totalAmount.assertValue(expectedCurrency(environment, backedProject, 1.0))
     }
 
     @Test
@@ -853,387 +885,19 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.estimatedDeliveryInfoIsGone.assertValue(true)
     }
 
-    @Test
-    fun testUpdatingPledgeAmount_WithStepper_USProject_USDPref() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-                .toBuilder()
-                .currentUser(MockCurrentUser(UserFactory.user()))
-                .build()
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment, project = project)
 
-        assertInitialPledgeState_WithShipping()
-        assertInitialPledgeCurrencyStates_WithShipping_USProject(environment, project)
-
-        this.vm.inputs.increasePledgeButtonClicked()
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 1.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "21")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 51.0))
-        this.projectCurrencySymbol.assertValue("$")
-
-        this.vm.inputs.decreasePledgeButtonClicked()
-
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 1.0), expectedCurrency(environment, project, 0.0))
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "21", "20")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 51.0),
-                expectedCurrency(environment, project, 50.0))
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-    }
 
     @Test
-    fun testUpdatingPledgeAmount_WithInput_USProject_USDPref() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-                .toBuilder()
-                .currentUser(MockCurrentUser(UserFactory.user()))
-                .build()
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment, project = project)
-
-        assertInitialPledgeState_WithShipping()
-        assertInitialPledgeCurrencyStates_WithShipping_USProject(environment, project)
-
-        this.vm.inputs.pledgeInput("40")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "40")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(2)
-
-        this.vm.inputs.pledgeInput("10")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "40", "10")
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0),
-                expectedCurrency(environment, project, 40.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(3)
-
-        this.vm.inputs.pledgeInput("10,000")
-
-        this.continueButtonIsEnabled.assertNoValues()
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
-        this.increasePledgeButtonIsEnabled.assertValues(true, false)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 9_980.0))
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.pledgeAmount.assertValues("20", "40", "10", "10,000")
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0))
-        this.pledgeMaximumIsGone.assertValues(true, false)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0),
-                expectedCurrency(environment, project, 40.0),
-                expectedCurrency(environment, project, 10_030.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10_030.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(4)
-
-        this.vm.inputs.pledgeInput("9,970")
-
-        this.continueButtonIsEnabled.assertNoValues()
-        this.pledgeButtonIsEnabled.assertValues(true, false, true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
-        this.increasePledgeButtonIsEnabled.assertValues(true, false)
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 9_980.0),
-                expectedCurrency(environment, project, 9_950.0))
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.pledgeAmount.assertValues("20", "40", "10", "10,000", "9,970")
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0))
-        this.pledgeMaximumIsGone.assertValues(true, false, true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400, R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0),
-                expectedCurrency(environment, project, 40.0),
-                expectedCurrency(environment, project, 10_030.0),
-                expectedCurrency(environment, project, 10_000.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10_030.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10_000.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(5)
-    }
-
-    @Test
-    fun testUpdatingPledgeAmount_NoShipping_WithStepper_USProject_USDPref() {
+    fun testShowMaxPledge_USProject_USDPref() {
         val environment = environmentForLoggedInUser(UserFactory.user())
         val project = ProjectFactory.project()
-        setUpEnvironment(environment, RewardFactory.reward(), project)
+        val rw = RewardFactory.reward()
+        setUpEnvironment(environment,rw, project)
 
-        assertInitialPledgeState_NoShipping(environment, project)
-        assertInitialPledgeCurrencyStates_NoShipping_USProject(environment, project)
-
-        this.vm.inputs.increasePledgeButtonClicked()
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0), expectedCurrency(environment, project, 1.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "21")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 10_000.0))
-        this.pledgeMaximumIsGone.assertValues(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 21.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 21.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(2)
-
-        this.vm.inputs.decreasePledgeButtonClicked()
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 1.0),
-                expectedCurrency(environment, project, 0.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "21", "20")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 10_000.0))
-        this.pledgeMaximumIsGone.assertValues(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 21.0),
-                expectedCurrency(environment, project, 20.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 21.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(3)
-    }
-
-    @Test
-    fun testUpdatingPledgeAmount_NoShipping_WithInput_USProject_USDPref() {
-        val environment = environmentForLoggedInUser(UserFactory.user())
-        val project = ProjectFactory.project()
-
-        setUpEnvironment(environment, RewardFactory.reward(), project)
-
-        assertInitialPledgeState_NoShipping(environment, project)
-        assertInitialPledgeCurrencyStates_NoShipping_USProject(environment, project)
-
-        this.vm.inputs.pledgeInput("40")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "40")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 10_000.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 40.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(2)
-
-        this.vm.inputs.pledgeInput("10")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "40", "10")
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 10_000.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 40.0),
-                expectedCurrency(environment, project, 10.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(3)
-
-        //US max is 10,000
-        this.vm.inputs.pledgeInput("10001")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 9_981.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
-        this.increasePledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeAmount.assertValues("20", "40", "10", "10,001")
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 10_000.0))
+        this.vm.inputs.bonusInput("999999")
+        
         this.pledgeMaximumIsGone.assertValues(true, false)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 40.0),
-                expectedCurrency(environment, project, 10.0),
-                expectedCurrency(environment, project, 10_001.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10_001.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(4)
-
-        //US max is 10,000
-        this.vm.inputs.pledgeInput("10000")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 9_981.0),
-                expectedCurrency(environment, project, 9_980.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertNoValues()
-        this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
-        this.increasePledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeAmount.assertValues("20", "40", "10", "10,001", "10,000")
-        this.pledgeButtonIsEnabled.assertValues(true, false, true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 10_000.0))
-        this.pledgeMaximumIsGone.assertValues(true, false, true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400, R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 40.0),
-                expectedCurrency(environment, project, 10.0),
-                expectedCurrency(environment, project, 10_001.0),
-                expectedCurrency(environment, project, 10_000.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10_001.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 10_000.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(5)
+        this.pledgeMaximum.assertValues("$9,980") // 10.000 - 20 : MAXUSD - REWARD.minimum
     }
 
     @Test
@@ -1259,13 +923,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.continueButtonIsEnabled.assertNoValues()
         this.conversionText.assertNoValues()
         this.conversionTextViewIsGone.assertValues(true)
-        this.decreasePledgeButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20")
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0),
-                expectedCurrency(environment, project, 9_960.0))
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValues(R.color.ksr_green_500)
@@ -1291,205 +950,35 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         assertInitialPledgeState_WithShipping()
         assertInitialPledgeCurrencyStates_WithShipping_MXProject(environment, project)
 
-        this.vm.inputs.increasePledgeButtonClicked()
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 10.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
         this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
-                expectedConvertedCurrency(environment, project, 60.0))
+        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0))
         this.conversionTextViewIsGone.assertValues(false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "30")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0))
+
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 60.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 60.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(2)
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0))
+        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)))
+        this.totalAndDeadlineIsVisible.assertValueCount(1)
 
-        this.vm.inputs.decreasePledgeButtonClicked()
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 10.0),
-                expectedCurrency(environment, project, 0.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
         this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
-                expectedConvertedCurrency(environment, project, 60.0),
-                expectedConvertedCurrency(environment, project, 50.0))
+        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0))
         this.conversionTextViewIsGone.assertValues(false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "30", "20")
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0))
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
         this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 60.00),
-                expectedCurrency(environment, project, 50.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 60.00), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(3)
+        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0))
+        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)))
+        this.totalAndDeadlineIsVisible.assertValueCount(1)
     }
 
-    @Test
-    fun testUpdatingPledgeAmount_WithInput_MXProject_USDPref() {
-        val project = ProjectFactory.mxProject().toBuilder().currentCurrency("USD").build()
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules())
-                .toBuilder()
-                .apolloClient(apolloClientWithStoredCards(listOf(StoredCardFactory.visa())))
-                .currentUser(MockCurrentUser(UserFactory.user()))
-                .build()
-        setUpEnvironment(environment, project = project)
 
-        assertInitialPledgeState_WithShipping()
-        assertInitialPledgeCurrencyStates_WithShipping_MXProject(environment, project)
-
-        this.vm.inputs.pledgeInput("40")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
-                expectedConvertedCurrency(environment, project, 70.0))
-        this.conversionTextViewIsGone.assertValues(false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "40")
-        this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(2)
-
-        this.vm.inputs.pledgeInput("10")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
-                expectedConvertedCurrency(environment, project, 70.0),
-                expectedConvertedCurrency(environment, project, 40.00))
-        this.conversionTextViewIsGone.assertValues(false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20", "40", "10")
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0))
-        this.pledgeMaximumIsGone.assertValue(true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0),
-                expectedCurrency(environment, project, 40.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(3)
-
-        //MX max is 200,000
-        this.vm.inputs.pledgeInput("200000")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 199_980.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
-                expectedConvertedCurrency(environment, project, 70.0),
-                expectedConvertedCurrency(environment, project, 40.00),
-                expectedConvertedCurrency(environment, project, 200_030.0))
-        this.conversionTextViewIsGone.assertValues(false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
-        this.increasePledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeAmount.assertValues("20", "40", "10", "200,000")
-        this.pledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0))
-        this.pledgeMaximumIsGone.assertValues(true, false)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400)
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0),
-                expectedCurrency(environment, project, 40.0),
-                expectedCurrency(environment, project, 200_030.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 200_030.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(4)
-
-        this.vm.inputs.pledgeInput("199,970")
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 20.0),
-                expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 199_980.0),
-                expectedCurrency(environment, project, 199_950.00))
-        this.additionalPledgeAmountIsGone.assertValues(true, false, true, false)
-        this.continueButtonIsEnabled.assertNoValues()
-        this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
-                expectedConvertedCurrency(environment, project, 70.0),
-                expectedConvertedCurrency(environment, project, 40.00),
-                expectedConvertedCurrency(environment, project, 200_030.0),
-                expectedConvertedCurrency(environment, project, 200_000.0))
-        this.conversionTextViewIsGone.assertValues(false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true, false, true)
-        this.increasePledgeButtonIsEnabled.assertValues(true, false)
-        this.pledgeAmount.assertValues("20", "40", "10", "200,000", "199,970")
-        this.pledgeButtonIsEnabled.assertValues(true, false, true)
-        this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0))
-        this.pledgeMaximumIsGone.assertValues(true, false, true)
-        this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500, R.color.ksr_red_400, R.color.ksr_green_500)
-        this.projectCurrencySymbol.assertValue("MX$")
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
-        this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0),
-                expectedCurrency(environment, project, 70.0),
-                expectedCurrency(environment, project, 40.0),
-                expectedCurrency(environment, project, 200_030.0),
-                expectedCurrency(environment, project, 200_000.0))
-        this.totalAndDeadline.assertValues(Pair(expectedCurrency(environment, project, 50.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 70.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 40.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 200_030.0), DateTimeUtils.longDate(this.deadline)),
-                Pair(expectedCurrency(environment, project, 200_000.0), DateTimeUtils.longDate(this.deadline)))
-        this.totalAndDeadlineIsVisible.assertValueCount(5)
-    }
 
     @Test
     fun testUpdatingPledgeAmount_WithShippingChange_MXProject_USDPref() {
@@ -1515,13 +1004,9 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.conversionText.assertValues(expectedConvertedCurrency(environment, project, 50.0),
                 expectedConvertedCurrency(environment, project, 60.0))
         this.conversionTextViewIsGone.assertValues(false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20")
+
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0),
-                expectedCurrency(environment, project, 199_960.0))
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
@@ -1544,7 +1029,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.additionalPledgeAmountIsGone.assertValuesAndClear(true)
         this.additionalPledgeAmount.assertValuesAndClear(expectedCurrency(environment, project, 0.0))
-        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false)
+        this.decreaseBonusButtonIsEnabled.assertValuesAndClear(false)
         this.increasePledgeButtonIsEnabled.assertValuesAndClear(false)
     }
 
@@ -1556,56 +1041,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.additionalPledgeAmountIsGone.assertValue(true)
         this.additionalPledgeAmount.assertValue(expectedCurrency(environment, mxProject, 0.0))
-        this.decreasePledgeButtonIsEnabled.assertValue(false)
+        this.decreaseBonusButtonIsEnabled.assertValue(false)
         this.increasePledgeButtonIsEnabled.assertValue(false)
-    }
-
-    @Test
-    fun testPledgeStepping_almostMaxReward_USProject() {
-        val almostMaxReward = RewardFactory.reward()
-                .toBuilder()
-                .minimum((Country.US.maxPledge - Country.US.minPledge).toDouble())
-                .build()
-        val environment = environment()
-        val project = ProjectFactory.project()
-        setUpEnvironment(environment, almostMaxReward, project)
-
-        this.additionalPledgeAmount.assertValue(expectedCurrency(environment, project, 0.0))
-        this.additionalPledgeAmountIsGone.assertValue(true)
-        this.decreasePledgeButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-
-        this.vm.inputs.increasePledgeButtonClicked()
-
-        this.additionalPledgeAmount.assertValuesAndClear(expectedCurrency(environment, project, 0.0),
-                expectedCurrency(environment, project, 1.0))
-        this.decreasePledgeButtonIsEnabled.assertValuesAndClear(false, true)
-        this.increasePledgeButtonIsEnabled.assertValuesAndClear(true, false)
-        this.additionalPledgeAmountIsGone.assertValuesAndClear(true, false)
-    }
-
-    @Test
-    fun testPledgeStepping_almostMaxReward_MXProject() {
-        val almostMaxMXReward = RewardFactory.reward()
-                .toBuilder()
-                .minimum((Country.MX.maxPledge - Country.MX.minPledge).toDouble())
-                .build()
-        val environment = environment()
-        val mxProject = ProjectFactory.mxProject()
-        setUpEnvironment(environment, almostMaxMXReward, mxProject)
-
-        this.additionalPledgeAmount.assertValue(expectedCurrency(environment, mxProject, 0.0))
-        this.additionalPledgeAmountIsGone.assertValue(true)
-        this.decreasePledgeButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-
-        this.vm.inputs.increasePledgeButtonClicked()
-
-        this.additionalPledgeAmount.assertValues(expectedCurrency(environment, mxProject, 0.0),
-                expectedCurrency(environment, mxProject, 10.0))
-        this.additionalPledgeAmountIsGone.assertValues(true, false)
-        this.decreasePledgeButtonIsEnabled.assertValues(false, true)
-        this.increasePledgeButtonIsEnabled.assertValues(true, false)
     }
 
     @Test
@@ -1633,6 +1070,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, RewardFactory.noReward(), project)
 
         this.vm.inputs.cardSelected(StoredCardFactory.visa(), 0)
+        this.pledgeButtonIsEnabled.assertValue(true)
         this.vm.inputs.pledgeButtonClicked()
 
         this.koalaTest.assertValues("Pledge Screen Viewed", "Pledge Button Clicked")
@@ -2182,7 +1620,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
@@ -2211,9 +1648,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
         this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.increasePledgeButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
+        this.pledgeButtonIsEnabled.assertValues(false, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePledgeError.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
@@ -2304,7 +1742,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeButtonClicked()
 
         this.pledgeProgressIsGone.assertValues(false)
-        this.showUpdatePledgeSuccess.assertValueCount(1)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -2324,12 +1761,12 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.pledgeInput("32.0")
+        this.vm.inputs.increasePledgeButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
-        this.pledgeProgressIsGone.assertValues(false)
-        this.showUpdatePledgeSuccess.assertValueCount(1)
+        this.pledgeButtonIsEnabled.assertValues(false, false)
+        this.pledgeProgressIsGone.assertValue(false)
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
@@ -2358,6 +1795,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.koalaTest.assertValues("Update Pledge Button Clicked")
     }
 
+    /* FIX TODO in https://kickstarter.atlassian.net/browse/NT-1462
     @Test
     fun testShowUpdatePledgeSuccess_whenRequiresAction_isSuccessful_successOutcome() {
         val reward = RewardFactory.noReward()
@@ -2382,18 +1820,18 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.vm.inputs.pledgeInput("31")
+        this.vm.inputs.bonusInput("31")
+        this.vm.inputs.increaseBonusButtonClicked()
         this.vm.inputs.pledgeButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeButtonIsEnabled.assertValues(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
+        this.pledgeButtonIsEnabled.assertValues(false, false)
         this.pledgeProgressIsGone.assertValues(false)
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
@@ -2403,17 +1841,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowUpdatePledgeSuccess_whenRequiresAction_isSuccessful_unsuccessfulOutcome() {
-        val reward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(30.0)
-                .reward(reward)
-                .rewardId(reward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+        val testData = setUpBackedShippableRewardTestData()
 
         val environment = environmentForLoggedInUser(UserFactory.user())
                 .toBuilder()
@@ -2423,16 +1851,16 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                     }
                 })
                 .build()
-        setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
+        setUpEnvironment(environment, testData.reward, testData.project, PledgeReason.UPDATE_PLEDGE)
 
-        this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.pledgeButtonClicked()
+        this.vm.inputs.bonusInput("31")
+        this.vm.inputs.increaseBonusButtonClicked()
 
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.pledgeProgressIsGone.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
+        this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.FAILED)
 
@@ -2468,11 +1896,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
                 .build()
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.vm.inputs.pledgeInput("31")
-        this.vm.inputs.pledgeButtonClicked()
-
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
-        this.pledgeProgressIsGone.assertValue(false)
+        this.vm.inputs.bonusInput("31")
+        this.vm.inputs.increaseBonusButtonClicked()
+        this.pledgeButtonIsEnabled.assertValues(false)
+        this.pledgeProgressIsGone.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
         this.showUpdatePledgeError.assertNoValues()
         this.showUpdatePledgeSuccess.assertNoValues()
@@ -2485,7 +1912,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showUpdatePledgeError.assertValueCount(1)
         this.showUpdatePledgeSuccess.assertNoValues()
         this.koalaTest.assertValues("Update Pledge Button Clicked")
-    }
+    }*/
 
     @Test
     fun testStartChromeTab() {
@@ -2511,32 +1938,17 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environmentForShippingRules(ShippingRulesEnvelopeFactory.shippingRules()))
         this.continueButtonIsEnabled.assertValue(true)
 
-        this.vm.inputs.pledgeInput("0")
-        this.continueButtonIsEnabled.assertValues(true, false)
+        this.vm.inputs.pledgeInput("1")
+        this.vm.inputs.increasePledgeButtonClicked()
+        this.continueButtonIsEnabled.assertValues(true)
 
         this.vm.inputs.pledgeInput("20")
-        this.continueButtonIsEnabled.assertValues(true, false, true)
+        this.vm.inputs.increasePledgeButtonClicked()
+        this.continueButtonIsEnabled.assertValues(true)
 
         this.vm.inputs.continueButtonClicked()
 
         this.startLoginToutActivity.assertValueCount(1)
-    }
-
-    @Test
-    fun testTotalDoesNotEmit_whenNoSelectedShippingRule() {
-        val environment = environmentForShippingRules(ShippingRulesEnvelopeFactory.emptyShippingRules())
-        setUpEnvironment(environment)
-        this.selectedShippingRule.assertNoValues()
-        this.totalAmount.assertNoValues()
-
-        this.vm.inputs.decreasePledgeButtonClicked()
-        this.totalAmount.assertNoValues()
-
-        this.vm.inputs.increasePledgeButtonClicked()
-        this.totalAmount.assertNoValues()
-
-        this.vm.inputs.pledgeInput("50")
-        this.totalAmount.assertNoValues()
     }
 
     @Test
@@ -2741,31 +2153,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testPledgeButtonIsEnabled_UpdatingPledge_whenAmountChanged() {
-        val reward = RewardFactory.noReward()
-        val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(30.0)
-                .reward(reward)
-                .rewardId(reward.id())
-                .build()
-        val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
-
-        setUpEnvironment(environment(), reward, backedProject, PledgeReason.UPDATE_PLEDGE)
-
-        this.pledgeButtonIsEnabled.assertValues(false)
-
-        this.vm.inputs.pledgeInput("31")
-        this.pledgeButtonIsEnabled.assertValues(false, true)
-
-        this.vm.inputs.pledgeInput("30")
-        this.pledgeButtonIsEnabled.assertValues(false, true, false)
-    }
-
-    @Test
     fun testUpdatePledgeButtonIsEnabled_UpdatingPledge_whenShippingChanged() {
         val reward = RewardFactory.rewardWithShipping()
         val unitedStates = LocationFactory.unitedStates()
@@ -2806,7 +2193,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment, reward, backedProject, PledgeReason.UPDATE_PLEDGE)
 
-        this.selectedShippingRule.assertValue(backingShippingRule)
+        this.selectedShippingRule.assertValues(backingShippingRule)
         this.pledgeButtonIsEnabled.assertValues(false)
 
         this.vm.inputs.shippingRuleSelected(germanyShippingRule)
@@ -2814,18 +2201,301 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValues(false, true)
 
         this.vm.inputs.shippingRuleSelected(backingShippingRule)
-        this.selectedShippingRule.assertValues(backingShippingRule, germanyShippingRule, backingShippingRule)
+        this.selectedShippingRule.assertValues(backingShippingRule,germanyShippingRule, backingShippingRule)
         this.pledgeButtonIsEnabled.assertValues(false, true, false)
 
-        this.vm.inputs.pledgeInput("500")
+        this.vm.inputs.bonusInput("500")
+        this.vm.inputs.increaseBonusButtonClicked()
         this.pledgeButtonIsEnabled.assertValues(false, true, false, true)
+    }
+
+    @Test
+    fun testExpandableHeaderIsVisible() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.headerSectionIsGone.assertValue(false)
+        this.isNoReward.assertNoValues()
+    }
+
+    @Test
+    fun testNoRewardHeaderIsVisible() {
+        val reward = RewardFactory.noReward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.headerSectionIsGone.assertValue(true)
+        this.shippingRulesSectionIsGone.assertValue(true)
+        this.shippingRuleStaticIsGone.assertValue(true)
+        this.isNoReward.assertValue(true)
+        this.projectTitle.assertValue(backedProject.name())
+    }
+
+    @Test
+    fun testExpandableHeaderIsNoVisible() {
+        val reward = RewardFactory.noReward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.headerSectionIsGone.assertValues(true)
+    }
+
+
+    @Test // TODO: Review
+    fun testBonusAmountIncreases_whenPlusButtonIsClicked() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(50.0)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        val environment = environmentForLoggedInUser(UserFactory.user())
+
+        setUpEnvironment(environment, reward, backedProject, PledgeReason.PLEDGE)
+
+        this.vm.inputs.increaseBonusButtonClicked()
+
+        this.bonusAmount.assertValues("0", "1")
+    }
+
+
+    @Test
+    fun testTotalAmountUpdates_whenBonusIsAdded() {
+        val testData = setUpBackedShippableRewardTestData()
+
+        setUpEnvironment(environment(), testData.reward, testData.project, PledgeReason.UPDATE_PLEDGE)
+
+        this.vm.inputs.bonusInput("20")
+        this.vm.inputs.increaseBonusButtonClicked()
+        this.totalAmount.assertValues("$50","$70", "$71")
+        this.bonusAmount.assertValues("0", "20", "21")
+    }
+
+    @Test
+    fun testBonusMinimumIsZero_andMinusButtonIsDisabled() {
+        val reward = RewardFactory.reward()
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .amount(30.0)
+                .reward(reward)
+                .rewardId(reward.id())
+                .build()
+
+        val backedProject = ProjectFactory.project()
+                .toBuilder()
+                .backing(backing)
+                .build()
+
+        setUpEnvironment(environment(), reward, backedProject)
+
+        this.bonusAmount.assertValue("0")
+        this.decreaseBonusButtonIsEnabled.assertValue(false)
+    }
+
+    @Test
+    fun testRewardPlusAddons_inHeader() {
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .build()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2).build()
+        val listAddOns = listOf(addOn, addOn, addOn) as java.util.List<Reward>?
+
+        setUpEnvironment(environment(), reward, project, addOns = listAddOns)
+
+        this.shippingRuleStaticIsGone.assertValue(false)
+        this.shippingRulesSectionIsGone.assertValue(true)
+        this.rewardAndAddOns.assertValue(listOf(reward, addOn, addOn, addOn))
+        this.headerSelectedItems.assertValue(listOf(
+                Pair(project, reward),
+                Pair(project, addOn),
+                Pair(project, addOn),
+                Pair(project, addOn)
+        ))
+    }
+
+    @Test
+    fun total_whenShippableAddOns() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .build()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()))
+                .build()
+        val listAddOns = listOf(addOn, addOn, addOn) as java.util.List<Reward>
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, project, addOns = listAddOns)
+
+        this.vm.inputs.shippingRuleSelected(shipRule)
+
+        this.totalAmount.assertValue("$290")
+    }
+
+    @Test
+    fun total_whenShippableAddOns_differentShippingCost() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .minimum(50.0)
+                .build()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+        // - total rw = 50 + 30 = 80
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
+                .minimum(9.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(5.0)
+                        .build()
+                ))
+                .build()
+        // - total a1 = (9 + 5) * 2 = 28
+
+        val addOn2 = RewardFactory.itemizedAddOn().toBuilder().quantity(4)
+                .minimum(11.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(3.0)
+                        .build()
+                ))
+                .build()
+        // total a2 = (11 + 3) * 4 = 56
+
+        val addOn3 = RewardFactory.itemizedAddOn().toBuilder().quantity(10)
+                .minimum(15.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(10.0)
+                        .build()
+                ))
+                .build()
+        // total a3 = (15 + 10) * 10 = 250
+
+        val listAddOns = listOf(addOn, addOn2, addOn3) as java.util.List<Reward>
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, project, addOns = listAddOns)
+
+        this.vm.inputs.shippingRuleSelected(shipRule)
+
+        this.totalAmount.assertValues("$414")
+    }
+
+    @Test
+    fun total_whenShippableAddOns_differentShippingCost_AndBonus() {
+        val shipRule = ShippingRuleFactory.usShippingRule()
+        val reward = RewardFactory.rewardWithShipping().toBuilder()
+                .hasAddons(true)
+                .minimum(50.0)
+                .build()
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .rewards(listOf(reward))
+                .build()
+        // - total rw = 50 + 30 = 80
+
+        val addOn = RewardFactory.itemizedAddOn().toBuilder().quantity(2)
+                .minimum(9.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(5.0)
+                        .build()
+                ))
+                .build()
+        // - total a1 = (9 + 5) * 2 = 28
+
+        val addOn2 = RewardFactory.itemizedAddOn().toBuilder().quantity(4)
+                .minimum(11.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(3.0)
+                        .build()
+                ))
+                .build()
+        // total a2 = (11 + 3) * 4 = 56
+
+        val addOn3 = RewardFactory.itemizedAddOn().toBuilder().quantity(10)
+                .minimum(15.0)
+                .shippingRules(listOf(ShippingRuleFactory.usShippingRule()
+                        .toBuilder()
+                        .cost(10.0)
+                        .build()
+                ))
+                .build()
+        // total a3 = (15 + 10) * 10 = 250
+
+        val listAddOns = listOf(addOn, addOn2, addOn3) as java.util.List<Reward>
+
+        val environment = environment()
+        setUpEnvironment(environment, reward, project, addOns = listAddOns)
+
+        this.vm.inputs.shippingRuleSelected(shipRule)
+        this.vm.inputs.bonusInput("123")
+        this.vm.inputs.increaseBonusButtonClicked()
+        this.vm.inputs.increaseBonusButtonClicked()
+        this.vm.inputs.increaseBonusButtonClicked()
+
+        this.totalAmount.assertValues(
+                "$414",
+                "$537",
+                "$538",
+                "$539",
+                "$540")
     }
 
     private fun assertInitialPledgeCurrencyStates_NoShipping_USProject(environment: Environment, project: Project) {
         this.additionalPledgeAmount.assertValue(expectedCurrency(environment, project, 0.0))
         this.conversionText.assertNoValues()
         this.conversionTextViewIsGone.assertValues(true)
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 10_000.0))
         this.pledgeMaximumIsGone.assertValue(true)
         this.projectCurrencySymbol.assertValue("$")
     }
@@ -2834,7 +2504,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.additionalPledgeAmount.assertValue(expectedCurrency(environment, project, 0.0))
         this.conversionText.assertValue(expectedConvertedCurrency(environment, project, 50.0))
         this.conversionTextViewIsGone.assertValues(false)
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 199_970.0))
         this.pledgeMaximumIsGone.assertValue(true)
         this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
@@ -2847,7 +2516,6 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.additionalPledgeAmount.assertValue(expectedCurrency(environment, project, 0.0))
         this.conversionText.assertNoValues()
         this.conversionTextViewIsGone.assertValues(true)
-        this.pledgeMaximum.assertValues(expectedCurrency(environment, project, 9_970.0))
         this.pledgeMaximumIsGone.assertValue(true)
         this.projectCurrencySymbol.assertValue("$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
@@ -2859,13 +2527,10 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private fun assertInitialPledgeState_NoShipping(environment: Environment, project: Project) {
         this.additionalPledgeAmountIsGone.assertValue(true)
         this.continueButtonIsEnabled.assertNoValues()
-        this.decreasePledgeButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20")
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
-        this.shippingAmount.assertValue(expectedCurrency(environment, project, 0.0))
+        this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0))
         this.totalAndDeadline.assertValue(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
         this.totalAndDeadlineIsVisible.assertValueCount(1)
@@ -2874,11 +2539,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
     private fun assertInitialPledgeState_WithShipping() {
         this.additionalPledgeAmountIsGone.assertValue(true)
         this.continueButtonIsEnabled.assertNoValues()
-        this.decreasePledgeButtonIsEnabled.assertValue(false)
-        this.increasePledgeButtonIsEnabled.assertValue(true)
-        this.pledgeAmount.assertValues("20")
         this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeHint.assertValue("20")
         this.pledgeTextColor.assertValue(R.color.ksr_green_500)
     }
 

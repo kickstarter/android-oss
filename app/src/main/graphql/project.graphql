@@ -13,59 +13,21 @@ query GetProjectBacking($slug: String!) {
   project(slug: $slug) {
     id
     backing {
-      id
-      status
-      sequence
-      pledgedOn
-      backerCompleted
-      cancelable
-      shippingAmount {
-        amount
-        currency
-        symbol
-      }
-      location {
-        id
-        displayableName
-      }
-      amount {
-        amount
-        currency
-        symbol
-      }
-      paymentSource {
-        ... on CreditCard {
-          state
-          id
-          lastFour
-          expirationDate
-          type
-        }
-      }
-      shippingAmount {
-        amount
-      }
-      reward {
-        id
-        name
-        backersCount
-        description
-        estimatedDeliveryOn
-        items {
+      ... backing
+    }
+  }
+}
+
+query GetProjectAddOns($slug: String!, $locationId: ID!) {
+  project(slug: $slug) {
+    addOns {
+      nodes {
+        shippingRulesExpanded(forLocation: $locationId) {
           nodes {
-            name
+            ... shippingRule
           }
         }
-        amount {
-          amount
-          currency
-          symbol
-        }
-      }
-      backer {
-        imageUrl(blur: false, width: 54)
-        name
-        id
+        ... reward
       }
     }
   }

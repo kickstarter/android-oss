@@ -14,6 +14,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Backing;
+import com.kickstarter.models.BackingWrapper;
 import com.kickstarter.models.Message;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.models.Project;
@@ -125,7 +126,7 @@ public interface MessagesViewModel {
     Observable<String> showMessageErrorToast();
 
     /** Emits when we should start the {@link BackingActivity}. */
-    Observable<Pair<Project, User>> startBackingActivity();
+    Observable<BackingWrapper> startBackingActivity();
 
     /** Emits when the thread has been marked as read. */
     Observable<Void> successfullyMarkedAsRead();
@@ -358,6 +359,8 @@ public interface MessagesViewModel {
         .compose(combineLatestPair(messagesData))
         .compose(takeWhen(this.viewPledgeButtonClicked))
         .map(this::projectAndBacker)
+        .compose(combineLatestPair(backingAndProject))
+        .map(it -> new BackingWrapper(it.second.first, it.first.second, it.first.first))
         .compose(bindToLifecycle())
         .subscribe(this.startBackingActivity::onNext);
 
@@ -432,7 +435,7 @@ public interface MessagesViewModel {
     private final PublishSubject<String> showMessageErrorToast = PublishSubject.create();
     private final Observable<Boolean> sendMessageButtonIsEnabled;
     private final Observable<String> setMessageEditText;
-    private final PublishSubject<Pair<Project, User>> startBackingActivity = PublishSubject.create();
+    private final PublishSubject<BackingWrapper> startBackingActivity = PublishSubject.create();
     private final BehaviorSubject<Void> successfullyMarkedAsRead = BehaviorSubject.create();
     private final Observable<Boolean> toolbarIsExpanded;
     private final BehaviorSubject<Boolean> viewPledgeButtonIsGone = BehaviorSubject.create();
@@ -516,7 +519,7 @@ public interface MessagesViewModel {
     @Override public @NonNull Observable<String> setMessageEditText() {
       return this.setMessageEditText;
     }
-    @Override public @NonNull Observable<Pair<Project, User>> startBackingActivity() {
+    @Override public @NonNull Observable<BackingWrapper> startBackingActivity() {
       return this.startBackingActivity;
     }
     @Override public @NonNull Observable<Void> successfullyMarkedAsRead() {

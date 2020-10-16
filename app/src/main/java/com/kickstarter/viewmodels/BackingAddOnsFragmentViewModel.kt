@@ -214,12 +214,19 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingRulesAndProject)
 
-            shippingRules
+            val defaultShippingRule = shippingRules
                     .filter { it.isNotEmpty() }
                     .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
                     .filter { !isDigital(it.second) && isShippable(it.second) }
                     .switchMap { defaultShippingRule(it.first) }
-                    .subscribe(this.shippingRuleSelected)
+
+            defaultShippingRule
+                    .compose<Pair<ShippingRule, Boolean>>(combineLatestPair(isSameReward))
+                    .filter { !it.second }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.shippingRuleSelected.onNext(it.first)
+                    }
 
             Observable
                     .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->

@@ -457,9 +457,9 @@ interface PledgeFragmentViewModel {
                     }
 
             val backingShippingRule = backing
-                    .compose<Pair<Backing, Reward>>(combineLatestPair(this.selectedReward))
+                    .compose<Pair<Backing, PledgeData>>(combineLatestPair(pledgeData))
                     .filter {
-                        RewardUtils.isShippable(it.second) && ObjectUtils.isNotNull(it.first.locationId()) && !hasBackedAddOns(it)
+                        shouldLoadShippingRuleFromBacking(it)
                     }
                     .map { requireNotNull(it.first.locationId()) }
                     .compose<Pair<Long, List<ShippingRule>>>(combineLatestPair(shippingRules))
@@ -1428,6 +1428,28 @@ interface PledgeFragmentViewModel {
         }
 
         /**
+         * The shipping rule from the backing object should be load on the next scenarios:
+         * - Shippable Reward without available addOns
+         * - Shippable Reward with available addOns but not backedAddOns
+         *
+         * Note: If pledgeData object contains shipping rule it comes from selecting addOns that's
+         * the prioritary shippingRule ignore anything on the backingObject
+         *
+         * Note: If skipping addOns, pledgeData.shippingRule will be null but we will display
+         * the shippingSelector for the user, so loading the backing shippingRule it's correct as
+         * it can be edited.
+         */
+        private fun shouldLoadShippingRuleFromBacking(it: Pair<Backing, PledgeData>) =
+                RewardUtils.isShippable(it.second.reward()) && ObjectUtils.isNotNull(it.first.locationId()) &&
+                !hasBackedAddOns(Pair(it.first, it.second.reward())) && !hasSelectedAddOns(it.second.addOns()) &&
+                it.second.shippingRule() == null
+
+        /**
+         * If a user has selected addOns, we will know by checking field addOns from pledgeData input
+         */
+        private fun hasSelectedAddOns(addOns: java.util.List<Reward>?): Boolean = addOns?.isNotEmpty() ?: false
+
+        /**
          * Determine if the user has backed addOns
          */
         private fun hasBackedAddOns(it: Pair<Backing, Reward>) =
@@ -1504,6 +1526,11 @@ interface PledgeFragmentViewModel {
             return shippingCost
         }
 
+        /**
+         * When retrieving the backing shipping information we do have available the LocationId on the backingObject
+         * and the list of shippingRules available for the selected reward, so we the backing shippingRule will be
+         * the one matching the backingObject field locationId
+         */
         private fun selectedShippingRule(shippingInfo: Pair<Long, List<ShippingRule>>): ShippingRule =
                 requireNotNull(shippingInfo.second.first { it.location().id() == shippingInfo.first })
 

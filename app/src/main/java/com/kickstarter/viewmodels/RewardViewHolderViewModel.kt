@@ -417,6 +417,7 @@ interface RewardViewHolderViewModel {
             return when {
                 !hasAddOns && isSelectable(project, rw) -> true
                 hasAddOns && selectingOtherRw && RewardUtils.isAvailable(project, rw) -> true
+                hasAddOns && !selectingOtherRw -> RewardUtils.isAvailable(project, rw)
                 isUpdatingSameRewardWithBackedAddOns(hasAddOns, project, selectingOtherRw, rw) -> true
                 else -> false
             }

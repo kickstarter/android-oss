@@ -780,13 +780,87 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.arguments(bundle)
 
         this.shippingSelectorIsGone.assertNoValues()
-        this.selectedShippingRule.assertValue(shippingRule.shippingRules().first())
+        this.selectedShippingRule.assertValues(ShippingRuleFactory.emptyShippingRule(),shippingRule.shippingRules().first())
         this.addOnsList.assertValues(Triple(projectData, listAddons, shippingRule.shippingRules().first()))
 
         // - Always 0 first time, them summatory of all addOns quantity every time the list gets updated
         this.totalSelectedAddOns.assertValues(0)
 
         this.lakeTest.assertValues("Add-Ons Page Viewed")
+    }
+
+    @Test
+    fun givenBackedAddOns_whenUpdatingSameReward_ChangeShippingRule() {
+        val shippingRule = ShippingRulesEnvelopeFactory.shippingRules()
+
+        val addOn = RewardFactory.addOn().toBuilder()
+                .shippingRules(shippingRule.shippingRules())
+                .shippingPreferenceType(Reward.ShippingPreference.UNRESTRICTED) // - Reward from GraphQL use this field
+                .build()
+        val addOn2 = addOn.toBuilder().id(8).build()
+        val addOn3 = addOn.toBuilder().id(99).build()
+
+        val listAddons = listOf(addOn, addOn2, addOn3)
+        val listAddonsBacked = listOf(addOn2.toBuilder().quantity(2).build(), addOn3.toBuilder().quantity(1).build())
+
+        val config = ConfigFactory.configForUSUser()
+        val currentConfig = MockCurrentConfig()
+        currentConfig.config(config)
+
+        setUpEnvironment(buildEnvironmentWith(listAddons, shippingRule, currentConfig))
+
+        // - Backed Reward
+        val rw = RewardFactory.rewardHasAddOns().toBuilder()
+                .shippingType(Reward.ShippingPreference.RESTRICTED.name.toLowerCase())
+                .shippingRules(shippingRule.shippingRules())
+                .shippingPreferenceType(Reward.ShippingPreference.RESTRICTED) // - Reward from GraphQL use this field
+                .shippingPreference(Reward.ShippingPreference.RESTRICTED.name.toLowerCase()) // - Reward from V1 use this field.
+                .shippingType(Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS) // - Reward from V1 use this field to check if is Digital
+                .build()
+
+        val project = ProjectFactory.project()
+
+        // -Build the backing with location and list of AddOns
+        val backing = BackingFactory.backing(project, UserFactory.user(), rw)
+                .toBuilder()
+                .locationId(ShippingRuleFactory.usShippingRule().location().id())
+                .location(ShippingRuleFactory.usShippingRule().location())
+                .addOns(listAddonsBacked)
+                .build()
+
+        val backedProject = project.toBuilder()
+                .rewards(listOf(rw))
+                .backing(backing)
+                .build()
+
+        val projectData = ProjectDataFactory.project(backedProject, null, null)
+        val pledgeReason = PledgeFlowContext.forPledgeReason(PledgeReason.UPDATE_REWARD)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA, PledgeData.with(pledgeReason, projectData, rw))
+        bundle.putSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON, PledgeReason.UPDATE_REWARD)
+
+        this.vm.arguments(bundle)
+
+        this.shippingSelectorIsGone.assertNoValues()
+        this.selectedShippingRule.assertValues(ShippingRuleFactory.emptyShippingRule(), shippingRule.shippingRules().first())
+
+        // - Change shippingRule
+        this.vm.inputs.shippingRuleSelected(ShippingRuleFactory.mexicoShippingRule())
+
+        // - Test asserts
+        this.selectedShippingRule.assertValues(ShippingRuleFactory.emptyShippingRule(),
+                shippingRule.shippingRules().first(),
+                ShippingRuleFactory.mexicoShippingRule())
+
+        this.vm.inputs.continueButtonPressed()
+
+        this.vm.outputs.showPledgeFragment().subscribe {
+            val shippingRuleSendToPledge = it.first.shippingRule()
+            TestCase.assertEquals(shippingRuleSendToPledge, ShippingRuleFactory.mexicoShippingRule())
+        }
+
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
     }
 
     @Test

@@ -175,12 +175,6 @@ class BackingAddOnsFragmentViewModel {
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
 
-            backingShippingRule
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingRuleSelected.onNext(it)
-                    }
-
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
                     .filter { isDigital(it) || !isShippable(it) }
@@ -188,7 +182,6 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.shippingSelectorIsGone.onNext(true)
-                        this.shippingRuleSelected.onNext(ShippingRuleFactory.emptyShippingRule())
                     }
 
             val addOnsFromBacking = backing
@@ -220,13 +213,17 @@ class BackingAddOnsFragmentViewModel {
                     .filter { !isDigital(it.second) && isShippable(it.second) }
                     .switchMap { defaultShippingRule(it.first) }
 
-            defaultShippingRule
-                    .compose<Pair<ShippingRule, Boolean>>(combineLatestPair(isSameReward))
-                    .filter { !it.second }
+            val shippingRule = getSelectedShippingRule(defaultShippingRule, isSameReward, backingShippingRule, reward)
+
+            shippingRule
+                    .distinctUntilChanged { rule1, rule2 ->
+                        rule1.location().id() == rule2.location().id() && rule1.cost() == rule2.cost()
+                    }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.shippingRuleSelected.onNext(it.first)
+                        this.shippingRuleSelected.onNext(it)
                     }
+
 
             Observable
                     .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
@@ -325,6 +322,36 @@ class BackingAddOnsFragmentViewModel {
                         this.showPledgeFragment.onNext(it)
                     }
         }
+
+        /**
+         * Observable containing the correct shippingRule to each case
+         */
+        private fun getSelectedShippingRule(
+                defaultShippingRule: Observable<ShippingRule>,
+                isSameReward: Observable<Boolean>,
+                backingShippingRule: Observable<ShippingRule>,
+                reward: Observable<Reward>): Observable<ShippingRule> {
+            return Observable.combineLatest(defaultShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
+                    isSameReward.startWith(false),
+                    backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
+                    reward
+            ) { defaultShipping, sameRw, backingRule, rw ->
+                return@combineLatest chooseShippingRule(defaultShipping, backingRule, sameRw, rw)
+            }
+        }
+
+        /**
+         * The use cases for populating the shipping rule selector:
+         * - First pledge or choosing another reward, we load in the shipping selector the default shipping rule
+         * - Digital or not shippable we return empty shippingRule to unify flow for all rewards types
+         * - Choosing to update same reward use the backing shippingRule
+         */
+        private fun chooseShippingRule(defaultShipping: ShippingRule, backingShippingRule: ShippingRule, sameReward: Boolean, rw: Reward): ShippingRule =
+                when {
+                    isDigital(rw) || !isShippable(rw) -> ShippingRuleFactory.emptyShippingRule()
+                    sameReward -> backingShippingRule
+                    else -> defaultShipping
+                }
 
         /**
          * Updates the pledgeData object if necessary. This observable should

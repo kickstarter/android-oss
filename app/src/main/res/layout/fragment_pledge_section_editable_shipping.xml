@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_4"
     android:focusable="true"
     android:gravity="center_vertical"
     android:orientation="horizontal"

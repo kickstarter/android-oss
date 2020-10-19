@@ -15,7 +15,6 @@
         style="@style/CalloutPrimaryMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_4"
         android:text="@string/Your_shipping_location"
         app:layout_constraintBottom_toTopOf="@id/shipping_rules_static"
         app:layout_constraintStart_toStartOf="parent"

@@ -5,7 +5,7 @@
     android:id="@+id/bonus_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_3"
+    android:layout_marginBottom="@dimen/grid_1_half"
     android:animateLayoutChanges="true"
     android:focusable="true"
     android:visibility="gone"

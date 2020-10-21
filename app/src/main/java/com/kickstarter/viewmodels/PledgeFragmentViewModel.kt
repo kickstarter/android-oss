@@ -1528,7 +1528,7 @@ interface PledgeFragmentViewModel {
 
         /**
          * When retrieving the backing shipping information we do have available the LocationId on the backingObject
-         * and the list of shippingRules available for the selected reward, so we the backing shippingRule will be
+         * and the list of shippingRules available for the selected reward, the backing shippingRule will be
          * the one matching the backingObject field locationId
          */
         private fun selectedShippingRule(shippingInfo: Pair<Long, List<ShippingRule>>): ShippingRule =

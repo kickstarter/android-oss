@@ -3,7 +3,7 @@ package com.kickstarter.services
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.ui.IntentKey
@@ -41,7 +41,7 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
         if (this.build.isDebug) {
             Timber.d("Successfully tracked $tag event: $eventName")
         }
-        Crashlytics.log(this.eventName)
+        FirebaseCrashlytics.getInstance().log(this.eventName)
     }
 
     private fun logTrackingError(code: Int, message: String) {
@@ -49,6 +49,6 @@ abstract class TrackingWorker(@ApplicationContext applicationContext: Context, p
         if (this.build.isDebug) {
             Timber.e(errorMessage)
         }
-        Crashlytics.logException(Exception(errorMessage))
+        FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
     }
 }

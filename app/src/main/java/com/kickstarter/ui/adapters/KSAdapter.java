@@ -4,7 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -101,7 +101,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
         ExceptionUtils.rethrowAsRuntimeException(e);
       } else {
         // TODO: alter the exception message to say we are just reporting it and it's not a real crash.
-        Crashlytics.logException(e);
+        FirebaseCrashlytics.getInstance().recordException(e);
       }
     }
   }

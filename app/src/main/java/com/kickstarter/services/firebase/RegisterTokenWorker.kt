@@ -3,7 +3,7 @@ package com.kickstarter.services.firebase
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -64,14 +64,14 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
         if (this.build.isDebug) {
             Timber.d(successMessage)
         }
-        Crashlytics.log(successMessage)
+        FirebaseCrashlytics.getInstance().log(successMessage)
     }
 
     private fun logError(errorMessage: String) {
         if (this.build.isDebug) {
             Timber.e(errorMessage)
         }
-        Crashlytics.logException(Exception(errorMessage))
+        FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
     }
 
     companion object {

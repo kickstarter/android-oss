@@ -20,7 +20,7 @@ import com.kickstarter.models.User
 import com.kickstarter.services.KoalaWorker
 import com.kickstarter.services.LakeWorker
 import com.kickstarter.ui.IntentKey
-import io.fabric.sdk.android.Fabric
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -52,7 +52,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
             if (this.build.isDebug) {
                 Timber.e("Failed to encode ${type().tag} event: $eventName")
             }
-            Fabric.getLogger().e(TrackingClient::class.java.simpleName, "Failed to encode ${type().tag} event: $eventName")
+            FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
         }
     }
 

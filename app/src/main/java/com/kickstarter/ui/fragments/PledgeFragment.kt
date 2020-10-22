@@ -48,6 +48,7 @@ import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.extensions.setTextAndSelection
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
@@ -185,18 +186,14 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    val maxLength = resources.getInteger(R.integer.max_length)
-                    val stringAmount = if (it.length >= maxLength) it.substring(0, maxLength -1) else it
-                    pledge_amount.setText(stringAmount)
-                    pledge_amount.setSelection(stringAmount.length)
+                    pledge_amount.setTextAndSelection(it)
                 }
 
         this.viewModel.outputs.bonusAmount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    bonus_amount.setText(it)
-                    bonus_amount.setSelection(it.length)
+                    bonus_amount.setTextAndSelection(it)
                     bonus_summary_amount.text = it
                 }
 

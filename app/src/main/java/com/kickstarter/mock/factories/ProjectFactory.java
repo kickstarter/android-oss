@@ -164,6 +164,33 @@ public final class ProjectFactory {
             .build();
   }
 
+  public static @NonNull Project backedProjectRewardAvailableAddOnsNotBackedAddOns() {
+    final Project project = project();
+
+    final Reward reward = RewardFactory.reward().toBuilder().hasAddons(true).build();
+
+    final Backing backing = Backing.builder()
+            .amount(10.0f)
+            .backerId(IdFactory.id())
+            .cancelable(true)
+            .id(IdFactory.id())
+            .sequence(1)
+            .reward(reward)
+            .rewardId(reward.id())
+            .paymentSource(PaymentSourceFactory.Companion.visa())
+            .pledgedAt(DateTime.now())
+            .projectId(project.id())
+            .shippingAmount(0.0f)
+            .status(Backing.STATUS_PLEDGED)
+            .build();
+
+    return project
+            .toBuilder()
+            .backing(backing)
+            .isBacking(true)
+            .build();
+  }
+
 
   public static @NonNull Project backedSuccessfulProject() {
     final Project project = successfulProject();

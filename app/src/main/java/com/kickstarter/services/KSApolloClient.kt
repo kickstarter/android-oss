@@ -331,9 +331,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
     }
 
     private fun getAddOnsFromProject(addOnsGr: GetProjectAddOnsQuery.AddOns): List<Reward> {
-       return addOnsGr.nodes()?.map {
-           val shippingRulesGr = it.shippingRulesExpanded()?.nodes()?.map { it.fragments().shippingRule() } ?: emptyList()
-           rewardTransformer(it.fragments().reward(), shippingRulesGr)
+       return addOnsGr.nodes()?.map { node ->
+           val shippingRulesGr = node.shippingRulesExpanded()?.nodes()?.map { it.fragments().shippingRule() } ?: emptyList()
+           rewardTransformer(node.fragments().reward(), shippingRulesGr)
         }?.toList() ?: emptyList()
     }
 
@@ -614,7 +614,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     }
 
     val backerData = backingGr?.backer()?.fragments()?.user()
-    val nameBacker = backerData?.name()
+    val nameBacker = backerData?.let { it.name() } ?: ""
     val backerId= decodeRelayId(backerData?.id()) ?: -1
     val avatar = Avatar.builder()
             .medium(backerData?.imageUrl())

@@ -104,6 +104,8 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   protected void onDestroy() {
     super.onDestroy();
     this.ksWebView.setDelegate(null);
+    this.ksWebView = null;
+    this.viewModel = null;
   }
 
   private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
@@ -112,7 +114,9 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   }
 
   private boolean handleProjectUpdateUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    this.viewModel.inputs.goToUpdateRequest(request);
+    if (request!= null && webView!= null) {
+      this.viewModel.inputs.goToUpdateRequest(request);
+    }
     return false;
   }
 

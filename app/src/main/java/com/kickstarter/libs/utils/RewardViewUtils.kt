@@ -26,9 +26,9 @@ object RewardViewUtils {
         val hasAddOnsSelected = project.backing()?.addOns()?.isNotEmpty() ?: false
 
         return when {
-            BackingUtils.isBacked(project, reward) && !hasAddOnsSelected -> R.string.Selected
+            BackingUtils.isBacked(project, reward) && !reward.hasAddons() -> R.string.Selected
             !BackingUtils.isBacked(project, reward) && RewardUtils.isAvailable(project, reward) -> R.string.Select
-            BackingUtils.isBacked(project, reward) && reward.hasAddons() && hasAddOnsSelected -> R.string.Continue
+            BackingUtils.isBacked(project, reward) && reward.hasAddons() || hasAddOnsSelected -> R.string.Continue
             else -> R.string.No_longer_available
         }
     }

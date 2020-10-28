@@ -10,7 +10,8 @@ class ShippingRulesEnvelopeFactory private constructor() {
             return ShippingRulesEnvelope.builder()
                     .shippingRules(listOf(
                             ShippingRuleFactory.usShippingRule(),
-                            ShippingRuleFactory.germanyShippingRule())
+                            ShippingRuleFactory.germanyShippingRule(),
+                            ShippingRuleFactory.mexicoShippingRule())
                     )
                     .build()
         }

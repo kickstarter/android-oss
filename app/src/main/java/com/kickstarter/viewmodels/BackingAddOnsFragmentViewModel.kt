@@ -24,6 +24,7 @@ import com.kickstarter.ui.fragments.BackingAddOnsFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.*
 
 class BackingAddOnsFragmentViewModel {
 
@@ -542,13 +543,13 @@ class BackingAddOnsFragmentViewModel {
         private fun filterByLocation(addOns: List<Reward>, pData: ProjectData, rule: ShippingRule, rw: Reward): Triple<ProjectData, List<Reward>, ShippingRule> {
             val filteredAddOns = when (rw.shippingPreference()) {
                 Reward.ShippingPreference.UNRESTRICTED.name,
-                Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase() -> {
+                Reward.ShippingPreference.UNRESTRICTED.toString().toLowerCase(Locale.getDefault()) -> {
                     addOns.filter {
                         it.shippingPreferenceType() == Reward.ShippingPreference.UNRESTRICTED || containsLocation(rule, it) || isDigital(it)
                     }
                 }
                 Reward.ShippingPreference.RESTRICTED.name,
-                Reward.ShippingPreference.RESTRICTED.toString().toLowerCase() -> {
+                Reward.ShippingPreference.RESTRICTED.toString().toLowerCase(Locale.getDefault()) -> {
                     addOns.filter { containsLocation(rule, it) || isDigital(it) }
                 }
                 else -> {

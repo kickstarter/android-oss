@@ -20,6 +20,7 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.util.*
 
 class RewardsFragmentViewModel {
     interface Inputs {
@@ -191,7 +192,7 @@ class RewardsFragmentViewModel {
         private fun differentShippingTypes(newRW: Reward, backedRW: Reward): Boolean {
             return if (newRW.id() == backedRW.id()) false
             else {
-                newRW.shippingType()?.toLowerCase() ?: "" != backedRW.shippingType()?.toLowerCase() ?: ""
+                newRW.shippingType()?.toLowerCase(Locale.getDefault()) ?: "" != backedRW.shippingType()?.toLowerCase(Locale.getDefault()) ?: ""
             }
         }
 

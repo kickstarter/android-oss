@@ -301,13 +301,13 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
+    override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
 
             this.service.query(GetProjectAddOnsQuery.builder()
                     .slug(slug)
-                    .locationId(encodeRelayId(location))
+                    .locationId(encodeRelayId(locationId))
                     .build())
                     .enqueue(object : ApolloCall.Callback<GetProjectAddOnsQuery.Data>() {
                         override fun onFailure(e: ApolloException) {
@@ -708,11 +708,11 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
     val title = rewardGr.name()
-    val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) } ?: null
+    val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
     val limit = chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     val remaining = rewardGr.remainingQuantity()
-    val endsAt = rewardGr.endsAt()?.let { DateTime(it) } ?: null
-    val startsAt = rewardGr.startsAt()?.let { DateTime(it) } ?: null
+    val endsAt = rewardGr.endsAt()?.let { DateTime(it) }
+    val startsAt = rewardGr.startsAt()?.let { DateTime(it) }
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
     val available = rewardGr.available()
 

@@ -25,7 +25,7 @@ public class MessageService extends FirebaseMessagingService {
   @Inject protected PushNotifications pushNotifications;
 
   @Override
-  public void onNewToken(@NonNull String s) {
+  public void onNewToken(@NonNull final String s) {
     super.onNewToken(s);
   }
 

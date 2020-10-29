@@ -1,10 +1,12 @@
 package com.kickstarter.viewmodels
 
+import android.os.Bundle
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.ArgumentsKey
@@ -69,7 +71,8 @@ interface CancelPledgeViewModel {
         init {
 
             val project = arguments()
-                    .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT) as Project }
+                    .filter { ObjectUtils.isNotNull(it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT)) }
+                    .map { it as Project }
 
             val backing = project
                     .map { it.backing() }

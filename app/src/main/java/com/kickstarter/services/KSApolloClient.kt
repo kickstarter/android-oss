@@ -619,6 +619,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val avatar = Avatar.builder()
             .medium(backerData?.imageUrl())
             .build()
+    val completedByBacker = backingGr?.backerCompleted() ?: false
 
     val backer = User.builder()
             .id(backerId)
@@ -646,6 +647,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
             .shippingAmount(shippingAmount?.amount()?.amount()?.toFloat() ?: 0f)
             .status(backingGr?.status()?.rawValue())
             .cancelable(backingGr?.cancelable() ?: false)
+            .completedByBacker(completedByBacker)
             .build()
 }
 

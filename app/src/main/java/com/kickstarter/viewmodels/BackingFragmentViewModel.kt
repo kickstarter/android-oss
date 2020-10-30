@@ -337,10 +337,9 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.completedByBacker() }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle<Boolean>())
-                    .subscribe {
-                        this.receivedCheckboxChecked.onNext(it)
-                    }
+                    .subscribe(this.receivedCheckboxChecked)
 
             backing
                     .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))

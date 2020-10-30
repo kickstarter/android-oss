@@ -157,7 +157,7 @@ interface BackingFragmentViewModel {
         private val pledgeStatusData = BehaviorSubject.create<PledgeStatusData>()
         private val pledgeSummaryIsGone = BehaviorSubject.create<Boolean>()
         private val projectDataAndReward = BehaviorSubject.create<Pair<ProjectData, Reward>>()
-        private val receivedCheckboxChecked = BehaviorSubject.create<Boolean>(false)
+        private val receivedCheckboxChecked = BehaviorSubject.create<Boolean>()
         private val receivedSectionIsGone = BehaviorSubject.create<Boolean>()
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingLocation = BehaviorSubject.create<String>()
@@ -337,7 +337,6 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.completedByBacker() }
-                    .map { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle<Boolean>())
                     .subscribe {
                         this.receivedCheckboxChecked.onNext(it)

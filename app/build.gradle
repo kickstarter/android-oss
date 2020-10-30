@@ -2,9 +2,15 @@ buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
     }
+
+    dependencies {
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
+    }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
@@ -55,7 +61,7 @@ android {
 
         def fabricProps = new Properties()
         file("fabric.properties").withInputStream { fabricProps.load(it) }
-        manifestPlaceholders = [apiKey: fabricProps.getProperty('apiKey')]
+        manifestPlaceholders = [apiKey: fabricProps.getProperty('apiKey'), performanceLogs: false]
     }
 
     signingConfigs {
@@ -98,6 +104,7 @@ android {
             applicationId "com.kickstarter.kickstarter.internal"
             versionCode internalPrivateVersion
             versionName internalPublicVersion
+            manifestPlaceholders = [performanceLogs: true]
         }
         external {
             dimension "AUDIENCE"

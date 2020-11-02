@@ -1,10 +1,10 @@
+@file:JvmName("ConfigExtension")
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.libs.Config
-
+import org.json.JSONArray
 /**
- * Config extension function: it will return a Boolean value
- * telling the actual state for a concrete feature flag
+ * Helper method to know if a feature flag is enabled
  *
  * @param text string feature flag you are looking for
  * @return true if the feature flag is enable
@@ -15,6 +15,38 @@ fun Config.isFeatureFlagEnabled(text: String): Boolean {
             ?.get(text)
 
     return isEnabled ?: false
+}
+
+/**
+ * @return The actual list of variants
+ */
+fun Config.currentVariants(): JSONArray? {
+    return this.abExperiments()
+            ?.toSortedMap()
+            ?.let {
+                JSONArray().apply {
+                    for (feature in it) {
+                        put("${feature.key}[${feature.value}]")
+                    }
+                }
+            }
+}
+
+/**
+ * @return The actual list of enabled feature flags
+ */
+fun Config.enabledFeatureFlags(): JSONArray? {
+    return this.features()
+            ?.filter { it.key.startsWith("android_") && it.value }
+            ?.keys
+            ?.sorted()
+            ?.let {
+                JSONArray().apply {
+                    for (feature in it) {
+                        put(feature)
+                    }
+                }
+            }
 }
 
 /**

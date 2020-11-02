@@ -12,7 +12,6 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
-import com.kickstarter.libs.utils.ConfigUtils
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.WorkUtils.baseConstraints
 import com.kickstarter.libs.utils.WorkUtils.uniqueWorkName
@@ -21,6 +20,8 @@ import com.kickstarter.services.KoalaWorker
 import com.kickstarter.services.LakeWorker
 import com.kickstarter.ui.IntentKey
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.kickstarter.libs.utils.extensions.currentVariants
+import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -100,7 +101,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     }
 
     override fun currentVariants(): JSONArray? {
-        return ConfigUtils.currentVariants(this.config)
+        return this.config?.currentVariants()
     }
 
     override fun deviceDistinctId(): String {
@@ -123,7 +124,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     override fun enabledFeatureFlags(): JSONArray? {
         return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
                 .apply {
-                    val configFlags = ConfigUtils.enabledFeatureFlags(this@TrackingClient.config)
+                    val configFlags = this@TrackingClient.config?.enabledFeatureFlags()
                     configFlags?.let {
                         for (index in 0 until it.length()) {
                             put(it.get(index))

@@ -1,7 +1,7 @@
 package com.kickstarter.libs.graphql
 
-import com.apollographql.apollo.response.CustomTypeAdapter
-import com.apollographql.apollo.response.CustomTypeValue
+import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomTypeValue
 
 class EmailAdapter : CustomTypeAdapter<String> {
     override fun encode(value: String): CustomTypeValue<*> {

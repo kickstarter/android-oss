@@ -1,7 +1,7 @@
 package com.kickstarter.libs.graphql
 
-import com.apollographql.apollo.response.CustomTypeAdapter
-import com.apollographql.apollo.response.CustomTypeValue
+import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomTypeValue
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import java.text.ParseException

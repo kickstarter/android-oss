@@ -69,7 +69,8 @@ interface CancelPledgeViewModel {
         init {
 
             val project = arguments()
-                    .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT) as Project }
+                    .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT) as Project? }
+                    .ofType(Project::class.java)
 
             val backing = project
                     .map { it.backing() }

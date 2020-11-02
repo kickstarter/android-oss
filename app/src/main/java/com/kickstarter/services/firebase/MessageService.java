@@ -2,6 +2,8 @@ package com.kickstarter.services.firebase;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -21,6 +23,11 @@ import timber.log.Timber;
 public class MessageService extends FirebaseMessagingService {
   @Inject protected Gson gson;
   @Inject protected PushNotifications pushNotifications;
+
+  @Override
+  public void onNewToken(@NonNull final String s) {
+    super.onNewToken(s);
+  }
 
   @Override
   public void onCreate() {

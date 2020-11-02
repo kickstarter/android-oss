@@ -336,8 +336,7 @@ interface BackingFragmentViewModel {
                     .subscribe { this.notifyDelegateToShowFixPledge.onNext(null) }
 
             backing
-                    .map { it.backerCompletedAt() }
-                    .map { ObjectUtils.isNotNull(it) }
+                    .map { it.completedByBacker() }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle<Boolean>())
                     .subscribe(this.receivedCheckboxChecked)

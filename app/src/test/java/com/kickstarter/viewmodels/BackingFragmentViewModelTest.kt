@@ -791,10 +791,10 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testReceivedCheckboxChecked_whenReceived() {
+    fun testReceivedCheckboxChecked_whenChecked() {
         val backing = BackingFactory.backing()
                 .toBuilder()
-                .backerCompletedAt(DateTime.now())
+                .completedByBacker(true)
                 .build()
 
         val environment = environment()
@@ -805,6 +805,23 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.receivedCheckboxChecked.assertValue(true)
+    }
+
+    @Test
+    fun testReceivedCheckboxChecked_whenUnchecked() {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .completedByBacker(false)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+
+        this.receivedCheckboxChecked.assertValue(false)
     }
 
     @Test

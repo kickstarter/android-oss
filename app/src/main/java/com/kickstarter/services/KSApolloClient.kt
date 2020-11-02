@@ -50,9 +50,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<CancelBackingMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onNext(response.errors().first().message())
+                                ps.onNext(response.errors?.first()?.message)
                             } else {
-                                val state = response.data()?.cancelBacking()?.backing()?.status()
+                                val state = response.data?.cancelBacking()?.backing()?.status()
                                 val success = state == BackingState.CANCELED
                                 ps.onNext(success)
                             }
@@ -85,10 +85,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<CreateBackingMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                                ps.onError(java.lang.Exception(response.errors?.first()?.message))
                             }
 
-                            val checkoutPayload = response.data()?.createBacking()?.checkout()
+                            val checkoutPayload = response.data?.createBacking()?.checkout()
 
                             // TODO: Add new status field to backing model
                             val backing = Checkout.Backing.builder()
@@ -119,7 +119,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
 
                         override fun onResponse(response: Response<GetBackingQuery.Data>) {
-                            response.data()?.let {data ->
+                            response.data?.let {data ->
                                 Observable.just(data.backing())
                                         .filter { it?.fragments()?.backing() != null }
                                         .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
@@ -147,9 +147,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<ClearUserUnseenActivityMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                                ps.onError(java.lang.Exception(response.errors?.first()?.message))
                             }
-                            response.data()?.clearUserUnseenActivity()?.activityIndicatorCount().let {
+                            response.data?.clearUserUnseenActivity()?.activityIndicatorCount().let {
                                 handleResponse(it, ps)
                             }
                         }
@@ -172,9 +172,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<CreatePasswordMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                                ps.onError(java.lang.Exception(response.errors?.first()?.message))
                             }
-                            ps.onNext(response.data())
+                            ps.onNext(response.data)
                             ps.onCompleted()
                         }
                     })
@@ -195,10 +195,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<ProjectCreatorDetailsQuery.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
 
-                            response.data()?.project()?.creator()?.let {
+                            response.data?.project()?.creator()?.let {
                                 ps.onNext(CreatorDetails.builder()
                                         .backingsCount(it.backingsCount())
                                         .launchedProjectsCount(it.launchedProjects()?.totalCount() ?: 1)
@@ -224,9 +224,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<DeletePaymentSourceMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
-                            ps.onNext(response.data())
+                            ps.onNext(response.data)
                             ps.onCompleted()
                         }
                     })
@@ -245,9 +245,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<ErroredBackingsQuery.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             } else {
-                                Observable.just(response.data())
+                                Observable.just(response.data)
                                         .map { cards -> cards?.me()?.backings()?.nodes() }
                                         .map { list ->
                                             val erroredBackings = list?.asSequence()?.map {
@@ -286,7 +286,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
 
                         override fun onResponse(response: Response<GetProjectBackingQuery.Data>) {
-                            response.data()?.let {data ->
+                            response.data?.let {data ->
                                 Observable.just(data.project()?.backing())
                                         .filter { it?.fragments()?.backing() != null }
                                         .map { backingObj -> createBackingObject(backingObj?.fragments()?.backing()) }
@@ -301,13 +301,13 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
         }
     }
 
-    override fun getProjectAddOns(slug: String, location: Location): Observable<List<Reward>> {
+    override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {
         return Observable.defer {
             val ps = PublishSubject.create<List<Reward>>()
 
             this.service.query(GetProjectAddOnsQuery.builder()
                     .slug(slug)
-                    .locationId(encodeRelayId(location))
+                    .locationId(encodeRelayId(locationId))
                     .build())
                     .enqueue(object : ApolloCall.Callback<GetProjectAddOnsQuery.Data>() {
                         override fun onFailure(e: ApolloException) {
@@ -315,7 +315,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
 
                         override fun onResponse(response: Response<GetProjectAddOnsQuery.Data>) {
-                            response.data()?.let {data ->
+                            response.data?.let {data ->
                                 Observable.just(data.project()?.addOns())
                                         .filter { it?.nodes() != null }
                                         .map <List<Reward>> { addOnsList -> addOnsList?.let { getAddOnsFromProject(it) }?: emptyList() }
@@ -348,9 +348,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<UserPaymentsQuery.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             } else {
-                                Observable.just(response.data())
+                                Observable.just(response.data)
                                         .map { cards -> cards?.me()?.storedCards()?.nodes() }
                                         .map { list ->
                                             val storedCards = list?.asSequence()?.map {
@@ -390,10 +390,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<SavePaymentMethodMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
 
-                            val paymentSource = response.data()?.createPaymentSource()?.paymentSource()
+                            val paymentSource = response.data?.createPaymentSource()?.paymentSource()
                             paymentSource?.let {
                                 val storedCard = StoredCard.builder()
                                         .expiration(it.expirationDate())
@@ -425,9 +425,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<SendMessageMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
-                            handleResponse(decodeRelayId(response.data()?.sendMessage()?.conversation()?.id()), ps)
+                            handleResponse(decodeRelayId(response.data?.sendMessage()?.conversation()?.id()), ps)
                         }
                     })
             return@defer ps
@@ -446,9 +446,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<SendEmailVerificationMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
-                            ps.onNext(response.data())
+                            ps.onNext(response.data)
                             ps.onCompleted()
                         }
                     })
@@ -475,10 +475,10 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<UpdateBackingMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(java.lang.Exception(response.errors().first().message()))
+                                ps.onError(java.lang.Exception(response.errors?.first()?.message))
                             }
 
-                            val checkoutPayload = response.data()?.updateBacking()?.checkout()
+                            val checkoutPayload = response.data?.updateBacking()?.checkout()
                             val backing = Checkout.Backing.builder()
                                     .clientSecret(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.clientSecret())
                                     .requiresAction(checkoutPayload?.backing()?.fragments()?.checkoutBacking()?.requiresAction()?: false)
@@ -508,9 +508,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<UpdateUserCurrencyMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
-                            ps.onNext(response.data())
+                            ps.onNext(response.data)
                             ps.onCompleted()
                         }
                     })
@@ -532,9 +532,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<UpdateUserEmailMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
-                            ps.onNext(response.data())
+                            ps.onNext(response.data)
                             ps.onCompleted()
                         }
                     })
@@ -557,9 +557,9 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
 
                         override fun onResponse(response: Response<UpdateUserPasswordMutation.Data>) {
                             if (response.hasErrors()) {
-                                ps.onError(Exception(response.errors().first().message()))
+                                ps.onError(Exception(response.errors?.first()?.message))
                             }
-                            ps.onNext(response.data())
+                            ps.onNext(response.data)
                             ps.onCompleted()
                         }
                     })
@@ -577,7 +577,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
 
                         override fun onResponse(response: Response<UserPrivacyQuery.Data>) {
-                            ps.onNext(response.data())
+                            ps.onNext(response.data)
                             ps.onCompleted()
                         }
                     })
@@ -619,6 +619,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
     val avatar = Avatar.builder()
             .medium(backerData?.imageUrl())
             .build()
+    val completedByBacker = backingGr?.backerCompleted() ?: false
 
     val backer = User.builder()
             .id(backerId)
@@ -646,6 +647,7 @@ private fun createBackingObject(backingGr: fragment.Backing?): Backing {
             .shippingAmount(shippingAmount?.amount()?.amount()?.toFloat() ?: 0f)
             .status(backingGr?.status()?.rawValue())
             .cancelable(backingGr?.cancelable() ?: false)
+            .completedByBacker(completedByBacker)
             .build()
 }
 
@@ -708,11 +710,11 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val convertedAmount = rewardGr.convertedAmount().fragments().amount().amount()?.toDouble() ?: 0.0
     val desc = rewardGr.description()
     val title = rewardGr.name()
-    val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) } ?: null
+    val estimatedDelivery = rewardGr.estimatedDeliveryOn()?.let { DateTime(it) }
     val limit = chooseLimit(rewardGr.limit(), rewardGr.limitPerBacker())
     val remaining = rewardGr.remainingQuantity()
-    val endsAt = rewardGr.endsAt()?.let { DateTime(it) } ?: null
-    val startsAt = rewardGr.startsAt()?.let { DateTime(it) } ?: null
+    val endsAt = rewardGr.endsAt()?.let { DateTime(it) }
+    val startsAt = rewardGr.startsAt()?.let { DateTime(it) }
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
     val available = rewardGr.available()
 

@@ -27,6 +27,7 @@ public abstract class Backing implements Parcelable, Relay {
   public abstract @Nullable DateTime backerCompletedAt();
   public abstract boolean cancelable();
   public abstract @Nullable DateTime completedAt();
+  public abstract @Nullable boolean completedByBacker();
   public abstract long id();
   public abstract @Nullable Location location();
   public abstract @Nullable Long locationId();
@@ -54,6 +55,7 @@ public abstract class Backing implements Parcelable, Relay {
     public abstract Builder backerCompletedAt(DateTime __);
     public abstract Builder cancelable(boolean __);
     public abstract Builder completedAt(DateTime __);
+    public abstract Builder completedByBacker(boolean __);
     public abstract Builder id(long __);
     public abstract Builder location(Location __);
     public abstract Builder locationId(Long __);

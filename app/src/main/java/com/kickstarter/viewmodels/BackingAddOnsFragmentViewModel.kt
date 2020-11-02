@@ -24,7 +24,7 @@ import com.kickstarter.ui.fragments.BackingAddOnsFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.util.*
+import java.util.Locale
 
 class BackingAddOnsFragmentViewModel {
 

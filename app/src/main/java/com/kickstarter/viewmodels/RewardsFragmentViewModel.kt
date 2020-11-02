@@ -20,7 +20,7 @@ import com.kickstarter.ui.fragments.RewardsFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
-import java.util.*
+import java.util.Locale
 
 class RewardsFragmentViewModel {
     interface Inputs {

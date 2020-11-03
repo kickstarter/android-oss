@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.kickstarter.KSApplication
 import com.kickstarter.R
-import com.kickstarter.extensions.snackbar
-import com.kickstarter.extensions.text
+import com.kickstarter.ui.extensions.snackbar
+import com.kickstarter.ui.extensions.text
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI

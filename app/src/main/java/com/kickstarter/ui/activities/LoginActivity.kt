@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showSnackbar
-import com.kickstarter.extensions.text
+import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.text
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString

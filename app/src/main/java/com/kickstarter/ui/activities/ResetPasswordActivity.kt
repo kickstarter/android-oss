@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.text
+import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.text
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft

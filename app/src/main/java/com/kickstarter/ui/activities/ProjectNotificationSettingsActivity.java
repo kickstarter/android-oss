@@ -3,10 +3,10 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 
 import com.kickstarter.R;
-import com.kickstarter.extensions.ActivityExtKt;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter;
+import com.kickstarter.ui.extensions.ActivityExtKt;
 import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel;
 
 import androidx.annotation.Nullable;

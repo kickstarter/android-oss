@@ -1,4 +1,4 @@
-package com.kickstarter.extensions
+package com.kickstarter.ui.extensions
 
 import android.view.View
 import com.google.android.material.snackbar.Snackbar

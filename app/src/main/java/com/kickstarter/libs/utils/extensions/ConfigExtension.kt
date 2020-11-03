@@ -54,6 +54,12 @@ fun Config.enabledFeatureFlags(): JSONArray? {
 
 /**
  * Internal name for "android_email_verification_flow"
- * @{link TODO: Add link to the features.yml on kickstarter repo
+ * @{link https://github.com/kickstarter/kickstarter/blob/d0d07b93379efceb9d3030e5f1591e4a931a85fb/config/features.yml#L209 }
  */
-const val EMAIL_VERIFICATION = "android_email_verification_flow"
+const val EMAIL_VERIFICATION_FLOW = "android_email_verification_flow"
+
+/**
+ * Internal name for "android_email_verification_skip"
+ * @{link https://github.com/kickstarter/kickstarter/blob/d0d07b93379efceb9d3030e5f1591e4a931a85fb/config/features.yml#L212 }
+ */
+const val EMAIL_VERIFICATION_SKIP = "android_email_verification_skip"

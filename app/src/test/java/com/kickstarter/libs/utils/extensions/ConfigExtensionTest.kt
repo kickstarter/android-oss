@@ -10,20 +10,20 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsEnabledFeature_true() {
-        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION, true)))
-        assertTrue(config.isFeatureFlagEnabled(EMAIL_VERIFICATION))
+        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, true)))
+        assertTrue(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW))
     }
 
     @Test
     fun testIsEnabledFeature_false() {
-        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION, false)))
-        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION))
+        val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, false)))
+        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW))
     }
 
     @Test
     fun testIsEnabledFeature_NotExistFeatureFlag() {
         val config = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("", true)))
-        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION))
+        assertFalse(config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW))
     }
 
     @Test

@@ -78,9 +78,9 @@
       <ImageView
         android:layout_width="@dimen/grid_2"
         android:layout_height="11dp"
-        android:tint="@color/ksr_text_green_700"
         android:src="@drawable/ic_survey_respond_icon"
-        tools:ignore="ContentDescription" />
+        card_view:tint="@color/ksr_text_green_700"
+        tools:ignore="ContentDescription"/>
 
       <TextView
         android:id="@+id/respond_now_text_view"

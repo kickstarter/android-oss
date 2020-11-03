@@ -29,7 +29,7 @@
         android:layout_gravity="start|center_vertical"
         android:contentDescription="@null"
         android:src="@drawable/ic_add"
-        android:tint="@color/ksr_dark_grey_400"
+        app:tint="@color/ksr_dark_grey_400"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bonus_summary_amount"
         app:layout_constraintStart_toEndOf="@+id/bonus_summary_label"

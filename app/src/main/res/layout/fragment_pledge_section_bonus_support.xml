@@ -85,7 +85,7 @@
             android:layout_height="@dimen/grid_3"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_add"
-            android:tint="@color/ksr_dark_grey_400" />
+            app:tint="@color/ksr_dark_grey_400" />
 
         <TextView
             android:id="@+id/additional_bonus_amount"

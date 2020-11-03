@@ -27,7 +27,7 @@
       android:layout_marginEnd="@dimen/grid_4"
       android:importantForAccessibility="no"
       android:src="@drawable/ic_not_a_store"
-      android:tint="@color/accent" />
+      app:tint="@color/accent" />
 
     <LinearLayout
       android:layout_width="match_parent"

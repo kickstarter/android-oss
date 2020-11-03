@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:background="@color/ksr_grey_300"
-  android:clipChildren="false"
-  android:orientation="horizontal"
-  android:padding="@dimen/grid_3">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/ksr_grey_300"
+    android:clipChildren="false"
+    android:orientation="horizontal"
+    android:padding="@dimen/grid_3">
 
   <LinearLayout
     android:layout_width="0dp"
@@ -38,7 +39,7 @@
         android:layout_marginEnd="@dimen/grid_1"
         android:contentDescription="@string/Alert"
         android:src="@drawable/ic_icon_alert"
-        android:tint="@color/ksr_red_400" />
+        app:tint="@color/ksr_red_400" />
 
       <TextView
         android:id="@+id/errored_backing_project_collection_date"

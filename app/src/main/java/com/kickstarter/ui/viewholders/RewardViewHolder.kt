@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Pair
 import android.view.View
@@ -247,6 +248,7 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
         this.view.reward_shipping_summary.text = RewardViewUtils.shippingSummary(context(), this.ksString, stringResAndLocationName)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun setUpRewardItemsAdapter(): RewardItemsAdapter {
         val rewardItemAdapter = RewardItemsAdapter()
         val itemRecyclerView = view.rewards_item_recycler_view

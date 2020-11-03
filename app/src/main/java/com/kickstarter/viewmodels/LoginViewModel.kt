@@ -2,11 +2,10 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.services.ApiClientType
@@ -88,6 +87,7 @@ interface LoginViewModel {
 
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
+        private val currentConfig = environment.currentConfig()
 
         init {
 
@@ -152,6 +152,9 @@ interface LoginViewModel {
             val loginNotification = emailAndPassword
                     .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
                     .switchMap { ep -> submit(ep.first, ep.second) }
+            
+            val isUserEmailVerified = LoginHelper.hasCurrentUserVerifiedEmail(this.currentUser.observable(), this.currentConfig.observable())
+                    .subscribe()
 
             loginNotification
                     .compose(values())

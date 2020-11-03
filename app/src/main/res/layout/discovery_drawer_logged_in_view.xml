@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:background="@color/discovery_drawer_header"
@@ -53,8 +54,8 @@
     style="@style/DrawerTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:drawableStart="@drawable/ic_person"
-    android:text="@string/tabbar_profile" />
+    android:text="@string/tabbar_profile"
+    app:drawableStartCompat="@drawable/ic_person" />
 
   <LinearLayout
     android:id="@+id/drawer_messages"
@@ -68,8 +69,8 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:drawableStart="@drawable/ic_mail"
-      android:text="@string/Messages" />
+      android:text="@string/Messages"
+      app:drawableStartCompat="@drawable/ic_mail" />
 
     <TextView
       android:id="@+id/unread_messages_count"
@@ -85,10 +86,10 @@
     style="@style/DrawerTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:drawableStart="@drawable/ic_dashboard"
     android:text="@string/tabbar_dashboard"
     android:visibility="gone"
-    tools:visibility="visible" />
+    tools:visibility="visible"
+    app:drawableStartCompat="@drawable/ic_dashboard" />
 
   <LinearLayout
     android:id="@+id/drawer_activity"
@@ -103,8 +104,8 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:drawableStart="@drawable/icon__bolt"
-      android:text="@string/tabbar_activity" />
+      android:text="@string/tabbar_activity"
+      app:drawableStartCompat="@drawable/icon__bolt" />
 
     <TextView
       android:id="@+id/unseen_activity_count"
@@ -120,7 +121,7 @@
     style="@style/DrawerTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:drawableStart="@drawable/ic_settings"
-    android:text="@string/profile_buttons_settings" />
+    android:text="@string/profile_buttons_settings"
+    app:drawableStartCompat="@drawable/ic_settings" />
 
 </LinearLayout>

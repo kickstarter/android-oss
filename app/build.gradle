@@ -52,7 +52,6 @@ android {
         multiDexEnabled true
 
         resConfigs "de", "es", "en", "fr", "ja"
-        kapt.includeCompileClasspath = false
 
         def fabricProps = new Properties()
         file("fabric.properties").withInputStream { fabricProps.load(it) }

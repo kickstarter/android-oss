@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
-import com.kickstarter.libs.utils.ConfigUtils;
+import com.kickstarter.libs.utils.extensions.ConfigExtension;
+import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 
@@ -20,7 +21,7 @@ public final class MockTrackingClient extends TrackingClientType {
   private final Type type;
   private final ExperimentsClientType optimizely;
   @Nullable private User loggedInUser;
-  @Nullable private Config config;
+  private Config config = ConfigFactory.config();
 
   public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final Type type, final @NonNull ExperimentsClientType optimizely) {
     this.type = type;
@@ -70,7 +71,7 @@ public final class MockTrackingClient extends TrackingClientType {
 
   @Override
   protected JSONArray currentVariants() {
-    return ConfigUtils.INSTANCE.currentVariants(this.config);
+    return ConfigExtension.currentVariants(this.config);
   }
 
   @Override
@@ -91,7 +92,7 @@ public final class MockTrackingClient extends TrackingClientType {
   @Override
   protected JSONArray enabledFeatureFlags() {
     final JSONArray combinedFeatures = new JSONArray(this.optimizely.enabledFeatures(this.loggedInUser));
-    final JSONArray configFeatures = ConfigUtils.INSTANCE.enabledFeatureFlags(this.config);
+    final JSONArray configFeatures = ConfigExtension.enabledFeatureFlags(this.config);
     if (configFeatures != null) {
       for (int i = 0; i < configFeatures.length(); i++) {
         try {

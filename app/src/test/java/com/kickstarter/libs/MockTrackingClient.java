@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import com.kickstarter.libs.utils.extensions.ConfigExtension;
+import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 
@@ -20,7 +21,7 @@ public final class MockTrackingClient extends TrackingClientType {
   private final Type type;
   private final ExperimentsClientType optimizely;
   @Nullable private User loggedInUser;
-  @Nullable private Config config;
+  private Config config = ConfigFactory.config();
 
   public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final Type type, final @NonNull ExperimentsClientType optimizely) {
     this.type = type;

@@ -11,7 +11,8 @@ import org.json.JSONArray
  *         false if the feature flag is disabled or does not exist
  */
 fun Config.isFeatureFlagEnabled(text: String): Boolean {
-    val isEnabled = this.features()
+    val isEnabled = this
+            ?.features()
             ?.get(text)
 
     return isEnabled ?: false
@@ -21,7 +22,8 @@ fun Config.isFeatureFlagEnabled(text: String): Boolean {
  * @return The actual list of variants
  */
 fun Config.currentVariants(): JSONArray? {
-    return this.abExperiments()
+    return this
+            ?.abExperiments()
             ?.toSortedMap()
             ?.let {
                 JSONArray().apply {
@@ -36,7 +38,8 @@ fun Config.currentVariants(): JSONArray? {
  * @return The actual list of enabled feature flags
  */
 fun Config.enabledFeatureFlags(): JSONArray? {
-    return this.features()
+    return this
+            ?.features()
             ?.filter { it.key.startsWith("android_") && it.value }
             ?.keys
             ?.sorted()

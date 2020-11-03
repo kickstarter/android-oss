@@ -83,7 +83,7 @@
           android:layout_gravity="center_vertical"
           android:layout_marginEnd="1dp"
           android:src="@drawable/creator_dashboard_circle"
-          android:tint="@color/ksr_green_800"
+          app:tint="@color/ksr_green_800"
           tools:ignore="ContentDescription" />
 
       </LinearLayout>
@@ -145,7 +145,7 @@
           android:layout_gravity="center_vertical"
           android:layout_marginEnd="1dp"
           android:src="@drawable/creator_dashboard_circle"
-          android:tint="@color/ksr_green_500"
+          app:tint="@color/ksr_green_500"
           tools:ignore="ContentDescription" />
 
       </LinearLayout>
@@ -209,7 +209,7 @@
           android:layout_gravity="center"
           android:layout_marginEnd="@dimen/grid_1_half"
           android:src="@drawable/creator_dashboard_circle"
-          android:tint="@color/ksr_highlighter_green"
+          app:tint="@color/ksr_highlighter_green"
           tools:ignore="ContentDescription" />
 
         <TextView

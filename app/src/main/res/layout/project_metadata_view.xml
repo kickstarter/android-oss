@@ -27,7 +27,7 @@
 
     <ImageView
       android:src="@drawable/icon__check"
-      android:tint="@color/white"
+      app:tint="@color/white"
       android:layout_gravity="center_vertical"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
       android:layout_height="match_parent"
       android:layout_width="wrap_content"
       android:focusable="true"
-      android:tint="@color/ksr_soft_black"
+      app:tint="@color/ksr_soft_black"
       android:importantForAccessibility="no"
       android:src="@drawable/icon__heart" />
 

@@ -27,7 +27,7 @@
         android:contentDescription="@string/Alert"
         android:accessibilityTraversalBefore="@id/toast_text_view"
         android:src="@drawable/ic_icon_alert"
-        android:tint="@color/white" />
+        app:tint="@color/white" />
 
       <TextView
         android:id="@+id/toast_text_view"

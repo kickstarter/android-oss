@@ -14,6 +14,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.ui.data.LoginReason
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -153,22 +154,19 @@ interface LoginViewModel {
                     .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
                     .switchMap { ep -> submit(ep.first, ep.second) }
 
-            loginNotification
+            val isEmailValidated = loginNotification
                     .compose(values())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.success(it) }
-
-            val isEmailValidated = LoginHelper.hasCurrentUserVerifiedEmail(
-                    this.currentUser.observable().distinctUntilChanged(),
-                    this.currentConfig.observable().distinctUntilChanged())
+                    .compose<Pair<AccessTokenEnvelope, Config>>(combineLatestPair(this.currentConfig.observable()))
+                    .switchMap { LoginHelper.hasCurrentUserVerifiedEmail(it.first.user(), it.second) }
 
             isEmailValidated
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
+                    .compose<Pair<Boolean, Notification<AccessTokenEnvelope>>>(combineLatestPair(loginNotification))
                     .compose(bindToLifecycle())
-                    .subscribe { isValidated ->
-                        if (isValidated) {
-                            this.loginSuccess.onNext(null)
+                    .subscribe {
+                        if (it.first && it.second.hasValue()) {
+                            this.success(it.second.value)
                         } else {
                             // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
                         }
@@ -216,6 +214,7 @@ interface LoginViewModel {
 
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())
+            this.loginSuccess.onNext(null)
         }
 
         override fun email(email: String) = this.emailEditTextChanged.onNext(email)

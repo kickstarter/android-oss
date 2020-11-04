@@ -10,28 +10,23 @@ import rx.Observable
 object LoginHelper {
 
     /**
-     * Takes the current User and configuration observables:
-     * @param user currentUser Observable
-     * @param config current configuration Observable
+     * Takes and user and a configuration:
+     * @param user User
+     * @param config Config
      *
      * @return Observable<Boolean?>
      *     True in case feature flag active and verified
      *     False in case feature flag active and not verified
      *     True in case not active feature flag
      *     Null in case no current User (not logged)
-     *
      */
-    fun hasCurrentUserVerifiedEmail(user: Observable<User?>, config: Observable<Config>): Observable<Boolean?> =
-            Observable.combineLatest(user, config) {
-                cUser, cConfig ->
-                if (cUser == null) {
-                    return@combineLatest null
-                }
+    fun hasCurrentUserVerifiedEmail(user: User?, config: Config): Observable<Boolean?> {
+        if (user == null) {
+            return Observable.just(null)
+        }
 
-                return@combineLatest if (cConfig.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW)) {
-                    cUser.isUserEmailVerified()
-                } else true
-            }
-                    .distinctUntilChanged()
-
+        return if (config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW)) {
+            Observable.just(user.isUserEmailVerified())
+        } else Observable.just(true)
+    }
 }

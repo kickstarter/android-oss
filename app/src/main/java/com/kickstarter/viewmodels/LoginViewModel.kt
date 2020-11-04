@@ -152,14 +152,27 @@ interface LoginViewModel {
             val loginNotification = emailAndPassword
                     .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
                     .switchMap { ep -> submit(ep.first, ep.second) }
-            
-            val isUserEmailVerified = LoginHelper.hasCurrentUserVerifiedEmail(this.currentUser.observable(), this.currentConfig.observable())
-                    .subscribe()
 
             loginNotification
                     .compose(values())
                     .compose(bindToLifecycle())
                     .subscribe { this.success(it) }
+
+            val isEmailValidated = LoginHelper.hasCurrentUserVerifiedEmail(
+                    this.currentUser.observable().distinctUntilChanged(),
+                    this.currentConfig.observable().distinctUntilChanged())
+
+            isEmailValidated
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
+                    .compose(bindToLifecycle())
+                    .subscribe { isValidated ->
+                        if (isValidated) {
+                            this.loginSuccess.onNext(null)
+                        } else {
+                            // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+                        }
+                    }
 
             loginNotification
                     .compose(errors())
@@ -203,7 +216,6 @@ interface LoginViewModel {
 
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())
-            this.loginSuccess.onNext(null)
         }
 
         override fun email(email: String) = this.emailEditTextChanged.onNext(email)

@@ -109,6 +109,20 @@ interface LoginViewModel {
                                 })
                     }
 
+            val loginNotification = emailAndPassword
+                    .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
+                    .switchMap { ep -> submit(ep.first, ep.second) }
+                    .filter { it.hasValue() }
+
+            val accessTokenEnvelope = loginNotification
+                    .compose(values())
+
+            val isEmailValidated = accessTokenEnvelope
+                    .compose<Pair<AccessTokenEnvelope, Config>>(combineLatestPair(this.currentConfig.observable()))
+                    .map {
+                        LoginHelper.hasCurrentUserVerifiedEmail(it.first.user(), it.second)
+                    }
+
             emailAndReason
                     .map { it.first }
                     .ofType(String::class.java)
@@ -150,21 +164,11 @@ interface LoginViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.logInButtonIsEnabled)
 
-            val loginNotification = emailAndPassword
-                    .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
-                    .switchMap { ep -> submit(ep.first, ep.second) }
-
-            val isEmailValidated = loginNotification
-                    .compose(values())
-                    .compose<Pair<AccessTokenEnvelope, Config>>(combineLatestPair(this.currentConfig.observable()))
-                    .switchMap { LoginHelper.hasCurrentUserVerifiedEmail(it.first.user(), it.second) }
-
             isEmailValidated
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
-                    .compose<Pair<Boolean, Notification<AccessTokenEnvelope>>>(combineLatestPair(loginNotification))
-                    .compose(bindToLifecycle())
-                    .subscribe {
+                    .compose<Pair<Boolean, AccessTokenEnvelope>>(combineLatestPair(accessTokenEnvelope))
+                    .map {
                         continueFlow(it.first, it.second)
                     }
 
@@ -201,9 +205,9 @@ interface LoginViewModel {
                     .subscribe { this.lake.trackLogInSubmitButtonClicked() }
         }
 
-        private fun continueFlow(isValidated: Boolean, accessTokenNotification: Notification<AccessTokenEnvelope>) {
-            if (isValidated && accessTokenNotification.hasValue()) {
-                this.success(accessTokenNotification.value)
+        private fun continueFlow(isValidated: Boolean, accessTokenNotification: AccessTokenEnvelope) {
+            if (isValidated) {
+                this.success(accessTokenNotification)
             } else {
                 // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
             }

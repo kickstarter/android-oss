@@ -98,7 +98,7 @@ public interface SignupViewModel {
               .compose(Transformers.values())
               .compose(combineLatestPair(this.currentConfig.observable().take(1)))
               .compose(bindToLifecycle())
-              .switchMap(accessTokenEnvelope -> LoginHelper.INSTANCE.hasCurrentUserVerifiedEmail(accessTokenEnvelope.first.user(), accessTokenEnvelope.second))
+              .map(accessTokenEnvelope -> LoginHelper.INSTANCE.hasCurrentUserVerifiedEmail(accessTokenEnvelope.first.user(), accessTokenEnvelope.second))
               .subscribe(isEmailValidated);
 
       // - Continue flow depending if the email has been validated or not

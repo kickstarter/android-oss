@@ -88,9 +88,10 @@ public interface SignupViewModel {
       signupData
               .compose(takeWhen(this.signupClick))
               .switchMap(this::submit)
-              .compose(combineLatestPair(this.currentConfig.observable().take(1)))
-              .compose(bindToLifecycle())
+              .compose(combineLatestPair(this.currentConfig.observable()))
+              .map(it -> it)
               .map(this::unwrapData)
+              .compose(bindToLifecycle())
               .subscribe(this::continueFlow);
 
       this.currentConfig.observable()

@@ -81,12 +81,12 @@ interface LoginViewModel {
         private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
         private val tfaChallenge: Observable<Void>
 
-        private val loginError = PublishSubject.create<ErrorEnvelope>()
-
         // - Contain the errors if any from the login endpoint response
         private val errors = PublishSubject.create<Throwable>()
-        // - Contains with success data if any from the login endpoint response
-        private val continueFlow = PublishSubject.create<Pair<Boolean, AccessTokenEnvelope>>()
+        // - Contains success data if any from the login endpoint response
+        private val successResponseData = PublishSubject.create<Pair<Boolean, AccessTokenEnvelope>>()
+
+        private val loginError = PublishSubject.create<ErrorEnvelope>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -113,8 +113,7 @@ interface LoginViewModel {
                                     LoginReason.DEFAULT
                                 })
                     }
-            
-            // - TODO:Extract logic to be the same as the SignUpViewModel
+
             emailAndPassword
                     .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
                     .switchMap { ep -> this.client.login(ep.first, ep.second) }
@@ -166,7 +165,7 @@ interface LoginViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.logInButtonIsEnabled)
 
-            continueFlow
+            successResponseData
                     .compose(bindToLifecycle())
                     .subscribe {
                         continueFlow(it.first, it.second)
@@ -222,7 +221,7 @@ interface LoginViewModel {
             val user = accessTokenData.user()
             val isValidated = LoginHelper.hasCurrentUserVerifiedEmail(user, config) ?: false
             val pair = Pair(isValidated, accessTokenData)
-            this.continueFlow.onNext(pair)
+            this.successResponseData.onNext(pair)
         }
 
         private fun continueFlow(isValidated: Boolean, accessTokenNotification: AccessTokenEnvelope) {

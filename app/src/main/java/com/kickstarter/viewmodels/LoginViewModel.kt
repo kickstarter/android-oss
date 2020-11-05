@@ -165,11 +165,7 @@ interface LoginViewModel {
                     .compose<Pair<Boolean, Notification<AccessTokenEnvelope>>>(combineLatestPair(loginNotification))
                     .compose(bindToLifecycle())
                     .subscribe {
-                        if (it.first && it.second.hasValue()) {
-                            this.success(it.second.value)
-                        } else {
-                            // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
-                        }
+                        continueFlow(it.first, it.second)
                     }
 
             loginNotification
@@ -203,6 +199,14 @@ interface LoginViewModel {
             this.logInButtonClicked
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackLogInSubmitButtonClicked() }
+        }
+
+        private fun continueFlow(isValidated: Boolean, accessTokenNotification: Notification<AccessTokenEnvelope>) {
+            if (isValidated && accessTokenNotification.hasValue()) {
+                this.success(accessTokenNotification.value)
+            } else {
+                // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+            }
         }
 
         private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()

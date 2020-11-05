@@ -5,6 +5,8 @@ import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.LoginHelper;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -12,10 +14,14 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.SignupActivity;
 
 import androidx.annotation.NonNull;
+
+import android.util.Pair;
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface SignupViewModel {
@@ -67,62 +73,91 @@ public interface SignupViewModel {
       this.currentUser = environment.currentUser();
 
       final Observable<SignupData> signupData = Observable.combineLatest(
-        this.name, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
+              this.name, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
       );
 
+      final PublishSubject<Boolean> isEmailValidated = PublishSubject.create();
+      final PublishSubject<Notification<AccessTokenEnvelope>> loginNotification = PublishSubject.create();
+
       this.sendNewslettersClick
-        .compose(bindToLifecycle())
-        .subscribe(this.sendNewslettersIsChecked::onNext);
+              .compose(bindToLifecycle())
+              .subscribe(this.sendNewslettersIsChecked::onNext);
 
       signupData
-        .map(SignupData::isValid)
-        .compose(bindToLifecycle())
-        .subscribe(this.formIsValid);
+              .map(SignupData::isValid)
+              .compose(bindToLifecycle())
+              .subscribe(this.formIsValid);
 
       signupData
-        .compose(takeWhen(this.signupClick))
-        .flatMap(this::submit)
-        .compose(bindToLifecycle())
-        .subscribe(this::success);
+              .compose(takeWhen(this.signupClick))
+              .switchMap(this::submit)
+              .subscribe(loginNotification);
+
+      // - Take the response from the login attempt and detect if the user has validated the email
+      loginNotification
+              .compose(Transformers.values())
+              .compose(combineLatestPair(this.currentConfig.observable().take(1)))
+              .compose(bindToLifecycle())
+              .switchMap(accessTokenEnvelope -> LoginHelper.INSTANCE.hasCurrentUserVerifiedEmail(accessTokenEnvelope.first.user(), accessTokenEnvelope.second))
+              .subscribe(isEmailValidated);
+
+      // - Continue flow depending if the email has been validated or not
+      isEmailValidated
+              .filter(ObjectUtils::isNotNull)
+              .compose(combineLatestPair(loginNotification))
+              .subscribe(this::continueFlow);
 
       this.currentConfig.observable()
-        .take(1)
-        .map(config -> false)
-        .compose(bindToLifecycle())
-        .subscribe(this.sendNewslettersIsChecked::onNext);
+              .take(1)
+              .map(config -> false)
+              .compose(bindToLifecycle())
+              .subscribe(this.sendNewslettersIsChecked::onNext);
 
       this.signupError
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackRegisterError());
+              .compose(bindToLifecycle())
+              .subscribe(__ -> this.koala.trackRegisterError());
 
       this.errorString = this.signupError
-        .takeUntil(this.signupSuccess)
-        .map(ErrorEnvelope::errorMessage);
+              .takeUntil(this.signupSuccess)
+              .map(ErrorEnvelope::errorMessage);
 
       this.sendNewslettersClick
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackSignupNewsletterToggle);
+              .compose(bindToLifecycle())
+              .subscribe(this.koala::trackSignupNewsletterToggle);
 
       this.signupSuccess
-        .compose(bindToLifecycle())
-        .subscribe(__ -> {
-          this.koala.trackLoginSuccess();
-          this.koala.trackRegisterSuccess();
-        });
+              .compose(bindToLifecycle())
+              .subscribe(__ -> {
+                this.koala.trackLoginSuccess();
+                this.koala.trackRegisterSuccess();
+              });
 
       this.koala.trackRegisterFormView();
 
       this.signupClick
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.lake.trackSignUpSubmitButtonClicked());
+              .compose(bindToLifecycle())
+              .subscribe(__ -> this.lake.trackSignUpSubmitButtonClicked());
     }
 
-    private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
+    private Observable<Notification<AccessTokenEnvelope>> submit(final @NonNull SignupData data) {
       return this.client.signup(data.name, data.email, data.password, data.password, data.sendNewsletters)
-        .compose(Transformers.pipeApiErrorsTo(this.signupError))
-        .compose(Transformers.neverError())
-        .doOnSubscribe(() -> this.formSubmitting.onNext(true))
-        .doAfterTerminate(() -> this.formSubmitting.onNext(false));
+              .compose(Transformers.pipeApiErrorsTo(this.signupError))
+              .compose(Transformers.neverError())
+              .doOnSubscribe(() -> this.formSubmitting.onNext(true))
+              .doAfterTerminate(() -> this.formSubmitting.onNext(false))
+              .materialize()
+              .share();
+    }
+
+    private void continueFlow(final @NonNull Pair<Boolean, Notification<AccessTokenEnvelope>> it) {
+      final Boolean isValidated = it.first;
+      final Notification<AccessTokenEnvelope> envelopNotification = it.second;
+
+      if (isValidated && envelopNotification.hasValue()){
+        this.success(envelopNotification.getValue());
+      } else if (!isValidated) {
+        //!isValidated  -> // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+      }
     }
 
     private void success(final @NonNull AccessTokenEnvelope envelope) {

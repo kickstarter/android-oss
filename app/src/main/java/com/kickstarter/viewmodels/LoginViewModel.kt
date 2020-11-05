@@ -83,12 +83,17 @@ interface LoginViewModel {
 
         private val loginError = PublishSubject.create<ErrorEnvelope>()
 
+        // - Contain the errors if any from the login endpoint response
+        private val errors = PublishSubject.create<Throwable>()
+        // - Contains with success data if any from the login endpoint response
+        private val continueFlow = PublishSubject.create<Pair<Boolean, AccessTokenEnvelope>>()
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
-        private val currentConfig = environment.currentConfig()
+        private val currentConfig = environment.currentConfig().observable()
 
         init {
 
@@ -108,19 +113,16 @@ interface LoginViewModel {
                                     LoginReason.DEFAULT
                                 })
                     }
-
-            val loginNotification = emailAndPassword
+            
+            // - TODO:Extract logic to be the same as the SignUpViewModel
+            emailAndPassword
                     .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
-                    .switchMap { ep -> submit(ep.first, ep.second) }
-                    .filter { it.hasValue() }
-
-            val accessTokenEnvelope = loginNotification
-                    .compose(values())
-
-            val isEmailValidated = accessTokenEnvelope
-                    .compose<Pair<AccessTokenEnvelope, Config>>(combineLatestPair(this.currentConfig.observable()))
-                    .map {
-                        LoginHelper.hasCurrentUserVerifiedEmail(it.first.user(), it.second)
+                    .switchMap { ep -> this.client.login(ep.first, ep.second) }
+                    .materialize()
+                    .share()
+                    .compose<Pair<Notification<AccessTokenEnvelope>, Config>>(combineLatestPair(currentConfig))
+                    .subscribe {
+                        unwrapNotificationEnvelope(it.first, it.second)
                     }
 
             emailAndReason
@@ -164,16 +166,13 @@ interface LoginViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.logInButtonIsEnabled)
 
-            isEmailValidated
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-                    .compose<Pair<Boolean, AccessTokenEnvelope>>(combineLatestPair(accessTokenEnvelope))
-                    .map {
+            continueFlow
+                    .compose(bindToLifecycle())
+                    .subscribe {
                         continueFlow(it.first, it.second)
                     }
 
-            loginNotification
-                    .compose(errors())
+            errors
                     .map { ErrorEnvelope.fromThrowable(it) }
                     .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
@@ -205,6 +204,27 @@ interface LoginViewModel {
                     .subscribe { this.lake.trackLogInSubmitButtonClicked() }
         }
 
+        private fun unwrapNotificationEnvelope (
+                notification: Notification<AccessTokenEnvelope>,
+                config: Config) {
+
+            if (notification.hasThrowable()) {
+                this.errors.onNext(notification.throwable)
+            }
+
+            if (notification.hasValue()) {
+                unwrapSuccess(notification, config)
+            }
+        }
+
+        private fun unwrapSuccess(notification: Notification<AccessTokenEnvelope>, config: Config) {
+            val accessTokenData = notification.value
+            val user = accessTokenData.user()
+            val isValidated = LoginHelper.hasCurrentUserVerifiedEmail(user, config) ?: false
+            val pair = Pair(isValidated, accessTokenData)
+            this.continueFlow.onNext(pair)
+        }
+
         private fun continueFlow(isValidated: Boolean, accessTokenNotification: AccessTokenEnvelope) {
             if (isValidated) {
                 this.success(accessTokenNotification)
@@ -214,11 +234,6 @@ interface LoginViewModel {
         }
 
         private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()
-
-        private fun submit(email: String, password: String) =
-                this.client.login(email, password)
-                        .materialize()
-                        .share()
 
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())

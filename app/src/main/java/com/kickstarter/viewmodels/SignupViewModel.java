@@ -1,13 +1,14 @@
 package com.kickstarter.viewmodels;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.LoginHelper;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -16,7 +17,6 @@ import com.kickstarter.ui.activities.SignupActivity;
 import androidx.annotation.NonNull;
 
 import android.util.Pair;
-import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -76,9 +76,6 @@ public interface SignupViewModel {
               this.name, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
       );
 
-      final PublishSubject<Boolean> isEmailValidated = PublishSubject.create();
-      final PublishSubject<Notification<AccessTokenEnvelope>> loginNotification = PublishSubject.create();
-
       this.sendNewslettersClick
               .compose(bindToLifecycle())
               .subscribe(this.sendNewslettersIsChecked::onNext);
@@ -91,20 +88,9 @@ public interface SignupViewModel {
       signupData
               .compose(takeWhen(this.signupClick))
               .switchMap(this::submit)
-              .subscribe(loginNotification);
-
-      // - Take the response from the login attempt and detect if the user has validated the email
-      loginNotification
-              .compose(Transformers.values())
               .compose(combineLatestPair(this.currentConfig.observable().take(1)))
               .compose(bindToLifecycle())
-              .map(accessTokenEnvelope -> LoginHelper.INSTANCE.hasCurrentUserVerifiedEmail(accessTokenEnvelope.first.user(), accessTokenEnvelope.second))
-              .subscribe(isEmailValidated);
-
-      // - Continue flow depending if the email has been validated or not
-      isEmailValidated
-              .filter(ObjectUtils::isNotNull)
-              .compose(combineLatestPair(loginNotification))
+              .map(this::unwrapData)
               .subscribe(this::continueFlow);
 
       this.currentConfig.observable()
@@ -139,24 +125,30 @@ public interface SignupViewModel {
               .subscribe(__ -> this.lake.trackSignUpSubmitButtonClicked());
     }
 
-    private Observable<Notification<AccessTokenEnvelope>> submit(final @NonNull SignupData data) {
+    private Pair<Boolean, AccessTokenEnvelope> unwrapData(Pair<AccessTokenEnvelope, Config> accessTokenEnvelopeConfig) {
+      final AccessTokenEnvelope accessToken = accessTokenEnvelopeConfig.first;
+      final User user = accessToken.user();
+      final Config config = accessTokenEnvelopeConfig.second;
+      final Boolean isValidated = LoginHelper.INSTANCE.hasCurrentUserVerifiedEmail(user, config);
+      return new Pair(isValidated, accessToken);
+    }
+
+    private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
       return this.client.signup(data.name, data.email, data.password, data.password, data.sendNewsletters)
               .compose(Transformers.pipeApiErrorsTo(this.signupError))
               .compose(Transformers.neverError())
               .doOnSubscribe(() -> this.formSubmitting.onNext(true))
-              .doAfterTerminate(() -> this.formSubmitting.onNext(false))
-              .materialize()
-              .share();
+              .doAfterTerminate(() -> this.formSubmitting.onNext(false));
     }
 
-    private void continueFlow(final @NonNull Pair<Boolean, Notification<AccessTokenEnvelope>> it) {
-      final Boolean isValidated = it.first;
-      final Notification<AccessTokenEnvelope> envelopNotification = it.second;
+    private void continueFlow(final @NonNull Pair<Boolean, AccessTokenEnvelope> validatedEnvelopInfo) {
+      final Boolean isValidated = validatedEnvelopInfo.first;
+      final AccessTokenEnvelope envelope = validatedEnvelopInfo.second;
 
-      if (isValidated && envelopNotification.hasValue()){
-        this.success(envelopNotification.getValue());
-      } else if (!isValidated) {
-        //!isValidated  -> // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+      if (isValidated) {
+        this.success(envelope);
+      } else {
+        // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
       }
     }
 

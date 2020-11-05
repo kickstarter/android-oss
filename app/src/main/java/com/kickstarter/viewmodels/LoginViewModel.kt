@@ -81,11 +81,6 @@ interface LoginViewModel {
         private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
         private val tfaChallenge: Observable<Void>
 
-        // - Contain the errors if any from the login endpoint response
-        private val errors = PublishSubject.create<Throwable>()
-        // - Contains success data if any from the login endpoint response
-        private val successResponseData = PublishSubject.create<Pair<Boolean, AccessTokenEnvelope>>()
-
         private val loginError = PublishSubject.create<ErrorEnvelope>()
 
         val inputs: Inputs = this
@@ -114,6 +109,11 @@ interface LoginViewModel {
                                 })
                     }
 
+            // - Contain the errors if any from the login endpoint response
+            val errors = PublishSubject.create<Throwable?>()
+            // - Contains success data if any from the login endpoint response
+            val successResponseData = PublishSubject.create<Pair<Boolean, AccessTokenEnvelope>?>()
+
             emailAndPassword
                     .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
                     .switchMap { ep -> this.client.login(ep.first, ep.second) }
@@ -121,7 +121,8 @@ interface LoginViewModel {
                     .share()
                     .compose<Pair<Notification<AccessTokenEnvelope>, Config>>(combineLatestPair(currentConfig))
                     .subscribe {
-                        unwrapNotificationEnvelope(it.first, it.second)
+                        errors.onNext(unwrapNotificationEnvelopeError(it.first))
+                        successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it.first, it.second))
                     }
 
             emailAndReason
@@ -166,12 +167,16 @@ interface LoginViewModel {
                     .subscribe(this.logInButtonIsEnabled)
 
             successResponseData
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe {
                         continueFlow(it.first, it.second)
                     }
 
             errors
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .map { ErrorEnvelope.fromThrowable(it) }
                     .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
@@ -203,25 +208,19 @@ interface LoginViewModel {
                     .subscribe { this.lake.trackLogInSubmitButtonClicked() }
         }
 
-        private fun unwrapNotificationEnvelope (
+        private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
+                if (notification.hasThrowable()) notification.throwable else null
+
+        private fun unwrapNotificationEnvelopeSuccess (
                 notification: Notification<AccessTokenEnvelope>,
-                config: Config) {
+                config: Config): Pair<Boolean, AccessTokenEnvelope>? {
 
-            if (notification.hasThrowable()) {
-                this.errors.onNext(notification.throwable)
-            }
-
-            if (notification.hasValue()) {
-                unwrapSuccess(notification, config)
-            }
-        }
-
-        private fun unwrapSuccess(notification: Notification<AccessTokenEnvelope>, config: Config) {
-            val accessTokenData = notification.value
-            val user = accessTokenData.user()
-            val isValidated = LoginHelper.hasCurrentUserVerifiedEmail(user, config) ?: false
-            val pair = Pair(isValidated, accessTokenData)
-            this.successResponseData.onNext(pair)
+            return if (notification.hasValue()) {
+                val accessTokenData = notification.value
+                val user = accessTokenData.user()
+                val isValidated = LoginHelper.hasCurrentUserVerifiedEmail(user, config) ?: false
+                Pair(isValidated, accessTokenData)
+            } else null
         }
 
         private fun continueFlow(isValidated: Boolean, accessTokenNotification: AccessTokenEnvelope) {

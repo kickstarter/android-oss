@@ -210,7 +210,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.loginClick()
 
-        this.loginSuccess.assertValueCount(1)
+        this.loginSuccess.assertValues(null, null)
         this.koalaTest.assertValues("Login")
         this.lakeTest.assertValue("Log In Submit Button Clicked")
     }

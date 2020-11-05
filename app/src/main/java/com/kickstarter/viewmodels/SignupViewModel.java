@@ -126,7 +126,7 @@ public interface SignupViewModel {
               .subscribe(__ -> this.lake.trackSignUpSubmitButtonClicked());
     }
 
-    private Pair<Boolean, AccessTokenEnvelope> unwrapData(Pair<AccessTokenEnvelope, Config> accessTokenEnvelopeConfig) {
+    private Pair<Boolean, AccessTokenEnvelope> unwrapData(@NonNull final Pair<AccessTokenEnvelope, Config> accessTokenEnvelopeConfig) {
       final AccessTokenEnvelope accessToken = accessTokenEnvelopeConfig.first;
       final User user = accessToken.user();
       final Config config = accessTokenEnvelopeConfig.second;
@@ -148,9 +148,9 @@ public interface SignupViewModel {
 
       if (isValidated) {
         this.success(envelope);
-      } else {
-        // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
-      }
+      } /*else {
+         TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+      }*/
     }
 
     private void success(final @NonNull AccessTokenEnvelope envelope) {

@@ -10,6 +10,7 @@ import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.models.User
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.viewmodels.EmailVerificationInterstitialFragmentViewModel
+import kotlinx.android.synthetic.main.fragment_email_verification_interstitial.*
 
 @RequiresFragmentViewModel(EmailVerificationInterstitialFragmentViewModel.ViewModel::class)
 class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInterstitialFragmentViewModel.ViewModel>() {
@@ -17,6 +18,14 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_email_verification_interstitial, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        email_verification_interstitial_cta_button.setOnClickListener {
+            this.viewModel.inputs.retryButtonPressed()
+        }
     }
 
     companion object {

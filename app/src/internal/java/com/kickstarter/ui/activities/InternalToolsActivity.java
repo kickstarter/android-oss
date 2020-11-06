@@ -151,7 +151,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.email_verification_button)
   public void emailVerificationInterstitialClick() {
-    EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance();
+    final EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance();
     getSupportFragmentManager()
             .beginTransaction()
             .add(R.id.email_verification_interstitial_fragment_container, fragment)

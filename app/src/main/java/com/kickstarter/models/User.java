@@ -147,12 +147,12 @@ public abstract class User implements Parcelable, Relay {
   }
 
   @Override
-  public boolean equals(@Nullable Object obj) {
+  public boolean equals(final @Nullable Object obj) {
     boolean equals = super.equals(obj);
 
     if (obj instanceof User) {
-      User otherUser = (User) obj;
-      equals = this.id() == otherUser.id() &&
+      final User otherUser = (User) obj;
+      equals = Objects.equals(this.id(), otherUser.id()) &&
               Objects.equals(this.alumniNewsletter(), otherUser.alumniNewsletter()) &&
               Objects.equals(this.artsCultureNewsletter(), otherUser.artsCultureNewsletter()) &&
               Objects.equals(this.backedProjectsCount(), otherUser.backedProjectsCount()) &&

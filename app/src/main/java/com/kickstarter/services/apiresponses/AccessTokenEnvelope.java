@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 
@@ -32,13 +33,13 @@ public abstract class AccessTokenEnvelope implements Parcelable {
   public abstract Builder toBuilder();
 
   @Override
-  public boolean equals(@Nullable Object obj) {
+  public boolean equals(final @Nullable Object obj) {
     boolean equals = super.equals(obj);
 
     if (obj instanceof AccessTokenEnvelope) {
-      AccessTokenEnvelope otherEnvelope = (AccessTokenEnvelope) obj;
-      equals = this.accessToken() == otherEnvelope.accessToken() &&
-              Objects.equals(this.user(), otherEnvelope.user());
+      final AccessTokenEnvelope otherEnvelope = (AccessTokenEnvelope) obj;
+      equals = Objects.equals(this.accessToken(), otherEnvelope.accessToken()) &&
+            Objects.equals(this.user(), otherEnvelope.user());
     }
 
     return equals;

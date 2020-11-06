@@ -42,19 +42,19 @@ public abstract class Location implements Parcelable, Relay {
   public abstract Builder toBuilder();
 
   @Override
-  public boolean equals(@Nullable Object obj) {
+  public boolean equals(final @Nullable Object obj) {
     boolean equals = super.equals(obj);
 
     if (obj instanceof Location) {
-      Location otherLoc = (Location) obj;
-      equals = this.id() == otherLoc.id() &&
-              Objects.equals(this.city(), otherLoc.city()) &&
-              Objects.equals(this.country(), otherLoc.country()) &&
-              Objects.equals(this.displayableName(), otherLoc.displayableName()) &&
-              Objects.equals(this.expandedCountry(), otherLoc.expandedCountry()) &&
-              Objects.equals(this.name(), otherLoc.name()) &&
-              Objects.equals(this.projectsCount(), otherLoc.projectsCount()) &&
-              Objects.equals(this.state(), otherLoc.state());
+      final Location otherLoc = (Location) obj;
+      equals = Objects.equals(this.id(), otherLoc.id()) &&
+            Objects.equals(this.city(), otherLoc.city()) &&
+            Objects.equals(this.country(), otherLoc.country()) &&
+            Objects.equals(this.displayableName(), otherLoc.displayableName()) &&
+            Objects.equals(this.expandedCountry(), otherLoc.expandedCountry()) &&
+            Objects.equals(this.name(), otherLoc.name()) &&
+            Objects.equals(this.projectsCount(), otherLoc.projectsCount()) &&
+            Objects.equals(this.state(), otherLoc.state());
     }
 
     return equals;

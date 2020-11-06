@@ -185,6 +185,7 @@ Please tap to retry.</string>
   <string name="Email_must_be_a_valid_email_address" formatted="false">Email must be a valid email address.</string>
   <string name="Email_notifications" formatted="false">Email notifications</string>
   <string name="Email_unverified" formatted="false">This email address is unverified.</string>
+  <string name="email_verification_interstitial" formatted="false">Email Verification Interstitial</string>
   <string name="Ending_in_last_four" formatted="false">Ending in %{last_four}</string>
   <string name="Ending_soon" formatted="false">Ending Soon</string>
   <string name="Enter_an_amount_less_than_max_pledge" formatted="false">Enter an amount less than %{max_pledge}.</string>

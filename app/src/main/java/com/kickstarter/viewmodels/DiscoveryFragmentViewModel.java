@@ -126,7 +126,7 @@ public interface DiscoveryFragmentViewModel {
       this.optimizely = environment.optimizely();
 
       final Observable<User> changedUser = this.currentUser.observable()
-        .distinctUntilChanged((u1, u2) -> !(u1 == u2));
+        .distinctUntilChanged();
 
       final Observable<Boolean> userIsLoggedIn = this.currentUser.isLoggedIn()
         .distinctUntilChanged();

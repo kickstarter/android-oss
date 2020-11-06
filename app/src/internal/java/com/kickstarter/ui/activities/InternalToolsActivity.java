@@ -29,6 +29,7 @@ import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.WorkUtils;
 import com.kickstarter.services.firebase.ResetDeviceIdWorker;
+import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment;
 import com.kickstarter.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
@@ -146,6 +147,15 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   public void featureFlagsClick() {
     final Intent featureFlagIntent = new Intent(this, FeatureFlagsActivity.class);
     startActivity(featureFlagIntent);
+  }
+
+  @OnClick(R.id.email_verification_button)
+  public void emailVerificationInterstitialClick() {
+    EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance();
+    getSupportFragmentManager()
+            .beginTransaction()
+            .add(R.id.email_verification_interstitial_fragment_container, fragment)
+            .commit();
   }
 
   @OnClick(R.id.reset_device_id)

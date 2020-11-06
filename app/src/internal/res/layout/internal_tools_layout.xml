@@ -245,7 +245,24 @@
         android:layout_marginBottom="@dimen/grid_1"
         android:text="@string/Force_a_crash" />
 
+      <include layout="@layout/horizontal_line_1dp_view" />
+
+      <Button
+          android:id="@+id/email_verification_button"
+          style="@style/Button"
+          app:background="@color/green_alpha_6"
+          android:layout_width="match_parent"
+          android:layout_marginTop="@dimen/grid_1"
+          android:layout_marginBottom="@dimen/grid_1"
+          android:text="Email Verification Interstitial" />
+
     </LinearLayout>
 
   </ScrollView>
+
+  <FrameLayout
+      android:id="@+id/email_verification_interstitial_fragment_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

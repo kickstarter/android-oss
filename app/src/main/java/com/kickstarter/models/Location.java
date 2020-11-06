@@ -59,4 +59,9 @@ public abstract class Location implements Parcelable, Relay {
 
     return equals;
   }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

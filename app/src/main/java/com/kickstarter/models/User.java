@@ -199,4 +199,9 @@ public abstract class User implements Parcelable, Relay {
 
     return equals;
   }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

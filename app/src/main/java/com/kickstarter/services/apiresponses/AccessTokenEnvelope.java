@@ -5,8 +5,6 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 
 import java.util.Objects;
@@ -43,5 +41,10 @@ public abstract class AccessTokenEnvelope implements Parcelable {
     }
 
     return equals;
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

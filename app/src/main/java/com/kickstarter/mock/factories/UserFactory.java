@@ -16,6 +16,17 @@ public final class UserFactory {
       .build();
   }
 
+  public static User userNotVerifiedEmail() {
+    return User.builder()
+            .avatar(AvatarFactory.avatar())
+            .id(IdFactory.id())
+            .isEmailVerified(false)
+            .name("Some Name")
+            .optedOutOfRecommendations(false)
+            .location(LocationFactory.unitedStates())
+            .build();
+  }
+
   public static User socialUser() {
     return user().toBuilder().social(true).build();
   }

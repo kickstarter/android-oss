@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.StringUtils
+import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -62,6 +63,9 @@ interface LoginViewModel {
 
         /** Start two factor activity for result.  */
         fun tfaChallenge(): Observable<Void>
+
+        /** Start the Interstitial screen.  */
+        fun showInterstitialFragment(): Observable<User>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<LoginActivity>(environment), Inputs, Outputs {
@@ -80,6 +84,7 @@ interface LoginViewModel {
         private val showCreatedPasswordSnackbar = BehaviorSubject.create<Void>()
         private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
         private val tfaChallenge: Observable<Void>
+        private val showInterstitial = BehaviorSubject.create<User>()
 
         private val loginError = PublishSubject.create<ErrorEnvelope>()
 
@@ -227,7 +232,7 @@ interface LoginViewModel {
             if (isValidated) {
                 this.success(accessTokenNotification)
             } else {
-                // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+                this.showInterstitial.onNext(accessTokenNotification.user())
             }
         }
 
@@ -265,5 +270,7 @@ interface LoginViewModel {
         override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, String>> = this.showResetPasswordSuccessDialog
 
         override fun tfaChallenge() = this.tfaChallenge
+
+        override fun showInterstitialFragment(): BehaviorSubject<User> = this.showInterstitial
     }
 }

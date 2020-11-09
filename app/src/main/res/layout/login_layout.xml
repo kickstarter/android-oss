@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:background="@color/white"
-  android:orientation="vertical">
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:orientation="vertical">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -16,17 +16,25 @@
 
   </com.google.android.material.appbar.AppBarLayout>
 
-  <ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-    <include
-      layout="@layout/login_form_view"
+  <FrameLayout
+      android:id="@+id/login_view_id"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/form_margin_x"
-      android:layout_marginRight="@dimen/form_margin_x" />
-  </ScrollView>
+      android:layout_height="match_parent"
+      android:layout_marginTop="@dimen/ks_toolbar_height"
+      tools:ignore="UselessParent">
+
+      <ScrollView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <include
+            layout="@layout/login_form_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/form_margin_x"
+            android:layout_marginRight="@dimen/form_margin_x" />
+      </ScrollView>
+  </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

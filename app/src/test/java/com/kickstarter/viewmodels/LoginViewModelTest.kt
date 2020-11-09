@@ -281,6 +281,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.password("androidiscool")
         this.vm.inputs.loginClick()
 
+        this.loginSuccess.assertNoValues()
         this.showEmailVerificationInterstitial.assertValue(user)
 
         this.lakeTest.assertValue("Log In Submit Button Clicked")

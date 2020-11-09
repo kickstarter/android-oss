@@ -9,7 +9,6 @@ import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.UserUtils
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isLocationGermany
 import com.kickstarter.ui.activities.NewsletterActivity

@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.Objects;
+
 import auto.parcel.AutoParcel;
 
 @AutoGson
@@ -141,5 +144,64 @@ public abstract class User implements Parcelable, Relay {
 
       return strings;
     }
+  }
+
+  @Override
+  public boolean equals(final @Nullable Object obj) {
+    boolean equals = super.equals(obj);
+
+    if (obj instanceof User) {
+      final User otherUser = (User) obj;
+      equals = Objects.equals(this.id(), otherUser.id()) &&
+      Objects.equals(this.alumniNewsletter(), otherUser.alumniNewsletter()) &&
+      Objects.equals(this.artsCultureNewsletter(), otherUser.artsCultureNewsletter()) &&
+      Objects.equals(this.backedProjectsCount(), otherUser.backedProjectsCount()) &&
+      Objects.equals(this.createdProjectsCount(), otherUser.createdProjectsCount()) &&
+      Objects.equals(this.name(), otherUser.name()) &&
+      Objects.equals(this.avatar(), otherUser.avatar()) &&
+      Objects.equals(this.createdProjectsCount(), otherUser.createdProjectsCount()) &&
+      Objects.equals(this.facebookConnected(), otherUser.facebookConnected());
+      Objects.equals(this.filmNewsletter(), otherUser.filmNewsletter());
+      Objects.equals(this.facebookConnected(), otherUser.facebookConnected());
+      Objects.equals(this.gamesNewsletter(), otherUser.gamesNewsletter());
+      Objects.equals(this.happeningNewsletter(), otherUser.happeningNewsletter());
+      Objects.equals(this.inventNewsletter(), otherUser.inventNewsletter());
+      Objects.equals(this.isAdmin(), otherUser.isAdmin());
+      Objects.equals(this.location(), otherUser.location());
+      Objects.equals(this.memberProjectsCount(), otherUser.memberProjectsCount());
+      Objects.equals(this.musicNewsletter(), otherUser.musicNewsletter());
+      Objects.equals(this.notifyMobileOfBackings(), otherUser.notifyMobileOfBackings());
+      Objects.equals(this.notifyMobileOfComments(), otherUser.notifyMobileOfComments());
+      Objects.equals(this.notifyMobileOfCreatorEdu(), otherUser.notifyMobileOfCreatorEdu());
+      Objects.equals(this.notifyMobileOfFollower(), otherUser.notifyMobileOfFollower());
+      Objects.equals(this.notifyMobileOfFriendActivity(), otherUser.notifyMobileOfFriendActivity());
+      Objects.equals(this.notifyMobileOfMessages(), otherUser.notifyMobileOfMessages());
+      Objects.equals(this.notifyMobileOfPostLikes(), otherUser.notifyMobileOfPostLikes());
+      Objects.equals(this.notifyMobileOfUpdates(), otherUser.notifyMobileOfUpdates());
+      Objects.equals(this.notifyOfBackings(), otherUser.notifyOfBackings());
+      Objects.equals(this.notifyOfComments(), otherUser.notifyOfComments());
+      Objects.equals(this.notifyOfCommentReplies(), otherUser.notifyOfCommentReplies());
+      Objects.equals(this.notifyOfCreatorDigest(), otherUser.notifyOfCreatorDigest());
+      Objects.equals(this.notifyOfCreatorEdu(), otherUser.notifyOfCreatorEdu());
+      Objects.equals(this.notifyOfFollower(), otherUser.notifyOfFollower());
+      Objects.equals(this.notifyOfFriendActivity(), otherUser.notifyOfFriendActivity());
+      Objects.equals(this.notifyOfMessages(), otherUser.notifyOfMessages());
+      Objects.equals(this.optedOutOfRecommendations(), otherUser.optedOutOfRecommendations());
+      Objects.equals(this.promoNewsletter(), otherUser.promoNewsletter());
+      Objects.equals(this.publishingNewsletter(), otherUser.publishingNewsletter());
+      Objects.equals(this.showPublicProfile(), otherUser.showPublicProfile());
+      Objects.equals(this.social(), otherUser.social());
+      Objects.equals(this.starredProjectsCount(), otherUser.starredProjectsCount());
+      Objects.equals(this.unreadMessagesCount(), otherUser.unreadMessagesCount());
+      Objects.equals(this.unseenActivityCount(), otherUser.unseenActivityCount());
+      Objects.equals(this.weeklyNewsletter(), otherUser.weeklyNewsletter());
+    }
+
+    return equals;
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

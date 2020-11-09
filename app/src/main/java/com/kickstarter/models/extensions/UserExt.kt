@@ -20,14 +20,3 @@ fun User.isLocationGermany(): Boolean {
     val location = this.location() ?: return false
     return I18nUtils.isCountryGermany(location.country())
 }
-
-/**
- * Returns whether two users are different where equality is determined by matching IDs.
- */
-fun User.userHasChanged(u2: User?): Boolean {
-    if (u2 == null) {
-        return true
-    }
-
-    return this.id() != u2.id()
-}

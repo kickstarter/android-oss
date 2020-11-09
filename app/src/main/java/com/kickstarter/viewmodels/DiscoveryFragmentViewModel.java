@@ -19,7 +19,6 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
-import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -127,7 +126,7 @@ public interface DiscoveryFragmentViewModel {
       this.optimizely = environment.optimizely();
 
       final Observable<User> changedUser = this.currentUser.observable()
-        .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
+        .distinctUntilChanged();
 
       final Observable<Boolean> userIsLoggedIn = this.currentUser.isLoggedIn()
         .distinctUntilChanged();
@@ -241,7 +240,7 @@ public interface DiscoveryFragmentViewModel {
         .subscribe(__ -> this.startHeartAnimation.onNext(null));
 
       final Observable<Pair<User, DiscoveryParams>> loggedInUserAndParams = this.currentUser.loggedInUser()
-        .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2))
+        .distinctUntilChanged()
         .compose(combineLatestPair(this.paramsFromActivity));
 
       // Activity should show on the user's default params

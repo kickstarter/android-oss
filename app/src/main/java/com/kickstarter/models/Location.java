@@ -5,6 +5,9 @@ import android.os.Parcelable;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import androidx.annotation.Nullable;
+
+import java.util.Objects;
+
 import auto.parcel.AutoParcel;
 
 @AutoGson
@@ -37,4 +40,28 @@ public abstract class Location implements Parcelable, Relay {
   }
 
   public abstract Builder toBuilder();
+
+  @Override
+  public boolean equals(final @Nullable Object obj) {
+    boolean equals = super.equals(obj);
+
+    if (obj instanceof Location) {
+      final Location otherLoc = (Location) obj;
+      equals = Objects.equals(this.id(), otherLoc.id()) &&
+            Objects.equals(this.city(), otherLoc.city()) &&
+            Objects.equals(this.country(), otherLoc.country()) &&
+            Objects.equals(this.displayableName(), otherLoc.displayableName()) &&
+            Objects.equals(this.expandedCountry(), otherLoc.expandedCountry()) &&
+            Objects.equals(this.name(), otherLoc.name()) &&
+            Objects.equals(this.projectsCount(), otherLoc.projectsCount()) &&
+            Objects.equals(this.state(), otherLoc.state());
+    }
+
+    return equals;
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 }

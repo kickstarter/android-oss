@@ -18,7 +18,6 @@ import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UrlUtils;
-import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
@@ -174,7 +173,7 @@ public interface DiscoveryViewModel {
       final Observable<User> currentUser = this.currentUserType.observable();
 
       final Observable<User> changedUser = currentUser
-        .distinctUntilChanged((u1, u2) -> !UserUtils.userHasChanged(u1, u2));
+        .distinctUntilChanged();
 
       changedUser
         .compose(bindToLifecycle())

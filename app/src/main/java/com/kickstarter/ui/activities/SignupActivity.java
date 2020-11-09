@@ -13,6 +13,8 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.models.User;
+import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.SignupViewModel;
@@ -75,10 +77,28 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, null, e));
 
+    this.viewModel.outputs.showInterstitialFragment()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showInterstitialFragment);
+
     RxView.clicks(this.newsletterSwitch)
       .skip(1)
       .compose(bindToLifecycle())
       .subscribe(__ -> this.viewModel.inputs.sendNewslettersClick(this.newsletterSwitch.isChecked()));
+  }
+
+  private void showInterstitialFragment(User user) {
+    final String tagName = EmailVerificationInterstitialFragment.class.getSimpleName();
+
+    if (this.getSupportFragmentManager().findFragmentByTag(tagName) == null) {
+      final EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance(user);
+      this.getSupportFragmentManager().beginTransaction()
+              .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+              .add(R.id.login_view_id, fragment)
+              .addToBackStack(null)
+              .commit();
+    }
   }
 
   @OnClick(R.id.disclaimer)

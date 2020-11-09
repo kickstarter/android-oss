@@ -16,7 +16,7 @@ public final class UserFactory {
       .build();
   }
 
-  public static User userNotVerified() {
+  public static User userNotVerifiedEmail() {
     return User.builder()
             .avatar(AvatarFactory.avatar())
             .id(IdFactory.id())

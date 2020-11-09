@@ -2,12 +2,12 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.User
@@ -31,7 +31,6 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val showEmailVerificationInterstitial = TestSubscriber<User>()
 
     fun setUpEnvironment(environment: Environment) {
-        environment.currentConfig().config(ConfigFactory.config())
         this.vm = LoginViewModel.ViewModel(environment)
         this.vm.outputs.genericLoginError().subscribe(this.genericLoginError)
         this.vm.outputs.invalidLoginError().subscribe(this.invalidLoginError)
@@ -72,7 +71,15 @@ class LoginViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        val mockConfig = MockCurrentConfig()
+        mockConfig.config(config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(mockConfig)
+                .apiClient(apiClient)
+                .build()
+
+        setUpEnvironment(environment)
 
         this.vm.inputs.email("incorrect@kickstarter.com")
         this.vm.inputs.password("lisaiscool")
@@ -92,7 +99,15 @@ class LoginViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        val mockConfig = MockCurrentConfig()
+        mockConfig.config(config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(mockConfig)
+                .apiClient(apiClient)
+                .build()
+
+        setUpEnvironment(environment)
 
         this.vm.inputs.email("typo@kickstartr.com")
         this.vm.inputs.password("julieiscool")
@@ -112,7 +127,15 @@ class LoginViewModelTest : KSRobolectricTestCase() {
             }
         }
 
-        setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
+        val mockConfig = MockCurrentConfig()
+        mockConfig.config(config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(mockConfig)
+                .apiClient(apiClient)
+                .build()
+
+        setUpEnvironment(environment)
 
         this.vm.inputs.email("hello@kickstarter.com")
         this.vm.inputs.password("androidiscool")
@@ -208,7 +231,14 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccessfulLogin() {
-        setUpEnvironment(environment())
+        val mockConfig = MockCurrentConfig()
+        mockConfig.config(config())
+
+        val environment = environment().toBuilder()
+                .currentConfig(mockConfig)
+                .build()
+
+        setUpEnvironment(environment)
 
         this.vm.outputs.loginSuccess().subscribe(this.loginSuccess)
 
@@ -224,7 +254,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testShowInterstitial_whenUserNotValidatedAndActiveFeatureFlag_ShowInterstitial() {
-        val user = UserFactory.userNotVerified()
+        val user = UserFactory.userNotVerifiedEmail()
         val token = "Token"
         val accessTokenEnvelope = AccessTokenEnvelope.builder()
                 .user(user)
@@ -238,11 +268,11 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         }
 
         val mockConfig = MockCurrentConfig()
-        mockConfig.config(ConfigFactory.configWithFeatureEnabled(EMAIL_VERIFICATION_FLOW))
+        mockConfig.config(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, true))))
 
         val environment = environment().toBuilder()
-                .apiClient(apiClient)
                 .currentConfig(mockConfig)
+                .apiClient(apiClient)
                 .build()
 
         setUpEnvironment(environment)

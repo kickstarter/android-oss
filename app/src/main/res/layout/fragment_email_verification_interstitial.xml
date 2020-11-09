@@ -10,6 +10,7 @@
         android:id="@+id/email_verification_interstitial_mail_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@null"
         android:layout_marginBottom="@dimen/grid_3"
         android:src="@drawable/ic_email"
         app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_title"

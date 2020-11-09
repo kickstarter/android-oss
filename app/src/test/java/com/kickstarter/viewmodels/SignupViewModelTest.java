@@ -2,9 +2,12 @@ package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
+import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -14,6 +17,8 @@ import org.junit.Test;
 import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
+
+import static com.kickstarter.libs.utils.extensions.ConfigExtension.EMAIL_VERIFICATION_FLOW;
 
 public class SignupViewModelTest extends KSRobolectricTestCase {
 
@@ -139,6 +144,76 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     signupSuccessTest.assertValueCount(0);
     signupErrorTest.assertValueCount(1);
     koalaTest.assertValues("User Signup", "Signup Newsletter Toggle", "Errored User Signup");
+    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
+  }
+
+  @Test
+  public void testShowInterstitial_whenCreatingAccountActiveFeatureFlag_ShowInterstitial() {
+    final User user = UserFactory.userNotVerifiedEmail();
+    final AccessTokenEnvelope envelope = AccessTokenEnvelope.builder()
+            .user(user)
+            .accessToken("Token")
+            .build();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
+                                                             final @NonNull String password, final @NonNull String passwordConfirmation, final boolean sendNewsletters) {
+        return Observable.just(envelope);
+      }
+    };
+
+    final MockCurrentConfig mockConfig = new MockCurrentConfig();
+    mockConfig.config(ConfigFactory.configWithFeatureEnabled(EMAIL_VERIFICATION_FLOW));
+
+    final Environment environment = environment().toBuilder()
+            .apiClient(apiClient)
+            .currentConfig(mockConfig)
+            .build();
+
+    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
+
+    final TestSubscriber<User> showInterstitial = new TestSubscriber<>();
+    vm.outputs.showInterstitialFragment().subscribe(showInterstitial);
+
+    vm.inputs.name("brandon");
+    vm.inputs.email("hello@kickstarter.com");
+    vm.inputs.password("danisawesome");
+
+    vm.inputs.signupClick();
+
+    showInterstitial.assertValue(user);
+    koalaTest.assertValues("User Signup");
+    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
+  }
+
+  public void testCreationAccountSuccess_whenCreatingAccountDeActiveFeatureFlag_CreationAccountSuccess() {
+
+    final MockCurrentConfig mockConfig = new MockCurrentConfig();
+    mockConfig.config(ConfigFactory.configWithFeatureEnabled(EMAIL_VERIFICATION_FLOW));
+
+    final Environment environment = environment().toBuilder()
+            .currentConfig(mockConfig)
+            .build();
+
+    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
+
+    final TestSubscriber<User> showInterstitial = new TestSubscriber<>();
+    vm.outputs.showInterstitialFragment().subscribe(showInterstitial);
+
+    final TestSubscriber<Void> signUpSuccessTest = new TestSubscriber<>();
+    vm.outputs.signupSuccess().subscribe(signUpSuccessTest);
+
+    vm.inputs.name("brandon");
+    vm.inputs.email("hello@kickstarter.com");
+    vm.inputs.password("danisawesome");
+
+    vm.inputs.signupClick();
+
+    showInterstitial.assertNoValues();
+    signUpSuccessTest.assertValueCount(1);
+
+    koalaTest.assertValues("User Signup");
     this.lakeTest.assertValues("Sign Up Submit Button Clicked");
   }
 }

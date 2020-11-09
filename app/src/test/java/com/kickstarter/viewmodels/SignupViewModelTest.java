@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
@@ -17,8 +18,6 @@ import org.junit.Test;
 import androidx.annotation.NonNull;
 import rx.Observable;
 import rx.observers.TestSubscriber;
-
-import static com.kickstarter.libs.utils.extensions.ConfigExtension.EMAIL_VERIFICATION_FLOW;
 
 public class SignupViewModelTest extends KSRobolectricTestCase {
 
@@ -164,7 +163,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     };
 
     final MockCurrentConfig mockConfig = new MockCurrentConfig();
-    mockConfig.config(ConfigFactory.configWithFeatureEnabled(EMAIL_VERIFICATION_FLOW));
+    mockConfig.config(ConfigFactory.configWithFeatureEnabled(ConfigExtension.EMAIL_VERIFICATION_FLOW));
 
     final Environment environment = environment().toBuilder()
             .apiClient(apiClient)
@@ -190,7 +189,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
   public void testCreationAccountSuccess_whenCreatingAccountDeActiveFeatureFlag_CreationAccountSuccess() {
 
     final MockCurrentConfig mockConfig = new MockCurrentConfig();
-    mockConfig.config(ConfigFactory.configWithFeatureEnabled(EMAIL_VERIFICATION_FLOW));
+    mockConfig.config(ConfigFactory.configWithFeatureEnabled(ConfigExtension.EMAIL_VERIFICATION_FLOW));
 
     final Environment environment = environment().toBuilder()
             .currentConfig(mockConfig)

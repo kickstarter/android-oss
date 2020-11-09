@@ -247,6 +247,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment)
 
+        this.vm.inputs.email("hello@kickstarter.com")
+        this.vm.inputs.password("androidiscool")
         this.vm.inputs.loginClick()
 
         this.showEmailVerificationInterstitial.assertValue(user)

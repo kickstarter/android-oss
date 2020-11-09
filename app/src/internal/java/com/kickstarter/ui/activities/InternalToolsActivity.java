@@ -28,6 +28,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.WorkUtils;
+import com.kickstarter.models.User;
 import com.kickstarter.services.firebase.ResetDeviceIdWorker;
 import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment;
 import com.kickstarter.viewmodels.InternalToolsViewModel;
@@ -151,7 +152,8 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.email_verification_button)
   public void emailVerificationInterstitialClick() {
-    final EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance();
+    final User user = this.environment().currentUser().getUser();
+    final EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance(user);
     getSupportFragmentManager()
             .beginTransaction()
             .add(R.id.email_verification_interstitial_fragment_container, fragment)

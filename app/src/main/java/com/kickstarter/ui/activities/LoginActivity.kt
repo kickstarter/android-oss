@@ -18,6 +18,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
+import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
 import kotlinx.android.synthetic.main.login_form_view.*
@@ -112,13 +113,14 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     }
 
     private fun showInterstitialFragment(user: User) {
-        /*val yourFragment: EmailVerificationInterstitialFragment = YourFragment()
-        val fragmentManager: FragmentManager = fragmentManager
-
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.your_activity_layout, YourFragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()*/
+        if (supportFragmentManager.findFragmentByTag(EmailVerificationInterstitialFragment::class.java.simpleName) == null) {
+            val emailValidationFragment: EmailVerificationInterstitialFragment = EmailVerificationInterstitialFragment.newInstance(user)
+            supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                    .add(R.id.login_view_id, emailValidationFragment)
+                    .addToBackStack(null)
+                    .commit()
+        }
     }
 
     /**

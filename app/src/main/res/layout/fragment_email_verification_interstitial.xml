@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/grid_4">
+
+    <ImageView
+        android:id="@+id/email_verification_interstitial_mail_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:src="@drawable/ic_email"
+        app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:tint="@color/gray_alpha_50"/>
+
+    <TextView
+        android:id="@+id/email_verification_interstitial_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:text="@string/verify_your_email"
+        app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_subtext"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/TextAppearance.AppCompat.Title"/>
+
+    <TextView
+        android:id="@+id/email_verification_interstitial_subtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/grid_3"
+        android:paddingEnd="@dimen/grid_7"
+        android:paddingStart="@dimen/grid_7"
+        android:text="@string/complete_this_simple_step_to_help_keep_your_kickstarter_account_secure"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/email_verification_interstitial_cta_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_inbox"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_subtext"
+        style="@style/Widget.AppCompat.Button.Colored"/>
+
+    <TextView
+        android:id="@+id/email_verification_interstitial_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:text="@string/ill_do_this_later"
+        android:textAllCaps="false"
+        android:textColor="@color/ksr_green_500"
+        android:textSize="@dimen/subheadline"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_cta_button" />
+
+    <TextView
+        android:id="@+id/email_verification_interstitial_resend_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/grid_1_half"
+        android:paddingBottom="@dimen/grid_2"
+        android:text="@string/cant_find_it"
+        android:textColor="@color/black"
+        android:textSize="@dimen/caption_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/email_verification_interstitial_resend_button" />
+
+    <TextView
+        android:id="@+id/email_verification_interstitial_resend_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/grid_2"
+        android:text="@string/resend_email"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/ksr_green_500"
+        android:textSize="@dimen/caption_1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/email_verification_interstitial_resend_text"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

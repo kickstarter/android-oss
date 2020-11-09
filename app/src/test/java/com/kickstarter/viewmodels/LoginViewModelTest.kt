@@ -286,4 +286,26 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.lakeTest.assertValue("Log In Submit Button Clicked")
     }
+
+    @Test
+    fun testLoginSuccess_whenUserNotValidatedAndDeactivatedFeatureFlag_LoginSuccess() {
+
+        val mockConfig = MockCurrentConfig()
+        mockConfig.config(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, false))))
+
+        val environment = environment().toBuilder()
+                .currentConfig(mockConfig)
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.email("hello@kickstarter.com")
+        this.vm.inputs.password("androidiscool")
+        this.vm.inputs.loginClick()
+
+        this.loginSuccess.assertValue(null)
+        this.showEmailVerificationInterstitial.assertNoValues()
+
+        this.lakeTest.assertValue("Log In Submit Button Clicked")
+    }
 }

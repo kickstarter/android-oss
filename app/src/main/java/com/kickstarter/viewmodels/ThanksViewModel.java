@@ -10,10 +10,10 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.models.extensions.UserExt;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -160,7 +160,7 @@ public interface ThanksViewModel {
       this.currentUser.observable()
         .filter(ObjectUtils::isNotNull)
         .compose(takeWhen(this.signedUpToGamesNewsletter))
-        .filter(UserUtils::isLocationGermany)
+        .filter(UserExt::isLocationGermany)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.showConfirmGamesNewsletterDialog.onNext(null));
 

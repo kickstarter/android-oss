@@ -24,9 +24,9 @@ import androidx.transition.TransitionManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
-import com.kickstarter.extensions.hideKeyboard
-import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showErrorToast
+import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI

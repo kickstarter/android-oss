@@ -9,6 +9,7 @@ public final class UserFactory {
     return User.builder()
       .avatar(AvatarFactory.avatar())
       .id(IdFactory.id())
+      .isEmailVerified(true)
       .name("Some Name")
       .optedOutOfRecommendations(false)
       .location(LocationFactory.unitedStates())
@@ -40,6 +41,13 @@ public final class UserFactory {
       .toBuilder()
       .location(LocationFactory.germany())
       .build();
+  }
+
+  public static User mexicanUser() {
+    return user()
+            .toBuilder()
+            .location(LocationFactory.mexico())
+            .build();
   }
 
   public static User noRecommendations() {

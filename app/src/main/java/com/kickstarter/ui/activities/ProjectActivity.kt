@@ -21,8 +21,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
-import com.kickstarter.extensions.hideKeyboard
-import com.kickstarter.extensions.showSnackbar
+import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers

@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.UserUtils
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.isLocationGermany
 import com.kickstarter.ui.activities.NewsletterActivity
 import com.kickstarter.ui.data.Newsletter
 import rx.Notification
@@ -237,7 +238,7 @@ interface NewsletterViewModel {
                     isTrue(user.publishingNewsletter()) && isTrue(user.weeklyNewsletter())
         }
 
-        private fun requiresDoubleOptIn(user: User, checked: Boolean) = UserUtils.isLocationGermany(user) && checked
+        private fun requiresDoubleOptIn(user: User, checked: Boolean) = user.isLocationGermany() && checked
 
         private fun success(user: User) {
             this.currentUser.refresh(user)

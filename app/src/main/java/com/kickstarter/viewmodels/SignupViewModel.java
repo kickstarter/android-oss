@@ -1,21 +1,27 @@
 package com.kickstarter.viewmodels;
 
 import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.LoginHelper;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.SignupActivity;
 
 import androidx.annotation.NonNull;
+
+import android.util.Pair;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface SignupViewModel {
@@ -67,62 +73,84 @@ public interface SignupViewModel {
       this.currentUser = environment.currentUser();
 
       final Observable<SignupData> signupData = Observable.combineLatest(
-        this.name, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
+              this.name, this.email, this.password, this.sendNewslettersIsChecked, SignupData::new
       );
 
       this.sendNewslettersClick
-        .compose(bindToLifecycle())
-        .subscribe(this.sendNewslettersIsChecked::onNext);
+              .compose(bindToLifecycle())
+              .subscribe(this.sendNewslettersIsChecked::onNext);
 
       signupData
-        .map(SignupData::isValid)
-        .compose(bindToLifecycle())
-        .subscribe(this.formIsValid);
+              .map(SignupData::isValid)
+              .compose(bindToLifecycle())
+              .subscribe(this.formIsValid);
 
       signupData
-        .compose(takeWhen(this.signupClick))
-        .flatMap(this::submit)
-        .compose(bindToLifecycle())
-        .subscribe(this::success);
+              .compose(takeWhen(this.signupClick))
+              .switchMap(this::submit)
+              .compose(combineLatestPair(this.currentConfig.observable()))
+              .map(it -> it)
+              .map(this::unwrapData)
+              .compose(bindToLifecycle())
+              .subscribe(this::continueFlow);
 
       this.currentConfig.observable()
-        .take(1)
-        .map(config -> false)
-        .compose(bindToLifecycle())
-        .subscribe(this.sendNewslettersIsChecked::onNext);
+              .take(1)
+              .map(config -> false)
+              .compose(bindToLifecycle())
+              .subscribe(this.sendNewslettersIsChecked::onNext);
 
       this.signupError
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackRegisterError());
+              .compose(bindToLifecycle())
+              .subscribe(__ -> this.koala.trackRegisterError());
 
       this.errorString = this.signupError
-        .takeUntil(this.signupSuccess)
-        .map(ErrorEnvelope::errorMessage);
+              .takeUntil(this.signupSuccess)
+              .map(ErrorEnvelope::errorMessage);
 
       this.sendNewslettersClick
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackSignupNewsletterToggle);
+              .compose(bindToLifecycle())
+              .subscribe(this.koala::trackSignupNewsletterToggle);
 
       this.signupSuccess
-        .compose(bindToLifecycle())
-        .subscribe(__ -> {
-          this.koala.trackLoginSuccess();
-          this.koala.trackRegisterSuccess();
-        });
+              .compose(bindToLifecycle())
+              .subscribe(__ -> {
+                this.koala.trackLoginSuccess();
+                this.koala.trackRegisterSuccess();
+              });
 
       this.koala.trackRegisterFormView();
 
       this.signupClick
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.lake.trackSignUpSubmitButtonClicked());
+              .compose(bindToLifecycle())
+              .subscribe(__ -> this.lake.trackSignUpSubmitButtonClicked());
+    }
+
+    private Pair<Boolean, AccessTokenEnvelope> unwrapData(@NonNull final Pair<AccessTokenEnvelope, Config> accessTokenEnvelopeConfig) {
+      final AccessTokenEnvelope accessToken = accessTokenEnvelopeConfig.first;
+      final User user = accessToken.user();
+      final Config config = accessTokenEnvelopeConfig.second;
+      final Boolean isValidated = LoginHelper.INSTANCE.hasCurrentUserVerifiedEmail(user, config);
+      return new Pair(isValidated, accessToken);
     }
 
     private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
       return this.client.signup(data.name, data.email, data.password, data.password, data.sendNewsletters)
-        .compose(Transformers.pipeApiErrorsTo(this.signupError))
-        .compose(Transformers.neverError())
-        .doOnSubscribe(() -> this.formSubmitting.onNext(true))
-        .doAfterTerminate(() -> this.formSubmitting.onNext(false));
+              .compose(Transformers.pipeApiErrorsTo(this.signupError))
+              .compose(Transformers.neverError())
+              .doOnSubscribe(() -> this.formSubmitting.onNext(true))
+              .doAfterTerminate(() -> this.formSubmitting.onNext(false));
+    }
+
+    private void continueFlow(final @NonNull Pair<Boolean, AccessTokenEnvelope> validatedEnvelopInfo) {
+      final Boolean isValidated = validatedEnvelopInfo.first;
+      final AccessTokenEnvelope envelope = validatedEnvelopInfo.second;
+
+      if (isValidated) {
+        this.success(envelope);
+      } /*else {
+         TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+      }*/
     }
 
     private void success(final @NonNull AccessTokenEnvelope envelope) {

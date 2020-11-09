@@ -1,4 +1,4 @@
-package com.kickstarter.extensions
+package com.kickstarter.ui.extensions
 
 import android.content.Context
 import android.view.Gravity

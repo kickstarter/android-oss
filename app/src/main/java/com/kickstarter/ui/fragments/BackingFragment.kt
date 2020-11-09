@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
-import com.kickstarter.extensions.showSnackbar
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.SwipeRefresher

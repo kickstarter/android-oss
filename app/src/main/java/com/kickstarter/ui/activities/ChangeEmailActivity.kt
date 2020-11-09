@@ -8,8 +8,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
-import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showSnackbar
+import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils

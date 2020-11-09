@@ -2,11 +2,10 @@ package com.kickstarter.viewmodels
 
 import android.util.Pair
 import androidx.annotation.NonNull
-import com.kickstarter.libs.ActivityViewModel
-import com.kickstarter.libs.CurrentUserType
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.services.ApiClientType
@@ -15,6 +14,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.ui.data.LoginReason
+import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
@@ -88,6 +88,7 @@ interface LoginViewModel {
 
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
+        private val currentConfig = environment.currentConfig().observable()
 
         init {
 
@@ -106,6 +107,22 @@ interface LoginViewModel {
                                 } else {
                                     LoginReason.DEFAULT
                                 })
+                    }
+
+            // - Contain the errors if any from the login endpoint response
+            val errors = PublishSubject.create<Throwable?>()
+            // - Contains success data if any from the login endpoint response
+            val successResponseData = PublishSubject.create<Pair<Boolean, AccessTokenEnvelope>?>()
+
+            emailAndPassword
+                    .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
+                    .switchMap { ep -> this.client.login(ep.first, ep.second) }
+                    .materialize()
+                    .share()
+                    .compose<Pair<Notification<AccessTokenEnvelope>, Config>>(combineLatestPair(currentConfig))
+                    .subscribe {
+                        errors.onNext(unwrapNotificationEnvelopeError(it.first))
+                        successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it.first, it.second))
                     }
 
             emailAndReason
@@ -149,17 +166,17 @@ interface LoginViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.logInButtonIsEnabled)
 
-            val loginNotification = emailAndPassword
-                    .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
-                    .switchMap { ep -> submit(ep.first, ep.second) }
-
-            loginNotification
-                    .compose(values())
+            successResponseData
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.success(it) }
+                    .subscribe {
+                        continueFlow(it.first, it.second)
+                    }
 
-            loginNotification
-                    .compose(errors())
+            errors
+                    .filter { ObjectUtils.isNotNull(it) }
+                    .map { requireNotNull(it) }
                     .map { ErrorEnvelope.fromThrowable(it) }
                     .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
@@ -191,12 +208,30 @@ interface LoginViewModel {
                     .subscribe { this.lake.trackLogInSubmitButtonClicked() }
         }
 
-        private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()
+        private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
+                if (notification.hasThrowable()) notification.throwable else null
 
-        private fun submit(email: String, password: String) =
-                this.client.login(email, password)
-                        .materialize()
-                        .share()
+        private fun unwrapNotificationEnvelopeSuccess (
+                notification: Notification<AccessTokenEnvelope>,
+                config: Config): Pair<Boolean, AccessTokenEnvelope>? {
+
+            return if (notification.hasValue()) {
+                val accessTokenData = notification.value
+                val user = accessTokenData.user()
+                val isValidated = LoginHelper.hasCurrentUserVerifiedEmail(user, config) ?: false
+                Pair(isValidated, accessTokenData)
+            } else null
+        }
+
+        private fun continueFlow(isValidated: Boolean, accessTokenNotification: AccessTokenEnvelope) {
+            if (isValidated) {
+                this.success(accessTokenNotification)
+            } else {
+                // TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
+            }
+        }
+
+        private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()
 
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())

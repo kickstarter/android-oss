@@ -41,7 +41,10 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSignupViewModel_SuccessfulSignup() {
-    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment());
+    final Environment environment = environment();
+    environment.currentConfig().config(ConfigFactory.config());
+
+    final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> signupSuccessTest = new TestSubscriber<>();
     vm.outputs.signupSuccess().subscribe(signupSuccessTest);

@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.kickstarter.R
-import com.kickstarter.extensions.onChange
-import com.kickstarter.extensions.showSnackbar
+import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Logout
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel

@@ -4,6 +4,7 @@ import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.mock.factories.ApiExceptionFactory
+import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
@@ -24,6 +25,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val tfaChallenge = TestSubscriber<Void>()
 
     fun setUpEnvironment(environment: Environment) {
+        environment.currentConfig().config(ConfigFactory.config())
         this.vm = LoginViewModel.ViewModel(environment)
         this.vm.outputs.genericLoginError().subscribe(this.genericLoginError)
         this.vm.outputs.invalidLoginError().subscribe(this.invalidLoginError)
@@ -199,7 +201,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccessfulLogin() {
-        this.vm = LoginViewModel.ViewModel(environment())
+        setUpEnvironment(environment())
+
         this.vm.outputs.loginSuccess().subscribe(this.loginSuccess)
 
         this.vm.inputs.email("hello@kickstarter.com")
@@ -207,7 +210,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.loginClick()
 
-        this.loginSuccess.assertValueCount(1)
+        this.loginSuccess.assertValues(null, null)
         this.koalaTest.assertValues("Login")
         this.lakeTest.assertValue("Log In Submit Button Clicked")
     }

@@ -5,9 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Pair
 import com.kickstarter.R
-import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.showSnackbar
-import com.kickstarter.ui.extensions.text
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
@@ -16,11 +13,16 @@ import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.text
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
 import kotlinx.android.synthetic.main.login_form_view.*
 import kotlinx.android.synthetic.main.login_toolbar.*
+
 
 @RequiresActivityViewModel(LoginViewModel.ViewModel::class)
 class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
@@ -96,12 +98,27 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe({ this.setLoginButtonEnabled(it) })
 
+        this.viewModel.outputs.showInterstitialFragment()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { showInterstitialFragment(it) }
+
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
         }
 
         login_button.setOnClickListener { this.viewModel.inputs.loginClick() }
+    }
+
+    private fun showInterstitialFragment(user: User) {
+        /*val yourFragment: EmailVerificationInterstitialFragment = YourFragment()
+        val fragmentManager: FragmentManager = fragmentManager
+
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.your_activity_layout, YourFragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()*/
     }
 
     /**

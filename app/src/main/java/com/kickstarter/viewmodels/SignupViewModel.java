@@ -58,6 +58,9 @@ public interface SignupViewModel {
 
     /** Finish the activity with a successful result. */
     Observable<Void> signupSuccess();
+
+    /** Start the Interstitial screen. */
+    Observable<User> showInterstitialFragment();
   }
 
   final class ViewModel extends ActivityViewModel<SignupActivity> implements Inputs, Outputs {
@@ -148,9 +151,9 @@ public interface SignupViewModel {
 
       if (isValidated) {
         this.success(envelope);
-      } /*else {
-         TODO: Present Interstitial https://kickstarter.atlassian.net/browse/NT-1652
-      }*/
+      } else {
+        this.showInterstitial.onNext(envelope.user());
+      }
     }
 
     private void success(final @NonNull AccessTokenEnvelope envelope) {
@@ -169,6 +172,7 @@ public interface SignupViewModel {
     private final BehaviorSubject<Boolean> formSubmitting = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> formIsValid = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
+    private final BehaviorSubject<User> showInterstitial = BehaviorSubject.create();
 
     private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
 
@@ -206,6 +210,9 @@ public interface SignupViewModel {
     }
     @Override public @NonNull PublishSubject<Void> signupSuccess() {
       return this.signupSuccess;
+    }
+    @Override public @NonNull Observable<User> showInterstitialFragment() {
+      return this.showInterstitial;
     }
 
     final static class SignupData {

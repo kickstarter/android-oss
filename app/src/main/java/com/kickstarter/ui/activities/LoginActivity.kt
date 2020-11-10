@@ -10,15 +10,14 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
-import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
 import kotlinx.android.synthetic.main.login_form_view.*
@@ -102,7 +101,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.showInterstitialFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showInterstitialFragment(it) }
+                .subscribe { LoginHelper.showInterstitialFragment(supportFragmentManager, it, R.id.login_view_id) }
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
@@ -110,17 +109,6 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         }
 
         login_button.setOnClickListener { this.viewModel.inputs.loginClick() }
-    }
-
-    private fun showInterstitialFragment(user: User) {
-        if (supportFragmentManager.findFragmentByTag(EmailVerificationInterstitialFragment::class.java.simpleName) == null) {
-            val emailValidationFragment: EmailVerificationInterstitialFragment = EmailVerificationInterstitialFragment.newInstance(user)
-            supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    .add(R.id.login_view_id, emailValidationFragment)
-                    .addToBackStack(null)
-                    .commit()
-        }
     }
 
     /**

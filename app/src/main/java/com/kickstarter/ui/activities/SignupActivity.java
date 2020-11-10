@@ -11,6 +11,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.LoginHelper;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
@@ -74,6 +75,11 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, null, e));
+
+    this.viewModel.outputs.showInterstitialFragment()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(user -> LoginHelper.INSTANCE.showInterstitialFragment(this.getSupportFragmentManager(), user, R.id.login_view_id));
 
     RxView.clicks(this.newsletterSwitch)
       .skip(1)

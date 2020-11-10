@@ -27,7 +27,7 @@ class EmailVerificationInterstitialFragmentViewModel {
 
 
         init {
-            openInboxButtonPressed
+            this.openInboxButtonPressed
                     .compose(bindToLifecycle())
                     .subscribe(this.startEmailActivity)
         }

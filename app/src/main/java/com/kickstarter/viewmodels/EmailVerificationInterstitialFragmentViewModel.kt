@@ -6,6 +6,8 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -13,8 +15,6 @@ import rx.subjects.PublishSubject
 
 class EmailVerificationInterstitialFragmentViewModel {
     interface Inputs {
-        /** Input to trigger the logic contained within the ViewModel */
-        fun configureWith(accessTokenEnvelope: AccessTokenEnvelope)
 
         /** Invoked when the open inbox button is pressed */
         fun openInboxButtonPressed()
@@ -38,7 +38,6 @@ class EmailVerificationInterstitialFragmentViewModel {
         val inputs = this
         val outputs = this
 
-        private val accessTokenEnvelope = BehaviorSubject.create<AccessTokenEnvelope>()
         private val openInboxButtonPressed = PublishSubject.create<Void>()
         private val skipLinkPressed = PublishSubject.create<Void>()
 
@@ -50,8 +49,14 @@ class EmailVerificationInterstitialFragmentViewModel {
         private val currentUser = this.environment.currentUser()
 
         init {
-            // - Log in the user in the app
-            this.accessTokenEnvelope
+
+            // - Retrieve data from intent
+            val accessTokenEnvelope = arguments()
+                    .map { it.getParcelable(ArgumentsKey.ENVELOPE) as AccessTokenEnvelope? }
+                    .ofType(AccessTokenEnvelope::class.java)
+
+            // - Log in the user in the current environment
+            accessTokenEnvelope
                     .subscribe {
                         this.currentUser.login(it.user(), it.accessToken())
                     }
@@ -66,13 +71,12 @@ class EmailVerificationInterstitialFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startEmailActivity)
 
-            this.dismissInterstitial
+            this.skipLinkPressed
                     .compose(bindToLifecycle())
                     .subscribe(this.dismissInterstitial)
         }
 
         // - Inputs
-        override fun configureWith(accessTokenEnvelope: AccessTokenEnvelope) = this.accessTokenEnvelope.onNext(accessTokenEnvelope)
         override fun openInboxButtonPressed() = this.openInboxButtonPressed.onNext(null)
         override fun skipButtonPressed() = this.skipLinkPressed.onNext(null)
 

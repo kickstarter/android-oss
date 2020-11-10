@@ -65,7 +65,7 @@ interface LoginViewModel {
         fun tfaChallenge(): Observable<Void>
 
         /** Start the Interstitial screen.  */
-        fun showInterstitialFragment(): Observable<User>
+        fun showInterstitialFragment(): Observable<AccessTokenEnvelope>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<LoginActivity>(environment), Inputs, Outputs {
@@ -84,7 +84,7 @@ interface LoginViewModel {
         private val showCreatedPasswordSnackbar = BehaviorSubject.create<Void>()
         private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
         private val tfaChallenge: Observable<Void>
-        private val showInterstitial = BehaviorSubject.create<User>()
+        private val showInterstitial = BehaviorSubject.create<AccessTokenEnvelope>()
 
         private val loginError = PublishSubject.create<ErrorEnvelope>()
 
@@ -232,7 +232,7 @@ interface LoginViewModel {
             if (isValidated) {
                 this.success(accessTokenNotification)
             } else {
-                this.showInterstitial.onNext(accessTokenNotification.user())
+                this.showInterstitial.onNext(accessTokenNotification)
             }
         }
 
@@ -271,6 +271,6 @@ interface LoginViewModel {
 
         override fun tfaChallenge() = this.tfaChallenge
 
-        override fun showInterstitialFragment(): BehaviorSubject<User> = this.showInterstitial
+        override fun showInterstitialFragment(): BehaviorSubject<AccessTokenEnvelope> = this.showInterstitial
     }
 }

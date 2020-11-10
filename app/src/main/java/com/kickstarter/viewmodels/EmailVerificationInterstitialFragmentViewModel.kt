@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels
 
-import android.content.Intent
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel

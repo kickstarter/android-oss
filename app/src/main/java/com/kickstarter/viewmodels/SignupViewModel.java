@@ -60,7 +60,7 @@ public interface SignupViewModel {
     Observable<Void> signupSuccess();
 
     /** Start the Interstitial screen. */
-    Observable<User> showInterstitialFragment();
+    Observable<AccessTokenEnvelope> showInterstitialFragment();
   }
 
   final class ViewModel extends ActivityViewModel<SignupActivity> implements Inputs, Outputs {
@@ -152,7 +152,7 @@ public interface SignupViewModel {
       if (isValidated) {
         this.success(envelope);
       } else {
-        this.showInterstitial.onNext(envelope.user());
+        this.showInterstitial.onNext(envelope);
       }
     }
 
@@ -172,7 +172,7 @@ public interface SignupViewModel {
     private final BehaviorSubject<Boolean> formSubmitting = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> formIsValid = BehaviorSubject.create();
     private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
-    private final BehaviorSubject<User> showInterstitial = BehaviorSubject.create();
+    private final BehaviorSubject<AccessTokenEnvelope> showInterstitial = BehaviorSubject.create();
 
     private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
 
@@ -211,7 +211,7 @@ public interface SignupViewModel {
     @Override public @NonNull PublishSubject<Void> signupSuccess() {
       return this.signupSuccess;
     }
-    @Override public @NonNull Observable<User> showInterstitialFragment() {
+    @Override public @NonNull Observable<AccessTokenEnvelope> showInterstitialFragment() {
       return this.showInterstitial;
     }
 

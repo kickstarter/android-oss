@@ -8,19 +8,17 @@ import android.view.ViewGroup
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.models.User
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
-import com.kickstarter.ui.activities.LoginActivity
 import com.kickstarter.viewmodels.EmailVerificationInterstitialFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_email_verification_interstitial.*
 
 @RequiresFragmentViewModel(EmailVerificationInterstitialFragmentViewModel.ViewModel::class)
 class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInterstitialFragmentViewModel.ViewModel>() {
 
-    private lateinit var callback: LoginActivity.Callbacks
+    private lateinit var callback: Callbacks
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -59,7 +57,7 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
     }
 
     /** Configure with current [AccessTokenEnvelope]. */
-    fun configureWithCallback(callback: LoginActivity.Callbacks) {
+    fun configureWithCallback(callback: Callbacks) {
         this.callback = callback
     }
 

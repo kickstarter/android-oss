@@ -14,6 +14,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.LoginHelper;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.fragments.Callbacks;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.SignupViewModel;
@@ -42,6 +43,13 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
 
   @BindString(R.string.signup_button) String signUpString;
+
+  private Callbacks callbackSuccess = new Callbacks() {
+    @Override
+    public void onSuccess() {
+      this.onSuccess();
+    }
+  };
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -79,7 +87,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
     this.viewModel.outputs.showInterstitialFragment()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(user -> LoginHelper.INSTANCE.showInterstitialFragment(this.getSupportFragmentManager(), user, R.id.login_view_id));
+      .subscribe(envelope -> LoginHelper.INSTANCE.showInterstitialFragment(this.getSupportFragmentManager(), envelope, R.id.login_view_id, callbackSuccess));
 
     RxView.clicks(this.newsletterSwitch)
       .skip(1)

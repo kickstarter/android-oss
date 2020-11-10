@@ -18,6 +18,7 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
+import com.kickstarter.ui.fragments.Callbacks
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
 import kotlinx.android.synthetic.main.login_form_view.*
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.login_toolbar.*
 
 @RequiresActivityViewModel(LoginViewModel.ViewModel::class)
 class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
+
     private var confirmResetPasswordSuccessDialog: ConfirmDialog? = null
     private lateinit var ksString: KSString
 
@@ -35,6 +37,12 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     private val unableToLoginString = R.string.login_errors_unable_to_log_in
     private val loginString = R.string.login_buttons_log_in
     private val errorTitleString = R.string.login_errors_title
+
+    private val callbackSuccess = object:Callbacks {
+        override fun onSuccess() {
+            this@LoginActivity.onSuccess()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +109,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.showInterstitialFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { LoginHelper.showInterstitialFragment(supportFragmentManager, it, R.id.login_view_id) }
+                .subscribe { LoginHelper.showInterstitialFragment(supportFragmentManager, it, R.id.login_view_id, callbackSuccess) }
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)

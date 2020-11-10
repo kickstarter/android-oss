@@ -64,6 +64,7 @@
         android:textColor="@color/ksr_green_500"
         android:textSize="@dimen/subheadline"
         android:textStyle="bold"
+        android:clickable="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_cta_button" />

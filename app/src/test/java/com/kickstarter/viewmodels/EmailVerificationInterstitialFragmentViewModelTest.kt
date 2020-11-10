@@ -17,15 +17,9 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
 
     @Test
     fun init_whenOpenEmailInboxPressedEmits_shouldEmitToStartEmailActivityStream() {
-        val environment = environment()
-                .toBuilder()
-                .build()
-
         setUpEnvironment(environment())
 
         this.vm.inputs.openInboxButtonPressed()
         this.startEmailActivity.assertValue(null)
     }
-
-
 }

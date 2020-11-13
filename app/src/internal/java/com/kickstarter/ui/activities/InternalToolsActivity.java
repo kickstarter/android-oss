@@ -160,7 +160,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
             .subscribe(this::startInterstitialFragment);
   }
 
-  private void startInterstitialFragment(@NonNull User user) {
+  private void startInterstitialFragment(@NonNull final User user) {
     final EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance(user);
     getSupportFragmentManager()
             .beginTransaction()

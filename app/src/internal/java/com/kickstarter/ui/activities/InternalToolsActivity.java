@@ -27,10 +27,12 @@ import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.LoginHelper;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.WorkUtils;
 import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory;
+import com.kickstarter.models.User;
 import com.kickstarter.services.firebase.ResetDeviceIdWorker;
 import com.kickstarter.viewmodels.InternalToolsViewModel;
 
@@ -153,12 +155,17 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.email_verification_button)
   public void emailVerificationInterstitialClick() {
-    LoginHelper.INSTANCE.showInterstitialFragment(
-      this.getSupportFragmentManager(),
-      AccessTokenEnvelopeFactory.Companion.envelope(),
-      R.id.email_verification_interstitial_fragment_container,
-      () -> Log.i(this.getLocalClassName(), "Placeholder for callback function")
-    );
+    this.environment()
+      .currentUser()
+      .observable()
+      .filter(ObjectUtils::isNotNull)
+      .subscribe(user ->
+        LoginHelper.INSTANCE.showInterstitialFragment(
+        this.getSupportFragmentManager(),
+        AccessTokenEnvelopeFactory.Companion.envelope(user, ""),
+        R.id.email_verification_interstitial_fragment_container,
+        () -> Log.i(this.getLocalClassName(), "Placeholder for callback function")
+      ));
   }
 
   @OnClick(R.id.reset_device_id)

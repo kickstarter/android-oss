@@ -14,6 +14,7 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.LoginHelper;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.extensions.ActivityExtKt;
 import com.kickstarter.ui.fragments.Callbacks;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
@@ -121,6 +122,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
   @OnClick(R.id.signup_button)
   public void signupButtonOnClick() {
     this.viewModel.inputs.signupClick();
+    ActivityExtKt.hideKeyboard(this);
   }
 
   public void onSuccess() {

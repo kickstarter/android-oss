@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
@@ -118,7 +119,10 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
         }
 
-        login_button.setOnClickListener { this.viewModel.inputs.loginClick() }
+        login_button.setOnClickListener {
+            this.viewModel.inputs.loginClick()
+            this@LoginActivity.hideKeyboard()
+        }
     }
 
     /**

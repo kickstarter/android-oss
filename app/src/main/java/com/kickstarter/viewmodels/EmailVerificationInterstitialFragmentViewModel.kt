@@ -22,7 +22,6 @@ class EmailVerificationInterstitialFragmentViewModel {
         val outputs = this
 
         private val openInboxButtonPressed = BehaviorSubject.create<Void>()
-
         private val startEmailActivity = BehaviorSubject.create<Void>()
 
 

@@ -25,6 +25,7 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.WorkUtils;
@@ -152,7 +153,14 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.email_verification_button)
   public void emailVerificationInterstitialClick() {
-    final User user = this.environment().currentUser().getUser();
+    this.environment()
+            .currentUser()
+            .observable()
+            .filter(ObjectUtils::isNotNull)
+            .subscribe(this::startInterstitialFragment);
+  }
+
+  private void startInterstitialFragment(@NonNull final User user) {
     final EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance(user);
     getSupportFragmentManager()
             .beginTransaction()

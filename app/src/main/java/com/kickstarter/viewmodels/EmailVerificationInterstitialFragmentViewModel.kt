@@ -9,6 +9,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 import rx.Observable
+import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 class EmailVerificationInterstitialFragmentViewModel {
@@ -39,7 +40,7 @@ class EmailVerificationInterstitialFragmentViewModel {
         private val openInboxButtonPressed = PublishSubject.create<Void>()
         private val skipLinkPressed = PublishSubject.create<Void>()
 
-        private val isSkipLinkShown = PublishSubject.create<Boolean>()
+        private val isSkipLinkShown = BehaviorSubject.create<Boolean>()
         private val startEmailActivity = PublishSubject.create<Void>()
         private val dismissInterstitial = PublishSubject.create<Void>()
 

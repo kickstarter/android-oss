@@ -1,14 +1,17 @@
 package com.kickstarter.viewmodels
 
+import android.os.Bundle
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.ui.ArgumentsKey
 import org.junit.Test
-import rx.Observable
 import rx.observers.TestSubscriber
 
 class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase() {
@@ -17,16 +20,24 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     private val isSkipLinkShown = TestSubscriber.create<Boolean>()
     private val dismissInterstitial = TestSubscriber.create<Void>()
 
-    private fun setUpEnvironment(@NonNull environment: Environment) {
+    private fun setUpEnvironment(envelope: AccessTokenEnvelope = AccessTokenEnvelopeFactory.envelope(),
+                                 @NonNull environment: Environment) {
+
         this.vm = EmailVerificationInterstitialFragmentViewModel.ViewModel(environment)
+
         this.vm.outputs.startEmailActivity().subscribe(startEmailActivity)
         this.vm.outputs.isSkipLinkShown().subscribe(isSkipLinkShown)
         this.vm.outputs.dismissInterstitial().subscribe(dismissInterstitial)
+
+        val bundle = Bundle()
+        bundle.putParcelable(ArgumentsKey.ENVELOPE, envelope)
+        // - set up intent arguments
+        this.vm.arguments(bundle)
     }
 
     @Test
     fun init_whenOpenEmailInboxPressedEmits_shouldEmitToStartEmailActivityStream() {
-        setUpEnvironment(environment())
+        setUpEnvironment(environment = environment())
 
         this.vm.inputs.openInboxButtonPressed()
         this.startEmailActivity.assertValue(null)
@@ -43,8 +54,9 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         val environment = environment().toBuilder()
                 .currentConfig(mockConfig)
                 .build()
+        val envelope = AccessTokenEnvelopeFactory.envelope(UserFactory.userNotVerifiedEmail(), "")
 
-        setUpEnvironment(environment)
+        setUpEnvironment(envelope, environment)
 
         this.isSkipLinkShown.assertValue(true)
     }
@@ -61,16 +73,33 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
                 .currentConfig(mockConfig)
                 .build()
 
-        setUpEnvironment(environment)
+        setUpEnvironment(environment = environment)
 
-        this.isSkipLinkShown.assertNoValues()
+        this.isSkipLinkShown.assertValue(false)
     }
 
     @Test
     fun dismissInterstitial_whenSkipButtonPressed_dismissInterstitial() {
-        setUpEnvironment(environment())
+        setUpEnvironment(AccessTokenEnvelopeFactory.envelope(), environment())
 
-        this.vm.inputs.dismissInterstitial()
+        this.vm.inputs.skipButtonPressed()
         this.dismissInterstitial.assertValueCount(1)
+    }
+
+    @Test
+    fun loggedInUser_whenNotVerifiedUser_userLoggedIn () {
+        val user = UserFactory.userNotVerifiedEmail()
+        val token = "Token"
+        val envelope = AccessTokenEnvelopeFactory.envelope(user, token)
+
+        setUpEnvironment(envelope, environment())
+
+        this.vm.environment.currentUser().observable().subscribe {
+            assertEquals(user, it)
+        }
+
+        this.vm.environment.currentUser().isLoggedIn.subscribe {
+            assertTrue(it)
+        }
     }
 }

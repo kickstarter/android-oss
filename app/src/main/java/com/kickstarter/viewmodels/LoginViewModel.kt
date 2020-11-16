@@ -174,6 +174,7 @@ interface LoginViewModel {
             successResponseData
                     .filter { ObjectUtils.isNotNull(it) }
                     .map { requireNotNull(it) }
+                    .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe {
                         continueFlow(it.first, it.second)

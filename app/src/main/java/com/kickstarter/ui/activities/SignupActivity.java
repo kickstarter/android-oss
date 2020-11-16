@@ -44,13 +44,6 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
 
   @BindString(R.string.signup_button) String signUpString;
 
-  private Callbacks callbackSuccess = new Callbacks() {
-    @Override
-    public void onSuccess() {
-      this.onSuccess();
-    }
-  };
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -87,7 +80,17 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
     this.viewModel.outputs.showInterstitialFragment()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(envelope -> LoginHelper.INSTANCE.showInterstitialFragment(this.getSupportFragmentManager(), envelope, R.id.login_view_id, callbackSuccess));
+      .subscribe(envelope -> LoginHelper.INSTANCE.showInterstitialFragment(
+              this.getSupportFragmentManager(),
+              envelope,
+              R.id.login_view_id,
+              new Callbacks() {
+                @Override
+                public void onSuccess() {
+                  SignupActivity.this.onSuccess();
+                }
+              })
+      );
 
     RxView.clicks(this.newsletterSwitch)
       .skip(1)

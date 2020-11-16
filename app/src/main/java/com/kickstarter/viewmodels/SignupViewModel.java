@@ -94,6 +94,7 @@ public interface SignupViewModel {
               .compose(combineLatestPair(this.currentConfig.observable()))
               .map(it -> it)
               .map(this::unwrapData)
+              .distinctUntilChanged()
               .compose(bindToLifecycle())
               .subscribe(this::continueFlow);
 

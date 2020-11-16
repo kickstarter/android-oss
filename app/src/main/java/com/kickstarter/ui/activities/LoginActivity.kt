@@ -38,12 +38,6 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     private val loginString = R.string.login_buttons_log_in
     private val errorTitleString = R.string.login_errors_title
 
-    private val callbackSuccess = object:Callbacks {
-        override fun onSuccess() {
-            this@LoginActivity.onSuccess()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_layout)
@@ -109,7 +103,15 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.showInterstitialFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { LoginHelper.showInterstitialFragment(supportFragmentManager, it, R.id.login_view_id, callbackSuccess) }
+                .subscribe { LoginHelper.showInterstitialFragment(
+                        supportFragmentManager,
+                        it, R.id.login_view_id,
+                        object: Callbacks {
+                            override fun onSuccess() {
+                                this@LoginActivity.onSuccess()
+                            }
+                        })
+                }
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)

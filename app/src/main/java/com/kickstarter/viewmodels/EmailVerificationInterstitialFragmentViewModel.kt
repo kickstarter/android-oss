@@ -57,6 +57,7 @@ class EmailVerificationInterstitialFragmentViewModel {
 
             // - Log in the user in the current environment
             accessTokenEnvelope
+                    .compose(bindToLifecycle())
                     .subscribe {
                         this.currentUser.login(it.user(), it.accessToken())
                     }

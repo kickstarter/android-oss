@@ -65,6 +65,7 @@
         android:textSize="@dimen/subheadline"
         android:textStyle="bold"
         android:clickable="true"
+        android:focusable="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_cta_button" />

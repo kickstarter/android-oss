@@ -54,8 +54,6 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
         email_verification_interstitial_skip.setOnClickListener {
             this.viewModel.inputs.skipButtonPressed()
         }
-
-        // TODO: Deactivate backButton in this fragment
     }
 
     /** Configure with current [AccessTokenEnvelope]. */
@@ -67,7 +65,7 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
      * Callback to the parent activity to finish the flow
      * with setResult(Activity.RESULT_OK)
      */
-    private fun close() = callback.onSuccess()
+    private fun close() = callback.onDismiss()
 
     companion object {
         fun newInstance(accessTokenEnvelope: AccessTokenEnvelope): EmailVerificationInterstitialFragment {

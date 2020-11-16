@@ -107,7 +107,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                         supportFragmentManager,
                         it, R.id.login_view_id,
                         object: Callbacks {
-                            override fun onSuccess() {
+                            override fun onDismiss() {
                                 this@LoginActivity.onSuccess()
                             }
                         })

@@ -44,7 +44,7 @@ object LoginHelper {
      * @param supportFragmentManager
      * @param user
      * @param R.id.loginViewId
-     * @param callbacks callback for dismissing the stack of
+     * @param callbacks callback for dismissing the stack of parent Views:
      * screens -> LoginToutActivity -> LoginActivity -> InterstitialFragment
      *         -> LoginToutActivity -> SignupActivity -> InterstitialFragment
      *

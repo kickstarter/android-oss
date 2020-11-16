@@ -86,7 +86,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
               R.id.login_view_id,
               new Callbacks() {
                 @Override
-                public void onSuccess() {
+                public void onDismiss() {
                   SignupActivity.this.onSuccess();
                 }
               })
@@ -139,5 +139,12 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
   @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
+  }
+
+  @Override
+  public void back() {
+    if (this.getSupportFragmentManager().getBackStackEntryCount() == 0) {
+      super.back();
+    }
   }
 }

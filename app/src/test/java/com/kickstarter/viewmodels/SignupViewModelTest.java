@@ -4,6 +4,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.mock.MockCurrentConfig;
+import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -149,10 +150,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testShowInterstitial_whenCreatingAccountActiveFeatureFlag_ShowInterstitial() {
     final User user = UserFactory.userNotVerifiedEmail();
-    final AccessTokenEnvelope envelope = AccessTokenEnvelope.builder()
-            .user(user)
-            .accessToken("Token")
-            .build();
+    final AccessTokenEnvelope envelope = AccessTokenEnvelopeFactory.Companion.envelope(user, "Token");
 
     final ApiClientType apiClient = new MockApiClient() {
       @Override
@@ -172,7 +170,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
     final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
-    final TestSubscriber<User> showInterstitial = new TestSubscriber<>();
+    final TestSubscriber<AccessTokenEnvelope> showInterstitial = new TestSubscriber<>();
     vm.outputs.showInterstitialFragment().subscribe(showInterstitial);
 
     vm.inputs.name("brandon");
@@ -181,7 +179,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.signupClick();
 
-    showInterstitial.assertValue(user);
+    showInterstitial.assertValue(envelope);
     koalaTest.assertValues("User Signup");
     this.lakeTest.assertValues("Sign Up Submit Button Clicked");
   }
@@ -197,7 +195,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
     final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
-    final TestSubscriber<User> showInterstitial = new TestSubscriber<>();
+    final TestSubscriber<AccessTokenEnvelope> showInterstitial = new TestSubscriber<>();
     vm.outputs.showInterstitialFragment().subscribe(showInterstitial);
 
     final TestSubscriber<Void> signUpSuccessTest = new TestSubscriber<>();

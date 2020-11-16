@@ -7,10 +7,8 @@ import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 import rx.Observable
-import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 class EmailVerificationInterstitialFragmentViewModel {

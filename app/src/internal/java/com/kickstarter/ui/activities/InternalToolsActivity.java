@@ -32,7 +32,6 @@ import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.WorkUtils;
 import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory;
-import com.kickstarter.models.User;
 import com.kickstarter.services.firebase.ResetDeviceIdWorker;
 import com.kickstarter.viewmodels.InternalToolsViewModel;
 

@@ -14,7 +14,6 @@ import rx.subjects.PublishSubject
 
 class EmailVerificationInterstitialFragmentViewModel {
     interface Inputs {
-
         /** Invoked when the open inbox button is pressed */
         fun openInboxButtonPressed()
 

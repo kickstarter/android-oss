@@ -56,7 +56,7 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
         }
     }
 
-    /** Configure with current [AccessTokenEnvelope]. */
+    /** Configure with current [Callbacks]. */
     fun configureWithCallback(callback: Callbacks) {
         this.callback = callback
     }

@@ -107,7 +107,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .subscribe { LoginHelper.showInterstitialFragment(
                         supportFragmentManager,
                         it, R.id.login_view_id,
-                        object: Callbacks {
+                        object : Callbacks {
                             override fun onDismiss() {
                                 this@LoginActivity.onSuccess()
                             }
@@ -177,5 +177,11 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
     override fun exitTransition(): Pair<Int, Int>? {
         return slideInFromLeft()
+    }
+
+    override fun back() {
+        if (this.supportFragmentManager.backStackEntryCount == 0) {
+            super.back()
+        }
     }
 }

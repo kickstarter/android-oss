@@ -80,6 +80,7 @@ fragment reward on Reward {
     limitPerBacker
     startsAt
     endsAt
+    rewardType
 }
 
 fragment shippingRule on ShippingRule {

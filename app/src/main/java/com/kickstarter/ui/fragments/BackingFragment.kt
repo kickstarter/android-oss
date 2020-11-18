@@ -38,6 +38,8 @@ import kotlinx.android.synthetic.main.fragment_backing_section_summary_total.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_shipping.*
 import kotlinx.android.synthetic.main.reward_card_details.*
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers.io
 
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
@@ -65,8 +67,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .subscribe { setBackerImageView(it) }
 
         this.viewModel.outputs.backerName()
+                .observeOn(io())
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe { backer_name.text = it }
 
         this.viewModel.outputs.backerNumber()

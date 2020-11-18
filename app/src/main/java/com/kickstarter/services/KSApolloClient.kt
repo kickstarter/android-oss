@@ -717,6 +717,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
     val startsAt = rewardGr.startsAt()?.let { DateTime(it) }
     val rewardId = decodeRelayId(rewardGr.id()) ?: -1
     val available = rewardGr.available()
+    val isAddOn = rewardGr.rewardType() == RewardType.ADDON
 
     val shippingPreference = when (rewardGr.shippingPreference()) {
         ShippingPreference.NONE -> Reward.ShippingPreference.NONE
@@ -733,7 +734,6 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
         shippingRuleTransformer(it)
     }
 
-
     return Reward.builder()
             .title(title)
             .convertedMinimum(convertedAmount)
@@ -744,7 +744,7 @@ private fun rewardTransformer(rewardGr: fragment.Reward, shippingRulesExpanded: 
             .startsAt(startsAt)
             .description(desc)
             .estimatedDeliveryOn(estimatedDelivery)
-            .isAddOn(true)
+            .isAddOn(isAddOn)
             .addOnsItems(items)
             .id(rewardId)
             .shippingPreference(shippingPreference.name)

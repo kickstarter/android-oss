@@ -101,8 +101,11 @@ interface BackingFragmentViewModel {
         /** Emits a boolean that determines if received checkbox should be checked. */
         fun receivedCheckboxChecked(): Observable<Boolean>
 
-        /** Emits a boolean determining if the delivered section should be visible. */
+        /** Emits a boolean determining if the delivered section should be visible for the backer perspective. */
         fun receivedSectionIsGone(): Observable<Boolean>
+
+        /** Emits a boolean determining if the delivered section should be visible for the creator perspective. */
+        fun receivedSectionCreatorIsGone(): Observable<Boolean>
 
         /** Emits the shipping amount of the backing. */
         fun shippingAmount(): Observable<CharSequence>
@@ -160,6 +163,7 @@ interface BackingFragmentViewModel {
         private val projectDataAndReward = BehaviorSubject.create<Pair<ProjectData, Reward>>()
         private val receivedCheckboxChecked = BehaviorSubject.create<Boolean>()
         private val receivedSectionIsGone = BehaviorSubject.create<Boolean>()
+        private val receivedSectionCreatorIsGone = BehaviorSubject.create<Boolean>()
         private val shippingAmount = BehaviorSubject.create<CharSequence>()
         private val shippingLocation = BehaviorSubject.create<String>()
         private val shippingSummaryIsGone = BehaviorSubject.create<Boolean>()
@@ -175,6 +179,7 @@ interface BackingFragmentViewModel {
         private val apolloClient = this.environment.apolloClient()
         private val ksCurrency = this.environment.ksCurrency()
         val ksString: KSString = this.environment.ksString()
+        private val currentUser = this.environment.currentUser()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -185,6 +190,12 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showUpdatePledgeSuccess)
 
+            this.projectDataInput
+                    .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
+                    .map { projectData -> joinProjectDataAndReward(projectData) }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.projectDataAndReward)
+
             val backedProject = this.projectDataInput
                     .map { it.project() }
 
@@ -193,6 +204,11 @@ interface BackingFragmentViewModel {
                     .compose(neverError())
                     .filter { ObjectUtils.isNotNull(it) }
                     .share()
+
+            val isCreator = Observable.combineLatest(this.currentUser.observable(), backedProject) { user, project ->
+                Pair(user, project)
+            }
+                    .map { ProjectUtils.userIsCreator(it.second, it.first) }
 
             backing
                     .map { it.backerName() }
@@ -204,12 +220,6 @@ interface BackingFragmentViewModel {
                     .map { it.backerUrl() }
                     .compose(bindToLifecycle())
                     .subscribe(this.backerAvatar)
-
-            this.projectDataInput
-                    .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
-                    .map { projectData -> joinProjectDataAndReward(projectData) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.projectDataAndReward)
 
             backing
                     .map { NumberUtils.format(it.sequence().toFloat()) }
@@ -247,7 +257,7 @@ interface BackingFragmentViewModel {
                         this.pledgeSummaryIsGone.onNext(it)
                     }
 
-            Observable.combineLatest(backedProject, backing, environment.currentUser().loggedInUser()) { p, b, user -> Triple(p, b, user) }
+            Observable.combineLatest(backedProject, backing, this.currentUser.loggedInUser()) { p, b, user -> Triple(p, b, user) }
                     .map { pledgeStatusData(it.first, it.second, it.third) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
@@ -357,13 +367,27 @@ interface BackingFragmentViewModel {
                     .map { it.status() }
                     .map { it == Backing.STATUS_COLLECTED }
 
-            rewardIsReceivable
+            val sectionShouldBeGone = rewardIsReceivable
                     .compose(combineLatestPair<Boolean, Boolean>(backingIsCollected))
                     .map { it.first && it.second }
                     .map { BooleanUtils.negate(it) }
                     .distinctUntilChanged()
+
+            sectionShouldBeGone
+                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(isCreator))
                     .compose(bindToLifecycle())
-                    .subscribe(this.receivedSectionIsGone)
+                    .subscribe {
+                        val isUserCreator = it.second
+                        val shouldBeGone = it.first
+
+                        if (isUserCreator) {
+                            this.receivedSectionIsGone.onNext(true)
+                            this.receivedSectionCreatorIsGone.onNext(shouldBeGone)
+                        } else {
+                            this.receivedSectionIsGone.onNext(shouldBeGone)
+                            this.receivedSectionCreatorIsGone.onNext(true)
+                        }
+                    }
 
             this.refreshProject
                     .compose(bindToLifecycle())
@@ -407,11 +431,7 @@ interface BackingFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.estimatedDelivery)
 
-
-            Observable.combineLatest(this.environment.currentUser().observable(), this.projectDataAndReward) { user, projectAndReward ->
-                Pair(user, projectAndReward)
-            }.filter { ProjectUtils.userIsCreator(it.second.first.project(), it.first) }
-                    .map { true }
+            isCreator
                     .compose(bindToLifecycle())
                     .subscribe(this.deliveryDisclaimerSectionIsGone)
 
@@ -558,6 +578,8 @@ interface BackingFragmentViewModel {
 
         override fun receivedSectionIsGone(): Observable<Boolean> = this.receivedSectionIsGone
 
+        override fun receivedSectionCreatorIsGone(): Observable<Boolean> = this.receivedSectionCreatorIsGone
+
         override fun shippingAmount(): Observable<CharSequence> = this.shippingAmount
 
         override fun shippingLocation(): Observable<String> = this.shippingLocation
@@ -575,6 +597,5 @@ interface BackingFragmentViewModel {
         override fun estimatedDelivery(): Observable<String> = this.estimatedDelivery
 
         override fun deliveryDisclaimerSectionIsGone(): Observable<Boolean> = this.deliveryDisclaimerSectionIsGone
-
     }
 }

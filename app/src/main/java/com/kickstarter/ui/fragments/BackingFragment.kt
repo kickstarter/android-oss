@@ -160,7 +160,13 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .compose(Transformers.observeForUI())
                 .subscribe {
                     ViewUtils.setGone(received_section, it)
-                    ViewUtils.setGone(estimated_delivery_label_2, !it)
+                }
+
+        this.viewModel.outputs.receivedSectionCreatorIsGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe {
+                    ViewUtils.setGone(estimated_delivery_label_2, it)
                 }
 
         this.viewModel.outputs.shippingAmount()

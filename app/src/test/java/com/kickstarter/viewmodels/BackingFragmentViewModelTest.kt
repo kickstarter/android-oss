@@ -4,7 +4,6 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
@@ -14,6 +13,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
+import com.kickstarter.models.User
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.model.Card
@@ -46,6 +46,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     private val projectDataAndReward = TestSubscriber.create<Pair<ProjectData, Reward>>()
     private val receivedCheckboxChecked = TestSubscriber.create<Boolean>()
     private val receivedSectionIsGone = TestSubscriber.create<Boolean>()
+    private val receivedSectionCreatorIsGone = TestSubscriber.create<Boolean>()
     private val shippingAmount = TestSubscriber.create<CharSequence>()
     private val shippingLocation = TestSubscriber.create<String>()
     private val shippingSummaryIsGone = TestSubscriber.create<Boolean>()
@@ -76,6 +77,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.projectDataAndReward().subscribe(this.projectDataAndReward)
         this.vm.outputs.receivedCheckboxChecked().subscribe(this.receivedCheckboxChecked)
         this.vm.outputs.receivedSectionIsGone().subscribe(this.receivedSectionIsGone)
+        this.vm.outputs.receivedSectionCreatorIsGone().subscribe(this.receivedSectionCreatorIsGone)
         this.vm.outputs.shippingAmount().map { it.toString() }.subscribe(this.shippingAmount)
         this.vm.outputs.shippingLocation().subscribe(this.shippingLocation)
         this.vm.outputs.shippingSummaryIsGone().subscribe(this.shippingSummaryIsGone)
@@ -842,24 +844,32 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testReceivedSectionIsGone_whenBackingIsNotCollected() {
+    fun testReceivedSectionIsGone_whenBackingIsNotCollectedNotCreator() {
+        val user = UserFactory.user()
+
         val backing = BackingFactory.backing()
                 .toBuilder()
+                .backer(user)
                 .status(Backing.STATUS_PLEDGED)
                 .build()
 
+        val currentUser = MockCurrentUser(UserFactory.creator())
+
         val environment = environment()
                 .toBuilder()
+                .currentUser(currentUser)
                 .apolloClient(mockApolloClientForBacking(backing))
                 .build()
+
         setUpEnvironment(environment)
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.receivedSectionIsGone.assertValue(true)
+        this.receivedSectionCreatorIsGone.assertValue(true)
     }
 
     @Test
-    fun testReceivedSectionIsGone_whenBackingIsCollected_actualReward() {
+    fun testReceivedSectionIsGone_whenBackingIsCollectedNoCreator_actualReward() {
         val backing = BackingFactory.backing()
                 .toBuilder()
                 .rewardId(3L)
@@ -874,23 +884,68 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.receivedSectionIsGone.assertValue(false)
+        this.receivedSectionCreatorIsGone.assertValue(true)
     }
 
     @Test
-    fun testReceivedSectionIsGone_whenBackingIsCollected_noReward() {
+    fun testReceivedSectionIsGone_whenBackingIsCollectedAndUserIsCreator_actualReward() {
+        val user = UserFactory.creator()
+
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .creator(user)
+                .build()
+
         val backing = BackingFactory.backing()
                 .toBuilder()
+                .project(project)
+                .rewardId(3L)
+                .status(Backing.STATUS_COLLECTED)
+                .build()
+
+        val currentUser = MockCurrentUser(user)
+        val environment = environment()
+                .toBuilder()
+                .currentUser(currentUser)
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.receivedSectionIsGone.assertValue(true)
+        this.receivedSectionCreatorIsGone.assertValue(false)
+    }
+
+    @Test
+    fun testReceivedSectionIsGone_whenBackingIsCollectedNoCreator_noReward() {
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .backer(UserFactory.user())
                 .rewardId(null)
                 .status(Backing.STATUS_COLLECTED)
                 .build()
 
+        val creator = UserFactory.creator()
+        val currentUser = MockCurrentUser(creator)
+
         val environment = environment()
                 .toBuilder()
+                .currentUser(currentUser)
                 .apolloClient(mockApolloClientForBacking(backing))
                 .build()
         setUpEnvironment(environment)
-        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .backing(backing)
+                .build()
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.receivedSectionCreatorIsGone.assertValue(true)
         this.receivedSectionIsGone.assertValue(true)
     }
 

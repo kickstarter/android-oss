@@ -13,7 +13,6 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
-import com.kickstarter.models.User
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.model.Card
@@ -55,6 +54,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     private val totalAmount = TestSubscriber.create<CharSequence>()
     private val listAddOns = TestSubscriber.create<Pair<ProjectData, List<Reward>>>()
     private val bonusAmount = TestSubscriber.create<CharSequence>()
+    private val disclaimerSectionIsGone = TestSubscriber.create<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
         this.vm = BackingFragmentViewModel.ViewModel(environment)
@@ -86,6 +86,7 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.totalAmount().map { it.toString() }.subscribe(this.totalAmount)
         this.vm.outputs.projectDataAndAddOns().subscribe(this.listAddOns)
         this.vm.outputs.bonusSupport().map { it.toString() }.subscribe(this.bonusAmount)
+        this.vm.outputs.deliveryDisclaimerSectionIsGone().subscribe(this.disclaimerSectionIsGone)
     }
 
     @Test
@@ -947,6 +948,62 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.receivedSectionCreatorIsGone.assertValue(true)
         this.receivedSectionIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testDisclaimerSectionIsGone_whenUserIsCreator_isGoneTrue() {
+        val creator = UserFactory.creator()
+        val currentUser = MockCurrentUser(creator)
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .build()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .backer(UserFactory.user())
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .currentUser(currentUser)
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.disclaimerSectionIsGone.assertValue(true)
+    }
+
+    @Test
+    fun testDisclaimerSectionIsGone_whenUserIsCreator_isGoneFalse() {
+        val user = UserFactory.user()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(UserFactory.creator())
+                .build()
+
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .project(project)
+                .backer(user)
+                .build()
+
+        val currentUser = MockCurrentUser(user)
+
+        val environment = environment()
+                .toBuilder()
+                .currentUser(currentUser)
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.disclaimerSectionIsGone.assertValue(false)
     }
 
     @Test

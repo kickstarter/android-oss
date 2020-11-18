@@ -434,8 +434,6 @@ interface BackingFragmentViewModel {
             isCreator
                     .compose(bindToLifecycle())
                     .subscribe(this.deliveryDisclaimerSectionIsGone)
-
-
         }
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {

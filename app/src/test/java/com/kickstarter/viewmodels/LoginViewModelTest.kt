@@ -5,6 +5,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
@@ -28,7 +29,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val showChangedPasswordSnackbar = TestSubscriber<Void>()
     private val showResetPasswordSuccessDialog = TestSubscriber<Boolean>()
     private val tfaChallenge = TestSubscriber<Void>()
-    private val showEmailVerificationInterstitial = TestSubscriber<User>()
+    private val showEmailVerificationInterstitial = TestSubscriber<AccessTokenEnvelope>()
 
     fun setUpEnvironment(environment: Environment) {
         this.vm = LoginViewModel.ViewModel(environment)
@@ -256,14 +257,11 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     fun testShowInterstitial_whenUserNotValidatedAndActiveFeatureFlag_ShowInterstitial() {
         val user = UserFactory.userNotVerifiedEmail()
         val token = "Token"
-        val accessTokenEnvelope = AccessTokenEnvelope.builder()
-                .user(user)
-                .accessToken(token)
-                .build()
+        val envelope = AccessTokenEnvelopeFactory.envelope(user, token)
 
         val apiClient = object : MockApiClient() {
             override fun login(email: String, password: String): Observable<AccessTokenEnvelope> {
-                return Observable.just(accessTokenEnvelope)
+                return Observable.just(envelope)
             }
         }
 
@@ -282,7 +280,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.loginClick()
 
         this.loginSuccess.assertNoValues()
-        this.showEmailVerificationInterstitial.assertValue(user)
+        this.showEmailVerificationInterstitial.assertValue(envelope)
 
         this.lakeTest.assertValue("Log In Submit Button Clicked")
     }

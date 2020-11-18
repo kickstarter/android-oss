@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -25,13 +26,13 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.LoginHelper;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.WorkUtils;
-import com.kickstarter.models.User;
+import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory;
 import com.kickstarter.services.firebase.ResetDeviceIdWorker;
-import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment;
 import com.kickstarter.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
@@ -154,18 +155,16 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @OnClick(R.id.email_verification_button)
   public void emailVerificationInterstitialClick() {
     this.environment()
-            .currentUser()
-            .observable()
-            .filter(ObjectUtils::isNotNull)
-            .subscribe(this::startInterstitialFragment);
-  }
-
-  private void startInterstitialFragment(@NonNull final User user) {
-    final EmailVerificationInterstitialFragment fragment = EmailVerificationInterstitialFragment.Companion.newInstance(user);
-    getSupportFragmentManager()
-            .beginTransaction()
-            .add(R.id.email_verification_interstitial_fragment_container, fragment)
-            .commit();
+      .currentUser()
+      .observable()
+      .filter(ObjectUtils::isNotNull)
+      .subscribe(user ->
+        LoginHelper.INSTANCE.showInterstitialFragment(
+        this.getSupportFragmentManager(),
+        AccessTokenEnvelopeFactory.Companion.envelope(user, ""),
+        R.id.email_verification_interstitial_fragment_container,
+        () -> Log.i(this.getLocalClassName(), "Placeholder for callback function")
+      ));
   }
 
   @OnClick(R.id.reset_device_id)

@@ -15,9 +15,11 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
+import com.kickstarter.ui.fragments.Callbacks
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
 import kotlinx.android.synthetic.main.login_form_view.*
@@ -26,6 +28,7 @@ import kotlinx.android.synthetic.main.login_toolbar.*
 
 @RequiresActivityViewModel(LoginViewModel.ViewModel::class)
 class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
+
     private var confirmResetPasswordSuccessDialog: ConfirmDialog? = null
     private lateinit var ksString: KSString
 
@@ -101,14 +104,25 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         this.viewModel.outputs.showInterstitialFragment()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { LoginHelper.showInterstitialFragment(supportFragmentManager, it, R.id.login_view_id) }
+                .subscribe { LoginHelper.showInterstitialFragment(
+                        supportFragmentManager,
+                        it, R.id.login_view_id,
+                        object : Callbacks {
+                            override fun onDismiss() {
+                                this@LoginActivity.onSuccess()
+                            }
+                        })
+                }
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
         }
 
-        login_button.setOnClickListener { this.viewModel.inputs.loginClick() }
+        login_button.setOnClickListener {
+            this.viewModel.inputs.loginClick()
+            this@LoginActivity.hideKeyboard()
+        }
     }
 
     /**
@@ -163,5 +177,11 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
     override fun exitTransition(): Pair<Int, Int>? {
         return slideInFromLeft()
+    }
+
+    override fun back() {
+        if (this.supportFragmentManager.backStackEntryCount == 0) {
+            super.back()
+        }
     }
 }

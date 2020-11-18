@@ -14,6 +14,8 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.LoginHelper;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.extensions.ActivityExtKt;
+import com.kickstarter.ui.fragments.Callbacks;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.SignupViewModel;
@@ -79,7 +81,17 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
     this.viewModel.outputs.showInterstitialFragment()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(user -> LoginHelper.INSTANCE.showInterstitialFragment(this.getSupportFragmentManager(), user, R.id.login_view_id));
+      .subscribe(envelope -> LoginHelper.INSTANCE.showInterstitialFragment(
+        this.getSupportFragmentManager(),
+        envelope,
+        R.id.login_view_id,
+        new Callbacks() {
+          @Override
+          public void onDismiss() {
+            SignupActivity.this.onSuccess();
+          }
+        })
+      );
 
     RxView.clicks(this.newsletterSwitch)
       .skip(1)
@@ -110,6 +122,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
   @OnClick(R.id.signup_button)
   public void signupButtonOnClick() {
     this.viewModel.inputs.signupClick();
+    ActivityExtKt.hideKeyboard(this);
   }
 
   public void onSuccess() {
@@ -128,5 +141,12 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
   @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
+  }
+
+  @Override
+  public void back() {
+    if (this.getSupportFragmentManager().getBackStackEntryCount() == 0) {
+      super.back();
+    }
   }
 }

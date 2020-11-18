@@ -8,5 +8,5 @@ public final class ArgumentsKey {
   public static final String NEW_CARD_PROJECT = "com.kickstarter.ui.fragments.NewCardFragment.project";
   public static final String PLEDGE_PLEDGE_DATA= "com.kickstarter.ui.fragments.PledgeFragment.pledge_data";
   public static final String PLEDGE_PLEDGE_REASON = "com.kickstarter.ui.fragments.PledgeFragment.pledge_reason";
-  public static final String USER = "com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment.user";
+  public static final String ENVELOPE = "com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment.envelope";
 }

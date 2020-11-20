@@ -1,336 +1,307 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.kickstarter"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools">
-
-  <!-- PERMISSIONS -->
-
-  <uses-permission android:name="android.permission.INTERNET" />
-  <!--
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.kickstarter">
+    <!-- PERMISSIONS -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--
     We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
     this permission though, since location is not core to the app.
     -->
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-  <!-- RECEIVE allows the app to register to receive GCM messages -->
-  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- RECEIVE allows the app to register to receive GCM messages -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /> <!-- Used to determine if network connection Snackbar should be shown. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-  <!-- Used to determine if network connection Snackbar should be shown.  -->
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <application
+        android:name=".KSApplication"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/full_backup_content"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="false"
+        android:theme="@style/KSTheme"
+        tools:replace="android:supportsRtl">
+        <!-- ACTIVITIES -->
+        <activity
+            android:name=".ui.activities.AccountActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.ActivityFeedActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/ActivityFeedActivity"></activity>
+        <activity
+            android:name=".ui.activities.CampaignDetailsActivity"
+            android:parentActivityName=".ui.activities.ProjectActivity"></activity>
+        <activity
+            android:name=".ui.activities.ChangeEmailActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.ChangePasswordActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.EditProfileActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.CommentsActivity"
+            android:parentActivityName=".ui.activities.ProjectActivity"
+            android:theme="@style/CommentsActivity"></activity>
+        <activity android:name=".ui.activities.CreatorBioActivity" />
+        <activity
+            android:name=".ui.activities.CreatePasswordActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.CreatorDashboardActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/ProjectActivity"></activity>
+        <activity
+            android:name=".ui.activities.DiscoveryActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/DiscoveryActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-  <application
-    android:name=".KSApplication"
-    android:allowBackup="true"
-    android:fullBackupContent="@xml/full_backup_content"
-    android:icon="@mipmap/ic_launcher"
-    android:roundIcon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:supportsRtl="false"
-    android:theme="@style/KSTheme"
-    tools:replace="android:supportsRtl">
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
-    <!-- ACTIVITIES -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-    <activity
-      android:name=".ui.activities.AccountActivity"
-      android:theme="@style/SettingsActivity" />
-    <activity
-      android:name=".ui.activities.ActivityFeedActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/ActivityFeedActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.CampaignDetailsActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.ChangeEmailActivity"
-      android:theme="@style/SettingsActivity" />
-    <activity
-      android:name=".ui.activities.ChangePasswordActivity"
-      android:theme="@style/SettingsActivity" />
-    <activity android:name=".ui.activities.EditProfileActivity"
-      android:theme="@style/SettingsActivity" />
-    <activity
-      android:name=".ui.activities.CommentsActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity"
-      android:theme="@style/CommentsActivity">
-    </activity>
-    <activity android:name=".ui.activities.CreatorBioActivity" />
-    <activity android:name=".ui.activities.CreatePasswordActivity"
-      android:theme="@style/SettingsActivity"/>
-    <activity
-      android:name=".ui.activities.CreatorDashboardActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/ProjectActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.DiscoveryActivity"
-      android:label="@string/app_name"
-      android:launchMode="singleTop"
-      android:theme="@style/DiscoveryActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
+                <data
+                    android:host="www.kickstarter.com"
+                    android:pathPrefix="/discover"
+                    android:scheme="https" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
-        <category android:name="android.intent.category.LAUNCHER" />
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>
-      <intent-filter
-        android:autoVerify="true">
-        <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="www.kickstarter.com"
+                    android:scheme="ksr" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activities.DownloadBetaActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"></activity>
+        <activity
+            android:name=".ui.activities.EditorialActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"></activity>
+        <activity
+            android:name=".ui.activities.WebViewActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/WebViewActivity"></activity>
+        <activity
+            android:name=".ui.activities.ResetPasswordActivity"
+            android:parentActivityName=".ui.activities.LoginActivity"
+            android:theme="@style/Login"></activity>
+        <activity
+            android:name=".ui.activities.HelpActivity"
+            android:theme="@style/HelpActivity" />
+        <activity
+            android:name=".ui.activities.HelpSettingsActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.HelpActivity$CookiePolicy"
+            android:theme="@style/HelpActivity" />
+        <activity
+            android:name=".ui.activities.HelpActivity$Privacy"
+            android:theme="@style/HelpActivity" />
+        <activity
+            android:name=".ui.activities.HelpActivity$Terms"
+            android:theme="@style/HelpActivity" />
+        <activity
+            android:name=".ui.activities.FacebookConfirmationActivity"
+            android:parentActivityName="com.facebook.FacebookActivity"
+            android:theme="@style/Login"></activity>
+        <activity
+            android:name=".ui.activities.ProfileActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"></activity>
+        <activity
+            android:name=".ui.activities.LoginActivity"
+            android:parentActivityName=".ui.activities.LoginToutActivity"
+            android:theme="@style/Login"></activity>
+        <activity
+            android:name=".ui.activities.LoginToutActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/Login"></activity>
+        <activity
+            android:name=".ui.activities.MessagesActivity"
+            android:parentActivityName=".ui.activities.MessageThreadsActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity
+            android:name=".ui.activities.MessageCreatorActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity
+            android:name=".ui.activities.MessageThreadsActivity"
+            android:parentActivityName=".ui.activities.ProfileActivity"></activity>
+        <activity
+            android:name=".ui.activities.NewCardActivity"
+            android:theme="@style/SettingsActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
+        <activity
+            android:name=".ui.activities.NewsletterActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.NotificationsActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.PaymentMethodsSettingsActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.PrivacyActivity"
+            android:theme="@style/SettingsActivity" />
+        <activity
+            android:name=".ui.activities.ProjectNotificationSettingsActivity"
+            android:parentActivityName=".ui.activities.SettingsActivity"
+            android:theme="@style/SettingsActivity"></activity>
+        <activity
+            android:name=".ui.activities.ProjectActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/ProjectActivity"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-        <data
-          android:host="www.kickstarter.com"
-          android:pathPrefix="/discover"
-          android:scheme="https" />
-      </intent-filter>
-      <intent-filter
-        android:autoVerify="true">
-        <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="www.kickstarter.com"
+                    android:pathPrefix="/projects/"
+                    android:scheme="ksr" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activities.ProjectSocialActivity"
+            android:parentActivityName=".ui.activities.ProjectActivity"></activity>
+        <activity
+            android:name=".ui.activities.ProjectUpdatesActivity"
+            android:parentActivityName=".ui.activities.ProjectActivity"></activity>
+        <activity android:name="com.qualtrics.digital.QualtricsSurveyActivity" />
+        <activity
+            android:name=".ui.activities.SearchActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/SearchActivity"></activity>
+        <activity
+            android:name=".ui.activities.SettingsActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/SettingsActivity"></activity>
+        <activity
+            android:name=".ui.activities.SignupActivity"
+            android:parentActivityName=".ui.activities.LoginToutActivity"
+            android:theme="@style/Login"></activity>
+        <activity
+            android:name=".ui.activities.SurveyResponseActivity"
+            android:parentActivityName=".ui.activities.ActivityFeedActivity"></activity> <!-- TODO: Maybe the parent should be the project? -->
+        <activity
+            android:name=".ui.activities.ThanksActivity"
+            android:parentActivityName=".ui.activities.DiscoveryActivity"
+            android:theme="@style/ThanksActivity"></activity>
+        <activity
+            android:name=".ui.activities.TwoFactorActivity"
+            android:parentActivityName=".ui.activities.LoginActivity"
+            android:theme="@style/Login"></activity>
+        <activity
+            android:name=".ui.activities.UpdateActivity"
+            android:parentActivityName=".ui.activities.ProjectUpdatesActivity"></activity>
+        <activity
+            android:name=".ui.activities.VideoActivity"
+            android:configChanges="keyboardHidden|screenSize"
+            android:parentActivityName=".ui.activities.ProjectActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/VideoPlayerActivity"></activity>
+        <activity
+            android:name=".ui.activities.BackingActivity"
+            android:parentActivityName=".ui.activities.ProjectActivity"
+            android:theme="@style/BackingActivity"></activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-        <data
-          android:host="www.kickstarter.com"
-          android:scheme="ksr" />
-      </intent-filter>
-    </activity>
-    <activity
-      android:name=".ui.activities.DownloadBetaActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.EditorialActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.WebViewActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/WebViewActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.ResetPasswordActivity"
-      android:parentActivityName=".ui.activities.LoginActivity"
-      android:theme="@style/Login">
-    </activity>
-    <activity
-      android:name=".ui.activities.HelpActivity"
-      android:theme="@style/HelpActivity" />
-    <activity
-      android:name=".ui.activities.HelpSettingsActivity"
-      android:theme="@style/SettingsActivity" />
-    <activity
-      android:name=".ui.activities.HelpActivity$CookiePolicy"
-      android:theme="@style/HelpActivity" />
-    <activity
-      android:name=".ui.activities.HelpActivity$Privacy"
-      android:theme="@style/HelpActivity" />
-    <activity
-      android:name=".ui.activities.HelpActivity$Terms"
-      android:theme="@style/HelpActivity" />
-    <activity
-      android:name=".ui.activities.FacebookConfirmationActivity"
-      android:parentActivityName="com.facebook.FacebookActivity"
-      android:theme="@style/Login">
-    </activity>
-    <activity
-      android:name=".ui.activities.ProfileActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.LoginActivity"
-      android:parentActivityName=".ui.activities.LoginToutActivity"
-      android:theme="@style/Login">
-    </activity>
-    <activity
-      android:name=".ui.activities.LoginToutActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/Login">
-    </activity>
-    <activity
-      android:name=".ui.activities.MessagesActivity"
-      android:parentActivityName=".ui.activities.MessageThreadsActivity"
-      android:windowSoftInputMode="adjustResize">
-    </activity>
-    <activity android:name=".ui.activities.MessageCreatorActivity"
-      android:windowSoftInputMode="adjustResize">
-    </activity>
-    <activity
-      android:name=".ui.activities.MessageThreadsActivity"
-      android:parentActivityName=".ui.activities.ProfileActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.NewCardActivity"
-      android:windowSoftInputMode="adjustResize|stateVisible"
-      android:theme="@style/SettingsActivity"/>
-    <activity
-      android:name=".ui.activities.NewsletterActivity"
-      android:theme="@style/SettingsActivity"/>
-    <activity
-      android:name=".ui.activities.NotificationsActivity"
-      android:theme="@style/SettingsActivity"/>
-    <activity
-      android:name=".ui.activities.PaymentMethodsSettingsActivity"
-      android:theme="@style/SettingsActivity"/>
-    <activity
-      android:name=".ui.activities.PrivacyActivity"
-      android:theme="@style/SettingsActivity"/>
-    <activity
-      android:name=".ui.activities.ProjectNotificationSettingsActivity"
-      android:theme="@style/SettingsActivity"
-      android:parentActivityName=".ui.activities.SettingsActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.ProjectActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:windowSoftInputMode="adjustResize"
-      android:theme="@style/ProjectActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activities.DeepLinkActivity">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
-        <data
-          android:host="www.kickstarter.com"
-          android:pathPrefix="/projects/"
-          android:scheme="ksr" />
-      </intent-filter>
-    </activity>
-    <activity
-      android:name=".ui.activities.ProjectSocialActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.ProjectUpdatesActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity">
-    </activity>
-    <activity android:name="com.qualtrics.digital.QualtricsSurveyActivity"/>
-    <activity
-      android:name=".ui.activities.SearchActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/SearchActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.SettingsActivity"
-      android:theme="@style/SettingsActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.SignupActivity"
-      android:parentActivityName=".ui.activities.LoginToutActivity"
-      android:theme="@style/Login">
-    </activity>
-    <activity
-      android:name=".ui.activities.SurveyResponseActivity"
-      android:parentActivityName=".ui.activities.ActivityFeedActivity">
-    </activity>
-    <!-- TODO: Maybe the parent should be the project? -->
-    <activity
-      android:name=".ui.activities.ThanksActivity"
-      android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/ThanksActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.TwoFactorActivity"
-      android:parentActivityName=".ui.activities.LoginActivity"
-      android:theme="@style/Login">
-    </activity>
-    <activity
-      android:name=".ui.activities.UpdateActivity"
-      android:parentActivityName=".ui.activities.ProjectUpdatesActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.VideoActivity"
-      android:configChanges="keyboardHidden|screenSize"
-      android:parentActivityName=".ui.activities.ProjectActivity"
-      android:screenOrientation="sensorLandscape"
-      android:theme="@style/VideoPlayerActivity">
-    </activity>
-    <activity
-      android:name=".ui.activities.BackingActivity"
-      android:parentActivityName=".ui.activities.ProjectActivity"
-      android:theme="@style/BackingActivity">
-    </activity>
-    <activity
-      android:name="com.facebook.FacebookActivity"
-      android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-      android:label="@string/app_name" />
-    <activity
-      android:name="com.facebook.CustomTabActivity"
-      android:exported="true">
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="www.kickstarter.com"
+                    android:pathPrefix="/projects"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activities.EmailVerificationDeepLinkActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
-        <data android:scheme="@string/fb_login_protocol_scheme" />
-      </intent-filter>
-    </activity>
-    <activity android:name=".ui.activities.DeepLinkActivity">
-      <intent-filter
-        android:autoVerify="true">
-        <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="*.kickstarter.com"
+                    android:pathPrefix="/profile/verify_email"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <!-- SERVICES, PROVIDERS, RECEIVERS -->
+        <!-- Receives new message events from Firebase. -->
+        <service
+            android:name=".services.firebase.MessageService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> <!-- Processes token refresh events from Friebase (e.g. token expired). Registers a new token. -->
+        <service
+            android:name=".services.firebase.TokenListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
-        <data
-          android:host="www.kickstarter.com"
-          android:pathPrefix="/projects"
-          android:scheme="https" />
-      </intent-filter>
-    </activity>
-
-    <!-- SERVICES, PROVIDERS, RECEIVERS -->
-
-
-    <!-- Receives new message events from Firebase. -->
-    <service
-      android:name=".services.firebase.MessageService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.google.firebase.MESSAGING_EVENT" />
-      </intent-filter>
-    </service>
-
-    <!-- Processes token refresh events from Friebase (e.g. token expired). Registers a new token. -->
-    <service
-      android:name=".services.firebase.TokenListenerService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.google.firebase.MESSAGING_EVENT" />
-      </intent-filter>
-    </service>
-
-    <provider
-      android:name="com.facebook.FacebookContentProvider"
-      android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
-      android:exported="true"
-      tools:ignore="ExportedContentProvider" />
-
-    <!-- META-DATA -->
-
-    <meta-data
-      android:name="com.facebook.sdk.ApplicationId"
-      android:value="@string/facebook_app_id" />
-    <meta-data
-      android:name="com.google.android.gms.wallet.api.enabled"
-      android:value="true" />
-
-    <meta-data
-      android:name="io.fabric.ApiKey"
-      android:value="${apiKey}" />
-    <meta-data
-        android:name="firebase_performance_collection_enabled"
-        android:value="true" />
-    <meta-data
-        android:name="firebase_performance_logcat_enabled"
-        android:value="${performanceLogs}" />
-  </application>
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" /> <!-- META-DATA -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="${apiKey}" />
+        <meta-data
+            android:name="firebase_performance_collection_enabled"
+            android:value="true" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="${performanceLogs}" />
+    </application>
 
 </manifest>

@@ -1,8 +1,10 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
@@ -16,6 +18,8 @@ class EmailVerificationInterstitialFragmentViewModel {
     interface Inputs {
         /** Invoked when the open inbox button is pressed */
         fun openInboxButtonPressed()
+
+        fun resendEmailButtonPressed()
 
         /** Invoked when the open inbox button is pressed */
         fun skipButtonPressed()
@@ -36,9 +40,11 @@ class EmailVerificationInterstitialFragmentViewModel {
         val inputs = this
         val outputs = this
 
-        private val openInboxButtonPressed = PublishSubject.create<Void>()
+        private val openInboxButtonPressed = BehaviorSubject.create<Void>()
+        private val resendEmailButtonPressed = BehaviorSubject.create<Void>()
         private val skipLinkPressed = PublishSubject.create<Void>()
 
+        private val apolloClient = this.environment.apolloClient()
         private val isSkipLinkShown = BehaviorSubject.create<Boolean>()
         private val startEmailActivity = PublishSubject.create<Void>()
         private val dismissInterstitial = PublishSubject.create<Void>()
@@ -70,6 +76,23 @@ class EmailVerificationInterstitialFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.startEmailActivity)
 
+            val sendEmailNotification = this.resendEmailButtonPressed
+                    .compose(bindToLifecycle())
+                    .switchMap { apolloClient.sendVerificationEmail().materialize() }
+                    .share()
+
+            sendEmailNotification
+                    .compose(Transformers.errors())
+                    .subscribe {
+                        Log.d("Resend Email", "Sent: error ")
+                    }
+
+            sendEmailNotification
+                    .compose(Transformers.values())
+                    .subscribe {
+                        Log.d("Resend Email", "Sent success: success ")
+                    }
+
             this.skipLinkPressed
                     .compose(bindToLifecycle())
                     .subscribe(this.dismissInterstitial)
@@ -78,6 +101,8 @@ class EmailVerificationInterstitialFragmentViewModel {
         // - Inputs
         override fun openInboxButtonPressed() = this.openInboxButtonPressed.onNext(null)
         override fun skipButtonPressed() = this.skipLinkPressed.onNext(null)
+
+        override fun resendEmailButtonPressed() = this.resendEmailButtonPressed.onNext(null)
 
         // - Outputs
         override fun isSkipLinkShown(): Observable<Boolean> = this.isSkipLinkShown

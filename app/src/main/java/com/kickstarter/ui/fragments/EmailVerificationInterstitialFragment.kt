@@ -51,6 +51,10 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
             this.viewModel.inputs.openInboxButtonPressed()
         }
 
+        email_verification_interstitial_resend_button.setOnClickListener{
+            this.viewModel.inputs.resendEmailButtonPressed()
+        }
+
         email_verification_interstitial_skip.setOnClickListener {
             this.viewModel.inputs.skipButtonPressed()
         }

@@ -12,6 +12,8 @@ import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.EmailVerificationInterstitialFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_email_verification_interstitial.*
 
@@ -47,8 +49,22 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
                 .compose(observeForUI())
                 .subscribe { close() }
 
+        this.viewModel.outputs.showSnackbar()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe { showSnackbar(view, this.getString(it)) }
+
+        this.viewModel.outputs.loadingIndicatorGone()
+                .compose(bindToLifecycle())
+                .compose(Transformers.observeForUI())
+                .subscribe{ ViewUtils.setGone(email_verification_loading_indicator, it)}
+
         email_verification_interstitial_cta_button.setOnClickListener {
             this.viewModel.inputs.openInboxButtonPressed()
+        }
+
+        email_verification_interstitial_resend_button.setOnClickListener{
+            this.viewModel.inputs.resendEmailButtonPressed()
         }
 
         email_verification_interstitial_skip.setOnClickListener {

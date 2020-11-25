@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:tint="@color/gray_alpha_50"/>
+        app:tint="@color/gray_alpha_50" />
 
     <TextView
         android:id="@+id/email_verification_interstitial_title"
@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_subtext"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        style="@style/TextAppearance.AppCompat.Title"/>
+        style="@style/TextAppearance.AppCompat.Title" />
 
     <TextView
         android:id="@+id/email_verification_interstitial_subtext"
@@ -52,7 +52,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_subtext"
-        style="@style/Widget.AppCompat.Button.Colored"/>
+        style="@style/Widget.AppCompat.Button.Colored" />
 
     <TextView
         android:id="@+id/email_verification_interstitial_skip"
@@ -69,6 +69,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_cta_button" />
+
+    <ProgressBar
+        android:id="@+id/email_verification_loading_indicator"
+        android:layout_width="@dimen/grid_5"
+        android:layout_height="@dimen/grid_5"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_resend_text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/Widget.AppCompat.ProgressBar"/>
 
     <TextView
         android:id="@+id/email_verification_interstitial_resend_text"
@@ -96,6 +107,6 @@
         android:textSize="@dimen/caption_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/email_verification_interstitial_resend_text"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

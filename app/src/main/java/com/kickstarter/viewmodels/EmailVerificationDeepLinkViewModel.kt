@@ -25,6 +25,8 @@ class EmailVerificationDeepLinkViewModel {
         val inputs = this
         val outputs = this
 
+        val client = this.environment.okHttpClient()
+
         init {
             val uriFromIntent = intent()
                     .map { obj: Intent -> obj.data }
@@ -52,13 +54,11 @@ class EmailVerificationDeepLinkViewModel {
         // TODO: Transform into a Observable<Notification>
         private fun makeCall(uri: Uri): Observable<Response?> {
             val url = uri.toString()
-            val httpClient = OkHttpClient.Builder()
-                    .build()
             val request = Request.Builder()
                     .url(url)
                     .build()
             return try {
-                val response = httpClient.newCall(request).execute()
+                val response = client.newCall(request).execute()
                 Observable.just(response)
             } catch (exception: IOException) {
                 Observable.just(null)

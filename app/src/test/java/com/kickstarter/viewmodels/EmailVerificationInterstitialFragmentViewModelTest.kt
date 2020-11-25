@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.os.Bundle
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.mock.MockCurrentConfig
@@ -11,7 +12,9 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
+import rx.Observable
 import rx.observers.TestSubscriber
 
 class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase() {
@@ -19,6 +22,8 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     private val startEmailActivity = TestSubscriber.create<Void>()
     private val isSkipLinkShown = TestSubscriber.create<Boolean>()
     private val dismissInterstitial = TestSubscriber.create<Void>()
+    private val showSnackbar = TestSubscriber.create<Int>()
+    private val loadingIndicatorGone = TestSubscriber.create<Boolean>()
 
     private fun setUpEnvironment(envelope: AccessTokenEnvelope = AccessTokenEnvelopeFactory.envelope(),
                                  @NonNull environment: Environment) {
@@ -33,6 +38,8 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         bundle.putParcelable(ArgumentsKey.ENVELOPE, envelope)
         // - set up intent arguments
         this.vm.arguments(bundle)
+        this.vm.outputs.showSnackbar().subscribe(showSnackbar)
+        this.vm.outputs.loadingIndicatorGone().subscribe(loadingIndicatorGone)
     }
 
     @Test
@@ -101,5 +108,50 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.vm.environment.currentUser().isLoggedIn.subscribe {
             assertTrue(it)
         }
+    }
+
+    @Test
+    fun init_whenResendButtonPressedAndSuccessful_shouldEmitSuccesStateToShowSnackbarStreamAndResendEmail() {
+        val environmentWithResendSuccess = environment()
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+                        return Observable
+                                .just(SendEmailVerificationMutation.Data(
+                                        SendEmailVerificationMutation.UserSendEmailVerification(
+                                                "",
+                                                CLIENT_MUTATION_ID)))
+                    }
+                }).build()
+
+        setUpEnvironment(AccessTokenEnvelopeFactory.envelope(), environmentWithResendSuccess)
+
+        this.vm.inputs.resendEmailButtonPressed()
+        this.loadingIndicatorGone.assertValueCount(2)
+        this.loadingIndicatorGone.assertValues(false, true)
+        this.showSnackbar.assertValue(R.string.verification_email_sent_inbox)
+    }
+
+
+    @Test
+    fun init_whenResendButtonPressedAndError_shouldEmitErrorStateToShowSnackbarStream() {
+        val environmentWithResendError = environment()
+                .toBuilder()
+                .apolloClient(object : MockApolloClient() {
+                    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+                        return Observable.error(Throwable())
+                    }
+                }).build()
+
+        setUpEnvironment(AccessTokenEnvelopeFactory.envelope(), environmentWithResendError)
+
+        this.vm.inputs.resendEmailButtonPressed()
+        this.loadingIndicatorGone.assertValueCount(2)
+        this.loadingIndicatorGone.assertValues(false, true)
+        this.showSnackbar.assertValue(R.string.we_couldnt_resend_this_email_please_try_again)
+    }
+
+    companion object {
+        private const val CLIENT_MUTATION_ID = "1234"
     }
 }

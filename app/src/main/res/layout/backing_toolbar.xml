@@ -23,7 +23,7 @@
     <TextView
       style="@style/ToolbarTitle"
       android:id="@+id/title_text_view"
-      android:text="@string/View_your_pledge" />
+      android:text="@string/project_view_button" />
   </RelativeLayout>
 
 </com.kickstarter.ui.toolbars.KSToolbar>

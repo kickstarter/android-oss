@@ -10,8 +10,8 @@
         android:id="@+id/email_verification_interstitial_mail_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_3"
         android:contentDescription="@null"
+        android:layout_marginBottom="@dimen/grid_3"
         android:src="@drawable/ic_email"
         app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_title"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -20,23 +20,23 @@
 
     <TextView
         android:id="@+id/email_verification_interstitial_title"
-        style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_2"
         android:text="@string/verify_your_email"
         app:layout_constraintBottom_toTopOf="@id/email_verification_interstitial_subtext"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        style="@style/TextAppearance.AppCompat.Title" />
 
     <TextView
         android:id="@+id/email_verification_interstitial_subtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingStart="@dimen/grid_7"
-        android:paddingEnd="@dimen/grid_7"
         android:paddingBottom="@dimen/grid_3"
+        android:paddingEnd="@dimen/grid_7"
+        android:paddingStart="@dimen/grid_7"
         android:text="@string/complete_this_simple_step_to_help_keep_your_kickstarter_account_secure"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,13 +46,13 @@
 
     <Button
         android:id="@+id/email_verification_interstitial_cta_button"
-        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/open_inbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_subtext" />
+        app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_subtext"
+        style="@style/Widget.AppCompat.Button.Colored" />
 
     <TextView
         android:id="@+id/email_verification_interstitial_skip"

@@ -636,7 +636,6 @@ catch your eye?</string>
   <string name="Update_pledge" formatted="false">Update pledge</string>
   <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Use the hashtag #backeditbecause to share what projects you\'re supporting and why they\'re important to you.</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Use this to keep track of which rewards you\'ve received.</string>
-  <string name="verification_email_sent_inbox" formatted="false">Verification email sent</string>
   <string name="Verification_email_sent" formatted="false">We\'ve just sent you a verification email. Click the link in it and your address will be verified.</string>
   <string name="verify_your_email" formatted="false">Verify your email address</string>
   <string name="complete_this_simple_step_to_help_keep_your_kickstarter_account_secure" formatted="false">Complete this simple step to help keep your Kickstarter account secure.</string>
@@ -1768,5 +1767,4 @@ saved</string>
   <string name="via_custom" formatted="false">via custom</string>
   <string name="via_external" formatted="false">via external</string>
   <string name="via_kickstarter" formatted="false">via Kickstarter</string>
-  <string name="we_couldnt_resend_this_email_please_try_again" formatted="false">We couldn\'t resend this email — please try again</string>
 </resources>

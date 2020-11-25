@@ -30,7 +30,7 @@ class EmailVerificationInterstitialFragmentViewModel {
         /** Launch Email app  */
         fun startEmailActivity(): Observable<Void>
 
-        /** Emits if the loading indicator should be gone */
+        /** Emits if the loading indicator should be gon`e */
         fun loadingIndicatorGone(): Observable<Boolean>
 
         /**Emits when the snackbar should be shown */

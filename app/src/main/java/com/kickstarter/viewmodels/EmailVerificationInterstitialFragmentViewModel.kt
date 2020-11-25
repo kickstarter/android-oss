@@ -19,6 +19,7 @@ class EmailVerificationInterstitialFragmentViewModel {
         /** Invoked when the open inbox button is pressed */
         fun openInboxButtonPressed()
 
+        /** Invoked when the resend email text is pressed */
         fun resendEmailButtonPressed()
 
         /** Invoked when the open inbox button is pressed */
@@ -28,7 +29,11 @@ class EmailVerificationInterstitialFragmentViewModel {
     interface Outputs {
         /** Launch Email app  */
         fun startEmailActivity(): Observable<Void>
+
+        /** Emits if the loading indicator should be gone */
         fun loadingIndicatorGone(): Observable<Boolean>
+
+        /**Emits when the snackbar should be shown */
         fun showSnackbar(): Observable<Int>
 
         /** Skip link button should be shown/hide */

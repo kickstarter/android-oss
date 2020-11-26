@@ -12,6 +12,7 @@ import okhttp3.Request
 import okhttp3.Response
 import rx.Observable
 import rx.schedulers.Schedulers
+import rx.subjects.PublishSubject
 import java.io.IOException
 
 class EmailVerificationDeepLinkViewModel {
@@ -19,15 +20,17 @@ class EmailVerificationDeepLinkViewModel {
     }
 
     interface Outputs {
+        fun openDiscoveryActivityWith(): Observable<Pair<Int, String>>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<EmailVerificationDeepLinkActivity>(environment), Outputs, Inputs {
         val inputs = this
         val outputs = this
 
-        val client = this.environment.okHttpClient()
+        private val client: OkHttpClient = this.environment.okHttpClient()
+        private val messageAndCode = PublishSubject.create<Pair<Int, String>>()
 
-        init {
+                init {
             val uriFromIntent = intent()
                     .map { obj: Intent -> obj.data }
                     .ofType(Uri::class.java)
@@ -42,16 +45,16 @@ class EmailVerificationDeepLinkViewModel {
                     .subscribe { response ->
                         val body = response?.body()?.string()
                         val isRedirect = response?.priorResponse()?.isRedirect?.toString()
-                        val responseCode = response?.code()?.toString()
-                        val message = response?.message()
+                        val responseCode = response?.code() ?: 0
+                        val message = response?.message() ?: ""
                         Log.i("Response body: ", body)
                         Log.i("fromRedirect: ", isRedirect.toString())
                         Log.i("code: ", responseCode.toString())
                         Log.i("message: ", message)
+                        messageAndCode.onNext(Pair(responseCode, message))
                     }
         }
 
-        // TODO: Transform into a Observable<Notification>
         private fun makeCall(uri: Uri): Observable<Response?> {
             val url = uri.toString()
             val request = Request.Builder()
@@ -64,6 +67,8 @@ class EmailVerificationDeepLinkViewModel {
                 Observable.just(null)
             }
         }
+
+        override fun openDiscoveryActivityWith(): Observable<Pair<Int, String>> = this.messageAndCode
     }
 
 }

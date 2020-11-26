@@ -7,6 +7,7 @@ import android.util.Pair;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -205,10 +206,13 @@ public interface DiscoveryViewModel {
         .map(intentAndUser -> DiscoveryParams.getDefaultParams(intentAndUser.second))
         .share();
 
+      final Observable<Config> currentConfig = this.currentConfigType.observable()
+              .distinctUntilChanged();
+
       final Observable<Uri> uriFromVerification = intent()
         .map(Intent::getData)
         .ofType(Uri.class)
-        .compose(combineLatestPair(this.currentConfigType.observable()))
+        .compose(combineLatestPair(currentConfig))
         .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, ConfigExtension.EMAIL_VERIFICATION_FLOW))
         .map(it -> it.first)
         .filter(KSUri::isVerificationEmailUrl);

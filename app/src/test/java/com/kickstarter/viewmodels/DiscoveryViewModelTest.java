@@ -636,8 +636,33 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void showSnackBar_whenIntentFromDeepLinkSuccessResponse_showSnackBar() throws IOException {
-    final String url = "https://staging.kickstarter.com/profile/verify_email";
+  public void testShowSnackBar_whenIntentFromDeepLinkFeatureFlagOff_NotShowSnackBar() throws IOException {
+    final String url = "https://*.kickstarter.com/profile/verify_email";
+    final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
+    final int code = 200;
+    final String message = "Sucess message";
+
+    final Response successMockResponse = new Response.Builder()
+            .protocol(Protocol.HTTP_2)
+            .request(new Request.Builder().url(url).build())
+            .code(code).message(message)
+            .build();
+
+    final Environment mockedClientEnvironment = environment().toBuilder()
+            .okHttpClient(mockOkHttpClientWithResponse(successMockResponse))
+            .build();
+
+    this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
+
+    this.vm.outputs.showVerificationSnackBar().subscribe(this.showSnackBar);
+    this.vm.intent(intentWithUrl);
+
+    this.showSnackBar.assertNoValues();
+  }
+
+  @Test
+  public void testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showSnackBar() throws IOException {
+    final String url = "https://*.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
     final int code = 200;
     final String message = "Success message";
@@ -663,31 +688,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithUrl);
 
     this.showSnackBar.assertValue(responseOutput);
-  }
-
-  @Test
-  public void showSnackBar_whenIntentFromDeepLinkFeatureFlagOff_NotShowSnackBar() throws IOException {
-    final String url = "https://staging.kickstarter.com/profile/verify_email";
-    final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
-    final int code = 200;
-    final String message = "Sucess message";
-
-    final Response successMockResponse = new Response.Builder()
-            .protocol(Protocol.HTTP_2)
-            .request(new Request.Builder().url(url).build())
-            .code(code).message(message)
-            .build();
-
-    final Environment mockedClientEnvironment = environment().toBuilder()
-            .okHttpClient(mockOkHttpClientWithResponse(successMockResponse))
-            .build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
-
-    this.vm.outputs.showVerificationSnackBar().subscribe(this.showSnackBar);
-    this.vm.intent(intentWithUrl);
-
-    this.showSnackBar.assertNoValues();
   }
 
   private OkHttpClient mockOkHttpClientWithResponse(final @NonNull Response response) throws IOException {

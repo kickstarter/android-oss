@@ -30,7 +30,7 @@ class EmailVerificationDeepLinkViewModel {
         private val client: OkHttpClient = this.environment.okHttpClient()
         private val messageAndCode = PublishSubject.create<Pair<Int, String>>()
 
-                init {
+        init {
             val uriFromIntent = intent()
                     .map { obj: Intent -> obj.data }
                     .ofType(Uri::class.java)

@@ -59,22 +59,8 @@ class EmailVerificationInterstitialFragmentViewModel {
         private val dismissInterstitial = PublishSubject.create<Void>()
 
         private val currentConfig = this.environment.currentConfig().observable()
-        private val currentUser = this.environment.currentUser()
 
         init {
-
-            // - Retrieve data from intent
-            val accessTokenEnvelope = arguments()
-                    .map { it.getParcelable(ArgumentsKey.ENVELOPE) as AccessTokenEnvelope? }
-                    .ofType(AccessTokenEnvelope::class.java)
-
-            // - Log in the user in the current environment
-            accessTokenEnvelope
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.currentUser.login(it.user(), it.accessToken())
-                    }
-
             this.currentConfig
                     .compose(bindToLifecycle())
                     .subscribe {

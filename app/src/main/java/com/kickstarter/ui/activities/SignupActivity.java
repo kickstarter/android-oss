@@ -81,9 +81,8 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
     this.viewModel.outputs.showInterstitialFragment()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(envelope -> LoginHelper.INSTANCE.showInterstitialFragment(
+      .subscribe(__ -> LoginHelper.INSTANCE.showInterstitialFragment(
         this.getSupportFragmentManager(),
-        envelope,
         R.id.login_view_id,
         new Callbacks() {
           @Override

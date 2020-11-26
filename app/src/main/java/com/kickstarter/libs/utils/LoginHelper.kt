@@ -42,7 +42,6 @@ object LoginHelper {
      * This will be called for Login flows and Account creation flows.
      *
      * @param supportFragmentManager
-     * @param user
      * @param R.id.loginViewId
      * @param callbacks callback for dismissing the stack of parent Views:
      * screens -> LoginToutActivity -> LoginActivity -> InterstitialFragment
@@ -52,9 +51,9 @@ object LoginHelper {
      * layout/login_layout.xml
      * layout/signup_layout.xml
      */
-    fun showInterstitialFragment(supportFragmentManager: FragmentManager, envelope: AccessTokenEnvelope, loginViewId: Int, callbacks: Callbacks) {
+    fun showInterstitialFragment(supportFragmentManager: FragmentManager, loginViewId: Int, callbacks: Callbacks) {
         if (supportFragmentManager.findFragmentByTag(EmailVerificationInterstitialFragment::class.java.simpleName) == null) {
-            val emailValidationFragment: EmailVerificationInterstitialFragment = EmailVerificationInterstitialFragment.newInstance(envelope)
+            val emailValidationFragment: EmailVerificationInterstitialFragment = EmailVerificationInterstitialFragment.newInstance()
             val presented = supportFragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
                     .add(loginViewId, emailValidationFragment)

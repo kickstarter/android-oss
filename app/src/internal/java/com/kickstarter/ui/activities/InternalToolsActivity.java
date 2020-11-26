@@ -154,17 +154,10 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.email_verification_button)
   public void emailVerificationInterstitialClick() {
-    this.environment()
-      .currentUser()
-      .observable()
-      .filter(ObjectUtils::isNotNull)
-      .subscribe(user ->
         LoginHelper.INSTANCE.showInterstitialFragment(
         this.getSupportFragmentManager(),
-        AccessTokenEnvelopeFactory.Companion.envelope(user, ""),
         R.id.email_verification_interstitial_fragment_container,
-        () -> Log.i(this.getLocalClassName(), "Placeholder for callback function")
-      ));
+        () -> Log.i(this.getLocalClassName(), "Placeholder for callback function"));
   }
 
   @OnClick(R.id.reset_device_id)

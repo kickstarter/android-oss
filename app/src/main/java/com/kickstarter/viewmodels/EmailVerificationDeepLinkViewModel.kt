@@ -43,14 +43,9 @@ class EmailVerificationDeepLinkViewModel {
                     }
                     .compose(bindToLifecycle())
                     .subscribe { response ->
-                        val body = response?.body()?.string()
                         val isRedirect = response?.priorResponse()?.isRedirect?.toString()
                         val responseCode = response?.code() ?: 0
                         val message = response?.message() ?: ""
-                        Log.i("Response body: ", body)
-                        Log.i("fromRedirect: ", isRedirect.toString())
-                        Log.i("code: ", responseCode.toString())
-                        Log.i("message: ", message)
                         messageAndCode.onNext(Pair(responseCode, message))
                     }
         }

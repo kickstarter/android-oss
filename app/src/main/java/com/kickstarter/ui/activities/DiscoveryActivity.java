@@ -380,4 +380,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
   }
 
+  @Override
+  protected void onDestroy() {
+    this.viewModel = null;
+    super.onDestroy();
+  }
 }

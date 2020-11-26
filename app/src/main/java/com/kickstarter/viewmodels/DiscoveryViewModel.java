@@ -19,12 +19,14 @@ import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UrlUtils;
+import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.KSUri;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -58,6 +60,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.utils.extensions.ConfigExtension.EMAIL_VERIFICATION_FLOW;
 
 public interface DiscoveryViewModel {
 
@@ -203,16 +206,21 @@ public interface DiscoveryViewModel {
         .map(intentAndUser -> DiscoveryParams.getDefaultParams(intentAndUser.second))
         .share();
 
-      final Observable<Uri> uriFromValidation = intent()
-              .map(intent -> intent.getData())
-              .ofType(Uri.class);
+      final Observable<Uri> uriFromVerification = intent()
+        .map(intent -> intent.getData())
+        .ofType(Uri.class)
+        .compose(combineLatestPair(this.currentConfigType.observable()))
+        .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, EMAIL_VERIFICATION_FLOW))
+        .map(it -> it.first)
+        .filter(KSUri::isVerificationEmailUrl);
 
-      uriFromValidation
-              .observeOn(Schedulers.io())
-              .subscribeOn(Schedulers.io())
-              .switchMap(this::makeCall)
-              .compose(bindToLifecycle())
-              .subscribe(this::showSnackBar);
+      uriFromVerification
+        .observeOn(Schedulers.io())
+        .subscribeOn(Schedulers.io())
+        .switchMap(this::makeCall)
+        .distinctUntilChanged(this::isSameResponse)
+        .compose(bindToLifecycle())
+        .subscribe(this::showSnackBar);
 
       final Observable<DiscoveryParams> paramsFromIntent = intent()
         .flatMap(i -> DiscoveryIntentMapper.params(i, this.apiClient));
@@ -425,6 +433,10 @@ public interface DiscoveryViewModel {
         .subscribe(this.showQualtricsSurvey);
     }
 
+    private Boolean isSameResponse(Response first, Response second) {
+      return first.code() == second.code() && first.message() == second.message();
+    }
+
     private void showSnackBar(Response response) {
       final int responseCode = response.code();
       final String message = response.message();
@@ -501,7 +513,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<QualtricsIntercept> updateImpressionCount = PublishSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
-    private final BehaviorSubject<Pair> codeAndMessage = BehaviorSubject.create();
+    private final PublishSubject<Pair> codeAndMessage = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;

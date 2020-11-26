@@ -14,6 +14,10 @@ import androidx.annotation.NonNull;
 public final class KSUri {
   private KSUri() {}
 
+  public static boolean isVerificationEmailUrl(final @NonNull Uri uri) {
+    return uri.toString().contains(VERIFICATION);
+  }
+
   public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.API.matcher(UriUtilsKt.host(uri)).matches();
   }
@@ -102,6 +106,8 @@ public final class KSUri {
   public static boolean isWebUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && !isApiUri(uri, webEndpoint);
   }
+
+  private static final String VERIFICATION = "/profile/verify_email";
 
   // /projects/:creator_param/:project_param/checkouts/1/thanks
   private static final Pattern CHECKOUT_THANKS_PATTERN = Pattern.compile(

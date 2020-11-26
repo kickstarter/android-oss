@@ -60,7 +60,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.extensions.ConfigExtension.EMAIL_VERIFICATION_FLOW;
 
 public interface DiscoveryViewModel {
 
@@ -210,7 +209,7 @@ public interface DiscoveryViewModel {
         .map(intent -> intent.getData())
         .ofType(Uri.class)
         .compose(combineLatestPair(this.currentConfigType.observable()))
-        .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, EMAIL_VERIFICATION_FLOW))
+        .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, ConfigExtension.EMAIL_VERIFICATION_FLOW))
         .map(it -> it.first)
         .filter(KSUri::isVerificationEmailUrl);
 
@@ -433,14 +432,14 @@ public interface DiscoveryViewModel {
         .subscribe(this.showQualtricsSurvey);
     }
 
-    private Boolean isSameResponse(Response first, Response second) {
+    private Boolean isSameResponse(final @NonNull Response first, final @NonNull Response second) {
       return first.code() == second.code() && first.message() == second.message();
     }
 
-    private void showSnackBar(Response response) {
+    private void showSnackBar(final @NonNull Response response) {
       final int responseCode = response.code();
       final String message = response.message();
-      codeAndMessage.onNext(new Pair(responseCode, message));
+      this.codeAndMessage.onNext(new Pair(responseCode, message));
     }
 
     private int currentDrawerMenuIcon(final @Nullable User user) {
@@ -466,7 +465,7 @@ public interface DiscoveryViewModel {
       final Request request = new Request.Builder().url(url).build();
 
       try {
-        final Response response = okHttpClient.newCall(request).execute();
+        final Response response = this.okHttpClient.newCall(request).execute();
         return Observable.just(response);
       } catch (IOException exception) {
         return Observable.just(null);

@@ -227,14 +227,17 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .subscribe(this::showSnackBar);
   }
 
-  private void showSnackBar(Pair pair) {
+  private void showSnackBar(final @NonNull Pair pair) {
     final int code = (int) pair.first;
     final String message = (String) pair.second;
 
     // TODO: Stylize error messages and color for the snackbar, currently the message is empty but we do get the code
-    final Snackbar snackBar = SnackbarExtKt.snackbar(snackbarAnchor, code + message);
-    if (code == 200) snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_green_500, this.getTheme()));
-    else snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_red_400, this.getTheme()));
+    final Snackbar snackBar = SnackbarExtKt.snackbar(this.snackbarAnchor, code + message);
+    if (code == 200) {
+      snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_green_500, this.getTheme()));
+    } else {
+      snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_red_400, this.getTheme()));
+    }
     snackBar.show();
   }
 

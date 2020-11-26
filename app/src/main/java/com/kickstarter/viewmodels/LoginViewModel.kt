@@ -230,15 +230,12 @@ interface LoginViewModel {
         }
 
         private fun continueFlow(isValidated: Boolean, accessTokenNotification: AccessTokenEnvelope) {
-           /* if (isValidated) {
+           if (isValidated) {
                 this.success(accessTokenNotification)
-            } else {
+           } else {
                 this.currentUser.login(accessTokenNotification.user(), accessTokenNotification.accessToken())
                 this.showInterstitial.onNext(null)
-            }*/
-
-            this.currentUser.login(accessTokenNotification.user(), accessTokenNotification.accessToken())
-            this.showInterstitial.onNext(null)
+           }
         }
 
         private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()

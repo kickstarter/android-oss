@@ -640,7 +640,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final String url = "https://staging.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
     final int code = 200;
-    final String message = "Sucess message";
+    final String message = "Success message";
     final Pair responseOutput = new Pair(code, message);
 
     final MockCurrentConfig mockConfig = new MockCurrentConfig();

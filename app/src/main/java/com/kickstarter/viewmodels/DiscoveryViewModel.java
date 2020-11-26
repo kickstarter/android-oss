@@ -206,7 +206,7 @@ public interface DiscoveryViewModel {
         .share();
 
       final Observable<Uri> uriFromVerification = intent()
-        .map(intent -> intent.getData())
+        .map(Intent::getData)
         .ofType(Uri.class)
         .compose(combineLatestPair(this.currentConfigType.observable()))
         .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, ConfigExtension.EMAIL_VERIFICATION_FLOW))

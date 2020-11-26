@@ -636,7 +636,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testShowSnackBar_whenIntentFromDeepLinkFeatureFlagOff_NotShowSnackBar() throws IOException {
+  public void testNotShowSnackBar_whenIntentFromDeepLinkFeatureFlagOff_NotShowSnackBar() throws IOException {
     final String url = "https://*.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
     final int code = 200;
@@ -662,6 +662,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showSnackBar() throws IOException {
+    this.vm = null;
     final String url = "https://*.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
     final int code = 200;
@@ -688,6 +689,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithUrl);
 
     this.showSnackBar.assertValue(responseOutput);
+    this.vm = null;
   }
 
   private OkHttpClient mockOkHttpClientWithResponse(final @NonNull Response response) throws IOException {

@@ -22,6 +22,7 @@
   <color name="ksr_green_500">#009E74</color>
   <color name="ksr_green_700">#037362</color>
   <color name="ksr_green_800">#034752</color>
+  <color name="ksr_create_300">#9BEBC9</color>
   <color name="ksr_grey_100">#FBFBFA</color>
   <color name="ksr_grey_200">#F7F7F6</color>
   <color name="ksr_grey_300">#F0F0F0</color>
@@ -29,6 +30,7 @@
   <color name="ksr_grey_500">#DCDEDD</color>
   <color name="ksr_orange">#FF4F00</color>
   <color name="ksr_red_400">#FF5151</color>
+  <color name="ksr_alert_red">#A12027</color>
   <color name="ksr_soft_black">#282828</color>
   <color name="ksr_teal_500">#05F2BA</color>
   <color name="ksr_text_green_700">@color/ksr_green_700</color>

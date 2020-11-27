@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.BuildConfig;
@@ -28,7 +27,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.ui.extensions.SnackbarExtKt;
+import com.kickstarter.ui.extensions.ActivityExtKt;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
@@ -232,13 +231,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     final String message = (String) pair.second;
 
     // TODO: Stylize error messages and color for the snackbar, currently the message is empty but we do get the code
-    final Snackbar snackBar = SnackbarExtKt.snackbar(this.snackbarAnchor, code + message);
     if (code == 200) {
-      snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_green_500, this.getTheme()));
+      ActivityExtKt.showSuccessSnackBar(this, this.snackbarAnchor, code + message);
     } else {
-      snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_red_400, this.getTheme()));
+      ActivityExtKt.showErrorSnackBar(this, this.snackbarAnchor, code + message);
     }
-    snackBar.show();
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {

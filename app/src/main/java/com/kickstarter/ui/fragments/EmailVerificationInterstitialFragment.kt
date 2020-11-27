@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import com.kickstarter.R
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.ui.extensions.showSnackbar
+import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.showErrorSnackBar
+import com.kickstarter.ui.extensions.showSuccessSnackBar
 import com.kickstarter.viewmodels.EmailVerificationInterstitialFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_email_verification_interstitial.*
 
@@ -29,6 +28,7 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.activity?.hideKeyboard()
 
         this.viewModel.outputs.startEmailActivity()
                 .compose(bindToLifecycle())
@@ -49,14 +49,23 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
                 .compose(observeForUI())
                 .subscribe { close() }
 
-        this.viewModel.outputs.showSnackbar()
+        this.viewModel.outputs.showSnackbarError()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { showSnackbar(view, this.getString(it)) }
+                .subscribe {
+                    this.activity?.showErrorSnackBar(view, this.getString(it))
+                }
+
+        this.viewModel.outputs.showSnackbarSuccess()
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    this.activity?.showSuccessSnackBar(view, this.getString(it))
+                }
 
         this.viewModel.outputs.loadingIndicatorGone()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe{ ViewUtils.setGone(email_verification_loading_indicator, it)}
 
         email_verification_interstitial_cta_button.setOnClickListener {

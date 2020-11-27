@@ -17,7 +17,8 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     private val startEmailActivity = TestSubscriber.create<Void>()
     private val isSkipLinkShown = TestSubscriber.create<Boolean>()
     private val dismissInterstitial = TestSubscriber.create<Void>()
-    private val showSnackbar = TestSubscriber.create<Int>()
+    private val showSnackbarSuccess = TestSubscriber.create<Int>()
+    private val showSnackbarError = TestSubscriber.create<Int>()
     private val loadingIndicatorGone = TestSubscriber.create<Boolean>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
@@ -28,7 +29,8 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.vm.outputs.isSkipLinkShown().subscribe(isSkipLinkShown)
         this.vm.outputs.dismissInterstitial().subscribe(dismissInterstitial)
 
-        this.vm.outputs.showSnackbar().subscribe(showSnackbar)
+        this.vm.outputs.showSnackbarSuccess().subscribe(showSnackbarSuccess)
+        this.vm.outputs.showSnackbarError().subscribe(showSnackbarError)
         this.vm.outputs.loadingIndicatorGone().subscribe(loadingIndicatorGone)
     }
 
@@ -101,7 +103,8 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.vm.inputs.resendEmailButtonPressed()
         this.loadingIndicatorGone.assertValueCount(2)
         this.loadingIndicatorGone.assertValues(false, true)
-        this.showSnackbar.assertValue(R.string.verification_email_sent_inbox)
+        this.showSnackbarSuccess.assertValue(R.string.verification_email_sent_inbox)
+        this.showSnackbarError.assertNoValues()
     }
 
 
@@ -120,7 +123,8 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.vm.inputs.resendEmailButtonPressed()
         this.loadingIndicatorGone.assertValueCount(2)
         this.loadingIndicatorGone.assertValues(false, true)
-        this.showSnackbar.assertValue(R.string.we_couldnt_resend_this_email_please_try_again)
+        this.showSnackbarError.assertValue(R.string.we_couldnt_resend_this_email_please_try_again)
+        this.showSnackbarSuccess.assertNoValues()
     }
 
     companion object {

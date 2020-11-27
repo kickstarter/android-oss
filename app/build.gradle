@@ -129,6 +129,7 @@ android {
     }
 
     lintOptions {
+        disable 'NonConstantResourceId'
         quiet true
         warningsAsErrors true
     }

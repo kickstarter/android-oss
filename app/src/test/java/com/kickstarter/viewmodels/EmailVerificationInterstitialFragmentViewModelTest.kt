@@ -28,7 +28,6 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.vm.outputs.startEmailActivity().subscribe(startEmailActivity)
         this.vm.outputs.isSkipLinkShown().subscribe(isSkipLinkShown)
         this.vm.outputs.dismissInterstitial().subscribe(dismissInterstitial)
-
         this.vm.outputs.showSnackbarSuccess().subscribe(showSnackbarSuccess)
         this.vm.outputs.showSnackbarError().subscribe(showSnackbarError)
         this.vm.outputs.loadingIndicatorGone().subscribe(loadingIndicatorGone)

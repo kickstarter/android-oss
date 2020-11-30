@@ -40,6 +40,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
 
         this.vm.inputs.openInboxButtonPressed()
         this.startEmailActivity.assertValue(null)
+        this.lakeTest.assertValue("Verification Screen Viewed")
     }
 
     @Test
@@ -57,6 +58,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         setUpEnvironment(environment)
 
         this.isSkipLinkShown.assertValue(true)
+        this.lakeTest.assertValue("Verification Screen Viewed")
     }
 
     @Test
@@ -74,6 +76,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         setUpEnvironment(environment = environment)
 
         this.isSkipLinkShown.assertValue(false)
+        this.lakeTest.assertValue("Verification Screen Viewed")
     }
 
     @Test
@@ -82,6 +85,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
 
         this.vm.inputs.skipButtonPressed()
         this.dismissInterstitial.assertValueCount(1)
+        this.lakeTest.assertValues("Verification Screen Viewed","Skip Verification Button Clicked")
     }
 
     @Test
@@ -105,6 +109,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.loadingIndicatorGone.assertValues(false, true)
         this.showSnackbarSuccess.assertValue(R.string.verification_email_sent_inbox)
         this.showSnackbarError.assertNoValues()
+        this.lakeTest.assertValue("Verification Screen Viewed")
     }
 
 
@@ -125,6 +130,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.loadingIndicatorGone.assertValues(false, true)
         this.showSnackbarError.assertValue(R.string.we_couldnt_resend_this_email_please_try_again)
         this.showSnackbarSuccess.assertNoValues()
+        this.lakeTest.assertValue("Verification Screen Viewed")
     }
 
     companion object {

@@ -790,6 +790,14 @@ public final class Koala {
   public void trackTwoFactorConfirmationViewed() {
     this.client.track(LakeEvent.TWO_FACTOR_CONFIRMATION_VIEWED);
   }
+
+  public void trackVerificationScreenViewed() {
+    this.client.track(LakeEvent.VERIFICATION_SCREEN_VIEWED);
+  }
+
+  public void trackSkipVerificationButtonClicked() {
+    this.client.track(LakeEvent.SKIP_VERIFICATION_BUTTON_CLICKED);
+  }
   //endregion
 
   //region Experiments

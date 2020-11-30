@@ -33,8 +33,11 @@ class EmailVerificationInterstitialFragmentViewModel {
         /** Emits if the loading indicator should be gon`e */
         fun loadingIndicatorGone(): Observable<Boolean>
 
-        /**Emits when the snackbar should be shown */
-        fun showSnackbar(): Observable<Int>
+        /**Emits when the snackbar should be shown in case of error */
+        fun showSnackbarError(): Observable<Int>
+
+        /**Emits when the snackbar should be shown in case of success */
+        fun showSnackbarSuccess(): Observable<Int>
 
         /** Skip link button should be shown/hide */
         fun isSkipLinkShown(): Observable<Boolean>
@@ -47,11 +50,12 @@ class EmailVerificationInterstitialFragmentViewModel {
         val inputs = this
         val outputs = this
 
-        private val loadingIndicatorGone = BehaviorSubject.create<Boolean>()
-        private val openInboxButtonPressed = BehaviorSubject.create<Void>()
-        private val resendEmailButtonPressed = BehaviorSubject.create<Void>()
-        private val showSnackbar = BehaviorSubject.create<Int>()
-        private val startEmailActivity = BehaviorSubject.create<Void>()
+        private val loadingIndicatorGone = PublishSubject.create<Boolean>()
+        private val openInboxButtonPressed = PublishSubject.create<Void>()
+        private val resendEmailButtonPressed = PublishSubject.create<Void>()
+        private val showSnackbarError = PublishSubject.create<Int>()
+        private val showSnackbarSuccess = PublishSubject.create<Int>()
+        private val startEmailActivity = PublishSubject.create<Void>()
         private val skipLinkPressed = PublishSubject.create<Void>()
 
         private val apolloClient = this.environment.apolloClient()
@@ -83,11 +87,17 @@ class EmailVerificationInterstitialFragmentViewModel {
 
             sendEmailNotification
                     .compose(Transformers.errors())
-                    .subscribe { this.showSnackbar.onNext(R.string.we_couldnt_resend_this_email_please_try_again) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.showSnackbarError.onNext(R.string.we_couldnt_resend_this_email_please_try_again)
+                    }
 
             sendEmailNotification
                     .compose(Transformers.values())
-                    .subscribe { this.showSnackbar.onNext(R.string.verification_email_sent_inbox) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.showSnackbarSuccess.onNext(R.string.verification_email_sent_inbox)
+                    }
 
             this.skipLinkPressed
                     .compose(bindToLifecycle())
@@ -103,7 +113,8 @@ class EmailVerificationInterstitialFragmentViewModel {
         override fun loadingIndicatorGone(): Observable<Boolean> = this.loadingIndicatorGone
         override fun isSkipLinkShown(): Observable<Boolean> = this.isSkipLinkShown
         override fun startEmailActivity(): Observable<Void> = this.startEmailActivity
-        override fun showSnackbar(): Observable<Int> = this.showSnackbar
+        override fun showSnackbarError(): Observable<Int> = this.showSnackbarError
+        override fun showSnackbarSuccess(): Observable<Int> = this.showSnackbarSuccess
         override fun dismissInterstitial(): Observable<Void> = this.dismissInterstitial
     }
 

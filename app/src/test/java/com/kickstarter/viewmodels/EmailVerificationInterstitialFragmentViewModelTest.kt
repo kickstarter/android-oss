@@ -1,17 +1,12 @@
 package com.kickstarter.viewmodels
 
-import android.os.Bundle
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory
 import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
 import rx.Observable
@@ -25,8 +20,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     private val showSnackbar = TestSubscriber.create<Int>()
     private val loadingIndicatorGone = TestSubscriber.create<Boolean>()
 
-    private fun setUpEnvironment(envelope: AccessTokenEnvelope = AccessTokenEnvelopeFactory.envelope(),
-                                 @NonNull environment: Environment) {
+    private fun setUpEnvironment(@NonNull environment: Environment) {
 
         this.vm = EmailVerificationInterstitialFragmentViewModel.ViewModel(environment)
 
@@ -34,10 +28,6 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.vm.outputs.isSkipLinkShown().subscribe(isSkipLinkShown)
         this.vm.outputs.dismissInterstitial().subscribe(dismissInterstitial)
 
-        val bundle = Bundle()
-        bundle.putParcelable(ArgumentsKey.ENVELOPE, envelope)
-        // - set up intent arguments
-        this.vm.arguments(bundle)
         this.vm.outputs.showSnackbar().subscribe(showSnackbar)
         this.vm.outputs.loadingIndicatorGone().subscribe(loadingIndicatorGone)
     }
@@ -61,9 +51,8 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         val environment = environment().toBuilder()
                 .currentConfig(mockConfig)
                 .build()
-        val envelope = AccessTokenEnvelopeFactory.envelope(UserFactory.userNotVerifiedEmail(), "")
 
-        setUpEnvironment(envelope, environment)
+        setUpEnvironment(environment)
 
         this.isSkipLinkShown.assertValue(true)
     }
@@ -87,27 +76,10 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
 
     @Test
     fun dismissInterstitial_whenSkipButtonPressed_dismissInterstitial() {
-        setUpEnvironment(AccessTokenEnvelopeFactory.envelope(), environment())
+        setUpEnvironment(environment())
 
         this.vm.inputs.skipButtonPressed()
         this.dismissInterstitial.assertValueCount(1)
-    }
-
-    @Test
-    fun loggedInUser_whenNotVerifiedUser_userLoggedIn () {
-        val user = UserFactory.userNotVerifiedEmail()
-        val token = "Token"
-        val envelope = AccessTokenEnvelopeFactory.envelope(user, token)
-
-        setUpEnvironment(envelope, environment())
-
-        this.vm.environment.currentUser().observable().subscribe {
-            assertEquals(user, it)
-        }
-
-        this.vm.environment.currentUser().isLoggedIn.subscribe {
-            assertTrue(it)
-        }
     }
 
     @Test
@@ -124,7 +96,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
                     }
                 }).build()
 
-        setUpEnvironment(AccessTokenEnvelopeFactory.envelope(), environmentWithResendSuccess)
+        setUpEnvironment(environmentWithResendSuccess)
 
         this.vm.inputs.resendEmailButtonPressed()
         this.loadingIndicatorGone.assertValueCount(2)
@@ -143,7 +115,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
                     }
                 }).build()
 
-        setUpEnvironment(AccessTokenEnvelopeFactory.envelope(), environmentWithResendError)
+        setUpEnvironment(environmentWithResendError)
 
         this.vm.inputs.resendEmailButtonPressed()
         this.loadingIndicatorGone.assertValueCount(2)

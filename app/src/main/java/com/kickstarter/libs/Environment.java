@@ -15,6 +15,7 @@ import com.stripe.android.Stripe;
 import java.net.CookieManager;
 
 import auto.parcel.AutoParcel;
+import okhttp3.OkHttpClient;
 import rx.Scheduler;
 
 @AutoParcel
@@ -22,6 +23,7 @@ public abstract class Environment implements Parcelable {
   public abstract IntPreferenceType activitySamplePreference();
   public abstract ApiClientType apiClient();
   public abstract ApolloClientType apolloClient();
+  public abstract OkHttpClient okHttpClient();
   public abstract Build build();
   public abstract BuildCheck buildCheck();
   public abstract CookieManager cookieManager();
@@ -50,6 +52,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder activitySamplePreference(IntPreferenceType __);
     public abstract Builder apiClient(ApiClientType __);
     public abstract Builder apolloClient(ApolloClientType __);
+    public abstract Builder okHttpClient(OkHttpClient __);
     public abstract Builder build(Build __);
     public abstract Builder buildCheck(BuildCheck __);
     public abstract Builder cookieManager(CookieManager __);

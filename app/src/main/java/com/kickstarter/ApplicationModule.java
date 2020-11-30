@@ -142,12 +142,14 @@ public final class ApplicationModule {
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
-    final @NonNull @WebEndpoint String webEndpoint) {
+    final @NonNull @WebEndpoint String webEndpoint,
+    final @NonNull OkHttpClient okHttpClient) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
       .apiClient(apiClient)
       .apolloClient(apolloClient)
+      .okHttpClient(okHttpClient)
       .build(build)
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)

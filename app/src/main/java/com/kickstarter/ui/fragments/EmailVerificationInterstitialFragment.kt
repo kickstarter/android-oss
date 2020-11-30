@@ -51,7 +51,7 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
 
         this.viewModel.outputs.showSnackbar()
                 .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
+                .compose(observeForUI())
                 .subscribe { showSnackbar(view, this.getString(it)) }
 
         this.viewModel.outputs.loadingIndicatorGone()
@@ -84,10 +84,9 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
     private fun close() = callback.onDismiss()
 
     companion object {
-        fun newInstance(accessTokenEnvelope: AccessTokenEnvelope): EmailVerificationInterstitialFragment {
+        fun newInstance(): EmailVerificationInterstitialFragment {
             val fragment = EmailVerificationInterstitialFragment()
             val argument = Bundle()
-            argument.putParcelable(ArgumentsKey.ENVELOPE, accessTokenEnvelope)
             fragment.arguments = argument
             return fragment
         }

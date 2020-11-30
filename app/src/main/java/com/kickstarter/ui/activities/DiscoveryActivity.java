@@ -3,10 +3,12 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageButton;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.BuildConfig;
@@ -26,6 +28,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.data.LoginReason;
+import com.kickstarter.ui.extensions.SnackbarExtKt;
 import com.kickstarter.ui.fragments.DiscoveryFragment;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.SortTabLayout;
@@ -41,6 +44,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -71,6 +75,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
   protected @Bind(R.id.discovery_view_pager) ViewPager sortViewPager;
   protected @Bind(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
   protected @Bind(R.id.qualtrics_prompt) View qualtricsPrompt;
+  protected @Bind(R.id.discovery_anchor_view) CoordinatorLayout snackbarAnchor;
 
   protected @BindString(R.string.A_newer_build_is_available) String aNewerBuildIsAvailableString;
   protected @BindString(R.string.Upgrade_app) String upgradeAppString;
@@ -215,6 +220,25 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
+    
+    this.viewModel.outputs.showVerificationSnackBar()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::showSnackBar);
+  }
+
+  private void showSnackBar(final @NonNull Pair pair) {
+    final int code = (int) pair.first;
+    final String message = (String) pair.second;
+
+    // TODO: Stylize error messages and color for the snackbar, currently the message is empty but we do get the code
+    final Snackbar snackBar = SnackbarExtKt.snackbar(this.snackbarAnchor, code + message);
+    if (code == 200) {
+      snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_green_500, this.getTheme()));
+    } else {
+      snackBar.setBackgroundTint(this.getResources().getColor(R.color.ksr_red_400, this.getTheme()));
+    }
+    snackBar.show();
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
@@ -359,4 +383,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
     Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
   }
 
+  @Override
+  protected void onDestroy() {
+    this.viewModel = null;
+    super.onDestroy();
+  }
 }

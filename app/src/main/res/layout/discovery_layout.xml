@@ -14,6 +14,7 @@
     android:fitsSystemWindows="true">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+      android:id="@+id/discovery_anchor_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 

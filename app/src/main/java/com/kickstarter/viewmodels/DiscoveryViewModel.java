@@ -1,11 +1,13 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -18,12 +20,14 @@ import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UrlUtils;
+import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.KSUri;
 import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -38,12 +42,18 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -138,6 +148,9 @@ public interface DiscoveryViewModel {
 
     /** Emits a {@link QualtricsIntercept} whose impression count property should be incremented. */
     Observable<QualtricsIntercept> updateImpressionCount();
+
+    /** Emits a pair with the http code and message from the response from verifiying email */
+    Observable<Pair> showVerificationSnackBar();
   }
 
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {
@@ -147,6 +160,7 @@ public interface DiscoveryViewModel {
     private final CurrentConfigType currentConfigType;
     private final BooleanPreferenceType firstSessionPreference;
     private final WebClientType webClient;
+    private final OkHttpClient okHttpClient;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -157,6 +171,7 @@ public interface DiscoveryViewModel {
       this.currentUserType = environment.currentUser();
       this.firstSessionPreference = environment.firstSessionPreference();
       this.webClient = environment.webClient();
+      this.okHttpClient = environment.okHttpClient();
 
       this.buildCheck.bind(this, this.webClient);
 
@@ -190,6 +205,25 @@ public interface DiscoveryViewModel {
         .compose(combineLatestPair(changedUser))
         .map(intentAndUser -> DiscoveryParams.getDefaultParams(intentAndUser.second))
         .share();
+
+      final Observable<Config> currentConfig = this.currentConfigType.observable()
+              .distinctUntilChanged();
+
+      final Observable<Uri> uriFromVerification = intent()
+        .map(Intent::getData)
+        .ofType(Uri.class)
+        .compose(combineLatestPair(currentConfig))
+        .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, ConfigExtension.EMAIL_VERIFICATION_FLOW))
+        .map(it -> it.first)
+        .filter(KSUri::isVerificationEmailUrl);
+
+      uriFromVerification
+        .observeOn(Schedulers.io())
+        .subscribeOn(Schedulers.io())
+        .switchMap(this::makeCall)
+        .distinctUntilChanged(this::isSameResponse)
+        .compose(bindToLifecycle())
+        .subscribe(this::showSnackBar);
 
       final Observable<DiscoveryParams> paramsFromIntent = intent()
         .flatMap(i -> DiscoveryIntentMapper.params(i, this.apiClient));
@@ -402,6 +436,16 @@ public interface DiscoveryViewModel {
         .subscribe(this.showQualtricsSurvey);
     }
 
+    private Boolean isSameResponse(final @NonNull Response first, final @NonNull Response second) {
+      return first.code() == second.code() && first.message() == second.message();
+    }
+
+    private void showSnackBar(final @NonNull Response response) {
+      final int responseCode = response.code();
+      final String message = response.message();
+      this.codeAndMessage.onNext(new Pair(responseCode, message));
+    }
+
     private int currentDrawerMenuIcon(final @Nullable User user) {
       if (ObjectUtils.isNull(user)) {
         return R.drawable.ic_menu;
@@ -417,6 +461,18 @@ public interface DiscoveryViewModel {
         return R.drawable.ic_menu_indicator;
       } else {
         return R.drawable.ic_menu;
+      }
+    }
+
+    private Observable<Response> makeCall(final @NonNull Uri uri) {
+      final String url = uri.toString();
+      final Request request = new Request.Builder().url(url).build();
+
+      try {
+        final Response response = this.okHttpClient.newCall(request).execute();
+        return Observable.just(response);
+      } catch (IOException exception) {
+        return Observable.just(null);
       }
     }
 
@@ -460,6 +516,7 @@ public interface DiscoveryViewModel {
     private final PublishSubject<QualtricsIntercept> updateImpressionCount = PublishSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
+    private final PublishSubject<Pair> codeAndMessage = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -587,6 +644,10 @@ public interface DiscoveryViewModel {
     }
     @Override public @NonNull Observable<DiscoveryParams> updateToolbarWithParams() {
       return this.updateToolbarWithParams;
+    }
+    @Override
+    public Observable<Pair> showVerificationSnackBar() {
+      return this.codeAndMessage;
     }
   }
 }

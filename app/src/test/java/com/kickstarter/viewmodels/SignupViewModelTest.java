@@ -170,7 +170,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
     final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
-    final TestSubscriber<AccessTokenEnvelope> showInterstitial = new TestSubscriber<>();
+    final TestSubscriber<Void> showInterstitial = new TestSubscriber<>();
     vm.outputs.showInterstitialFragment().subscribe(showInterstitial);
 
     vm.inputs.name("brandon");
@@ -179,7 +179,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.signupClick();
 
-    showInterstitial.assertValue(envelope);
+    showInterstitial.assertValueCount(1);
     koalaTest.assertValues("User Signup");
     this.lakeTest.assertValues("Sign Up Submit Button Clicked");
   }
@@ -195,7 +195,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
     final SignupViewModel.ViewModel vm = new SignupViewModel.ViewModel(environment);
 
-    final TestSubscriber<AccessTokenEnvelope> showInterstitial = new TestSubscriber<>();
+    final TestSubscriber<Void> showInterstitial = new TestSubscriber<>();
     vm.outputs.showInterstitialFragment().subscribe(showInterstitial);
 
     final TestSubscriber<Void> signUpSuccessTest = new TestSubscriber<>();

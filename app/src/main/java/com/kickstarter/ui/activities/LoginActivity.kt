@@ -106,7 +106,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe { LoginHelper.showInterstitialFragment(
                         supportFragmentManager,
-                        it, R.id.login_view_id,
+                        R.id.login_view_id,
                         object : Callbacks {
                             override fun onDismiss() {
                                 this@LoginActivity.onSuccess()

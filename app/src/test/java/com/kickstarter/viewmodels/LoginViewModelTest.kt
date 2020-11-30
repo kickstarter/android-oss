@@ -11,7 +11,6 @@ import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
-import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.LoginReason
@@ -29,7 +28,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val showChangedPasswordSnackbar = TestSubscriber<Void>()
     private val showResetPasswordSuccessDialog = TestSubscriber<Boolean>()
     private val tfaChallenge = TestSubscriber<Void>()
-    private val showEmailVerificationInterstitial = TestSubscriber<AccessTokenEnvelope>()
+    private val showEmailVerificationInterstitial = TestSubscriber<Void>()
 
     fun setUpEnvironment(environment: Environment) {
         this.vm = LoginViewModel.ViewModel(environment)
@@ -280,7 +279,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.loginClick()
 
         this.loginSuccess.assertNoValues()
-        this.showEmailVerificationInterstitial.assertValue(envelope)
+        this.showEmailVerificationInterstitial.assertValueCount(1)
 
         this.lakeTest.assertValue("Log In Submit Button Clicked")
     }

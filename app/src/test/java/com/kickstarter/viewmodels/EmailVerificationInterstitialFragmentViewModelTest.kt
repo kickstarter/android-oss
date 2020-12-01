@@ -84,7 +84,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
 
         this.vm.inputs.skipButtonPressed()
         this.dismissInterstitial.assertValueCount(1)
-        this.lakeTest.assertValues("Verification Screen Viewed","Skip Verification Button Clicked")
+        this.lakeTest.assertValues("Verification Screen Viewed", "Skip Verification Button Clicked")
     }
 
     @Test

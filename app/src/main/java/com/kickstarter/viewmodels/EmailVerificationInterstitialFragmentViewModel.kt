@@ -44,6 +44,9 @@ class EmailVerificationInterstitialFragmentViewModel {
 
         /** Dismiss the Interstitial Screen */
         fun dismissInterstitial(): Observable<Void>
+
+        /** On presenting the Fragment a verification email has been sent**/
+        fun emailSent(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<EmailVerificationInterstitialFragment>(environment), Outputs, Inputs {
@@ -57,6 +60,7 @@ class EmailVerificationInterstitialFragmentViewModel {
         private val showSnackbarSuccess = PublishSubject.create<Int>()
         private val startEmailActivity = PublishSubject.create<Void>()
         private val skipLinkPressed = PublishSubject.create<Void>()
+        private val emailSent = PublishSubject.create<Void>()
 
         private val apolloClient = this.environment.apolloClient()
         private val isSkipLinkShown = BehaviorSubject.create<Boolean>()
@@ -65,6 +69,15 @@ class EmailVerificationInterstitialFragmentViewModel {
         private val currentConfig = this.environment.currentConfig().observable()
 
         init {
+
+            this.apolloClient.sendVerificationEmail()
+                    .materialize()
+                    .share()
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.emailSent.onNext(null)
+                    }
+
             this.currentConfig
                     .compose(bindToLifecycle())
                     .subscribe {
@@ -121,6 +134,7 @@ class EmailVerificationInterstitialFragmentViewModel {
         override fun showSnackbarError(): Observable<Int> = this.showSnackbarError
         override fun showSnackbarSuccess(): Observable<Int> = this.showSnackbarSuccess
         override fun dismissInterstitial(): Observable<Void> = this.dismissInterstitial
+        override fun emailSent(): Observable<Void> = this.emailSent
     }
 
 }

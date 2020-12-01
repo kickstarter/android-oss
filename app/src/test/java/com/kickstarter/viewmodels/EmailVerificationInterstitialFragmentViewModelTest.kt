@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import SendEmailVerificationMutation
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
@@ -8,6 +9,7 @@ import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApolloClient
+import junit.framework.TestCase
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -20,6 +22,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     private val showSnackbarSuccess = TestSubscriber.create<Int>()
     private val showSnackbarError = TestSubscriber.create<Int>()
     private val loadingIndicatorGone = TestSubscriber.create<Boolean>()
+    private val emailSent = TestSubscriber.create<Void>()
 
     private fun setUpEnvironment(@NonNull environment: Environment) {
 
@@ -31,6 +34,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.vm.outputs.showSnackbarSuccess().subscribe(showSnackbarSuccess)
         this.vm.outputs.showSnackbarError().subscribe(showSnackbarError)
         this.vm.outputs.loadingIndicatorGone().subscribe(loadingIndicatorGone)
+        this.vm.outputs.emailSent().subscribe(emailSent)
     }
 
     @Test
@@ -124,6 +128,15 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.loadingIndicatorGone.assertValues(false, true)
         this.showSnackbarError.assertValue(R.string.we_couldnt_resend_this_email_please_try_again)
         this.showSnackbarSuccess.assertNoValues()
+    }
+
+    @Test
+    fun init_whenPresentingInterstitial_sendEmail() {
+        setUpEnvironment(environment())
+
+        this.vm.outputs.emailSent().subscribe {
+            TestCase.assertNull(it)
+        }
     }
 
     companion object {

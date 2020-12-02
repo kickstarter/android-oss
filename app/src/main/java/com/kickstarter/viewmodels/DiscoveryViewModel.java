@@ -23,7 +23,6 @@ import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Comment;
 import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
@@ -46,19 +45,15 @@ import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 import rx.Notification;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -243,7 +238,7 @@ public interface DiscoveryViewModel {
               .map(ErrorEnvelope::fromThrowable)
               .map(ErrorEnvelope::errorMessage)
               .compose(bindToLifecycle())
-              .subscribe(this.errorMessage);
+              .subscribe(this.messageError);
 
       final Observable<DiscoveryParams> paramsFromIntent = intent()
         .flatMap(i -> DiscoveryIntentMapper.params(i, this.apiClient));
@@ -519,7 +514,7 @@ public interface DiscoveryViewModel {
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
     private final PublishSubject<String> sucessMessage = PublishSubject.create();
-    private final PublishSubject<String> errorMessage = PublishSubject.create();
+    private final PublishSubject<String> messageError = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -654,7 +649,7 @@ public interface DiscoveryViewModel {
     }
     @Override
     public Observable<String> showErrorMessage() {
-      return this.errorMessage;
+      return this.messageError;
     }
   }
 }

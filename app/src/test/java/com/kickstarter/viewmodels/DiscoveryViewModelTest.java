@@ -682,7 +682,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final MockApiClient mockApiClient = new MockApiClient() {
       @NonNull
       @Override
-      public Observable<EmailVerificationEnvelope> verifyEmail(@NonNull String token) {
+      public Observable<EmailVerificationEnvelope> verifyEmail(final @NonNull String token) {
         return Observable.error(apiException);
       }
     };

@@ -540,7 +540,7 @@ public final class ApiClient implements ApiClientType {
 
   @NonNull
   @Override
-  public Observable<EmailVerificationEnvelope> verifyEmail(@NonNull String token) {
+  public Observable<EmailVerificationEnvelope> verifyEmail(final @NonNull String token) {
     return this.service.verifyEmail(token)
             .lift(apiErrorOperator())
             .subscribeOn(Schedulers.io());

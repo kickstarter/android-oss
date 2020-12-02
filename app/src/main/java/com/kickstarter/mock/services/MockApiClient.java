@@ -440,7 +440,7 @@ public class MockApiClient implements ApiClientType {
 
   @NonNull
   @Override
-  public Observable<EmailVerificationEnvelope> verifyEmail(@NonNull String token) {
+  public Observable<EmailVerificationEnvelope> verifyEmail(final @NonNull String token) {
     return Observable.just(EmailVerificationEnvelope.Companion.builder()
     .code(200)
     .message("")

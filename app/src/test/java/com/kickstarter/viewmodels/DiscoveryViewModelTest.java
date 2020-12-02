@@ -653,7 +653,19 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final MockCurrentConfig mockConfig = new MockCurrentConfig();
     mockConfig.config(ConfigFactory.configWithFeatureEnabled(ConfigExtension.EMAIL_VERIFICATION_FLOW));
 
+    final MockApiClient mockApiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<EmailVerificationEnvelope> verifyEmail(final @NonNull String token) {
+        return Observable.just(EmailVerificationEnvelope.Companion.builder()
+          .code(200)
+          .message("Success")
+          .build());
+      }
+    };
+
     final Environment mockedClientEnvironment = environment().toBuilder()
+            .apiClient(mockApiClient)
             .currentConfig(mockConfig)
             .build();
 
@@ -663,7 +675,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     this.vm.intent(intentWithUrl);
 
-    this.showSuccessMessage.assertValueCount(1);
+    this.showSuccessMessage.assertValue("Success");
     this.showErrorMessage.assertNoValues();
   }
 
@@ -699,7 +711,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(intentWithUrl);
 
     this.showSuccessMessage.assertNoValues();
-    this.showErrorMessage.assertValueCount(1);
+    this.showErrorMessage.assertValue("expired");
   }
 
   private QualtricsResult qualtricsResult(final String surveyUrl, final boolean success) {

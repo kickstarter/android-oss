@@ -36,6 +36,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadEnvelope;
 import com.kickstarter.services.apiresponses.MessageThreadsEnvelope;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
@@ -435,5 +436,14 @@ public class MockApiClient implements ApiClientType {
       })
     );
     return Observable.just(user);
+  }
+
+  @NonNull
+  @Override
+  public Observable<EmailVerificationEnvelope> verifyEmail(@NonNull String token) {
+    return Observable.just(EmailVerificationEnvelope.Companion.builder()
+    .code(200)
+    .message("")
+    .build());
   }
 }

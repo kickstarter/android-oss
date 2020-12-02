@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.libs.utils.UriUtilsKt;
+import com.kickstarter.libs.utils.extensions.UriExt;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,11 +19,11 @@ public final class KSUri {
   }
 
   public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.API.matcher(UriUtilsKt.host(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.API.matcher(UriExt.host(uri)).matches();
   }
 
   public static boolean isCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && NATIVE_CHECKOUT_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && NATIVE_CHECKOUT_PATTERN.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isDiscoverCategoriesPath(final @NonNull String path) {
@@ -40,15 +40,15 @@ public final class KSUri {
   }
 
   public static boolean isHivequeenUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.HIVEQUEEN.matcher(UriUtilsKt.host(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.HIVEQUEEN.matcher(UriExt.host(uri)).matches();
   }
 
   public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return UriUtilsKt.host(uri).equals(Uri.parse(webEndpoint).getHost());
+    return UriExt.host(uri).equals(Uri.parse(webEndpoint).getHost());
   }
 
   public static boolean isKSFavIcon(final Uri uri, final String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && UriUtilsKt.lastPathSegment(uri).equals("favicon.ico");
+    return isKickstarterUri(uri, webEndpoint) && UriExt.lastPathSegment(uri).equals("favicon.ico");
   }
 
   public static boolean isWebViewUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -56,11 +56,11 @@ public final class KSUri {
   }
 
   public static boolean isNewGuestCheckoutUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && NEW_GUEST_CHECKOUT_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && NEW_GUEST_CHECKOUT_PATTERN.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isProjectUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && PROJECT_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_PATTERN.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isProjectPreviewUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -68,15 +68,15 @@ public final class KSUri {
   }
 
   public static boolean isSignupUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && UriUtilsKt.path(uri).equals("/signup");
+    return isKickstarterUri(uri, webEndpoint) && UriExt.path(uri).equals("/signup");
   }
 
   public static boolean isStagingUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.STAGING.matcher(UriUtilsKt.host(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.STAGING.matcher(UriExt.host(uri)).matches();
   }
 
   public static boolean isCheckoutThanksUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isModalUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -84,23 +84,23 @@ public final class KSUri {
   }
 
   public static boolean isProjectSurveyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && PROJECT_SURVEY.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_SURVEY.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isProjectUpdateCommentsUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_COMMENTS_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_COMMENTS_PATTERN.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isProjectUpdateUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_PATTERN.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isProjectUpdatesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATES_PATTERN.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATES_PATTERN.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isUserSurveyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && USER_SURVEY.matcher(UriUtilsKt.path(uri)).matches();
+    return isKickstarterUri(uri, webEndpoint) && USER_SURVEY.matcher(UriExt.path(uri)).matches();
   }
 
   public static boolean isWebUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {

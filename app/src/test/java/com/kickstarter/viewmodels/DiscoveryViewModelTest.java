@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
@@ -15,37 +14,32 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.mock.MockCurrentConfig;
+import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
 import com.kickstarter.mock.factories.UserFactory;
+import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
+import com.kickstarter.services.ApiException;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
-
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
+import rx.Observable;
 import rx.observers.TestSubscriber;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private DiscoveryViewModel.ViewModel vm;
@@ -76,7 +70,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   private final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> updateParams= new TestSubscriber<>();
   private final TestSubscriber<DiscoveryParams> updateToolbarWithParams = new TestSubscriber<>();
-  private final TestSubscriber<Pair> showSnackBar = new TestSubscriber<>();
+  private final TestSubscriber<String> showSuccessMessage = new TestSubscriber<>();
+  private final TestSubscriber<String> showErrorMessage = new TestSubscriber<>();
 
   @Test
   public void testBuildCheck() {
@@ -636,69 +631,75 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testNotShowSnackBar_whenIntentFromDeepLinkFeatureFlagOff_NotShowSnackBar() throws IOException {
+  public void testNotShowSnackBar_whenIntentFromDeepLinkFeatureFlagOff_NotShowSnackBar() {
     final String url = "https://*.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
-    final int code = 200;
-    final String message = "Sucess message";
 
-    final Response successMockResponse = new Response.Builder()
-            .protocol(Protocol.HTTP_2)
-            .request(new Request.Builder().url(url).build())
-            .code(code).message(message)
-            .build();
+    this.vm = new DiscoveryViewModel.ViewModel(environment());
+    this.vm.outputs.showSuccessMessage().subscribe(this.showSuccessMessage);
+    this.vm.outputs.showErrorMessage().subscribe(this.showErrorMessage);
 
-    final Environment mockedClientEnvironment = environment().toBuilder()
-            .okHttpClient(mockOkHttpClientWithResponse(successMockResponse))
-            .build();
-
-    this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
-
-    this.vm.outputs.showVerificationSnackBar().subscribe(this.showSnackBar);
     this.vm.intent(intentWithUrl);
 
-    this.showSnackBar.assertNoValues();
+    this.showSuccessMessage.assertNoValues();
+    this.showErrorMessage.assertNoValues();
   }
 
   @Test
-  public void testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showSnackBar() throws IOException {
-    this.vm = null;
+  public void testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showSuccessMessage() {
     final String url = "https://*.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
-    final int code = 200;
-    final String message = "Success message";
-    final Pair responseOutput = new Pair(code, message);
 
     final MockCurrentConfig mockConfig = new MockCurrentConfig();
     mockConfig.config(ConfigFactory.configWithFeatureEnabled(ConfigExtension.EMAIL_VERIFICATION_FLOW));
 
-    final Response successMockResponse = new Response.Builder()
-            .protocol(Protocol.HTTP_2)
-            .request(new Request.Builder().url(url).build())
-            .code(code).message(message)
-            .build();
-
     final Environment mockedClientEnvironment = environment().toBuilder()
-            .okHttpClient(mockOkHttpClientWithResponse(successMockResponse))
             .currentConfig(mockConfig)
             .build();
 
     this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
+    this.vm.outputs.showSuccessMessage().subscribe(this.showSuccessMessage);
+    this.vm.outputs.showErrorMessage().subscribe(this.showErrorMessage);
 
-    this.vm.outputs.showVerificationSnackBar().subscribe(this.showSnackBar);
     this.vm.intent(intentWithUrl);
 
-    this.showSnackBar.assertValue(responseOutput);
-    this.vm = null;
+    this.showSuccessMessage.assertValueCount(1);
+    this.showErrorMessage.assertNoValues();
   }
 
-  private OkHttpClient mockOkHttpClientWithResponse(final @NonNull Response response) throws IOException {
-    final OkHttpClient okHttpClient = mock(OkHttpClient.class);
-    final Call remoteCall = mock(Call.class);
+  @Test
+  public void testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showErrorMessage() {
+    final String url = "https://*.kickstarter.com/profile/verify_email";
+    final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
 
-    when(remoteCall.execute()).thenReturn(response);
-    when(okHttpClient.newCall(ArgumentMatchers.any())).thenReturn(remoteCall);
-    return okHttpClient;
+    final ErrorEnvelope errorEnvelope = ErrorEnvelope.builder()
+            .httpCode(403).errorMessages(Collections.singletonList("expired")).build();
+    final ApiException apiException = ApiExceptionFactory.apiError(errorEnvelope);
+
+    final MockCurrentConfig mockConfig = new MockCurrentConfig();
+    mockConfig.config(ConfigFactory.configWithFeatureEnabled(ConfigExtension.EMAIL_VERIFICATION_FLOW));
+
+    final MockApiClient mockApiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<EmailVerificationEnvelope> verifyEmail(@NonNull String token) {
+        return Observable.error(apiException);
+      }
+    };
+
+    final Environment mockedClientEnvironment = environment().toBuilder()
+            .apiClient(mockApiClient)
+            .currentConfig(mockConfig)
+            .build();
+
+    this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
+    this.vm.outputs.showSuccessMessage().subscribe(this.showSuccessMessage);
+    this.vm.outputs.showErrorMessage().subscribe(this.showErrorMessage);
+
+    this.vm.intent(intentWithUrl);
+
+    this.showSuccessMessage.assertNoValues();
+    this.showErrorMessage.assertValueCount(1);
   }
 
   private QualtricsResult qualtricsResult(final String surveyUrl, final boolean success) {

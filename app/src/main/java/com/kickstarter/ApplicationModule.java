@@ -149,7 +149,6 @@ public final class ApplicationModule {
       .activitySamplePreference(activitySamplePreference)
       .apiClient(apiClient)
       .apolloClient(apolloClient)
-      .okHttpClient(okHttpClient)
       .build(build)
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)

@@ -21,7 +21,9 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.extensions.ConfigExtension;
+import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Comment;
 import com.kickstarter.models.QualtricsIntercept;
 import com.kickstarter.models.QualtricsResult;
 import com.kickstarter.models.User;
@@ -29,6 +31,8 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.WebClientType;
+import com.kickstarter.services.apiresponses.EmailVerificationEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
@@ -52,15 +56,18 @@ import androidx.annotation.Nullable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import rx.Notification;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.errors;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public interface DiscoveryViewModel {
 
@@ -149,8 +156,11 @@ public interface DiscoveryViewModel {
     /** Emits a {@link QualtricsIntercept} whose impression count property should be incremented. */
     Observable<QualtricsIntercept> updateImpressionCount();
 
-    /** Emits a pair with the http code and message from the response from verifiying email */
-    Observable<Pair> showVerificationSnackBar();
+    /** Emits the success message from verify endpoint */
+    Observable<String> showSuccessMessage();
+
+    /** Emits the error message from verify endpoint */
+    Observable<String> showErrorMessage();
   }
 
   final class ViewModel extends ActivityViewModel<DiscoveryActivity> implements Inputs, Outputs {
@@ -160,7 +170,6 @@ public interface DiscoveryViewModel {
     private final CurrentConfigType currentConfigType;
     private final BooleanPreferenceType firstSessionPreference;
     private final WebClientType webClient;
-    private final OkHttpClient okHttpClient;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
@@ -171,7 +180,6 @@ public interface DiscoveryViewModel {
       this.currentUserType = environment.currentUser();
       this.firstSessionPreference = environment.firstSessionPreference();
       this.webClient = environment.webClient();
-      this.okHttpClient = environment.okHttpClient();
 
       this.buildCheck.bind(this, this.webClient);
 
@@ -217,13 +225,25 @@ public interface DiscoveryViewModel {
         .map(it -> it.first)
         .filter(KSUri::isVerificationEmailUrl);
 
-      uriFromVerification
-        .observeOn(Schedulers.io())
-        .subscribeOn(Schedulers.io())
-        .switchMap(this::makeCall)
-        .distinctUntilChanged(this::isSameResponse)
-        .compose(bindToLifecycle())
-        .subscribe(this::showSnackBar);
+      final Observable<Notification<EmailVerificationEnvelope>> verification = uriFromVerification
+              .map(UriExt::getTokenFromVerifyEmailUri)
+              .switchMap(this.apiClient::verifyEmail)
+              .materialize()
+              .share()
+              .distinctUntilChanged();
+
+      verification
+              .compose(values())
+              .map(EmailVerificationEnvelope::message)
+              .compose(bindToLifecycle())
+              .subscribe(this.sucessMessage);
+
+      verification
+              .compose(errors())
+              .map(ErrorEnvelope::fromThrowable)
+              .map(ErrorEnvelope::errorMessage)
+              .compose(bindToLifecycle())
+              .subscribe(this.errorMessage);
 
       final Observable<DiscoveryParams> paramsFromIntent = intent()
         .flatMap(i -> DiscoveryIntentMapper.params(i, this.apiClient));
@@ -440,12 +460,6 @@ public interface DiscoveryViewModel {
       return first.code() == second.code() && first.message() == second.message();
     }
 
-    private void showSnackBar(final @NonNull Response response) {
-      final int responseCode = response.code();
-      final String message = response.message();
-      this.codeAndMessage.onNext(new Pair(responseCode, message));
-    }
-
     private int currentDrawerMenuIcon(final @Nullable User user) {
       if (ObjectUtils.isNull(user)) {
         return R.drawable.ic_menu;
@@ -461,18 +475,6 @@ public interface DiscoveryViewModel {
         return R.drawable.ic_menu_indicator;
       } else {
         return R.drawable.ic_menu;
-      }
-    }
-
-    private Observable<Response> makeCall(final @NonNull Uri uri) {
-      final String url = uri.toString();
-      final Request request = new Request.Builder().url(url).build();
-
-      try {
-        final Response response = this.okHttpClient.newCall(request).execute();
-        return Observable.just(response);
-      } catch (IOException exception) {
-        return Observable.just(null);
       }
     }
 
@@ -516,7 +518,8 @@ public interface DiscoveryViewModel {
     private final PublishSubject<QualtricsIntercept> updateImpressionCount = PublishSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
     private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
-    private final PublishSubject<Pair> codeAndMessage = PublishSubject.create();
+    private final PublishSubject<String> sucessMessage = PublishSubject.create();
+    private final PublishSubject<String> errorMessage = PublishSubject.create();
 
     public final Inputs inputs = this;
     public final Outputs outputs = this;
@@ -646,8 +649,12 @@ public interface DiscoveryViewModel {
       return this.updateToolbarWithParams;
     }
     @Override
-    public Observable<Pair> showVerificationSnackBar() {
-      return this.codeAndMessage;
+    public Observable<String> showSuccessMessage() {
+      return this.sucessMessage;
+    }
+    @Override
+    public Observable<String> showErrorMessage() {
+      return this.errorMessage;
     }
   }
 }

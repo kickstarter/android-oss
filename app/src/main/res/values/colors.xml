@@ -23,12 +23,21 @@
   <color name="transparent">@android:color/transparent</color>
 
   <!-- KDS  -->
-  <color name="trust_700">#0A007D</color>
   <color name="kds_alert">#A12027</color>
   <color name="kds_celebrate_100">#FFF2EC</color>
+  <color name="kds_celebrate_300">#FECCB3</color>
+  <color name="kds_celebrate_500">#F97B62</color>
+  <color name="kds_celebrate_700">#D8503D</color>
+  <color name="kds_create_100">#E6FAF1</color>
   <color name="kds_create_300">#9BEBC9</color>
+  <color name="kds_create_500">#05CE78</color>
   <color name="kds_create_700">#028858</color>
   <color name="kds_trust_500">#5555FF</color>
+  <color name="kds_inform">#B6D9E1</color>
+  <color name="kds_trust_100">#DBE7FF</color>
+  <color name="kds_trust_300">#71A0FF</color>
+  <color name="kds_trust_700">#0A007D</color>
+  <color name="kds_warn">#F9D66D</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->

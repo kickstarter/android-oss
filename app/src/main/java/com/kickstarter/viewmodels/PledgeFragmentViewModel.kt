@@ -910,7 +910,7 @@ interface PledgeFragmentViewModel {
             pledgeInput
                     .compose<Pair<Double, Pair<Double, Double>>>(combineLatestPair(minAndMaxPledge))
                     .map { it.first in it.second.first..it.second.second }
-                    .map { if (it) R.color.kds_create_700 else R.color.ksr_red_400 }
+                    .map { if (it) R.color.kds_create_700 else R.color.kds_alert }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeTextColor)

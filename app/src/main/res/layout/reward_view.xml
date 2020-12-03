@@ -133,7 +133,7 @@
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_weight="2"
-          android:textColor="@color/ksr_orange"
+          android:textColor="@color/kds_alert"
           tools:text="Limited (20 left of 30)" />
 
         <TextView

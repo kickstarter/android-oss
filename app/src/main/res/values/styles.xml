@@ -570,7 +570,7 @@
     <item name="android:layout_marginBottom">@dimen/grid_2</item>
     <item name="android:layout_marginStart">@dimen/activity_vertical_margin</item>
     <item name="android:layout_marginEnd">@dimen/activity_vertical_margin</item>
-    <item name="android:textColor">@color/ksr_red_400</item>
+    <item name="android:textColor">@color/kds_alert</item>
   </style>
 
   <style name="PledgeCurrency" parent="TextPrimary">
@@ -785,7 +785,7 @@
   <style name="CardInputWidget" parent="UnderlineTextInputLayout">
     <item name="android:layout_marginBottom">0dp</item>
     <item name="cardTint">@color/ksr_dark_grey_500</item>
-    <item name="cardTextErrorColor">@color/ksr_red_400</item>
+    <item name="cardTextErrorColor">@color/kds_alert</item>
   </style>
 
   <!-- AutoComplete -->

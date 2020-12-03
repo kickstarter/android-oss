@@ -85,7 +85,7 @@ interface LoggedInViewHolderViewModel {
 
             this.user
                     .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.erroredBackingsCount())) }
-                    .map { if (BooleanUtils.isTrue(it)) R.color.text_primary else R.color.ksr_red_400 }
+                    .map { if (BooleanUtils.isTrue(it)) R.color.text_primary else R.color.kds_alert }
                     .compose(bindToLifecycle())
                     .subscribe(this.activityCountTextColor)
 

@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/grid_1"
-    app:cardBackgroundColor="@color/ksr_red_400"
+    app:cardBackgroundColor="@color/kds_alert"
     app:cardCornerRadius="@dimen/grid_1">
 
     <LinearLayout

@@ -165,7 +165,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Delete_my_Kickstarter_Account"
-            android:textColor="@color/ksr_red_400" />
+            android:textColor="@color/kds_alert" />
         </LinearLayout>
 
       </LinearLayout>

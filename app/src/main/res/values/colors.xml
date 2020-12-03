@@ -11,8 +11,8 @@
 
   <!-- Legacy Kickstarter colors -->
   <color name="black">@android:color/black</color>
-  <color name="ksr_apricot_500">#FFCBA9</color>
-  <color name="ksr_apricot_600">#F0AE81</color>
+  <color name="_old_ksr_apricot_500">#FFCBA9</color>
+  <color name="_old_ksr_apricot_600">#F0AE81</color>
   <color name="_old_ksr_cobalt_500">#4C6CF8</color>
   <color name="_old_ksr_cobalt_600">#395AEB</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>
@@ -28,9 +28,9 @@
   <color name="ksr_grey_300">#F0F0F0</color>
   <color name="ksr_grey_400">#E8E8E8</color>
   <color name="ksr_grey_500">#DCDEDD</color>
-  <color name="ksr_orange">#FF4F00</color>
-  <color name="ksr_red_400">#FF5151</color>
-  <color name="ksr_alert_red">#A12027</color>
+  <color name="_old_ksr_orange">#FF4F00</color>
+  <color name="_old_ksr_red_400">#FF5151</color>
+  <color name="_old_ksr_alert_red">#A12027</color>
   <color name="ksr_soft_black">#282828</color>
   <color name="_old_ksr_teal_500">#05F2BA</color>
   <color name="ksr_text_green_700">@color/kds_create_700</color>
@@ -43,6 +43,7 @@
   <color name="kds_trust_500">#5555FF</color>
   <color name="kds_create_300">#9BEBC9</color>
   <color name="kds_create_700">#028858</color>
+  <color name="kds_alert">#A12027</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->

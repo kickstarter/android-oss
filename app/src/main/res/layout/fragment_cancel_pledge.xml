@@ -66,7 +66,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/Yes_cancel_my_pledge"
-          app:backgroundTint="@color/ksr_red_400" />
+          app:backgroundTint="@color/kds_alert" />
 
         <FrameLayout
           android:id="@+id/progress_bar"
@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stateListAnimator="@null"
-            app:backgroundTint="@color/ksr_red_400" />
+            app:backgroundTint="@color/kds_alert" />
 
           <ProgressBar
             android:layout_width="wrap_content"

@@ -212,7 +212,7 @@ interface ChangeEmailViewModel {
             val deliverable = userPrivacyData?.me()?.isDeliverable ?: false
 
             return if (!deliverable) {
-                R.color.ksr_red_400
+                R.color.kds_alert
             } else {
                 R.color.ksr_dark_grey_400
             }

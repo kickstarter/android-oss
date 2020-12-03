@@ -68,6 +68,6 @@ public final class SwipeRefresher {
 
   private void setColorSchemeResources(final @NonNull SwipeRefreshLayout layout) {
     // Iterate through colors in loading spinner while waiting for refresh
-    layout.setColorSchemeResources(R.color.kds_create_700,R.color.kds_create_500, R.color.kds_create_300);
+    layout.setColorSchemeResources(R.color.kds_create_700, R.color.kds_create_500, R.color.kds_create_300);
   }
 }

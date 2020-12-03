@@ -21,8 +21,11 @@ fun Uri.query(): String {
 
 /**
  * Get token from Uri query params
- * From "at=3{TOKEN}&ref=ksr_email_user_email_verification" to "{TOKEN}"
+ * From "at={TOKEN}&ref=ksr_email_user_email_verification" to "{TOKEN}"
  */
-fun Uri.getTokenFromVerifyEmailUri(): String {
-    return this.query?.replace("at=", "")?.replace("&ref=ksr_email_user_email_verification", "") ?: ""
+fun Uri.getTokenFromQueryParams(): String {
+    return this.query
+            ?.replace("at=", "")
+            ?.replace("&ref=ksr_email_user_email_verification", "")
+            ?: ""
 }

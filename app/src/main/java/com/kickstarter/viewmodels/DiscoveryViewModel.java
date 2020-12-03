@@ -221,7 +221,7 @@ public interface DiscoveryViewModel {
         .filter(KSUri::isVerificationEmailUrl);
 
       final Observable<Notification<EmailVerificationEnvelope>> verification = uriFromVerification
-              .map(UriExt::getTokenFromVerifyEmailUri)
+              .map(UriExt::getTokenFromQueryParams)
               .switchMap(this.apiClient::verifyEmail)
               .materialize()
               .share()

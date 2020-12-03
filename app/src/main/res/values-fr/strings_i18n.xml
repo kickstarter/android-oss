@@ -82,6 +82,7 @@ contributeurs</string>
   <string name="Cancel_pledge" formatted="false">Annuler mon engagement</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
   <string name="Cancellation_reason" formatted="false">Motif d\'annulation</string>
+  <string name="Cant_find_it" formatted="false">Introuvable ?</string>
   <string name="Card_ending_in_last_four" formatted="false">Numéro de carte se terminant par : %{last_four}</string>
   <string name="Card_number" formatted="false">N° de carte</string>
   <string name="Cardholder_name" formatted="false">Nom du titulaire</string>
@@ -93,6 +94,7 @@ contributeurs</string>
   <string name="Chat" formatted="false">Chat</string>
   <string name="Check_back_later_for_an_update_on_your_export" formatted="false">Repassez plus tard pour suivre la préparation de votre exportation.</string>
   <string name="Check_out_these_handpicked_projects" formatted="false">Voici quelques projets sélectionnés rien que pour vous.</string>
+  <string name="Check_your_inbox_to_complete_this_simple_step" formatted="false">Pour terminer cette démarche simple, ouvrez votre boîte de réception.</string>
   <string name="Check_your_payment_details" formatted="false">Vérifiez vos coordonnées bancaires</string>
   <string name="Choose_another_reward" formatted="false">Choisir une autre récompense</string>
   <string name="Chooses_location_for_shipping" formatted="false">Sélectionne %{location} pour la livraison.</string>
@@ -283,6 +285,7 @@ contributeurs</string>
   <string name="If_your_profile_is_public" formatted="false">Si votre profil n\'est pas privé, les projets que vous avez soutenus, votre bio, votre emplacement géographique et vos sites Web seront également visibles.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_on_project_deadline" formatted="false">Si vous atteignez votre objectif de financement, le contributeur sera débité le %{project_deadline}.</string>
   <string name="If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline" formatted="false">Si vous atteignez votre objectif de financement, le contributeur sera débité de %{total} le %{project_deadline}.</string>
+  <string name="Ill_do_this_later" formatted="false">Plus tard</string>
   <string name="Increase_pledge" formatted="false">Augmenter mon engagement</string>
   <string name="Individual_Emails" formatted="false">E-mails individuels</string>
   <string name="Info" formatted="false">Info</string>
@@ -379,6 +382,7 @@ n\'ont rien soutenu.</string>
   <string name="Notifications" formatted="false">Notifications</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Une fois que vous aurez soutenu un projet, des recommandations personnalisées s\'afficheront ici.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Plus que %{amount_of_time} pour regarder cette diffusion.</string>
+  <string name="Open_inbox" formatted="false">Ouvrir ma boîte de réception</string>
   <string name="Opens_comments" formatted="false">Ouvre les commentaires.</string>
   <string name="Opens_creator_profile" formatted="false">Ouvre le profil du créateur.</string>
   <string name="Opens_email_composer" formatted="false">Ouvre l\'éditeur d\'e-mail.</string>
@@ -408,7 +412,7 @@ n\'ont rien soutenu.</string>
   <string name="Please_log_in_or_sign_up_to_message_this_creator" formatted="false">Veuillez vous connecter ou vous inscrire pour écrire à ce créateur.</string>
   <string name="Please_log_in_or_sign_up_to_participate_in_this_live_stream_chat" formatted="false">Veuillez vous connecter ou vous inscrire pour participer au chat de cette diffusion en direct.</string>
   <string name="Please_log_in_or_sign_up_to_subscribe_to_this_live_stream" formatted="false">Veuillez vous connecter ou vous inscrire pour vous abonner à cette diffusion en direct.</string>
-  <string name="Pledge" formatted="false">Engagement :</string>
+  <string name="Pledge" formatted="false">Je m\'engage</string>
   <string name="Pledge_activity" formatted="false">Mes engagements</string>
   <string name="Pledge_amount" formatted="false">Montant engagé</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
@@ -467,6 +471,7 @@ n\'ont rien soutenu.</string>
   <string name="Reply_to_user_name" formatted="false">Répondre à %{user_name}…</string>
   <string name="Request_my_data" formatted="false">Demander mes données</string>
   <string name="Request_my_personal_data" formatted="false">Demander mes données personnelles</string>
+  <string name="Resend_email" formatted="false">Renvoyer</string>
   <string name="Resend_verification_email" formatted="false">Renvoyer l\'e-mail de vérification</string>
   <string name="Retry" formatted="false">Réessayer</string>
   <string name="Retry_or_select_another_method" formatted="false">Veuillez réessayer ou choisir un autre moyen de paiement.</string>
@@ -576,6 +581,7 @@ n\'ont rien soutenu.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Merci pour votre soutien.</string>
   <string name="Thanks_for_being_part_of_all_the_joy" formatted="false">Vous avez partagé nos joies, nos espoirs et l\'ardeur de notre travail. Sans vous, nous ne serions pas là.</string>
   <string name="Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality" formatted="false">Grâce à votre soutien, ce créateur se rapproche un peu plus de son objectif.</string>
+  <string name="Thanks_youve_successfully_verified_your_email_address" formatted="false">Merci, votre adresse électronique a bien été vérifiée.</string>
   <string name="The_backer_canceled_their_pledge_for_this_project" formatted="false">Le contributeur a annulé son engagement.</string>
   <string name="The_creator_canceled_this_project_so_your_payment_method_was_never_charged" formatted="false">Ce projet a été annulé par le créateur, donc votre moyen de paiement n\'a pas été débité.</string>
   <string name="The_email_associated_with_this_Facebook_account_is_already_registered" formatted="false">L\'adresse e-mail associée à ce compte Facebook a déjà été enregistrée par un autre utilisateur Kickstarter.</string>
@@ -629,6 +635,7 @@ n\'ont rien soutenu.</string>
   <string name="Use_the_hashtag_hashtag_backeditbecause_to_share_what_projects_youre_supporting_and_why_theyre_important_to_you" formatted="false">Hashtag #backeditbecause : en quoi les projets que vous soutenez sont-ils importants ?</string>
   <string name="Use_this_to_keep_track_of_which_rewards_youve_received" formatted="false">Utilisez cette fonction pour garder une trace des récompenses que vous avez reçues.</string>
   <string name="Verification_email_sent" formatted="false">Nous venons de vous envoyer un e-mail de vérification. Cliquez sur le lien qu\'il contient pour vérifier votre adresse.</string>
+  <string name="Verify_your_email_address" formatted="false">Confirmation de votre adresse e-mail</string>
   <string name="Video_disabled_until_the_internet_connection_improves" formatted="false">Vidéo désactivée en attente d\'une meilleure connexion Internet</string>
   <string name="View" formatted="false">Afficher</string>
   <string name="View_dashboard" formatted="false">Tableau de bord</string>

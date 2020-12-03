@@ -207,6 +207,6 @@ public interface ApiService {
   @PUT("/v1/users/self")
   Observable<Response<User>> updateUserSettings(@Body SettingsBody body);
 
-  @POST("/v1/users/verify_email")
+  @POST("/v1/users/self/verify_email")
   Observable<Response<EmailVerificationEnvelope>> verifyEmail(@Query("email_access_token") String token);
 }

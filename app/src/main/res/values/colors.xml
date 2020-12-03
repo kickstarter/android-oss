@@ -17,12 +17,12 @@
   <color name="_old_ksr_cobalt_600">#395AEB</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>
   <color name="ksr_dark_grey_500">#656969</color>
-  <color name="ksr_highlighter_green">#05F2BA</color>
-  <color name="ksr_green_200">#57BFA4</color>
+  <color name="old_ksr_highlighter_green">#05F2BA</color>
+  <color name="_old_ksr_green_200">#57BFA4</color>
   <color name="ksr_green_500">#009E74</color>
   <color name="ksr_green_700">#037362</color>
   <color name="ksr_green_800">#034752</color>
-  <color name="ksr_create_300">#9BEBC9</color>
+  <color name="_old_ksr_create_300">#9BEBC9</color>
   <color name="ksr_grey_100">#FBFBFA</color>
   <color name="ksr_grey_200">#F7F7F6</color>
   <color name="ksr_grey_300">#F0F0F0</color>
@@ -32,7 +32,7 @@
   <color name="ksr_red_400">#FF5151</color>
   <color name="ksr_alert_red">#A12027</color>
   <color name="ksr_soft_black">#282828</color>
-  <color name="ksr_teal_500">#05F2BA</color>
+  <color name="_old_ksr_teal_500">#05F2BA</color>
   <color name="ksr_text_green_700">@color/ksr_green_700</color>
   <color name="white">@android:color/white</color>
   <color name="transparent">@android:color/transparent</color>
@@ -41,6 +41,7 @@
   <!-- KDS  -->
   <color name="trust_700">#0A007D</color>
   <color name="kds_trust_500">#5555FF</color>
+  <color name="kds_create_300">#9BEBC9</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->

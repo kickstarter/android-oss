@@ -13,7 +13,7 @@
   card_view:cardUseCompatPadding="true">
 
   <View
-    android:background="@color/ksr_green_500"
+    android:background="@color/kds_create_700"
     android:layout_width="match_parent"
     android:layout_height="2dp"/>
 

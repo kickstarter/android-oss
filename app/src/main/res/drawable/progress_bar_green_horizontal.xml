@@ -11,8 +11,8 @@
     <clip>
       <shape>
         <gradient
-          android:endColor="@color/ksr_green_700"
-          android:startColor="@color/ksr_green_700" />
+          android:endColor="@color/kds_create_700"
+          android:startColor="@color/kds_create_700" />
       </shape>
     </clip>
   </item>

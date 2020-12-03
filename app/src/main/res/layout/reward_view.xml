@@ -41,7 +41,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_2"
-          android:textColor="@color/ksr_green_700"
+          android:textColor="@color/kds_create_700"
           android:textSize="@dimen/headline"
           tools:text="$20 AUD" />
 

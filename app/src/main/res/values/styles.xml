@@ -240,7 +240,7 @@
   <style name="TextButton" parent="TextButtonBase"/>
 
   <style name="SecondaryTextButton" parent="TextButton">
-    <item name="android:textColor">@color/kds_trust_500</item>
+    <item name="android:textColor">@color/kds_create_700</item>
     <item name="rippleColor">@color/ripple_secondary_text_button</item>
   </style>
 
@@ -790,7 +790,7 @@
 
   <!-- AutoComplete -->
   <style name="AutocompleteStyle" parent="Widget.AppCompat.Light.AutoCompleteTextView">
-    <item name="android:colorControlActivated">@color/ksr_green_500</item>
+    <item name="android:colorControlActivated">@color/kds_create_700</item>
     <item name="android:background">@drawable/rect_white_rounded</item>
     <item name="android:dropDownWidth">@dimen/autocomplete_drop_down_width</item>
     <item name="android:textSize">@dimen/callout</item>

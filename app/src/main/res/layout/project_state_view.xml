@@ -19,7 +19,7 @@
     <TextView
       android:id="@+id/funding_successful_text_view"
       style="@style/BodyPrimaryMedium"
-      android:textColor="@color/ksr_green_700"
+      android:textColor="@color/kds_create_700"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/Funding_successful"

@@ -22,7 +22,7 @@ import rx.android.schedulers.AndroidSchedulers
 @RequiresActivityViewModel(NotificationsViewModel.ViewModel::class)
 class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
-    private val green = R.color.ksr_green_500
+    private val green = R.color.kds_create_700
     private val grey = R.color.ksr_dark_grey_400
 
     private val circleOutline = R.drawable.circle_gray_outline

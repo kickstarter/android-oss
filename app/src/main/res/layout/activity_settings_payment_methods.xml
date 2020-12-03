@@ -65,7 +65,7 @@
             android:gravity="center_vertical"
             android:text="@string/Add_new_card"
             android:textAllCaps="true"
-            android:textColor="@color/ksr_green_500" />
+            android:textColor="@color/kds_create_700" />
         </LinearLayout>
 
       </LinearLayout>

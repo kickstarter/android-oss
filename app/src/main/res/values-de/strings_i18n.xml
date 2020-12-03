@@ -381,6 +381,7 @@ Bitte antippen und erneut versuchen.</string>
   <string name="Notifications" formatted="false">Benachrichtigungen</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Nur noch %{amount_of_time} live!</string>
+  <string name="Open_inbox" formatted="false">Open inbox</string>
   <string name="Opens_comments" formatted="false">Öffnet Kommentare.</string>
   <string name="Opens_creator_profile" formatted="false">Öffnet das Profil des Projektgründers.</string>
   <string name="Opens_email_composer" formatted="false">Öffnet E-Mail-Vorlage.</string>

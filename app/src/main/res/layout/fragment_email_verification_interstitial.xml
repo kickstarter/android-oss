@@ -48,7 +48,7 @@
         android:id="@+id/email_verification_interstitial_cta_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Open_Inbox"
+        android:text="@string/Open_inbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/email_verification_interstitial_subtext"

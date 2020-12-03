@@ -382,6 +382,7 @@ Haz clic para volver a intentarlo.</string>
   <string name="Notifications" formatted="false">Notificaciones</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
+  <string name="Open_inbox" formatted="false">Open inbox</string>
   <string name="Opens_comments" formatted="false">Abre comentarios.</string>
   <string name="Opens_creator_profile" formatted="false">Abre el perfil del creador.</string>
   <string name="Opens_email_composer" formatted="false">Abre plantilla de correo.</string>

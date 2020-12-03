@@ -382,6 +382,7 @@ n\'ont rien soutenu.</string>
   <string name="Notifications" formatted="false">Notifications</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Une fois que vous aurez soutenu un projet, des recommandations personnalisées s\'afficheront ici.</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Plus que %{amount_of_time} pour regarder cette diffusion.</string>
+  <string name="Open_inbox" formatted="false">Ouvrir ma boîte de réception</string>
   <string name="Opens_comments" formatted="false">Ouvre les commentaires.</string>
   <string name="Opens_creator_profile" formatted="false">Ouvre le profil du créateur.</string>
   <string name="Opens_email_composer" formatted="false">Ouvre l\'éditeur d\'e-mail.</string>

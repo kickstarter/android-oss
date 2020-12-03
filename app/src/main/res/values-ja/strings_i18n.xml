@@ -379,6 +379,7 @@
   <string name="Notifications" formatted="false">通知</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">プロジェクトをバックするとこのスペースにあなたへのオススメを表示します</string>
   <string name="Only_amount_of_time_left_to_watch_this" formatted="false">あと%{amount_of_time} のみ視聴可能</string>
+  <string name="Open_inbox" formatted="false">Open inbox</string>
   <string name="Opens_comments" formatted="false">コメントをみる</string>
   <string name="Opens_creator_profile" formatted="false">クリエイタープロフィールをみる</string>
   <string name="Opens_email_composer" formatted="false">メールの送受信者をみる</string>

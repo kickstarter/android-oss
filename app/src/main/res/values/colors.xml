@@ -13,8 +13,8 @@
   <color name="black">@android:color/black</color>
   <color name="ksr_apricot_500">#FFCBA9</color>
   <color name="ksr_apricot_600">#F0AE81</color>
-  <color name="ksr_cobalt_500">#4C6CF8</color>
-  <color name="ksr_cobalt_600">#395AEB</color>
+  <color name="_old_ksr_cobalt_500">#4C6CF8</color>
+  <color name="_old_ksr_cobalt_600">#395AEB</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>
   <color name="ksr_dark_grey_500">#656969</color>
   <color name="ksr_highlighter_green">#05F2BA</color>
@@ -40,7 +40,7 @@
 
   <!-- KDS  -->
   <color name="trust_700">#0A007D</color>
-  <color name="celebrate_500">#F97B62</color>
+  <color name="kds_trust_500">#5555FF</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
@@ -52,7 +52,7 @@
   <color name="black_alpha_40">#66000000</color>
   <color name="black_alpha_50">#80000000</color>
   <color name="blue_alpha_6">#0f2b60ff</color>
-  <color name="blue_darken_10">@color/ksr_cobalt_600</color>
+  <color name="blue_darken_10">@color/kds_trust_500</color>
   <color name="gray_alpha_50">@color/ksr_grey_300</color>
   <color name="gray_darken_10">@color/ksr_grey_500</color>
   <color name="green_alpha_6">#0F009E74</color>

@@ -240,7 +240,7 @@
   <style name="TextButton" parent="TextButtonBase"/>
 
   <style name="SecondaryTextButton" parent="TextButton">
-    <item name="android:textColor">@color/ksr_cobalt_500</item>
+    <item name="android:textColor">@color/kds_trust_500</item>
     <item name="rippleColor">@color/ripple_secondary_text_button</item>
   </style>
 

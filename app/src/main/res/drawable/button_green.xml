@@ -6,7 +6,7 @@
 
       <item android:state_enabled="true">
         <shape>
-          <solid android:color="@color/ksr_green_700" />
+          <solid android:color="@color/kds_create_700" />
         </shape>
       </item>
 

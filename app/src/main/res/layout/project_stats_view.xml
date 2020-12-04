@@ -20,14 +20,14 @@
       style="@style/CalloutPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/ksr_green_700" />
+      android:textColor="@color/kds_create_700" />
 
     <TextView
       android:id="@+id/goal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Caption1Secondary"
-      android:textColor="@color/ksr_green_700" />
+      android:textColor="@color/kds_create_700" />
 
   </LinearLayout>
 

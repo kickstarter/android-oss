@@ -124,7 +124,7 @@ class ChangeEmailViewModelTest : KSRobolectricTestCase() {
         this.sendVerificationIsHidden.assertValue(false)
 
         this.warningText.assertValue(R.string.We_ve_been_unable_to_send_email)
-        this.warningTextColor.assertValue(R.color.ksr_red_400)
+        this.warningTextColor.assertValue(R.color.kds_alert)
     }
 
     @Test

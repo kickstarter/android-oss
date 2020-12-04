@@ -122,7 +122,7 @@
         <TextView
           style="@style/SettingsSingleRow"
           android:text="@string/Log_out"
-          android:textColor="@color/ksr_red_400" />
+          android:textColor="@color/kds_alert" />
       </LinearLayout>
 
       <LinearLayout

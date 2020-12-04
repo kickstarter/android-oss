@@ -88,7 +88,7 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
                 .build()
         this.vm.inputs.configureWith(user)
 
-        this.activityCountTextColor.assertValue(R.color.ksr_red_400)
+        this.activityCountTextColor.assertValue(R.color.kds_alert)
     }
 
     @Test

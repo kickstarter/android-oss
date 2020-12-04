@@ -40,7 +40,7 @@
       android:layout_marginEnd="@dimen/grid_2"
       android:layout_marginBottom="@dimen/grid_2"
       android:text="@string/This_project_has_a_set_currency_that_cant_process_this_option"
-      android:textColor="@color/ksr_red_400"
+      android:textColor="@color/kds_alert"
       android:visibility="gone"
       tools:visibility="visible" />
 

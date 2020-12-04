@@ -37,7 +37,7 @@
         android:nextFocusDown="@id/shipping_amount"
         android:scrollHorizontally="true"
         android:text="@string/Loading"
-        android:textColor="@color/ksr_green_500"
+        android:textColor="@color/kds_create_700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/shipping_add_symbol"
         app:layout_constraintStart_toStartOf="parent"

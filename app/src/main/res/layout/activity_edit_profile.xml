@@ -179,7 +179,7 @@
           android:layout_marginStart="@dimen/activity_horizontal_margin"
           android:layout_marginTop="@dimen/grid_2"
           android:text="@string/Add"
-          android:textColor="@color/ksr_green_700" />
+          android:textColor="@color/kds_create_700" />
 
       </LinearLayout>
 

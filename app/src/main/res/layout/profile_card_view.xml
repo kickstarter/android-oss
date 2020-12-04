@@ -85,7 +85,7 @@
           android:visibility="gone"
           style="@style/Caption1PrimaryMedium"
           android:textColor="@color/white"
-          android:background="@color/ksr_green_700"
+          android:background="@color/kds_create_700"
           android:gravity="center"
           android:maxLines="1"
           android:layout_width="match_parent"

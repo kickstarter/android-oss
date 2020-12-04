@@ -17,14 +17,14 @@
     <TextView
       android:id="@+id/percent"
       style="@style/BodyPrimaryMedium"
-      android:textColor="@color/ksr_green_700"
+      android:textColor="@color/kds_create_700"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="85%" />
 
     <TextView
       android:text="@string/discovery_baseball_card_stats_funded"
-      android:textColor="@color/ksr_green_700"
+      android:textColor="@color/kds_create_700"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/BodyPrimary" />

@@ -153,7 +153,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/grid_2"
                             android:text="@string/We_cant_process_your_pledge_Please_update_your_payment_method"
-                            android:textColor="@color/ksr_red_400"
+                            android:textColor="@color/kds_alert"
                             android:visibility="gone"
                             tools:visibility="visible" />
 

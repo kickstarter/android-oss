@@ -73,7 +73,7 @@
             android:maxLines="1"
             android:scrollHorizontally="true"
             android:text="@string/Location"
-            android:textColor="@color/ksr_green_500"
+            android:textColor="@color/kds_create_700"
             app:layout_constraintEnd_toStartOf="@+id/fragment_backing_addons_guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_backing_addons_call_out"

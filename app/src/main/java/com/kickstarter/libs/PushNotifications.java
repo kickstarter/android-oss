@@ -352,7 +352,7 @@ public final class PushNotifications {
 
     return new NotificationCompat.Builder(this.context, channelId)
       .setSmallIcon(R.drawable.ic_kickstarter_micro_k)
-      .setColor(ContextCompat.getColor(this.context, R.color.ksr_green_800))
+      .setColor(ContextCompat.getColor(this.context, R.color.kds_create_700))
       .setContentText(text)
       .setContentTitle(title)
       .setStyle(new NotificationCompat.BigTextStyle().bigText(text))

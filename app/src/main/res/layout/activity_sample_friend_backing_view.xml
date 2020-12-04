@@ -20,7 +20,7 @@
       <TextView
         style="@style/TextPrimary"
         android:textSize="@dimen/headline"
-        android:textColor="@color/ksr_green_700"
+        android:textColor="@color/kds_create_700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_2"

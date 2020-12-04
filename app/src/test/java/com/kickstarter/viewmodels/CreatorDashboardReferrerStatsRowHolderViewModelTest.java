@@ -67,7 +67,7 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(ProjectFactory.project(), referrerStats));
-    this.referrerSourceColorId.assertValues(R.color.ksr_highlighter_green);
+    this.referrerSourceColorId.assertValues(R.color.kds_create_300);
   }
 
   @Test
@@ -76,7 +76,7 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(ProjectFactory.project(), referrerStats));
-    this.referrerSourceColorId.assertValues(R.color.ksr_green_500);
+    this.referrerSourceColorId.assertValues(R.color.kds_create_700);
   }
 
   @Test
@@ -85,7 +85,7 @@ public class CreatorDashboardReferrerStatsRowHolderViewModelTest extends KSRobol
 
     setUpEnvironment(environment());
     this.vm.inputs.projectAndReferrerStatsInput(Pair.create(ProjectFactory.project(), referrerStats));
-    this.referrerSourceColorId.assertValues(R.color.ksr_green_800);
+    this.referrerSourceColorId.assertValues(R.color.kds_create_700);
   }
 
   @Test

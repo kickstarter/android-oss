@@ -33,7 +33,7 @@ class EditorialViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(Editorial.GO_REWARDLESS)
 
-        this.backgroundColor.assertValue(R.color.trust_700)
+        this.backgroundColor.assertValue(R.color.kds_trust_700)
     }
 
     @Test

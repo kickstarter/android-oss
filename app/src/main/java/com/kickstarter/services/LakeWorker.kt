@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.work.WorkerParameters
 import com.kickstarter.KSApplication
 import com.kickstarter.libs.qualifiers.ApplicationContext
-import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -17,7 +17,7 @@ class LakeWorker(@ApplicationContext applicationContext: Context, params: Worker
 
     override fun doWork(): Result {
         (applicationContext as KSApplication).component().inject(this)
-        val body = RequestBody.create(MediaType.parse("application/json"), this.eventData)
+        val body = this.eventData.toRequestBody("application/json".toMediaTypeOrNull())
         val result = this.lakeService
                 .track(body, this.clientId)
                 .subscribeOn(Schedulers.io())

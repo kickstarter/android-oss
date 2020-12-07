@@ -107,7 +107,7 @@
       android:id="@+id/pledged_via_external_bar"
       android:layout_width="0dp"
       android:layout_height="24dp"
-      android:background="@color/kds_create_700"
+      android:background="@color/kds_create_500"
       app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_bar"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_bar"

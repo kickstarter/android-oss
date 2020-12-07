@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -220,22 +219,15 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.Vie
       .compose(observeForUI())
       .subscribe(this.viewModel.inputs::openDrawer);
     
-    this.viewModel.outputs.showVerificationSnackBar()
+    this.viewModel.outputs.showSuccessMessage()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this::showSnackBar);
-  }
+      .subscribe(message -> ActivityExtKt.showSuccessSnackBar(DiscoveryActivity.this, this.snackbarAnchor, message));
 
-  private void showSnackBar(final @NonNull Pair pair) {
-    final int code = (int) pair.first;
-    final String message = (String) pair.second;
-
-    // TODO: Stylize error messages and color for the snackbar, currently the message is empty but we do get the code
-    if (code == 200) {
-      ActivityExtKt.showSuccessSnackBar(this, this.snackbarAnchor, code + message);
-    } else {
-      ActivityExtKt.showErrorSnackBar(this, this.snackbarAnchor, code + message);
-    }
+    this.viewModel.outputs.showErrorMessage()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(message -> ActivityExtKt.showErrorSnackBar(DiscoveryActivity.this, this.snackbarAnchor, message));
   }
 
   private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {

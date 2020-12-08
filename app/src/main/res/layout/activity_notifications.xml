@@ -36,7 +36,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ksr_grey_100"
+    android:background="@color/kds_support_100"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.kickstarter.ui.activities.NotificationsActivity">
 

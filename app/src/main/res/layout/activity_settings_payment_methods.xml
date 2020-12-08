@@ -5,7 +5,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100">
+  android:background="@color/kds_support_100">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"

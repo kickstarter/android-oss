@@ -11,7 +11,7 @@
     <shape
       android:dither="true"
       android:shape="rectangle">
-      <solid android:color="@color/ksr_grey_100" />
+      <solid android:color="@color/kds_support_100" />
     </shape>
   </item>
 </layer-list>

@@ -8,6 +8,10 @@ import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Response
 
+/**
+ * Headers specific for the GraphQL client
+ * see @see <a href="https://square.github.io/okhttp/interceptors/">https://square.github.io/okhttp/interceptors/</a>
+ */
 class GraphQLInterceptor(private val clientId: String,
                          private val currentUser: CurrentUserType,
                          private val build: Build) : Interceptor {

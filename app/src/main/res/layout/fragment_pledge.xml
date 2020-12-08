@@ -4,7 +4,7 @@
     android:id="@+id/pledge_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ksr_grey_300"
+    android:background="@color/kds_support_100"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView

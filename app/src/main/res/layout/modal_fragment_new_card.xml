@@ -4,7 +4,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  app:cardBackgroundColor="@color/white">
+  app:cardBackgroundColor="@color/kds_white">
 
   <include
     layout="@layout/form_new_card"

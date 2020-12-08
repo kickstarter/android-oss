@@ -6,7 +6,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@color/white"
+  android:background="@color/kds_white"
   android:fitsSystemWindows="true"
   tools:showIn="@layout/creator_dashboard_layout">
 
@@ -17,7 +17,7 @@
     android:fitsSystemWindows="true"
     app:collapsedTitleTextAppearance="@android:color/transparent"
     app:expandedTitleMarginStart="@dimen/grid_2"
-    app:expandedTitleTextAppearance="@color/ksr_soft_black"
+    app:expandedTitleTextAppearance="@color/kds_support_700"
     app:layout_scrollFlags="scroll|exitUntilCollapsed"
     app:paddingEnd="@dimen/grid_2">
 
@@ -35,7 +35,7 @@
       android:id="@+id/creator_dashboard_toolbar"
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
-      android:background="@color/white"
+      android:background="@color/kds_white"
       app:contentInsetLeft="0dp"
       app:contentInsetStart="0dp"
       app:layout_collapseMode="pin">

@@ -6,7 +6,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:layout_marginTop="1px"
-  app:cardBackgroundColor="@color/white"
+  app:cardBackgroundColor="@color/kds_white"
   app:cardCornerRadius="@dimen/card_container_radius"
   app:cardElevation="@dimen/grid_2"
   tools:layout_marginTop="620dp"
@@ -44,7 +44,7 @@
       android:id="@+id/pledge_toolbar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/ksr_grey_300"
+      android:background="@color/kds_support_100"
       android:focusableInTouchMode="true"
       app:navigationContentDescription="@string/View_project"
       app:navigationIcon="@drawable/ic_arrow_down" />

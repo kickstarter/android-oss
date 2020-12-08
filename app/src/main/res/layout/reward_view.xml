@@ -11,7 +11,7 @@
   android:layout_marginBottom="@dimen/grid_2"
   android:layout_height="wrap_content"
   android:layout_width="match_parent"
-  app:cardBackgroundColor="@color/white"
+  app:cardBackgroundColor="@color/kds_white"
   app:cardCornerRadius="@dimen/card_corner_radius"
   app:cardElevation="@dimen/card_no_elevation"
   app:cardPreventCornerOverlap="false">
@@ -163,7 +163,7 @@
       <TextView
         style="@style/Caption1SecondaryMedium"
         android:background="@drawable/rect_white_dark_grey_stroke"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -178,7 +178,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:alpha="0.6"
-      android:background="@color/white"
+      android:background="@color/kds_white"
       android:visibility="invisible" />
 
   </FrameLayout>

@@ -7,7 +7,7 @@
   tools:showIn="@layout/activity_project"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
-  android:background="@color/white"
+  android:background="@color/kds_white"
   android:focusable="true"
   android:focusableInTouchMode="true"
   app:contentInsetLeft="0dp"

@@ -12,7 +12,7 @@
     android:id="@+id/message_threads_app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/kds_white">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
       android:id="@+id/message_threads_collapsing_toolbar_layout"

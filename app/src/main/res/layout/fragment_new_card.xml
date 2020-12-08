@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100">
+  android:background="@color/kds_support_100">
 
   <include layout="@layout/form_new_card" />
 

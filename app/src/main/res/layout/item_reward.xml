@@ -32,7 +32,7 @@
               android:background="@drawable/ic_container"
               android:gravity="center"
               android:text="@string/Your_selection"
-              android:textColor="@color/white"
+              android:textColor="@color/kds_white"
               android:textSize="@dimen/subheadline"
               android:paddingLeft="@dimen/grid_3"
               android:paddingRight="@dimen/grid_3"/>

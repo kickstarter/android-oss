@@ -10,7 +10,7 @@
   <TextView
     android:id="@+id/message_center_timestamp_text_view"
     style="@style/Caption2Primary"
-    android:textColor="@color/ksr_dark_grey_500"
+    android:textColor="@color/kds_support_400"
     android:layout_centerHorizontal="true"
     android:layout_marginTop="@dimen/grid_5"
     android:layout_marginBottom="@dimen/grid_1"

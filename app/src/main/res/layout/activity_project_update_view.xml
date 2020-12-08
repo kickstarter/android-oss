@@ -12,7 +12,7 @@
     <RelativeLayout
       android:id="@+id/project_info"
       android:clickable="true"
-      android:background="@color/transparent"
+      android:background="@color/kds_transparent"
       android:foreground="@drawable/click_indicator_light"
       android:focusable="true"
       android:orientation="horizontal"
@@ -54,7 +54,7 @@
     <LinearLayout
       android:id="@+id/update_info"
       android:focusable="true"
-      android:background="@color/transparent"
+      android:background="@color/kds_transparent"
       android:foreground="@drawable/click_indicator_light"
       android:clickable="true"
       android:padding="@dimen/grid_2"

@@ -23,5 +23,5 @@
     android:background="@drawable/circle_blue_white_stroke"
     android:importantForAccessibility="no"
     android:src="@drawable/icon__check"
-    app:tint="@color/white" />
+    app:tint="@color/kds_white" />
 </FrameLayout>

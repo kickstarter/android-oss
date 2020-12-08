@@ -6,7 +6,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@color/white"
+  android:background="@color/kds_white"
   android:orientation="vertical">
 
   <include layout="@layout/project_creator_dashboard_header" />
@@ -19,7 +19,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/project_padding_x"
     android:layout_marginStart="@dimen/project_padding_x"
-    android:background="@color/white"
+    android:background="@color/kds_white"
     android:orientation="vertical">
 
     <ProgressBar

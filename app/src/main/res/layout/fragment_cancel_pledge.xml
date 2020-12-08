@@ -5,7 +5,7 @@
   android:id="@+id/cancel_pledge_root"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_300"
+  android:background="@color/kds_support_300"
   android:paddingTop="?android:attr/actionBarSize">
 
   <ScrollView

@@ -5,6 +5,6 @@
   <solid
     android:color="@color/kds_transparent"/>
   <stroke
-    android:color="@color/ksr_grey_500"
+    android:color="@color/kds_support_300"
     android:width="1dp"/>
 </shape>

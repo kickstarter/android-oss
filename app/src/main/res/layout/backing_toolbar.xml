@@ -4,7 +4,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/backing_layout"
-  android:background="@color/ksr_grey_300"
+  android:background="@color/kds_support_100"
   style="@style/Toolbar"
   android:id="@+id/backing_toolbar"
   app:contentInsetLeft="0dp"

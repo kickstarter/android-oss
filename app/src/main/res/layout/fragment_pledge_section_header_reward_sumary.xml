@@ -86,7 +86,7 @@
         android:id="@+id/header_spacing_translated_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_3"
-        android:background="@color/ksr_grey_300"
+        android:background="@color/kds_support_100"
         android:contentDescription="@string/expand_more"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

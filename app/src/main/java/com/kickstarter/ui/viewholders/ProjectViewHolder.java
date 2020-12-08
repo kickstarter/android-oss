@@ -103,7 +103,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
-  protected @BindColor(R.color.ksr_grey_400) int ksrGrey400;
+  protected @BindColor(R.color.kds_support_300) int ksrGrey400;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
   protected @BindDimen(R.dimen.grid_2) int grid2Dimen;

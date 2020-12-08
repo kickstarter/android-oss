@@ -7,14 +7,11 @@
   <color name="text_primary">@color/ksr_soft_black</color>
   <color name="text_secondary">@color/ksr_dark_grey_500</color>
   <color name="window_background">@color/kds_white</color>
-  <color name="status_bar">@color/ksr_grey_300</color>
+  <color name="status_bar">@color/kds_support_300</color>
 
   <!-- Legacy Kickstarter colors -->
   <color name="ksr_dark_grey_400">#9B9E9E</color>
   <color name="ksr_dark_grey_500">#656969</color>
-  <color name="ksr_grey_300">#F0F0F0</color>
-  <color name="ksr_grey_400">#E8E8E8</color>
-  <color name="ksr_grey_500">#DCDEDD</color>
   <color name="ksr_soft_black">#282828</color>
 
   <!-- KDS  -->
@@ -30,6 +27,7 @@
   <color name="kds_create_700">#028858</color>
   <color name="kds_inform">#B6D9E1</color>
   <color name="kds_support_100">#F3F3F3</color>
+  <color name="kds_support_300">#D1D1D1</color>
   <color name="kds_transparent">@android:color/transparent</color>
   <color name="kds_trust_100">#DBE7FF</color>
   <color name="kds_trust_300">#71A0FF</color>
@@ -49,8 +47,8 @@
   <color name="black_alpha_50">#80000000</color>
   <color name="blue_alpha_6">#0f2b60ff</color>
   <color name="blue_darken_10">@color/kds_trust_500</color>
-  <color name="gray_alpha_50">@color/ksr_grey_300</color>
-  <color name="gray_darken_10">@color/ksr_grey_500</color>
+  <color name="gray_alpha_50">@color/kds_support_300</color>
+  <color name="gray_darken_10">@color/kds_support_300</color>
   <color name="green_alpha_6">#0F009E74</color>
   <color name="green_alpha_10">#1A009E74</color>
   <color name="green_alpha_20">#33009E74</color>
@@ -69,7 +67,7 @@
   <color name="debug_background">@color/kds_white</color>
 
   <!-- Discovery colors -->
-  <color name="discovery_drawer_item_selected">@color/ksr_grey_400</color>
+  <color name="discovery_drawer_item_selected">@color/kds_support_300</color>
   <color name="discovery_drawer_header">@color/kds_white</color>
 
   <!-- Third-party colors -->

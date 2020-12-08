@@ -262,7 +262,7 @@
     <item name="android:gravity">center</item>
     <item name="android:paddingTop">@dimen/grid_1_half</item>
     <item name="android:background">@drawable/click_indicator_light</item>
-    <item name="android:tint">@color/ksr_grey_500</item>
+    <item name="android:tint">@color/kds_support_300</item>
   </style>
 
   <style name="EndSettingsWidgetBase">

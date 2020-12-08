@@ -122,13 +122,13 @@
     android:paddingStart="@dimen/project_padding_x"
     android:paddingTop="@dimen/grid_4"
     android:paddingEnd="@dimen/project_padding_x"
-    android:textColor="@color/ksr_dark_grey_500" />
+    android:textColor="@color/kds_support_400" />
 
   <View
     android:layout_width="match_parent"
     android:layout_height="1dp"
     android:layout_marginTop="@dimen/grid_5"
     android:layout_marginBottom="@dimen/grid_4"
-    android:background="@color/ksr_dark_grey_500" />
+    android:background="@color/kds_support_400" />
 
 </LinearLayout>

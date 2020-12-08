@@ -97,7 +97,7 @@
           android:visibility="gone"
           style="@style/Caption1PrimaryMedium"
           android:textColor="@color/kds_white"
-          android:background="@color/ksr_dark_grey_500"
+          android:background="@color/kds_support_400"
           android:gravity="center"
           android:maxLines="1"
           android:layout_width="match_parent"

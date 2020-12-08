@@ -82,7 +82,7 @@
     android:layout_below="@+id/message_body_sender_card_view"
     android:layout_alignEnd="@id/message_body_sender_card_view"
     style="@style/Caption2Primary"
-    android:textColor="@color/ksr_dark_grey_400"
+    android:textColor="@color/kds_support_400"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_3"

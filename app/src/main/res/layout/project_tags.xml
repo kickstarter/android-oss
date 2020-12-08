@@ -89,7 +89,7 @@
       android:layout_height="wrap_content"
       android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
       android:text="@string/location_on_icon"
-      android:textColor="@color/ksr_dark_grey_400" />
+      android:textColor="@color/kds_support_400" />
 
     <TextView
       android:id="@+id/location_text_view"

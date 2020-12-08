@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:maxLines="3"
             android:ellipsize="end"
-            android:textColor="@color/ksr_dark_grey_500"/>
+            android:textColor="@color/kds_support_400"/>
 
         </LinearLayout>
 

@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/grid_1_half"
-                    android:textColor="@color/ksr_dark_grey_500"
+                    android:textColor="@color/kds_support_400"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/add_on_minimum"
                     tools:text="About $15 USD"
@@ -129,7 +129,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/grid_1"
-                        android:textColor="@color/ksr_dark_grey_500"
+                        android:textColor="@color/kds_support_400"
                         android:visibility="gone"
                         tools:text="3 days left"
                         tools:visibility="visible" />
@@ -140,7 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/grid_1"
-                        android:textColor="@color/ksr_dark_grey_500"
+                        android:textColor="@color/kds_support_400"
                         android:visibility="gone"
                         tools:text="30 left"
                         tools:visibility="visible" />
@@ -151,7 +151,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/grid_1"
-                        android:textColor="@color/ksr_dark_grey_500"
+                        android:textColor="@color/kds_support_400"
                         android:visibility="gone"
                         tools:text="Limit 4"
                         tools:visibility="visible" />

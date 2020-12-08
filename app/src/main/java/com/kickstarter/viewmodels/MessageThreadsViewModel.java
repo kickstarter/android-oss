@@ -189,7 +189,7 @@ public interface MessageThreadsViewModel {
         .subscribe(this.hasNoUnreadMessages);
 
       unreadMessagesCount
-        .map(count -> intValueOrZero(count) > 0 ? R.color.accent : R.color.ksr_dark_grey_400)
+        .map(count -> intValueOrZero(count) > 0 ? R.color.accent : R.color.kds_support_400)
         .subscribe(this.unreadCountTextViewColorInt);
 
       unreadMessagesCount

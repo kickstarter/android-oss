@@ -582,7 +582,7 @@
   </style>
 
   <style name="PledgeCurrencySecondary" parent="PledgeCurrency">
-    <item name="android:textColor">@color/ksr_dark_grey_500</item>
+    <item name="android:textColor">@color/kds_support_400</item>
   </style>
 
   <style name="PledgeCurrencyInput" parent="PledgeCurrency">
@@ -601,7 +601,7 @@
   </style>
 
   <style name="RewardSectionTitle" parent="CalloutPrimaryMedium">
-    <item name="android:textColor">@color/ksr_dark_grey_500</item>
+    <item name="android:textColor">@color/kds_support_400</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
   </style>
@@ -644,7 +644,7 @@
 
   <!-- Rewards -->
   <style name="RewardHeadline" parent="Caption2Primary">
-    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:textColor">@color/kds_support_400</item>
     <item name="android:textAllCaps">true</item>
     <item name="android:letterSpacing">.2</item>
   </style>
@@ -683,7 +683,7 @@
   </style>
 
   <style name="CreatorDashboardTableRowText.SecondaryColumn">
-    <item name="android:textColor">@color/ksr_dark_grey_500</item>
+    <item name="android:textColor">@color/kds_support_400</item>
   </style>
 
   <style name="FacepileImageView">
@@ -730,7 +730,7 @@
     <item name="android:layout_marginTop">@dimen/grid_2</item>
     <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
     <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
-    <item name="android:textColor">@color/ksr_dark_grey_400</item>
+    <item name="android:textColor">@color/kds_support_400</item>
   </style>
 
   <style name="NewsLetterSwitch" parent="EndSettingsWidget">
@@ -784,7 +784,7 @@
 
   <style name="CardInputWidget" parent="UnderlineTextInputLayout">
     <item name="android:layout_marginBottom">0dp</item>
-    <item name="cardTint">@color/ksr_dark_grey_500</item>
+    <item name="cardTint">@color/kds_support_400</item>
     <item name="cardTextErrorColor">@color/kds_alert</item>
   </style>
 
@@ -815,7 +815,7 @@
   <style name="DrawerTextViewWithCount" parent="DrawerTextView">
     <item name="android:layout_marginStart">0dp</item>
     <item name="android:foreground">@null</item>
-    <item name="android:drawableTint">@color/ksr_dark_grey_500</item>
+    <item name="android:drawableTint">@color/kds_support_400</item>
   </style>
 
   <style name="DrawerCountTextView" parent="FootnotePrimaryMedium">

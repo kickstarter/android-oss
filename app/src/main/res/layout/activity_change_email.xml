@@ -56,7 +56,7 @@
           android:paddingEnd="@dimen/grid_2"
           android:paddingStart="@dimen/grid_2"
           android:text="@string/Email_unverified"
-          android:textColor="@color/ksr_dark_grey_400"
+          android:textColor="@color/kds_support_400"
           android:textSize="@dimen/caption_1"
           android:visibility="gone"
           tools:visibility="visible" />

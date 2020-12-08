@@ -41,7 +41,7 @@
     <TextView
       android:id="@+id/backers_count"
       style="@style/CalloutPrimaryMedium"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -49,7 +49,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/discovery_baseball_card_stats_backers"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       style="@style/Caption1Secondary" />
   </LinearLayout>
 
@@ -64,7 +64,7 @@
       android:id="@+id/deadline_countdown_text_view"
       android:maxLines="1"
       style="@style/CalloutPrimaryMedium"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -72,7 +72,7 @@
       android:id="@+id/deadline_countdown_unit_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       style="@style/Caption1Secondary" />
 
   </LinearLayout>

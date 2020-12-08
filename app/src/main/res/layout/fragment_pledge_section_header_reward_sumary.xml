@@ -35,7 +35,7 @@
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_4"
         android:text="@string/Estimated_delivery"
-        android:textColor="@color/ksr_dark_grey_500"
+        android:textColor="@color/kds_support_400"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pledge_header_title"
         app:layout_constraintEnd_toStartOf="@id/guideline_separator"

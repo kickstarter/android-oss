@@ -219,11 +219,11 @@ dependencies {
     implementation 'com.optimizely.ab:android-sdk:3.0.0'
     implementation 'com.qualtrics:digital:1.3'
     implementation "com.stripe:stripe-android:12.0.1"
-    final okhttp_version = "3.5.0"
+    final okhttp_version = "4.8.+"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
     implementation "com.squareup.picasso:picasso:2.5.2"
-    final retrofit_version = "2.3.0"
+    final retrofit_version = "2.9.+"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"

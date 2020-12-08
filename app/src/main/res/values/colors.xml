@@ -4,13 +4,10 @@
   <color name="primary">@color/kds_create_700</color>
   <color name="primary_dark">@color/kds_create_700</color>
   <color name="accent">@color/primary</color>
-  <color name="text_primary">@color/ksr_soft_black</color>
+  <color name="text_primary">@color/kds_support_700</color>
   <color name="text_secondary">@color/kds_support_400</color>
   <color name="window_background">@color/kds_white</color>
   <color name="status_bar">@color/kds_support_300</color>
-
-  <!-- Legacy Kickstarter colors -->
-  <color name="ksr_soft_black">#282828</color>
 
   <!-- KDS  -->
   <color name="kds_alert">#A12027</color>
@@ -27,6 +24,8 @@
   <color name="kds_support_100">#F3F3F3</color>
   <color name="kds_support_300">#D1D1D1</color>
   <color name="kds_support_400">#696969</color>
+  <color name="kds_support_500">#464646</color>
+  <color name="kds_support_700">#222222</color>
   <color name="kds_transparent">@android:color/transparent</color>
   <color name="kds_trust_100">#DBE7FF</color>
   <color name="kds_trust_300">#71A0FF</color>

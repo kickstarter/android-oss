@@ -32,7 +32,7 @@
         android:enabled="false"
         android:hint="@string/Shipping"
         android:maxLines="1"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/shipping_add_symbol_static"
         app:layout_constraintStart_toStartOf="parent"

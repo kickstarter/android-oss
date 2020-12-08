@@ -17,7 +17,7 @@
     android:fitsSystemWindows="true"
     app:collapsedTitleTextAppearance="@android:color/transparent"
     app:expandedTitleMarginStart="@dimen/grid_2"
-    app:expandedTitleTextAppearance="@color/ksr_soft_black"
+    app:expandedTitleTextAppearance="@color/kds_support_700"
     app:layout_scrollFlags="scroll|exitUntilCollapsed"
     app:paddingEnd="@dimen/grid_2">
 

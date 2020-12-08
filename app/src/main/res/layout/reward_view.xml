@@ -163,7 +163,7 @@
       <TextView
         style="@style/Caption1SecondaryMedium"
         android:background="@drawable/rect_white_dark_grey_stroke"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"

@@ -59,7 +59,7 @@
       android:layout_height="match_parent"
       android:layout_width="wrap_content"
       android:focusable="true"
-      app:tint="@color/ksr_soft_black"
+      app:tint="@color/kds_support_700"
       android:importantForAccessibility="no"
       android:src="@drawable/icon__heart" />
 

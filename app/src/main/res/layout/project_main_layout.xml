@@ -162,7 +162,7 @@
         style="@style/Subheadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         tools:ignore="InconsistentLayout"
         tools:text="Description about this project." />
 
@@ -204,7 +204,7 @@
         style="@style/Subheadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         tools:ignore="InconsistentLayout"
         tools:text="Description about this project." />
 

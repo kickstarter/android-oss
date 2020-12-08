@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:textColor="@color/ksr_soft_black"
+            android:textColor="@color/kds_support_700"
             android:textSize="@dimen/caption_1"
             tools:text="3" />
 

@@ -82,7 +82,7 @@
 
   <style name="VideoPlayerBase" parent="KSTheme">
     <item name="android:windowNoTitle">true</item>
-    <item name="android:windowBackground">@color/ksr_soft_black</item>
+    <item name="android:windowBackground">@color/kds_support_700</item>
   </style>
 
   <style name="VideoPlayerActivity" parent="VideoPlayerBase" />
@@ -152,7 +152,7 @@
 
   <style name="TertiaryButton" parent="Button">
     <item name="backgroundTint">@color/button_tertiary</item>
-    <item name="android:textColor">@color/ksr_soft_black</item>
+    <item name="android:textColor">@color/kds_support_700</item>
   </style>
 
   <style name="BorderButton" parent="TertiaryButton" />
@@ -329,7 +329,7 @@
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
-    <item name="android:textColor">@color/ksr_soft_black</item>
+    <item name="android:textColor">@color/kds_support_700</item>
     <item name="android:textSize">@dimen/icon</item>
   </style>
 

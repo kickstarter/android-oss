@@ -174,7 +174,7 @@
                     <TextView
                         android:id="@+id/pledge_details_label"
                         style="@style/CalloutPrimaryMedium"
-                        android:textColor="@color/ksr_soft_black"
+                        android:textColor="@color/kds_support_700"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/grid_4"
@@ -187,7 +187,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/grid_3"
                         android:text="@string/Estimated_delivery"
-                        android:textColor="@color/ksr_soft_black"
+                        android:textColor="@color/kds_support_700"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 

@@ -14,7 +14,7 @@
     android:paddingBottom="@dimen/grid_6"
     android:paddingTop="@dimen/grid_8"
     android:text="@string/Thank_you_exclamation"
-    android:textColor="@color/ksr_soft_black"
+    android:textColor="@color/kds_support_700"
     android:textSize="@dimen/title_thank_you" />
 
   <LinearLayout

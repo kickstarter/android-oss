@@ -17,7 +17,7 @@
 
   <View
     android:alpha="0.6"
-    android:background="@color/ksr_soft_black"
+    android:background="@color/kds_support_700"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_16" />
 

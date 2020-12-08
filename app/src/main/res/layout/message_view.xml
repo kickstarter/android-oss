@@ -69,7 +69,7 @@
       style="@style/BodyPrimary"
       android:textColor="@color/kds_white"
       android:padding="@dimen/grid_2"
-      android:background="@color/ksr_soft_black"
+      android:background="@color/kds_support_700"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:autoLink="web"

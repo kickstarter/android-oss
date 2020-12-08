@@ -32,7 +32,7 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/campaign_button"
         android:text="@string/project_menu_buttons_campaign"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body" />
 
       <ImageView
@@ -43,7 +43,7 @@
         android:layout_centerVertical="true"
         android:importantForAccessibility="no"
         android:src="@drawable/chevron_right"
-        app:tint="@color/ksr_soft_black" />
+        app:tint="@color/kds_support_700" />
 
     </RelativeLayout>
 
@@ -63,7 +63,7 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/updates_count"
         android:text="@string/project_menu_buttons_updates"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body" />
 
       <TextView
@@ -73,7 +73,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:background="@drawable/text_view_rect_background"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body"
         tools:text="45" />
 
@@ -95,7 +95,7 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/comments_count"
         android:text="@string/project_menu_buttons_comments"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body" />
 
       <TextView
@@ -105,7 +105,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:background="@drawable/text_view_rect_background"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         android:textSize="@dimen/body"
         tools:text="1,000" />
 

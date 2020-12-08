@@ -78,7 +78,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.saved_view_group) ViewGroup savedViewGroup;
 
   protected @BindColor(R.color.kds_support_400) int ksrDarkGrey400;
-  protected @BindColor(R.color.ksr_soft_black) int ksrSoftBlack;
+  protected @BindColor(R.color.kds_support_700) int ksrSoftBlack;
 
   protected @BindDimen(R.dimen.grid_1) int gridNew1Dimen;
   protected @BindDimen(R.dimen.grid_2) int gridNew2Dimen;

@@ -50,7 +50,7 @@
               android:layout_height="wrap_content"
               app:tabMode="scrollable"
               app:tabSelectedTextColor="@color/primary"
-              app:tabTextColor="@color/ksr_soft_black" />
+              app:tabTextColor="@color/kds_support_700" />
 
           </LinearLayout>
 

@@ -39,7 +39,7 @@
           android:layout_alignParentStart="true"
           android:gravity="center_vertical"
           android:text="@string/View_project"
-          android:textColor="@color/ksr_soft_black"
+          android:textColor="@color/kds_support_700"
           android:textSize="@dimen/callout" />
 
         <ImageView
@@ -67,7 +67,7 @@
           android:layout_alignParentStart="true"
           android:gravity="center_vertical"
           android:text="@string/accessibility_dashboard_buttons_messages"
-          android:textColor="@color/ksr_soft_black"
+          android:textColor="@color/kds_support_700"
           android:textSize="@dimen/callout" />
 
         <ImageView

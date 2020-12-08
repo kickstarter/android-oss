@@ -11,7 +11,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:ignore="UnusedResources">
   <item android:id="@android:id/mask">
-    <color android:color="@color/ksr_soft_black"/>
+    <color android:color="@color/kds_support_700"/>
   </item>
 </ripple>
 

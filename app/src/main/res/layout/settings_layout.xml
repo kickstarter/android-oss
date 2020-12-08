@@ -31,7 +31,7 @@
         android:id="@+id/edit_profile_row"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_12"
-        android:background="@color/white"
+        android:background="@color/kds_white"
         android:foreground="@drawable/click_indicator_light"
         android:orientation="horizontal"
         android:visibility="gone"

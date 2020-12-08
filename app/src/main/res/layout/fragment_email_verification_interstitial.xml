@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/kds_white"
     android:padding="@dimen/grid_4">
 
     <ImageView
@@ -38,7 +38,7 @@
         android:paddingEnd="@dimen/grid_7"
         android:paddingStart="@dimen/grid_7"
         android:text="@string/Check_your_inbox_to_complete_this_simple_step"
-        android:textColor="@color/black"
+        android:textColor="@color/kds_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -88,7 +88,7 @@
         android:layout_marginEnd="@dimen/grid_1_half"
         android:paddingBottom="@dimen/grid_2"
         android:text="@string/Cant_find_it"
-        android:textColor="@color/black"
+        android:textColor="@color/kds_black"
         android:textSize="@dimen/caption_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"

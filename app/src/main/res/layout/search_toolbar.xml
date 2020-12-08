@@ -22,7 +22,7 @@
       style="@style/ToolbarTitle"
       android:layout_width="match_parent"
       android:layout_toStartOf="@+id/clear_button"
-      android:background="@color/transparent"
+      android:background="@color/kds_transparent"
       android:hint="@string/tabbar_search"
       android:importantForAutofill="no"
       android:inputType="textNoSuggestions"

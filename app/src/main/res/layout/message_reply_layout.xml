@@ -7,7 +7,7 @@
   android:layout_height="wrap_content"
   android:layout_alignParentBottom="true"
   android:layout_gravity="bottom"
-  android:background="@color/white">
+  android:background="@color/kds_white">
 
   <View
     android:layout_width="match_parent"

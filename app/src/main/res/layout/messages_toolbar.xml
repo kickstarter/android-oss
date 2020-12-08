@@ -6,7 +6,7 @@
   tools:showIn="@layout/messages_layout"
   style="@style/Toolbar"
   android:id="@+id/messages_toolbar"
-  android:background="@color/white"
+  android:background="@color/kds_white"
   android:elevation="0dp"
   android:gravity="top"
   app:contentInsetLeft="0dp"

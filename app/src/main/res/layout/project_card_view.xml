@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="0dp"
-    card_view:cardBackgroundColor="@color/transparent"
+    card_view:cardBackgroundColor="@color/kds_transparent"
     card_view:cardElevation="@dimen/card_no_elevation"
     android:foreground="@drawable/click_indicator_light"
     android:focusable="true"

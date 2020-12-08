@@ -27,7 +27,7 @@
         android:contentDescription="@string/Alert"
         android:accessibilityTraversalBefore="@id/toast_text_view"
         android:src="@drawable/ic_icon_alert"
-        app:tint="@color/white" />
+        app:tint="@color/kds_white" />
 
       <TextView
         android:id="@+id/toast_text_view"
@@ -35,7 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@color/white"
+        android:textColor="@color/kds_white"
         tools:text="Error message here!" />
 
     </LinearLayout>

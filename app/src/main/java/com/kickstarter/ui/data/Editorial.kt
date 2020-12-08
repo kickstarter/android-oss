@@ -24,7 +24,7 @@ enum class Editorial(@StringRes val ctaTitle: Int,
             R.string.Support_creative_spaces_and_businesses_affected_by,
             R.string.Show_up_for_the_spaces_you_love,
             R.string.Help_local_businesses_keep_the_lights,
-            R.color.white,
+            R.color.kds_white,
             R.drawable.lights_on,
             557);
 }

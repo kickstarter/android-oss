@@ -27,7 +27,7 @@
 
     <ImageView
       android:src="@drawable/icon__check"
-      app:tint="@color/white"
+      app:tint="@color/kds_white"
       android:layout_gravity="center_vertical"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
       style="@style/Caption1PrimaryMedium"
       android:includeFontPadding="false"
       android:layout_gravity="center_vertical"
-      android:textColor="@color/white"
+      android:textColor="@color/kds_white"
       android:text="@string/discovery_baseball_card_metadata_backer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />

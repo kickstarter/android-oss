@@ -67,7 +67,7 @@
     <TextView
       android:id="@+id/message_body_sender_text_view"
       style="@style/BodyPrimary"
-      android:textColor="@color/white"
+      android:textColor="@color/kds_white"
       android:padding="@dimen/grid_2"
       android:background="@color/ksr_soft_black"
       android:layout_width="wrap_content"

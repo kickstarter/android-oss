@@ -212,7 +212,7 @@
                     android:layout_marginTop="@dimen/grid_9_half"
                     android:gravity="center"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:textColor="@color/kds_white"
                     android:background="@drawable/border_rounded_solid_black"
                     android:text="@string/Add"
                     style="@style/TextAppearance.AppCompat.Button"

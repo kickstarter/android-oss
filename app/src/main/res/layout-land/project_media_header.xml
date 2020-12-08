@@ -61,7 +61,7 @@
         android:layout_weight="1"
         android:maxLines="2"
         android:paddingBottom="@dimen/grid_1_half"
-        android:textColor="@color/white"
+        android:textColor="@color/kds_white"
         tools:ignore="InconsistentLayout"
         tools:text="Secret Bunnies" />
 
@@ -106,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/project_menu_created_by"
-            android:textColor="@color/white" />
+            android:textColor="@color/kds_white" />
 
           <TextView
             android:id="@+id/creator_name"
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/white"
+            android:textColor="@color/kds_white"
             tools:text="Creator Name" />
         </LinearLayout>
 
@@ -193,7 +193,7 @@
           android:background="@drawable/click_indicator_light_masked"
           android:focusable="true"
           android:maxLines="3"
-          android:textColor="@color/white"
+          android:textColor="@color/kds_white"
           tools:ignore="InconsistentLayout"
           tools:text="Description about this project." />
 
@@ -212,13 +212,13 @@
             android:layout_marginEnd="@dimen/grid_1"
             android:focusable="true"
             android:text="@string/Read_more_about_the_campaign"
-            android:textColor="@color/white" />
+            android:textColor="@color/kds_white" />
 
           <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_right"
-            app:tint="@color/white"
+            app:tint="@color/kds_white"
             tools:ignore="ContentDescription" />
 
         </LinearLayout>

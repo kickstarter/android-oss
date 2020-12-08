@@ -30,6 +30,6 @@ fun Activity.showSuccessSnackBar(anchor: View, message: String) {
 
 fun Activity.showErrorSnackBar(anchor: View, message: String) {
     val backgroundColor = this.resources.getColor(R.color.kds_alert, this.theme)
-    val textColor = this.resources.getColor(R.color.white, this.theme)
+    val textColor = this.resources.getColor(R.color.kds_white, this.theme)
     showSnackbarWithColor(anchor, message, backgroundColor, textColor)
 }

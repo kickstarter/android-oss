@@ -11,7 +11,7 @@
     android:id="@+id/comment_body"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_27"
-    android:background="@color/white"
+    android:background="@color/kds_white"
     android:gravity="top"
     android:importantForAutofill="no"
     android:inputType="textCapSentences|textMultiLine|textAutoCorrect"

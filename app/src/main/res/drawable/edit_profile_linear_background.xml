@@ -3,7 +3,7 @@
     <shape
       android:dither="true"
       android:shape="rectangle">
-      <solid android:color="@color/white" />
+      <solid android:color="@color/kds_white" />
     </shape>
   </item>
 

@@ -34,7 +34,7 @@
       android:textStyle="bold"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/white"
+      android:textColor="@color/kds_white"
       tools:text="SKULL GRAPHIC TEE" />
 
     <TextView
@@ -44,7 +44,7 @@
       android:layout_below="@id/project_context_project_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/white"
+      android:textColor="@color/kds_white"
       tools:text="Taylor Moore" />
 
   </RelativeLayout>

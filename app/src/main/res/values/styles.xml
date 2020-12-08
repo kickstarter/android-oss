@@ -20,7 +20,7 @@
     <item name="colorPrimary">@color/primary</item>
     <item name="colorPrimaryDark">@color/primary_dark</item>
     <item name="colorAccent">@color/primary</item>
-    <item name="colorSurface">@color/white</item>
+    <item name="colorSurface">@color/kds_white</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColorSecondary">@color/text_secondary</item>
@@ -40,11 +40,11 @@
   <style name="ActivityFeedActivity" parent="KSTheme" />
 
   <style name="CommentsActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
   </style>
 
   <style name="DiscoveryBase" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
   </style>
 
   <style name="DiscoveryActivity" parent="DiscoveryBase">
@@ -52,11 +52,11 @@
   </style>
 
   <style name="HelpActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
   </style>
 
   <style name="Login" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
     <item name="android:popupMenuStyle">@style/PopupMenu</item>
   </style>
 
@@ -64,7 +64,7 @@
   </style>
 
   <style name="SearchActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
   </style>
 
   <style name="SettingsActivity" parent="KSTheme">
@@ -73,11 +73,11 @@
   </style>
 
   <style name="ThanksActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
   </style>
 
   <style name="WebViewActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
   </style>
 
   <style name="VideoPlayerBase" parent="KSTheme">
@@ -88,7 +88,7 @@
   <style name="VideoPlayerActivity" parent="VideoPlayerBase" />
 
   <style name="BackingActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/kds_white</item>
   </style>
 
   <!-- Activity Transitions-->
@@ -176,7 +176,7 @@
 
   <style name="FacebookButton" parent="Button">
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/kds_white</item>
     <item name="backgroundTint">@color/facebook_blue</item>
     <item name="icon">@drawable/ic_social_facebook</item>
     <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
@@ -315,7 +315,7 @@
 
   <!-- Toolbars -->
   <style name="ToolbarBase" parent="Widget.MaterialComponents.Toolbar">
-    <item name="android:background">@color/white</item>
+    <item name="android:background">@color/kds_white</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:foregroundGravity">center_vertical</item>
     <item name="android:layout_height">wrap_content</item>
@@ -351,7 +351,7 @@
   <style name="ToolbarTitle" parent="ToolbarTitleBase" />
 
   <style name="ToolbarTitleWhite" parent="ToolbarTitleBase">
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/kds_white</item>
   </style>
 
   <style name="ToolbarVectorIcon">
@@ -363,7 +363,7 @@
   </style>
 
   <style name="AppBarLayout" parent="Widget.Design.AppBarLayout">
-    <item name="android:background">@color/white</item>
+    <item name="android:background">@color/kds_white</item>
   </style>
 
   <!-- Typography -->
@@ -386,7 +386,7 @@
   </style>
 
   <style name="TextWhite">
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/kds_white</item>
     <item name="android:textStyle">normal</item>
     <item name="android:fontFamily">@string/font_family_sans_serif</item>
   </style>
@@ -613,7 +613,7 @@
     <item name="android:layout_marginTop">@dimen/activity_feed_view_margin_top</item>
     <item name="android:layout_marginBottom">@dimen/activity_feed_view_margin_bottom</item>
     <item name="android:layout_width">match_parent</item>
-    <item name="cardBackgroundColor">@color/white</item>
+    <item name="cardBackgroundColor">@color/kds_white</item>
     <item name="cardCornerRadius">0dp</item>
     <item name="cardElevation">0dp</item>
     <item name="android:layout_marginStart">@dimen/activity_padding_x</item>
@@ -625,7 +625,7 @@
   <style name="ActivitySampleCardBase">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="cardBackgroundColor">@color/white</item>
+    <item name="cardBackgroundColor">@color/kds_white</item>
     <item name="cardElevation">@dimen/card_no_elevation</item>
     <item name="android:focusable">true</item>
     <item name="android:layout_marginBottom">@dimen/grid_1</item>
@@ -638,7 +638,7 @@
 
   <style name="PledgeStoredCard">
     <item name="cardCornerRadius">@dimen/stored_card_radius</item>
-    <item name="cardBackgroundColor">@color/white</item>
+    <item name="cardBackgroundColor">@color/kds_white</item>
     <item name="cardElevation">@dimen/card_no_elevation</item>
   </style>
 
@@ -710,7 +710,7 @@
     <item name="android:showDividers">end</item>
     <item name="android:orientation">vertical</item>
     <item name="android:foreground">@drawable/click_indicator_light</item>
-    <item name="android:background">@color/white</item>
+    <item name="android:background">@color/kds_white</item>
   </style>
 
   <style name="NewsletterSingleRow" parent="CalloutPrimary">
@@ -847,7 +847,7 @@
     <item name="colorPrimary">@color/primary</item>
     <item name="colorPrimaryDark">@color/primary_dark</item>
     <item name="colorAccent">@color/primary</item>
-    <item name="colorSurface">@color/white</item>
+    <item name="colorSurface">@color/kds_white</item>
     <item name="android:textColor">@color/text_primary</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>

@@ -5,7 +5,7 @@
   android:id="@+id/project_search_result_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@color/transparent"
+  android:background="@color/kds_transparent"
   android:focusable="true"
   android:foreground="@drawable/click_indicator_light"
   android:orientation="vertical"

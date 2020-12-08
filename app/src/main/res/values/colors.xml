@@ -6,11 +6,10 @@
   <color name="accent">@color/primary</color>
   <color name="text_primary">@color/ksr_soft_black</color>
   <color name="text_secondary">@color/ksr_dark_grey_500</color>
-  <color name="window_background">@color/white</color>
+  <color name="window_background">@color/kds_white</color>
   <color name="status_bar">@color/ksr_grey_300</color>
 
   <!-- Legacy Kickstarter colors -->
-  <color name="black">@android:color/black</color>
   <color name="ksr_dark_grey_400">#9B9E9E</color>
   <color name="ksr_dark_grey_500">#656969</color>
   <color name="ksr_grey_100">#FBFBFA</color>
@@ -19,11 +18,10 @@
   <color name="ksr_grey_400">#E8E8E8</color>
   <color name="ksr_grey_500">#DCDEDD</color>
   <color name="ksr_soft_black">#282828</color>
-  <color name="white">@android:color/white</color>
-  <color name="transparent">@android:color/transparent</color>
 
   <!-- KDS  -->
   <color name="kds_alert">#A12027</color>
+  <color name="kds_black">@android:color/black</color>
   <color name="kds_celebrate_100">#FFF2EC</color>
   <color name="kds_celebrate_300">#FECCB3</color>
   <color name="kds_celebrate_500">#F97B62</color>
@@ -32,12 +30,14 @@
   <color name="kds_create_300">#9BEBC9</color>
   <color name="kds_create_500">#05CE78</color>
   <color name="kds_create_700">#028858</color>
-  <color name="kds_trust_500">#5555FF</color>
   <color name="kds_inform">#B6D9E1</color>
+  <color name="kds_transparent">@android:color/transparent</color>
   <color name="kds_trust_100">#DBE7FF</color>
   <color name="kds_trust_300">#71A0FF</color>
+  <color name="kds_trust_500">#5555FF</color>
   <color name="kds_trust_700">#0A007D</color>
   <color name="kds_warn">#F9D66D</color>
+  <color name="kds_white">@android:color/white</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
@@ -67,11 +67,11 @@
   <color name="ripple_light">#1f000000</color>
 
   <!-- Debug colors -->
-  <color name="debug_background">@color/white</color>
+  <color name="debug_background">@color/kds_white</color>
 
   <!-- Discovery colors -->
   <color name="discovery_drawer_item_selected">@color/ksr_grey_400</color>
-  <color name="discovery_drawer_header">@color/white</color>
+  <color name="discovery_drawer_header">@color/kds_white</color>
 
   <!-- Third-party colors -->
   <color name="facebook_blue">#1877F2</color>

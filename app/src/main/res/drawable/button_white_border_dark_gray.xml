@@ -3,7 +3,7 @@
   android:color="@color/ksr_grey_500">
   <item>
     <shape>
-      <solid android:color="@color/white"/>
+      <solid android:color="@color/kds_white"/>
       <stroke android:width="@dimen/button_stroke_width" android:color="@color/ksr_grey_500"/>
     </shape>
   </item>

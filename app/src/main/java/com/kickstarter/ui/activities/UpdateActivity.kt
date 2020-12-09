@@ -13,18 +13,16 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.NumberUtils
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils
 import com.kickstarter.models.Update
 import com.kickstarter.services.KSUri
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.toolbars.KSToolbar
 import com.kickstarter.ui.views.KSWebView
 import com.kickstarter.viewmodels.UpdateViewModel
-import kotlinx.android.synthetic.main.update_layout.*
-import kotlinx.android.synthetic.main.update_layout.update_toolbar
-import kotlinx.android.synthetic.main.update_toolbar.*
+import kotlinx.android.synthetic.main.update_layout.update_web_view
+import kotlinx.android.synthetic.main.update_toolbar.share_icon_button
+import kotlinx.android.synthetic.main.update_toolbar.update_toolbar
 import okhttp3.Request
 
 @RequiresActivityViewModel(UpdateViewModel.ViewModel::class)
@@ -86,7 +84,7 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { updateSequence ->
-                    (update_toolbar as KSToolbar).setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
+                    update_toolbar.setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
                 }
 
         share_icon_button.setOnClickListener {

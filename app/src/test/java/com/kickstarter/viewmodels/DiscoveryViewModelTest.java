@@ -12,11 +12,8 @@ import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
-import com.kickstarter.libs.utils.extensions.ConfigExtension;
-import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
-import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
 import com.kickstarter.mock.factories.UserFactory;
 import com.kickstarter.mock.services.MockApiClient;
@@ -631,27 +628,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testNotShowSnackBar_whenIntentFromDeepLinkFeatureFlagOff_NotShowSnackBar() {
-    final String url = "https://*.kickstarter.com/profile/verify_email";
-    final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
-
-    this.vm = new DiscoveryViewModel.ViewModel(environment());
-    this.vm.outputs.showSuccessMessage().subscribe(this.showSuccessMessage);
-    this.vm.outputs.showErrorMessage().subscribe(this.showErrorMessage);
-
-    this.vm.intent(intentWithUrl);
-
-    this.showSuccessMessage.assertNoValues();
-    this.showErrorMessage.assertNoValues();
-  }
-
-  @Test
   public void testShowSnackBar_whenIntentFromDeepLinkSuccessResponse_showSuccessMessage() {
     final String url = "https://*.kickstarter.com/profile/verify_email";
     final Intent intentWithUrl = new Intent().setData(Uri.parse(url));
-
-    final MockCurrentConfig mockConfig = new MockCurrentConfig();
-    mockConfig.config(ConfigFactory.configWithFeatureEnabled(ConfigExtension.EMAIL_VERIFICATION_FLOW));
 
     final MockApiClient mockApiClient = new MockApiClient() {
       @NonNull
@@ -666,7 +645,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     final Environment mockedClientEnvironment = environment().toBuilder()
             .apiClient(mockApiClient)
-            .currentConfig(mockConfig)
             .build();
 
     this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);
@@ -688,9 +666,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
             .httpCode(403).errorMessages(Collections.singletonList("expired")).build();
     final ApiException apiException = ApiExceptionFactory.apiError(errorEnvelope);
 
-    final MockCurrentConfig mockConfig = new MockCurrentConfig();
-    mockConfig.config(ConfigFactory.configWithFeatureEnabled(ConfigExtension.EMAIL_VERIFICATION_FLOW));
-
     final MockApiClient mockApiClient = new MockApiClient() {
       @NonNull
       @Override
@@ -701,7 +676,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     final Environment mockedClientEnvironment = environment().toBuilder()
             .apiClient(mockApiClient)
-            .currentConfig(mockConfig)
             .build();
 
     this.vm = new DiscoveryViewModel.ViewModel(mockedClientEnvironment);

@@ -197,6 +197,7 @@ android {
 
     lintOptions {
         disable 'NonConstantResourceId'
+        disable 'QueryPermissionsNeeded'
         quiet true
         warningsAsErrors true
     }

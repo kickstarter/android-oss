@@ -8,7 +8,6 @@ import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.StringUtils
-import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -104,9 +103,9 @@ interface LoginViewModel {
                     .map<Boolean> { isValid(it.first, it.second) }
 
             val emailAndReason = intent()
-                    .filter{ it.hasExtra(IntentKey.EMAIL)}
+                    .filter { it.hasExtra(IntentKey.EMAIL)}
                     .map {
-                        Pair.create(it.getStringExtra(IntentKey.EMAIL),
+                        Pair.create(it.getStringExtra(IntentKey.EMAIL) ?: "",
                                 if (it.hasExtra(IntentKey.LOGIN_REASON)) {
                                     it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
                                 } else {

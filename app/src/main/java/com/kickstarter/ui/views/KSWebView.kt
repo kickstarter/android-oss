@@ -98,7 +98,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
     }
 
     fun evaluateJavascript(javascript: String?, resultCallback: ValueCallback<String>?) {
-        internal_web_view.evaluateJavascript(javascript, resultCallback)
+        internal_web_view.evaluateJavascript(javascript ?: "", resultCallback)
     }
 
     fun goBack() {
@@ -106,7 +106,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
     }
 
     fun loadUrl(url: String?) {
-        internal_web_view.loadUrl(url)
+        internal_web_view.loadUrl(url ?: "")
     }
 
     fun registerRequestHandlers(requestHandlers: List<RequestHandler>) {

@@ -209,15 +209,9 @@ public interface DiscoveryViewModel {
         .map(intentAndUser -> DiscoveryParams.getDefaultParams(intentAndUser.second))
         .share();
 
-      final Observable<Config> currentConfig = this.currentConfigType.observable()
-              .distinctUntilChanged();
-
       final Observable<Uri> uriFromVerification = intent()
         .map(Intent::getData)
         .ofType(Uri.class)
-        .compose(combineLatestPair(currentConfig))
-        .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, ConfigExtension.EMAIL_VERIFICATION_FLOW))
-        .map(it -> it.first)
         .filter(KSUri::isVerificationEmailUrl);
 
       final Observable<Notification<EmailVerificationEnvelope>> verification = uriFromVerification

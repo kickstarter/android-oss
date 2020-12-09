@@ -7,7 +7,6 @@ import android.util.Pair;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -20,7 +19,6 @@ import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UrlUtils;
-import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.QualtricsIntercept;
@@ -209,15 +207,9 @@ public interface DiscoveryViewModel {
         .map(intentAndUser -> DiscoveryParams.getDefaultParams(intentAndUser.second))
         .share();
 
-      final Observable<Config> currentConfig = this.currentConfigType.observable()
-              .distinctUntilChanged();
-
       final Observable<Uri> uriFromVerification = intent()
         .map(Intent::getData)
         .ofType(Uri.class)
-        .compose(combineLatestPair(currentConfig))
-        .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, ConfigExtension.EMAIL_VERIFICATION_FLOW))
-        .map(it -> it.first)
         .filter(KSUri::isVerificationEmailUrl);
 
       final Observable<Notification<EmailVerificationEnvelope>> verification = uriFromVerification

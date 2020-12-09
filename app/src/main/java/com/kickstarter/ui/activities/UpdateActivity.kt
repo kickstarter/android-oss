@@ -11,6 +11,7 @@ import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.libs.utils.TransitionUtils
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.update_toolbar.share_icon_button
 import kotlinx.android.synthetic.main.update_toolbar.update_toolbar
 import okhttp3.Request
 
+
 @RequiresActivityViewModel(UpdateViewModel.ViewModel::class)
 class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Delegate {
     private lateinit var ksString: KSString
@@ -38,13 +40,17 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         update_web_view.registerRequestHandlers(
                 listOf(
                         RequestHandler({ uri: Uri?, webEndpoint: String ->
-                            KSUri.isProjectUpdateUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint) })
+                            KSUri.isProjectUpdateUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
+                        })
                         { request: Request, _ -> handleProjectUpdateUriRequest(request) },
                         RequestHandler({ uri: Uri?, webEndpoint: String ->
-                            KSUri.isProjectUpdateCommentsUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint) })
+                            KSUri.isProjectUpdateCommentsUri(uri?.let { it }
+                                    ?: Uri.EMPTY, webEndpoint)
+                        })
                         { request: Request, _ -> handleProjectUpdateCommentsUriRequest(request) },
                         RequestHandler({ uri: Uri?, webEndpoint: String ->
-                            KSUri.isProjectUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint ) })
+                            KSUri.isProjectUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
+                        })
                         { request: Request, webView: WebView -> handleProjectUriRequest(request, webView) }
                 )
         )
@@ -98,6 +104,26 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         update_web_view.setDelegate(null)
         this.viewModel = null
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        // - When pressing the url within this webview for seeing updates for a concrete project, this same activity is presented again.
+        // we need to reload the webview with the updates url to refresh the UI
+        this.viewModel?.let { vm ->
+            vm.webViewUrl()
+                    .take(1)
+                    .compose(bindToLifecycle())
+                    .compose(observeForUI())
+                    .subscribe { url ->
+                        url?.let {
+                            update_web_view.loadUrl(it)
+                        }
+                    }
+
+        }
+    }
+
 
     private fun handleProjectUpdateCommentsUriRequest(request: Request): Boolean {
         this.viewModel?.inputs?.goToCommentsRequest(request)

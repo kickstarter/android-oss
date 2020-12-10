@@ -443,10 +443,6 @@ public interface DiscoveryViewModel {
         .subscribe(this.showQualtricsSurvey);
     }
 
-    private Boolean isSameResponse(final @NonNull Response first, final @NonNull Response second) {
-      return first.code() == second.code() && first.message() == second.message();
-    }
-
     private int currentDrawerMenuIcon(final @Nullable User user) {
       if (ObjectUtils.isNull(user)) {
         return R.drawable.ic_menu;

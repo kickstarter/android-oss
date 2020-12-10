@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginEnd="@dimen/grid_12"
-            android:background="@color/kds_support_300"
+            android:background="@color/kds_support_100"
             android:visibility="gone" />
 
           <TextView

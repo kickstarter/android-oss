@@ -9,7 +9,7 @@
   android:layout_marginEnd="@dimen/activity_vertical_margin"
   android:layout_marginBottom="@dimen/grid_4"
   android:foreground="@drawable/click_indicator_light"
-  app:cardBackgroundColor="@color/kds_support_100"
+  app:cardBackgroundColor="@color/kds_support_200"
   app:cardCornerRadius="@dimen/grid_2"
   app:cardElevation="@dimen/card_no_elevation">
 

@@ -33,7 +33,7 @@
         android:paddingEnd="@dimen/grid_3"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_2"
-        android:background="@color/kds_support_300"
+        android:background="@color/kds_support_100"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="web"

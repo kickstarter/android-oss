@@ -49,7 +49,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import okhttp3.Response;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -441,10 +440,6 @@ public interface DiscoveryViewModel {
         })
         .compose(bindToLifecycle())
         .subscribe(this.showQualtricsSurvey);
-    }
-
-    private Boolean isSameResponse(final @NonNull Response first, final @NonNull Response second) {
-      return first.code() == second.code() && first.message() == second.message();
     }
 
     private int currentDrawerMenuIcon(final @Nullable User user) {

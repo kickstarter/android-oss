@@ -7,7 +7,7 @@
   <color name="text_primary">@color/kds_support_700</color>
   <color name="text_secondary">@color/kds_support_400</color>
   <color name="window_background">@color/kds_white</color>
-  <color name="status_bar">@color/kds_support_300</color>
+  <color name="status_bar">@color/kds_support_100</color>
 
   <!-- KDS  -->
   <color name="kds_alert">#A12027</color>
@@ -22,6 +22,7 @@
   <color name="kds_create_700">#028858</color>
   <color name="kds_inform">#B6D9E1</color>
   <color name="kds_support_100">#F3F3F3</color>
+  <color name="kds_support_200">#E6E6E6</color>
   <color name="kds_support_300">#D1D1D1</color>
   <color name="kds_support_400">#696969</color>
   <color name="kds_support_500">#464646</color>
@@ -45,7 +46,7 @@
   <color name="black_alpha_50">#80000000</color>
   <color name="blue_alpha_6">#0f2b60ff</color>
   <color name="blue_darken_10">@color/kds_trust_500</color>
-  <color name="gray_alpha_50">@color/kds_support_300</color>
+  <color name="gray_alpha_50">@color/kds_support_100</color>
   <color name="gray_darken_10">@color/kds_support_300</color>
   <color name="green_alpha_6">#0F009E74</color>
   <color name="green_alpha_10">#1A009E74</color>

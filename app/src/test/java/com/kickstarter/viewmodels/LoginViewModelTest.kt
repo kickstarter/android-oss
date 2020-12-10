@@ -3,13 +3,9 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.factories.AccessTokenEnvelopeFactory
 import com.kickstarter.mock.factories.ApiExceptionFactory
-import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
-import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.IntentKey
@@ -28,7 +24,6 @@ class LoginViewModelTest : KSRobolectricTestCase() {
     private val showChangedPasswordSnackbar = TestSubscriber<Void>()
     private val showResetPasswordSuccessDialog = TestSubscriber<Boolean>()
     private val tfaChallenge = TestSubscriber<Void>()
-    private val showEmailVerificationInterstitial = TestSubscriber<Void>()
 
     fun setUpEnvironment(environment: Environment) {
         this.vm = LoginViewModel.ViewModel(environment)
@@ -42,7 +37,6 @@ class LoginViewModelTest : KSRobolectricTestCase() {
                 .map { showAndEmail -> showAndEmail.first }
                 .subscribe(this.showResetPasswordSuccessDialog)
         this.vm.outputs.tfaChallenge().subscribe(this.tfaChallenge)
-        this.vm.outputs.showInterstitialFragment().subscribe(this.showEmailVerificationInterstitial)
     }
 
     @Test
@@ -249,60 +243,6 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertValues(null, null)
         this.koalaTest.assertValues("Login")
-        this.lakeTest.assertValue("Log In Submit Button Clicked")
-    }
-
-    @Test
-    fun testShowInterstitial_whenUserNotValidatedAndActiveFeatureFlag_ShowInterstitial() {
-        val user = UserFactory.userNotVerifiedEmail()
-        val token = "Token"
-        val envelope = AccessTokenEnvelopeFactory.envelope(user, token)
-
-        val apiClient = object : MockApiClient() {
-            override fun login(email: String, password: String): Observable<AccessTokenEnvelope> {
-                return Observable.just(envelope)
-            }
-        }
-
-        val mockConfig = MockCurrentConfig()
-        mockConfig.config(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, true))))
-
-        val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .apiClient(apiClient)
-                .build()
-
-        setUpEnvironment(environment)
-
-        this.vm.inputs.email("hello@kickstarter.com")
-        this.vm.inputs.password("androidiscool")
-        this.vm.inputs.loginClick()
-
-        this.loginSuccess.assertNoValues()
-        this.showEmailVerificationInterstitial.assertValueCount(1)
-
-        this.lakeTest.assertValue("Log In Submit Button Clicked")
-    }
-
-    @Test
-    fun testLoginSuccess_whenUserNotValidatedAndDeactivatedFeatureFlag_LoginSuccess() {
-
-        val mockConfig = MockCurrentConfig()
-        mockConfig.config(ConfigFactory.configWithFeaturesEnabled(mapOf(Pair(EMAIL_VERIFICATION_FLOW, false))))
-
-        val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .build()
-
-        setUpEnvironment(environment)
-
-        this.vm.inputs.email("hello@kickstarter.com")
-        this.vm.inputs.password("androidiscool")
-        this.vm.inputs.loginClick()
-
-        this.loginSuccess.assertValue(null)
-        this.showEmailVerificationInterstitial.assertNoValues()
-
         this.lakeTest.assertValue("Log In Submit Button Clicked")
     }
 }

@@ -8,7 +8,6 @@ import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.StringUtils
-import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -63,15 +62,12 @@ interface LoginViewModel {
 
         /** Start two factor activity for result.  */
         fun tfaChallenge(): Observable<Void>
-
-        /** Start the Interstitial screen.  */
-        fun showInterstitialFragment(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<LoginActivity>(environment), Inputs, Outputs {
 
-        private val emailEditTextChanged = PublishSubject.create<String>()
-        private val logInButtonClicked = PublishSubject.create<Void>()
+        private val emailEditTextChanged = BehaviorSubject.create<String>()
+        private val logInButtonClicked = BehaviorSubject.create<Void>()
         private val passwordEditTextChanged = PublishSubject.create<String>()
         private val resetPasswordConfirmationDialogDismissed = PublishSubject.create<Boolean>()
 
@@ -93,7 +89,6 @@ interface LoginViewModel {
 
         private val client: ApiClientType = environment.apiClient()
         private val currentUser: CurrentUserType = environment.currentUser()
-        private val currentConfig = environment.currentConfig().observable()
 
         init {
 
@@ -117,17 +112,16 @@ interface LoginViewModel {
             // - Contain the errors if any from the login endpoint response
             val errors = PublishSubject.create<Throwable?>()
             // - Contains success data if any from the login endpoint response
-            val successResponseData = PublishSubject.create<Pair<Boolean, AccessTokenEnvelope>?>()
+            val successResponseData = PublishSubject.create<AccessTokenEnvelope>()
 
             emailAndPassword
-                    .compose(takeWhen<Pair<String, String>, Void>(this.logInButtonClicked))
-                    .switchMap { ep -> this.client.login(ep.first, ep.second) }
-                    .materialize()
+                    .compose(takeWhen(this.logInButtonClicked))
+                    .compose(bindToLifecycle())
+                    .switchMap { ep -> this.client.login(ep.first, ep.second).materialize() }
                     .share()
-                    .compose<Pair<Notification<AccessTokenEnvelope>, Config>>(combineLatestPair(currentConfig))
                     .subscribe {
-                        errors.onNext(unwrapNotificationEnvelopeError(it.first))
-                        successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it.first, it.second))
+                        errors.onNext(unwrapNotificationEnvelopeError(it))
+                        successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it))
                     }
 
             emailAndReason
@@ -176,8 +170,8 @@ interface LoginViewModel {
                     .map { requireNotNull(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        continueFlow(it.first, it.second)
+                    .subscribe { envelope ->
+                        this.success(envelope)
                     }
 
             errors
@@ -210,6 +204,7 @@ interface LoginViewModel {
                     .map { null }
 
             this.logInButtonClicked
+                    .compose(combineLatestPair(emailAndPassword))
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackLogInSubmitButtonClicked() }
         }
@@ -217,26 +212,8 @@ interface LoginViewModel {
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
                 if (notification.hasThrowable()) notification.throwable else null
 
-        private fun unwrapNotificationEnvelopeSuccess (
-                notification: Notification<AccessTokenEnvelope>,
-                config: Config): Pair<Boolean, AccessTokenEnvelope>? {
-
-            return if (notification.hasValue()) {
-                val accessTokenData = notification.value
-                val user = accessTokenData.user()
-                val isValidated = LoginHelper.hasCurrentUserVerifiedEmail(user, config) ?: false
-                Pair(isValidated, accessTokenData)
-            } else null
-        }
-
-        private fun continueFlow(isValidated: Boolean, accessTokenNotification: AccessTokenEnvelope) {
-           if (isValidated) {
-                this.success(accessTokenNotification)
-           } else {
-                this.currentUser.login(accessTokenNotification.user(), accessTokenNotification.accessToken())
-                this.showInterstitial.onNext(null)
-           }
-        }
+        private fun unwrapNotificationEnvelopeSuccess(notification: Notification<AccessTokenEnvelope>) =
+                if (notification.hasValue()) notification.value else null
 
         private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()
 
@@ -272,7 +249,5 @@ interface LoginViewModel {
         override fun showResetPasswordSuccessDialog(): BehaviorSubject<Pair<Boolean, String>> = this.showResetPasswordSuccessDialog
 
         override fun tfaChallenge() = this.tfaChallenge
-
-        override fun showInterstitialFragment(): BehaviorSubject<Void> = this.showInterstitial
     }
 }

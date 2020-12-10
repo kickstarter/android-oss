@@ -7,7 +7,6 @@ import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isUserEmailVerified
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.ui.fragments.Callbacks
 import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 

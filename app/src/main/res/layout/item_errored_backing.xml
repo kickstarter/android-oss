@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/ksr_grey_300"
+    android:background="@color/kds_support_300"
     android:clipChildren="false"
     android:orientation="horizontal"
     android:padding="@dimen/grid_3">
@@ -39,7 +39,7 @@
         android:layout_marginEnd="@dimen/grid_1"
         android:contentDescription="@string/Alert"
         android:src="@drawable/ic_icon_alert"
-        app:tint="@color/ksr_red_400" />
+        app:tint="@color/kds_alert" />
 
       <TextView
         android:id="@+id/errored_backing_project_collection_date"
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
-        android:textColor="@color/ksr_red_400"
+        android:textColor="@color/kds_alert"
         tools:text="6 days" />
 
     </LinearLayout>

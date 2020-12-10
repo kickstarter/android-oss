@@ -4,7 +4,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
-  android:background="@color/white"
+  android:background="@color/kds_white"
   android:id="@+id/message_threads_toolbar"
   android:elevation="0dp"
   app:contentInsetLeft="0dp"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_1"
-        android:textColor="@color/ksr_green_500"
+        android:textColor="@color/kds_create_700"
         tools:text="(3)" />
 
     </LinearLayout>

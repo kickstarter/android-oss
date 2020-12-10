@@ -50,7 +50,7 @@
     android:layout_marginBottom="-30dp"
     android:minHeight="130dp"
     android:visibility="gone"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/kds_white"
     app:cardCornerRadius="@dimen/card_container_radius"
     app:cardElevation="@dimen/grid_2"
     tools:showIn="@layout/activity_project"

@@ -32,7 +32,7 @@
       android:layout_height="match_parent"
       android:gravity="center"
       android:text="@string/keyboard_arrow_down_icon"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       android:textSize="@dimen/icon" />
 
     <com.kickstarter.ui.views.IconButton
@@ -41,7 +41,7 @@
       android:layout_height="match_parent"
       android:gravity="center"
       android:text="@string/keyboard_arrow_up_icon"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       android:textSize="@dimen/icon" />
 
   </FrameLayout>

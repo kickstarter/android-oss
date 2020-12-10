@@ -34,7 +34,7 @@
         android:layout_marginBottom="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_4"
         android:layout_marginStart="@dimen/grid_7_half"
-        android:textColor="@color/ksr_dark_grey_500"
+        android:textColor="@color/kds_support_400"
         app:layout_constraintStart_toEndOf="@+id/icon_calendar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -9,7 +9,7 @@
     style="@style/ActivitySampleCard">
 
     <LinearLayout
-      android:background="@color/white"
+      android:background="@color/kds_white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/grid_3"
@@ -20,7 +20,7 @@
       <TextView
         style="@style/TextPrimary"
         android:textSize="@dimen/headline"
-        android:textColor="@color/ksr_green_700"
+        android:textColor="@color/kds_create_700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_2"
@@ -37,7 +37,7 @@
 
         <ImageView
           android:id="@+id/activity_image"
-          android:background="@color/transparent"
+          android:background="@color/kds_transparent"
           android:layout_gravity="top"
           android:layout_width="@dimen/grid_5"
           android:layout_height="@dimen/grid_5"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:maxLines="3"
             android:ellipsize="end"
-            android:textColor="@color/ksr_dark_grey_500"/>
+            android:textColor="@color/kds_support_400"/>
 
         </LinearLayout>
 

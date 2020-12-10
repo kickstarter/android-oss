@@ -3,16 +3,16 @@
   <item android:id="@android:id/background">
     <shape>
       <gradient
-        android:endColor="@color/ksr_grey_400"
-        android:startColor="@color/ksr_grey_400" />
+        android:endColor="@color/kds_support_300"
+        android:startColor="@color/kds_support_300" />
     </shape>
   </item>
   <item android:id="@android:id/progress">
     <clip>
       <shape>
         <gradient
-          android:endColor="@color/ksr_green_700"
-          android:startColor="@color/ksr_green_700" />
+          android:endColor="@color/kds_create_700"
+          android:startColor="@color/kds_create_700" />
       </shape>
     </clip>
   </item>

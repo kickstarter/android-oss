@@ -1,46 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- Theme colors -->
-  <color name="primary">@color/ksr_green_500</color>
-  <color name="primary_dark">@color/ksr_green_700</color>
+  <color name="primary">@color/kds_create_700</color>
+  <color name="primary_dark">@color/kds_create_700</color>
   <color name="accent">@color/primary</color>
-  <color name="text_primary">@color/ksr_soft_black</color>
-  <color name="text_secondary">@color/ksr_dark_grey_500</color>
-  <color name="window_background">@color/white</color>
-  <color name="status_bar">@color/ksr_grey_300</color>
-
-  <!-- Legacy Kickstarter colors -->
-  <color name="black">@android:color/black</color>
-  <color name="ksr_apricot_500">#FFCBA9</color>
-  <color name="ksr_apricot_600">#F0AE81</color>
-  <color name="ksr_cobalt_500">#4C6CF8</color>
-  <color name="ksr_cobalt_600">#395AEB</color>
-  <color name="ksr_dark_grey_400">#9B9E9E</color>
-  <color name="ksr_dark_grey_500">#656969</color>
-  <color name="ksr_highlighter_green">#05F2BA</color>
-  <color name="ksr_green_200">#57BFA4</color>
-  <color name="ksr_green_500">#009E74</color>
-  <color name="ksr_green_700">#037362</color>
-  <color name="ksr_green_800">#034752</color>
-  <color name="ksr_create_300">#9BEBC9</color>
-  <color name="ksr_grey_100">#FBFBFA</color>
-  <color name="ksr_grey_200">#F7F7F6</color>
-  <color name="ksr_grey_300">#F0F0F0</color>
-  <color name="ksr_grey_400">#E8E8E8</color>
-  <color name="ksr_grey_500">#DCDEDD</color>
-  <color name="ksr_orange">#FF4F00</color>
-  <color name="ksr_red_400">#FF5151</color>
-  <color name="ksr_alert_red">#A12027</color>
-  <color name="ksr_soft_black">#282828</color>
-  <color name="ksr_teal_500">#05F2BA</color>
-  <color name="ksr_text_green_700">@color/ksr_green_700</color>
-  <color name="white">@android:color/white</color>
-  <color name="transparent">@android:color/transparent</color>
-  <color name="kds_celebrate_100">#FFF2EC</color>
+  <color name="text_primary">@color/kds_support_700</color>
+  <color name="text_secondary">@color/kds_support_400</color>
+  <color name="window_background">@color/kds_white</color>
+  <color name="status_bar">@color/kds_support_300</color>
 
   <!-- KDS  -->
-  <color name="trust_700">#0A007D</color>
-  <color name="celebrate_500">#F97B62</color>
+  <color name="kds_alert">#A12027</color>
+  <color name="kds_black">@android:color/black</color>
+  <color name="kds_celebrate_100">#FFF2EC</color>
+  <color name="kds_celebrate_300">#FECCB3</color>
+  <color name="kds_celebrate_500">#F97B62</color>
+  <color name="kds_celebrate_700">#D8503D</color>
+  <color name="kds_create_100">#E6FAF1</color>
+  <color name="kds_create_300">#9BEBC9</color>
+  <color name="kds_create_500">#05CE78</color>
+  <color name="kds_create_700">#028858</color>
+  <color name="kds_inform">#B6D9E1</color>
+  <color name="kds_support_100">#F3F3F3</color>
+  <color name="kds_support_300">#D1D1D1</color>
+  <color name="kds_support_400">#696969</color>
+  <color name="kds_support_500">#464646</color>
+  <color name="kds_support_700">#222222</color>
+  <color name="kds_transparent">@android:color/transparent</color>
+  <color name="kds_trust_100">#DBE7FF</color>
+  <color name="kds_trust_300">#71A0FF</color>
+  <color name="kds_trust_500">#5555FF</color>
+  <color name="kds_trust_700">#0A007D</color>
+  <color name="kds_warn">#F9D66D</color>
+  <color name="kds_white">@android:color/white</color>
 
   <!-- Colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
@@ -52,9 +44,9 @@
   <color name="black_alpha_40">#66000000</color>
   <color name="black_alpha_50">#80000000</color>
   <color name="blue_alpha_6">#0f2b60ff</color>
-  <color name="blue_darken_10">@color/ksr_cobalt_600</color>
-  <color name="gray_alpha_50">@color/ksr_grey_300</color>
-  <color name="gray_darken_10">@color/ksr_grey_500</color>
+  <color name="blue_darken_10">@color/kds_trust_500</color>
+  <color name="gray_alpha_50">@color/kds_support_300</color>
+  <color name="gray_darken_10">@color/kds_support_300</color>
   <color name="green_alpha_6">#0F009E74</color>
   <color name="green_alpha_10">#1A009E74</color>
   <color name="green_alpha_20">#33009E74</color>
@@ -70,11 +62,11 @@
   <color name="ripple_light">#1f000000</color>
 
   <!-- Debug colors -->
-  <color name="debug_background">@color/white</color>
+  <color name="debug_background">@color/kds_white</color>
 
   <!-- Discovery colors -->
-  <color name="discovery_drawer_item_selected">@color/ksr_grey_400</color>
-  <color name="discovery_drawer_header">@color/white</color>
+  <color name="discovery_drawer_item_selected">@color/kds_support_300</color>
+  <color name="discovery_drawer_header">@color/kds_white</color>
 
   <!-- Third-party colors -->
   <color name="facebook_blue">#1877F2</color>

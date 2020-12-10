@@ -38,7 +38,7 @@
         android:gravity="center"
         android:layout_marginTop="@dimen/grid_14"
         android:text="@string/Change_your_shipping_location_or_skip_add_ons_to_continue"
-        android:textColor="@color/ksr_dark_grey_500"
+        android:textColor="@color/kds_support_400"
         app:layout_constraintTop_toBottomOf="@id/add_on_unavailable_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

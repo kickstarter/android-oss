@@ -50,7 +50,7 @@
               android:layout_height="wrap_content"
               app:tabMode="scrollable"
               app:tabSelectedTextColor="@color/primary"
-              app:tabTextColor="@color/ksr_soft_black" />
+              app:tabTextColor="@color/kds_support_700" />
 
           </LinearLayout>
 
@@ -69,7 +69,7 @@
     android:layout_width="304dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:background="@color/white"
+    android:background="@color/kds_white"
     android:fitsSystemWindows="false">
 
     <androidx.recyclerview.widget.RecyclerView

@@ -3,5 +3,5 @@
   android:shape="oval">
   <stroke
     android:width="@dimen/unselected_card_stroke_width"
-    android:color="@color/ksr_grey_500" />
+    android:color="@color/kds_support_300" />
 </shape>

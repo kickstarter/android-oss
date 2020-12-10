@@ -13,10 +13,10 @@
     android:height="@dimen/grid_4"
     android:width="@dimen/grid_4"/>
 
-  <solid android:color="@color/white"/>
+  <solid android:color="@color/kds_white"/>
 
   <stroke
     android:width="@dimen/message_avatar_border_width"
-    android:color="@color/white"/>
+    android:color="@color/kds_white"/>
 
 </shape>

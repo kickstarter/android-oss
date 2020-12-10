@@ -46,7 +46,7 @@ public final class KSColorUtils {
   }
 
   public static @ColorRes int lightColorId() {
-    return R.color.white;
+    return R.color.kds_white;
   }
 
   /**

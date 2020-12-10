@@ -19,7 +19,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Headline"
-      android:textColor="@color/ksr_green_700"
+      android:textColor="@color/kds_create_700"
       tools:text="$10 USD" />
 
     <TextView
@@ -28,7 +28,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/BodySecondary"
-      android:textColor="@color/ksr_green_700"
+      android:textColor="@color/kds_create_700"
       tools:text="pledged of $70 USD" />
 
   </LinearLayout>
@@ -45,7 +45,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Headline"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       tools:text="47" />
 
     <TextView
@@ -53,7 +53,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/discovery_baseball_card_stats_backers"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       style="@style/BodySecondary" />
 
   </LinearLayout>
@@ -71,7 +71,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/Headline"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       tools:text="22" />
 
     <TextView
@@ -80,7 +80,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/BodySecondary"
-      android:textColor="@color/ksr_dark_grey_500"
+      android:textColor="@color/kds_support_400"
       tools:text="days to go" />
 
   </LinearLayout>

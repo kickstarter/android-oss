@@ -5,7 +5,7 @@
   android:id="@+id/project_search_result_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@color/transparent"
+  android:background="@color/kds_transparent"
   android:focusable="true"
   android:foreground="@drawable/click_indicator_light"
   android:orientation="vertical"
@@ -57,7 +57,7 @@
           style="@style/Caption1PrimaryMedium"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/ksr_text_green_700"
+          android:textColor="@color/kds_create_700"
           android:textStyle="bold"
           android:layout_marginEnd="@dimen/grid_1_half"
           tools:text="10,000%"/>

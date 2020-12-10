@@ -5,7 +5,7 @@
   android:id="@+id/cancel_pledge_root"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_300"
+  android:background="@color/kds_support_300"
   android:paddingTop="?android:attr/actionBarSize">
 
   <ScrollView
@@ -66,7 +66,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/Yes_cancel_my_pledge"
-          app:backgroundTint="@color/ksr_red_400" />
+          app:backgroundTint="@color/kds_alert" />
 
         <FrameLayout
           android:id="@+id/progress_bar"
@@ -77,13 +77,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stateListAnimator="@null"
-            app:backgroundTint="@color/ksr_red_400" />
+            app:backgroundTint="@color/kds_alert" />
 
           <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminateTint="@color/white" />
+            android:indeterminateTint="@color/kds_white" />
         </FrameLayout>
 
       </FrameLayout>

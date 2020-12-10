@@ -4,7 +4,7 @@
   <corners android:radius="@dimen/grid_1" />
   <gradient
     android:angle="0"
-    android:endColor="@color/ksr_grey_300"
-    android:startColor="@color/ksr_grey_500" />
+    android:endColor="@color/kds_support_300"
+    android:startColor="@color/kds_support_300" />
   <size android:height="@dimen/grid_3_half" />
 </shape>

@@ -16,7 +16,7 @@
     android:layout_marginStart="@dimen/activity_horizontal_margin"
     android:gravity="center_vertical"
     android:textSize="@dimen/body"
-    android:textColor="@color/ksr_soft_black"
+    android:textColor="@color/kds_support_700"
     tools:text="United States" />
 
 </LinearLayout>

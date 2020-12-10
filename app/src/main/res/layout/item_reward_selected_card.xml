@@ -25,7 +25,7 @@
         android:background="@drawable/circle_accent"
         android:contentDescription="@string/Selected_card"
         android:src="@drawable/icon__check"
-        app:tint="@color/white" />
+        app:tint="@color/kds_white" />
 
       <include layout="@layout/reward_card_details" />
     </LinearLayout>

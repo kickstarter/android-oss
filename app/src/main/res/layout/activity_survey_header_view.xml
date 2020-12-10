@@ -10,5 +10,5 @@
   android:layout_marginEnd="@dimen/feed_padding_x"
   android:layout_marginTop="@dimen/grid_2"
   android:layout_marginBottom="@dimen/grid_2"
-  android:textColor="@color/ksr_text_green_700"
+  android:textColor="@color/kds_create_700"
   tools:text="2 Reward Surveys" />

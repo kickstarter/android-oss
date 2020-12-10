@@ -25,8 +25,8 @@ import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 public final class ChildFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.accent) int accentColor;
-  protected @BindColor(R.color.ksr_dark_grey_500) int ksrDarkGrayColor;
-  protected @BindColor(R.color.ksr_soft_black) int ksrSoftBlackColor;
+  protected @BindColor(R.color.kds_support_400) int ksrDarkGrayColor;
+  protected @BindColor(R.color.kds_support_700) int ksrSoftBlackColor;
   protected @BindDrawable(R.drawable.ic_label_green) Drawable labelSelectedDrawable;
   protected @BindDrawable(R.drawable.ic_label) Drawable labelUnselectedDrawable;
   protected @BindDrawable(R.drawable.drawer_selected) Drawable selectedBackgroundDrawable;

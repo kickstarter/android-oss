@@ -3,7 +3,7 @@
   <item>
     <shape>
       <corners android:radius="@dimen/button_corner_radius"/>
-      <solid android:color="@color/ksr_grey_100" />
+      <solid android:color="@color/kds_support_100" />
     </shape>
   </item>
 </selector>

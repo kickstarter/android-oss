@@ -3,8 +3,8 @@
   <corners
     android:radius="2dp"/>
   <solid
-    android:color="@color/transparent"/>
+    android:color="@color/kds_transparent"/>
   <stroke
-    android:color="@color/ksr_grey_500"
+    android:color="@color/kds_support_300"
     android:width="1dp"/>
 </shape>

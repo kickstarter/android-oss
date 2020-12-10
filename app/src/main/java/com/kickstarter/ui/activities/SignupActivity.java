@@ -78,20 +78,6 @@ public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, null, e));
 
-    this.viewModel.outputs.showInterstitialFragment()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> LoginHelper.INSTANCE.showInterstitialFragment(
-        this.getSupportFragmentManager(),
-        R.id.login_view_id,
-        new Callbacks() {
-          @Override
-          public void onDismiss() {
-            SignupActivity.this.onSuccess();
-          }
-        })
-      );
-
     RxView.clicks(this.newsletterSwitch)
       .skip(1)
       .compose(bindToLifecycle())

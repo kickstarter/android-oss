@@ -99,7 +99,7 @@
     </com.google.android.material.appbar.CollapsingToolbarLayout>
   </com.google.android.material.appbar.AppBarLayout>
 
-  <fragment
+  <androidx.fragment.app.FragmentContainerView
     android:id="@+id/fragment_discovery"
     android:name="com.kickstarter.ui.fragments.DiscoveryFragment"
     android:layout_width="match_parent"

@@ -131,7 +131,7 @@ class StringExtKtTest : KSRobolectricTestCase() {
         private const val EMPTY_SPACE = " "
         private const val EMPTY_MULTI_SPACE = "    "
         private const val KICKSTARTER = "kickstarter"
-        private const val KICKSTARTER_PARENTHESES= "kickstarter"
+        private const val KICKSTARTER_PARENTHESES= "(kickstarter)"
         private const val PASSWORD_LENGTH_FIVE = "kicks"
         private const val PASSWORD_LENGTH_SIX = "kickst"
         private const val PASSWORD_LENGTH_TEN = "kickstarts"

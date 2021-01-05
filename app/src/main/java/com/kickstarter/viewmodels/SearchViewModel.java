@@ -8,7 +8,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;

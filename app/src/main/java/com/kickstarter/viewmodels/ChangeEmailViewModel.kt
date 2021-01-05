@@ -8,7 +8,6 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.StringUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.libs.utils.extensions.isValidPassword
 import com.kickstarter.services.ApolloClientType

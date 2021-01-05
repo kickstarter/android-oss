@@ -12,7 +12,6 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.MessageThread;

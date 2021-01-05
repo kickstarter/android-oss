@@ -10,7 +10,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;

@@ -7,7 +7,6 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.LoginHelper;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;

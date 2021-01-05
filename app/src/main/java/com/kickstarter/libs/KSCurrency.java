@@ -4,7 +4,6 @@ import android.os.Parcelable;
 
 import com.kickstarter.libs.models.Country;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.Project;
 

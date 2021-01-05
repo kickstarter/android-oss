@@ -18,7 +18,6 @@ import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UrlUtils;
 import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.libs.utils.extensions.StringExtKt;

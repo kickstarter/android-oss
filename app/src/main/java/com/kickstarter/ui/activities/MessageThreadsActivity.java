@@ -16,7 +16,6 @@ import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.extensions.StringExtKt;

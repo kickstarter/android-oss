@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.PairUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.BackingWrapper;
 import com.kickstarter.models.Message;
@@ -265,7 +266,7 @@ public interface MessagesViewModel {
         .distinctUntilChanged();
 
       final Observable<Boolean> messageHasBody = this.messageEditTextChanged
-        .map(StringUtils::isPresent);
+        .map(StringExtKt::isPresent);
 
       messageThreadEnvelope
         .map(MessageThreadEnvelope::messageThread)

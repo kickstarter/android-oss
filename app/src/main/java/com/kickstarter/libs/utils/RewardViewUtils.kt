@@ -12,6 +12,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.models.Country
+import com.kickstarter.libs.utils.extensions.trim
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import java.math.RoundingMode
@@ -62,7 +63,7 @@ object RewardViewUtils {
         val country = Country.findByCurrencyCode(project.currency()) ?: return spannableString
 
         val currencyNeedsCode = ksCurrency.currencyNeedsCode(country, true)
-        val currencySymbolToDisplay = StringUtils.trim(ksCurrency.getCurrencySymbol(country, true))
+        val currencySymbolToDisplay = ksCurrency.getCurrencySymbol(country, true).trim()
 
         if (currencyNeedsCode) {
             val startOfSymbol = formattedCurrency.indexOf(currencySymbolToDisplay)

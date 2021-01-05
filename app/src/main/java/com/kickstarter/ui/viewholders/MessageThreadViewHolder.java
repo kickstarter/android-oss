@@ -14,6 +14,7 @@ import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.MessagesActivity;
@@ -140,7 +141,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
   }
 
   private void setUnreadCountTextView(final @NonNull String unreadCount) {
-    this.unreadCountTextView.setText(StringUtils.wrapInParentheses(unreadCount));
+    this.unreadCountTextView.setText(StringExtKt.wrapInParentheses(unreadCount));
 
     this.unreadCountTextView.setContentDescription(
       this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCount)

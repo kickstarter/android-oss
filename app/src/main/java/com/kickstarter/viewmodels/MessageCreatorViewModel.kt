@@ -7,6 +7,7 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.StringUtils
+import com.kickstarter.libs.utils.extensions.isPresent
 import com.kickstarter.models.MessageThread
 import com.kickstarter.models.Project
 import com.kickstarter.services.ApiClientType
@@ -77,7 +78,7 @@ interface MessageCreatorViewModel {
             { p, u -> SendMessage(p, u) }
 
             this.messageBodyChanged
-                    .map { StringUtils.isPresent(it) }
+                    .map { it.isPresent() }
                     .distinctUntilChanged()
                     .subscribe(this.sendButtonIsEnabled)
 

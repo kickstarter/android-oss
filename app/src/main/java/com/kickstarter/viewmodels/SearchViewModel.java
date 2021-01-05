@@ -9,6 +9,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
@@ -63,12 +64,12 @@ public interface SearchViewModel {
       final Scheduler scheduler = environment.scheduler();
 
       final Observable<DiscoveryParams> searchParams = this.search
-        .filter(StringUtils::isPresent)
+        .filter(StringExtKt::isPresent)
         .debounce(300, TimeUnit.MILLISECONDS, scheduler)
         .map(s -> DiscoveryParams.builder().term(s).build());
 
       final Observable<DiscoveryParams> popularParams = this.search
-        .filter(StringUtils::isEmpty)
+        .filter(StringExtKt::isEmpty)
         .map(__ -> defaultParams)
         .startWith(defaultParams);
 
@@ -91,7 +92,7 @@ public interface SearchViewModel {
         .subscribe(this.isFetchingProjects);
 
       this.search
-        .filter(StringUtils::isEmpty)
+        .filter(StringExtKt::isEmpty)
         .compose(bindToLifecycle())
         .subscribe(__ -> {
           this.searchProjects.onNext(ListUtils.empty());
@@ -127,7 +128,7 @@ public interface SearchViewModel {
 
       query
         .compose(takePairWhen(pageCount))
-        .filter(qp -> StringUtils.isPresent(qp.first))
+        .filter(qp -> StringExtKt.isPresent(qp.first))
         .observeOn(Schedulers.io())
         .compose(bindToLifecycle())
         .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));

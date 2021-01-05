@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import com.kickstarter.libs.models.Country;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.libs.utils.extensions.StringExtKt;
 import com.kickstarter.models.Project;
 
 import java.math.RoundingMode;
@@ -76,7 +77,7 @@ public final class KSCurrency {
       .precision(NumberUtils.precision(initialValue, roundingMode))
       .build();
 
-    return StringUtils.trim(NumberUtils.format(currencyOptions.value(), numberOptions));
+    return StringExtKt.trim(NumberUtils.format(currencyOptions.value(), numberOptions));
   }
 
   /**
@@ -115,7 +116,7 @@ public final class KSCurrency {
       .precision(precision > 0 ? 2 : 0)
       .build();
 
-    return StringUtils.trim(NumberUtils.format(currencyOptions.value(), numberOptions));
+    return StringExtKt.trim(NumberUtils.format(currencyOptions.value(), numberOptions));
   }
 
   /**

@@ -6,18 +6,18 @@ import java.util.*
     const val MINIMUM_PASSWORD_LENGTH = 6
 
     /**
-     * Returns a boolean of if the string is an email address
+     * Returns a boolean that reflects if the string is an email address
      */
     fun String.isEmail(): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(this).matches()
     }
 
     /**
-    * Returns a boolean of if the string is empty or the length is zero when space characters are
-     * trimmed
+    * Returns a boolean that reflects if the string is empty or the length is zero when space
+    * characters are trimmed
     */
     fun String?.isEmpty(): Boolean {
-        return this == null || this.trim(' ').length == 0
+        return this == null || this.trim().length == 0
     }
 
     /**

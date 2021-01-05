@@ -7,75 +7,91 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun isEmail_whenGivenEmail_shouldReturnTrue() {
-        assertTrue("hello@kickstarter.com".isEmail())
+        assertTrue(VALID_EMAIL.isEmail())
     }
 
     @Test
     fun isEmail_whenNotGivenEmail_shouldReturnFalse() {
-        assertFalse("hello@kickstarer".isEmail())
+        assertFalse(INVALID_EMAIL.isEmail())
     }
 
     @Test
     fun isEmpty_whenGivenEmptyString_shouldReturnTrue() {
-        val nullString: String? = null
-        assertTrue("".isEmpty())
-        assertTrue(" ".isEmpty())
-        assertTrue("    ".isEmpty())
-        assertTrue(nullString.isEmpty())
+        assertTrue(EMPTY_STRING.isEmpty())
+        assertTrue(EMPTY_SPACE.isEmpty())
+        assertTrue(EMPTY_MULTI_SPACE.isEmpty())
+        assertTrue(NULL_STRING.isEmpty())
     }
 
     @Test
     fun isEmpty_whenStringNotEmpty_shouldReturnFalse() {
-        assertFalse("a".isEmpty())
-        assertFalse(" a ".isEmpty())
+        assertFalse("k".isEmpty())
+        assertFalse(" k ".isEmpty())
     }
 
     @Test
     fun isPresent_whenStringEmpty_shouldReturnFalse() {
-        val nullString: String? = null
-        assertFalse("".isPresent())
-        assertFalse(" ".isPresent())
-        assertFalse("    ".isPresent())
-        assertFalse(nullString.isPresent())
+        assertFalse(EMPTY_STRING.isPresent())
+        assertFalse(EMPTY_SPACE.isPresent())
+        assertFalse(EMPTY_MULTI_SPACE.isPresent())
+        assertFalse(NULL_STRING.isPresent())
     }
 
     @Test
     fun isPresent_whenStringNotEmpty_shouldReturnTrue() {
-        assertTrue("a".isPresent())
-        assertTrue(" a ".isPresent())
+        assertTrue("k".isPresent())
+        assertTrue(" k ".isPresent())
+    }
+
+    @Test
+    fun isValidPassword_whenStringIsEmpty_shouldReturnFalse(){
+        assertFalse(EMPTY_STRING.isValidPassword())
+        assertFalse(EMPTY_SPACE.isValidPassword())
+        assertFalse(EMPTY_MULTI_SPACE.isValidPassword())
+    }
+
+    @Test
+    fun isValidPassword_whenStringIsLessThanRequiredLength_shouldReturnFalse(){
+        assertFalse(PASSWORD_LENGTH_FIVE.isValidPassword())
+    }
+
+    @Test
+    fun isValidPassword_whenStringIsNotNullAndGreaterThanOrEqualToRequiredLength_shouldReturnTrue() {
+        assertTrue(PASSWORD_LENGTH_SIX.isValidPassword())
+        assertTrue(PASSWORD_LENGTH_TEN.isValidPassword())
     }
 
     @Test
     fun sentenceCase_whenGivenLowerCaseString_shouldReformatToSentenceCase() {
-        assertEquals("A", "a".sentenceCase());
-        assertEquals("Apple", "apple".sentenceCase());
+        assertEquals("K", "k".sentenceCase());
+        assertEquals("Kickstarter", "kickstarter".sentenceCase());
     }
 
     @Test
     fun sentenceCase_whenGivenUpperCaseString_shouldReformatToSentenceCase() {
-        assertEquals("Apple", "APPLE".sentenceCase());
+        assertEquals("Kickstarter", "KICKSTARTER".sentenceCase());
     }
 
     @Test
     fun sentenceCase_whenGivenMixedCaseString_shouldReformatToSentenceCase() {
-        assertEquals("Apple", "APple".sentenceCase());
+        assertEquals("Kickstarter", "KiCkSTarTer".sentenceCase());
     }
 
     @Test
     fun sentenceCase_whenGivenTitleCaseString_shouldReformatToSentenceCase() {
-        assertEquals("Snapple apple", "Snapple Apple".sentenceCase());
-        assertEquals("Snapple apple apple", "Snapple Apple Apple".sentenceCase());
+        assertEquals("Kickstarter kickstarter", "Kickstarter Kickstarter".sentenceCase());
+        assertEquals("Kickstarter is great", "Kickstarter Is Great".sentenceCase());
     }
 
     @Test
     fun sentenceCase_whenGivenEmptyString_shouldEmptyString() {
-        assertEquals("", "".sentenceCase());
+        assertEquals(EMPTY_STRING, EMPTY_STRING.sentenceCase());
     }
 
     @Test
     fun trim_whenGivenEmptyString_shouldReturnEmptyString() {
-        assertEquals("", "".trim())
-        assertEquals("", " ".trim())
+        assertEquals(EMPTY_STRING, EMPTY_STRING.trim())
+        assertEquals(EMPTY_STRING, EMPTY_SPACE.trim())
     }
 
     @Test
@@ -102,6 +118,23 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertEquals("", "\u00A0 ".trim())
     }
 
+    @Test
+    fun wrapInParentheses_whenGivenString_shouldReturnFlankedString() {
+        assertEquals(KICKSTARTER.wrapInParentheses(), KICKSTARTER_PARENTHESES)
+        assertEquals(EMPTY_STRING.wrapInParentheses(), "()")
+    }
 
-
+    companion object {
+        private const val VALID_EMAIL = "hello@kickstarter.com"
+        private const val INVALID_EMAIL = "hello@kickstarer"
+        private const val EMPTY_STRING = ""
+        private const val EMPTY_SPACE = " "
+        private const val EMPTY_MULTI_SPACE = "    "
+        private const val KICKSTARTER = "kickstarter"
+        private const val KICKSTARTER_PARENTHESES= "kickstarter"
+        private const val PASSWORD_LENGTH_FIVE = "kicks"
+        private const val PASSWORD_LENGTH_SIX = "kickst"
+        private const val PASSWORD_LENGTH_TEN = "kickstarts"
+        private val NULL_STRING = null
+    }
 }

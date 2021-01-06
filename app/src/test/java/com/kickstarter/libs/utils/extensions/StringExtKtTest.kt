@@ -20,7 +20,6 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertTrue(EMPTY_STRING.isEmpty())
         assertTrue(EMPTY_SPACE.isEmpty())
         assertTrue(EMPTY_MULTI_SPACE.isEmpty())
-        assertTrue(NULL_STRING.isEmpty())
     }
 
     @Test
@@ -34,7 +33,6 @@ class StringExtKtTest : KSRobolectricTestCase() {
         assertFalse(EMPTY_STRING.isPresent())
         assertFalse(EMPTY_SPACE.isPresent())
         assertFalse(EMPTY_MULTI_SPACE.isPresent())
-        assertFalse(NULL_STRING.isPresent())
     }
 
     @Test
@@ -90,32 +88,32 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun trim_whenGivenEmptyString_shouldReturnEmptyString() {
-        assertEquals(EMPTY_STRING, EMPTY_STRING.trim())
-        assertEquals(EMPTY_STRING, EMPTY_SPACE.trim())
+        assertEquals(EMPTY_STRING, EMPTY_STRING.trim2())
+        assertEquals(EMPTY_STRING, EMPTY_SPACE.trim2())
     }
 
     @Test
     fun trim_whenGivenStringWithLeadingOrTrailingSpace_shouldReturnTrimmedString() {
-        assertEquals("A", "A ".trim())
-        assertEquals("A", " A".trim())
-        assertEquals("A", " A ".trim())
+        assertEquals("A", "A ".trim2())
+        assertEquals("A", " A".trim2())
+        assertEquals("A", " A ".trim2())
     }
 
     @Test
     fun trim_whenGivenStringWithNonBreakingSpaceWithChar_shouldReturnTrimmedString() {
-        assertEquals("A", "\u00A0A".trim())
-        assertEquals("A", "A\u00A0".trim())
-        assertEquals("A", "\u00A0A\u00A0".trim())
-        assertEquals("A", "\u00A0 A".trim())
-        assertEquals("A", "A \u00A0".trim())
-        assertEquals("A", "A\u00A0 ".trim())
-        assertEquals("A", "\u00A0 A \u00A0".trim())
+        assertEquals("A", "\u00A0A".trim2())
+        assertEquals("A", "A\u00A0".trim2())
+        assertEquals("A", "\u00A0A\u00A0".trim2())
+        assertEquals("A", "\u00A0 A".trim2())
+        assertEquals("A", "A \u00A0".trim2())
+        assertEquals("A", "A\u00A0 ".trim2())
+        assertEquals("A", "\u00A0 A \u00A0".trim2())
     }
 
     @Test
     fun trim_whenGivenStringWithNonBreakingSpace_shouldReturnEmptydString() {
-        assertEquals("", "\u00A0".trim())
-        assertEquals("", "\u00A0 ".trim())
+        assertEquals("", "\u00A0".trim2())
+        assertEquals("", "\u00A0 ".trim2())
     }
 
     @Test
@@ -135,6 +133,5 @@ class StringExtKtTest : KSRobolectricTestCase() {
         private const val PASSWORD_LENGTH_FIVE = "kicks"
         private const val PASSWORD_LENGTH_SIX = "kickst"
         private const val PASSWORD_LENGTH_TEN = "kickstarts"
-        private val NULL_STRING = null
     }
 }

@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright 2020 Google Inc. All Rights Reserved. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
-  <application>
+          xmlns:tools="http://schemas.android.com/tools"
+          android:sharedUserId="com.kickstarter.kickstarter.regression.debug.uid" >
+  <!-- for screenshot tests -->
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                   />
+  <application
+      android:requestLegacyExternalStorage="true" >
     <meta-data android:name="firebase_performance_collection_enabled" android:value="false"
                tools:replace="android:value" />
   </application>

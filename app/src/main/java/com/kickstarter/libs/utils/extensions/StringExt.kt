@@ -14,23 +14,23 @@ import java.util.Locale
     }
 
     /**
-    * Returns a boolean that reflects if the string is empty or the length is zero when space
+    * Returns a boolean that reflects if the string is empty or the length is zero when white space
     * characters are trimmed
     */
-    fun String.isEmpty(): Boolean {
-        return this == null || this.trim().length == 0
+    fun String.isTrimmedEmpty(): Boolean {
+        return this.isNullOrEmpty() || this.trimAllWhitespace().length == 0
     }
 
     /**
     * Returns a boolean of if the string is not empty
     */
-    fun String.isPresent() = !this.isEmpty()
+    fun String.isPresent() = !this.isTrimmedEmpty()
 
     /**
     * Returns a boolean of if the string is not empty and has more than 5 characters
     */
     fun String.isValidPassword(): Boolean {
-        return !this.isEmpty() && this.length >= MINIMUM_PASSWORD_LENGTH
+        return !this.isTrimmedEmpty() && this.length >= MINIMUM_PASSWORD_LENGTH
     }
 
     /**
@@ -42,10 +42,11 @@ import java.util.Locale
     }
 
     /**
-     * Returns a string with no leading or trailing whitespace.
+     * Returns a string with no leading or trailing whitespace. This method calls on the kotlin trim string method,
+     * which removes more types of whitespace than the java string method for trim.
      */
-    fun String.trim(): String {
-        return this.trim()
+    fun String.trimAllWhitespace(): String {
+        return this.trim().replace(" +".toRegex(), " ")
     }
 
     /**

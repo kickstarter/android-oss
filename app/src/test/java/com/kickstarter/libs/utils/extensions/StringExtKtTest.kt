@@ -17,15 +17,15 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun isEmpty_whenGivenEmptyString_shouldReturnTrue() {
-        assertTrue(EMPTY_STRING.isEmpty())
-        assertTrue(EMPTY_SPACE.isEmpty())
-        assertTrue(EMPTY_MULTI_SPACE.isEmpty())
+        assertTrue(EMPTY_STRING.isTrimmedEmpty())
+        assertTrue(EMPTY_SPACE.isTrimmedEmpty())
+        assertTrue(EMPTY_MULTI_SPACE.isTrimmedEmpty())
     }
 
     @Test
     fun isEmpty_whenStringNotEmpty_shouldReturnFalse() {
-        assertFalse("k".isEmpty())
-        assertFalse(" k ".isEmpty())
+        assertFalse("k".isTrimmedEmpty())
+        assertFalse(" k ".isTrimmedEmpty())
     }
 
     @Test
@@ -88,32 +88,32 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun trim_whenGivenEmptyString_shouldReturnEmptyString() {
-        assertEquals(EMPTY_STRING, EMPTY_STRING.trim2())
-        assertEquals(EMPTY_STRING, EMPTY_SPACE.trim2())
+        assertEquals(EMPTY_STRING, EMPTY_STRING.trimAllWhitespace())
+        assertEquals(EMPTY_STRING, EMPTY_SPACE.trimAllWhitespace())
     }
 
     @Test
     fun trim_whenGivenStringWithLeadingOrTrailingSpace_shouldReturnTrimmedString() {
-        assertEquals("A", "A ".trim2())
-        assertEquals("A", " A".trim2())
-        assertEquals("A", " A ".trim2())
+        assertEquals("A", "A ".trimAllWhitespace())
+        assertEquals("A", " A".trimAllWhitespace())
+        assertEquals("A", " A ".trimAllWhitespace())
     }
 
     @Test
     fun trim_whenGivenStringWithNonBreakingSpaceWithChar_shouldReturnTrimmedString() {
-        assertEquals("A", "\u00A0A".trim2())
-        assertEquals("A", "A\u00A0".trim2())
-        assertEquals("A", "\u00A0A\u00A0".trim2())
-        assertEquals("A", "\u00A0 A".trim2())
-        assertEquals("A", "A \u00A0".trim2())
-        assertEquals("A", "A\u00A0 ".trim2())
-        assertEquals("A", "\u00A0 A \u00A0".trim2())
+        assertEquals("A", "\u00A0A".trimAllWhitespace())
+        assertEquals("A", "A\u00A0".trimAllWhitespace())
+        assertEquals("A", "\u00A0A\u00A0".trimAllWhitespace())
+        assertEquals("A", "\u00A0 A".trimAllWhitespace())
+        assertEquals("A", "A \u00A0".trimAllWhitespace())
+        assertEquals("A", "A\u00A0 ".trimAllWhitespace())
+        assertEquals("A", "\u00A0 A \u00A0".trimAllWhitespace())
     }
 
     @Test
     fun trim_whenGivenStringWithNonBreakingSpace_shouldReturnEmptydString() {
-        assertEquals("", "\u00A0".trim2())
-        assertEquals("", "\u00A0 ".trim2())
+        assertEquals("", "\u00A0".trimAllWhitespace())
+        assertEquals("", "\u00A0 ".trimAllWhitespace())
     }
 
     @Test

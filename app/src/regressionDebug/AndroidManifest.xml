@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 Google Inc. All Rights Reserved. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+  <application>
+    <meta-data android:name="firebase_performance_collection_enabled" android:value="false"
+               tools:replace="android:value" />
+  </application>
+</manifest>

@@ -60,13 +60,13 @@ public class KSApplication extends MultiDexApplication {
 
     if (!isInUnitTests()) {
       setVisitorCookie();
+
+      this.pushNotifications.initialize();
+
+      final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
+      registerActivityLifecycleCallbacks(appUtil);
+      registerComponentCallbacks(appUtil);
     }
-
-    this.pushNotifications.initialize();
-
-    final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
-    registerActivityLifecycleCallbacks(appUtil);
-    registerComponentCallbacks(appUtil);
   }
 
   public ApplicationComponent component() {
@@ -74,7 +74,7 @@ public class KSApplication extends MultiDexApplication {
   }
 
   public boolean isInUnitTests() {
-    return false;
+    return getPackageName().equals("com.kickstarter.kickstarter.regression.debug");
   }
 
   private void setVisitorCookie() {

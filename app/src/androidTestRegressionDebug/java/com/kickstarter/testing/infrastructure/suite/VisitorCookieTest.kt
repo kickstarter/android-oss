@@ -8,6 +8,7 @@ import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.ui.activities.DiscoveryActivity
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import java.net.CookieStore
@@ -20,6 +21,7 @@ class VisitorCookieTest {
     @JvmField
     val activityRule = ActivityTestRule(DiscoveryActivity::class.java)
 
+    @Ignore
     @Test
     fun testVisitorCookieHasBeenSet() {
         val activity = this.activityRule.activity

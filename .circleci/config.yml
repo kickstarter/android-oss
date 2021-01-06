@@ -26,6 +26,7 @@ jobs:
             - ~/.gradle
             - ~/.android
       - run: ./gradlew assembleExternalRelease
+      - run: ./gradlew assembleRegressionDebugAndroidTest
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -46,8 +47,20 @@ jobs:
       - run: ./gradlew testExternalRelease -PdisablePreDex
       - run: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
       - run:
-          name: Run Android Tests with Firelab
-
+          name: Prepare gcloud for Firebase Test Lab
+          command: |
+            sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      # - run:
+      #     name: Run Android Tests with Firebase Test Lab
+      #     command: >
+      #       cd ~/project && sudo gcloud firebase test android run \
+      #         --app ./app/build/outputs/apk/debug/project-debug.apk \
+      #         --test ./build/outputs/apk/androidTest/debug/project-debug-androidTest.apk \
+      #         --results-bucket cloud-test-${GOOGLE_PROJECT_ID} \
+      #         --directories-to-pull /sdcard/screenshots/com.kickstarter.kickstarter.regression.debug \
+      #         --device-ids Pixel2 \
+      #         --os-version-ids 27
       - store_artifacts:
           path: app/build/reports
           destination: reports

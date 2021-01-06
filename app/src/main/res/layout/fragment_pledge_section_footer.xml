@@ -55,7 +55,7 @@
           android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:indeterminate="true"
-          android:indeterminateTint="@color/white"
+          android:indeterminateTint="@color/kds_white"
           android:indeterminateTintMode="src_in" />
       </FrameLayout>
     </FrameLayout>

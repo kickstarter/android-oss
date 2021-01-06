@@ -101,19 +101,6 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
                 .compose(observeForUI())
                 .subscribe({ this.setLoginButtonEnabled(it) })
 
-        this.viewModel.outputs.showInterstitialFragment()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { LoginHelper.showInterstitialFragment(
-                        supportFragmentManager,
-                        R.id.login_view_id,
-                        object : Callbacks {
-                            override fun onDismiss() {
-                                this@LoginActivity.onSuccess()
-                            }
-                        })
-                }
-
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)

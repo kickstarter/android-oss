@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-  android:color="@color/ripple_light">
+  android:color="@color/kds_support_100">
   <item android:id="@android:id/mask">
     <shape android:shape="oval">
       <solid android:color="?android:colorPrimary"/>
     </shape>
-    <color android:color="@color/white"/>
+    <color android:color="@color/kds_white"/>
   </item>
 </ripple>

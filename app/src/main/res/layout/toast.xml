@@ -15,7 +15,7 @@
     android:layout_height="0dp"
     android:layout_weight="1"
     android:layout_gravity="center_horizontal"
-    android:textColor="@color/white"
+    android:textColor="@color/kds_white"
     tools:text="Toast message here!"/>
 
 </LinearLayout>

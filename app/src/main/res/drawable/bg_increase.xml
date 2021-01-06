@@ -14,7 +14,7 @@
       <corners
         android:bottomRightRadius="@dimen/grid_3_half"
         android:topRightRadius="@dimen/grid_3_half" />
-      <solid android:color="@color/white" />
+      <solid android:color="@color/kds_white" />
       <padding
         android:bottom="@dimen/grid_3_half"
         android:left="@dimen/grid_3"

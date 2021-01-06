@@ -7,12 +7,12 @@
   android:layout_height="wrap_content"
   android:layout_alignParentBottom="true"
   android:layout_gravity="bottom"
-  android:background="@color/white">
+  android:background="@color/kds_white">
 
   <View
     android:layout_width="match_parent"
     android:layout_height="0.5dp"
-    android:background="@color/ksr_grey_500"
+    android:background="@color/kds_support_300"
     app:layout_constraintTop_toTopOf="parent" />
 
   <EditText

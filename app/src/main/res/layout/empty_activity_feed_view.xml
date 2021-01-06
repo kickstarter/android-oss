@@ -2,9 +2,9 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  card_view:cardBackgroundColor="@color/white"
-  android:background="@color/white"
-  android:foreground="@color/transparent"
+  card_view:cardBackgroundColor="@color/kds_white"
+  android:background="@color/kds_white"
+  android:foreground="@color/kds_transparent"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"

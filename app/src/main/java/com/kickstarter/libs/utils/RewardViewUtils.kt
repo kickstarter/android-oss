@@ -84,7 +84,7 @@ object RewardViewUtils {
         val numberGreenCharacters = quantity.toString().length + symbol.length
         val spannable = SpannableString(quantity.toString() + symbol + title)
         spannable.setSpan(
-                ForegroundColorSpan(context.getColor(R.color.ksr_green_500)),
+                ForegroundColorSpan(context.getColor(R.color.kds_create_700)),
                 0, numberGreenCharacters,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return spannable

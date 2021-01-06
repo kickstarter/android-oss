@@ -12,7 +12,7 @@ class TableItemDecoration :RecyclerView.ItemDecoration() {
         super.getItemOffsets(outRect, view, parent, state)
 
         val position = parent.getChildAdapterPosition(view)
-        val backgroundColor = if (position % 2 == 0) R.color.transparent else R.color.ksr_grey_300
+        val backgroundColor = if (position % 2 == 0) R.color.kds_transparent else R.color.kds_support_100
         view.setBackgroundColor(ContextCompat.getColor(view.context, backgroundColor))
     }
 }

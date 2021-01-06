@@ -12,7 +12,7 @@
       android:layout_width="@dimen/grid_20"
       android:layout_height="match_parent"
       android:layout_marginEnd="@dimen/grid_2"
-      android:background="@color/ksr_grey_100"
+      android:background="@color/kds_support_100"
       android:gravity="center_vertical"
       android:orientation="horizontal">
 

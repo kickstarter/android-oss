@@ -115,7 +115,7 @@
           android:layout_marginEnd="@dimen/grid_1_half"
           android:importantForAccessibility="no"
           android:src="@drawable/ic_chat_bubble"
-          app:tint="@color/celebrate_500" />
+          app:tint="@color/kds_celebrate_500" />
 
         <TextView
           android:id="@+id/update_comments_count"
@@ -139,7 +139,7 @@
           android:layout_marginEnd="@dimen/grid_1_half"
           android:importantForAccessibility="no"
           android:src="@drawable/icon__heart"
-          app:tint="@color/celebrate_500" />
+          app:tint="@color/kds_celebrate_500" />
 
         <TextView
           android:id="@+id/update_likes_count"

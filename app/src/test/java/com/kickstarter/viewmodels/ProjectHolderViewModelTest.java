@@ -594,7 +594,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
-    this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
+    this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.kds_support_300);
     this.projectStateViewGroupIsGone.assertValues(false);
     this.setCanceledProjectStateView.assertValueCount(1);
   }
@@ -631,7 +631,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
-    this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
+    this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.kds_support_300);
     this.projectStateViewGroupIsGone.assertValues(false);
     this.setSuspendedProjectStateView.assertValueCount(1);
   }
@@ -647,7 +647,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
       .build();
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 
-    this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.ksr_grey_400);
+    this.projectStateViewGroupBackgroundColorInt.assertValues(R.color.kds_support_300);
     this.projectStateViewGroupIsGone.assertValues(false);
     this.setUnsuccessfulProjectStateView.assertValues(stateChangedAt);
   }

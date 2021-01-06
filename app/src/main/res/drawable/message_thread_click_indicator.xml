@@ -4,7 +4,7 @@
   android:color="@color/ripple_light">
 
   <item android:id="@android:id/mask">
-    <color android:color="@color/white"/>
+    <color android:color="@color/kds_white"/>
   </item>
 
   <item android:drawable="@drawable/message_thread_border_background"/>

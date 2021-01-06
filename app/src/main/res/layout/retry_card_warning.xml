@@ -9,7 +9,7 @@
   android:layout_marginEnd="@dimen/grid_2"
   android:layout_marginBottom="@dimen/grid_2"
   android:text="@string/Retry_or_select_another_method"
-  android:textColor="@color/ksr_red_400"
+  android:textColor="@color/kds_alert"
   android:visibility="gone"
   tools:showIn="@layout/item_reward_unselected_card"
   tools:visibility="visible" />

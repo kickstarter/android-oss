@@ -38,7 +38,7 @@
       android:layout_marginBottom="@dimen/activity_vertical_margin"
       android:layout_marginEnd="@dimen/grid_5_half"
       android:layout_marginStart="@dimen/grid_5_half"
-      android:textColor="@color/ksr_soft_black"
+      android:textColor="@color/kds_support_700"
       tools:text="Lisa Luo" />
 
   </LinearLayout>

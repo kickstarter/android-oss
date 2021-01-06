@@ -202,7 +202,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     this.hasNoMessages.assertValues(true);
     this.unreadMessagesCount.assertNoValues();
     this.unreadMessagesCountIsGone.assertValue(false);
-    this.unreadCountTextViewColorInt.assertValues(R.color.ksr_dark_grey_400);
+    this.unreadCountTextViewColorInt.assertValues(R.color.kds_support_400);
     this.unreadCountTextViewTypefaceInt.assertValues(Typeface.NORMAL);
     this.unreadCountToolbarTextViewIsGone.assertValues(true);
 
@@ -227,7 +227,7 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     this.hasNoUnreadMessages.assertValues(true);
     this.unreadMessagesCount.assertNoValues();
     this.unreadMessagesCountIsGone.assertValue(false);
-    this.unreadCountTextViewColorInt.assertValues(R.color.ksr_dark_grey_400);
+    this.unreadCountTextViewColorInt.assertValues(R.color.kds_support_400);
     this.unreadCountTextViewTypefaceInt.assertValues(Typeface.NORMAL);
     this.unreadCountToolbarTextViewIsGone.assertValues(true);
 

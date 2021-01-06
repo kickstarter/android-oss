@@ -9,7 +9,7 @@
     style="@style/ActivitySampleCard">
 
     <LinearLayout
-      android:background="@color/white"
+      android:background="@color/kds_white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
@@ -33,7 +33,7 @@
 
         <ImageView
           android:id="@+id/activity_image"
-          android:background="@color/transparent"
+          android:background="@color/kds_transparent"
           android:layout_gravity="top"
           android:layout_width="@dimen/grid_5"
           android:layout_height="@dimen/grid_5"

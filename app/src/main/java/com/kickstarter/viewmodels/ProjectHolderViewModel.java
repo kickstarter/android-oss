@@ -388,7 +388,7 @@ public interface ProjectHolderViewModel {
 
       this.projectStateViewGroupBackgroundColorInt = project
         .filter(p -> !p.isLive())
-        .map(p -> p.state().equals(Project.STATE_SUCCESSFUL) ? R.color.green_alpha_50 : R.color.ksr_grey_400);
+        .map(p -> p.state().equals(Project.STATE_SUCCESSFUL) ? R.color.green_alpha_50 : R.color.kds_support_300);
 
       this.projectStateViewGroupIsGone = project.map(Project::isLive);
 

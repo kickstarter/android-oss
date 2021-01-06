@@ -3,7 +3,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:background="@color/white"
+  android:background="@color/kds_white"
   android:orientation="vertical">
 
   <include layout="@layout/project_creator_dashboard_header" />
@@ -32,7 +32,7 @@
     android:layout_marginStart="@dimen/project_padding_x"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_marginEnd="@dimen/project_padding_x"
-    android:background="@color/white"
+    android:background="@color/kds_white"
     android:orientation="vertical">
 
     <TextView
@@ -132,7 +132,7 @@
             style="@style/FootnotePrimaryMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/ksr_cobalt_500"
+            android:textColor="@color/kds_trust_500"
             tools:text="3 created • 2 launched" />
         </LinearLayout>
 
@@ -162,7 +162,7 @@
         style="@style/Subheadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         tools:ignore="InconsistentLayout"
         tools:text="Description about this project." />
 
@@ -204,7 +204,7 @@
         style="@style/Subheadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/ksr_soft_black"
+        android:textColor="@color/kds_support_700"
         tools:ignore="InconsistentLayout"
         tools:text="Description about this project." />
 
@@ -233,7 +233,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
         android:text="@string/local_offer_icon"
-        android:textColor="@color/ksr_dark_grey_400" />
+        android:textColor="@color/kds_support_400" />
 
       <TextView
         android:id="@+id/category"
@@ -242,7 +242,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/grid_1"
         android:paddingEnd="@dimen/grid_5"
-        android:textColor="@color/ksr_dark_grey_500"
+        android:textColor="@color/kds_support_400"
         tools:ignore="InconsistentLayout"
         tools:text="Category name" />
 
@@ -253,7 +253,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
         android:text="@string/location_on_icon"
-        android:textColor="@color/ksr_dark_grey_400" />
+        android:textColor="@color/kds_support_400" />
 
       <TextView
         android:id="@+id/location"
@@ -264,7 +264,7 @@
         android:maxLines="1"
         android:paddingStart="@dimen/grid_1"
         android:paddingEnd="@dimen/grid_1_half"
-        android:textColor="@color/ksr_dark_grey_500"
+        android:textColor="@color/kds_support_400"
         tools:ignore="InconsistentLayout"
         tools:text="Location" />
 

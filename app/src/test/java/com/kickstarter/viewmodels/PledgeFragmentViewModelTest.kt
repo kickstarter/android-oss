@@ -926,7 +926,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValues(R.color.ksr_green_500)
+        this.pledgeTextColor.assertValues(R.color.kds_create_700)
         this.projectCurrencySymbol.assertValue("$")
         this.selectedShippingRule.assertValues(defaultRule, selectedRule)
         this.shippingAmount.assertValues(expectedCurrency(environment, project, 30.0),
@@ -955,7 +955,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.pledgeTextColor.assertValue(R.color.kds_create_700)
         this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
         this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0))
@@ -969,7 +969,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.pledgeTextColor.assertValue(R.color.kds_create_700)
         this.projectCurrencySymbol.assertValue("MX$")
         this.shippingAmount.assertValue(expectedCurrency(environment, project, 30.0))
         this.totalAmount.assertValues(expectedCurrency(environment, project, 50.0))
@@ -1008,7 +1008,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeHint.assertValue("20")
         this.pledgeMaximumIsGone.assertValue(true)
         this.pledgeMinimum.assertValue(expectedCurrency(environment, project, 20.0))
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.pledgeTextColor.assertValue(R.color.kds_create_700)
         this.projectCurrencySymbol.assertValue("MX$")
         this.selectedShippingRule.assertValues(initialRule, selectedRule)
         this.shippingAmount.assertValues(expectedCurrency(environment, project, 30.0),
@@ -2528,7 +2528,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.continueButtonIsEnabled.assertNoValues()
         this.pledgeButtonIsEnabled.assertValue(true)
         this.pledgeHint.assertValue("20")
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.pledgeTextColor.assertValue(R.color.kds_create_700)
         this.shippingAmount.assertNoValues()
         this.totalAmount.assertValues(expectedCurrency(environment, project, 20.0))
         this.totalAndDeadline.assertValue(Pair(expectedCurrency(environment, project, 20.0), DateTimeUtils.longDate(this.deadline)))
@@ -2539,7 +2539,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.additionalPledgeAmountIsGone.assertValue(true)
         this.continueButtonIsEnabled.assertNoValues()
         this.pledgeButtonIsEnabled.assertValue(true)
-        this.pledgeTextColor.assertValue(R.color.ksr_green_500)
+        this.pledgeTextColor.assertValue(R.color.kds_create_700)
     }
 
     private fun apolloClientWithStoredCards(storedCards: List<StoredCard>): MockApolloClient {

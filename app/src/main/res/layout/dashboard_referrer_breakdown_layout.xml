@@ -33,7 +33,7 @@
       android:id="@+id/pledged_via_kickstarter_bar"
       android:layout_width="0dp"
       android:layout_height="24dp"
-      android:background="@color/ksr_green_800"
+      android:background="@color/kds_create_700"
       app:layout_constraintEnd_toStartOf="@+id/pledged_via_external_bar"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,7 @@
           android:layout_gravity="center_vertical"
           android:layout_marginEnd="1dp"
           android:src="@drawable/creator_dashboard_circle"
-          app:tint="@color/ksr_green_800"
+          app:tint="@color/kds_create_700"
           tools:ignore="ContentDescription" />
 
       </LinearLayout>
@@ -107,7 +107,7 @@
       android:id="@+id/pledged_via_external_bar"
       android:layout_width="0dp"
       android:layout_height="24dp"
-      android:background="@color/ksr_green_500"
+      android:background="@color/kds_create_500"
       app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_bar"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_bar"
@@ -145,7 +145,7 @@
           android:layout_gravity="center_vertical"
           android:layout_marginEnd="1dp"
           android:src="@drawable/creator_dashboard_circle"
-          app:tint="@color/ksr_green_500"
+          app:tint="@color/kds_create_700"
           tools:ignore="ContentDescription" />
 
       </LinearLayout>
@@ -181,7 +181,7 @@
       android:id="@+id/pledged_via_custom_bar"
       android:layout_width="0dp"
       android:layout_height="24dp"
-      android:background="@color/ksr_highlighter_green"
+      android:background="@color/kds_create_300"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toEndOf="@+id/pledged_via_external_bar"
@@ -209,7 +209,7 @@
           android:layout_gravity="center"
           android:layout_marginEnd="@dimen/grid_1_half"
           android:src="@drawable/creator_dashboard_circle"
-          app:tint="@color/ksr_highlighter_green"
+          app:tint="@color/kds_create_300"
           tools:ignore="ContentDescription" />
 
         <TextView

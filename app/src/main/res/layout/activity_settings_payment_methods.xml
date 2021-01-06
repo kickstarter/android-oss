@@ -5,7 +5,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100">
+  android:background="@color/kds_support_100">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginEnd="@dimen/grid_12"
-            android:background="@color/ksr_grey_300"
+            android:background="@color/kds_support_100"
             android:visibility="gone" />
 
           <TextView
@@ -65,7 +65,7 @@
             android:gravity="center_vertical"
             android:text="@string/Add_new_card"
             android:textAllCaps="true"
-            android:textColor="@color/ksr_green_500" />
+            android:textColor="@color/kds_create_700" />
         </LinearLayout>
 
       </LinearLayout>

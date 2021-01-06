@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:color="@color/ksr_grey_500" android:state_enabled="false" />
-  <item android:color="@color/ksr_red_400"/>
+  <item android:color="@color/kds_support_300" android:state_enabled="false" />
+  <item android:color="@color/kds_alert"/>
 </selector>

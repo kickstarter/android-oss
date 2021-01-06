@@ -7,7 +7,6 @@ import android.util.Pair;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -51,7 +50,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import okhttp3.Response;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -209,15 +207,9 @@ public interface DiscoveryViewModel {
         .map(intentAndUser -> DiscoveryParams.getDefaultParams(intentAndUser.second))
         .share();
 
-      final Observable<Config> currentConfig = this.currentConfigType.observable()
-              .distinctUntilChanged();
-
       final Observable<Uri> uriFromVerification = intent()
         .map(Intent::getData)
         .ofType(Uri.class)
-        .compose(combineLatestPair(currentConfig))
-        .filter(it -> ConfigExtension.isFeatureFlagEnabled(it.second, ConfigExtension.EMAIL_VERIFICATION_FLOW))
-        .map(it -> it.first)
         .filter(KSUri::isVerificationEmailUrl);
 
       final Observable<Notification<EmailVerificationEnvelope>> verification = uriFromVerification
@@ -449,10 +441,6 @@ public interface DiscoveryViewModel {
         })
         .compose(bindToLifecycle())
         .subscribe(this.showQualtricsSurvey);
-    }
-
-    private Boolean isSameResponse(final @NonNull Response first, final @NonNull Response second) {
-      return first.code() == second.code() && first.message() == second.message();
     }
 
     private int currentDrawerMenuIcon(final @Nullable User user) {

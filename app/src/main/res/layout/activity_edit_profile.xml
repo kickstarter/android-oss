@@ -6,7 +6,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/ksr_grey_100"
+  android:background="@color/kds_support_100"
   android:orientation="vertical">
 
   <com.google.android.material.appbar.AppBarLayout
@@ -62,7 +62,7 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/kds_white"
         android:orientation="vertical">
 
         <TextView
@@ -179,7 +179,7 @@
           android:layout_marginStart="@dimen/activity_horizontal_margin"
           android:layout_marginTop="@dimen/grid_2"
           android:text="@string/Add"
-          android:textColor="@color/ksr_green_700" />
+          android:textColor="@color/kds_create_700" />
 
       </LinearLayout>
 

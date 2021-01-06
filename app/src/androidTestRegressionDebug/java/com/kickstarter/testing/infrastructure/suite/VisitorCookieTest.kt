@@ -21,7 +21,7 @@ class VisitorCookieTest {
     @JvmField
     val activityRule = ActivityTestRule(DiscoveryActivity::class.java)
 
-    @Ignore
+    @Ignore("Test seems to hit the network")
     @Test
     fun testVisitorCookieHasBeenSet() {
         val activity = this.activityRule.activity

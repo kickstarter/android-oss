@@ -131,7 +131,7 @@ public interface SearchViewModel {
 
       query
         .compose(takePairWhen(pageCount))
-        .filter(ObjectUtils::isNotNull)
+        .filter(qp-> ObjectUtils.isNotNull(qp.first))
         .filter(qp -> StringExt.isPresent(qp.first))
         .observeOn(Schedulers.io())
         .compose(bindToLifecycle())

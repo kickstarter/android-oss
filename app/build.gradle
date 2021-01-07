@@ -288,4 +288,18 @@ def buildDate() {
     return value
 }
 
+// Copy google-services.json from variant directory to root of app
+gradle.taskGraph.beforeTask { Task task ->
+    if (task.name ==~ /process.*GoogleServices/) {
+        android.applicationVariants.all { variant ->
+            if (task.name ==~ /(?i)process${variant.name}GoogleServices/) {
+                copy {
+                    from "src/${variant.name}"
+                    into '.'
+                    include 'google-services.json'
+                }
+            }
+        }
+    }
+}
 apply plugin: 'com.google.gms.google-services'

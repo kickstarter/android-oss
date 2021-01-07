@@ -55,7 +55,7 @@ jobs:
           name: Run Android Tests with Firebase Test Lab
           command: >
             cd ~/project && sudo gcloud firebase test android run \
-              --app ./app/build/outputs/apk/androidTest/regression/debug/app-regression-debug-androidTest.apk \
+              --app ./app/build/outputs/apk/regression/debug/app-regression-debug.apk \
               --test ./app/build/outputs/apk/androidTest/regression/debug/app-regression-debug-androidTest.apk \
               ## These next two lines are going to be required for Screenshotbot \
               ## integration, but we can skip it for now \

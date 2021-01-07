@@ -17,7 +17,6 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.SearchActivity;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -96,7 +95,7 @@ public interface SearchViewModel {
 
       this.search
         .filter(ObjectUtils::isNotNull)
-        .filter(StringExt::isTrimmedEmpty)
+        .filter(StringExt:: isTrimmedEmpty)
         .compose(bindToLifecycle())
         .subscribe(__ -> {
           this.searchProjects.onNext(ListUtils.empty());

@@ -26,6 +26,7 @@ jobs:
             - ~/.gradle
             - ~/.android
       - run: ./gradlew assembleExternalRelease
+      - run: ./gradlew assembleRegressionDebug
       - run: ./gradlew assembleRegressionDebugAndroidTest
       - persist_to_workspace:
           root: ~/project

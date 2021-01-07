@@ -46,7 +46,7 @@
         android:backgroundTint="@color/white_enabled_gray_disabled"
         android:contentDescription="@string/Decrease_pledge"
         android:src="@drawable/ic_remove"
-        android:tint="@color/green_enabled_dark_grey_disabled"
+        app:tint="@color/green_enabled_dark_grey_disabled"
         app:layout_constraintBottom_toBottomOf="@id/pledge_amount_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pledge_minimum" />
@@ -59,7 +59,7 @@
         android:backgroundTint="@color/white_enabled_gray_disabled"
         android:contentDescription="@string/Increase_pledge"
         android:src="@drawable/ic_add"
-        android:tint="@color/green_enabled_dark_grey_disabled"
+        app:tint="@color/green_enabled_dark_grey_disabled"
         app:layout_constraintBottom_toBottomOf="@id/decrease_pledge"
         app:layout_constraintStart_toEndOf="@id/decrease_pledge"
         app:layout_constraintTop_toTopOf="@id/decrease_pledge" />

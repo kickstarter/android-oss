@@ -10,7 +10,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_backing"
         android:name="com.kickstarter.ui.fragments.BackingFragment"
         android:layout_width="match_parent"

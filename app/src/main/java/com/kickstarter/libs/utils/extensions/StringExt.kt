@@ -18,7 +18,7 @@ import java.util.Locale
     * characters are trimmed
     */
     fun String.isTrimmedEmpty(): Boolean {
-        return this.isNullOrEmpty() || this.trimAllWhitespace().length == 0
+        return this.trimAllWhitespace().length == 0
     }
 
     /**

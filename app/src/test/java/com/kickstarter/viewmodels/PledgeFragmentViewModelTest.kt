@@ -12,6 +12,7 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
@@ -133,7 +134,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.pledgeSummaryAmount().map { normalizeCurrency(it) }.subscribe(this.pledgeSummaryAmount)
         this.vm.outputs.pledgeSummaryIsGone().subscribe(this.pledgeSummaryIsGone)
         this.vm.outputs.pledgeTextColor().subscribe(this.pledgeTextColor)
-        this.vm.outputs.projectCurrencySymbol().map { it.first.toString().trim() }.subscribe(this.projectCurrencySymbol)
+        this.vm.outputs.projectCurrencySymbol().map { it.first.toString().trimAllWhitespace() }.subscribe(this.projectCurrencySymbol)
         this.vm.outputs.rewardTitle().subscribe(this.rewardTitle)
         this.vm.outputs.selectedShippingRule().subscribe(this.selectedShippingRule)
         this.vm.outputs.shippingAmount().map { normalizeCurrency(it) }.subscribe(this.shippingAmount)

@@ -16,14 +16,14 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun isEmpty_whenGivenEmptyString_shouldReturnTrue() {
+    fun isTrimmedEmpty_whenGivenEmptyString_shouldReturnTrue() {
         assertTrue(EMPTY_STRING.isTrimmedEmpty())
         assertTrue(EMPTY_SPACE.isTrimmedEmpty())
         assertTrue(EMPTY_MULTI_SPACE.isTrimmedEmpty())
     }
 
     @Test
-    fun isEmpty_whenStringNotEmpty_shouldReturnFalse() {
+    fun isTrimmedEmpty_whenStringNotEmpty_shouldReturnFalse() {
         assertFalse("k".isTrimmedEmpty())
         assertFalse(" k ".isTrimmedEmpty())
     }
@@ -87,20 +87,20 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun trim_whenGivenEmptyString_shouldReturnEmptyString() {
+    fun trimAllWhitespace_whenGivenEmptyString_shouldReturnEmptyString() {
         assertEquals(EMPTY_STRING, EMPTY_STRING.trimAllWhitespace())
         assertEquals(EMPTY_STRING, EMPTY_SPACE.trimAllWhitespace())
     }
 
     @Test
-    fun trim_whenGivenStringWithLeadingOrTrailingSpace_shouldReturnTrimmedString() {
+    fun trimAllWhitespace_whenGivenStringWithLeadingOrTrailingSpace_shouldReturnTrimmedString() {
         assertEquals("A", "A ".trimAllWhitespace())
         assertEquals("A", " A".trimAllWhitespace())
         assertEquals("A", " A ".trimAllWhitespace())
     }
 
     @Test
-    fun trim_whenGivenStringWithNonBreakingSpaceWithChar_shouldReturnTrimmedString() {
+    fun trimAllWhitespace_whenGivenStringWithNonBreakingSpaceWithChar_shouldReturnTrimmedString() {
         assertEquals("A", "\u00A0A".trimAllWhitespace())
         assertEquals("A", "A\u00A0".trimAllWhitespace())
         assertEquals("A", "\u00A0A\u00A0".trimAllWhitespace())
@@ -111,7 +111,7 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun trim_whenGivenStringWithNonBreakingSpace_shouldReturnEmptydString() {
+    fun trimAllWhitespace_whenGivenStringWithNonBreakingSpace_shouldReturnEmptydString() {
         assertEquals("", "\u00A0".trimAllWhitespace())
         assertEquals("", "\u00A0 ".trimAllWhitespace())
     }

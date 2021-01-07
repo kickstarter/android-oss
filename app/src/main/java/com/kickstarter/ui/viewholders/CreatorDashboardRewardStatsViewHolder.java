@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.libs.utils.extensions.StringExtKt;
+import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.adapters.CreatorDashboardRewardStatsAdapter;
@@ -70,7 +70,7 @@ public final class CreatorDashboardRewardStatsViewHolder extends KSViewHolder {
   }
 
   private void setTitleCopy(final boolean referrersTitleIsTopTen) {
-    final String formattedTopRewards = StringExtKt.sentenceCase(this.topRewardsString);
+    final String formattedTopRewards = StringExt.sentenceCase(this.topRewardsString);
     this.rewardsTitleTextView.setText(referrersTitleIsTopTen ? this.topTenRewardsString : formattedTopRewards);
   }
 

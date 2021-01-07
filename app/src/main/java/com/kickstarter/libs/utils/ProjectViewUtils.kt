@@ -13,7 +13,7 @@ import com.kickstarter.libs.KSCurrency
 import com.kickstarter.libs.NumberOptions
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.models.OptimizelyExperiment
-import com.kickstarter.libs.utils.extensions.trim
+import com.kickstarter.libs.utils.extensions.trimAllWhitespace
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.ui.views.CenterSpan
@@ -93,7 +93,7 @@ object ProjectViewUtils {
         val currencySymbolToDisplay = ksCurrency.getCurrencySymbol(country, true)
 
         var symbolAtStart = true
-        if (formattedCurrency.endsWith(currencySymbolToDisplay.trim())) {
+        if (formattedCurrency.endsWith(currencySymbolToDisplay.trimAllWhitespace())) {
             symbolAtStart = false
         }
 
@@ -148,7 +148,7 @@ object ProjectViewUtils {
         spannedCurrencySymbol.setSpan(RelativeSizeSpan(.6f), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannedCurrencySymbol.setSpan(CenterSpan(), startOfSymbol, endOfSymbol, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        val styledCurrency = if (formattedCurrency.startsWith(currencySymbolToDisplay.trim())) {
+        val styledCurrency = if (formattedCurrency.startsWith(currencySymbolToDisplay.trimAllWhitespace())) {
             TextUtils.concat(spannedCurrencySymbol, spannedDigits)
         } else {
             TextUtils.concat(spannedDigits, spannedCurrencySymbol)

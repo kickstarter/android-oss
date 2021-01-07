@@ -10,7 +10,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.extensions.StringExtKt;
+import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -134,7 +134,7 @@ public interface CommentsViewModel {
         .share();
 
       final Observable<Boolean> commentHasBody = this.commentBodyChanged
-        .map(StringExtKt::isPresent);
+        .map(it -> ObjectUtils.isNull(it) ? false : StringExt.isPresent(it));
 
       final Observable<Notification<Comment>> commentNotification = projectOrUpdate
         .compose(combineLatestPair(this.commentBodyChanged))

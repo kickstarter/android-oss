@@ -42,8 +42,8 @@ import java.util.Locale
     }
 
     /**
-     * Returns a string with no leading or trailing whitespace. This method calls on the kotlin trim string method,
-     * which removes more types of whitespace than the java string method for trim.
+     * Returns a string with no leading or trailing whitespace. Takes all the unicode and replaces it with
+     * whiteSpace character, them trims the start of the string and the end.
      */
     fun String.trimAllWhitespace(): String {
         return this.replace('\u00A0', ' ').trimStart().trim()

@@ -58,12 +58,12 @@ jobs:
             cd ~/project && sudo gcloud firebase test android run \
               --app ./app/build/outputs/apk/regression/debug/app-regression-debug.apk \
               --test ./app/build/outputs/apk/androidTest/regression/debug/app-regression-debug-androidTest.apk \
-              ## These next two lines are going to be required for Screenshotbot \
-              ## integration, but we can skip it for now \
-              # --results-bucket cloud-test-${GOOGLE_PROJECT_ID} \
-              # --directories-to-pull /sdcard/screenshots/com.kickstarter.kickstarter.regression.debug \
               --device-ids Pixel2 \
               --os-version-ids 27
+              ## These next two lines are going to be required for Screenshotbot
+              ## integration, but we can skip it for now
+              # --results-bucket cloud-test-${GOOGLE_PROJECT_ID} \
+              # --directories-to-pull /sdcard/screenshots/com.kickstarter.kickstarter.regression.debug
       - store_artifacts:
           path: app/build/reports
           destination: reports

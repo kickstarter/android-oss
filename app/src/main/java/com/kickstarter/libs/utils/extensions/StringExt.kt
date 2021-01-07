@@ -46,7 +46,7 @@ import java.util.Locale
      * which removes more types of whitespace than the java string method for trim.
      */
     fun String.trimAllWhitespace(): String {
-        return this.trim().replace(" +".toRegex(), " ")
+        return this.replace('\u00A0', ' ').trimStart().trim()
     }
 
     /**

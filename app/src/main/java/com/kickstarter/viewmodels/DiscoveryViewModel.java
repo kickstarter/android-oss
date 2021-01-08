@@ -17,8 +17,8 @@ import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.UrlUtils;
+import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.libs.utils.extensions.UriExt;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.QualtricsIntercept;
@@ -427,7 +427,8 @@ public interface DiscoveryViewModel {
           final User user = resultAndUser.second;
           return Pair.create(qualtricsResult.surveyUrl(), user);
         })
-        .filter(surveyAndUser -> StringUtils.isPresent(surveyAndUser.first))
+        .filter(surveyAndUser -> ObjectUtils.isNotNull(surveyAndUser.first))
+        .filter(surveyAndUser -> StringExt.isPresent(surveyAndUser.first))
         .map(surveyAndUser -> {
           final String surveyUrl = surveyAndUser.first;
           final User user = surveyAndUser.second;

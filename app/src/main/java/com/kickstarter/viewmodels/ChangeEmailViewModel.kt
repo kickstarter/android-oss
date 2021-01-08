@@ -8,7 +8,8 @@ import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.StringUtils
+import com.kickstarter.libs.utils.extensions.isEmail
+import com.kickstarter.libs.utils.extensions.isValidPassword
 import com.kickstarter.services.ApolloClientType
 import com.kickstarter.ui.activities.ChangeEmailActivity
 import rx.Observable
@@ -117,7 +118,7 @@ interface ChangeEmailViewModel {
 
             this.emailFocus
                     .compose(combineLatestPair<Boolean, String>(this.email))
-                    .map { !it.first && it.second.isNotEmpty() && !StringUtils.isEmail(it.second) }
+                    .map { !it.first && it.second.isNotEmpty() && !it.second.isEmail()}
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe { this.emailErrorIsVisible.onNext(it) }
@@ -255,7 +256,7 @@ interface ChangeEmailViewModel {
 
         data class ChangeEmail(val email: String, val password: String) {
             fun isValid(): Boolean {
-                return StringUtils.isEmail(this.email) && StringUtils.isValidPassword(this.password)
+                return this.email.isEmail() && this.password.isValidPassword()
             }
         }
     }

@@ -16,9 +16,9 @@ import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ToolbarUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.ui.adapters.MessageThreadsAdapter;
 import com.kickstarter.ui.data.Mailbox;
@@ -163,7 +163,7 @@ public class MessageThreadsActivity extends BaseActivity<MessageThreadsViewModel
     this.unreadCountTextView.setText(
       this.ksString.format(this.unreadCountUnreadString, "unread_count", unreadCountString)
     );
-    this.unreadCountToolbarTextView.setText(StringUtils.wrapInParentheses(unreadCountString));
+    this.unreadCountToolbarTextView.setText(StringExt.wrapInParentheses(unreadCountString));
   }
 
   private void setUpAdapter() {

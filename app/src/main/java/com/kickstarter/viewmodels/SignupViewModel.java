@@ -5,7 +5,7 @@ import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.libs.utils.extensions.StringExt;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -198,7 +198,7 @@ public interface SignupViewModel {
       }
 
       boolean isValid() {
-        return this.name.length() > 0 && StringUtils.isEmail(this.email) && this.password.length() >= 6;
+        return this.name.length() > 0 && StringExt.isEmail(this.email) && this.password.length() >= 6;
       }
     }
   }

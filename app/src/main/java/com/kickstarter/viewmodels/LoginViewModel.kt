@@ -7,7 +7,7 @@ import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.StringUtils
+import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -215,7 +215,7 @@ interface LoginViewModel {
         private fun unwrapNotificationEnvelopeSuccess(notification: Notification<AccessTokenEnvelope>) =
                 if (notification.hasValue()) notification.value else null
 
-        private fun isValid(email: String, password: String) = StringUtils.isEmail(email) && password.isNotEmpty()
+        private fun isValid(email: String, password: String) = email.isEmail() && password.isNotEmpty()
 
         private fun success(envelope: AccessTokenEnvelope) {
             this.currentUser.login(envelope.user(), envelope.accessToken())

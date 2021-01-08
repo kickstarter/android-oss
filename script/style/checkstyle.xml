@@ -63,7 +63,6 @@
       <property name="excludes" value="com.kickstarter.libs.utils.ExceptionUtils.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.IntegerUtils.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.ObjectUtils.*" />
-      <property name="excludes" value="com.kickstarter.libs.utils.StringUtils.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.TransitionUtils.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.ViewUtils.*" />
       <property name="excludes" value="com.kickstarter.TestUtils.*" />

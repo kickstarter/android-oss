@@ -6,7 +6,7 @@ import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.libs.utils.StringUtils
+import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.ErrorEnvelope
@@ -55,7 +55,7 @@ interface ResetPasswordViewModel {
 
         init {
             this.email
-                    .map(StringUtils::isEmail)
+                    .map { it.isEmail() }
                     .compose(bindToLifecycle())
                     .subscribe(this.isFormValid)
 

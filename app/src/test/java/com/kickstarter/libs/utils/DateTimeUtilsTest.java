@@ -48,9 +48,9 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testMediumDateTime() {
-    assertEquals("Dec 17, 2015 6:35:05 PM", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC));
-    assertEquals("Dec 17, 2015 1:35:05 PM", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.forID("EST")));
-    assertEquals("17 déc. 2015 18:35:05", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC, Locale.FRENCH));
+    assertEquals("Dec 17, 2015, 6:35:05 PM", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC));
+    assertEquals("Dec 17, 2015, 1:35:05 PM", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.forID("EST")));
+    assertEquals("17 déc. 2015 à 18:35:05", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC, Locale.FRENCH));
   }
 
   @Test
@@ -154,8 +154,8 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testMediumDateShortTime() {
-    assertEquals("Dec 17, 2015 6:35 PM", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC));
-    assertEquals("Dec 17, 2015 1:35 PM", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.forID("EST")));
+    assertEquals("Dec 17, 2015, 6:35 PM", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC));
+    assertEquals("Dec 17, 2015, 1:35 PM", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.forID("EST")));
     assertEquals("17 déc. 2015 18:35", DateTimeUtils.mediumDateShortTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC, Locale.FRENCH));
   }
 

@@ -51,16 +51,16 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), getString(this.errorMessageString)) }
 
+        reset_password_button.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
+
+        email.onChange { this.viewModel.inputs.email(it) }
+
         this.viewModel.outputs.prefillEmail()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
                     email.setText(it)
                 }
-
-        reset_password_button.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
-
-        email.onChange { this.viewModel.inputs.email(it) }
     }
 
     override fun exitTransition(): Pair<Int, Int>? {

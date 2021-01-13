@@ -67,6 +67,7 @@ interface ResetPasswordViewModel {
                     }
                     .compose(bindToLifecycle())
                     .subscribe(this.prefillEmail)
+
             this.email
                     .map { it.isEmail() }
                     .compose(bindToLifecycle())

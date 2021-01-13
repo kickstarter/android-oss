@@ -1,14 +1,17 @@
 package com.kickstarter.viewmodels
 
+import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.User
+import com.kickstarter.ui.IntentKey
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 
 class ResetPasswordViewModelTest : KSRobolectricTestCase() {
+    private val preFillEmail = TestSubscriber<String>()
 
     @Test
     fun testResetPasswordViewModel_formValidation() {
@@ -77,5 +80,15 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         koalaTest.assertValues("Forgot Password View", "Forgot Password Errored")
         this.lakeTest.assertValue("Forgot Password Page Viewed")
+    }
+
+    @Test
+    fun testPrefillEmail() {
+        val vm = ResetPasswordViewModel.ViewModel(environment())
+        vm.outputs.prefillEmail().subscribe(this.preFillEmail)
+        // Start the view model with an email to prefill.
+        vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
+
+        this.preFillEmail.assertValue("hello@kickstarter.com")
     }
 }

@@ -10,7 +10,6 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft
 import com.kickstarter.libs.utils.ViewUtils
@@ -19,12 +18,10 @@ import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.extensions.text
-import com.kickstarter.ui.fragments.Callbacks
 import com.kickstarter.ui.views.ConfirmDialog
 import com.kickstarter.viewmodels.LoginViewModel
 import kotlinx.android.synthetic.main.login_form_view.*
 import kotlinx.android.synthetic.main.login_toolbar.*
-
 
 @RequiresActivityViewModel(LoginViewModel.ViewModel::class)
 class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
@@ -103,6 +100,7 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
+                    .putExtra(IntentKey.EMAIL, email.text.toString())
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
         }
 
@@ -131,9 +129,10 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
     private fun errorMessages() =
             this.viewModel.outputs.invalidLoginError()
                     .map(ObjectUtils.coalesceWith(getString(this.loginDoesNotMatchString)))
-                    .mergeWith(this.viewModel.outputs.genericLoginError()
-                            .map(ObjectUtils.coalesceWith(getString(this.unableToLoginString))))
-
+                    .mergeWith(
+                            this.viewModel.outputs.genericLoginError()
+                                    .map(ObjectUtils.coalesceWith(getString(this.unableToLoginString)))
+                    )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)

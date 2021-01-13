@@ -10,9 +10,11 @@ import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.ErrorEnvelope
+import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ResetPasswordActivity
 import rx.Notification
 import rx.Observable
+import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 interface ResetPasswordViewModel {
@@ -37,6 +39,9 @@ interface ResetPasswordViewModel {
 
         /** Emits when password reset fails. */
         fun resetError(): Observable<String>
+
+        /** Fill the view's email address when it's supplied from the intent.  */
+        fun prefillEmail(): Observable<String>
     }
 
     class ViewModel(val environment: Environment) : ActivityViewModel<ResetPasswordActivity>(environment), Inputs, Outputs {
@@ -49,11 +54,19 @@ interface ResetPasswordViewModel {
         private val isFormValid = PublishSubject.create<Boolean>()
         private val resetSuccess = PublishSubject.create<Void>()
         private val resetError = PublishSubject.create<ErrorEnvelope>()
+        private val prefillEmail = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
 
         init {
+            intent()
+                    .filter { it.hasExtra(IntentKey.EMAIL) }
+                    .map {
+                        it.getStringExtra(IntentKey.EMAIL)
+                    }
+                    .compose(bindToLifecycle())
+                    .subscribe(this.prefillEmail)
             this.email
                     .map { it.isEmail() }
                     .compose(bindToLifecycle())
@@ -124,5 +137,7 @@ interface ResetPasswordViewModel {
                     .takeUntil(this.resetSuccess)
                     .map { it.errorMessage() }
         }
+
+        override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail
     }
 }

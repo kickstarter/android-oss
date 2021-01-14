@@ -39,6 +39,8 @@ import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.SegmentAnalytics;
+import com.kickstarter.libs.SegmentClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -85,6 +87,7 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
+import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
@@ -143,7 +146,7 @@ public final class ApplicationModule {
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint,
-    final @NonNull OkHttpClient okHttpClient) {
+    final @NonNull SegmentClientType segmentClientType) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -171,6 +174,7 @@ public final class ApplicationModule {
       .stripe(stripe)
       .webClient(webClient)
       .webEndpoint(webEndpoint)
+      .segment(segmentClientType)
       .build();
   }
 
@@ -618,6 +622,18 @@ public final class ApplicationModule {
       ? Secrets.StripePublishableKey.PRODUCTION
       : Secrets.StripePublishableKey.STAGING;
     return new Stripe(context, stripePublishableKey);
+  }
+
+  @Provides
+  @Singleton
+  SegmentClientType provideSegmentClient(final @ApplicationContext @NonNull Context context) {
+    Analytics segmentAnalytics = new Analytics.Builder(context, "random key here")
+            .trackApplicationLifecycleEvents()
+            .recordScreenViews()
+            .build();
+    Analytics.setSingletonInstance(segmentAnalytics);
+
+    return new SegmentAnalytics(segmentAnalytics);
   }
 
   @Provides

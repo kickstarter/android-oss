@@ -242,6 +242,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf-ktx'
     implementation "com.google.firebase:firebase-messaging"
 
+    // Analytics
+    implementation 'com.segment.analytics.android:analytics:4.+'
+
     // Testing
     testImplementation "junit:junit:4.12"
     testImplementation "org.mockito:mockito-core:2.8.9"

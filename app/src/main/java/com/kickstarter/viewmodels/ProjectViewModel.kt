@@ -227,6 +227,7 @@ interface ProjectViewModel {
         private val optimizely: ExperimentsClientType = environment.optimizely()
         private val sharedPreferences: SharedPreferences = environment.sharedPreferences()
         private val apolloClient = environment.apolloClient()
+        private val segmentClient = environment.segment()
 
         private val blurbTextViewClicked = PublishSubject.create<Void>()
         private val blurbVariantClicked = PublishSubject.create<Void>()
@@ -297,6 +298,7 @@ interface ProjectViewModel {
 
         init {
 
+            this.segmentClient.track("Test event", Pair("random value", "random value"))
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(intent(), intent()

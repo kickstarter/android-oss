@@ -1,5 +1,6 @@
 package com.kickstarter;
 
+import android.Manifest;
 import android.content.Context;
 
 import com.kickstarter.libs.Environment;
@@ -24,7 +25,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
 
 import androidx.annotation.NonNull;
 import rx.observers.TestSubscriber;
@@ -68,6 +71,10 @@ public abstract class KSRobolectricTestCase extends TestCase {
     }
 
     this.application = (TestKSApplication) RuntimeEnvironment.application;
+
+    ShadowApplication app = Shadows.shadowOf(this.application);
+    app.grantPermissions(Manifest.permission.INTERNET);
+
     return this.application;
   }
 

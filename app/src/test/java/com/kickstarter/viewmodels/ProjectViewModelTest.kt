@@ -16,6 +16,9 @@ import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.*
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import rx.Observable
 import rx.observers.TestSubscriber
 import java.math.RoundingMode
@@ -1434,6 +1437,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.expandPledgeSheet.assertValue(Pair(false, false))
         this.startThanksActivity.assertValue(Pair(checkoutData, pledgeData))
         this.projectData.assertValueCount(2)
+    }
+
+    @Test
+    fun firstSegmentTest_track() {
+
+        val segmentAnalytics: SegmentAnalytics = mock(SegmentAnalytics::class.java)
+        val environment = environment()
+                .toBuilder()
+                .segment(segmentAnalytics)
+                .build()
+        setUpEnvironment(environment)
+
+        Mockito.verify(segmentAnalytics.track("Test event", Pair("random value", "random value")))
     }
 
     @Test

@@ -16,7 +16,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.*
 import org.junit.Test
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import rx.Observable
@@ -1440,16 +1439,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun firstSegmentTest_track() {
+    fun firstSegmentTest_trackOpenedAppBanner() {
+        setUpEnvironment(environment())
 
-        val segmentAnalytics: SegmentAnalytics = mock(SegmentAnalytics::class.java)
-        val environment = environment()
-                .toBuilder()
-                .segment(segmentAnalytics)
-                .build()
-        setUpEnvironment(environment)
+        // Start the view model with a backed project
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()))
 
-        Mockito.verify(segmentAnalytics.track("Test event", Pair("random value", "random value")))
+        this.segmentTest.assertValue("Opened App Banner")
     }
 
     @Test

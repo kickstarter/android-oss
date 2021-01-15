@@ -298,7 +298,12 @@ interface ProjectViewModel {
 
         init {
 
-            this.segmentClient.track("Test event", Pair("random value", "random value"))
+            // TODO: Test implementation
+            intent()
+                    .subscribe {
+                        this.segmentClient.trackOpenedAppBanner()
+                    }
+
             val progressBarIsGone = PublishSubject.create<Boolean>()
 
             val mappedProjectNotification = Observable.merge(intent(), intent()
@@ -803,7 +808,9 @@ interface ProjectViewModel {
             intent()
                     .filter { IntentMapper.appBannerIsSet(it) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackOpenedAppBanner() }
+                    .subscribe {
+                        this.koala.trackOpenedAppBanner()
+                    }
 
             fullProjectDataAndPledgeFlowContext
                     .map { it.first }

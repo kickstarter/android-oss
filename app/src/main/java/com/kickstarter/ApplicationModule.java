@@ -39,7 +39,7 @@ import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
-import com.kickstarter.libs.SegmentAnalytics;
+import com.kickstarter.libs.SegmentAnalyticsClient;
 import com.kickstarter.libs.SegmentClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
@@ -146,7 +146,7 @@ public final class ApplicationModule {
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
     final @NonNull @WebEndpoint String webEndpoint,
-    final @NonNull SegmentClientType segmentClientType) {
+    final @NonNull Koala segment) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -174,7 +174,7 @@ public final class ApplicationModule {
       .stripe(stripe)
       .webClient(webClient)
       .webEndpoint(webEndpoint)
-      .segment(segmentClientType)
+      .segment(segment)
       .build();
   }
 
@@ -430,6 +430,22 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
+  static Koala provideSegment(final @ApplicationContext @NonNull Context context) {
+    Analytics segmentClient = null;
+
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      segmentClient = new Analytics.Builder(context, "key storage in native secrets that we do not currently have")
+              .trackApplicationLifecycleEvents()
+              .recordScreenViews()
+              .build();
+      Analytics.setSingletonInstance(segmentClient);
+    }
+
+    return new Koala(new SegmentAnalyticsClient(segmentClient));
+  }
+
+  @Provides
+  @Singleton
   static Scheduler provideScheduler() {
     return Schedulers.computation();
   }
@@ -622,18 +638,6 @@ public final class ApplicationModule {
       ? Secrets.StripePublishableKey.PRODUCTION
       : Secrets.StripePublishableKey.STAGING;
     return new Stripe(context, stripePublishableKey);
-  }
-
-  @Provides
-  @Singleton
-  SegmentClientType provideSegmentClient(final @ApplicationContext @NonNull Context context) {
-    Analytics segmentAnalytics = new Analytics.Builder(context, "random key here")
-            .trackApplicationLifecycleEvents()
-            .recordScreenViews()
-            .build();
-    Analytics.setSingletonInstance(segmentAnalytics);
-
-    return new SegmentAnalytics(segmentAnalytics);
   }
 
   @Provides

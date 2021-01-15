@@ -39,6 +39,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
   public TestSubscriber<String> experimentsTest;
   public TestSubscriber<String> koalaTest;
   public TestSubscriber<String> lakeTest;
+  public TestSubscriber<String> segmentTest;
   private Environment environment;
 
   @Override
@@ -50,6 +51,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
     final MockExperimentsClientType experimentsClientType = experimentsClient();
     final MockTrackingClient koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType);
     final MockTrackingClient lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType);
+    final MockTrackingClient segmentTrackingClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType);
 
     DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
 
@@ -120,5 +122,13 @@ public abstract class KSRobolectricTestCase extends TestCase {
     this.lakeTest = new TestSubscriber<>();
     lakeTrackingClient.eventNames.subscribe(this.lakeTest);
     return lakeTrackingClient;
+  }
+
+  private MockTrackingClient segmentTrackingClient(MockCurrentConfig mockCurrentConfig, MockExperimentsClientType experimentsClientType){
+      final MockTrackingClient segmentTrackingClient = new MockTrackingClient(new MockCurrentUser(),
+              mockCurrentConfig, TrackingClientType.Type.SEGMENT, experimentsClientType);
+      this.segmentTest = new TestSubscriber<>();
+    segmentTrackingClient.eventNames.subscribe(this.segmentTest);
+      return segmentTrackingClient;
   }
 }

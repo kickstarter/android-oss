@@ -15,7 +15,8 @@ import androidx.annotation.NonNull;
 public abstract class TrackingClientType {
   public enum Type {
     KOALA("🐨 Koala"),
-    LAKE("💧 Lake");
+    LAKE("💧 Lake"),
+    SEGMENT(" Segment");
 
     private String tag;
 
@@ -124,6 +125,12 @@ public abstract class TrackingClientType {
       combinedProperties.putAll(lakeProperties());
     } else if (type() == Type.KOALA){
       combinedProperties.putAll(koalaProperties());
+    }
+
+    // TODO: join properties of both previous tracking clients, we do not know yet what properties we should send, take all for now
+    if (type() == Type.SEGMENT) {
+      combinedProperties.putAll(koalaProperties());
+      combinedProperties.putAll(lakeProperties());
     }
     return combinedProperties;
   }

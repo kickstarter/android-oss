@@ -44,7 +44,7 @@ public abstract class Environment implements Parcelable {
   public abstract Stripe stripe();
   public abstract WebClientType webClient();
   public abstract String webEndpoint();
-  public abstract SegmentClientType segment();
+  public abstract Koala segment();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -73,7 +73,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder stripe(Stripe __);
     public abstract Builder webClient(WebClientType __);
     public abstract Builder webEndpoint(String __);
-    public abstract Builder segment(SegmentClientType __);
+    public abstract Builder segment(Koala __);
     public abstract Environment build();
   }
 

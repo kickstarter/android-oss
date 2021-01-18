@@ -74,8 +74,8 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.startHeartAnimation()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .filter { !lazyHeartCrossFadeAnimation().isRunning }
-            .subscribe { lazyHeartCrossFadeAnimation().start() }
+            .filter { !(lazyHeartCrossFadeAnimation()?.isRunning?:false) }
+            .subscribe { lazyHeartCrossFadeAnimation()?.start() }
 
         this.viewModel.outputs.projectList()
             .compose(bindToLifecycle())
@@ -166,12 +166,12 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             return null
         }
 
-    private fun lazyHeartCrossFadeAnimation(): AnimatorSet {
+    private fun lazyHeartCrossFadeAnimation(): AnimatorSet? {
 
         if (heartsAnimation == null) {
             heartsAnimation = crossFadeAndReverse(discovery_empty_heart_outline, discovery_empty_heart_filled, 400L)
         }
-        return heartsAnimation!!
+        return heartsAnimation
     }
 
     private fun startActivityFeedActivity() {

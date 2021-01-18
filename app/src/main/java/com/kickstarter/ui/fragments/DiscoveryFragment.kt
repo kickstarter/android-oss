@@ -11,7 +11,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
-import com.kickstarter.databinding.FragmentDiscoveryBinding
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -30,10 +29,10 @@ import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.viewholders.EditorialViewHolder
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel
+import kotlinx.android.synthetic.main.fragment_discovery.*
 
 @RequiresFragmentViewModel(DiscoveryFragmentViewModel.ViewModel::class)
 class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
-    private lateinit var binding: FragmentDiscoveryBinding
     private var heartsAnimation: AnimatorSet? = null
     private var recyclerViewPaginator: RecyclerViewPaginator? = null
 
@@ -43,7 +42,6 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = FragmentDiscoveryBinding.inflate(layoutInflater)
         return inflater.inflate(R.layout.fragment_discovery, container, false)
     }
 
@@ -52,17 +50,17 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
         val discoveryAdapter = DiscoveryAdapter(this.viewModel.inputs)
 
-        binding.discoveryRecyclerView.apply {
+        discovery_recycler_view.apply {
             adapter = discoveryAdapter
             layoutManager = LinearLayoutManager(context)
         }
 
         SwipeRefresher(
-            this, binding.discoverySwipeRefreshLayout, { this.viewModel.inputs.refresh() }
+            this, discovery_swipe_refresh_layout, { this.viewModel.inputs.refresh() }
         ) { this.viewModel.outputs.isFetchingProjects }
 
         recyclerViewPaginator = RecyclerViewPaginator(
-            binding.discoveryRecyclerView,
+            discovery_recycler_view,
             { this.viewModel.inputs.nextPage() },
             this.viewModel.outputs.isFetchingProjects
         )
@@ -91,7 +89,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         this.viewModel.outputs.shouldShowEmptySavedView()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
-            .subscribe { ViewUtils.setGone(binding.discoveryEmptyView, !it) }
+            .subscribe { ViewUtils.setGone(discovery_empty_view, !it) }
 
         this.viewModel.outputs.shouldShowOnboardingView()
             .compose(bindToLifecycle())
@@ -123,7 +121,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             .compose(Transformers.observeForUI())
             .subscribe { startLoginToutActivity() }
 
-        RxView.clicks(binding.discoveryHeartsContainer)
+        RxView.clicks(discovery_hearts_container)
             .compose(bindToLifecycle())
             .subscribe { this.viewModel.inputs.heartContainerClicked() }
     }
@@ -135,7 +133,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
 
     override fun onDetach() {
         super.onDetach()
-        binding.discoveryRecyclerView.adapter = null
+        discovery_recycler_view?.adapter = null
         recyclerViewPaginator?.stop()
     }
 
@@ -143,18 +141,18 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
         get() = viewModel != null
 
     val isInstantiated: Boolean
-        get() = binding.discoveryRecyclerView != null
+        get() = discovery_recycler_view != null
 
     private val editorialImageView: ImageView?
         get() {
-            val layoutManager = binding.discoveryRecyclerView.layoutManager as? LinearLayoutManager
-            val discoveryAdapter = binding.discoveryRecyclerView.adapter as? DiscoveryAdapter
+            val layoutManager = discovery_recycler_view.layoutManager as? LinearLayoutManager
+            val discoveryAdapter = discovery_recycler_view.adapter as? DiscoveryAdapter
             if (layoutManager != null && discoveryAdapter != null) {
                 for (i in layoutManager.findFirstVisibleItemPosition()..
                           layoutManager.findLastVisibleItemPosition()) {
                     val childView = layoutManager.getChildAt(i)
                     if (childView != null) {
-                        val viewHolder = binding.discoveryRecyclerView.getChildViewHolder(childView)
+                        val viewHolder = discovery_recycler_view.getChildViewHolder(childView)
                         if (viewHolder is EditorialViewHolder) {
                             return childView.findViewById(R.id.editorial_graphic)
                         }
@@ -167,7 +165,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
     private fun lazyHeartCrossFadeAnimation(): AnimatorSet? {
 
         if (heartsAnimation == null) {
-            heartsAnimation = crossFadeAndReverse(binding.discoveryEmptyHeartOutline, binding.discoveryEmptyHeartFilled, 400L)
+            heartsAnimation = crossFadeAndReverse(discovery_empty_heart_outline, discovery_empty_heart_filled, 400L)
         }
         return heartsAnimation
     }
@@ -234,7 +232,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
     }
 
     fun scrollToTop() {
-        binding.discoveryRecyclerView.smoothScrollToPosition(0)
+        discovery_recycler_view.smoothScrollToPosition(0)
     }
 
     companion object {

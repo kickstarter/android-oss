@@ -8,6 +8,7 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.qualifiers.WebEndpoint
 import com.kickstarter.viewmodels.HelpViewModel
+import kotlinx.android.synthetic.main.help_layout.*
 import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 

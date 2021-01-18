@@ -15,7 +15,6 @@ import com.kickstarter.libs.utils.UrlUtils
 import com.kickstarter.libs.utils.UrlUtils.baseCustomTabsIntent
 import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
-import com.kickstarter.ui.activities.HelpActivity.*
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import kotlinx.android.synthetic.main.activity_help_settings.*
 import rx.android.schedulers.AndroidSchedulers
@@ -50,11 +49,11 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
 
         accessibility_statement.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(ACCESSIBILITY), Intent(this, HelpActivity.AccessibilityStatement::class.java))
+            startChromeTab(buildWebEndpointUrl(HelpActivity.ACCESSIBILITY), Intent(this, HelpActivity.AccessibilityStatement::class.java))
         }
 
         cookie_policy.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(COOKIES), Intent(this, HelpActivity.CookiePolicy::class.java))
+            startChromeTab(buildWebEndpointUrl(HelpActivity.COOKIES), Intent(this, HelpActivity.CookiePolicy::class.java))
         }
 
         help_center.setOnClickListener {
@@ -62,11 +61,11 @@ class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {
         }
 
         privacy_policy.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(PRIVACY), Intent(this, HelpActivity.Privacy::class.java))
+            startChromeTab(buildWebEndpointUrl(HelpActivity.PRIVACY), Intent(this, HelpActivity.Privacy::class.java))
         }
 
         terms_of_use.setOnClickListener {
-            startChromeTab(buildWebEndpointUrl(TERMS_OF_USE), Intent(this, HelpActivity.Terms::class.java))
+            startChromeTab(buildWebEndpointUrl(HelpActivity.TERMS_OF_USE), Intent(this, HelpActivity.Terms::class.java))
         }
     }
 

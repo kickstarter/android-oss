@@ -22,6 +22,8 @@ import com.kickstarter.ui.IntentKey
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
+import com.segment.analytics.Analytics
+import com.segment.analytics.Properties
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -32,7 +34,8 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
                      @set:Inject var currentUser: CurrentUserType,
                      @set:Inject var build: Build,
                      @set:Inject var currentConfig: CurrentConfigType,
-                     @set:Inject var optimizely: ExperimentsClientType) : TrackingClientType() {
+                     @set:Inject var optimizely: ExperimentsClientType,
+                     private var segmentClient: Analytics? = null) : TrackingClientType() {
 
     private var loggedInUser: User? = null
     private var config: Config? = null
@@ -47,13 +50,21 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     }
 
     final override fun track(eventName: String, additionalProperties: MutableMap<String, Any?>) {
-        try {
-            queueEvent(eventName, additionalProperties)
-        } catch (e: JSONException) {
-            if (this.build.isDebug) {
-                Timber.e("Failed to encode ${type().tag} event: $eventName")
+        if (type() != Type.SEGMENT) {
+            try {
+                queueEvent(eventName, additionalProperties)
+            } catch (e: JSONException) {
+                if (this.build.isDebug) {
+                    Timber.e("Failed to encode ${type().tag} event: $eventName")
+                }
+                FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
             }
-            FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
+        } else {
+            segmentClient?.track(eventName, additionalProperties.let {
+                // TODO: Sending for now just the first of the combined properties
+                val combined = additionalProperties?.let { props -> this.combinedProperties(props) }
+                Properties().putValue(combined?.entries?.first()?.key, combined?.entries?.first()?.value)
+            })
         }
     }
 

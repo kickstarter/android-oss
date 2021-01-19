@@ -64,6 +64,7 @@ public abstract class KSRobolectricTestCase extends TestCase {
       .koala(new Koala(koalaTrackingClient))
       .lake(new Koala(lakeTrackingClient))
       .optimizely(experimentsClientType)
+      .segment(new Koala(segmentTrackingClient))
       .build();
   }
 

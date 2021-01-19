@@ -127,9 +127,8 @@ public abstract class TrackingClientType {
       combinedProperties.putAll(koalaProperties());
     }
 
-    // TODO: join properties of both previous tracking clients, we do not know yet what properties we should send, take all for now
+    // TODO: take for segment just the lake properties, as we're uncertain about the properties needed VS the ones segment tracks automatically
     if (type() == Type.SEGMENT) {
-      combinedProperties.putAll(koalaProperties());
       combinedProperties.putAll(lakeProperties());
     }
     return combinedProperties;

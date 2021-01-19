@@ -40,7 +40,6 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentAnalyticsClient;
-import com.kickstarter.libs.SegmentClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -430,18 +429,19 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  static Koala provideSegment(final @ApplicationContext @NonNull Context context) {
+  static Koala provideSegment(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
+                              final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
     Analytics segmentClient = null;
 
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      segmentClient = new Analytics.Builder(context, "key storage in native secrets that we do not currently have")
+      segmentClient = new Analytics.Builder(context, Secrets.Segment.API_KEY)
               .trackApplicationLifecycleEvents()
               .recordScreenViews()
               .build();
       Analytics.setSingletonInstance(segmentClient);
     }
 
-    return new Koala(new SegmentAnalyticsClient(segmentClient));
+    return new Koala(new SegmentAnalyticsClient(context, currentUser, build, currentConfig, experimentsClientType, segmentClient));
   }
 
   @Provides

@@ -23,7 +23,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import com.segment.analytics.Analytics
-import com.segment.analytics.Properties
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -50,21 +49,13 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     }
 
     final override fun track(eventName: String, additionalProperties: MutableMap<String, Any?>) {
-        if (type() != Type.SEGMENT) {
-            try {
-                queueEvent(eventName, additionalProperties)
-            } catch (e: JSONException) {
-                if (this.build.isDebug) {
-                    Timber.e("Failed to encode ${type().tag} event: $eventName")
-                }
-                FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
+        try {
+            queueEvent(eventName, additionalProperties)
+        } catch (e: JSONException) {
+            if (this.build.isDebug) {
+                Timber.e("Failed to encode ${type().tag} event: $eventName")
             }
-        } else {
-            segmentClient?.track(eventName, additionalProperties.let {
-                // TODO: Sending for now just the first of the combined properties
-                val combined = additionalProperties?.let { props -> this.combinedProperties(props) }
-                Properties().putValue(combined?.entries?.first()?.key, combined?.entries?.first()?.value)
-            })
+            FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
         }
     }
 
@@ -72,29 +63,33 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     private fun queueEvent(eventName: String, additionalProperties: MutableMap<String, Any?>) {
         val eventData = trackingData(eventName, combinedProperties(additionalProperties))
-        val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
-                IntentKey.EVENT_NAME to eventName,
-                IntentKey.EVENT_DATA to eventData)
 
-        var requestBuilder: OneTimeWorkRequest.Builder? = null
-        if (type() == Type.KOALA) {
-            requestBuilder = OneTimeWorkRequestBuilder<KoalaWorker>()
-        } else if (type() == Type.LAKE) {
-            requestBuilder = OneTimeWorkRequestBuilder<LakeWorker>()
-        }
+        // - Activate and enqueue the analytics events for the Lake and Koala workers
+        if (type() != Type.SEGMENT) {
+            val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
+                    IntentKey.EVENT_NAME to eventName,
+                    IntentKey.EVENT_DATA to eventData)
 
-        requestBuilder?.let {
-            val request = it
-                    .setInputData(data)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
-                    .setConstraints(baseConstraints)
-                    .build()
+            var requestBuilder: OneTimeWorkRequest.Builder? = null
+            if (type() == Type.KOALA) {
+                requestBuilder = OneTimeWorkRequestBuilder<KoalaWorker>()
+            } else if (type() == Type.LAKE) {
+                requestBuilder = OneTimeWorkRequestBuilder<LakeWorker>()
+            }
 
-            WorkManager.getInstance(this.context)
-                    .enqueueUniqueWork(uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
+            requestBuilder?.let {
+                val request = it
+                        .setInputData(data)
+                        .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
+                        .setConstraints(baseConstraints)
+                        .build()
 
-            if (this.build.isDebug) {
-                Timber.d("Queued ${type().tag} $eventName event: $eventData")
+                WorkManager.getInstance(this.context)
+                        .enqueueUniqueWork(uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
+
+                if (this.build.isDebug) {
+                    Timber.d("Queued ${type().tag} $eventName event: $eventData")
+                }
             }
         }
     }

@@ -3,6 +3,8 @@ package com.kickstarter.libs;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreferenceType;

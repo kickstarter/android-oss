@@ -423,14 +423,14 @@ public final class ApplicationModule {
   @LakeTracker
   @Singleton
   static Koala provideLake(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
-    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType,
+  final @NonNull Analytics segmentClient) {
+    return new Koala(new SegmentAnalyticsClient(context, currentUser, build, currentConfig, experimentsClientType,segmentClient));
   }
 
   @Provides
   @Singleton
-  static Koala provideSegment(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-                              final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
+  static Analytics provideSegment(final @ApplicationContext @NonNull Context context) {
     Analytics segmentClient = null;
 
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
@@ -440,6 +440,15 @@ public final class ApplicationModule {
               .build();
       Analytics.setSingletonInstance(segmentClient);
     }
+
+    return segmentClient;
+  }
+
+  @Provides
+  @Singleton
+  static Koala SegmentAnalyticsClient(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
+                              final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType,
+                              final @NonNull Analytics segmentClient) {
 
     return new Koala(new SegmentAnalyticsClient(context, currentUser, build, currentConfig, experimentsClientType, segmentClient));
   }

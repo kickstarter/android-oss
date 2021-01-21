@@ -1,14 +1,14 @@
 package com.kickstarter;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.tz.UTCProvider;
+import com.facebook.FacebookSdk;
 
 public class TestKSApplication extends KSApplication {
 
   @Override
   public void onCreate() {
+    // - LoginToutViewModelTest needs the FacebookSDK initialized
+    FacebookSdk.sdkInitialize(this);
     super.onCreate();
-    DateTimeZone.setProvider(new UTCProvider());
   }
 
   @Override

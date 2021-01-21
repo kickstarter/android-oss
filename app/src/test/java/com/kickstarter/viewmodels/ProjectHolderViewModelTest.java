@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.os.Looper;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
@@ -32,6 +33,7 @@ import com.kickstarter.ui.data.ProjectData;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.junit.Test;
+import org.robolectric.Shadows;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -142,7 +144,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.setUnsuccessfulProjectStateView().subscribe(this.setUnsuccessfulProjectStateView);
     this.vm.outputs.startProjectSocialActivity().subscribe(this.startProjectSocialActivity);
     this.vm.outputs.updatesCountTextViewText().subscribe(this.updatesCountTextViewText);
-
+    Shadows.shadowOf(Looper.getMainLooper()).idle();
     this.vm.inputs.configureWith(projectData);
   }
 

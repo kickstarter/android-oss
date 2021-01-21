@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Looper
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
@@ -16,6 +17,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.data.*
 import org.junit.Test
+import org.robolectric.Shadows
 import rx.Observable
 import rx.observers.TestSubscriber
 import java.math.RoundingMode
@@ -99,6 +101,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.startThanksActivity().subscribe(this.startThanksActivity)
         this.vm.outputs.startVideoActivity().subscribe(this.startVideoActivity)
         this.vm.outputs.updateFragments().subscribe(this.updateFragments)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @Test

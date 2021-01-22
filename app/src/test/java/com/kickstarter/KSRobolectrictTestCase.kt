@@ -45,6 +45,8 @@ abstract class KSRobolectricTestCase : TestCase() {
                 .applicationModule(TestApplicationModule(application()))
                 .build()
 
+        DateTimeUtils.setCurrentMillisFixed(DateTime().millis)
+
         environment = component.environment().toBuilder()
                 .apiClient(MockApiClient())
                 .apolloClient(MockApolloClient())

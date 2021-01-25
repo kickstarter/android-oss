@@ -127,18 +127,6 @@ public interface CreatorDashboardViewModel {
         .map(__ -> false)
         .compose(bindToLifecycle())
         .subscribe(this.bottomSheetShouldExpand);
-
-      this.projectSelectionInput
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackSwitchedProjects);
-
-      this.projectsListButtonClicked
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackOpenedProjectSwitcher());
-
-      currentProject
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackViewedProjectDashboard);
     }
 
     private final PublishSubject<Void> backClicked = PublishSubject.create();

@@ -9,13 +9,4 @@ class HelpSettingsViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment() {
         this.vm = HelpSettingsViewModel.ViewModel(environment())
     }
-
-    @Test
-    fun testCreatorDigestFrequencyIsGone_IsFalseWhenUserHasBackingsEmails() {
-        setUpEnvironment()
-
-        this.vm.inputs.contactClicked()
-
-        this.koalaTest.assertValue("Contact Email Clicked")
-    }
 }

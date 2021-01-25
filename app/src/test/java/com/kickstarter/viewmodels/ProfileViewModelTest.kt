@@ -151,7 +151,6 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
 
         setUpEnvironment(environment().toBuilder().apiClient(apiClient).build())
 
-        this.koalaTest.assertValues(KoalaEvent.PROFILE_VIEW_MY, KoalaEvent.VIEWED_PROFILE)
         this.projectList.assertValueCount(1)
     }
 

@@ -105,16 +105,6 @@ public interface ProjectUpdatesViewModel {
         .compose(takePairWhen(this.updateClicked))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
-
-      project
-        .compose(takeWhen(this.updateClicked))
-        .compose(bindToLifecycle())
-        .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.UPDATES));
-
-      project
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackViewedUpdates);
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();

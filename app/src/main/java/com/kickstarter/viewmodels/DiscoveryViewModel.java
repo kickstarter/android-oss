@@ -335,10 +335,6 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.navigationDrawerData);
 
-      drawerParamsClicked
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackDiscoveryFilterSelected);
-
       final List<Observable<Boolean>> drawerOpenObservables = Arrays.asList(
         this.openDrawer,
         this.childFilterRowClick.map(__ -> false),
@@ -361,19 +357,10 @@ public interface DiscoveryViewModel {
       final Observable<Boolean> drawerOpened = this.openDrawer
         .filter(BooleanUtils::isTrue);
 
-      drawerOpened
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackDiscoveryFilters());
-
       paramsWithSort
         .compose(takeWhen(drawerOpened))
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackHamburgerMenuClicked);
-
-      intent()
-        .filter(IntentMapper::appBannerIsSet)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackOpenedAppBanner());
 
       currentUser
         .map(this::currentDrawerMenuIcon)

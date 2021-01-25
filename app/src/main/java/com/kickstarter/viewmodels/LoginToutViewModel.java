@@ -138,24 +138,10 @@ public interface LoginToutViewModel {
       this.startLoginActivity = this.loginClick;
       this.startSignupActivity = this.signupClick;
 
-      this.loginReason.take(1)
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackLoginRegisterTout);
-
       this.loginReason
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(__ -> this.lake.trackLogInSignUpPageViewed());
-
-      this.loginError
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackLoginError());
-
-      showMissingFacebookEmailErrorToast()
-        .mergeWith(showFacebookInvalidAccessTokenErrorToast())
-        .mergeWith(showFacebookAuthorizationErrorDialog())
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackFacebookLoginError());
 
       this.facebookLoginClick
         .compose(ignoreValues())

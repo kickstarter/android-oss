@@ -105,19 +105,6 @@ public interface TwoFactorViewModel {
         .compose(bindToLifecycle())
         .subscribe();
 
-      this.tfaSuccess
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackLoginSuccess());
-
-      this.resendClick
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackTwoFactorResendCode());
-
-      this.tfaError
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackLoginError());
-
-      this.koala.trackTwoFactorAuthView();
       this.lake.trackTwoFactorConfirmationViewed();
     }
 

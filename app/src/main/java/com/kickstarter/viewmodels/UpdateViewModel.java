@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.Secrets;
@@ -134,11 +133,6 @@ public interface UpdateViewModel {
           : uriString)
         .compose(bindToLifecycle())
         .subscribe(this.openProjectExternally::onNext);
-
-      project
-        .compose(takeWhen(this.externalLinkActivated))
-        .compose(bindToLifecycle())
-        .subscribe(p -> this.koala.trackOpenedExternalLink(p, KoalaContext.ExternalLink.PROJECT_UPDATE));
     }
 
     /**

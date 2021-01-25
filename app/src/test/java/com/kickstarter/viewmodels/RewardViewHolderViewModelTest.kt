@@ -601,7 +601,6 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.rewardClicked(3)
         this.showPledgeFragment.assertNoValues()
-        this.koalaTest.assertNoValues()
     }
 
     @Test
@@ -616,7 +615,6 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.rewardClicked(3)
         this.showPledgeFragment.assertNoValues()
-        this.koalaTest.assertNoValues()
     }
 
     @Test
@@ -631,7 +629,6 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // When a reward from a live project is clicked, start checkout.
         this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
-        this.koalaTest.assertValue("Select Reward Button Clicked")
         this.lakeTest.assertValue("Select Reward Button Clicked")
     }
 
@@ -647,7 +644,6 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // When a reward from a live backed project is clicked, start checkout.
         this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(backedProject, reward))
-        this.koalaTest.assertValue("Select Reward Button Clicked")
         this.lakeTest.assertNoValues()
     }
 

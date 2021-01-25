@@ -7,7 +7,6 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.extensions.StringExt;
@@ -266,56 +265,6 @@ public interface CommentsViewModel {
         .subscribe(__ -> this.refresh.onNext(null));
 
       final Observable<Update> update = projectOrUpdate.map(Either::right);
-
-      // TODO: add a pageCount to RecyclerViewPaginator to track loading newer comments.
-      Observable.combineLatest(project, update, Pair::create)
-        .compose(takeWhen(this.nextPage))
-        .compose(bindToLifecycle())
-        .subscribe(pu ->
-          this.koala.trackLoadedOlderComments(
-            pu.first, pu.second, pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE
-          )
-        );
-
-      Observable.combineLatest(project, update, Pair::create)
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(pu ->
-          this.koala.trackViewedComments(
-            pu.first, pu.second, pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE
-          )
-        );
-
-      Observable.combineLatest(project, update, Pair::create)
-        .compose(takeWhen(postedComment))
-        .compose(bindToLifecycle())
-        .subscribe(pu ->
-          this.koala.trackPostedComment(
-            pu.first,
-            pu.second,
-            pu.second == null ? KoalaContext.CommentDialog.PROJECT_COMMENTS : KoalaContext.CommentDialog.UPDATE_COMMENTS
-          )
-        );
-
-      projectOrUpdate
-        .filter(Either::isLeft)
-        .map(Either::left)
-        .compose(takeWhen(this.nextPage))
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackLoadedOlderProjectComments);
-
-      projectOrUpdate
-        .filter(Either::isLeft)
-        .map(Either::left)
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackProjectCommentsView);
-
-      projectOrUpdate
-        .filter(Either::isLeft)
-        .map(Either::left)
-        .compose(takeWhen(postedComment))
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackProjectCommentCreate);
     }
 
     private @NonNull Observable<Comment> postComment(final @NonNull Either<Project, Update> projectOrUpdate, final @NonNull String body) {

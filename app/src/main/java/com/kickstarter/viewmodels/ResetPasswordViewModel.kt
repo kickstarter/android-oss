@@ -89,15 +89,6 @@ interface ResetPasswordViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.resetError)
 
-            this.resetError
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackResetPasswordError() }
-
-            this.resetSuccess
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackResetPasswordSuccess() }
-
-            this.koala.trackResetPasswordFormView()
             this.lake.trackForgotPasswordPageViewed()
         }
 

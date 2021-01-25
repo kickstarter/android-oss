@@ -71,7 +71,7 @@ public final class Koala {
   }
 
   public void trackDiscoveryFilterSelected(final @NonNull DiscoveryParams params) {
-    this.client.track("Discover Modal Selected Filter", KoalaUtils.discoveryParamsProperties(params));
+    this.client.track("Discover Modal Selected Filter", KoalaUtils. discoveryParamsProperties(params));
   }
 
   public void trackDiscoveryRefreshTriggered() {

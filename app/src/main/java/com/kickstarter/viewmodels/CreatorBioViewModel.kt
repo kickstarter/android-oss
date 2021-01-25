@@ -76,11 +76,6 @@ interface CreatorBioViewModel {
                     .filter { it.isBacking }
                     .compose(bindToLifecycle())
                     .subscribe(this.startMessageActivity)
-
-            project
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackViewedCreatorBioModal(it) }
-
         }
 
         private fun userIsLoggedOutOrProjectCreator(userAndProject: Pair<User, Project>) =

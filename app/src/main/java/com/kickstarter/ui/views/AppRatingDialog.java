@@ -7,10 +7,8 @@ import android.widget.Button;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
-import com.kickstarter.libs.qualifiers.KoalaTracker;
 import com.kickstarter.libs.utils.ViewUtils;
 
 import javax.inject.Inject;
@@ -24,7 +22,6 @@ import butterknife.OnClick;
 
 public class AppRatingDialog extends AppCompatDialog {
   protected @Inject @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference;
-  protected @Inject @KoalaTracker Koala koala;
 
   protected @Bind(R.id.no_thanks_button) Button noThanksButton;
   protected @Bind(R.id.remind_button) Button remindButton;
@@ -46,7 +43,6 @@ public class AppRatingDialog extends AppCompatDialog {
 
   @OnClick(R.id.rate_button)
   protected void rateButtonClick() {
-    this.koala.trackAppRatingNow();
     this.hasSeenAppRatingPreference.set(true);
     dismiss();
     ViewUtils.openStoreRating(getContext(), getContext().getPackageName());
@@ -54,13 +50,11 @@ public class AppRatingDialog extends AppCompatDialog {
 
   @OnClick(R.id.remind_button)
   protected void remindButtonClick() {
-    this.koala.trackAppRatingRemindLater();
     dismiss();
   }
 
   @OnClick(R.id.no_thanks_button)
   protected void noThanksButtonClick() {
-    this.koala.trackAppRatingNoThanks();
     this.hasSeenAppRatingPreference.set(true);
     dismiss();
   }

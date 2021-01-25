@@ -147,7 +147,6 @@ interface ChangeEmailViewModel {
                     .subscribe {
                         this.currentEmail.onNext(it.updateUserAccount()?.user()?.email())
                         this.success.onNext(null)
-                        this.koala.trackChangedEmail()
                     }
 
             val sendEmailNotification = this.sendVerificationEmailClick
@@ -163,10 +162,7 @@ interface ChangeEmailViewModel {
                     .compose(values())
                     .subscribe {
                         this.success.onNext(null)
-                        this.koala.trackResentVerificationEmail()
                     }
-
-            this.koala.trackViewedChangedEmail()
         }
 
         override fun email(email: String) {

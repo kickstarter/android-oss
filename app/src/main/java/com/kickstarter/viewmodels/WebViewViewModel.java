@@ -37,14 +37,6 @@ public interface WebViewViewModel {
         .ofType(String.class)
         .compose(bindToLifecycle())
         .subscribe(this.url::onNext);
-
-      intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
-        .ofType(PushNotificationEnvelope.class)
-        .filter(ObjectUtils::isNotNull)
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackPushNotification);
     }
 
     private final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();

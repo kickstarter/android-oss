@@ -4,9 +4,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext.Update;
 import com.kickstarter.libs.utils.IntegerUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.ErroredBacking;
 import com.kickstarter.models.Project;
@@ -181,29 +179,9 @@ public interface ActivityFeedViewModel {
         .startWith(0);
 
       feedViewed
-        .compose(this.bindToLifecycle())
-        .subscribe(this.koala::trackActivityView);
-
-      feedViewed
         .take(1)
         .compose(this.bindToLifecycle())
         .subscribe(__ -> this.lake.trackActivityFeedViewed());
-
-      // Track tapping on any of the activity items.
-      Observable.merge(
-        this.friendBackingClick,
-        this.projectStateChangedPositiveClick,
-        this.projectStateChangedClick,
-        this.projectUpdateProjectClick
-      )
-        .compose(this.bindToLifecycle())
-        .subscribe(this.koala::trackActivityTapped);
-
-      this.startUpdateActivity
-        .map(Activity::project)
-        .filter(ObjectUtils::isNotNull)
-        .compose(this.bindToLifecycle())
-        .subscribe(p -> this.koala.trackViewedUpdate(p, Update.ACTIVITY));
     }
 
     private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();

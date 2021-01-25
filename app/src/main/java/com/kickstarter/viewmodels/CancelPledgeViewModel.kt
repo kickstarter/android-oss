@@ -118,10 +118,6 @@ interface CancelPledgeViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.dismiss)
 
-            project
-                    .compose<Project>(takeWhen(this.confirmCancellationClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackCancelPledgeButtonClicked(it) }
         }
 
         private fun cancelBacking(note: String, backing: Backing): Observable<Notification<Any>> {

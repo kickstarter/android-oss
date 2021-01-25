@@ -85,6 +85,7 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
+import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
@@ -142,8 +143,7 @@ public class ApplicationModule {
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
-    final @NonNull @WebEndpoint String webEndpoint,
-    final @NonNull OkHttpClient okHttpClient) {
+    final @NonNull @WebEndpoint String webEndpoint) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -172,6 +172,28 @@ public class ApplicationModule {
       .webClient(webClient)
       .webEndpoint(webEndpoint)
       .build();
+  }
+
+  @Provides
+  @Singleton
+  static Analytics provideSegment(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    String apiKey = "";
+
+    if (build.isRelease() && Build.isExternal()) {
+      apiKey = Secrets.Segment.PRODUCTION;
+    }
+    if (build.isDebug()) {
+      apiKey = Secrets.Segment.STAGING;
+    }
+
+    final Analytics segmentClient = new Analytics.Builder(context, apiKey)
+              .trackApplicationLifecycleEvents()
+              .recordScreenViews()
+              .build();
+
+    Analytics.setSingletonInstance(segmentClient);
+
+    return segmentClient;
   }
 
   @Provides

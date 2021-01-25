@@ -17,6 +17,8 @@ import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -154,6 +156,8 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectSwitcherProjectClickOutput() {
+    DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
+
     final Project project1 = ProjectFactory.project();
     final Project project2 = ProjectFactory.project();
     final List<Project> projects = Arrays.asList(

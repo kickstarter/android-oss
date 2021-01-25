@@ -1,62 +1,43 @@
-package com.kickstarter.ui.viewholders;
+package com.kickstarter.ui.viewholders
 
-import android.view.View;
-import android.widget.Button;
+import android.view.View
+import com.kickstarter.databinding.EmptyActivityFeedViewBinding
+import com.kickstarter.libs.utils.BooleanUtils
 
-import com.kickstarter.R;
-import com.kickstarter.libs.utils.BooleanUtils;
+class EmptyActivityFeedViewHolder(
+    private val binding: EmptyActivityFeedViewBinding,
+    private val delegate: Delegate?
+) : KSViewHolder(binding.root) {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+    private var isLoggedIn = false
 
-public final class EmptyActivityFeedViewHolder extends KSViewHolder {
-  private boolean isLoggedIn;
-  protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
-  protected @Bind(R.id.login_button) Button loginButton;
-
-  private final @Nullable Delegate delegate;
-
-  public interface Delegate {
-    void emptyActivityFeedDiscoverProjectsClicked(EmptyActivityFeedViewHolder viewHolder);
-    void emptyActivityFeedLoginClicked(EmptyActivityFeedViewHolder viewHolder);
-  }
-
-  public EmptyActivityFeedViewHolder(final @NonNull View view, final @Nullable Delegate delegate) {
-    super(view);
-    this.delegate = delegate;
-    ButterKnife.bind(this, view);
-  }
-
-  @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-    this.isLoggedIn = BooleanUtils.isTrue((Boolean) data);
-  }
-
-  @Override
-  public void onBind() {
-    if (this.isLoggedIn) {
-      this.discoverProjectsButton.setVisibility(View.VISIBLE);
-      this.loginButton.setVisibility(View.GONE);
-    } else  {
-      this.discoverProjectsButton.setVisibility(View.GONE);
-      this.loginButton.setVisibility(View.VISIBLE);
+    interface Delegate {
+        fun emptyActivityFeedDiscoverProjectsClicked(viewHolder: EmptyActivityFeedViewHolder?)
+        fun emptyActivityFeedLoginClicked(viewHolder: EmptyActivityFeedViewHolder?)
     }
-  }
 
-  @OnClick(R.id.discover_projects_button)
-  public void discoverProjectsOnClick() {
-    if (this.delegate != null) {
-      this.delegate.emptyActivityFeedDiscoverProjectsClicked(this);
+    @Throws(Exception::class)
+    override fun bindData(data: Any?) {
+        isLoggedIn = BooleanUtils.isTrue(data as Boolean?)
     }
-  }
 
-  @OnClick(R.id.login_button)
-  public void loginOnClick() {
-    if (this.delegate != null) {
-      this.delegate.emptyActivityFeedLoginClicked(this);
+    override fun onBind() {
+        if (isLoggedIn) {
+            binding.discoverProjectsButton.visibility = View.VISIBLE
+            binding.loginButton.visibility = View.GONE
+        } else {
+            binding.discoverProjectsButton.visibility = View.GONE
+            binding.loginButton.visibility = View.VISIBLE
+        }
+        binding.loginButton.setOnClickListener { loginOnClick() }
+        binding.discoverProjectsButton.setOnClickListener { discoverProjectsOnClick() }
     }
-  }
+
+    private fun discoverProjectsOnClick() {
+        delegate?.emptyActivityFeedDiscoverProjectsClicked(this)
+    }
+
+    private fun loginOnClick() {
+        delegate?.emptyActivityFeedLoginClicked(this)
+    }
 }

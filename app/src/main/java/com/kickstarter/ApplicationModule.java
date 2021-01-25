@@ -39,6 +39,7 @@ import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -194,6 +195,14 @@ public class ApplicationModule {
     Analytics.setSingletonInstance(segmentClient);
 
     return segmentClient;
+  }
+
+  @Provides
+  @Singleton
+  static SegmentTrackingClient provideSegmentTrackingClient(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
+    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType, final @NonNull Analytics segmentClient) {
+
+    return new SegmentTrackingClient(context, currentUser, build, currentConfig, experimentsClientType, segmentClient);
   }
 
   @Provides

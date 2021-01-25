@@ -15,7 +15,8 @@ import androidx.annotation.NonNull;
 public abstract class TrackingClientType {
   public enum Type {
     KOALA("🐨 Koala"),
-    LAKE("💧 Lake");
+    LAKE("💧 Lake"),
+    SEGMENT(" Segment");
 
     private String tag;
 
@@ -28,6 +29,7 @@ public abstract class TrackingClientType {
     }
   }
 
+  // TODO: Will add methods Screen and Identity those two are specifics to Segment, the implementation on Lake will be empty
   public abstract void track(final String eventName, final Map<String, Object> additionalProperties);
 
   public final void track(final String eventName) {

@@ -109,7 +109,7 @@ import rx.schedulers.Schedulers;
 import type.CustomType;
 
 @Module
-public final class ApplicationModule {
+public class ApplicationModule {
   private final Application application;
 
   public ApplicationModule(final @NonNull Application application) {

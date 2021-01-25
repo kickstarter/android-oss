@@ -11,8 +11,6 @@ import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
 import org.joda.time.DateTime;
 
 import java.net.CookieHandler;
@@ -38,6 +36,12 @@ public class KSApplication extends MultiDexApplication {
   public void onCreate() {
     super.onCreate();
 
+    if (!isInUnitTests()) {
+      initApplication();
+    }
+  }
+
+  private void initApplication() {
     MultiDex.install(this);
 
     // Only log for internal builds
@@ -45,23 +49,18 @@ public class KSApplication extends MultiDexApplication {
       Timber.plant(new Timber.DebugTree());
     }
 
-    JodaTimeAndroid.init(this);
-
     this.component = DaggerApplicationComponent.builder()
-      .applicationModule(new ApplicationModule(this))
-      .build();
+            .applicationModule(new ApplicationModule(this))
+            .build();
     component().inject(this);
 
-    if (FirebaseApp.getApps(getApplicationContext()).isEmpty() && !isInUnitTests()) {
+    if (FirebaseApp.getApps(getApplicationContext()).isEmpty()) {
       FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
       FirebaseApp.initializeApp(getApplicationContext());
       FirebaseAnalytics.getInstance(getApplicationContext()).setAnalyticsCollectionEnabled(true);
     }
 
-    if (!isInUnitTests()) {
-      setVisitorCookie();
-    }
-
+    setVisitorCookie();
     this.pushNotifications.initialize();
 
     final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
@@ -73,6 +72,9 @@ public class KSApplication extends MultiDexApplication {
     return this.component;
   }
 
+  /**
+   * Method override in tha child class for testings purposes
+   */
   public boolean isInUnitTests() {
     return false;
   }

@@ -6,14 +6,24 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RelativeDateTimeOptions;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 
 public final class DateTimeUtilsTest extends KSRobolectricTestCase {
+
+  @Before
+  public void init() {
+    // -  DateTimeZone.forID("EST")) requires initializing joda time library, on newest versions the initializing method has been deprecated look for an alternative
+    JodaTimeAndroid.init(this.context());
+  }
+
   @Test
   public void testEstimatedDeliveryOn() {
     assertEquals("December 2015", DateTimeUtils.estimatedDeliveryOn(DateTime.parse("2015-12-17T18:35:05Z")));

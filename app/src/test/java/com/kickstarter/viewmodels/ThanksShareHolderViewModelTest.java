@@ -48,7 +48,6 @@ public final class ThanksShareHolderViewModelTest extends KSRobolectricTestCase 
     this.vm.inputs.shareClick();
     final String expectedShareUrl = "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_share";
     this.startShare.assertValue(Pair.create("Best Project 2K19", expectedShareUrl));
-    this.koalaTest.assertValues("Checkout Show Share Sheet");
   }
 
   @Test
@@ -61,7 +60,6 @@ public final class ThanksShareHolderViewModelTest extends KSRobolectricTestCase 
     this.vm.inputs.shareOnFacebookClick();
     final String expectedShareUrl = "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_facebook_share";
     this.startShareOnFacebook.assertValue(Pair.create(project, expectedShareUrl));
-    this.koalaTest.assertValues("Checkout Show Share");
   }
 
   @Test
@@ -74,7 +72,6 @@ public final class ThanksShareHolderViewModelTest extends KSRobolectricTestCase 
     this.vm.inputs.shareOnTwitterClick();
     final String expectedShareUrl = "https://www.kck.str/projects/15/best-project-2k19?ref=android_thanks_twitter_share";
     this.startShareOnTwitter.assertValue(Pair.create("Best Project 2K19", expectedShareUrl));
-    this.koalaTest.assertValues("Checkout Show Share");
   }
 
   private Project setUpProjectWithWebUrls() {

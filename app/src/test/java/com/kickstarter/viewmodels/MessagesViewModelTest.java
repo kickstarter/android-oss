@@ -185,7 +185,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     this.backingAndProject.assertValueCount(1);
     this.messageList.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -199,7 +198,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     this.backingAndProject.assertValueCount(1);
     this.messageList.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -392,9 +390,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Error toast is displayed, errored message body remains in edit text, no new message is emitted.
     this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
-
-    // No sent message event tracked.
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -428,8 +423,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Reply edit text should be cleared and view should be scrolled to new message.
     this.setMessageEditText.assertValues("");
     this.scrollRecyclerViewToBottom.assertValueCount(1);
-
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
   }
 
   @Test

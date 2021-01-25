@@ -65,12 +65,10 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     // Activities should emit.
     this.activityList.assertValueCount(1);
-    this.koalaTest.assertValue(KoalaEvent.ACTIVITY_VIEW);
 
     // Paginate.
     this.vm.inputs.nextPage();
     this.activityList.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_LOAD_MORE);
     this.lakeTest.assertValue("Activity Feed Viewed");
   }
 
@@ -82,7 +80,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.goToLogin.assertNoValues();
     this.goToProject.assertNoValues();
     this.startUpdateActivity.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
 
     // Empty activity feed clicks do not trigger events yet.
     this.vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
@@ -96,19 +93,11 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
     this.vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
 
-    this.koalaTest.assertValues(
-      KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
-      KoalaEvent.ACTIVITY_VIEW_ITEM
-    );
     this.goToProject.assertValueCount(4);
 
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
     this.startUpdateActivity.assertValueCount(1);
-    this.koalaTest.assertValues(
-      KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
-      KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.VIEWED_UPDATE
-    );
     this.lakeTest.assertValue("Activity Feed Viewed");
   }
 
@@ -136,7 +125,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.refresh();
     this.erroredBackings.assertValueCount(2);
 
-    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
     this.lakeTest.assertValue("Activity Feed Viewed");
   }
 
@@ -148,7 +136,6 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     this.erroredBackings.assertNoValues();
 
-    this.koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
     this.lakeTest.assertValue("Activity Feed Viewed");
   }
 

@@ -41,14 +41,4 @@ public final class WebViewViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(new Intent().putExtra(IntentKey.URL, url));
     this.url.assertValues(url);
   }
-
-  @Test
-  public void testTrackPushNotification() {
-    setUpEnvironment(environment());
-
-    this.vm.intent(
-      new Intent().putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, PushNotificationEnvelopeFactory.envelope())
-    );
-    this.koalaTest.assertValues(KoalaEvent.NOTIFICATION_OPENED_LEGACY, KoalaEvent.OPENED_NOTIFICATION);
-  }
 }

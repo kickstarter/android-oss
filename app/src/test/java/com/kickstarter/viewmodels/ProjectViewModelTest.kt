@@ -820,7 +820,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
-]        this.lakeTest.assertValue("Project Page Viewed")
+        this.lakeTest.assertValue("Project Page Viewed")
     }
 
     @Test

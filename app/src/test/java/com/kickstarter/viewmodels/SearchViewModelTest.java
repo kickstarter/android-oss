@@ -62,19 +62,16 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     // Popular projects emit immediately.
     this.popularProjectsPresent.assertValues(true);
     this.searchProjectsPresent.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
     this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     // Searching shouldn't emit values immediately
     this.vm.inputs.search("hello");
     this.searchProjectsPresent.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
     this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     // Waiting a small amount time shouldn't emit values
     scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
     this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     // Waiting the rest of the time makes the search happen
@@ -110,7 +107,6 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(env);
 
     this.searchProjectsPresent.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_SEARCH, KoalaEvent.DISCOVER_SEARCH_LEGACY);
     this.lakeTest.assertValues("Search Button Clicked", "Search Page Viewed");
 
     this.vm.inputs.search("cats");

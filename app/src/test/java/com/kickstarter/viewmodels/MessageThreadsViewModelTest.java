@@ -99,13 +99,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     this.messageThreadList.assertValueCount(2);
     this.messageThreadListCount.assertValues(0, 1);
 
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX);
-
     this.vm.inputs.mailbox(Mailbox.SENT);
     this.messageThreadList.assertValueCount(4);
     this.messageThreadListCount.assertValues(0, 1, 0, 2);
-
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX, KoalaEvent.VIEWED_SENT_MESSAGES);
   }
 
   @Test
@@ -150,13 +146,9 @@ public class MessageThreadsViewModelTest extends KSRobolectricTestCase {
     this.messageThreadList.assertValueCount(2);
     this.messageThreadListCount.assertValues(0, 1);
 
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX);
-
     this.vm.inputs.mailbox(Mailbox.SENT);
     this.messageThreadList.assertValueCount(4);
     this.messageThreadListCount.assertValues(0, 1, 0, 2);
-
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_INBOX, KoalaEvent.VIEWED_SENT_MESSAGES);
   }
 
   @Test

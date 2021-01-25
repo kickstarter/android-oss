@@ -42,7 +42,6 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.prefillEmail().subscribe(this.prefillEmail);
 
     this.prefillEmail.assertValue("test@kickstarter.com");
-    this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP);
   }
 
   @Test
@@ -62,14 +61,10 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
     this.vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "token"));
     this.vm.outputs.signupError().subscribe(this.signupError);
 
-    this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP);
-
     this.vm.inputs.sendNewslettersClick(true);
     this.vm.inputs.createNewAccountClick();
 
     this.signupError.assertValue("oh no");
-    this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP,
-      KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, KoalaEvent.ERRORED_USER_SIGNUP);
   }
 
   @Test
@@ -86,8 +81,6 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.createNewAccountClick();
 
     this.signupSuccess.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP,
-      KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, KoalaEvent.LOGIN, KoalaEvent.NEW_USER);
   }
 
   @Test
@@ -104,7 +97,5 @@ public class FacebookConfimationViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.sendNewslettersClick(false);
 
     this.sendNewslettersIsChecked.assertValues(false, true, false);
-    this.koalaTest.assertValues(KoalaEvent.FACEBOOK_CONFIRM, KoalaEvent.USER_SIGNUP,
-      KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE, KoalaEvent.SIGNUP_NEWSLETTER_TOGGLE);
   }
 }

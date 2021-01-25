@@ -48,7 +48,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.code("");
     this.formIsValid.assertValues(true, false);
 
-    this.koalaTest.assertValue(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW);
     this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
   }
 
@@ -72,7 +71,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.LOGIN);
     this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
   }
 
@@ -96,7 +94,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.LOGIN);
     this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
   }
 
@@ -116,7 +113,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.TWO_FACTOR_AUTH_RESEND_CODE);
     this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
   }
 
@@ -136,7 +132,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.TWO_FACTOR_AUTH_RESEND_CODE);
     this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
   }
 
@@ -174,7 +169,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.genericTfaError.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.ERRORED_USER_LOGIN);
     this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
   }
 
@@ -210,7 +204,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.tfaCodeMismatchError.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.TWO_FACTOR_AUTH_CONFIRM_VIEW, KoalaEvent.ERRORED_USER_LOGIN);
     this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
   }
 }

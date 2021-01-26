@@ -3,7 +3,12 @@ package com.kickstarter
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.kickstarter.libs.*
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.KSString
+import com.kickstarter.libs.Koala
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockTrackingClient
+import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
@@ -12,13 +17,13 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockWebClient
 import com.stripe.android.Stripe
 import junit.framework.TestCase
-import org.joda.time.DateTime
 import org.joda.time.DateTimeUtils
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import rx.observers.TestSubscriber
+import kotlin.jvm.Throws
 
 @RunWith(KSRobolectricGradleTestRunner::class)
 @Config(shadows = [ShadowAndroidXMultiDex::class], sdk = [KSRobolectricGradleTestRunner.DEFAULT_SDK])
@@ -29,8 +34,7 @@ abstract class KSRobolectricTestCase : TestCase() {
     lateinit var experimentsTest: TestSubscriber<String>
     lateinit var lakeTest: TestSubscriber<String>
     lateinit var koalaTest: TestSubscriber<String>
-
-
+    
     @Before
     @Throws(Exception::class)
     public override fun setUp() {
@@ -51,7 +55,6 @@ abstract class KSRobolectricTestCase : TestCase() {
                 .currentConfig(mockCurrentConfig)
                 .webClient(MockWebClient())
                 .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
-                .koala(Koala(koalaTrackingClient))
                 .lake(Koala(lakeTrackingClient))
                 .optimizely(experimentsClientType)
                 .build()

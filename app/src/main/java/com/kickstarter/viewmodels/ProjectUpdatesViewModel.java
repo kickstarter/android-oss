@@ -5,7 +5,6 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
@@ -105,16 +104,6 @@ public interface ProjectUpdatesViewModel {
         .compose(takePairWhen(this.updateClicked))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
-
-      project
-        .compose(takeWhen(this.updateClicked))
-        .compose(bindToLifecycle())
-        .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.UPDATES));
-
-      project
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackViewedUpdates);
     }
 
     private final PublishSubject<Void> nextPage = PublishSubject.create();

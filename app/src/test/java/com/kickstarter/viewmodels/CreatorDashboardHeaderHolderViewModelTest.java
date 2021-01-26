@@ -20,6 +20,7 @@ import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.junit.Test;
 
 import androidx.annotation.NonNull;
@@ -235,6 +236,7 @@ public class CreatorDashboardHeaderHolderViewModelTest extends KSRobolectricTest
   @Test
   public void testTimeRemainingText() {
     setUpEnvironment(environment());
+    DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
     final Project project = ProjectFactory.project().toBuilder().deadline(new DateTime().plusDays(10)).build();
     final ProjectStatsEnvelope projectStatsEnvelope = ProjectStatsEnvelopeFactory.projectStatsEnvelope();
     final int deadlineVal = ProjectUtils.deadlineCountdownValue(project);

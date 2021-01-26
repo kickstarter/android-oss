@@ -308,12 +308,6 @@ interface RewardViewHolderViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showFragment)
 
-            projectAndReward
-                    .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
-                    .compose<Pair<Pair<Project, Reward>, Int>>(combineLatestPair(this.rewardClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackSelectRewardButtonClicked(it.first.first, it.first.second.minimum().roundToInt(), it.second)}
-
             this.projectDataAndReward
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))

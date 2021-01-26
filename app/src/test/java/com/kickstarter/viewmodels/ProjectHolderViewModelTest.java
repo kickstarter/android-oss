@@ -31,6 +31,7 @@ import com.kickstarter.ui.data.ProjectData;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -654,6 +655,7 @@ public final class ProjectHolderViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectStatsEmit() {
+    DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
     final Project project = ProjectFactory.project();
     setUpEnvironment(environment(), ProjectDataFactory.Companion.project(project));
 

@@ -70,16 +70,11 @@ interface SettingsViewModel {
 
             this.confirmLogoutClicked
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        this.koala.trackLogout()
-                        this.logout.onNext(null)
-                    }
+                    .subscribe { this.logout.onNext(null) }
 
             this.avatarImageViewUrl = this.currentUser.loggedInUser().map { u -> u.avatar().medium() }
 
             this.userNameTextViewText = this.currentUser.loggedInUser().map({ it.name() })
-
-            this.koala.trackSettingsView()
         }
 
         override fun avatarImageViewUrl() = this.avatarImageViewUrl

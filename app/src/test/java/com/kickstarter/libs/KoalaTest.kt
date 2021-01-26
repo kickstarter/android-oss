@@ -25,7 +25,6 @@ class KoalaTest : KSRobolectricTestCase() {
 
         koala.trackAppOpen()
 
-        this.koalaTest.assertValue("App Open")
 
         assertDefaultProperties(null)
     }
@@ -39,8 +38,6 @@ class KoalaTest : KSRobolectricTestCase() {
         val koala = Koala(client)
 
         koala.trackAppOpen()
-
-        this.koalaTest.assertValue("App Open")
 
         assertDefaultProperties(user)
         val expectedProperties = propertiesTest.value
@@ -156,7 +153,6 @@ class KoalaTest : KSRobolectricTestCase() {
 
         assertDefaultProperties(null)
         assertProjectProperties(project)
-        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -176,8 +172,6 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
-
-        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -205,8 +199,6 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(true, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
-
-        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -226,8 +218,6 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(true, expectedProperties["project_user_is_project_creator"])
-
-        this.koalaTest.assertValues("Project Page")
     }
 
     @Test
@@ -247,8 +237,6 @@ class KoalaTest : KSRobolectricTestCase() {
         assertEquals(true, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
-
-        this.koalaTest.assertValues("Project Page")
     }
 
     private fun assertDefaultProperties(user: User?) {

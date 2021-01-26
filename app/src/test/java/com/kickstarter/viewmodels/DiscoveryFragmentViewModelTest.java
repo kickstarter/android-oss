@@ -5,7 +5,6 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.models.OptimizelyFeature;
@@ -84,13 +83,11 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Should emit current fragment's projects.
     this.hasProjects.assertValues(true);
-    this.koalaTest.assertValues("Discover List View");
     this.lakeTest.assertValue("Explore Page Viewed");
 
     //Page is refreshed
     this.vm.inputs.refresh();
     this.hasProjects.assertValues(true, true);
-    this.koalaTest.assertValues("Discover List View", "Triggered Refresh");
     this.lakeTest.assertValue("Explore Page Viewed");
   }
 
@@ -103,7 +100,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Should emit current fragment's projects.
     this.hasProjects.assertValues(true);
-    this.koalaTest.assertValues("Discover List View");
     this.lakeTest.assertValue("Explore Page Viewed");
 
     // Select a new category.
@@ -116,7 +112,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // New projects load with new params.
     this.hasProjects.assertValues(true, true, true);
-    this.koalaTest.assertValues("Discover List View", "Discover List View");
     this.lakeTest.assertValues("Explore Page Viewed", "Explore Page Viewed");
 
     this.vm.inputs.clearPage();
@@ -131,13 +126,11 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     setUpInitialHomeAllProjectsParams();
 
     this.projects.assertValueCount(1);
-    this.koalaTest.assertValues("Discover List View");
     this.lakeTest.assertValue("Explore Page Viewed");
 
     // Popular tab clicked.
     this.vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
     this.projects.assertValueCount(3);
-    this.koalaTest.assertValues("Discover List View", "Discover List View");
     this.lakeTest.assertValues("Explore Page Viewed", "Explore Page Viewed");
   }
 
@@ -427,7 +420,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.collection(518)));
-    this.koalaTest.assertValues("Discover List View");
     this.lakeTest.assertValue("Explore Page Viewed");
   }
 
@@ -443,7 +435,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.discovery()));
-    this.koalaTest.assertValues("Discover List View");
     this.lakeTest.assertValue("Explore Page Viewed");
   }
 
@@ -464,7 +455,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.startUpdateActivity.assertNoValues();
     this.vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
     this.startUpdateActivity.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_UPDATE);
   }
 
   private void logUserIn(final @NonNull CurrentUserType currentUser) {

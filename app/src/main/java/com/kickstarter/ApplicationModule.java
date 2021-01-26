@@ -133,7 +133,6 @@ public class ApplicationModule {
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
     final @NonNull InternalToolsType internalToolsType,
-    final @NonNull @KoalaTracker Koala koala,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
     final @NonNull @LakeTracker Koala lake,
@@ -160,7 +159,6 @@ public class ApplicationModule {
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .internalTools(internalToolsType)
-      .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
       .lake(lake)

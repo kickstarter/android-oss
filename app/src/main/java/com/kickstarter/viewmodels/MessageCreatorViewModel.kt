@@ -101,11 +101,6 @@ interface MessageCreatorViewModel {
                     .switchMap { fetchThread(it) }
                     .filter(ObjectUtils::isNotNull)
                     .subscribe(this.showMessageThread)
-
-            project
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackViewedMessageCreatorModal(it) }
-
         }
 
         private fun fetchThread(conversationId: Long): Observable<MessageThread> {

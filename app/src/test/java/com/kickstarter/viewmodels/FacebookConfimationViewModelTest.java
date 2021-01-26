@@ -5,7 +5,6 @@ import android.content.Intent;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.mock.MockCurrentConfig;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.ConfigFactory;

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.KoalaEvent;
 
 import org.junit.Test;
 

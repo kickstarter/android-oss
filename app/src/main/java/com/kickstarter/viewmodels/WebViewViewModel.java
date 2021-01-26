@@ -2,8 +2,6 @@ package com.kickstarter.viewmodels;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.WebViewActivity;
 

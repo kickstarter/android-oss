@@ -28,13 +28,14 @@ import com.kickstarter.libs.utils.RewardUtils.timeInSecondsUntilDeadline
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import org.joda.time.DateTime
+import org.joda.time.DateTimeUtils
 import org.joda.time.MutableDateTime
 import org.junit.Before
 import org.junit.Test
 import java.util.*
-import com.kickstarter.models.Project;
 
 class RewardUtilsTest : KSRobolectricTestCase() {
 
@@ -53,6 +54,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
 
     @Before
     fun setUpTests() {
+        DateTimeUtils.setCurrentMillisFixed(DateTime().millis)
         context = context()
         ksString = ksString()
         date = DateTime.now().toDate()

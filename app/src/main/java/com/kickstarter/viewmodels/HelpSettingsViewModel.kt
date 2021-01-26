@@ -19,6 +19,8 @@ interface HelpSettingsViewModel {
 
         val inputs: Inputs = this
 
+        init { }
+
         override fun contactClicked() = this.contactClicked.onNext(null)
     }
 }

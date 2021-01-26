@@ -46,7 +46,6 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment(), ProjectFactory.project());
 
     this.horizontalProgressBarIsGone.assertValues(false, true);
-    this.koalaTest.assertValue("Viewed Updates");
   }
 
   @Test
@@ -54,7 +53,6 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment(), ProjectFactory.project());
 
     this.isFetchingUpdates.assertValues(true, false);
-    this.koalaTest.assertValue("Viewed Updates");
   }
 
   @Test
@@ -80,7 +78,6 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     }).build(), project);
 
     this.projectAndUpdates.assertValues(Pair.create(project, updates));
-    this.koalaTest.assertValue("Viewed Updates");
   }
 
   @Test
@@ -103,7 +100,6 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     this.projectAndUpdates.assertValues(Pair.create(project, Collections.emptyList()));
     this.isFetchingUpdates.assertValues(true, false);
     this.horizontalProgressBarIsGone.assertValues(false, true);
-    this.koalaTest.assertValue("Viewed Updates");
   }
 
   @Test
@@ -129,7 +125,6 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.updateClicked(update);
 
     this.startUpdateActivity.assertValues(Pair.create(project, update));
-    this.koalaTest.assertValues("Viewed Updates", "Viewed Update");
   }
 
   private UpdatesEnvelope.UrlsEnvelope urlsEnvelope() {

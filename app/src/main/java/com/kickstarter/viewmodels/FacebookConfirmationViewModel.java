@@ -101,24 +101,6 @@ public interface FacebookConfirmationViewModel {
         .take(1)
         .map(config -> false)
         .subscribe(this.sendNewslettersIsChecked::onNext);
-
-      this.signupError
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackRegisterError());
-
-      this.sendNewslettersClick
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackSignupNewsletterToggle);
-
-      this.signupSuccess
-        .compose(bindToLifecycle())
-        .subscribe(__ -> {
-          this.koala.trackLoginSuccess();
-          this.koala.trackRegisterSuccess();
-        });
-
-      this.koala.trackFacebookConfirmation();
-      this.koala.trackRegisterFormView();
     }
 
     private void registerWithFacebookSuccess(final @NonNull AccessTokenEnvelope envelope) {

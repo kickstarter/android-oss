@@ -113,11 +113,6 @@ interface NewsletterViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.showOptInPrompt)
 
-            this.newsletterInput
-                    .map { bs -> bs.first }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.koala::trackNewsletterToggle)
-
             currentUser
                     .map { isSubscribedToAllNewsletters(it) }
                     .compose(bindToLifecycle())
@@ -147,8 +142,6 @@ interface NewsletterViewModel {
                     .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
                     .compose(bindToLifecycle())
                     .subscribe(this.userOutput)
-
-            this.koala.trackViewedNewsletter()
         }
 
         override fun sendAllNewsletter(checked: Boolean) {

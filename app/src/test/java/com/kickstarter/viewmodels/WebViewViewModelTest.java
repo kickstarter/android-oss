@@ -4,8 +4,6 @@ import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaEvent;
-import com.kickstarter.mock.factories.PushNotificationEnvelopeFactory;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
@@ -40,15 +38,5 @@ public final class WebViewViewModelTest extends KSRobolectricTestCase {
 
     this.vm.intent(new Intent().putExtra(IntentKey.URL, url));
     this.url.assertValues(url);
-  }
-
-  @Test
-  public void testTrackPushNotification() {
-    setUpEnvironment(environment());
-
-    this.vm.intent(
-      new Intent().putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, PushNotificationEnvelopeFactory.envelope())
-    );
-    this.koalaTest.assertValues(KoalaEvent.NOTIFICATION_OPENED_LEGACY, KoalaEvent.OPENED_NOTIFICATION);
   }
 }

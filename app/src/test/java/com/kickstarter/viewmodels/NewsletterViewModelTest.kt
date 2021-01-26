@@ -35,7 +35,6 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.currentUserTest.assertValues(user)
-        this.koalaTest.assertValue("Viewed Newsletter")
     }
 
     @Test
@@ -49,11 +48,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendAlumniNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().alumniNewsletter(true).build())
 
         this.vm.inputs.sendAlumniNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().alumniNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -70,11 +67,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendArtsNewsNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().artsCultureNewsletter(true).build())
 
         this.vm.inputs.sendArtsNewsNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().artsCultureNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -91,11 +86,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendFilmsNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().filmNewsletter(true).build())
 
         this.vm.inputs.sendFilmsNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().filmNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -112,11 +105,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendGamesNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build())
 
         this.vm.inputs.sendGamesNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().gamesNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -133,11 +124,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendHappeningNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build())
 
         this.vm.inputs.sendHappeningNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -154,11 +143,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendInventNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter","Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().inventNewsletter(true).build())
 
         this.vm.inputs.sendInventNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().inventNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -175,11 +162,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendMusicNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter","Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().musicNewsletter(true).build())
 
         this.vm.inputs.sendMusicNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().musicNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -196,11 +181,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendPromoNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build())
 
         this.vm.inputs.sendPromoNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -217,11 +200,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendReadsNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().publishingNewsletter(true).build())
 
         this.vm.inputs.sendReadsNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().publishingNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()
@@ -239,12 +220,10 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.subscribeAll.assertValue(false)
 
         this.vm.inputs.sendWeeklyNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build())
         this.subscribeAll.assertValues(false, true)
 
         this.vm.inputs.sendWeeklyNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build(), user)
         this.subscribeAll.assertValues(false, true, false)
     }
@@ -260,11 +239,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
         this.currentUserTest.assertValues(user)
 
         this.vm.inputs.sendWeeklyNewsletter(true)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build())
 
         this.vm.inputs.sendWeeklyNewsletter(false)
-        this.koalaTest.assertValues("Viewed Newsletter", "Newsletter Subscribe", "Newsletter Unsubscribe")
         this.currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build(), user)
 
         this.showOptInPromptTest.assertNoValues()

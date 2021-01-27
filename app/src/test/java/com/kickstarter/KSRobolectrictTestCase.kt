@@ -33,7 +33,6 @@ abstract class KSRobolectricTestCase : TestCase() {
 
     lateinit var experimentsTest: TestSubscriber<String>
     lateinit var lakeTest: TestSubscriber<String>
-    lateinit var koalaTest: TestSubscriber<String>
     lateinit var segmentTest: TestSubscriber<String>
 
     @Before
@@ -43,7 +42,6 @@ abstract class KSRobolectricTestCase : TestCase() {
 
         val mockCurrentConfig = MockCurrentConfig()
         val experimentsClientType = experimentsClient()
-        val koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType)
         val lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType)
         val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
 
@@ -57,7 +55,7 @@ abstract class KSRobolectricTestCase : TestCase() {
                 .currentConfig(mockCurrentConfig)
                 .webClient(MockWebClient())
                 .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
-                .analytics(AnalyticEvents(listOf(koalaTrackingClient, lakeTrackingClient, segmentTestClient)))
+                .analytics(AnalyticEvents(listOf(lakeTrackingClient, segmentTestClient)))
                 .optimizely(experimentsClientType)
                 .build()
     }
@@ -82,13 +80,6 @@ abstract class KSRobolectricTestCase : TestCase() {
         val experimentsClientType = MockExperimentsClientType()
         experimentsClientType.eventKeys.subscribe(experimentsTest)
         return experimentsClientType
-    }
-
-    private fun koalaTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
-        koalaTest = TestSubscriber()
-        val koalaTrackingClient = MockTrackingClient(MockCurrentUser(), mockCurrentConfig, TrackingClientType.Type.KOALA, experimentsClientType)
-        koalaTrackingClient.eventNames.subscribe(koalaTest)
-        return koalaTrackingClient
     }
 
     private fun lakeTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {

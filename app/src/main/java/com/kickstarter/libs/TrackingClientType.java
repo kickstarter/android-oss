@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 
 public abstract class TrackingClientType {
   public enum Type {
-    KOALA("🐨 Koala"),
     LAKE("💧 Lake"),
     SEGMENT(" Segment");
 
@@ -122,10 +121,8 @@ public abstract class TrackingClientType {
 
   @NonNull Map<String, Object> combinedProperties(final @NonNull Map<String, Object> additionalProperties) {
     final Map<String, Object> combinedProperties = new HashMap<>(additionalProperties);
-    if (type() == Type.LAKE) {
+    if (type() == Type.LAKE || type() == Type.SEGMENT) {
       combinedProperties.putAll(lakeProperties());
-    } else if (type() == Type.KOALA){
-      combinedProperties.putAll(koalaProperties());
     }
     return combinedProperties;
   }

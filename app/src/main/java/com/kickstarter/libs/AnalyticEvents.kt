@@ -13,7 +13,7 @@ import com.kickstarter.ui.data.*
 import com.kickstarter.ui.data.Mailbox
 import java.util.*
 
-class Koala(trackingClients: List<TrackingClientType?>) {
+class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     private val client = ProxyClient(trackingClients)
 

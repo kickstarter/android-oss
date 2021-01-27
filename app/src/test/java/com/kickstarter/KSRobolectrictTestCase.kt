@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.Koala
+import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
@@ -57,7 +57,7 @@ abstract class KSRobolectricTestCase : TestCase() {
                 .currentConfig(mockCurrentConfig)
                 .webClient(MockWebClient())
                 .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
-                .analytics(Koala(listOf(koalaTrackingClient, lakeTrackingClient, segmentTestClient)))
+                .analytics(AnalyticEvents(listOf(koalaTrackingClient, lakeTrackingClient, segmentTestClient)))
                 .optimizely(experimentsClientType)
                 .build()
     }

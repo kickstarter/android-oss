@@ -24,7 +24,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
-  protected final Koala lake;
+  protected final AnalyticEvents lake;
   protected final PublishSubject<Void> optimizelyReady = PublishSubject.create();
 
   public FragmentViewModel(final @NonNull Environment environment) {

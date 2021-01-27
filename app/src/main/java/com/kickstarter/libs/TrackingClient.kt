@@ -16,7 +16,6 @@ import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.libs.utils.WorkUtils.baseConstraints
 import com.kickstarter.libs.utils.WorkUtils.uniqueWorkName
 import com.kickstarter.models.User
-import com.kickstarter.services.KoalaWorker
 import com.kickstarter.services.LakeWorker
 import com.kickstarter.ui.IntentKey
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -61,30 +60,28 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     private fun queueEvent(eventName: String, additionalProperties: MutableMap<String, Any?>) {
         val eventData = trackingData(eventName, combinedProperties(additionalProperties))
-        val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
-                IntentKey.EVENT_NAME to eventName,
-                IntentKey.EVENT_DATA to eventData)
 
-        var requestBuilder: OneTimeWorkRequest.Builder? = null
-        if (type() == Type.KOALA) {
-            requestBuilder = OneTimeWorkRequestBuilder<KoalaWorker>()
-        } else if (type() == Type.LAKE) {
-            requestBuilder = OneTimeWorkRequestBuilder<LakeWorker>()
+        if (type() == Type.LAKE) {
+
+            val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
+                    IntentKey.EVENT_NAME to eventName,
+                    IntentKey.EVENT_DATA to eventData)
+
+            val requestBuilder =  OneTimeWorkRequestBuilder<LakeWorker>()
+            requestBuilder?.let {
+                val request = it
+                        .setInputData(data)
+                        .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
+                        .setConstraints(baseConstraints)
+                        .build()
+
+                WorkManager.getInstance(this.context)
+                        .enqueueUniqueWork(uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
+            }
         }
 
-        requestBuilder?.let {
-            val request = it
-                    .setInputData(data)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
-                    .setConstraints(baseConstraints)
-                    .build()
-
-            WorkManager.getInstance(this.context)
-                    .enqueueUniqueWork(uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
-
-            if (this.build.isDebug) {
-                Timber.d("Queued ${type().tag} $eventName event: $eventData")
-            }
+        if (this.build.isDebug) {
+            Timber.d("Queued ${type().tag} $eventName event: $eventData")
         }
     }
 

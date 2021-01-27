@@ -34,7 +34,8 @@ abstract class KSRobolectricTestCase : TestCase() {
     lateinit var experimentsTest: TestSubscriber<String>
     lateinit var lakeTest: TestSubscriber<String>
     lateinit var koalaTest: TestSubscriber<String>
-    
+    lateinit var segmentTest: TestSubscriber<String>
+
     @Before
     @Throws(Exception::class)
     public override fun setUp() {
@@ -44,6 +45,7 @@ abstract class KSRobolectricTestCase : TestCase() {
         val experimentsClientType = experimentsClient()
         val koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType)
         val lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType)
+        val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
 
         val component = DaggerApplicationComponent.builder()
                 .applicationModule(TestApplicationModule(application()))
@@ -55,7 +57,7 @@ abstract class KSRobolectricTestCase : TestCase() {
                 .currentConfig(mockCurrentConfig)
                 .webClient(MockWebClient())
                 .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
-                .lake(Koala(lakeTrackingClient))
+                .analytics(Koala(listOf(koalaTrackingClient, lakeTrackingClient, segmentTestClient)))
                 .optimizely(experimentsClientType)
                 .build()
     }
@@ -95,5 +97,13 @@ abstract class KSRobolectricTestCase : TestCase() {
                 mockCurrentConfig, TrackingClientType.Type.LAKE, experimentsClientType)
         lakeTrackingClient.eventNames.subscribe(lakeTest)
         return lakeTrackingClient
+    }
+
+    private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
+        segmentTest = TestSubscriber()
+        val segmentTrackingClient = MockTrackingClient(MockCurrentUser(),
+                mockCurrentConfig, TrackingClientType.Type.SEGMENT, experimentsClientType)
+        segmentTrackingClient.eventNames.subscribe(lakeTest)
+        return segmentTrackingClient
     }
 }

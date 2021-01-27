@@ -28,7 +28,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
   protected final PublishSubject<Void> optimizelyReady = PublishSubject.create();
 
   public FragmentViewModel(final @NonNull Environment environment) {
-    this.lake = environment.lake();
+    this.lake = environment.analytics();
   }
 
   @CallSuper

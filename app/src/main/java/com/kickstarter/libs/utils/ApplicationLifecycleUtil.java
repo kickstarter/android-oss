@@ -24,8 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
-  protected @Inject @KoalaTracker Koala koala;
-  protected @Inject @LakeTracker Koala lake;
   protected @Inject ApiClientType client;
   protected @Inject CurrentConfigType config;
   protected @Inject CurrentUserType currentUser;
@@ -50,7 +48,6 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   @Override
   public void onActivityResumed(final @NonNull Activity activity) {
     if(this.isInBackground){
-      this.koala.trackAppOpen();
 
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity.getApplication());
@@ -110,7 +107,6 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   @Override
   public void onLowMemory() {
-    this.koala.trackMemoryWarning();
   }
 
   /**
@@ -121,7 +117,6 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   @Override
   public void onTrimMemory(final int i) {
     if(i == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
-      this.koala.trackAppClose();
       this.isInBackground = true;
     }
   }

@@ -40,6 +40,8 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
+import com.kickstarter.libs.TrackingClient;
+import com.kickstarter.libs.TrackingClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -92,6 +94,8 @@ import com.stripe.android.Stripe;
 import org.joda.time.DateTime;
 
 import java.net.CookieManager;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -135,7 +139,7 @@ public class ApplicationModule {
     final @NonNull InternalToolsType internalToolsType,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
-    final @NonNull @LakeTracker Koala lake,
+    final @NonNull @LakeTracker Koala analytics,
     final @NonNull Logout logout,
     final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
@@ -161,7 +165,7 @@ public class ApplicationModule {
       .internalTools(internalToolsType)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
-      .lake(lake)
+      .analytics(analytics)
       .logout(logout)
       .optimizely(optimizely)
       .playServicesCapability(playServicesCapability)
@@ -440,17 +444,25 @@ public class ApplicationModule {
   @Provides
   @KoalaTracker
   @Singleton
-  static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
+  static KoalaTrackingClient provideKoalaTrackingClient(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
     final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
+    return new KoalaTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
   }
 
   @Provides
   @LakeTracker
   @Singleton
-  static Koala provideLake(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
-    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
+  static Koala provideAnalytics(
+          final @ApplicationContext @NonNull Context context,
+          final @NonNull CurrentUserType currentUser,
+          final @NonNull Build build,
+          final @NonNull CurrentConfigType currentConfig,
+          final @NonNull ExperimentsClientType experimentsClientType,
+          final @NonNull Analytics segment) {
+    final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
+    final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(context, currentUser, build, currentConfig, experimentsClientType, segment);
+    List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentTrackingClient);
+    return new Koala(clients);
   }
 
   @Provides

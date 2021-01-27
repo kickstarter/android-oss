@@ -28,7 +28,7 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   protected final Koala lake;
 
   public ActivityViewModel(final @NonNull Environment environment) {
-    this.lake = environment.lake();
+    this.lake = environment.analytics();
   }
 
   /**

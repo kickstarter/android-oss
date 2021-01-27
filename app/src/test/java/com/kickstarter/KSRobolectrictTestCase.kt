@@ -103,7 +103,7 @@ abstract class KSRobolectricTestCase : TestCase() {
         segmentTest = TestSubscriber()
         val segmentTrackingClient = MockTrackingClient(MockCurrentUser(),
                 mockCurrentConfig, TrackingClientType.Type.SEGMENT, experimentsClientType)
-        segmentTrackingClient.eventNames.subscribe(lakeTest)
+        segmentTrackingClient.eventNames.subscribe(segmentTest)
         return segmentTrackingClient
     }
 }

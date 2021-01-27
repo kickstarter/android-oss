@@ -45,7 +45,16 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         this.currentConfig.observable().subscribe { c -> this.config = c }
     }
 
-    final override fun track(eventName: String, additionalProperties: MutableMap<String, Any?>) {
+    override val isGooglePlayServicesAvailable: Boolean
+        get() = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS
+
+    override val isTalkBackOn: Boolean
+        get() {
+            val am = this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+            return am?.isTouchExplorationEnabled ?: false
+        }
+
+    override fun track(eventName: String, additionalProperties: Map<String, Any>) {
         try {
             queueEvent(eventName, additionalProperties)
         } catch (e: JSONException) {
@@ -58,7 +67,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     override fun optimizely(): ExperimentsClientType = this.optimizely
 
-    private fun queueEvent(eventName: String, additionalProperties: MutableMap<String, Any?>) {
+    private fun queueEvent(eventName: String, additionalProperties: Map<String, Any>) {
         val eventData = trackingData(eventName, combinedProperties(additionalProperties))
 
         if (type() == Type.LAKE) {
@@ -118,7 +127,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         } else "Portrait"
     }
 
-    override fun enabledFeatureFlags(): JSONArray? {
+    override fun enabledFeatureFlags(): JSONArray {
         return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
                 .apply {
                     val configFlags = this@TrackingClient.config?.enabledFeatureFlags()
@@ -128,18 +137,6 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
                         }
                     }
                 }
-    }
-
-    /**
-     * Derives the availability of google play services from the `context`.
-     */
-    override fun isGooglePlayServicesAvailable(): Boolean {
-        return GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this.context) == ConnectionResult.SUCCESS
-    }
-
-    override fun isTalkBackOn(): Boolean {
-        val am = this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
-        return am?.isTouchExplorationEnabled ?: false
     }
 
     override fun manufacturer(): String {
@@ -166,8 +163,8 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         return WebUtils.userAgent(this.build)
     }
 
-    override fun userCountry(user: User): String? {
-        return user.location()?.country() ?: this.config?.countryCode()
+    override fun userCountry(user: User): String {
+        return user.location()?.country() ?: this.config?.countryCode() ?: ""
     }
 
     override fun versionName(): String {

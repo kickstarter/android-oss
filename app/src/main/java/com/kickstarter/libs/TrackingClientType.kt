@@ -45,8 +45,8 @@ abstract class TrackingClientType {
         loggedInUser()?.let {
             hashMap.putAll(KoalaUtils.userProperties(it))
             hashMap["user_country"] = userCountry(it)
-            hashMap.putAll(sessionProperties(true))
         }
+        hashMap.putAll(sessionProperties(loggedInUser() != null))
         hashMap.putAll(contextProperties())
         return hashMap
     }

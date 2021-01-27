@@ -75,12 +75,4 @@ class CreatorBioViewModelTest : KSRobolectricTestCase() {
 
         this.url.assertValue("http://www.project.com/creator-bio")
     }
-
-    @Test
-    fun testTracking() {
-        setUpEnvironment(environment())
-
-        this.koalaTest.assertValue("Modal Dialog View")
-    }
-
 }

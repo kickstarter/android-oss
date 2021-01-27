@@ -37,7 +37,6 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.confirmLogoutClicked()
         this.logout.assertValueCount(1)
-        this.koalaTest.assertValues("Viewed Settings", "Logout")
     }
 
     @Test

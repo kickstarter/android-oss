@@ -93,26 +93,9 @@ public interface SignupViewModel {
               .compose(bindToLifecycle())
               .subscribe(this.sendNewslettersIsChecked::onNext);
 
-      this.signupError
-              .compose(bindToLifecycle())
-              .subscribe(__ -> this.koala.trackRegisterError());
-
       this.errorString = this.signupError
               .takeUntil(this.signupSuccess)
               .map(ErrorEnvelope::errorMessage);
-
-      this.sendNewslettersClick
-              .compose(bindToLifecycle())
-              .subscribe(this.koala::trackSignupNewsletterToggle);
-
-      this.signupSuccess
-              .compose(bindToLifecycle())
-              .subscribe(__ -> {
-                this.koala.trackLoginSuccess();
-                this.koala.trackRegisterSuccess();
-              });
-
-      this.koala.trackRegisterFormView();
 
       this.signupClick
               .compose(bindToLifecycle())

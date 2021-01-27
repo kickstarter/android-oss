@@ -7,7 +7,6 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
-import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.BackingFactory;
@@ -185,7 +184,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     this.backingAndProject.assertValueCount(1);
     this.messageList.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -199,7 +197,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
 
     this.backingAndProject.assertValueCount(1);
     this.messageList.assertValueCount(1);
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -392,9 +389,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Error toast is displayed, errored message body remains in edit text, no new message is emitted.
     this.showMessageErrorToast.assertValueCount(1);
     this.setMessageEditText.assertNoValues();
-
-    // No sent message event tracked.
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD);
   }
 
   @Test
@@ -428,8 +422,6 @@ public final class MessagesViewModelTest extends KSRobolectricTestCase {
     // Reply edit text should be cleared and view should be scrolled to new message.
     this.setMessageEditText.assertValues("");
     this.scrollRecyclerViewToBottom.assertValueCount(1);
-
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_MESSAGE_THREAD, KoalaEvent.SENT_MESSAGE);
   }
 
   @Test

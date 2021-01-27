@@ -104,7 +104,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Drawer data should emit. Drawer should be closed.
     this.navigationDrawerDataEmitted.assertValueCount(1);
     this.drawerIsOpen.assertNoValues();
-    this.koalaTest.assertNoValues();
     this.lakeTest.assertNoValues();
 
     // Open drawer and click the top PWL filter.
@@ -118,7 +117,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Drawer data should emit. Drawer should open, then close upon selection.
     this.navigationDrawerDataEmitted.assertValueCount(2);
     this.drawerIsOpen.assertValues(true, false);
-    this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter");
     this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked");
 
     // Open drawer and click a child filter.
@@ -136,8 +134,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Drawer data should emit. Drawer should open, then close upon selection.
     this.navigationDrawerDataEmitted.assertValueCount(3);
     this.drawerIsOpen.assertValues(true, false, true, false);
-    this.koalaTest.assertValues("Discover Switch Modal", "Discover Modal Selected Filter", "Discover Switch Modal",
-      "Discover Modal Selected Filter");
     this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked", "Hamburger Menu Clicked", "Filter Clicked");
   }
 
@@ -180,7 +176,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true);
-    this.koalaTest.assertValues("Discover Modal Selected Filter");
     this.lakeTest.assertValues("Explore Sort Clicked", "Filter Clicked");
 
     // Select ART category from drawer.
@@ -192,7 +187,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true, true);
-    this.koalaTest.assertValues("Discover Modal Selected Filter", "Discover Modal Selected Filter");
     this.lakeTest.assertValues("Explore Sort Clicked", "Filter Clicked", "Filter Clicked");
 
     // Simulate rotating the device and hitting initial inputs again.
@@ -295,7 +289,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build()
     );
     this.updatePage.assertValues(0, 1, 1);
-    this.koalaTest.assertValues("Discover Modal Selected Filter");
 
     // Select MAGIC sort position.
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);

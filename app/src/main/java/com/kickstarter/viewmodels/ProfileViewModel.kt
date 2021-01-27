@@ -164,8 +164,6 @@ interface ProfileViewModel {
             this.startProjectActivity = this.projectCardClicked
             this.startMessageThreadsActivity = this.messagesButtonClicked
             this.userNameTextViewText = loggedInUser.map { it.name() }
-
-            this.koala.trackProfileView()
         }
 
         override fun emptyProfileViewHolderExploreProjectsClicked(viewHolder: EmptyProfileViewHolder) = this.exploreProjectsButtonClicked()

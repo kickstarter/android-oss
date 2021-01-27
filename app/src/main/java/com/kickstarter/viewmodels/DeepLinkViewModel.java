@@ -49,9 +49,6 @@ public interface DeepLinkViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.startDiscoveryActivity::onNext);
 
-      this.startDiscoveryActivity
-        .subscribe(__ -> koala.trackContinueUserActivityAndOpenedDeepLink());
-
       uriFromIntent
         .filter(uri -> KSUri.isProjectUri(uri, Secrets.WebEndpoint.PRODUCTION))
         .filter(uri -> !KSUri.isCheckoutUri(uri, Secrets.WebEndpoint.PRODUCTION))
@@ -65,9 +62,6 @@ public interface DeepLinkViewModel {
         .map(this::appendRefTagIfNone)
         .compose(bindToLifecycle())
         .subscribe(this.startProjectActivityWithCheckout::onNext);
-
-      this.startProjectActivity
-        .subscribe(__ -> koala.trackContinueUserActivityAndOpenedDeepLink());
 
       final Observable<Uri> projectPreview = uriFromIntent
         .filter(uri -> KSUri.isProjectPreviewUri(uri, Secrets.WebEndpoint.PRODUCTION));

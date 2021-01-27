@@ -182,10 +182,6 @@ interface LoginViewModel {
                     .compose(bindToLifecycle())
                     .subscribe(this.loginError)
 
-            this.loginSuccess
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackLoginSuccess() }
-
             this.genericLoginError = this.loginError
                     .filter { it.isGenericLoginError }
                     .map { it.errorMessage() }
@@ -193,11 +189,6 @@ interface LoginViewModel {
             this.invalidloginError = this.loginError
                     .filter { it.isInvalidLoginError }
                     .map { it.errorMessage() }
-
-            this.invalidloginError
-                    .mergeWith(this.genericLoginError)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackLoginError() }
 
             this.tfaChallenge = this.loginError
                     .filter { it.isTfaRequiredError }

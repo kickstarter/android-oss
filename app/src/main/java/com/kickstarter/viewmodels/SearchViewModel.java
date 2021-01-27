@@ -97,10 +97,7 @@ public interface SearchViewModel {
         .filter(ObjectUtils::isNotNull)
         .filter(StringExt:: isTrimmedEmpty)
         .compose(bindToLifecycle())
-        .subscribe(__ -> {
-          this.searchProjects.onNext(ListUtils.empty());
-          this.koala.trackClearedSearchTerm();
-        });
+        .subscribe(__ -> this.searchProjects.onNext(ListUtils.empty()));
 
       params
         .compose(takePairWhen(paginator.paginatedData()))
@@ -129,14 +126,6 @@ public interface SearchViewModel {
           return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
         });
 
-      query
-        .compose(takePairWhen(pageCount))
-        .filter(qp-> ObjectUtils.isNotNull(qp.first))
-        .filter(qp -> StringExt.isPresent(qp.first))
-        .observeOn(Schedulers.io())
-        .compose(bindToLifecycle())
-        .subscribe(qp -> this.koala.trackSearchResults(qp.first, qp.second));
-
       params
         .compose(takePairWhen(pageCount))
         .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
@@ -145,7 +134,6 @@ public interface SearchViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackSearchResultsLoaded);
 
-      this.koala.trackSearchView();
       this.lake.trackSearchButtonClicked();
       this.lake.trackSearchPageViewed(defaultParams);
     }

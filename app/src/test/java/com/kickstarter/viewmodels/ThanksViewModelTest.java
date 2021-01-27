@@ -161,7 +161,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.showGamesNewsletterDialogTest.assertValueCount(1);
     assertEquals(Arrays.asList(false, true), hasSeenGamesNewsletterPreference.values());
-    this.koalaTest.assertValueCount(0);
   }
 
   @Test
@@ -260,7 +259,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build());
 
     this.showConfirmGamesNewsletterDialogTest.assertValueCount(0);
-    this.koalaTest.assertValues("Newsletter Subscribe");
   }
 
   @Test
@@ -282,7 +280,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.vm.signupToGamesNewsletterClick();
     this.showConfirmGamesNewsletterDialogTest.assertValueCount(1);
-    this.koalaTest.assertValues("Newsletter Subscribe");
   }
 
   @Test
@@ -292,7 +289,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.categoryViewHolderClicked(category);
     this.startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
-    this.koalaTest.assertValue("Checkout Finished Discover More");
   }
 
   @Test
@@ -302,7 +298,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.projectCardViewHolderClicked(project);
     this.startProjectTest.assertValues(Pair.create(project, RefTag.thanks()));
-    this.koalaTest.assertValue("Checkout Finished Discover Open Project");
   }
 
   @Test

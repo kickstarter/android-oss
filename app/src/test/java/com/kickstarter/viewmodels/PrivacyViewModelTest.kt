@@ -39,7 +39,6 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(user)
 
         this.currentUserTest.assertValue(user)
-        this.koalaTest.assertValue("Viewed Privacy")
     }
 
     @Test

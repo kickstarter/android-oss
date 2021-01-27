@@ -94,38 +94,27 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         }
     }
 
-    @Throws(JSONException::class)
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>): String
 
     //Default property values
-    override fun brand(): String {
-        return android.os.Build.BRAND
-    }
+    override fun brand(): String = android.os.Build.BRAND
 
-    override fun buildNumber(): Int {
-        return BuildConfig.VERSION_CODE
-    }
+    override fun buildNumber(): Int = BuildConfig.VERSION_CODE
 
-    override fun currentVariants(): JSONArray? {
-        return this.config?.currentVariants()
-    }
+    override fun currentVariants(): JSONArray? = this.config?.currentVariants()
 
-    override fun deviceDistinctId(): String {
-        return FirebaseInstanceId.getInstance().id
-    }
+    override fun deviceDistinctId(): String = FirebaseInstanceId.getInstance().id
 
-    override fun deviceFormat(): String {
-        return if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet" else "phone"
-    }
+    override fun deviceFormat(): String =
+            if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet"
+            else "phone"
 
     /**
      * Derives the device's orientation (portrait/landscape) from the `context`.
      */
-    override fun deviceOrientation(): String {
-        return if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            "Landscape"
-        } else "Portrait"
-    }
+    override fun deviceOrientation(): String =
+            if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "Landscape"
+            else "Portrait"
 
     override fun enabledFeatureFlags(): JSONArray {
         return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
@@ -139,37 +128,21 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
                 }
     }
 
-    override fun manufacturer(): String {
-        return android.os.Build.MANUFACTURER
-    }
+    override fun manufacturer(): String = android.os.Build.MANUFACTURER
 
-    override fun model(): String {
-        return android.os.Build.MODEL
-    }
+    override fun model(): String = android.os.Build.MODEL
 
-    override fun OSVersion(): String {
-        return android.os.Build.VERSION.RELEASE
-    }
+    override fun OSVersion(): String = android.os.Build.VERSION.RELEASE
 
-    override fun time(): Long {
-        return System.currentTimeMillis() / 1000
-    }
+    override fun time() = System.currentTimeMillis() / 1000
 
-    override fun loggedInUser(): User? {
-        return this.loggedInUser
-    }
+    override fun loggedInUser(): User? = this.loggedInUser
 
-    override fun userAgent(): String {
-        return WebUtils.userAgent(this.build)
-    }
+    override fun userAgent(): String = WebUtils.userAgent(this.build)
 
-    override fun userCountry(user: User): String {
-        return user.location()?.country() ?: this.config?.countryCode() ?: ""
-    }
+    override fun userCountry(user: User): String =  user.location()?.country() ?: this.config?.countryCode() ?: ""
 
-    override fun versionName(): String {
-        return BuildConfig.VERSION_NAME
-    }
+    override fun versionName(): String =  BuildConfig.VERSION_NAME
 
     override fun wifiConnection(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?

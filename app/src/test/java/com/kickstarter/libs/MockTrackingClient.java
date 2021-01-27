@@ -5,6 +5,7 @@ import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,12 +45,12 @@ public final class MockTrackingClient extends TrackingClientType {
   public final @NonNull Observable<Map<String, Object>> eventProperties = this.events.map(e -> e.properties);
 
   @Override
-  public void track(final @NonNull String eventName, final @NonNull Map<String, Object> additionalProperties) {
+  public void track(@NotNull String eventName, @NotNull Map<String, ?> additionalProperties) {
     this.events.onNext(new Event(eventName, combinedProperties(additionalProperties)));
   }
 
   @Override
-  protected ExperimentsClientType optimizely() {
+  public ExperimentsClientType optimizely() {
     return this.optimizely;
   }
 
@@ -135,7 +136,7 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected User loggedInUser() {
+  public User loggedInUser() {
     return this.loggedInUser;
   }
 

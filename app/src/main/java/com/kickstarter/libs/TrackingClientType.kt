@@ -14,8 +14,10 @@ abstract class TrackingClientType {
     protected abstract val isGooglePlayServicesAvailable: Boolean
     protected abstract val isTalkBackOn: Boolean
 
-    protected abstract fun type(): Type
     abstract fun optimizely(): ExperimentsClientType?
+    abstract fun loggedInUser(): User?
+
+    protected abstract fun type(): Type
     protected abstract fun brand(): String
     protected abstract fun buildNumber(): Int
     protected abstract fun currentVariants(): JSONArray?
@@ -23,7 +25,6 @@ abstract class TrackingClientType {
     protected abstract fun deviceFormat(): String
     protected abstract fun deviceOrientation(): String
     protected abstract fun enabledFeatureFlags(): JSONArray
-    abstract fun loggedInUser(): User?
     protected abstract fun manufacturer(): String
     protected abstract fun model(): String
     protected abstract fun OSVersion(): String

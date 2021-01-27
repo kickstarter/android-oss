@@ -40,7 +40,6 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
-import com.kickstarter.libs.TrackingClient;
 import com.kickstarter.libs.TrackingClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
@@ -100,6 +99,7 @@ import java.util.List;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
@@ -178,9 +178,11 @@ public class ApplicationModule {
   }
 
   @Provides
+  @Nullable
   @Singleton
   static Analytics provideSegment(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     String apiKey = "";
+    Analytics segmentClient = null;
 
     if (build.isRelease() && Build.isExternal()) {
       apiKey = Secrets.Segment.PRODUCTION;
@@ -189,22 +191,16 @@ public class ApplicationModule {
       apiKey = Secrets.Segment.STAGING;
     }
 
-    final Analytics segmentClient = new Analytics.Builder(context, apiKey)
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      segmentClient = new Analytics.Builder(context, apiKey)
               .trackApplicationLifecycleEvents()
               .recordScreenViews()
               .build();
 
-    Analytics.setSingletonInstance(segmentClient);
+      Analytics.setSingletonInstance(segmentClient);
+    }
 
     return segmentClient;
-  }
-
-  @Provides
-  @Singleton
-  static SegmentTrackingClient provideSegmentTrackingClient(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType, final @NonNull Analytics segmentClient) {
-
-    return new SegmentTrackingClient(context, currentUser, build, currentConfig, experimentsClientType, segmentClient);
   }
 
   @Provides
@@ -458,10 +454,10 @@ public class ApplicationModule {
           final @NonNull Build build,
           final @NonNull CurrentConfigType currentConfig,
           final @NonNull ExperimentsClientType experimentsClientType,
-          final @NonNull Analytics segment) {
+          final @Nullable Analytics segment) {
     final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
     final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(context, currentUser, build, currentConfig, experimentsClientType, segment);
-    List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentTrackingClient);
+    final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentTrackingClient);
     return new Koala(clients);
   }
 

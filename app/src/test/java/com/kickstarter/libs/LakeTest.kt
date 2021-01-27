@@ -25,7 +25,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(null)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackAppOpen()
 
@@ -41,7 +41,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackAppOpen()
 
@@ -61,7 +61,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val params = DiscoveryParams
                 .builder()
@@ -95,7 +95,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val params = DiscoveryParams
                 .builder()
@@ -130,7 +130,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val params = DiscoveryParams
                 .builder()
@@ -166,7 +166,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(null)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 
@@ -190,7 +190,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 
@@ -222,7 +222,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
 
@@ -246,7 +246,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(creator)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
 
@@ -270,7 +270,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 
@@ -294,7 +294,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
         lake.trackProjectPagePledgeButtonClicked(projectData, PledgeFlowContext.NEW_PLEDGE)
@@ -319,7 +319,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
@@ -346,7 +346,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
@@ -384,7 +384,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
@@ -414,7 +414,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
@@ -444,7 +444,7 @@ class LakeTest : KSRobolectricTestCase() {
         val client = client(user)
         client.eventNames.subscribe(this.lakeTest)
         client.eventProperties.subscribe(this.propertiesTest)
-        val lake = Koala(client)
+        val lake = Koala(listOf(client))
 
         lake.trackProjectPagePledgeButtonClicked(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 

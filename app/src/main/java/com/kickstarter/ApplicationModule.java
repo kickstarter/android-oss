@@ -109,7 +109,7 @@ import rx.schedulers.Schedulers;
 import type.CustomType;
 
 @Module
-public final class ApplicationModule {
+public class ApplicationModule {
   private final Application application;
 
   public ApplicationModule(final @NonNull Application application) {
@@ -131,7 +131,6 @@ public final class ApplicationModule {
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
     final @NonNull InternalToolsType internalToolsType,
-    final @NonNull @KoalaTracker Koala koala,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
     final @NonNull @LakeTracker Koala lake,
@@ -159,7 +158,6 @@ public final class ApplicationModule {
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .internalTools(internalToolsType)
-      .koala(koala)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
       .lake(lake)

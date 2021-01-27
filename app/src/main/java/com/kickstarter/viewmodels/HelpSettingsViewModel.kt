@@ -19,13 +19,7 @@ interface HelpSettingsViewModel {
 
         val inputs: Inputs = this
 
-        init {
-
-            this.contactClicked
-                    .compose(bindToLifecycle())
-                    .subscribe({ _ -> this.koala.trackContactEmailClicked() })
-
-        }
+        init { }
 
         override fun contactClicked() = this.contactClicked.onNext(null)
     }

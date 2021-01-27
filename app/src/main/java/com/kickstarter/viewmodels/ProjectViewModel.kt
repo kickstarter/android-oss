@@ -699,15 +699,6 @@ interface ProjectViewModel {
                     .subscribe(this.scrimIsVisible)
 
             currentProject
-                    .compose<Project>(takeWhen(this.showShareSheet))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackShowProjectShareSheet(it) }
-
-            this.startVideoActivity
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackVideoStart(it) }
-
-            currentProject
                     .map { p -> if (p.isStarred) R.drawable.icon__heart else R.drawable.icon__heart_outline }
                     .subscribe(this.heartDrawableId)
 
@@ -734,7 +725,6 @@ interface ProjectViewModel {
 
                         val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
 
-                        this.koala.trackProjectShow(dataWithStoredCookieRefTag)
                         this.lake.trackProjectPageViewed(dataWithStoredCookieRefTag, pledgeFlowContext)
                     }
 
@@ -748,60 +738,6 @@ interface ProjectViewModel {
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose(bindToLifecycle())
                     .subscribe { this.lake.trackProjectPagePledgeButtonClicked(storeCurrentCookieRefTag(it.first), it.second) }
-
-            this.pledgeActionButtonText
-                    .map { eventName(it) }
-                    .compose<Pair<String, Project>>(combineLatestPair(currentProject))
-                    .compose<Pair<String, Project>>(takeWhen(this.nativeProjectActionButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackProjectActionButtonClicked(it.first, it.second) }
-
-            currentProject
-                    .compose<Project>(takeWhen(this.updatePledgeClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "update_pledge") }
-
-            currentProject
-                    .compose<Project>(takeWhen(this.updatePaymentClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "change_payment_method") }
-
-            currentProject
-                    .filter { it.isLive }
-                    .compose<Project>(takeWhen(this.viewRewardsClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "choose_another_reward") }
-
-            currentProject
-                    .filter { !it.isLive }
-                    .compose<Project>(takeWhen(this.viewRewardsClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "view_rewards") }
-
-            currentProject
-                    .compose<Project>(takeWhen(this.cancelPledgeClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "cancel_pledge") }
-
-            currentProject
-                    .compose<Project>(takeWhen(this.contactCreatorClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackManagePledgeOptionClicked(it, "contact_creator") }
-
-            projectOnUserChangeSave
-                    .mergeWith(savedProjectOnLoginSuccess)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackProjectStar(it) }
-
-            pushNotificationEnvelope
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackPushNotification(it) }
-
-            intent()
-                    .filter { IntentMapper.appBannerIsSet(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackOpenedAppBanner() }
 
             fullProjectDataAndPledgeFlowContext
                     .map { it.first }

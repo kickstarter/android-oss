@@ -2,8 +2,6 @@ package com.kickstarter.viewmodels;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.WebViewActivity;
 
@@ -37,14 +35,6 @@ public interface WebViewViewModel {
         .ofType(String.class)
         .compose(bindToLifecycle())
         .subscribe(this.url::onNext);
-
-      intent()
-        .map(i -> i.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
-        .ofType(PushNotificationEnvelope.class)
-        .filter(ObjectUtils::isNotNull)
-        .take(1)
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackPushNotification);
     }
 
     private final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();

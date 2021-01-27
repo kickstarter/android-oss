@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.KoalaEvent;
 
 import org.junit.Test;
 
@@ -36,7 +35,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertNoValues();
-    this.koalaTest.assertNoValues();
   }
 
   @Test
@@ -50,7 +48,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertNoValues();
-    this.koalaTest.assertNoValues();
   }
 
   @Test
@@ -64,7 +61,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startBrowser.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertValue(Uri.parse(url));
-    this.koalaTest.assertNoValues();
   }
 
   @Test
@@ -79,7 +75,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startBrowser.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertValue(Uri.parse(expectedUrl));
-    this.koalaTest.assertNoValues();
   }
 
   @Test
@@ -93,7 +88,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startBrowser.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }
 
   @Test
@@ -108,7 +102,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startBrowser.assertNoValues();
     this.startDiscoveryActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }
 
   @Test
@@ -122,7 +115,6 @@ public class DeepLinkViewModelTest extends KSRobolectricTestCase {
     this.startBrowser.assertNoValues();
     this.startProjectActivity.assertNoValues();
     this.startProjectActivityForCheckout.assertNoValues();
-    this.koalaTest.assertValues(KoalaEvent.CONTINUE_USER_ACTIVITY, KoalaEvent.OPENED_DEEP_LINK);
   }
 
   private Intent intentWithData(final String url) {

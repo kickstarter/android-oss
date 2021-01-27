@@ -18,8 +18,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         val vm = ResetPasswordViewModel.ViewModel(environment())
         val test = TestSubscriber<Boolean>()
 
-        koalaTest.assertValues("Forgot Password View")
-
         vm.outputs.isFormValid().subscribe(test)
 
         vm.inputs.email("incorrect@kickstarter")
@@ -28,7 +26,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         vm.inputs.email("hello@kickstarter.com")
         test.assertValues(false, true)
 
-        koalaTest.assertValueCount(1)
         this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 
@@ -36,8 +33,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
     fun testResetPasswordViewModel_resetSuccess() {
         val vm = ResetPasswordViewModel.ViewModel(environment())
         val test = TestSubscriber<Void>()
-
-        koalaTest.assertValues("Forgot Password View")
 
         vm.outputs.resetSuccess().subscribe(test)
 
@@ -50,7 +45,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         vm.inputs.resetPasswordClick()
         test.assertValueCount(1)
 
-        koalaTest.assertValues("Forgot Password View", "Forgot Password Requested")
         this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 
@@ -69,8 +63,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         val vm = ResetPasswordViewModel.ViewModel(environment)
         val errorTest = TestSubscriber<String>()
 
-        koalaTest.assertValues("Forgot Password View")
-
         vm.outputs.resetError().subscribe(errorTest)
 
         vm.inputs.email("hello@kickstarter.com")
@@ -78,7 +70,6 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
         errorTest.assertValue("bad request")
 
-        koalaTest.assertValues("Forgot Password View", "Forgot Password Errored")
         this.lakeTest.assertValue("Forgot Password Page Viewed")
     }
 

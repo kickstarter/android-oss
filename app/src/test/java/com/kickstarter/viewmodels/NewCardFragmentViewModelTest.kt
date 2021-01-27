@@ -292,7 +292,6 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
         this.createStripeToken.assertValueCount(1)
         this.error.assertValueCount(1)
-        this.koalaTest.assertValues("Viewed Add New Card", "Failed Payment Method Creation")
     }
 
     @Test
@@ -307,7 +306,6 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.createStripeToken.assertValueCount(1)
         this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
         this.modalError.assertValueCount(1)
-        this.koalaTest.assertValues("Viewed Add New Card", "Failed Payment Method Creation")
     }
 
     @Test
@@ -532,7 +530,6 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.saveCardClicked()
         this.vm.inputs.stripeTokenResultSuccessful(TokenFactory.token(CardFactory.card()))
         this.success.assertValue(visa)
-        this.koalaTest.assertValues("Viewed Add New Card", "Saved Payment Method")
     }
 
     private fun environmentWithSavePaymentMethodError(): Environment {

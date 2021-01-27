@@ -101,12 +101,4 @@ class MessageCreatorViewModelTest : KSRobolectricTestCase() {
         this.showSentSuccess.assertNoValues()
         this.showMessageThread.assertValueCount(1)
     }
-
-    @Test
-    fun testTracking() {
-        setUpEnvironment(environment())
-
-        this.koalaTest.assertValue("Modal Dialog View")
-    }
-
 }

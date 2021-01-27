@@ -36,7 +36,6 @@ import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
-import com.kickstarter.ui.intentmappers.IntentMapper;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
@@ -335,10 +334,6 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.navigationDrawerData);
 
-      drawerParamsClicked
-        .compose(bindToLifecycle())
-        .subscribe(this.koala::trackDiscoveryFilterSelected);
-
       final List<Observable<Boolean>> drawerOpenObservables = Arrays.asList(
         this.openDrawer,
         this.childFilterRowClick.map(__ -> false),
@@ -361,19 +356,10 @@ public interface DiscoveryViewModel {
       final Observable<Boolean> drawerOpened = this.openDrawer
         .filter(BooleanUtils::isTrue);
 
-      drawerOpened
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackDiscoveryFilters());
-
       paramsWithSort
         .compose(takeWhen(drawerOpened))
         .compose(bindToLifecycle())
         .subscribe(this.lake::trackHamburgerMenuClicked);
-
-      intent()
-        .filter(IntentMapper::appBannerIsSet)
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackOpenedAppBanner());
 
       currentUser
         .map(this::currentDrawerMenuIcon)

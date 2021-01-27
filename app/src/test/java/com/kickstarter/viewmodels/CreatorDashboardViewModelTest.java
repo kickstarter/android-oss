@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.ProjectStatsEnvelopeFactory;
@@ -17,6 +16,8 @@ import com.kickstarter.services.apiresponses.ProjectsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.data.ProjectDashboardData;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -51,7 +52,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.backClicked();
 
     this.bottomSheetShouldExpand.assertValue(false);
-    this.koalaTest.assertNoValues();
   }
 
   @Test
@@ -61,7 +61,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectSelectionInput(ProjectFactory.project());
 
     this.bottomSheetShouldExpand.assertValue(false);
-    this.koalaTest.assertValues("Switched Projects", "Viewed Project Dashboard");
   }
 
   @Test
@@ -71,7 +70,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectsListButtonClicked();
 
     this.bottomSheetShouldExpand.assertValue(true);
-    this.koalaTest.assertValue("Opened Project Switcher");
   }
 
   @Test
@@ -81,7 +79,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.scrimClicked();
 
     this.bottomSheetShouldExpand.assertValue(false);
-    this.koalaTest.assertNoValues();
   }
 
   public void testProjectDashboardData_whenViewingAllProjects() {
@@ -101,7 +98,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
     this.vm.intent(new Intent());
     this.projectDashboardData.assertValue(new ProjectDashboardData(Objects.requireNonNull(ListUtils.first(projects)), projectStatsEnvelope, false));
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 
   public void testProjectDashboardData_whenViewingSingleProjects() {
@@ -117,7 +113,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(environment().toBuilder().apiClient(apiClient).build());
     this.vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
     this.projectDashboardData.assertValue(new ProjectDashboardData(project, projectStatsEnvelope, true));
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 
   @Test
@@ -154,6 +149,8 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectSwitcherProjectClickOutput() {
+    DateTimeUtils.setCurrentMillisFixed(new DateTime().getMillis());
+
     final Project project1 = ProjectFactory.project();
     final Project project2 = ProjectFactory.project();
     final List<Project> projects = Arrays.asList(
@@ -176,7 +173,6 @@ public class CreatorDashboardViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectSelectionInput(project2);
     this.projectDashboardData.assertValues(new ProjectDashboardData(project1, ProjectStatsEnvelopeFactory.projectStatsEnvelope(), false),
       new ProjectDashboardData(project2, ProjectStatsEnvelopeFactory.projectStatsEnvelope(), false));
-    this.koalaTest.assertValues(KoalaEvent.VIEWED_PROJECT_DASHBOARD, KoalaEvent.SWITCHED_PROJECTS, KoalaEvent.VIEWED_PROJECT_DASHBOARD);
   }
 
   @Test

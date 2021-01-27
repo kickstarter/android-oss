@@ -229,7 +229,6 @@ public interface MessageThreadsViewModel {
       final Project project = projectMailboxAndRedTag.first.first;
       final RefTag refTag = projectMailboxAndRedTag.second.first;
       final KoalaContext.Mailbox context = projectMailboxAndRedTag.second.second;
-      this.koala.trackViewedMailbox(mailbox, project, refTag, context);
     }
 
     private int getStringResForMailbox(final @NonNull Mailbox mailbox) {

@@ -72,18 +72,6 @@ public interface ThanksShareHolderViewModel {
         .compose(takeWhen(this.shareOnTwitterClick))
         .compose(bindToLifecycle())
         .subscribe(this.startShareOnTwitter::onNext);
-
-      this.shareClick
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackCheckoutShowShareSheet());
-
-      this.shareOnFacebookClick
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackCheckoutShowFacebookShareView());
-
-      this.shareOnTwitterClick
-        .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackCheckoutShowTwitterShareView());
     }
 
     private final PublishSubject<Project> project = PublishSubject.create();

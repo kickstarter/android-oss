@@ -1305,34 +1305,6 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<PledgeReason, Pair<Project, Double>>>(combineLatestPair(projectAndTotal))
                     .map { it.second }
 
-            projectAndTotalForInitialPledges
-                    .take(1)
-                    .map { it.first }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackPledgeScreenViewed(it) }
-
-            projectAndTotalForInitialPledges
-                    .compose<Pair<Project, Double>>(takeWhen(this.newCardButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackAddNewCardButtonClicked(it.first, it.second) }
-
-            projectAndTotalForInitialPledges
-                    .compose<Pair<Project, Double>>(takeWhen(this.pledgeButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackPledgeButtonClicked(it.first, it.second) }
-
-            projectAndTotal
-                    .compose<Pair<Project, Double>>(takeWhen(updatePledgeClick))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackUpdatePledgeButtonClicked(it.first, it.second) }
-
-            project
-                    .compose<Project>(takeWhen(updatePaymentClick))
-                    .compose<Pair<Project, PledgeReason>>(combineLatestPair(pledgeReason))
-                    .filter { it.second == PledgeReason.UPDATE_PAYMENT }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.koala.trackUpdatePaymentMethodButtonClicked(it.first) }
-
             pledgeData
                     .take(1)
                     .filter { it.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }

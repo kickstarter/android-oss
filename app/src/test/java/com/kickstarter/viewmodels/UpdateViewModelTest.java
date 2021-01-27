@@ -6,7 +6,6 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
@@ -49,31 +48,6 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     vm.inputs.goToProjectRequest(projectRequest);
 
     openProjectExternally.assertValue(url + "&ref=update");
-  }
-
-  @Test
-  public void testUpdateViewModel_ExternalLinkActivated() {
-    final Project project = ProjectFactory.project().toBuilder().slug("meatballs").build();
-    final MockApiClient client = new MockApiClient() {
-      @Override public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
-        return Observable.just(project);
-      }
-    };
-
-    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(
-      environment().toBuilder().apiClient(client).build()
-    );
-
-    // Start the intent with a project param and update.
-    vm.intent(
-      new Intent()
-        .putExtra(IntentKey.PROJECT_PARAM, "meatballs")
-        .putExtra(IntentKey.UPDATE, UpdateFactory.update())
-    );
-
-    vm.inputs.externalLinkActivated();
-
-    this.koalaTest.assertValues(KoalaEvent.OPENED_EXTERNAL_LINK);
   }
 
   @Test

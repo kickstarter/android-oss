@@ -215,10 +215,7 @@ interface NewCardFragmentViewModel {
             saveCardNotification
                     .compose(values())
                     .compose(bindToLifecycle())
-                    .subscribe {
-                        this.success.onNext(it)
-                        this.koala.trackSavedPaymentMethod()
-                    }
+                    .subscribe { this.success.onNext(it) }
 
             val errors = Observable.merge(saveCardNotification.compose(errors()), this.stripeTokenResultUnsuccessful)
                     .compose(ignoreValues())
@@ -236,13 +233,7 @@ interface NewCardFragmentViewModel {
                     .map { it.first }
                     .subscribe(this.modalError)
 
-            errors
-                    .subscribe {
-                        this.koala.trackFailedPaymentMethodCreation()
-                        this.progressBarIsVisible.onNext(false)
-                    }
-
-            this.koala.trackViewedAddNewCard()
+            errors.subscribe { this.progressBarIsVisible.onNext(false) }
         }
 
         override fun card(card: Card?) {

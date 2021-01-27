@@ -86,7 +86,6 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.showCancelError.assertValuesAndClear("Error")
         this.showServerError.assertNoValues()
         this.success.assertNoValues()
-        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
     }
 
     @Test
@@ -104,7 +103,6 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.showCancelError.assertNoValues()
         this.showServerError.assertValueCount(1)
         this.success.assertNoValues()
-        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
     }
 
     @Test
@@ -122,7 +120,6 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.showCancelError.assertNoValues()
         this.showServerError.assertValueCount(1)
         this.success.assertNoValues()
-        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
     }
 
     @Test
@@ -135,7 +132,6 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.showCancelError.assertNoValues()
         this.showServerError.assertNoValues()
         this.success.assertValueCount(1)
-        this.koalaTest.assertValues("Cancel Pledge Button Clicked")
     }
 
 }

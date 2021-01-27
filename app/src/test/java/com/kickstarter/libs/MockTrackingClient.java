@@ -45,7 +45,7 @@ public final class MockTrackingClient extends TrackingClientType {
   public final @NonNull Observable<Map<String, Object>> eventProperties = this.events.map(e -> e.properties);
 
   @Override
-  public void track(@NotNull String eventName, @NotNull Map<String, ?> additionalProperties) {
+  public void track(final @NotNull String eventName, final @NotNull Map<String, ?> additionalProperties) {
     this.events.onNext(new Event(eventName, combinedProperties(additionalProperties)));
   }
 

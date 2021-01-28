@@ -8,7 +8,7 @@ import java.util.*
 
 abstract class TrackingClientType {
     enum class Type(val tag: String) {
-        LAKE("💧 Lake"), SEGMENT(" Segment");
+        LAKE("💧 Lake"), SEGMENT("\uD83C\uDF81 Segment");
     }
 
     protected abstract val isGooglePlayServicesAvailable: Boolean

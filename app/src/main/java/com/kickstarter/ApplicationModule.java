@@ -426,7 +426,7 @@ public class ApplicationModule {
           final @NonNull ExperimentsClientType experimentsClientType,
           final @Nullable Analytics segment) {
     final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
-    final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(context, currentUser, build, currentConfig, experimentsClientType, segment);
+    final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType, segment);
     final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentTrackingClient);
     return new AnalyticEvents(clients);
   }

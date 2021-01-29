@@ -8,7 +8,8 @@ import java.util.*
 
 abstract class TrackingClientType {
     enum class Type(val tag: String) {
-        LAKE("💧 Lake"), SEGMENT("\uD83C\uDF81 Segment");
+        LAKE("💧 Lake"),
+        SEGMENT("\uD83C\uDF81 Segment");
     }
 
     protected abstract val isGooglePlayServicesAvailable: Boolean
@@ -17,7 +18,6 @@ abstract class TrackingClientType {
     abstract fun optimizely(): ExperimentsClientType?
     abstract fun loggedInUser(): User?
 
-    protected abstract fun type(): Type
     protected abstract fun brand(): String
     protected abstract fun buildNumber(): Int
     protected abstract fun currentVariants(): JSONArray?
@@ -29,6 +29,7 @@ abstract class TrackingClientType {
     protected abstract fun model(): String
     protected abstract fun OSVersion(): String
     protected abstract fun time(): Long
+    protected abstract fun type(): Type
     protected abstract fun userAgent(): String?
     protected abstract fun userCountry(user: User): String
     protected abstract fun versionName(): String

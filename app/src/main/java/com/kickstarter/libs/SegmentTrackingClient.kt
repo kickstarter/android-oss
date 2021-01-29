@@ -5,10 +5,10 @@ import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 
 class SegmentTrackingClient(
-        context: Context,
-        currentUser: CurrentUserType,
         build: Build,
+        context: Context,
         currentConfig: CurrentConfigType,
+        currentUser: CurrentUserType,
         optimizely: ExperimentsClientType,
         private val segmentAnalytics: Analytics?) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 

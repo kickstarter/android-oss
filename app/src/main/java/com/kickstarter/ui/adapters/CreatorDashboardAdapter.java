@@ -2,9 +2,18 @@ package com.kickstarter.ui.adapters;
 
 
 import android.util.Pair;
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.DashboardFundingViewBinding;
+import com.kickstarter.databinding.DashboardReferrerBreakdownLayoutBinding;
+import com.kickstarter.databinding.DashboardReferrerStatsViewBinding;
+import com.kickstarter.databinding.DashboardRewardStatsViewBinding;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.adapters.data.ProjectDashboardData;
@@ -15,10 +24,6 @@ import com.kickstarter.ui.viewholders.CreatorDashboardRewardStatsViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import java.util.Collections;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class CreatorDashboardAdapter extends KSAdapter {
   private static final int SECTION_FUNDING_VIEW = 0;
@@ -51,17 +56,21 @@ public class CreatorDashboardAdapter extends KSAdapter {
     }
   }
 
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  @NonNull
+  @Override
+  protected KSViewHolder viewHolder(int layout, @NonNull ViewGroup viewGroup) {
     if (layout == R.layout.dashboard_funding_view) {
-      return new CreatorDashboardHeaderViewHolder(view, this.delegate);
+      return new CreatorDashboardHeaderViewHolder(DashboardFundingViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     } else if (layout == R.layout.dashboard_reward_stats_view) {
-      return new CreatorDashboardRewardStatsViewHolder(view);
+      return new CreatorDashboardRewardStatsViewHolder(DashboardRewardStatsViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     } else if (layout == R.layout.dashboard_referrer_breakdown_layout) {
-      return new CreatorDashboardReferrerBreakdownViewHolder(view);
+      return new CreatorDashboardReferrerBreakdownViewHolder(DashboardReferrerBreakdownLayoutBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     } else {
-      return new CreatorDashboardReferrerStatsViewHolder(view);
+      return new CreatorDashboardReferrerStatsViewHolder(DashboardReferrerStatsViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
+
+  //ProjectContextViewHolder(ProjectContextViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false)
 
   public void takeProjectDashboardData(final @NonNull ProjectDashboardData projectDashboardData) {
     setSection(SECTION_FUNDING_VIEW, Collections.singletonList(projectDashboardData));

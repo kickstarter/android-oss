@@ -23,7 +23,7 @@ public final class BackingUtils {
 
     return rewardId == reward.id();
   }
-  
+
   public static boolean isErrored(final @Nullable Backing backing) {
     if (backing == null) {
       return false;

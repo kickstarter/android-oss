@@ -21,7 +21,10 @@ import com.kickstarter.viewmodels.ProjectCardHolderViewModel
 import com.squareup.picasso.Picasso
 import org.joda.time.DateTime
 
-class ProjectCardViewHolder(private val binding: ProjectCardViewBinding, delegate: Delegate) : KSViewHolder(binding.root) {
+class ProjectCardViewHolder(
+    private val binding: ProjectCardViewBinding,
+    delegate: Delegate
+) : KSViewHolder(binding.root) {
     private val viewModel = ProjectCardHolderViewModel.ViewModel(environment())
     private val ksString = environment().ksString()
 

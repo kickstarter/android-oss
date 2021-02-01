@@ -3,12 +3,7 @@ package com.kickstarter
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KSString
-import com.kickstarter.libs.Koala
-import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.libs.MockTrackingClient
-import com.kickstarter.libs.TrackingClientType
+import com.kickstarter.libs.*
 import com.kickstarter.libs.utils.Secrets
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
@@ -17,6 +12,7 @@ import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.mock.services.MockWebClient
 import com.stripe.android.Stripe
 import junit.framework.TestCase
+import net.danlew.android.joda.JodaTimeAndroid
 import org.joda.time.DateTimeUtils
 import org.junit.After
 import org.junit.Before
@@ -39,6 +35,9 @@ abstract class KSRobolectricTestCase : TestCase() {
     @Throws(Exception::class)
     public override fun setUp() {
         super.setUp()
+
+        // -  DateTimeZone.forID("EST")) requires initializing joda time library, on newest versions the initializing method has been deprecated look for an alternative
+        JodaTimeAndroid.init(context())
 
         val mockCurrentConfig = MockCurrentConfig()
         val experimentsClientType = experimentsClient()

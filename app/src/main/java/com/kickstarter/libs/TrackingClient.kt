@@ -65,6 +65,12 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         }
     }
 
+    override fun identify(userId: String, additionalTraits: Map<String, String>?) {
+        if (this.build.isDebug) {
+            Timber.d("Queued ${type().tag} Identify userId: $userId")
+        }
+    }
+
     override fun optimizely(): ExperimentsClientType = this.optimizely
 
     private fun queueEvent(eventName: String, additionalProperties: Map<String, Any>) {

@@ -35,8 +35,11 @@ abstract class TrackingClientType {
     protected abstract fun versionName(): String
     protected abstract fun wifiConnection(): Boolean
 
-    // TODO: Will add methods Screen and Identity those two are specifics to Segment, the implementation on Lake will be empty
+    // TODO: Will add method Screen those two are specifics to Segment, the implementation on Lake will be empty
     abstract fun track(eventName: String, additionalProperties: Map<String, Any>)
+    // - Specific to segment
+    abstract fun identify(userId: String, additionalTraits: Map<String, String>?)
+
     fun track(eventName: String) {
         track(eventName, HashMap())
     }

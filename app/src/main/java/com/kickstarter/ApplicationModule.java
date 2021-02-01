@@ -189,7 +189,6 @@ public class ApplicationModule {
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
       segmentClient = new Analytics.Builder(context, apiKey)
               .trackApplicationLifecycleEvents()
-              .recordScreenViews()
               .build();
 
       Analytics.setSingletonInstance(segmentClient);

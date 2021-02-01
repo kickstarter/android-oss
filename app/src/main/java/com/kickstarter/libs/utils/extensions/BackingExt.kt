@@ -28,4 +28,3 @@ import com.kickstarter.models.Reward
         }
         return null
     }
-

@@ -35,12 +35,13 @@ class BackingExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun testIsShippable() {
-        val backingWithShipping = BackingFactory.backing().toBuilder()
-                .reward(RewardFactory.rewardWithShipping())
-                .build()
+        val backingWithShipping =
+                BackingFactory
+                    .backing()
+                    .toBuilder()
+                    .reward(RewardFactory.rewardWithShipping())
+                    .build()
         assertTrue(backingWithShipping.isShippable())
         assertFalse(BackingFactory.backing().isShippable())
     }
 }
-
-

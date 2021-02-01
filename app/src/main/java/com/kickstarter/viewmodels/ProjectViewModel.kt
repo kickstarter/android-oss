@@ -599,11 +599,6 @@ interface ProjectViewModel {
                             Pair(pD.first.toBuilder().backing(pD.second).build(), it)
                         }
                     }
-//                    .map { pD ->
-//                        BackingUtils.backedReward(pD.first.project())?.let {
-//                            Pair(pD.first.toBuilder().backing(pD.second).build(), it)
-//                        }
-//                    }
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))

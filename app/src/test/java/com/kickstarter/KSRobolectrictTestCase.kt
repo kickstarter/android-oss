@@ -36,7 +36,6 @@ abstract class KSRobolectricTestCase : TestCase() {
     public override fun setUp() {
         super.setUp()
 
-        // -  DateTimeZone.forID("EST")) requires initializing joda time library, on newest versions the initializing method has been deprecated look for an alternative
         JodaTimeAndroid.init(context())
 
         val mockCurrentConfig = MockCurrentConfig()

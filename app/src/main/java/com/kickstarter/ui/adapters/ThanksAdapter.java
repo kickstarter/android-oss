@@ -1,8 +1,16 @@
 package com.kickstarter.ui.adapters;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.EmptyViewBinding;
+import com.kickstarter.databinding.ProjectCardViewBinding;
+import com.kickstarter.databinding.ThanksCategoryViewBinding;
+import com.kickstarter.databinding.ThanksShareViewBinding;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.data.ThanksData;
@@ -13,9 +21,6 @@ import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.ThanksShareViewHolder;
 
 import java.util.Collections;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 
 public final class ThanksAdapter extends KSAdapter {
   private static final int SECTION_SHARE_VIEW = 0;
@@ -43,16 +48,16 @@ public final class ThanksAdapter extends KSAdapter {
     }
   }
 
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     switch(layout) {
       case R.layout.thanks_share_view:
-        return new ThanksShareViewHolder(view);
+        return new ThanksShareViewHolder(ThanksShareViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
       case R.layout.project_card_view:
-        return new ProjectCardViewHolder(view, this.delegate);
+        return new ProjectCardViewHolder(ProjectCardViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.thanks_category_view:
-        return new ThanksCategoryViewHolder(view, this.delegate);
+        return new ThanksCategoryViewHolder(ThanksCategoryViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       default:
-        return new EmptyViewHolder(view);
+        return new EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
 

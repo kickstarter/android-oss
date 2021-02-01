@@ -50,6 +50,7 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
 
         assertEquals(R.string.Manage, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.backedProject(), UserFactory.user()))
         assertEquals(R.string.Manage, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.backedProject(), null))
+        assertEquals(R.string.Manage, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.backedProjectWithError(), null))
 
         assertEquals(R.string.View_rewards, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.successfulProject(), UserFactory.user()))
         assertEquals(R.string.View_rewards, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.successfulProject(), null))

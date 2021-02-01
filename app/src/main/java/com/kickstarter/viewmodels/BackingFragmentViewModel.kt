@@ -9,6 +9,8 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.extensions.backedReward
+import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.*
 import com.kickstarter.ui.data.PledgeStatusData
@@ -330,7 +332,7 @@ interface BackingFragmentViewModel {
                     .subscribe(this.cardLogo)
 
             val backingIsNotErrored = backing
-                    .map { BackingUtils.isErrored(it) }
+                    .map { it.isErrored() }
                     .distinctUntilChanged()
                     .map { BooleanUtils.negate(it) }
 
@@ -446,7 +448,7 @@ interface BackingFragmentViewModel {
 
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.reward()
-                    ?: BackingUtils.backedReward(projectData.project())
+                    ?: projectData.project().backing()?.backedReward(projectData.project())
                     ?: RewardFactory.noReward().toBuilder()
                             .minimum(projectData.backing()?.amount() ?: 1.0)
                             .build()

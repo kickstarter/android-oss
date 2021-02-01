@@ -5,6 +5,7 @@ import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.utils.BackingUtils
+import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
@@ -86,7 +87,7 @@ interface BaseRewardCardViewHolderViewModel {
 
             isBackingPaymentSource
                     .compose<Pair<Boolean, Backing?>>(combineLatestPair(backing))
-                    .map { it.first && BackingUtils.isErrored(it.second) }
+                    .map { it.first && it.second?.isErrored() ?: false }
                     .subscribe(this.retryCopyIsVisible)
 
         }

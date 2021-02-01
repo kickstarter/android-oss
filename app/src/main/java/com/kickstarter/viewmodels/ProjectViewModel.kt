@@ -9,6 +9,8 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.extensions.backedReward
+import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
@@ -592,11 +594,16 @@ interface ProjectViewModel {
 
             val projectDataAndBackedReward = projectData
                     .compose<Pair<ProjectData, Backing>>(combineLatestPair(backing))
-                    .map { pD ->
-                        BackingUtils.backedReward(pD.first.project())?.let {
+                    .map {
+                        pD -> pD.first.project().backing()?.backedReward(pD.first.project())?.let {
                             Pair(pD.first.toBuilder().backing(pD.second).build(), it)
                         }
                     }
+//                    .map { pD ->
+//                        BackingUtils.backedReward(pD.first.project())?.let {
+//                            Pair(pD.first.toBuilder().backing(pD.second).build(), it)
+//                        }
+//                    }
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.fixPaymentMethodButtonClicked))
@@ -621,15 +628,14 @@ interface ProjectViewModel {
                     .subscribe(this.revealRewardsFragment)
 
             currentProject
-                    .map { it.isBacking && it.isLive || BackingUtils.isErrored(it.backing()) }
+                    .map { it.isBacking && it.isLive || it.backing()?.isErrored() == true }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetailsIsVisible)
 
             currentProject
                     .filter { it.isBacking }
-                    .map { it.backing() }
-                    .map { if (BackingUtils.isErrored(it)) R.string.Payment_failure else R.string.Youre_a_backer }
+                    .map { if (it.backing()?.isErrored() == true) R.string.Payment_failure else R.string.Youre_a_backer }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.backingDetailsTitle)
@@ -832,7 +838,7 @@ interface ProjectViewModel {
             return when {
                 ProjectUtils.userIsCreator(project, currentUser) -> null
                 project.isLive && !project.isBacking -> PledgeFlowContext.NEW_PLEDGE
-                !project.isLive && BackingUtils.isErrored(project.backing()) -> PledgeFlowContext.FIX_ERRORED_PLEDGE
+                !project.isLive && project.backing()?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
                 else -> null
             }
         }

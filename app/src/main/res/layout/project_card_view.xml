@@ -31,9 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/project_card_photo_view" />
+        <include
+            android:id="@+id/project_card_photo"
+            layout="@layout/project_card_photo_view" />
 
-        <include layout="@layout/project_metadata_view"/>
+        <include
+            android:id="@+id/project_metadata_view"
+            layout="@layout/project_metadata_view"/>
 
         <ImageButton
           android:id="@+id/heart_button"
@@ -88,7 +92,9 @@
         android:layout_width="match_parent"
         android:id="@+id/project_state_view_group"/>
 
-      <include layout="@layout/project_card_stats_view"
+      <include
+        android:id="@+id/project_card_stats"
+        layout="@layout/project_card_stats_view"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginTop="@dimen/grid_2"
@@ -111,6 +117,7 @@
   </androidx.cardview.widget.CardView>
 
   <include
+      android:id="@+id/friend_row_backing_group"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@id/project_card_view"

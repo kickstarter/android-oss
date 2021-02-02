@@ -21,7 +21,9 @@
 
   <include layout="@layout/horizontal_line_1dp_view" />
 
-  <include layout="@layout/internal_tools_button_view" />
+  <include
+      android:id="@+id/internal_tools_layout"
+      layout="@layout/internal_tools_button_view" />
 
   <TextView
     android:id="@+id/drawer_activity"

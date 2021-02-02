@@ -27,10 +27,14 @@
         android:src="@drawable/icon__check"
         app:tint="@color/kds_white" />
 
-      <include layout="@layout/reward_card_details" />
+      <include
+          android:id="@+id/reward_card_details"
+          layout="@layout/reward_card_details" />
     </LinearLayout>
 
-    <include layout="@layout/retry_card_warning" />
+    <include
+        android:id="@+id/retry_card_warning"
+        layout="@layout/retry_card_warning" />
 
   </LinearLayout>
 </androidx.cardview.widget.CardView>

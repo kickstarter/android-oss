@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:showIn="@layout/project_main_layout"
+    xmlns:tools="http://schemas.android.com/tools">
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -135,7 +139,9 @@
         android:visibility="gone"
         tools:ignore="InconsistentLayout">
 
-        <include layout="@layout/creator_avatar_verified" />
+        <include
+            android:id="@+id/creator_avatar_verified"
+            layout="@layout/creator_avatar_verified" />
 
         <LinearLayout
           android:layout_width="0dp"
@@ -162,7 +168,9 @@
 
       </LinearLayout>
 
-      <include layout="@layout/loading_placeholder_creator_info" />
+      <include
+          android:id="@+id/loading_placeholder_creator_info_layout"
+          layout="@layout/loading_placeholder_creator_info" />
     </FrameLayout>
 
     <LinearLayout
@@ -174,6 +182,7 @@
       android:orientation="vertical">
 
       <include
+          android:id="@+id/project_metadata_layout"
         layout="@layout/project_metadata_view"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/metadata_label_height"
@@ -307,3 +316,4 @@
   </RelativeLayout>
 
 </RelativeLayout>
+</merge>

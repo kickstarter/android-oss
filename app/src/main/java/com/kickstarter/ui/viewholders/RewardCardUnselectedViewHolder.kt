@@ -1,20 +1,19 @@
 package com.kickstarter.ui.viewholders
 
 import android.util.Pair
-import android.view.View
 import androidx.core.content.ContextCompat
 import com.kickstarter.R
+import com.kickstarter.databinding.ItemRewardUnselectedCardBinding
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardCardUnselectedViewHolderViewModel
-import kotlinx.android.synthetic.main.item_reward_unselected_card.view.*
 import kotlinx.android.synthetic.main.retry_card_warning.view.*
 import kotlinx.android.synthetic.main.reward_card_details.view.*
 
-class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) : KSViewHolder(view) {
+class RewardCardUnselectedViewHolder(val binding : ItemRewardUnselectedCardBinding, val delegate : Delegate) : KSViewHolder(binding.root) {
 
     interface Delegate {
         fun cardSelected(storedCard: StoredCard, position: Int)
@@ -36,22 +35,22 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
         this.viewModel.outputs.isClickable()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.card_container.isClickable = it }
+                .subscribe { this.binding.cardContainer.isClickable = it }
 
         this.viewModel.outputs.issuerImage()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_card_logo.setImageResource(it) }
+                .subscribe { this.binding.root.reward_card_logo.setImageResource(it) }
 
         this.viewModel.outputs.issuer()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_card_logo.contentDescription = it }
+                .subscribe { this.binding.root.reward_card_logo.contentDescription = it }
 
         this.viewModel.outputs.issuerImageAlpha()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_card_logo.alpha = it }
+                .subscribe { this.binding.root.reward_card_logo.alpha = it }
 
         this.viewModel.outputs.lastFour()
                 .compose(bindToLifecycle())
@@ -61,12 +60,12 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
         this.viewModel.outputs.lastFourTextColor()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.reward_card_last_four.setTextColor(ContextCompat.getColor(context(), it)) }
+                .subscribe { this.binding.root.reward_card_last_four.setTextColor(ContextCompat.getColor(context(), it)) }
 
         this.viewModel.outputs.notAvailableCopyIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.card_not_allowed_warning, !it) }
+                .subscribe { ViewUtils.setGone(this.binding.cardNotAllowedWarning, !it) }
 
         this.viewModel.outputs.notifyDelegateCardSelected()
                 .compose(bindToLifecycle())
@@ -76,14 +75,14 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
         this.viewModel.outputs.retryCopyIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.retry_card_warning, !it) }
+                .subscribe { ViewUtils.setGone(this.binding.root.retry_card_warning, !it) }
 
         this.viewModel.outputs.selectImageIsVisible()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setInvisible(this.view.select_image_view, !it) }
+                .subscribe { ViewUtils.setInvisible(this.binding.selectImageView, !it) }
 
-        this.view.card_container.setOnClickListener {
+        this.binding.cardContainer.setOnClickListener {
             this.viewModel.inputs.cardSelected(adapterPosition)
         }
     }
@@ -95,12 +94,12 @@ class RewardCardUnselectedViewHolder(val view : View, val delegate : Delegate) :
     }
 
     private fun setExpirationDateText(date: String) {
-        this.view.reward_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
+        this.binding.root.reward_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
                 "expiration_date", date)
     }
 
     private fun setLastFourText(lastFour: String) {
-        this.view.reward_card_last_four.text = this.ksString.format(this.lastFourString,
+        this.binding.root.reward_card_last_four.text = this.ksString.format(this.lastFourString,
                 "last_four",
                 lastFour)
     }

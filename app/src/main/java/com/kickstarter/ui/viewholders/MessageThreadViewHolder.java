@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
@@ -22,9 +26,6 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -44,7 +45,7 @@ public final class MessageThreadViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.unread_count_unread) String unreadCountUnreadString;
 
-  private KSString ksString;
+  private final KSString ksString;
 
   public MessageThreadViewHolder(final @NonNull View view) {
     super(view);

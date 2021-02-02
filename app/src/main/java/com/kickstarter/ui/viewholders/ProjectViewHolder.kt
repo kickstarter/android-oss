@@ -1,612 +1,661 @@
-package com.kickstarter.ui.viewholders;
-
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.util.Pair;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
-import com.kickstarter.libs.utils.SocialUtils;
-import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Photo;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.ProjectSocialActivity;
-import com.kickstarter.ui.data.ProjectData;
-import com.kickstarter.viewmodels.ProjectHolderViewModel;
-import com.squareup.picasso.Picasso;
-
-import org.joda.time.DateTime;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import butterknife.Bind;
-import butterknife.BindColor;
-import butterknife.BindDimen;
-import butterknife.BindDrawable;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
-import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
-import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
-import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
-import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
-import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
-import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
-
-public final class ProjectViewHolder extends KSViewHolder {
-  private ProjectHolderViewModel.ViewModel viewModel;
-  private final Delegate delegate;
-  private final KSString ksString;
-
-  protected @Bind(R.id.avatar) ImageView avatarImageView;
-  protected @Bind(R.id.avatar_variant) ImageView avatarVariantImageView;
-  protected @Bind(R.id.backers_count) TextView backersCountTextView;
-  protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
-  protected @Bind(R.id.blurb_view) ViewGroup blurbViewGroup;
-  protected @Bind(R.id.blurb_view_variant) ViewGroup blurbVariantViewGroup;
-  protected @Bind(R.id.blurb) TextView blurbTextView;
-  protected @Bind(R.id.blurb_variant) TextView blurbVariantTextView;
-  protected @Bind(R.id.category) TextView categoryTextView;
-  protected @Bind(R.id.comments_count) TextView commentsCountTextView;
-  protected @Bind(R.id.usd_conversion_text_view) TextView conversionTextView;
-  protected @Bind(R.id.creator_details) TextView creatorDetailsTextView;
-  protected @Bind(R.id.creator_info) ViewGroup creatorInfoContainer;
-  protected @Bind(R.id.creator_info_loading_container) ViewGroup creatorInfoLoadingContainer;
-  protected @Bind(R.id.creator_info_variant) ViewGroup creatorInfoVariantContainer;
-  protected @Bind(R.id.creator_name) TextView creatorNameTextView;
-  protected @Bind(R.id.creator_name_variant) TextView creatorNameVariantTextView;
-  protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
-  protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
-  protected @Bind(R.id.featured) TextView featuredTextView;
-  protected @Bind(R.id.featured_group) ViewGroup featuredViewGroup;
-  protected @Bind(R.id.project_disclaimer_text_view) TextView projectDisclaimerTextView;
-  protected @Bind(R.id.goal) TextView goalTextView;
-  protected @Bind(R.id.land_overlay_text) @Nullable ViewGroup landOverlayTextViewGroup;
-  protected @Bind(R.id.location) TextView locationTextView;
-  protected @Bind(R.id.name_creator_view) @Nullable ViewGroup nameCreatorViewGroup;
-  protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
-  protected @Bind(R.id.project_photo) ImageView photoImageView;
-  protected @Bind(R.id.play_button_overlay) ImageButton playButton;
-  protected @Bind(R.id.pledged) TextView pledgedTextView;
-  protected @Bind(R.id.project_dashboard_button) Button projectDashboardButton;
-  protected @Bind(R.id.project_dashboard_container) ViewGroup projectDashboardContainer;
-  protected @Bind(R.id.project_launch_date) TextView projectLaunchDateTextView;
-  protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
-  protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
-  protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
-  protected @Bind(R.id.project_stats_view) ViewGroup projectStatsViewGroup;
-  protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGroup;
-  protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
-  protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
-  protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
-  protected @Bind(R.id.updates) ViewGroup updatesContainer;
-  protected @Bind(R.id.updates_count) TextView updatesCountTextView;
-
-  protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
-  protected @BindColor(R.color.kds_support_300) int ksrGrey400;
-
-  protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
-  protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
-  protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
-  protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
-  protected @BindDimen(R.dimen.grid_10) int grid10Dimen;
-
-  protected @BindDrawable(R.drawable.click_indicator_light_masked) Drawable clickIndicatorLightMaskedDrawable;
-  protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
-
-  protected @BindString(R.string.projects_launched_count_created_projects_backed_count_backed) String createdAndBackedProjectsString;
-  protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
-  protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
-  protected @BindString(R.string.discovery_baseball_card_stats_convert_from_pledged_of_goal) String convertedFromString;
-  protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
-  protected @BindString(R.string.project_disclaimer_goal_not_reached) String projectDisclaimerGoalNotReachedString;
-  protected @BindString(R.string.project_disclaimer_goal_reached) String projectDisclaimerGoalReachedString;
-  protected @BindString(R.string.project_status_funding_canceled) String fundingCanceledString;
-  protected @BindString(R.string.project_status_funding_project_canceled_by_creator) String fundingCanceledByCreatorString;
-  protected @BindString(R.string.project_status_project_was_successfully_funded_on_deadline) String successfullyFundedOnDeadlineString;
-  protected @BindString(R.string.project_status_funding_suspended) String fundingSuspendedString;
-  protected @BindString(R.string.project_status_funding_project_suspended) String fundingProjectSuspendedString;
-  protected @BindString(R.string.project_status_funding_unsuccessful) String fundingUnsuccessfulString;
-  protected @BindString(R.string.project_status_project_funding_goal_not_reached) String fundingGoalNotReachedString;
-  protected @BindString(R.string.project_status_funded) String fundedString;
-  protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
-  protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal_short) String ofGoalString;
-  protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
-
-  public interface Delegate {
-    void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderBlurbVariantClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderCreatorInfoVariantClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderDashboardClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
-    void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
-  }
-
-  public ProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
-    super(view);
-    this.viewModel = new ProjectHolderViewModel.ViewModel(environment());
-    this.delegate = delegate;
-    this.ksString = environment().ksString();
-
-    ButterKnife.bind(this, view);
-
-    this.viewModel.outputs.avatarPhotoUrl()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setAvatar);
-
-    this.viewModel.outputs.backersCountTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.backersCountTextView::setText);
-
-    this.viewModel.outputs.backingViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.backingViewGroup));
-
-    this.viewModel.outputs.blurbTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setBlurbTextViews);
-
-    this.viewModel.outputs.blurbVariantIsVisible()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setBlurbVariantVisibility);
-
-    this.viewModel.outputs.categoryTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.categoryTextView::setText);
-
-    this.viewModel.outputs.commentsCountTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.commentsCountTextView::setText);
-
-    this.viewModel.outputs.creatorBackedAndLaunchedProjectsCount()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setCreatorDetailsTextView);
-
-    this.viewModel.outputs.creatorDetailsLoadingContainerIsVisible()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(visible -> ViewUtils.setGone(this.creatorInfoLoadingContainer, !visible));
-
-    this.viewModel.outputs.creatorDetailsVariantIsVisible()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setCreatorDetailsVariantVisibility);
-
-    this.viewModel.outputs.creatorNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.creatorNameTextView::setText);
-
-    this.viewModel.outputs.creatorNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.creatorNameVariantTextView::setText);
-
-    this.viewModel.outputs.deadlineCountdownTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.deadlineCountdownTextView::setText);
-
-    this.viewModel.outputs.featuredTextViewRootCategory()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(c ->
-        this.featuredTextView.setText(this.ksString.format(this.featuredInString, "category_name", c))
-      );
-
-    this.viewModel.outputs.featuredViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.featuredViewGroup));
-
-    this.viewModel.outputs.goalStringForTextView()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setGoalTextView);
-
-    this.viewModel.outputs.locationTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.locationTextView::setText);
-
-    this.viewModel.outputs.projectOutput()
-      .subscribe(p -> {
-        // todo: break down these helpers
-        setLandscapeOverlayText(p);
-        this.deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(p, context(), this.ksString));
-      });
-
-    this.viewModel.outputs.percentageFundedProgress()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.percentageFundedProgressBar::setProgress);
-
-    this.viewModel.outputs.percentageFundedProgressBarIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.percentageFundedProgressBar));
-
-    this.viewModel.outputs.playButtonIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.playButton));
-
-    this.viewModel.outputs.pledgedTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.pledgedTextView::setText);
-
-    this.viewModel.outputs.projectDashboardButtonText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectDashboardButton::setText);
-
-    this.viewModel.outputs.projectDashboardContainerIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectDashboardContainer));
-
-    this.viewModel.outputs.projectDisclaimerGoalNotReachedString()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setProjectDisclaimerGoalNotReachedString);
-
-    this.viewModel.outputs.projectDisclaimerGoalReachedDateTime()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setProjectDisclaimerGoalReachedString);
-
-    this.viewModel.outputs.projectDisclaimerTextViewIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectDisclaimerTextView));
-
-    this.viewModel.outputs.projectLaunchDate()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setProjectLaunchDateString);
-
-    this.viewModel.outputs.projectLaunchDateIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectLaunchDateTextView));
-
-    this.viewModel.outputs.projectMetadataViewGroupBackgroundDrawableInt()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(d -> this.projectMetadataViewGroup.setBackground(ContextCompat.getDrawable(context(), d)));
-
-    this.viewModel.outputs.projectMetadataViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectMetadataViewGroup));
-
-    this.viewModel.outputs.projectNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectNameTextView::setText);
-
-    this.viewModel.outputs.projectPhoto()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setProjectPhoto);
-
-    this.viewModel.outputs.projectSocialTextViewFriends()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(friends ->
-        this.projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(context(), friends, this.ksString))
-      );
-
-    this.viewModel.outputs.projectSocialImageViewIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectSocialImageView));
-
-    this.viewModel.outputs.projectSocialImageViewUrl()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(url ->
-        Picasso.with(context()).load(url)
-          .transform(new CircleTransformation())
-          .into(this.projectSocialImageView)
-      );
-
-    this.viewModel.outputs.projectSocialViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectSocialViewGroup));
-
-    this.viewModel.outputs.projectStateViewGroupBackgroundColorInt()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(c -> this.projectStateViewGroup.setBackgroundColor(ContextCompat.getColor(context(), c)));
-
-    this.viewModel.outputs.projectStateViewGroupIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.projectStateViewGroup));
-
-    this.viewModel.outputs.setCanceledProjectStateView()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.setCanceledProjectStateView());
-
-    this.viewModel.outputs.setProjectSocialClickListener()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.setProjectSocialClickListener());
-
-    this.viewModel.outputs.setSuccessfulProjectStateView()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setSuccessfulProjectStateView);
-
-    this.viewModel.outputs.setSuspendedProjectStateView()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.setSuspendedProjectStateView());
-
-    this.viewModel.outputs.setUnsuccessfulProjectStateView()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setUnsuccessfulProjectStateView);
-
-    this.viewModel.outputs.shouldSetDefaultStatsMargins()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setStatsMargins);
-
-    this.viewModel.outputs.startProjectSocialActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::startProjectSocialActivity);
-
-    this.viewModel.outputs.updatesCountTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.updatesCountTextView::setText);
-
-    this.viewModel.outputs.conversionPledgedAndGoalText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setConvertedCurrencyView);
-
-    this.viewModel.outputs.conversionTextViewIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.conversionTextView));
-  }
-
-  @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-    @SuppressWarnings("unchecked")
-    final ProjectData projectData = requireNonNull((ProjectData) data);
-    this.viewModel.inputs.configureWith(projectData);
-  }
-
-  private void setAvatar(final @NonNull String url) {
-    Picasso.with(context())
-      .load(url)
-      .transform(new CircleTransformation())
-      .into(this.avatarImageView);
-
-    Picasso.with(context())
-      .load(url)
-      .transform(new CircleTransformation())
-      .into(this.avatarVariantImageView);
-  }
-
-  private void setConvertedCurrencyView(final @NonNull Pair<String, String> pledgedAndGoal) {
-    this.conversionTextView.setText(
-      this.ksString.format(
-        this.convertedFromString, "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
-      )
-    );
-  }
-
-  private void setCreatorDetailsTextView(final @NonNull Pair<Integer, Integer> backedAndLaunchedProjectsCount) {
-    this.creatorDetailsTextView.setText(this.ksString.format(this.createdAndBackedProjectsString,
-      "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
-      "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)));
-  }
-
-  private void setCreatorDetailsVariantVisibility(final boolean visible) {
-    ViewUtils.setGone(this.creatorInfoVariantContainer, !visible);
-    ViewUtils.setGone(this.creatorInfoContainer, visible);
-  }
-
-  private void setGoalTextView(final @NonNull String goalString) {
-    final String goalText = ViewUtils.isFontScaleLarge(context())
-      ? this.ksString.format(this.ofGoalString, "goal", goalString)
-      : this.ksString.format(this.pledgedOfGoalString, "goal", goalString);
-    this.goalTextView.setText(goalText);
-  }
-
-  private void setProjectPhoto(final @NonNull Photo photo) {
-    // Account for the grid2 start and end margins.
-    final int targetImageWidth = (int) (getScreenWidthDp(context()) * getScreenDensity(context())) - this.grid2Dimen * 2;
-    final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
-    this.photoImageView.setMaxHeight(targetImageHeight);
-
-    Picasso.with(context())
-      .load(photo.full())
-      .resize(targetImageWidth, targetImageHeight)
-      .centerCrop()
-      .placeholder(this.grayGradientDrawable)
-      .into(this.photoImageView);
-  }
-
-  private void setCanceledProjectStateView() {
-    this.projectStateHeaderTextView.setText(this.fundingCanceledString);
-    this.projectStateSubheadTextView.setText(this.fundingCanceledByCreatorString);
-  }
-
-  private void setBlurbTextViews(final String blurb) {
-    final Spanned blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb));
-    this.blurbTextView.setText(blurbHtml);
-    this.blurbVariantTextView.setText(blurbHtml);
-  }
-
-  private void setBlurbVariantVisibility(final boolean blurbVariantVisible) {
-    ViewUtils.setGone(this.blurbViewGroup, blurbVariantVisible);
-    ViewUtils.setGone(this.blurbVariantViewGroup, !blurbVariantVisible);
-  }
-
-  private void setProjectDisclaimerGoalReachedString(final @NonNull DateTime deadline) {
-    this.projectDisclaimerTextView.setText(this.ksString.format(
-      this.projectDisclaimerGoalReachedString,
-      "deadline",
-      mediumDateShortTime(deadline)
-    ));
-  }
-
-  private void setProjectDisclaimerGoalNotReachedString(final @NonNull Pair<String, DateTime> goalAndDeadline) {
-    this.projectDisclaimerTextView.setText(this.ksString.format(
-      this.projectDisclaimerGoalNotReachedString,
-      "goal_currency",
-      goalAndDeadline.first,
-      "deadline",
-      mediumDateShortTime(goalAndDeadline.second)
-    ));
-  }
-
-  private void setProjectLaunchDateString(final @NonNull String launchDate) {
-    final SpannableString launchedDateSpannableString = new SpannableString(this.ksString.format(
-      context().getString(R.string.You_launched_this_project_on_launch_date),
-      "launch_date",
-      launchDate
-    ));
-
-    ViewUtils.addBoldSpan(launchedDateSpannableString, launchDate);
-    this.projectLaunchDateTextView.setText(launchedDateSpannableString);
-  }
-
-  private void setProjectSocialClickListener() {
-    this.projectSocialViewGroup.setBackground(this.clickIndicatorLightMaskedDrawable);
-    this.projectSocialViewGroup.setOnClickListener(__ -> this.viewModel.inputs.projectSocialViewGroupClicked());
-  }
-
-  private void setSuccessfulProjectStateView(final @NonNull DateTime stateChangedAt) {
-    this.projectStateHeaderTextView.setText(this.fundedString);
-    this.projectStateSubheadTextView.setText(
-      this.ksString.format(this.successfullyFundedOnDeadlineString, "deadline", mediumDate(stateChangedAt))
-    );
-  }
-
-  private void setSuspendedProjectStateView() {
-    this.projectStateHeaderTextView.setText(this.fundingSuspendedString);
-    this.projectStateSubheadTextView.setText(this.fundingProjectSuspendedString);
-  }
-
-  private void setUnsuccessfulProjectStateView(final @NonNull DateTime stateChangedAt) {
-    this.projectStateHeaderTextView.setText(this.fundingUnsuccessfulString);
-    this.projectStateSubheadTextView.setText(
-      this.ksString.format(this.fundingGoalNotReachedString, "deadline", mediumDate(stateChangedAt))
-    );
-  }
-
-  private void setStatsMargins(final boolean shouldSetDefaultMargins) {
-    if (shouldSetDefaultMargins) {
-      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid2Dimen);
-    } else {
-      ViewUtils.setLinearViewGroupMargins(this.projectStatsViewGroup, 0, this.grid3Dimen, 0, this.grid4Dimen);
+package com.kickstarter.ui.viewholders
+
+import android.content.Intent
+import android.content.res.Configuration
+import android.text.Html
+import android.text.SpannableString
+import android.text.TextUtils
+import android.util.Pair
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.kickstarter.R
+import com.kickstarter.databinding.ProjectMainLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
+import com.kickstarter.libs.transformations.CircleTransformation
+import com.kickstarter.libs.utils.*
+import com.kickstarter.models.Photo
+import com.kickstarter.models.Project
+import com.kickstarter.models.User
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.activities.ProjectSocialActivity
+import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.viewmodels.ProjectHolderViewModel
+import com.squareup.picasso.Picasso
+import org.joda.time.DateTime
+
+class ProjectViewHolder(
+    private val binding: ProjectMainLayoutBinding,
+    private val delegate: Delegate
+) : KSViewHolder(binding.root) {
+    private val viewModel = ProjectHolderViewModel.ViewModel(environment())
+    private val ksString = environment().ksString()
+
+    interface Delegate {
+        fun projectViewHolderBlurbClicked(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderBlurbVariantClicked(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderCommentsClicked(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderCreatorClicked(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderCreatorInfoVariantClicked(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderDashboardClicked(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderVideoStarted(viewHolder: ProjectViewHolder?)
     }
-  }
 
-  private void startProjectSocialActivity(final @NonNull Project project) {
-    final BaseActivity activity = (BaseActivity) context();
-    final Intent intent = new Intent(context(), ProjectSocialActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
-    activity.startActivity(intent);
-    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  @OnClick({R.id.blurb_view, R.id.campaign})
-  public void blurbOnClick() {
-    this.delegate.projectViewHolderBlurbClicked(this);
-  }
-
-  @OnClick(R.id.read_more)
-  public void blurbVariantOnClick() {
-    this.delegate.projectViewHolderBlurbVariantClicked(this);
-  }
-
-  @OnClick(R.id.comments)
-  public void commentsOnClick() {
-    this.delegate.projectViewHolderCommentsClicked(this);
-  }
-
-  @OnClick(R.id.creator_info)
-  public void creatorNameOnClick() {
-    this.delegate.projectViewHolderCreatorClicked(this);
-  }
-
-  @OnClick(R.id.creator_info_variant)
-  public void creatorInfoVariantOnClick() {
-    this.delegate.projectViewHolderCreatorInfoVariantClicked(this);
-  }
-
-  @OnClick(R.id.project_dashboard_button)
-  public void creatorDashboardOnClick() {
-    this.delegate.projectViewHolderDashboardClicked(this);
-  }
-
-  @OnClick(R.id.play_button_overlay)
-  public void playButtonOnClick() {
-    this.delegate.projectViewHolderVideoStarted(this);
-  }
-
-  @OnClick(R.id.updates)
-  public void updatesOnClick() {
-    this.delegate.projectViewHolderUpdatesClicked(this);
-  }
-
-  /**
-   * Set top margin of overlay text based on landscape screen height, scaled by screen density.
-   */
-  private void setLandscapeOverlayText(final @NonNull Project project) {
-    if (this.landOverlayTextViewGroup != null && this.nameCreatorViewGroup != null) {
-      final int screenHeight = getScreenHeightDp(context());
-      final float densityOffset = context().getResources().getDisplayMetrics().density;
-      final float topMargin = ((screenHeight / 3f * 2) * densityOffset) - this.grid10Dimen;
-      ViewUtils.setRelativeViewGroupMargins(this.landOverlayTextViewGroup, this.grid4Dimen, (int) topMargin, this.grid4Dimen, 0);
-
-      if (!project.hasVideo()) {
-        ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid2Dimen);
-      } else {
-        ViewUtils.setRelativeViewGroupMargins(this.nameCreatorViewGroup, 0, 0, 0, this.grid1Dimen);
-      }
+    @Throws(Exception::class)
+    override fun bindData(data: Any?) {
+        val projectData = ObjectUtils.requireNonNull(data as ProjectData?)
+        viewModel.inputs.configureWith(projectData)
     }
-  }
+
+    private fun setAvatar(url: String) {
+        val avatarImageView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.avatar
+        } else {
+            binding.avatar
+        }
+        Picasso.with(context())
+            .load(url)
+            .transform(CircleTransformation())
+            .into(avatarImageView)
+
+        val avatarVariantImageView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.creatorAvatarVerified?.avatarVariant
+        } else {
+            binding.creatorAvatarVerified?.avatarVariant
+        }
+        Picasso.with(context())
+            .load(url)
+            .transform(CircleTransformation())
+            .into(avatarVariantImageView)
+    }
+
+    private fun setConvertedCurrencyView(pledgedAndGoal: Pair<String, String>) {
+        binding.usdConversionTextView.text = ksString.format(
+            context().getString(R.string.discovery_baseball_card_stats_convert_from_pledged_of_goal), "pledged", pledgedAndGoal.first, "goal", pledgedAndGoal.second
+        )
+    }
+
+    private fun setCreatorDetailsTextView(backedAndLaunchedProjectsCount: Pair<Int, Int>) {
+        val creatorDetailsTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.creatorDetails
+        } else {
+            binding.creatorDetails
+        }
+        creatorDetailsTextView?.text = ksString.format(
+            context().getString(R.string.projects_launched_count_created_projects_backed_count_backed),
+            "projects_backed_count", NumberUtils.format(backedAndLaunchedProjectsCount.first),
+            "projects_launched_count", NumberUtils.format(backedAndLaunchedProjectsCount.second)
+        )
+    }
+
+    private fun setCreatorDetailsVariantVisibility(visible: Boolean) {
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.creatorInfoVariant
+        } else {
+            binding.creatorInfoVariant
+        }?.let { creatorInfoVariantContainer ->
+            ViewUtils.setGone(creatorInfoVariantContainer, !visible)
+        }
+
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.creatorInfo
+        } else {
+            binding.creatorInfo
+        }?.let { creatorInfoContainer ->
+            ViewUtils.setGone(creatorInfoContainer, visible)
+        }
+    }
+
+    private fun setGoalTextView(goalString: String) {
+        val goalText = if (ViewUtils.isFontScaleLarge(context()))
+            ksString.format(context().getString(R.string.discovery_baseball_card_stats_pledged_of_goal_short), "goal", goalString)
+        else
+            ksString.format(context().getString(R.string.discovery_baseball_card_stats_pledged_of_goal), "goal", goalString)
+
+        binding.statsView.goal.text = goalText
+    }
+
+    private fun setProjectPhoto(photo: Photo) {
+        // Account for the grid2 start and end margins.
+        val targetImageWidth = (ViewUtils.getScreenWidthDp(context()) * ViewUtils.getScreenDensity(context())).toInt() - context().resources.getDimension(R.dimen.grid_2).toInt() * 2
+        val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
+        binding.projectMediaHeaderLayout.projectPhoto.maxHeight = targetImageHeight
+
+        Picasso.with(context())
+            .load(photo.full())
+            .resize(targetImageWidth, targetImageHeight)
+            .centerCrop()
+            .placeholder(ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null))
+            .into(binding.projectMediaHeaderLayout.projectPhoto)
+    }
+
+    private fun setCanceledProjectStateView() {
+        binding.projectStateHeaderTextView.setText(R.string.project_status_funded)
+        binding.projectStateSubheadTextView.setText(R.string.project_status_funding_project_canceled_by_creator)
+    }
+
+    private fun setBlurbTextViews(blurb: String) {
+        val blurbHtml = Html.fromHtml(TextUtils.htmlEncode(blurb))
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.blurb
+        } else {
+            binding.blurb
+        }?.let { blurbTextView ->
+            blurbTextView.text = blurbHtml
+        }
+
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.blurbVariant
+        } else {
+            binding.blurbVariant
+        }?.let { blurbVariantTextView ->
+            blurbVariantTextView.text = blurbHtml
+        }
+    }
+
+    private fun setBlurbVariantVisibility(blurbVariantVisible: Boolean) {
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.blurbView
+        } else {
+            binding.blurbView
+        }?.let { blurbViewGroup ->
+            ViewUtils.setGone(blurbViewGroup, blurbVariantVisible)
+        }
+
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.blurbViewVariant
+        } else {
+            binding.blurbViewVariant
+        }?.let { blurbVariantViewGroup ->
+            ViewUtils.setGone(blurbVariantViewGroup, !blurbVariantVisible)
+        }
+    }
+
+    private fun setProjectDisclaimerGoalReachedString(deadline: DateTime) {
+        binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
+            context().getString(R.string.project_disclaimer_goal_reached),
+            "deadline",
+            DateTimeUtils.mediumDateShortTime(deadline)
+        )
+    }
+
+    private fun setProjectDisclaimerGoalNotReachedString(goalAndDeadline: Pair<String, DateTime>) {
+        binding.projectCreatorInfoLayout.projectDisclaimerTextView.text = ksString.format(
+            context().getString(R.string.project_disclaimer_goal_not_reached),
+            "goal_currency",
+            goalAndDeadline.first,
+            "deadline",
+            DateTimeUtils.mediumDateShortTime(goalAndDeadline.second)
+        )
+    }
+
+    private fun setProjectLaunchDateString(launchDate: String) {
+        val launchedDateSpannableString = SpannableString(
+            ksString.format(
+                context().getString(R.string.You_launched_this_project_on_launch_date),
+                "launch_date",
+                launchDate
+            )
+        )
+        ViewUtils.addBoldSpan(launchedDateSpannableString, launchDate)
+        binding.projectCreatorDashboardHeader.projectLaunchDate.text = launchedDateSpannableString
+    }
+
+    private fun setProjectSocialClickListener() {
+        binding.projectSocialView.background = ResourcesCompat.getDrawable(context().resources, R.drawable.click_indicator_light_masked, null)
+        binding.projectSocialView.setOnClickListener { viewModel.inputs.projectSocialViewGroupClicked() }
+    }
+
+    private fun setSuccessfulProjectStateView(stateChangedAt: DateTime) {
+        binding.projectStateHeaderTextView.setText(R.string.project_status_funded)
+        binding.projectStateSubheadTextView.text =
+            ksString.format(context().getString(R.string.project_status_project_was_successfully_funded_on_deadline), "deadline", DateTimeUtils.mediumDate(stateChangedAt))
+    }
+
+    private fun setSuspendedProjectStateView() {
+        binding.projectStateHeaderTextView.setText(R.string.project_status_funding_suspended)
+        binding.projectStateSubheadTextView.setText(R.string.project_status_funding_project_suspended)
+    }
+
+    private fun setUnsuccessfulProjectStateView(stateChangedAt: DateTime) {
+        binding.projectStateHeaderTextView.text = context().getString(R.string.project_status_funding_unsuccessful)
+        binding.projectStateSubheadTextView.text = ksString.format(context().getString(R.string.project_status_project_funding_goal_not_reached), "deadline", DateTimeUtils.mediumDate(stateChangedAt))
+    }
+
+    private fun setStatsMargins(shouldSetDefaultMargins: Boolean) {
+        if (shouldSetDefaultMargins) {
+            ViewUtils.setLinearViewGroupMargins(
+                binding.projectStatsView,
+                0, context().resources.getDimension(R.dimen.grid_3).toInt(),
+                0, context().resources.getDimension(R.dimen.grid_2).toInt()
+            )
+        } else {
+            ViewUtils.setLinearViewGroupMargins(
+                binding.projectStatsView,
+                0, context().resources.getDimension(R.dimen.grid_3).toInt(),
+                0, context().resources.getDimension(R.dimen.grid_4).toInt()
+            )
+        }
+    }
+
+    private fun startProjectSocialActivity(project: Project) {
+        val activity = context() as BaseActivity<*>
+        val intent = Intent(context(), ProjectSocialActivity::class.java)
+            .putExtra(IntentKey.PROJECT, project)
+        activity.startActivity(intent)
+        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    /**
+     * Set top margin of overlay text based on landscape screen height, scaled by screen density.
+     */
+    private fun setLandscapeOverlayText(project: Project) {
+        if (binding.projectMediaHeaderLayout.landOverlayText != null && binding.projectMediaHeaderLayout.nameCreatorView != null) {
+            val screenHeight = ViewUtils.getScreenHeightDp(context())
+            val densityOffset = context().resources.displayMetrics.density
+            val topMargin = screenHeight / 3f * 2 * densityOffset - context().resources.getDimension(R.dimen.grid_10).toInt()
+            ViewUtils.setRelativeViewGroupMargins(
+                binding.projectMediaHeaderLayout.landOverlayText, context().resources.getDimension(R.dimen.grid_4).toInt(),
+                topMargin.toInt(), context().resources.getDimension(R.dimen.grid_4).toInt(), 0
+            )
+            if (!project.hasVideo()) {
+                ViewUtils.setRelativeViewGroupMargins(binding.projectMediaHeaderLayout.nameCreatorView, 0, 0, 0, context().resources.getDimension(R.dimen.grid_2).toInt())
+            } else {
+                ViewUtils.setRelativeViewGroupMargins(binding.projectMediaHeaderLayout.nameCreatorView, 0, 0, 0, context().resources.getDimension(R.dimen.grid_1).toInt())
+            }
+        }
+    }
+
+    init {
+
+        viewModel.outputs.avatarPhotoUrl()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setAvatar(it) }
+        viewModel.outputs.backersCountTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(binding.statsView.backersCount::setText)
+        viewModel.outputs.backingViewGroupIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.projectMetadataLayout.backingGroup))
+        viewModel.outputs.blurbTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setBlurbTextViews(it) }
+
+        viewModel.outputs.blurbVariantIsVisible()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setBlurbVariantVisibility(it) }
+
+        this.viewModel.outputs.categoryTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                val categoryTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.category
+                } else {
+                    binding.category
+                }
+                categoryTextView?.text = it
+            }
+
+        viewModel.outputs.commentsCountTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.projectCreatorInfoLayout.commentsCount.text = it }
+
+        viewModel.outputs.creatorBackedAndLaunchedProjectsCount()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setCreatorDetailsTextView(it) }
+
+        viewModel.outputs.creatorDetailsLoadingContainerIsVisible()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                val creatorInfoLoadingContainer = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
+                } else {
+                    binding.loadingPlaceholderCreatorInfoLayout?.creatorInfoLoadingContainer
+                }
+                creatorInfoLoadingContainer?.let { loadingContainer -> ViewUtils.setGone(loadingContainer, !it) }
+            }
+
+        viewModel.outputs.creatorDetailsVariantIsVisible()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setCreatorDetailsVariantVisibility(it) }
+
+        viewModel.outputs.creatorNameTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                val creatorNameTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.creatorName
+                } else {
+                    binding.creatorName
+                }
+                creatorNameTextView?.text = it
+            }
+
+        viewModel.outputs.creatorNameTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                val creatorNameVariantTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.creatorNameVariant
+                } else {
+                    binding.creatorNameVariant
+                }
+                creatorNameVariantTextView?.text = it
+            }
+
+        viewModel.outputs.deadlineCountdownTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(binding.statsView.deadlineCountdownTextView::setText)
+
+        viewModel.outputs.featuredTextViewRootCategory()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.projectMediaHeaderLayout.projectMetadataLayout.featured.text =
+                    (ksString.format(context().getString(R.string.discovery_baseball_card_metadata_featured_project), "category_name", it))
+            }
+
+        viewModel.outputs.featuredViewGroupIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.projectMetadataLayout.featuredGroup))
+
+        viewModel.outputs.goalStringForTextView()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setGoalTextView(it) }
+
+        viewModel.outputs.locationTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                val locationTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.location
+                } else {
+                    binding.location
+                }
+                locationTextView?.text = it
+            }
+
+        viewModel.outputs.projectOutput()
+            .subscribe {
+                // todo: break down these helpers
+                setLandscapeOverlayText(it)
+                binding.statsView.deadlineCountdownUnitTextView.text = ProjectUtils.deadlineCountdownDetail(it, context(), ksString)
+            }
+        viewModel.outputs.percentageFundedProgress()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(binding.percentageFunded::setProgress)
+
+        viewModel.outputs.percentageFundedProgressBarIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.percentageFunded))
+
+        viewModel.outputs.playButtonIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.playButtonOverlay))
+
+        binding.projectMediaHeaderLayout.playButtonOverlay.setOnClickListener {
+            playButtonOnClick()
+        }
+
+        viewModel.outputs.pledgedTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(binding.statsView.pledged::setText)
+
+        viewModel.outputs.projectDashboardButtonText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(binding.projectCreatorDashboardHeader.projectDashboardButton::setText)
+
+        binding.projectCreatorDashboardHeader.projectDashboardButton.setOnClickListener {
+            creatorDashboardOnClick()
+        }
+
+        viewModel.outputs.projectDashboardContainerIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectCreatorDashboardHeader.projectDashboardContainer))
+
+        viewModel.outputs.projectDisclaimerGoalNotReachedString()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setProjectDisclaimerGoalNotReachedString(it) }
+
+        viewModel.outputs.projectDisclaimerGoalReachedDateTime()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setProjectDisclaimerGoalReachedString(it) }
+
+        viewModel.outputs.projectDisclaimerTextViewIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectCreatorInfoLayout.projectDisclaimerTextView))
+
+        viewModel.outputs.projectLaunchDate()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setProjectLaunchDateString(it) }
+
+        viewModel.outputs.projectLaunchDateIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectCreatorDashboardHeader.projectLaunchDate))
+
+        viewModel.outputs.projectMetadataViewGroupBackgroundDrawableInt()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.projectMediaHeaderLayout.projectMetadataLayout.projectMetadataViewGroup.background = ContextCompat.getDrawable(context(), it) }
+
+        viewModel.outputs.projectMetadataViewGroupIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectMediaHeaderLayout.projectMetadataLayout.projectMetadataViewGroup))
+
+        viewModel.outputs.projectNameTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                val projectNameTextView = if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    binding.projectMediaHeaderLayout.projectName
+                } else {
+                    binding.projectName
+                }
+                projectNameTextView?.text = it
+            }
+
+        viewModel.outputs.projectPhoto()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setProjectPhoto(it) }
+
+        viewModel.outputs.projectSocialTextViewFriends()
+            .compose(bindToLifecycle())
+            .compose<List<User?>>(observeForUI())
+            .subscribe { binding.projectSocialText.text = SocialUtils.projectCardFriendNamepile(context(), it, ksString) }
+
+        viewModel.outputs.projectSocialImageViewIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectSocialImage))
+
+        viewModel.outputs.projectSocialImageViewUrl()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { url: String? ->
+                Picasso.with(context()).load(url)
+                    .transform(CircleTransformation())
+                    .into(binding.projectSocialImage)
+            }
+        viewModel.outputs.projectSocialViewGroupIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectSocialView))
+
+        viewModel.outputs.projectStateViewGroupBackgroundColorInt()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.projectStateViewGroup.setBackgroundColor(ContextCompat.getColor(context(), it)) }
+
+        viewModel.outputs.projectStateViewGroupIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.projectStateViewGroup))
+
+        viewModel.outputs.setCanceledProjectStateView()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setCanceledProjectStateView() }
+
+        viewModel.outputs.setProjectSocialClickListener()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setProjectSocialClickListener() }
+
+        viewModel.outputs.setSuccessfulProjectStateView()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setSuccessfulProjectStateView(it) }
+
+        viewModel.outputs.setSuspendedProjectStateView()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setSuspendedProjectStateView() }
+
+        viewModel.outputs.setUnsuccessfulProjectStateView()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setUnsuccessfulProjectStateView(it) }
+
+        viewModel.outputs.shouldSetDefaultStatsMargins()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setStatsMargins(it) }
+
+        viewModel.outputs.startProjectSocialActivity()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { startProjectSocialActivity(it) }
+
+        viewModel.outputs.updatesCountTextViewText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(binding.projectCreatorInfoLayout.updatesCount::setText)
+
+        viewModel.outputs.conversionPledgedAndGoalText()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { pledgedAndGoal: Pair<String, String> -> setConvertedCurrencyView(pledgedAndGoal) }
+
+        viewModel.outputs.conversionTextViewIsGone()
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.usdConversionTextView))
+
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.readMore
+        } else {
+            binding.readMore
+        }?.let { readMoreButton ->
+            readMoreButton.setOnClickListener {
+                blurbVariantOnClick()
+            }
+        }
+
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.readMore
+        } else {
+            binding.readMore
+        }?.let { readMoreButton ->
+            readMoreButton.setOnClickListener {
+                blurbVariantOnClick()
+            }
+        }
+
+        binding.projectCreatorInfoLayout.campaign.setOnClickListener {
+            blurbOnClick()
+        }
+        binding.projectCreatorInfoLayout.comments.setOnClickListener {
+            commentsOnClick()
+        }
+        binding.projectCreatorInfoLayout.updates.setOnClickListener {
+            updatesOnClick()
+        }
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.blurbView
+        } else {
+            binding.blurbView
+        }?.let { blurbView ->
+            blurbView.setOnClickListener {
+                blurbOnClick()
+            }
+        }
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.creatorInfo
+        } else {
+            binding.creatorInfo
+        }?.let { creatorInfo ->
+            creatorInfo.setOnClickListener {
+                creatorNameOnClick()
+            }
+        }
+
+        if (context().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.projectMediaHeaderLayout.creatorInfoVariant
+        } else {
+            binding.creatorInfoVariant
+        }?.let { creatorInfoVariant ->
+            creatorInfoVariant.setOnClickListener {
+                creatorInfoVariantOnClick()
+            }
+        }
+    }
+
+    fun blurbOnClick() {
+        delegate.projectViewHolderBlurbClicked(this)
+    }
+
+    fun blurbVariantOnClick() {
+        delegate.projectViewHolderBlurbVariantClicked(this)
+    }
+
+    fun commentsOnClick() {
+        delegate.projectViewHolderCommentsClicked(this)
+    }
+
+    fun creatorNameOnClick() {
+        delegate.projectViewHolderCreatorClicked(this)
+    }
+
+    fun creatorInfoVariantOnClick() {
+        delegate.projectViewHolderCreatorInfoVariantClicked(this)
+    }
+
+    fun creatorDashboardOnClick() {
+        delegate.projectViewHolderDashboardClicked(this)
+    }
+
+    fun playButtonOnClick() {
+        delegate.projectViewHolderVideoStarted(this)
+    }
+
+    fun updatesOnClick() {
+        delegate.projectViewHolderUpdatesClicked(this)
+    }
 }

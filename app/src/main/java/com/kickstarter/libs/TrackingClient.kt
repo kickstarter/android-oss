@@ -84,9 +84,9 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
      * Send data to the Tracking clients.
      * implementation differs between Lake and Segment
      * Segment will call a third party dependency, while Lake will send the event to a concrete
-     * endpoint
+     * endpoint.
      */
-    abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>): String
+    abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>)
 
     //Default property values
     override fun brand(): String = android.os.Build.BRAND

@@ -29,7 +29,7 @@ class LakeTrackingClient(
     override fun type() =  Type.LAKE
 
     @Throws(JSONException::class)
-    override fun trackingData(eventName: String, newProperties: Map<String, Any?>): String {
+    override fun trackingData(eventName: String, newProperties: Map<String, Any?>) {
         val data = JSONObject()
         data.put("event", eventName)
 
@@ -45,7 +45,6 @@ class LakeTrackingClient(
         record.put("data", data)
 
         callLakeServiceWithEvent(eventName, record.toString())
-        return record.toString()
     }
 
     /**

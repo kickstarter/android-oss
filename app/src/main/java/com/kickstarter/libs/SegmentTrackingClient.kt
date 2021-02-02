@@ -18,11 +18,10 @@ class SegmentTrackingClient(
      * Perform the request to the Segment third party library
      * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#track
      */
-    override fun trackingData(eventName: String, newProperties: Map<String, Any?>): String {
+    override fun trackingData(eventName: String, newProperties: Map<String, Any?>) {
         segmentAnalytics?.let { segment ->
             segment.track(eventName, this.getProperties(newProperties))
         }
-        return ""
     }
 
     /**

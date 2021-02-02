@@ -39,7 +39,10 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     init {
 
         // Cache the most recent logged in user for default Lake properties.
-        this.currentUser.observable().subscribe { u -> this.loggedInUser = u }
+        this.currentUser.observable().subscribe { u ->
+            this.loggedInUser = u
+            identify()
+        }
 
         // Cache the most recent config for default Lake properties.
         this.currentConfig.observable().subscribe { c -> this.config = c }
@@ -65,9 +68,11 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         }
     }
 
-    override fun identify(userId: String, additionalTraits: Map<String, String>?) {
+    override fun identify() {
         if (this.build.isDebug) {
-            Timber.d("Queued ${type().tag} Identify userId: $userId")
+            loggedInUser?.let {
+                Timber.d("Queued ${type().tag} Identify userName: ${loggedInUser?.name()} userId: ${loggedInUser?.id()}")
+            }
         }
     }
 

@@ -29,7 +29,7 @@ abstract class TrackingClientType {
     protected abstract fun model(): String
     protected abstract fun OSVersion(): String
     protected abstract fun time(): Long
-    protected abstract fun type(): Type
+    abstract fun type(): Type
     protected abstract fun userAgent(): String?
     protected abstract fun userCountry(user: User): String
     protected abstract fun versionName(): String
@@ -38,7 +38,7 @@ abstract class TrackingClientType {
     // TODO: Will add method Screen those two are specifics to Segment, the implementation on Lake will be empty
     abstract fun track(eventName: String, additionalProperties: Map<String, Any>)
     // - Specific to segment
-    abstract fun identify(userId: String, additionalTraits: Map<String, String>?)
+    abstract fun identify()
 
     fun track(eventName: String) {
         track(eventName, HashMap())

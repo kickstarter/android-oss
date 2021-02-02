@@ -158,6 +158,10 @@ android {
         resolutionStrategy.force 'com.android.support:customtabs:27.1.1'
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
 }
 
 buildscript {

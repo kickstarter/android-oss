@@ -1,9 +1,21 @@
 package com.kickstarter.ui.adapters;
 
 import android.util.Pair;
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.ActivitySampleFriendBackingViewBinding;
+import com.kickstarter.databinding.ActivitySampleFriendFollowViewBinding;
+import com.kickstarter.databinding.ActivitySampleProjectViewBinding;
+import com.kickstarter.databinding.DiscoveryOnboardingViewBinding;
+import com.kickstarter.databinding.EmptyViewBinding;
+import com.kickstarter.databinding.ItemLightsOnBinding;
+import com.kickstarter.databinding.ProjectCardViewBinding;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
@@ -19,10 +31,6 @@ import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class DiscoveryAdapter extends KSAdapter {
   private static final int SECTION_ONBOARDING_VIEW = 0;
@@ -106,22 +114,22 @@ public final class DiscoveryAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
-        return new DiscoveryOnboardingViewHolder(view, this.delegate);
+        return new DiscoveryOnboardingViewHolder(DiscoveryOnboardingViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.item_lights_on:
-        return new EditorialViewHolder(view, this.delegate);
+        return new EditorialViewHolder(ItemLightsOnBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.project_card_view:
-        return new ProjectCardViewHolder(view, this.delegate);
+        return new ProjectCardViewHolder(ProjectCardViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.activity_sample_friend_backing_view:
-        return new ActivitySampleFriendBackingViewHolder(view, this.delegate);
+        return new ActivitySampleFriendBackingViewHolder(ActivitySampleFriendBackingViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.activity_sample_friend_follow_view:
-        return new ActivitySampleFriendFollowViewHolder(view, this.delegate);
+        return new ActivitySampleFriendFollowViewHolder(ActivitySampleFriendFollowViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.activity_sample_project_view:
-        return new ActivitySampleProjectViewHolder(view, this.delegate);
+        return new ActivitySampleProjectViewHolder(ActivitySampleProjectViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       default:
-        return new EmptyViewHolder(view);
+        return new EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
 }

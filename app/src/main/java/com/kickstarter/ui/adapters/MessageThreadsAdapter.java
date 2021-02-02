@@ -2,6 +2,10 @@ package com.kickstarter.ui.adapters;
 
 import android.view.View;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+
 import com.kickstarter.R;
 import com.kickstarter.models.MessageThread;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -10,10 +14,6 @@ import com.kickstarter.ui.viewholders.MessageThreadViewHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 
 import static java.util.Collections.emptyList;
 
@@ -38,4 +38,9 @@ public final class MessageThreadsAdapter extends KSListAdapter {
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     return new MessageThreadViewHolder(view);
   }
+//  @Override
+//  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
+//    return new MessageThreadViewHolder(MessageThreadViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
+//
+//  }
 }

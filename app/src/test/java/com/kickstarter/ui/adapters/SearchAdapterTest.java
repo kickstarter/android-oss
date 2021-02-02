@@ -5,7 +5,7 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SearchAdapterTest extends KSRobolectricTestCase implements SearchAdapter.Delegate {
-  private SearchAdapter adapter = new SearchAdapter(this);
+  private final SearchAdapter adapter = new SearchAdapter(this);
 
   @Test
   public void load3PopularProjects() throws Exception {
@@ -100,7 +100,7 @@ public class SearchAdapterTest extends KSRobolectricTestCase implements SearchAd
   }
 
   @Override
-  public void projectSearchResultClick(final ProjectSearchResultViewHolder viewHolder, final Project project) {
+  public void projectSearchResultClick(final KSViewHolder viewHolder, final Project project) {
     // nothing to do here
   }
 }

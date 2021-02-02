@@ -15,7 +15,6 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -33,13 +32,15 @@ public final class MockTrackingClient extends TrackingClientType {
     currentConfig.observable().subscribe(c -> this.config = c);
   }
 
-  private void propagateUser(User user) {
-    if (user != null) identify(user);
+  private void propagateUser(final @Nullable User user) {
+    if (user != null) {
+      identify(user);
+    }
     this.loggedInUser = user;
   }
 
   @Override
-  public void identify(@NotNull User user) {
+  public void identify(final @NotNull User user) {
     this.identifiedId.onNext(user.id());
   }
 

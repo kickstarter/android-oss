@@ -13,18 +13,13 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
-import com.kickstarter.libs.utils.WorkUtils.baseConstraints
-import com.kickstarter.libs.utils.WorkUtils.uniqueWorkName
 import com.kickstarter.models.User
-import com.kickstarter.services.LakeWorker
-import com.kickstarter.ui.IntentKey
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 abstract class TrackingClient(@param:ApplicationContext private val context: Context,
@@ -39,10 +34,12 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     init {
 
         // Cache the most recent logged in user for default Lake properties.
-        this.currentUser.observable().subscribe { u ->
-            this.loggedInUser = u
-            this.loggedInUser?.let { identify(it) }
-        }
+        this.currentUser.observable()
+                .distinctUntilChanged()
+                .subscribe { u ->
+                    this.loggedInUser = u
+                    this.loggedInUser?.let { identify(it) }
+                }
 
         // Cache the most recent config for default Lake properties.
         this.currentConfig.observable().subscribe { c -> this.config = c }
@@ -59,7 +56,11 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     override fun track(eventName: String, additionalProperties: Map<String, Any>) {
         try {
-            queueEvent(eventName, additionalProperties)
+            val eventData = trackingData(eventName, combinedProperties(additionalProperties))
+
+            if (this.build.isDebug) {
+                Timber.d("Queued ${type().tag} $eventName event: $eventData")
+            }
         } catch (e: JSONException) {
             if (this.build.isDebug) {
                 Timber.e("Failed to encode ${type().tag} event: $eventName")
@@ -79,33 +80,12 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     override fun optimizely(): ExperimentsClientType = this.optimizely
 
-    private fun queueEvent(eventName: String, additionalProperties: Map<String, Any>) {
-        val eventData = trackingData(eventName, combinedProperties(additionalProperties))
-
-        if (type() == Type.LAKE) {
-
-            val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
-                    IntentKey.EVENT_NAME to eventName,
-                    IntentKey.EVENT_DATA to eventData)
-
-            val requestBuilder =  OneTimeWorkRequestBuilder<LakeWorker>()
-            requestBuilder?.let {
-                val request = it
-                        .setInputData(data)
-                        .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
-                        .setConstraints(baseConstraints)
-                        .build()
-
-                WorkManager.getInstance(this.context)
-                        .enqueueUniqueWork(uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
-            }
-        }
-
-        if (this.build.isDebug) {
-            Timber.d("Queued ${type().tag} $eventName event: $eventData")
-        }
-    }
-
+    /**
+     * Send data to the Tracking clients.
+     * implementation differs between Lake and Segment
+     * Segment will call a third party dependency, while Lake will send the event to a concrete
+     * endpoint
+     */
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>): String
 
     //Default property values

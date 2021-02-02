@@ -35,16 +35,14 @@ abstract class TrackingClientType {
     protected abstract fun versionName(): String
     protected abstract fun wifiConnection(): Boolean
 
-    // TODO: Will add method Screen those two are specifics to Segment, the implementation on Lake will be empty
     abstract fun track(eventName: String, additionalProperties: Map<String, Any>)
-    // - Specific to segment
     abstract fun identify(u: User)
 
     fun track(eventName: String) {
         track(eventName, HashMap())
     }
 
-    private fun lakeProperties(): Map<String, Any> {
+    private fun genericProperties(): Map<String, Any> {
         val hashMap = hashMapOf<String, Any>()
         loggedInUser()?.let {
             hashMap.putAll(KoalaUtils.userProperties(it))
@@ -88,43 +86,12 @@ abstract class TrackingClientType {
         return MapUtils.prefixKeys(properties, "session_")
     }
 
-    private fun koalaProperties(): Map<String, Any> {
-        val properties = hashMapOf<String, Any>()
-
-        loggedInUser()?.let {
-            properties.putAll(KoalaUtils.userProperties(it))
-            properties["user_logged_in"] = true
-        }
-
-        properties.apply {
-            this["app_version"] = versionName()
-            this["brand"] = brand()
-            this["client_platform"] = "android"
-            this["client_type"] = "native"
-            this["device_fingerprint"] = deviceDistinctId()
-            this["device_format"] = deviceFormat()
-            this["device_orientation"] = deviceOrientation()
-            this["distinct_id"] = deviceDistinctId()
-            this["enabled_feature_flags"] = enabledFeatureFlags()
-            this["google_play_services"] = if (isGooglePlayServicesAvailable) "available" else "unavailable"
-            this["is_vo_on"] = isTalkBackOn
-            this["koala_lib"] = "kickstarter_android"
-            this["manufacturer"] = manufacturer()
-            this["model"] = model()
-            this["mp_lib"] = "android"
-            this["os"] = "Android"
-            this["os_version"] = OSVersion()
-            this["time"] = time()
-        }
-
-        return properties
-    }
-
+    /**
+     * We use the same properties for Segment and DataLake
+     */
     fun combinedProperties(additionalProperties: Map<String, Any>): Map<String, Any> {
-        val combinedProperties = HashMap(additionalProperties)
-        if (type() == Type.LAKE || type() == Type.SEGMENT) {
-            combinedProperties.putAll(lakeProperties())
+        return HashMap(additionalProperties).apply {
+            putAll(genericProperties())
         }
-        return combinedProperties
     }
 }

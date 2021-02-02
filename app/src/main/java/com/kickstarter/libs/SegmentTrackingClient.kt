@@ -14,7 +14,6 @@ class SegmentTrackingClient(
         optimizely: ExperimentsClientType,
         private val segmentAnalytics: Analytics?) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
-
     /**
      * Perform the request to the Segment third party library
      * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#track
@@ -50,6 +49,11 @@ class SegmentTrackingClient(
         }
     }
 
+    /**
+     * In order to send custom properties to segment for the Identify method we need to use
+     * the method Traits() from the Segment SDK
+     * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#identify
+     */
     private fun getTraits(user: User) = Traits().apply {
         this.putName(user.name())
         this.putAvatar(user.avatar().toString())

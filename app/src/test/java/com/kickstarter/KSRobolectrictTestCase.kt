@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.Koala
+import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.MockTrackingClient
 import com.kickstarter.libs.TrackingClientType
@@ -33,8 +33,8 @@ abstract class KSRobolectricTestCase : TestCase() {
 
     lateinit var experimentsTest: TestSubscriber<String>
     lateinit var lakeTest: TestSubscriber<String>
-    lateinit var koalaTest: TestSubscriber<String>
-    
+    lateinit var segmentTest: TestSubscriber<String>
+
     @Before
     @Throws(Exception::class)
     public override fun setUp() {
@@ -42,8 +42,8 @@ abstract class KSRobolectricTestCase : TestCase() {
 
         val mockCurrentConfig = MockCurrentConfig()
         val experimentsClientType = experimentsClient()
-        val koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType)
         val lakeTrackingClient = lakeTrackingClient(mockCurrentConfig, experimentsClientType)
+        val segmentTestClient = segmentTrackingClient(mockCurrentConfig, experimentsClientType)
 
         val component = DaggerApplicationComponent.builder()
                 .applicationModule(TestApplicationModule(application()))
@@ -55,7 +55,7 @@ abstract class KSRobolectricTestCase : TestCase() {
                 .currentConfig(mockCurrentConfig)
                 .webClient(MockWebClient())
                 .stripe(Stripe(context(), Secrets.StripePublishableKey.STAGING))
-                .lake(Koala(lakeTrackingClient))
+                .analytics(AnalyticEvents(listOf(lakeTrackingClient, segmentTestClient)))
                 .optimizely(experimentsClientType)
                 .build()
     }
@@ -82,18 +82,19 @@ abstract class KSRobolectricTestCase : TestCase() {
         return experimentsClientType
     }
 
-    private fun koalaTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
-        koalaTest = TestSubscriber()
-        val koalaTrackingClient = MockTrackingClient(MockCurrentUser(), mockCurrentConfig, TrackingClientType.Type.KOALA, experimentsClientType)
-        koalaTrackingClient.eventNames.subscribe(koalaTest)
-        return koalaTrackingClient
-    }
-
     private fun lakeTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
         lakeTest = TestSubscriber()
         val lakeTrackingClient = MockTrackingClient(MockCurrentUser(),
                 mockCurrentConfig, TrackingClientType.Type.LAKE, experimentsClientType)
         lakeTrackingClient.eventNames.subscribe(lakeTest)
         return lakeTrackingClient
+    }
+
+    private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
+        segmentTest = TestSubscriber()
+        val segmentTrackingClient = MockTrackingClient(MockCurrentUser(),
+                mockCurrentConfig, TrackingClientType.Type.SEGMENT, experimentsClientType)
+        segmentTrackingClient.eventNames.subscribe(segmentTest)
+        return segmentTrackingClient
     }
 }

@@ -33,12 +33,13 @@ import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.Koala;
-import com.kickstarter.libs.KoalaTrackingClient;
+import com.kickstarter.libs.AnalyticEvents;
 import com.kickstarter.libs.LakeTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.SegmentTrackingClient;
+import com.kickstarter.libs.TrackingClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -58,9 +59,6 @@ import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.FirstSessionPreference;
 import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
-import com.kickstarter.libs.qualifiers.KoalaEndpoint;
-import com.kickstarter.libs.qualifiers.KoalaRetrofit;
-import com.kickstarter.libs.qualifiers.KoalaTracker;
 import com.kickstarter.libs.qualifiers.LakeEndpoint;
 import com.kickstarter.libs.qualifiers.LakeRetrofit;
 import com.kickstarter.libs.qualifiers.LakeTracker;
@@ -74,7 +72,6 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.ApolloClientType;
 import com.kickstarter.services.KSWebViewClient;
-import com.kickstarter.services.KoalaService;
 import com.kickstarter.services.LakeService;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.WebClientType;
@@ -85,15 +82,19 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
+import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
 
 import java.net.CookieManager;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 import dagger.Module;
 import dagger.Provides;
@@ -133,7 +134,7 @@ public class ApplicationModule {
     final @NonNull InternalToolsType internalToolsType,
     final @NonNull KSCurrency ksCurrency,
     final @NonNull KSString ksString,
-    final @NonNull @LakeTracker Koala lake,
+    final @NonNull @LakeTracker AnalyticEvents analytics,
     final @NonNull Logout logout,
     final @NonNull ExperimentsClientType optimizely,
     final @NonNull PlayServicesCapability playServicesCapability,
@@ -141,8 +142,7 @@ public class ApplicationModule {
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull Stripe stripe,
     final @NonNull WebClientType webClient,
-    final @NonNull @WebEndpoint String webEndpoint,
-    final @NonNull OkHttpClient okHttpClient) {
+    final @NonNull @WebEndpoint String webEndpoint) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
@@ -160,7 +160,7 @@ public class ApplicationModule {
       .internalTools(internalToolsType)
       .ksCurrency(ksCurrency)
       .ksString(ksString)
-      .lake(lake)
+      .analytics(analytics)
       .logout(logout)
       .optimizely(optimizely)
       .playServicesCapability(playServicesCapability)
@@ -170,6 +170,32 @@ public class ApplicationModule {
       .webClient(webClient)
       .webEndpoint(webEndpoint)
       .build();
+  }
+
+  @Provides
+  @Nullable
+  @Singleton
+  static Analytics provideSegment(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    String apiKey = "";
+    Analytics segmentClient = null;
+
+    if (build.isRelease() && Build.isExternal()) {
+      apiKey = Secrets.Segment.PRODUCTION;
+    }
+    if (build.isDebug()) {
+      apiKey = Secrets.Segment.STAGING;
+    }
+
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      segmentClient = new Analytics.Builder(context, apiKey)
+              .trackApplicationLifecycleEvents()
+              .recordScreenViews()
+              .build();
+
+      Analytics.setSingletonInstance(segmentClient);
+    }
+
+    return segmentClient;
   }
 
   @Provides
@@ -233,16 +259,6 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @KoalaRetrofit
-  @NonNull
-  static Retrofit provideKoalaRetrofit(@NonNull @KoalaEndpoint final String koalaEndpoint,
-    final @NonNull Gson gson,
-    final @NonNull OkHttpClient okHttpClient) {
-    return createRetrofit(koalaEndpoint, gson, okHttpClient);
-  }
-
-  @Provides
-  @Singleton
   @LakeRetrofit
   @NonNull
   static Retrofit provideLakeRetrofit(@NonNull @LakeEndpoint final String lakeEndpoint,
@@ -272,13 +288,6 @@ public class ApplicationModule {
   @NonNull
   static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
-  }
-
-  @Provides
-  @Singleton
-  @NonNull
-  static KoalaService provideKoalaService(final @KoalaRetrofit @NonNull Retrofit retrofit) {
-    return retrofit.create(KoalaService.class);
   }
 
   @Provides
@@ -407,19 +416,19 @@ public class ApplicationModule {
   }
 
   @Provides
-  @KoalaTracker
-  @Singleton
-  static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
-    return new Koala(new KoalaTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
-  }
-
-  @Provides
   @LakeTracker
   @Singleton
-  static Koala provideLake(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull Build build, final @NonNull CurrentConfigType currentConfig, final @NonNull ExperimentsClientType experimentsClientType) {
-    return new Koala(new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType));
+  static AnalyticEvents provideAnalytics(
+          final @ApplicationContext @NonNull Context context,
+          final @NonNull CurrentUserType currentUser,
+          final @NonNull Build build,
+          final @NonNull CurrentConfigType currentConfig,
+          final @NonNull ExperimentsClientType experimentsClientType,
+          final @Nullable Analytics segment) {
+    final LakeTrackingClient lakeTrackingClient = new LakeTrackingClient(context, currentUser, build, currentConfig, experimentsClientType);
+    final SegmentTrackingClient segmentTrackingClient = new SegmentTrackingClient(build, context, currentConfig, currentUser,  experimentsClientType, segment);
+    final List<TrackingClientType> clients = Arrays.asList(lakeTrackingClient, segmentTrackingClient);
+    return new AnalyticEvents(clients);
   }
 
   @Provides
@@ -500,16 +509,6 @@ public class ApplicationModule {
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url().replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
-  }
-
-  @Provides
-  @Singleton
-  @KoalaEndpoint
-  @NonNull
-  static String provideKoalaEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
-    return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
-      Secrets.KoalaEndpoint.PRODUCTION :
-      Secrets.KoalaEndpoint.STAGING;
   }
 
   @Provides

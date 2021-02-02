@@ -235,6 +235,9 @@ dependencies {
     implementation "net.danlew:android.joda:2.9.3"
     implementation "org.jsoup:jsoup:1.12.1"
 
+    // Analytics
+    implementation 'com.segment.analytics.android:analytics:4.9.0'
+
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-crashlytics'

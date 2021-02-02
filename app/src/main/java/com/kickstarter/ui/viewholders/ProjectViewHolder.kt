@@ -6,6 +6,7 @@ import android.text.Html
 import android.text.SpannableString
 import android.text.TextUtils
 import android.util.Pair
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.kickstarter.R
@@ -32,14 +33,14 @@ class ProjectViewHolder(
     private val ksString = environment().ksString()
 
     interface Delegate {
-        fun projectViewHolderBlurbClicked(viewHolder: ProjectViewHolder?)
-        fun projectViewHolderBlurbVariantClicked(viewHolder: ProjectViewHolder?)
-        fun projectViewHolderCommentsClicked(viewHolder: ProjectViewHolder?)
-        fun projectViewHolderCreatorClicked(viewHolder: ProjectViewHolder?)
-        fun projectViewHolderCreatorInfoVariantClicked(viewHolder: ProjectViewHolder?)
-        fun projectViewHolderDashboardClicked(viewHolder: ProjectViewHolder?)
-        fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder?)
-        fun projectViewHolderVideoStarted(viewHolder: ProjectViewHolder?)
+        fun projectViewHolderBlurbClicked(viewHolder: ProjectViewHolder)
+        fun projectViewHolderBlurbVariantClicked(viewHolder: ProjectViewHolder)
+        fun projectViewHolderCommentsClicked(viewHolder: ProjectViewHolder)
+        fun projectViewHolderCreatorClicked(viewHolder: ProjectViewHolder)
+        fun projectViewHolderCreatorInfoVariantClicked(viewHolder: ProjectViewHolder)
+        fun projectViewHolderDashboardClicked(viewHolder: ProjectViewHolder)
+        fun projectViewHolderUpdatesClicked(viewHolder: ProjectViewHolder)
+        fun projectViewHolderVideoStarted(viewHolder: ProjectViewHolder)
     }
 
     @Throws(Exception::class)
@@ -224,18 +225,20 @@ class ProjectViewHolder(
     }
 
     private fun setStatsMargins(shouldSetDefaultMargins: Boolean) {
-        if (shouldSetDefaultMargins) {
-            ViewUtils.setLinearViewGroupMargins(
-                binding.projectStatsView,
-                0, context().resources.getDimension(R.dimen.grid_3).toInt(),
-                0, context().resources.getDimension(R.dimen.grid_2).toInt()
-            )
-        } else {
-            ViewUtils.setLinearViewGroupMargins(
-                binding.projectStatsView,
-                0, context().resources.getDimension(R.dimen.grid_3).toInt(),
-                0, context().resources.getDimension(R.dimen.grid_4).toInt()
-            )
+        (binding.projectStatsView as? LinearLayout)?.let { projectStatsView ->
+            if (shouldSetDefaultMargins) {
+                ViewUtils.setLinearViewGroupMargins(
+                    projectStatsView,
+                    0, context().resources.getDimension(R.dimen.grid_3).toInt(),
+                    0, context().resources.getDimension(R.dimen.grid_2).toInt()
+                )
+            } else {
+                ViewUtils.setLinearViewGroupMargins(
+                    projectStatsView,
+                    0, context().resources.getDimension(R.dimen.grid_3).toInt(),
+                    0, context().resources.getDimension(R.dimen.grid_4).toInt()
+                )
+            }
         }
     }
 

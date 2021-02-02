@@ -38,7 +38,7 @@ abstract class TrackingClientType {
     // TODO: Will add method Screen those two are specifics to Segment, the implementation on Lake will be empty
     abstract fun track(eventName: String, additionalProperties: Map<String, Any>)
     // - Specific to segment
-    abstract fun identify()
+    abstract fun identify(u: User)
 
     fun track(eventName: String) {
         track(eventName, HashMap())

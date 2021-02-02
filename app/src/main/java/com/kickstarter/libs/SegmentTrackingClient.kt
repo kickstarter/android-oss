@@ -43,12 +43,10 @@ class SegmentTrackingClient(
      * Perform the request to the Segment third party library
      * see https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#identify
      */
-    override fun identify() {
-        super.identify()
-        this.loggedInUser()?.let { user ->
-            segmentAnalytics?.let { segment ->
-                segment.identify(user.id().toString(), getTraits(user), null)
-            }
+    override fun identify(user: User) {
+        super.identify(user)
+        segmentAnalytics?.let { segment ->
+            segment.identify(user.id().toString(), getTraits(user), null)
         }
     }
 

@@ -1,8 +1,9 @@
 package com.kickstarter.ui.viewholders.discoverydrawer
 
-import android.view.View
+
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
+import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
 import com.kickstarter.libs.utils.IntegerUtils
@@ -12,9 +13,8 @@ import com.kickstarter.models.User
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.viewmodels.LoggedInViewHolderViewModel
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.discovery_drawer_logged_in_view.view.*
 
-class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Delegate) : KSViewHolder(view) {
+class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding, @NonNull private val delegate: Delegate) : KSViewHolder(binding.root) {
     private val viewModel: LoggedInViewHolderViewModel.ViewModel = LoggedInViewHolderViewModel.ViewModel(environment())
 
     interface Delegate {
@@ -35,19 +35,19 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                     Picasso.with(context())
                             .load(it)
                             .transform(CircleTransformation())
-                            .into(view.user_image_view)
+                            .into(binding.userImageView)
                 }
 
         this.viewModel.outputs.name()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.user_name_text_view.text = it }
+                .subscribe { binding.userNameTextView.text = it }
 
         this.viewModel.outputs.unreadMessagesCount()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    view.unread_messages_count.text = when {
+                    binding.unreadMessagesCount.text = when {
                         IntegerUtils.isNullOrZero(it) -> null
                         else -> NumberUtils.format(it)
                     }
@@ -57,7 +57,7 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    view.unseen_activity_count.text = when {
+                    binding.unseenActivityCount.text = when {
                         IntegerUtils.isNullOrZero(it) -> null
                         else -> NumberUtils.format(it)
                     }
@@ -66,24 +66,24 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
         this.viewModel.outputs.activityCountTextColor()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { view.unseen_activity_count.setTextColor(ContextCompat.getColor(context(), it)) }
+                .subscribe { binding.unseenActivityCount.setTextColor(ContextCompat.getColor(context(), it)) }
 
         this.viewModel.outputs.dashboardRowIsGone()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(view.drawer_dashboard, it) }
+                .subscribe { ViewUtils.setGone(binding.drawerDashboard, it) }
 
         this.viewModel.outputs.user()
                 .subscribe { user ->
-                    view.drawer_settings.setOnClickListener { this.delegate.loggedInViewHolderSettingsClick(this, user) }
-                    view.drawer_profile.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
-                    view.user_container.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
+                    binding.drawerSettings.setOnClickListener { this.delegate.loggedInViewHolderSettingsClick(this, user) }
+                    binding.drawerProfile.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
+                    binding.userContainer.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
                 }
 
-        view.drawer_activity.setOnClickListener { this.delegate.loggedInViewHolderActivityClick(this) }
-        view.drawer_dashboard.setOnClickListener { this.delegate.loggedInViewHolderDashboardClick(this) }
-        view.drawer_messages.setOnClickListener { this.delegate.loggedInViewHolderMessagesClick(this) }
-        view.internal_tools.setOnClickListener { this.delegate.loggedInViewHolderInternalToolsClick(this) }
+        binding.drawerActivity.setOnClickListener { this.delegate.loggedInViewHolderActivityClick(this) }
+        binding.drawerDashboard.setOnClickListener { this.delegate.loggedInViewHolderDashboardClick(this) }
+        binding.drawerMessages.setOnClickListener { this.delegate.loggedInViewHolderMessagesClick(this) }
+        binding.internalTools.internalTools.setOnClickListener { this.delegate.loggedInViewHolderInternalToolsClick(this) }
     }
 
     @Throws(Exception::class)

@@ -1,82 +1,66 @@
-package com.kickstarter.ui.viewholders.discoverydrawer;
+package com.kickstarter.ui.viewholders.discoverydrawer
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.widget.TextView;
+import androidx.core.content.res.ResourcesCompat
+import com.kickstarter.R
+import com.kickstarter.databinding.DiscoveryDrawerChildFilterViewBinding
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.ui.adapters.data.NavigationDrawerData
+import com.kickstarter.ui.viewholders.KSViewHolder
+import timber.log.Timber
 
-import com.kickstarter.R;
-import com.kickstarter.libs.KSString;
-import com.kickstarter.models.Category;
-import com.kickstarter.ui.adapters.data.NavigationDrawerData;
-import com.kickstarter.ui.viewholders.KSViewHolder;
+class ChildFilterViewHolder(
+    private val binding: DiscoveryDrawerChildFilterViewBinding,
+    private val delegate: Delegate
+) : KSViewHolder(binding.root) {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.Bind;
-import butterknife.BindColor;
-import butterknife.BindDrawable;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import timber.log.Timber;
+    private val ksString = environment().ksString()
+    private var item: NavigationDrawerData.Section.Row? = null
 
-import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
-
-public final class ChildFilterViewHolder extends KSViewHolder {
-  protected @Bind(R.id.filter_text_view) TextView filterTextView;
-  protected @BindColor(R.color.accent) int accentColor;
-  protected @BindColor(R.color.kds_support_400) int ksrDarkGrayColor;
-  protected @BindColor(R.color.kds_support_700) int ksrSoftBlackColor;
-  protected @BindDrawable(R.drawable.ic_label_green) Drawable labelSelectedDrawable;
-  protected @BindDrawable(R.drawable.ic_label) Drawable labelUnselectedDrawable;
-  protected @BindDrawable(R.drawable.drawer_selected) Drawable selectedBackgroundDrawable;
-
-  private final KSString ksString;
-
-  private NavigationDrawerData.Section.Row item;
-  private Delegate delegate;
-
-  public interface Delegate {
-    void childFilterViewHolderRowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
-  }
-
-  public ChildFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
-    super(view);
-    this.delegate = delegate;
-    this.ksString = environment().ksString();
-    ButterKnife.bind(this, view);
-  }
-
-  @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-    this.item = requireNonNull((NavigationDrawerData.Section.Row) data, NavigationDrawerData.Section.Row.class);
-  }
-
-  @Override
-  public void onBind() {
-    final Context context = context();
-
-    final Category category = this.item.params().category();
-    if (category != null && category.isRoot()) {
-      this.filterTextView.setText(this.item.params().filterString(context, this.ksString));
-    } else {
-      this.filterTextView.setText(this.item.params().filterString(context, this.ksString));
+    interface Delegate {
+        fun childFilterViewHolderRowClick(viewHolder: ChildFilterViewHolder, row: NavigationDrawerData.Section.Row)
     }
 
-    final int textColor = this.item.selected() ? this.accentColor : this.ksrSoftBlackColor;
-    this.filterTextView.setTextColor(textColor);
+    @Throws(Exception::class)
+    override fun bindData(data: Any?) {
+        item = ObjectUtils.requireNonNull(data as NavigationDrawerData.Section.Row?, NavigationDrawerData.Section.Row::class.java)
+    }
 
-    final Drawable iconDrawable = this.item.selected() ? this.labelSelectedDrawable : this.labelUnselectedDrawable;
-    this.filterTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(iconDrawable, null, null, null);
+    override fun onBind() {
+        val context = context()
+        val category = item?.params()?.category()
+        if (category?.isRoot == true) {
+            binding.filterTextView.text = item?.params()?.filterString(context, ksString)
+        } else {
+            binding.filterTextView.text = item?.params()?.filterString(context, ksString)
+        }
 
-    final Drawable backgroundDrawable = this.item.selected() ? this.selectedBackgroundDrawable : null;
-    this.filterTextView.setBackground(backgroundDrawable);
-  }
+        val textColor = if (item?.selected() == true)
+            context.resources.getColor(R.color.accent, null)
+        else
+            context.resources.getColor(R.color.kds_support_700, null)
 
-  @OnClick(R.id.filter_text_view)
-  protected void textViewClick() {
-    Timber.d("DiscoveryDrawerChildParamsViewHolder topFilterViewHolderRowClick");
-    this.delegate.childFilterViewHolderRowClick(this, this.item);
-  }
+        val iconDrawable = if (item?.selected() == true)
+            ResourcesCompat.getDrawable(context.resources, R.drawable.ic_label_green, null)
+        else
+            ResourcesCompat.getDrawable(context.resources, R.drawable.ic_label, null)
+
+        val backgroundDrawable = if (item?.selected() == true)
+            ResourcesCompat.getDrawable(context.resources, R.drawable.drawer_selected, null)
+        else
+            null
+
+        binding.filterTextView.apply {
+            setCompoundDrawablesRelativeWithIntrinsicBounds(iconDrawable, null, null, null)
+            setTextColor(textColor)
+            background = backgroundDrawable
+            setOnClickListener {
+                textViewClick()
+            }
+        }
+    }
+
+    fun textViewClick() {
+        Timber.d("DiscoveryDrawerChildParamsViewHolder topFilterViewHolderRowClick")
+        item?.let { delegate.childFilterViewHolderRowClick(this, it) }
+    }
 }
-

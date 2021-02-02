@@ -1,55 +1,48 @@
-package com.kickstarter.ui.viewholders.discoverydrawer;
+package com.kickstarter.ui.viewholders.discoverydrawer
 
-import android.view.View;
+import com.kickstarter.databinding.DiscoveryDrawerLoggedOutViewBinding
+import com.kickstarter.ui.viewholders.KSViewHolder
 
-import com.kickstarter.R;
-import com.kickstarter.ui.viewholders.KSViewHolder;
+class LoggedOutViewHolder(private val binding: DiscoveryDrawerLoggedOutViewBinding, private val delegate: Delegate) : KSViewHolder(binding.root) {
+    interface Delegate {
+        fun loggedOutViewHolderActivityClick(viewHolder: LoggedOutViewHolder)
+        fun loggedOutViewHolderInternalToolsClick(viewHolder: LoggedOutViewHolder)
+        fun loggedOutViewHolderLoginToutClick(viewHolder: LoggedOutViewHolder)
+        fun loggedOutViewHolderHelpClick(viewHolder: LoggedOutViewHolder)
+    }
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+    @Throws(Exception::class)
+    override fun bindData(data: Any?) {
+    }
 
-public final class LoggedOutViewHolder extends KSViewHolder {
-  private Delegate delegate;
+    override fun onBind() {
+        binding.drawerActivity.setOnClickListener {
+            activityClick()
+        }
+        binding.drawerHelp.setOnClickListener {
+            helpClick()
+        }
+        binding.internalToolsLayout.internalTools.setOnClickListener {
+            internalToolsClick()
+        }
+        binding.loggedOutTextView.setOnClickListener {
+            loginToutClick()
+        }
+    }
 
-  public interface Delegate {
-    void loggedOutViewHolderActivityClick(final @NonNull LoggedOutViewHolder viewHolder);
-    void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder);
-    void loggedOutViewHolderLoginToutClick(final @NonNull LoggedOutViewHolder viewHolder);
-    void loggedOutViewHolderHelpClick(final @NonNull LoggedOutViewHolder viewHolder);
-  }
+    fun activityClick() {
+        delegate.loggedOutViewHolderActivityClick(this)
+    }
 
-  public LoggedOutViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
-    super(view);
-    ButterKnife.bind(this, view);
-    this.delegate = delegate;
-  }
+    fun helpClick() {
+        delegate.loggedOutViewHolderHelpClick(this)
+    }
 
-  @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-  }
+    fun internalToolsClick() {
+        delegate.loggedOutViewHolderInternalToolsClick(this)
+    }
 
-  @Override
-  public void onBind() {
-  }
-  @OnClick(R.id.drawer_activity)
-  public void activityClick() {
-    this.delegate.loggedOutViewHolderActivityClick(this);
-  }
-
-  @OnClick(R.id.drawer_help)
-  public void helpClick() {
-    this.delegate.loggedOutViewHolderHelpClick(this);
-  }
-
-  @Nullable @OnClick(R.id.internal_tools)
-  public void internalToolsClick() {
-    this.delegate.loggedOutViewHolderInternalToolsClick(this);
-  }
-
-  @OnClick(R.id.logged_out_text_view)
-  public void loginToutClick() {
-    this.delegate.loggedOutViewHolderLoginToutClick(this);
-  }
+    fun loginToutClick() {
+        delegate.loggedOutViewHolderLoginToutClick(this)
+    }
 }

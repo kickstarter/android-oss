@@ -1,62 +1,43 @@
-package com.kickstarter.ui.viewholders.discoverydrawer;
+package com.kickstarter.ui.viewholders.discoverydrawer
 
-import android.content.Context;
-import android.view.View;
-import android.widget.TextView;
+import android.view.View
+import com.kickstarter.databinding.DiscoveryDrawerParentFilterViewBinding
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.ui.adapters.data.NavigationDrawerData
+import com.kickstarter.ui.viewholders.KSViewHolder
 
-import com.kickstarter.R;
-import com.kickstarter.ui.adapters.data.NavigationDrawerData;
-import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.ui.views.IconButton;
+class ParentFilterViewHolder(
+    private val binding: DiscoveryDrawerParentFilterViewBinding,
+    private val delegate: Delegate
+) : KSViewHolder(binding.root) {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+    private var item: NavigationDrawerData.Section.Row? = null
 
-import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
-
-public final class ParentFilterViewHolder extends KSViewHolder {
-  protected @Bind(R.id.filter_text_view) TextView filterTextView;
-  protected @Bind(R.id.expand_button) IconButton expandButton;
-  protected @Bind(R.id.collapse_button) IconButton collapseButton;
-  private NavigationDrawerData.Section.Row item;
-  private Delegate delegate;
-
-  public interface Delegate {
-    void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
-  }
-
-  public ParentFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
-    super(view);
-    this.delegate = delegate;
-    ButterKnife.bind(this, view);
-  }
-
-  @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-    this.item = requireNonNull((NavigationDrawerData.Section.Row) data, NavigationDrawerData.Section.Row.class);
-  }
-
-  @Override
-  public void onBind() {
-    final Context context = context();
-
-    this.filterTextView.setText(this.item.params().filterString(context, environment().ksString(), false, true));
-
-    if (this.item.rootIsExpanded()) {
-      this.expandButton.setVisibility(View.GONE);
-      this.collapseButton.setVisibility(View.VISIBLE);
-    } else {
-      this.expandButton.setVisibility(View.VISIBLE);
-      this.collapseButton.setVisibility(View.GONE);
+    interface Delegate {
+        fun parentFilterViewHolderRowClick(viewHolder: ParentFilterViewHolder, row: NavigationDrawerData.Section.Row)
     }
-  }
 
-  @OnClick(R.id.filter_view)
-  protected void rowClick() {
-    this.delegate.parentFilterViewHolderRowClick(this, this.item);
-  }
+    @Throws(Exception::class)
+    override fun bindData(data: Any?) {
+        item = ObjectUtils.requireNonNull(data as NavigationDrawerData.Section.Row?, NavigationDrawerData.Section.Row::class.java)
+    }
+
+    override fun onBind() {
+        val context = context()
+        binding.filterTextView.text = item?.params()?.filterString(context, environment().ksString(), false, true)
+        if (item?.rootIsExpanded() == true) {
+            binding.expandButton.visibility = View.GONE
+            binding.collapseButton.visibility = View.VISIBLE
+        } else {
+            binding.expandButton.visibility = View.VISIBLE
+            binding.collapseButton.visibility = View.GONE
+        }
+        binding.filterView.setOnClickListener {
+            rowClick()
+        }
+    }
+
+    fun rowClick() {
+        delegate.parentFilterViewHolderRowClick(this, item!!)
+    }
 }
-

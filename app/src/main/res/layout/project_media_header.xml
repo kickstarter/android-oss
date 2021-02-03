@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-  tools:showIn="@layout/project_main_layout"
-  xmlns:tools="http://schemas.android.com/tools">
-
-  <ImageView
-    android:id="@+id/project_photo"
-    android:scaleType="centerCrop"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/gray_gradient"
-    android:layout_margin="@dimen/grid_2"
-    android:adjustViewBounds="true"
-    tools:ignore="ContentDescription" />
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-  <ImageButton
-    android:id="@+id/play_button_overlay"
-    android:background="@drawable/video_button_background"
-    android:contentDescription="@string/accessibility_projects_buttons_play_video"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:src="@drawable/ic_play_icon"
-    tools:visibility="visible"/>
-  <FrameLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:layout_marginStart="@dimen/grid_1">
+    <ImageView
+        android:id="@+id/project_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/grid_2"
+        android:adjustViewBounds="true"
+        android:background="@drawable/gray_gradient"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription" />
 
-    <include
-        android:id="@+id/project_metadata_layout"
-        layout="@layout/project_metadata_view" />
-  </FrameLayout>
-</merge>
+    <ImageButton
+        android:id="@+id/play_button_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@drawable/video_button_background"
+        android:contentDescription="@string/accessibility_projects_buttons_play_video"
+        android:src="@drawable/ic_play_icon"
+        tools:visibility="visible" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="@dimen/grid_1">
+
+        <include
+            android:id="@+id/project_metadata_layout"
+            layout="@layout/project_metadata_view" />
+    </FrameLayout>
+</RelativeLayout>

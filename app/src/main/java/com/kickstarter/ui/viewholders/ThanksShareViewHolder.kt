@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.Html
 import android.util.Pair
-import butterknife.OnClick
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.model.ShareOpenGraphAction
 import com.facebook.share.model.ShareOpenGraphContent
@@ -42,26 +41,34 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { startShareOnTwitter(it) }
-    }
-    @Throws(Exception::class)
-    override fun bindData(data: Any?) {
-        val project = ObjectUtils.requireNonNull(data as Project?)
-        viewModel.inputs.configureWith(project)
+
+        binding.shareButton.setOnClickListener {
+             shareButtonClicked()
+        }
+        binding.thanksFacebookShareButton.setOnClickListener {
+            shareOnFacebookButtonClicked()
+        }
+        binding.thanksTwitterShareButton.setOnClickListener {
+            shareOnTwitterButtonClicked()
+        }
     }
 
-    @OnClick(R.id.share_button)
     fun shareButtonClicked() {
         viewModel.inputs.shareClick()
     }
 
-    @OnClick(R.id.thanks_facebook_share_button)
     fun shareOnFacebookButtonClicked() {
         viewModel.inputs.shareOnFacebookClick()
     }
 
-    @OnClick(R.id.thanks_twitter_share_button)
     fun shareOnTwitterButtonClicked() {
         viewModel.inputs.shareOnTwitterClick()
+    }
+
+    @Throws(Exception::class)
+    override fun bindData(data: Any?) {
+        val project = ObjectUtils.requireNonNull(data as Project?)
+        viewModel.inputs.configureWith(project)
     }
 
     private fun shareString(projectName: String): String {

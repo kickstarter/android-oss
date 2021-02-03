@@ -37,6 +37,7 @@ abstract class TrackingClientType {
 
     abstract fun track(eventName: String, additionalProperties: Map<String, Any>)
     abstract fun identify(u: User)
+    abstract fun reset()
 
     fun track(eventName: String) {
         track(eventName, HashMap())

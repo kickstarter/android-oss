@@ -4,6 +4,7 @@ import CreatePasswordMutation
 import androidx.annotation.NonNull
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.extensions.MINIMUM_PASSWORD_LENGTH
@@ -41,7 +42,7 @@ interface CreatePasswordViewModel {
         /** Emits when the save button should be enabled. */
         fun saveButtonIsEnabled(): Observable<Boolean>
 
-        /** Emits when the password update was unsuccessful. */
+        /** Emits when the password update was successful. */
         fun success(): Observable<String>
     }
 
@@ -61,6 +62,7 @@ interface CreatePasswordViewModel {
         val outputs: Outputs = this
 
         private val apolloClient: ApolloClientType = this.environment.apolloClient()
+        private val analytics: AnalyticEvents = this.environment.analytics()
 
         init {
 
@@ -92,7 +94,10 @@ interface CreatePasswordViewModel {
             createNewPasswordNotification
                     .compose(values())
                     .map { it.updateUserAccount()?.user()?.email() }
-                    .subscribe { this.success.onNext(it) }
+                    .subscribe {
+                        this.success.onNext(it)
+                        this.analytics.reset()
+                    }
         }
 
         private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {

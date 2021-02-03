@@ -5,6 +5,7 @@ import com.kickstarter.models.User
 import com.segment.analytics.Analytics
 import com.segment.analytics.Properties
 import com.segment.analytics.Traits
+import timber.log.Timber
 
 class SegmentTrackingClient(
         build: Build,
@@ -43,9 +44,27 @@ class SegmentTrackingClient(
      */
     override fun identify(user: User) {
         super.identify(user)
+
+        if (this.build.isDebug && type() == Type.SEGMENT) {
+            user.apply {
+                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${ this.id()}")
+            }
+        }
         segmentAnalytics?.let { segment ->
             segment.identify(user.id().toString(), getTraits(user), null)
         }
+    }
+
+    /**
+     * clears the internal stores on Segment SDK for the current user and group
+     * https://segment.com/docs/connections/sources/catalog/libraries/mobile/android/#reset
+     */
+    override fun reset() {
+        super.reset()
+        if (this.build.isDebug) {
+            Timber.d("Queued ${type().tag} Reset UserId")
+        }
+        segmentAnalytics?.reset()
     }
 
     /**

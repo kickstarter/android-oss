@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.AnalyticEvents
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -55,6 +56,7 @@ interface SettingsViewModel {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
+        private val analytics: AnalyticEvents = this.environment.analytics()
         init {
 
             this.client.fetchCurrentUser()
@@ -70,7 +72,10 @@ interface SettingsViewModel {
 
             this.confirmLogoutClicked
                     .compose(bindToLifecycle())
-                    .subscribe { this.logout.onNext(null) }
+                    .subscribe {
+                        this.logout.onNext(null)
+                        this.analytics.reset()
+                    }
 
             this.avatarImageViewUrl = this.currentUser.loggedInUser().map { u -> u.avatar().medium() }
 

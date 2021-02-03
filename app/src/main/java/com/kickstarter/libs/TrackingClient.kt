@@ -69,13 +69,12 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         }
     }
 
+    override fun reset() {
+        this.loggedInUser = null
+    }
+
     override fun identify(user: User) {
         this.loggedInUser = user
-        if (this.build.isDebug) {
-            user.apply {
-                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${ this.id()}")
-            }
-        }
     }
 
     override fun optimizely(): ExperimentsClientType = this.optimizely

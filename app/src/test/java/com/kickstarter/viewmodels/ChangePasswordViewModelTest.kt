@@ -3,7 +3,10 @@ package com.kickstarter.viewmodels
 import UpdateUserPasswordMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.Environment
+import com.kickstarter.libs.*
+import com.kickstarter.mock.MockCurrentConfig
+import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
 import org.junit.Test
 import rx.Observable
@@ -100,5 +103,74 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.confirmPassword("password")
         this.vm.inputs.changePasswordClicked()
         this.success.assertValue("test@email.com")
+    }
+
+    @Test
+    fun userLoggedIn_whenChangePasswordError_userNotReset() {
+        val userId = TestSubscriber<Long>()
+
+        // - create MockTracking client with user logged in
+        val user = UserFactory.user()
+        val trackingClient = MockTrackingClient(MockCurrentUser(user),
+                MockCurrentConfig() , TrackingClientType.Type.SEGMENT, MockExperimentsClientType())
+        trackingClient.identifiedId.subscribe(userId)
+
+        // - Mock failed response from apollo
+        val apolloClient = object : MockApolloClient() {
+            override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
+                return Observable.error(Exception("Oops"))
+            }
+        }
+
+        // - Create environment with mocked objects
+        val environment = environment().toBuilder()
+                .apolloClient(apolloClient)
+                .analytics(AnalyticEvents(listOf(trackingClient)))
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.currentPassword("password")
+        this.vm.inputs.newPassword("password")
+        this.vm.inputs.confirmPassword("password")
+        this.vm.inputs.changePasswordClicked()
+        this.error.assertValue("Oops")
+
+        userId.assertValue(user.id())
+    }
+
+    @Test
+    fun serLoggedIn_whenChangePasswordSuccess_userReset() {
+        val userId = TestSubscriber<Long?>()
+
+        // - create MockTracking client with user logged in
+        val user = UserFactory.user()
+        val trackingClient = MockTrackingClient(MockCurrentUser(user),
+                MockCurrentConfig() , TrackingClientType.Type.SEGMENT, MockExperimentsClientType())
+        trackingClient.identifiedId.subscribe(userId)
+
+        // - Mock success response from apollo
+        val apolloClient = object : MockApolloClient() {
+            override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
+                return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
+                        UpdateUserPasswordMutation.User("", "test@email.com", false))))
+            }
+        }
+
+        // - Create environment with mocked objects
+        val environment = environment().toBuilder()
+                .apolloClient(apolloClient)
+                .analytics(AnalyticEvents(listOf(trackingClient)))
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.currentPassword("password")
+        this.vm.inputs.newPassword("password")
+        this.vm.inputs.confirmPassword("password")
+        this.vm.inputs.changePasswordClicked()
+        this.success.assertValue("test@email.com")
+
+        userId.assertValues(user.id(), null)
     }
 }

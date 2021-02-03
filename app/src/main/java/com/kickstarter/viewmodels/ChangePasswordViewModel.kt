@@ -100,8 +100,8 @@ interface ChangePasswordViewModel {
                     .compose(values())
                     .map { it.updateUserAccount()?.user()?.email() }
                     .subscribe {
-                        this.success.onNext(it)
                         this.analytics.reset()
+                        this.success.onNext(it)
                     }
         }
 

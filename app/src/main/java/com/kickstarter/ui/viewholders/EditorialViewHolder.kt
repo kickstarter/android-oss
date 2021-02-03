@@ -36,7 +36,7 @@ class EditorialViewHolder(val binding: ItemLightsOnBinding,
                 .compose(Transformers.observeForUI())
                 .subscribe { binding.editorialGraphic.setImageResource(it) }
 
-        this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
+        binding.lightsOnContainer.setOnClickListener { this.vm.inputs.editorialClicked() }
     }
 
     override fun bindData(data: Any?) {

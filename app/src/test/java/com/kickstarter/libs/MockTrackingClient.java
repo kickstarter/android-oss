@@ -15,6 +15,7 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class MockTrackingClient extends TrackingClientType {
@@ -27,8 +28,20 @@ public final class MockTrackingClient extends TrackingClientType {
   public MockTrackingClient(final @NonNull CurrentUserType currentUser, final @NonNull CurrentConfigType currentConfig, final Type type, final @NonNull ExperimentsClientType optimizely) {
     this.type = type;
     this.optimizely = optimizely;
-    currentUser.observable().subscribe(u -> this.loggedInUser = u);
+    currentUser.observable().subscribe(this::propagateUser);
     currentConfig.observable().subscribe(c -> this.config = c);
+  }
+
+  private void propagateUser(final @Nullable User user) {
+    if (user != null) {
+      identify(user);
+    }
+    this.loggedInUser = user;
+  }
+
+  @Override
+  public void identify(final @NotNull User user) {
+    this.identifiedId.onNext(user.id());
   }
 
   public static class Event {
@@ -43,6 +56,7 @@ public final class MockTrackingClient extends TrackingClientType {
   private final @NonNull PublishSubject<Event> events = PublishSubject.create();
   public final @NonNull Observable<String> eventNames = this.events.map(e -> e.name);
   public final @NonNull Observable<Map<String, Object>> eventProperties = this.events.map(e -> e.properties);
+  public final @NonNull BehaviorSubject<Long> identifiedId = BehaviorSubject.create();
 
   @Override
   public void track(final @NotNull String eventName, final @NotNull Map<String, ?> additionalProperties) {
@@ -55,7 +69,8 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected @NonNull Type type() {
+  @NonNull
+  public Type type() {
     return this.type;
   }
 

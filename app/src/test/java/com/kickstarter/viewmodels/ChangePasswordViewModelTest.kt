@@ -8,6 +8,7 @@ import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApolloClient
+import com.kickstarter.models.User
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -20,6 +21,7 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     private val progressBarIsVisible = TestSubscriber<Boolean>()
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<String>()
+    private val userId = TestSubscriber<Long?>()
 
     private fun setUpEnvironment(environment: Environment) {
         this.vm = ChangePasswordViewModel.ViewModel(environment)
@@ -107,13 +109,9 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun userLoggedIn_whenChangePasswordError_userNotReset() {
-        val userId = TestSubscriber<Long>()
-
         // - create MockTracking client with user logged in
         val user = UserFactory.user()
-        val trackingClient = MockTrackingClient(MockCurrentUser(user),
-                MockCurrentConfig() , TrackingClientType.Type.SEGMENT, MockExperimentsClientType())
-        trackingClient.identifiedId.subscribe(userId)
+        val trackingClient = getMockClientWithUser(user)
 
         // - Mock failed response from apollo
         val apolloClient = object : MockApolloClient() {
@@ -141,13 +139,9 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun serLoggedIn_whenChangePasswordSuccess_userReset() {
-        val userId = TestSubscriber<Long?>()
-
         // - create MockTracking client with user logged in
         val user = UserFactory.user()
-        val trackingClient = MockTrackingClient(MockCurrentUser(user),
-                MockCurrentConfig() , TrackingClientType.Type.SEGMENT, MockExperimentsClientType())
-        trackingClient.identifiedId.subscribe(userId)
+        val trackingClient = getMockClientWithUser(user)
 
         // - Mock success response from apollo
         val apolloClient = object : MockApolloClient() {
@@ -173,4 +167,12 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         userId.assertValues(user.id(), null)
     }
+
+    private fun getMockClientWithUser(user: User) = MockTrackingClient(
+            MockCurrentUser(user),
+            MockCurrentConfig(),
+            TrackingClientType.Type.SEGMENT,
+            MockExperimentsClientType()).apply {
+                this.identifiedId.subscribe(userId)
+            }
 }

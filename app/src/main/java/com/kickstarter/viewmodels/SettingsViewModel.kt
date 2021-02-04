@@ -73,8 +73,8 @@ interface SettingsViewModel {
             this.confirmLogoutClicked
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.logout.onNext(null)
                         this.analytics.reset()
+                        this.logout.onNext(null)
                     }
 
             this.avatarImageViewUrl = this.currentUser.loggedInUser().map { u -> u.avatar().medium() }

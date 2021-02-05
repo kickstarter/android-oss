@@ -69,7 +69,7 @@ abstract class TrackingClientType {
             this["client_type"] = "native"
             this["current_variants"] = currentVariants() ?: ""
             this["device_distinct_id"] = deviceDistinctId()
-            this["device_format"] = deviceFormat()
+            this["device_type"] = deviceFormat()
             this["device_manufacturer"] = manufacturer()
             this["device_model"] = model()
             this["device_orientation"] = deviceOrientation()

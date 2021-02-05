@@ -549,7 +549,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals("native", expectedProperties["session_client_type"])
         assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
-        assertEquals("phone", expectedProperties["session_device_format"])
+        assertEquals("phone", expectedProperties["session_device_type"])
         assertEquals("Google", expectedProperties["session_device_manufacturer"])
         assertEquals("Pixel 3", expectedProperties["session_device_model"])
         assertEquals("Portrait", expectedProperties["session_device_orientation"])

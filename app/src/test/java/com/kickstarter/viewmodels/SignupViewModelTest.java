@@ -63,6 +63,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     formSubmittingTest.assertValues(true, false);
     signupSuccessTest.assertValueCount(1);
     this.lakeTest.assertValues("Sign Up Submit Button Clicked");
+    this.segmentTrack.assertValues("Sign Up Submit Button Clicked");
   }
 
   @Test
@@ -101,6 +102,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     signupSuccessTest.assertValueCount(0);
     signupErrorTest.assertValueCount(1);
     this.lakeTest.assertValues("Sign Up Submit Button Clicked");
+    this.segmentTrack.assertValues("Sign Up Submit Button Clicked");
   }
 
   @Test
@@ -137,6 +139,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     signupSuccessTest.assertValueCount(0);
     signupErrorTest.assertValueCount(1);
     this.lakeTest.assertValues("Sign Up Submit Button Clicked");
+    this.segmentTrack.assertValues("Sign Up Submit Button Clicked");
   }
 
 }

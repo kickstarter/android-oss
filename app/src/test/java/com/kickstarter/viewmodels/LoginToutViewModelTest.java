@@ -49,6 +49,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.loginClick();
     this.startLoginActivity.assertValueCount(1);
     this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Log In Button Clicked");
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Log In Button Clicked");
   }
 
   @Test
@@ -60,6 +61,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.signupClick();
     this.startSignupActivity.assertValueCount(1);
     this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Sign Up Button Clicked");
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Sign Up Button Clicked");
   }
 
   @Test
@@ -77,6 +79,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.currentUser.assertValueCount(1);
     this.finishWithSuccessfulResult.assertValueCount(1);
     this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
   }
 
   @Test
@@ -101,5 +104,6 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.currentUser.assertNoValues();
     this.finishWithSuccessfulResult.assertNoValues();
     this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
   }
 }

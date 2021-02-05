@@ -33,7 +33,8 @@ abstract class KSRobolectricTestCase : TestCase() {
 
     lateinit var experimentsTest: TestSubscriber<String>
     lateinit var lakeTest: TestSubscriber<String>
-    lateinit var segmentTest: TestSubscriber<String>
+    lateinit var segmentTrack: TestSubscriber<String>
+    lateinit var segmentIdentify: TestSubscriber<Long>
 
     @Before
     @Throws(Exception::class)
@@ -91,10 +92,12 @@ abstract class KSRobolectricTestCase : TestCase() {
     }
 
     private fun segmentTrackingClient(mockCurrentConfig: MockCurrentConfig, experimentsClientType: MockExperimentsClientType): MockTrackingClient {
-        segmentTest = TestSubscriber()
+        segmentTrack = TestSubscriber()
+        segmentIdentify = TestSubscriber()
         val segmentTrackingClient = MockTrackingClient(MockCurrentUser(),
                 mockCurrentConfig, TrackingClientType.Type.SEGMENT, experimentsClientType)
-        segmentTrackingClient.eventNames.subscribe(segmentTest)
+        segmentTrackingClient.eventNames.subscribe(segmentTrack)
+        segmentTrackingClient.identifiedId.subscribe(segmentIdentify)
         return segmentTrackingClient
     }
 }

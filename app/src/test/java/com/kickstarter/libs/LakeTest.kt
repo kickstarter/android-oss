@@ -545,7 +545,7 @@ class LakeTest : KSRobolectricTestCase() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(9999, expectedProperties["session_app_build_number"])
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
-        assertEquals("android", expectedProperties["session_client_platform"])
+        assertEquals("android", expectedProperties["session_platform"])
         assertEquals("native", expectedProperties["session_client_type"])
         assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])

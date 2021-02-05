@@ -62,7 +62,7 @@ class SegmentTrackingClient(
     override fun reset() {
         super.reset()
         if (this.build.isDebug) {
-            Timber.d("Queued ${type().tag} Reset UserId")
+            Timber.d("Queued ${type().tag} Reset user after logout")
         }
         segmentAnalytics?.reset()
     }

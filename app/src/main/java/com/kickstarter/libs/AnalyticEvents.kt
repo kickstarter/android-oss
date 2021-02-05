@@ -708,6 +708,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CREATOR_DETAILS_CLICKED, experimentProperties(projectData))
     }
 
+    fun reset() {
+        client.reset()
+    }
+
     //endregion
     private fun experimentProperties(projectData: ProjectData): Map<String, Any> {
         val props = KoalaUtils.projectProperties(projectData.project(), client.loggedInUser())
@@ -734,6 +738,8 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
                 client?.track(eventName, additionalProperties)
             }
         }
+
+        fun reset() = clients.forEach { it?.reset() }
 
         fun loggedInUser(): User? = clients.firstOrNull()?.loggedInUser()
 

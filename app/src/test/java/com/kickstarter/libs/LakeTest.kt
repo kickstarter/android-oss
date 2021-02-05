@@ -498,7 +498,7 @@ class LakeTest : KSRobolectricTestCase() {
 
     private fun assertPledgeProperties() {
         val expectedProperties = this.propertiesTest.value
-        assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["pledge_backer_reward_estimated_delivery_on"])
+        assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["checkout_reward_estimated_delivery_on"])
         assertEquals(false, expectedProperties["checkout_reward_has_items"])
         assertEquals(2L, expectedProperties["checkout_reward_id"])
         assertEquals(false, expectedProperties["checkout_reward_is_limited_time"])

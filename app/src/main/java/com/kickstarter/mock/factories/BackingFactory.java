@@ -24,6 +24,10 @@ public final class BackingFactory {
     return backing(project, backer, RewardFactory.reward());
   }
 
+  public static @NonNull Backing backing(final @NonNull Reward reward) {
+    return backing(ProjectFactory.project(), UserFactory.user(), reward);
+  }
+
   public static @NonNull Backing backing(final @NonNull Project project, final @NonNull User backer, final @NonNull Reward reward) {
     return Backing.builder()
       .amount(10.0f)

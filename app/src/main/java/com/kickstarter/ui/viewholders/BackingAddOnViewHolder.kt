@@ -15,7 +15,7 @@ import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
 
-class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, viewListener: ViewListener) : KSViewHolder(binding.root) {
+class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, private val viewListener: ViewListener) : KSViewHolder(binding.root) {
 
     interface ViewListener {
         fun quantityPerId(quantityPerId: Pair<Int, Long>)
@@ -23,7 +23,6 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, viewLi
 
     private var viewModel = BackingAddOnViewHolderViewModel.ViewModel(environment())
     private val ksString = environment().ksString()
-    private val viewListener = viewListener
 
     init {
 

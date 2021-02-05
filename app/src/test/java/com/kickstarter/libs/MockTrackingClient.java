@@ -44,6 +44,12 @@ public final class MockTrackingClient extends TrackingClientType {
     this.identifiedId.onNext(user.id());
   }
 
+  @Override
+  public void reset() {
+    this.loggedInUser = null;
+    this.identifiedId.onNext(null);
+  }
+
   public static class Event {
     private final String name;
     private final Map<String, Object> properties;

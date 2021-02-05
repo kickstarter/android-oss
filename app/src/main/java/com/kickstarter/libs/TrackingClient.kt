@@ -59,7 +59,8 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
             val eventData = trackingData(eventName, combinedProperties(additionalProperties))
 
             if (this.build.isDebug) {
-                Timber.d("Queued ${type().tag} $eventName event: $eventData")
+                val dataForLogs = combinedProperties(additionalProperties).toString()
+                Timber.d("Queued ${type().tag} $eventName event: $dataForLogs")
             }
         } catch (e: JSONException) {
             if (this.build.isDebug) {
@@ -69,13 +70,12 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         }
     }
 
+    override fun reset() {
+        this.loggedInUser = null
+    }
+
     override fun identify(user: User) {
         this.loggedInUser = user
-        if (this.build.isDebug) {
-            user.apply {
-                Timber.d("Queued ${type().tag} Identify userName: ${this.name()} userId: ${ this.id()}")
-            }
-        }
     }
 
     override fun optimizely(): ExperimentsClientType = this.optimizely

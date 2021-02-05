@@ -59,7 +59,8 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
             val eventData = trackingData(eventName, combinedProperties(additionalProperties))
 
             if (this.build.isDebug) {
-                Timber.d("Queued ${type().tag} $eventName event: $eventData")
+                val dataForLogs = combinedProperties(additionalProperties).toString()
+                Timber.d("Queued ${type().tag} $eventName event: $dataForLogs")
             }
         } catch (e: JSONException) {
             if (this.build.isDebug) {

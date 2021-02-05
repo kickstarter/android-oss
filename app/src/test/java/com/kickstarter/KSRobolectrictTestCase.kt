@@ -36,8 +36,6 @@ abstract class KSRobolectricTestCase : TestCase() {
     public override fun setUp() {
         super.setUp()
 
-        JodaTimeAndroid.init(context())
-
         val mockCurrentConfig = MockCurrentConfig()
         val experimentsClientType = experimentsClient()
         val koalaTrackingClient = koalaTrackingClient(mockCurrentConfig, experimentsClientType)

@@ -546,7 +546,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(9999, expectedProperties["session_app_build_number"])
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
         assertEquals("android", expectedProperties["session_platform"])
-        assertEquals("native", expectedProperties["session_client_type"])
+        assertEquals("native", expectedProperties["session_client"])
         assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
         assertEquals("phone", expectedProperties["session_device_type"])

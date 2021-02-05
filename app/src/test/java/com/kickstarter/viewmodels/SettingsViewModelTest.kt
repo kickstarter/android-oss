@@ -29,6 +29,7 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun setUpEnvironment(environment: Environment) {
+
         this.vm = SettingsViewModel.ViewModel(environment)
         this.vm.outputs.logout().subscribe(this.logout)
         this.vm.outputs.showConfirmLogoutPrompt().subscribe(this.showConfirmLogoutPrompt)
@@ -72,14 +73,10 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     fun user_whenPressLogout_userReset() {
         val user = UserFactory.user()
 
-        val environment = environment().toBuilder()
-                .analytics(AnalyticEvents(listOf(getMockClientWithUser(user))))
-                .build()
+        setUpEnvironment(user)
 
-        setUpEnvironment(environment)
-
-        this.vm.inputs.logoutClicked()
-        this.showConfirmLogoutPrompt.assertValue(true)
+        this.vm.inputs.confirmLogoutClicked()
+        this.logout.assertValue(null)
 
         this.userId.assertValues(user.id(), null)
     }

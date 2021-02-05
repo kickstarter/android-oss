@@ -85,7 +85,7 @@
                     android:layout_marginBottom="@dimen/grid_2"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/items_container"
+                    app:layout_constraintTop_toBottomOf="@id/add_on_items_container"
                     tools:text="@string/Pledge_any_amount_to_help_bring_this_project_to_life" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

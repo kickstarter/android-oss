@@ -4,7 +4,6 @@ import android.util.Pair
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
-import com.kickstarter.libs.utils.BackingUtils
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
@@ -15,7 +14,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 interface BaseRewardCardViewHolderViewModel {
     interface Inputs {

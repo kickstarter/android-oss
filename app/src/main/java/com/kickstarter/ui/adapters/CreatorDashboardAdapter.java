@@ -58,7 +58,7 @@ public class CreatorDashboardAdapter extends KSAdapter {
 
   @NonNull
   @Override
-  protected KSViewHolder viewHolder(int layout, @NonNull ViewGroup viewGroup) {
+  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     if (layout == R.layout.dashboard_funding_view) {
       return new CreatorDashboardHeaderViewHolder(DashboardFundingViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     } else if (layout == R.layout.dashboard_reward_stats_view) {

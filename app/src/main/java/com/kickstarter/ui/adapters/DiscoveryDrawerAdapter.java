@@ -33,8 +33,7 @@ import java.util.List;
 import rx.Observable;
 
 public class DiscoveryDrawerAdapter extends KSAdapter {
-  private @NonNull
-  final Delegate delegate;
+  private @NonNull final Delegate delegate;
   private @NonNull NavigationDrawerData drawerData;
 
   public DiscoveryDrawerAdapter(final @NonNull Delegate delegate) {

@@ -3,6 +3,7 @@ package com.kickstarter.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
@@ -29,7 +30,7 @@ public final class ProjectNotificationSettingsAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(int layout, @NonNull ViewGroup viewGroup) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     return new ProjectNotificationViewHolder(ProjectNotificationViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
   }
 

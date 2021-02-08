@@ -69,7 +69,7 @@ public final class CommentsAdapter extends KSAdapter {
 
   @NonNull
   @Override
-  protected KSViewHolder viewHolder(int layout, @NonNull ViewGroup viewGroup) {
+  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(ProjectContextViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     } else if (layout == R.layout.empty_comments_layout) {

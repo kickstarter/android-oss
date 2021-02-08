@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.kickstarter.R
 import com.kickstarter.databinding.ProfileCardViewBinding
 import com.kickstarter.libs.utils.ObjectUtils
@@ -32,7 +33,7 @@ class ProfileCardViewHolder(
             binding.profileCardImage.apply {
                 visibility = View.VISIBLE
                 Picasso.with(context()).load(photo.med())
-                    .placeholder(context().getDrawable(R.drawable.gray_gradient))
+                    .placeholder(ContextCompat.getDrawable(context,R.drawable.gray_gradient))
                     .into(this)
             }
         }

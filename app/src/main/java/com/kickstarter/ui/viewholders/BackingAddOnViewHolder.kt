@@ -68,7 +68,7 @@ class BackingAddOnViewHolder(private val binding: ItemAddOnPledgeBinding, privat
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe {
-                    binding.addOnMinimum.text = "${it} "
+                    binding.addOnMinimum.text = it.toString()
                 }
 
         this.viewModel.outputs.conversionIsGone()

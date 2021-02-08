@@ -52,8 +52,8 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   protected abstract int layout(final @NonNull SectionRow sectionRow);
 
   /**
-   * Returns a new KSViewHolder given a layout and view.
-   */
+  * Returns a new KSViewHolder given a layout and view.
+  */
   protected abstract @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup);
 
   @Override
@@ -81,9 +81,8 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
 
   @Override
   public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, final @LayoutRes int layout) {
-    final KSViewHolder viewHolder = viewHolder(layout,viewGroup);
+    final KSViewHolder viewHolder = viewHolder(layout, viewGroup);
     viewHolder.lifecycleEvent(ActivityEvent.CREATE);
-
     return viewHolder;
   }
 

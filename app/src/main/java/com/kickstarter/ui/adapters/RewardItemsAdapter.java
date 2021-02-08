@@ -32,8 +32,8 @@ public final class RewardItemsAdapter extends KSAdapter {
     return R.layout.rewards_item_view;
   }
 
-    @Override
-    protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
-        return new RewardsItemViewHolder(RewardsItemViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
-    }
+  @Override
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
+    return new RewardsItemViewHolder(RewardsItemViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
+  }
 }

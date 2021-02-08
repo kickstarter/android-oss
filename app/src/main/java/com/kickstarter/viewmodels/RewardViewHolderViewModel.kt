@@ -12,6 +12,7 @@ import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.extensions.isBacked
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
@@ -25,7 +26,6 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.math.RoundingMode
-import kotlin.math.roundToInt
 
 interface RewardViewHolderViewModel {
     interface Inputs {
@@ -230,7 +230,7 @@ interface RewardViewHolderViewModel {
 
             projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
-                    .map { BackingUtils.isBacked(it.first, it.second) }
+                    .map { it.first.backing()?.isBacked(it.second) ?: false }
                     .map {
                         when {
                             it -> R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality
@@ -317,7 +317,7 @@ interface RewardViewHolderViewModel {
 
             projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }
-                    .map { BackingUtils.isBacked(it.first, it.second) }
+                    .map { it.first.backing()?.isBacked(it.second) ?: false }
                     .map {
                         when {
                             it -> R.string.You_pledged_without_a_reward
@@ -328,7 +328,7 @@ interface RewardViewHolderViewModel {
                     .subscribe(this.titleForNoReward)
 
             projectAndReward
-                    .map { BackingUtils.isBacked(it.first, it.second) }
+                    .map { it.first.backing()?.isBacked(it.second) ?: false }
                     .compose(bindToLifecycle())
                     .subscribe{
                         this.selectedRewardTagIsGone.onNext(!it)
@@ -450,7 +450,7 @@ interface RewardViewHolderViewModel {
         private fun buttonIsGone(project: Project, reward: Reward, userCreatedProject: Boolean): Boolean {
             return when {
                 userCreatedProject -> true
-                BackingUtils.isBacked(project, reward) || project.isLive -> false
+                project.backing()?.isBacked(reward) ?: false || project.isLive -> false
                 else -> true
             }
         }
@@ -466,7 +466,7 @@ interface RewardViewHolderViewModel {
         private fun hasBackedAddOns(project: Project) = !project.backing()?.addOns().isNullOrEmpty()
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
-            if (BackingUtils.isBacked(project, reward)) {
+            if (project.backing()?.isBacked(reward) == true)  {
                 return false
             }
 

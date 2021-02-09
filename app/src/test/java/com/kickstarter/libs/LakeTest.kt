@@ -498,15 +498,15 @@ class LakeTest : KSRobolectricTestCase() {
 
     private fun assertPledgeProperties() {
         val expectedProperties = this.propertiesTest.value
-        assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["pledge_backer_reward_estimated_delivery_on"])
-        assertEquals(false, expectedProperties["pledge_backer_reward_has_items"])
-        assertEquals(2L, expectedProperties["pledge_backer_reward_id"])
-        assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_time"])
-        assertEquals(false, expectedProperties["pledge_backer_reward_is_limited_quantity"])
-        assertEquals(10.0, expectedProperties["pledge_backer_reward_minimum"])
-        assertEquals(true, expectedProperties["pledge_backer_reward_shipping_enabled"])
-        assertEquals("unrestricted", expectedProperties["pledge_backer_reward_shipping_preference"])
-        assertEquals("Digital Bundle", expectedProperties["pledge_backer_reward_title"])
+        assertEquals(DateTime.parse("2019-03-26T19:26:09Z").millis / 1000, expectedProperties["checkout_reward_estimated_delivery_on"])
+        assertEquals(false, expectedProperties["checkout_reward_has_items"])
+        assertEquals(2L, expectedProperties["checkout_reward_id"])
+        assertEquals(false, expectedProperties["checkout_reward_is_limited_time"])
+        assertEquals(false, expectedProperties["checkout_reward_is_limited_quantity"])
+        assertEquals(10.0, expectedProperties["checkout_reward_minimum"])
+        assertEquals(true, expectedProperties["checkout_reward_shipping_enabled"])
+        assertEquals("unrestricted", expectedProperties["checkout_reward_shipping_preference"])
+        assertEquals("Digital Bundle", expectedProperties["checkout_reward_title"])
     }
 
     private fun assertProjectProperties(project: Project) {

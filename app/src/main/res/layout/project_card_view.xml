@@ -1,126 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/project_card_view_group"
-  android:layout_height="wrap_content"
-  android:layout_width="match_parent">
-
-  <androidx.cardview.widget.CardView
-    android:id="@+id/project_card_view"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/project_card_view_group"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="0dp"
-    card_view:cardBackgroundColor="@color/kds_transparent"
-    card_view:cardElevation="@dimen/card_no_elevation"
-    android:foreground="@drawable/click_indicator_light"
-    android:focusable="true"
-    android:layout_marginBottom="@dimen/project_card_margin_bottom"
-    android:layout_marginTop="@dimen/project_card_margin_top"
-    android:layout_marginStart="@dimen/card_margin_x"
-    android:layout_marginEnd="@dimen/card_margin_x">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-      android:orientation="vertical"
-      android:background="@drawable/rect_white_grey_stroke"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-      <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include
-            android:id="@+id/project_card_photo"
-            layout="@layout/project_card_photo_view" />
-
-        <include
-            android:id="@+id/project_metadata_view"
-            layout="@layout/project_metadata_view"/>
-
-        <ImageButton
-          android:id="@+id/heart_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="end"
-          android:background="@drawable/circle_black_alpha"
-          android:contentDescription="@string/Save_this_project"
-          android:focusable="true"
-          android:visibility="gone"
-          android:src="@drawable/ic_discovery_heart" />
-
-      </FrameLayout>
-
-      <LinearLayout
-        android:id="@+id/project_card_info"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/project_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/grid_2"
-        android:paddingStart="@dimen/grid_4"
-        android:paddingEnd="@dimen/grid_4"
-        android:orientation="vertical">
+        android:layout_marginStart="@dimen/card_margin_x"
+        android:layout_marginTop="@dimen/project_card_margin_top"
+        android:layout_marginEnd="@dimen/card_margin_x"
+        android:layout_marginBottom="@dimen/project_card_margin_bottom"
+        android:focusable="true"
+        android:foreground="@drawable/click_indicator_light"
+        card_view:cardBackgroundColor="@color/kds_transparent"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardElevation="@dimen/card_no_elevation">
 
-        <TextView
-          android:id="@+id/name_and_blurb_text_view"
-          style="@style/TextPrimary"
-          android:textSize="@dimen/headline"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:maxLines="3"
-          tools:text="Project name here: somebody once told me the world world is gonna"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rect_white_grey_stroke"
+            android:orientation="vertical">
 
-        <ProgressBar
-          style="@style/ProgressBar"
-          android:visibility="visible"
-          android:layout_marginTop="@dimen/grid_5"
-          android:id="@+id/percentage_funded"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/progress_bar_height"
-          android:max="100"
-          android:minHeight="@dimen/progress_bar_min_height"
-          android:progress="50"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-      </LinearLayout>
+                <include
+                    android:id="@+id/project_card_photo"
+                    layout="@layout/project_card_photo_view" />
 
-      <include layout="@layout/project_state_view"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginStart="@dimen/grid_4"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/project_state_view_group"/>
+                <include
+                    android:id="@+id/project_metadata_view"
+                    layout="@layout/project_metadata_view" />
 
-      <include
-        android:id="@+id/project_card_stats"
-        layout="@layout/project_card_stats_view"
-        android:layout_height="wrap_content"
+                <ImageButton
+                    android:id="@+id/heart_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@drawable/circle_black_alpha"
+                    android:contentDescription="@string/Save_this_project"
+                    android:focusable="true"
+                    android:src="@drawable/ic_discovery_heart"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/project_card_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/grid_4"
+                android:paddingTop="@dimen/grid_2"
+                android:paddingEnd="@dimen/grid_4">
+
+                <TextView
+                    android:id="@+id/name_and_blurb_text_view"
+                    style="@style/TextPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textSize="@dimen/headline"
+                    tools:text="Project name here: somebody once told me the world world is gonna" />
+
+                <ProgressBar
+                    android:id="@+id/percentage_funded"
+                    style="@style/ProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_bar_height"
+                    android:layout_marginTop="@dimen/grid_5"
+                    android:max="100"
+                    android:minHeight="@dimen/progress_bar_min_height"
+                    android:progress="50"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/project_state_view_group"
+                layout="@layout/project_state_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/grid_4"
+                android:layout_marginTop="@dimen/grid_2"
+                android:layout_marginEnd="@dimen/grid_4" />
+
+            <include
+                android:id="@+id/project_card_stats"
+                layout="@layout/project_card_stats_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/grid_4"
+                android:layout_marginTop="@dimen/grid_2"
+                android:layout_marginEnd="@dimen/grid_4"
+                android:layout_marginBottom="@dimen/grid_4" />
+
+            <include
+                android:id="@+id/project_card_tags"
+                layout="@layout/project_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/grid_4"
+                android:layout_marginTop="@dimen/grid_1"
+                android:layout_marginEnd="@dimen/grid_4"
+                android:layout_marginBottom="@dimen/grid_4" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <include
+        android:id="@+id/friend_row_backing_group"
+        layout="@layout/friend_row_backing_group"
         android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginBottom="@dimen/grid_4"
-        android:layout_marginStart="@dimen/grid_4"
-        android:layout_marginEnd="@dimen/grid_4"/>
-
-      <include
-        android:id="@+id/project_card_tags"
-        layout="@layout/project_tags"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_4"
-        android:layout_marginEnd="@dimen/grid_4"
-        android:layout_marginStart="@dimen/grid_4"
-        android:layout_marginTop="@dimen/grid_1" />
-
-    </LinearLayout>
-
-  </androidx.cardview.widget.CardView>
-
-  <include
-      android:id="@+id/friend_row_backing_group"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/project_card_view"
-    layout="@layout/friend_row_backing_group" />
+        android:layout_below="@id/project_card_view" />
 
 </RelativeLayout>

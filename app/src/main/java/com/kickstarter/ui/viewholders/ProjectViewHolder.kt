@@ -502,9 +502,11 @@ class ProjectViewHolder(
             .compose(bindToLifecycle())
             .compose(observeForUI())
             .subscribe { url: String? ->
-                Picasso.with(context()).load(url)
-                    .transform(CircleTransformation())
-                    .into(binding.projectSocialImage)
+                url?.let {
+                    Picasso.with(context()).load(it)
+                            .transform(CircleTransformation())
+                            .into(binding.projectSocialImage)
+                }
             }
         viewModel.outputs.projectSocialViewGroupIsGone()
             .compose(bindToLifecycle())

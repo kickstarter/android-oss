@@ -42,9 +42,11 @@ class CommentViewHolder(private val binding: CommentCardViewBinding) : KSViewHol
                     }
                 }
 
-            Picasso.with(context).load(comment.author()?.avatar()?.small())
-                .transform(CircleTransformation())
-                .into(binding.avatar)
+            comment.author()?.avatar()?.small()?.let {
+                Picasso.with(context).load(it)
+                    .transform(CircleTransformation())
+                    .into(binding.avatar)
+            }
 
             binding.name.text = comment.author()?.name()
 

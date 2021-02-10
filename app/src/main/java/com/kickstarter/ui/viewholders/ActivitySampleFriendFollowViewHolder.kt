@@ -26,13 +26,13 @@ class ActivitySampleFriendFollowViewHolder(
 
     override fun onBind() {
         val context = context()
-        activity?.user()?.let {user->
-            Picasso.with(context).load(
-                user.avatar()
-                    .small()
-            )
-                .transform(CircleTransformation())
-                .into(binding.activityImage)
+        activity?.user()?.let { user->
+            user.avatar()?.small()?.let {
+                Picasso.with(context).load(it)
+                        .transform(CircleTransformation())
+                        .into(binding.activityImage)
+            }
+
             binding.activityTitle.text = ksString.format(context().getString(R.string.activity_user_name_is_now_following_you), "user_name", user.name())
             binding.activitySubtitle.setText(R.string.activity_follow_back)
 

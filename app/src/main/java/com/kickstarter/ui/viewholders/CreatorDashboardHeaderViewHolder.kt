@@ -93,15 +93,15 @@ class CreatorDashboardHeaderViewHolder(
         }
     }
 
-    fun projectsListButtonClicked() {
+    private fun projectsListButtonClicked() {
         delegate?.projectsListButtonClicked()
     }
 
-    fun dashboardMessagesButtonClicked() {
+    private fun dashboardMessagesButtonClicked() {
         viewModel.inputs.messagesButtonClicked()
     }
 
-    fun viewProjectButtonClicked() {
+    private fun viewProjectButtonClicked() {
         viewModel.inputs.projectButtonClicked()
     }
 

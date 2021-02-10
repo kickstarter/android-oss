@@ -25,17 +25,26 @@ class TopFilterViewHolder(
     override fun onBind() {
         val context = context()
 
-        val textColor = if (item?.selected() == true) context.resources.getColor(R.color.accent, null)
-        else
-            context.resources.getColor(R.color.kds_support_700, null)
-        val iconDrawable = if (item?.selected() == true)
-            ResourcesCompat.getDrawable(context.resources, R.drawable.ic_label_green, null)
-        else
-            ResourcesCompat.getDrawable(context.resources, R.drawable.ic_label, null)
+        val textColor = when {
+            item?.selected() == true ->
+                context.resources.getColor(R.color.accent, null)
+            else ->
+                context.resources.getColor(R.color.kds_support_700, null)
+        }
 
-        val backgroundDrawable = if (item?.selected() == true) ResourcesCompat.getDrawable(context.resources, R.drawable.drawer_selected, null)
-        else
-            null
+        val iconDrawable = when {
+            item?.selected() == true ->
+                ResourcesCompat.getDrawable(context.resources, R.drawable.ic_label_green, null)
+            else ->
+                ResourcesCompat.getDrawable(context.resources, R.drawable.ic_label, null)
+        }
+
+        val backgroundDrawable = when {
+            item?.selected() == true ->
+                ResourcesCompat.getDrawable(context.resources, R.drawable.drawer_selected, null)
+            else -> null
+        }
+
         binding.filterTextView.apply {
             text = item?.params()?.filterString(context, environment().ksString())
             setCompoundDrawablesRelativeWithIntrinsicBounds(iconDrawable, null, null, null)
@@ -47,7 +56,7 @@ class TopFilterViewHolder(
         }
     }
 
-    fun textViewClick() {
+    private fun textViewClick() {
         item?.let { delegate.topFilterViewHolderRowClick(this, it) }
     }
 }

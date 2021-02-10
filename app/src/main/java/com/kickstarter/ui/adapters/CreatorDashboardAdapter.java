@@ -70,8 +70,6 @@ public class CreatorDashboardAdapter extends KSAdapter {
     }
   }
 
-  //ProjectContextViewHolder(ProjectContextViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false)
-
   public void takeProjectDashboardData(final @NonNull ProjectDashboardData projectDashboardData) {
     setSection(SECTION_FUNDING_VIEW, Collections.singletonList(projectDashboardData));
 

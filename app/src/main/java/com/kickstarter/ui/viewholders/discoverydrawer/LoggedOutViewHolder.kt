@@ -30,19 +30,19 @@ class LoggedOutViewHolder(private val binding: DiscoveryDrawerLoggedOutViewBindi
         }
     }
 
-    fun activityClick() {
+    private fun activityClick() {
         delegate.loggedOutViewHolderActivityClick(this)
     }
 
-    fun helpClick() {
+    private fun helpClick() {
         delegate.loggedOutViewHolderHelpClick(this)
     }
 
-    fun internalToolsClick() {
+    private fun internalToolsClick() {
         delegate.loggedOutViewHolderInternalToolsClick(this)
     }
 
-    fun loginToutClick() {
+    private fun loginToutClick() {
         delegate.loggedOutViewHolderLoginToutClick(this)
     }
 }

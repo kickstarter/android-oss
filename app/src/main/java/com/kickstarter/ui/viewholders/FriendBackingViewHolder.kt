@@ -25,10 +25,13 @@ class FriendBackingViewHolder(
         val projectCreator = activityProject.creator() ?: return
         val projectCategory = activityProject.category() ?: return
         val projectPhoto = activityProject.photo() ?: return
-        Picasso.with(context)
-            .load(activityUser.avatar().small())
-            .transform(CircleTransformation())
-            .into(binding.avatar)
+        activityUser.avatar().small()?.let {
+            Picasso.with(context)
+                .load(it)
+                .transform(CircleTransformation())
+                .into(binding.avatar)
+        }
+
         binding.creatorName.text = ksString.format(context.getString(R.string.project_creator_by_creator), "creator_name", projectCreator.name())
         binding.projectName.text = activityProject.name()
         Picasso.with(context)

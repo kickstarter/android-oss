@@ -11,11 +11,12 @@ class FriendFollowViewHolder(private val binding: ActivityFriendFollowViewBindin
     override fun onBind() {
         val context = context()
         val friend = activity().user() ?: return
-        Picasso.with(context)
-            .load(friend.avatar().small())
-            .transform(CircleTransformation())
-            .into(binding.avatar)
-
+        friend.avatar().small()?.let {
+            Picasso.with(context)
+                .load(it)
+                .transform(CircleTransformation())
+                .into(binding.avatar)
+        }
         // TODO: bold username
         binding.title.text = StringBuilder(friend.name())
             .append(" ")

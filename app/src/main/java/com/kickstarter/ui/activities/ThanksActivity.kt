@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
 import com.kickstarter.databinding.ThanksLayoutBinding
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.KSString
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit
 
 @RequiresActivityViewModel(ThanksViewModel.ViewModel::class)
 class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
-    private var ksString = environment().ksString()
+    private lateinit var ksString: KSString
     private lateinit var binding: ThanksLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +33,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         binding = ThanksLayoutBinding.inflate(layoutInflater)
         val view: View = binding.root
         setContentView(view)
-
+        ksString = environment().ksString()
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = RecyclerView.VERTICAL
         binding.thanksRecyclerView.layoutManager = layoutManager

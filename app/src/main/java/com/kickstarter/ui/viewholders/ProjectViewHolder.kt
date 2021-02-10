@@ -503,9 +503,10 @@ class ProjectViewHolder(
             .compose(observeForUI())
             .subscribe { url: String? ->
                 url?.let {
-                    Picasso.with(context()).load(it)
-                            .transform(CircleTransformation())
-                            .into(binding.projectSocialImage)
+                    Picasso.with(context())
+                        .load(it)
+                        .transform(CircleTransformation())
+                        .into(binding.projectSocialImage)
                 }
             }
         viewModel.outputs.projectSocialViewGroupIsGone()
@@ -632,35 +633,35 @@ class ProjectViewHolder(
         }
     }
 
-    fun blurbOnClick() {
+    private fun blurbOnClick() {
         delegate.projectViewHolderBlurbClicked(this)
     }
 
-    fun blurbVariantOnClick() {
+    private fun blurbVariantOnClick() {
         delegate.projectViewHolderBlurbVariantClicked(this)
     }
 
-    fun commentsOnClick() {
+    private fun commentsOnClick() {
         delegate.projectViewHolderCommentsClicked(this)
     }
 
-    fun creatorNameOnClick() {
+    private fun creatorNameOnClick() {
         delegate.projectViewHolderCreatorClicked(this)
     }
 
-    fun creatorInfoVariantOnClick() {
+    private fun creatorInfoVariantOnClick() {
         delegate.projectViewHolderCreatorInfoVariantClicked(this)
     }
 
-    fun creatorDashboardOnClick() {
+    private fun creatorDashboardOnClick() {
         delegate.projectViewHolderDashboardClicked(this)
     }
 
-    fun playButtonOnClick() {
+    private fun playButtonOnClick() {
         delegate.projectViewHolderVideoStarted(this)
     }
 
-    fun updatesOnClick() {
+    private fun updatesOnClick() {
         delegate.projectViewHolderUpdatesClicked(this)
     }
 }

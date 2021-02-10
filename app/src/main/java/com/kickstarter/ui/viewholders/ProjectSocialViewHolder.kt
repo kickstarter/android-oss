@@ -15,9 +15,10 @@ class ProjectSocialViewHolder(private val binding: ProjectSocialViewBinding) : K
 
     override fun onBind() {
         user?.avatar()?.small()?.let {
-            Picasso.with(context()).load(it)
-                    .transform(CircleTransformation())
-                    .into(binding.friendImage)
+            Picasso.with(context())
+                .load(it)
+                .transform(CircleTransformation())
+                .into(binding.friendImage)
         }
         binding.friendName.text = user?.name()
     }

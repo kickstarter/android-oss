@@ -28,12 +28,11 @@ class ActivitySampleFriendBackingViewHolder(
         val project = activity?.project()
         if (user != null && project != null) {
             binding.activityTitle.visibility = View.GONE
-            Picasso.with(context).load(
-                user.avatar()
-                    .small()
-            )
-                .transform(CircleTransformation())
-                .into(binding.activityImage)
+            user.avatar().small()?.let {
+                Picasso.with(context).load(it)
+                    .transform(CircleTransformation())
+                    .into(binding.activityImage)
+            }
             binding.activitySubtitle.text = Html.fromHtml(
                 ksString.format(
                     context().getString(R.string.activity_friend_backed_project_name_by_creator_name),

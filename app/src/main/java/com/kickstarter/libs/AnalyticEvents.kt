@@ -2,6 +2,8 @@ package com.kickstarter.libs
 
 import com.kickstarter.libs.KoalaContext.*
 import com.kickstarter.libs.KoalaEvent.ProjectAction
+import com.kickstarter.libs.utils.EventContext
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.KoalaUtils
 import com.kickstarter.models.Activity
@@ -12,6 +14,7 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.data.*
 import com.kickstarter.ui.data.Mailbox
 import java.util.*
+import kotlin.collections.HashMap
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
@@ -646,6 +649,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackAddOnsContinueButtonClicked(pledgeData: PledgeData) {
         val props = KoalaUtils.pledgeDataProperties(pledgeData, client.loggedInUser())
         client.track(ADD_ONS_CONTINUED_BUTTON_CLICKED, props)
+    }
+
+    /**
+     * Sends data associated with the add ons continue CTA clicked event to the client.
+     *
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackAddOnsContinueCTA(pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf("context_cta" to EventContext.CtaContextName.ADD_ONS_CONTINUE.contextName)
+        props.putAll(KoalaUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
+        client.track(EventName.CTA_CLICKED.eventName, props)
     }
 
     //endregion

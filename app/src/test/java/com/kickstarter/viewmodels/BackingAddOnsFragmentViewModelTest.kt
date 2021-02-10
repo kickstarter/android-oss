@@ -5,6 +5,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
@@ -455,7 +456,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     TestCase.assertEquals(it.second, pledgeReason)
                 }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -522,7 +524,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     TestCase.assertEquals(selectedAddOnsList, listAddonsToCheck)
                 }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -648,7 +651,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
                     TestCase.assertEquals(it.first.addOns(), updateList)
                 }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -860,7 +864,8 @@ class BackingAddOnsFragmentViewModelTest : KSRobolectricTestCase() {
             TestCase.assertEquals(shippingRuleSendToPledge, ShippingRuleFactory.mexicoShippingRule())
         }
 
-        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked")
+        this.lakeTest.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues("Add-Ons Page Viewed", "Add-Ons Continue Button Clicked", EventName.CTA_CLICKED.eventName)
     }
 
     @Test

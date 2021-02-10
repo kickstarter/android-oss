@@ -35,7 +35,7 @@ public final class KoalaUtils {
         put("amount", checkoutData.amount());
         put("id", checkoutData.id());
         put("payment_type", checkoutData.paymentType().rawValue());
-        put("amount_total_usd", (CheckoutDataExt.totalAmount(checkoutData) * project.staticUsdRate()));
+        put("amount_total_usd", CheckoutDataExt.totalAmount(checkoutData) * project.staticUsdRate());
         put("shipping_amount", checkoutData.shippingAmount());
         if (checkoutData.bonusAmount() != null) {
           put("bonus_amount", checkoutData.bonusAmount());

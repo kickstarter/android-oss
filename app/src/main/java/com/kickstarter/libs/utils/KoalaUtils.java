@@ -195,7 +195,7 @@ public final class KoalaUtils {
         put("creator_uid", project.creator().id());
         put("currency", project.currency());
         put("current_pledge_amount", project.pledged());
-        put("current_pledge_amount_usd", project.pledged() * project.staticUsdRate());
+        put("current_amount_pledged_usd", project.pledged() * project.staticUsdRate());
         put("deadline", project.deadline() != null ? project.deadline().getMillis() / 1000 : null);
         put("duration", Math.round(ProjectUtils.timeInSecondsOfDuration(project)));
         put("goal", project.goal());

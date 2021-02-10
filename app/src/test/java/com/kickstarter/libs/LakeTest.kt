@@ -519,7 +519,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals(3L, expectedProperties["project_creator_uid"])
         assertEquals("USD", expectedProperties["project_currency"])
         assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
-        assertEquals(50.0, expectedProperties["project_current_pledge_amount_usd"])
+        assertEquals(50.0, expectedProperties["project_current_amount_pledged_usd"])
         assertEquals(project.deadline()?.millis?.let { it / 1000 }, expectedProperties["project_deadline"])
         assertEquals(60 * 60 * 24 * 20, expectedProperties["project_duration"])
         assertEquals(100.0, expectedProperties["project_goal"])

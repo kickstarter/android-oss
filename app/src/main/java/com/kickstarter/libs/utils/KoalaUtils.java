@@ -151,7 +151,7 @@ public final class KoalaUtils {
   }
 
   public static @NonNull Map<String, Object> pledgeProperties(final @NonNull Reward reward) {
-    return pledgeProperties(reward, "pledge_backer_reward_");
+    return pledgeProperties(reward, "checkout_reward_");
   }
 
   public static @NonNull Map<String, Object> pledgeProperties(final @NonNull Reward reward, final @NonNull String prefix) {

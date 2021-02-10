@@ -35,9 +35,9 @@ import rx.subjects.PublishSubject
 
 @RequiresActivityViewModel(CommentsViewModel.ViewModel::class)
 class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAdapter.Delegate {
-    private var adapter: CommentsAdapter? = null
-    private var recyclerViewPaginator: RecyclerViewPaginator? = null
-    private var swipeRefresher: SwipeRefresher? = null
+    private val adapter = CommentsAdapter(this)
+    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
+    private lateinit var swipeRefresher: SwipeRefresher
     private val alertDialog = PublishSubject.create<AlertDialog>()
     private lateinit var binding: CommentsLayoutBinding
 
@@ -46,7 +46,7 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
         binding = CommentsLayoutBinding.inflate(layoutInflater)
         val view: View = binding.root
         setContentView(view)
-        adapter = CommentsAdapter(this)
+
         binding.commentsRecyclerView.adapter = adapter
         binding.commentsRecyclerView.layoutManager = LinearLayoutManager(this)
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingComments)
@@ -60,12 +60,12 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
         val cancelButton = alertDialog
             .map { it?.findViewById<TextView>(R.id.cancel_button) }
         cancelButton
-            .switchMap { view -> view?.let { RxView.clicks(it) } }
+            .switchMap { it?.let { RxView.clicks(it) } }
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
             .subscribe { viewModel.inputs.commentDialogDismissed() }
         postCommentButton
-            .switchMap { view -> view?.let { RxView.clicks(it) } }
+            .switchMap { it?.let { RxView.clicks(it) } }
             .compose(bindToLifecycle())
             .subscribe { viewModel.inputs.postCommentClicked() }
         commentBodyEditText
@@ -81,7 +81,7 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
         viewModel.outputs.commentsData()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { adapter?.takeData(it) }
+            .subscribe { adapter.takeData(it) }
         viewModel.outputs.enablePostButton()
             .compose(Transformers.combineLatestPair(postCommentButton))
             .compose(bindToLifecycle())
@@ -122,7 +122,7 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
 
     override fun onDestroy() {
         super.onDestroy()
-        recyclerViewPaginator?.stop()
+        recyclerViewPaginator.stop()
         binding.commentsRecyclerView.adapter = null
     }
 
@@ -160,19 +160,11 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
         alertDialog.onNext(commentDialog)
     }
 
-    fun setPostButtonEnabled(postCommentButton: TextView?, enabled: Boolean) {
-        if (postCommentButton != null) {
-            postCommentButton.isEnabled = enabled
-        }
-    }
+    private fun setPostButtonEnabled(postCommentButton: TextView?, enabled: Boolean) = postCommentButton?.let { it.isEnabled = enabled }
 
-    override fun projectContextClicked(viewHolder: ProjectContextViewHolder?) {
-        back()
-    }
+    override fun projectContextClicked(viewHolder: ProjectContextViewHolder?) = back()
 
-    override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) {
-        commentsLogin()
-    }
+    override fun emptyCommentsLoginClicked(viewHolder: EmptyCommentsViewHolder?) = commentsLogin()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)

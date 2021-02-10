@@ -88,9 +88,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         binding.thanksRecyclerView.adapter = null
     }
 
-    fun closeButtonClick() {
-        viewModel.inputs.closeButtonClicked()
-    }
+    private fun closeButtonClick() = viewModel.inputs.closeButtonClicked()
 
     private fun showConfirmGamesNewsletterDialog() {
         val optInDialogMessageString = ksString.format(
@@ -113,9 +111,7 @@ class ThanksActivity : BaseActivity<ThanksViewModel.ViewModel>() {
         builder.show()
     }
 
-    private fun showRatingDialog() {
-        ViewUtils.showRatingDialog(this)
-    }
+    private fun showRatingDialog() = ViewUtils.showRatingDialog(this)
 
     private fun startDiscoveryActivity(params: DiscoveryParams) {
         val intent = Intent(this, DiscoveryActivity::class.java)

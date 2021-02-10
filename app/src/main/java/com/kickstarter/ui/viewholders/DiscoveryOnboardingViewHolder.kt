@@ -20,7 +20,7 @@ class DiscoveryOnboardingViewHolder(
     override fun bindData(data: Any?) {
     }
 
-    fun loginToutClick() {
+    private fun loginToutClick() {
         delegate.discoveryOnboardingViewHolderLoginToutClick(this)
     }
 }

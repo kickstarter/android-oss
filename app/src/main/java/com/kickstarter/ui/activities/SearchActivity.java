@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -15,13 +20,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.SearchAdapter;
 import com.kickstarter.ui.toolbars.SearchToolbar;
-import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.viewmodels.SearchViewModel;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
@@ -84,7 +85,7 @@ public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel
     this.recyclerView.setAdapter(null);
   }
 
-  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {
+  public void projectSearchResultClick(final @NonNull KSViewHolder viewHolder, final @NonNull Project project) {
     this.viewModel.inputs.projectClicked(project);
   }
 }

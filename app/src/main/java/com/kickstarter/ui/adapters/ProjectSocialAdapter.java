@@ -1,17 +1,20 @@
 package com.kickstarter.ui.adapters;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.ProjectContextViewBinding;
+import com.kickstarter.databinding.ProjectSocialViewBinding;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSocialViewHolder;
 
 import java.util.Collections;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 
 public final class ProjectSocialAdapter extends KSAdapter {
   private final Delegate delegate;
@@ -39,11 +42,11 @@ public final class ProjectSocialAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     if (layout == R.layout.project_context_view) {
-      return new ProjectContextViewHolder(view, this.delegate);
+      return new ProjectContextViewHolder(ProjectContextViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     } else {
-      return new ProjectSocialViewHolder(view);
+      return new ProjectSocialViewHolder(ProjectSocialViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
 }

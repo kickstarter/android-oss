@@ -1,8 +1,12 @@
 package com.kickstarter.ui.adapters
 
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ProfileCardViewBinding
+import com.kickstarter.databinding.ProfileEmptyStateViewBinding
 import com.kickstarter.models.Empty
 import com.kickstarter.models.Project
 import com.kickstarter.ui.viewholders.EmptyProfileViewHolder
@@ -39,11 +43,11 @@ class ProfileAdapter(private val delegate: Delegate) : KSAdapter() {
         }
     }
 
-    override fun viewHolder(@LayoutRes layout: Int, view: View): KSViewHolder {
+    override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
-            R.layout.profile_empty_state_view -> EmptyProfileViewHolder(view, this.delegate)
-            R.layout.profile_card_view -> ProfileCardViewHolder(view, this.delegate)
-            else -> EmptyViewHolder(view)
+            R.layout.profile_empty_state_view -> EmptyProfileViewHolder(ProfileEmptyStateViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
+            R.layout.profile_card_view -> ProfileCardViewHolder(ProfileCardViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
+            else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 

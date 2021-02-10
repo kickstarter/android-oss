@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.extensions.CheckoutDataExt;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -34,7 +35,7 @@ public final class KoalaUtils {
         put("amount", checkoutData.amount());
         put("id", checkoutData.id());
         put("payment_type", checkoutData.paymentType().rawValue());
-        put("revenue_in_usd_cents", Math.round(checkoutData.amount() * project.staticUsdRate() * 100));
+        put("amount_total_usd", (CheckoutDataExt.totalAmount(checkoutData) * project.staticUsdRate()));
         put("shipping_amount", checkoutData.shippingAmount());
         if (checkoutData.bonusAmount() != null) {
           put("bonus_amount", checkoutData.bonusAmount());

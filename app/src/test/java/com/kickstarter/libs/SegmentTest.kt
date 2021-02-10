@@ -490,7 +490,7 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(30.0, expectedProperties["checkout_amount"])
         assertEquals("CREDIT_CARD", expectedProperties["checkout_payment_type"])
-        assertEquals(3000L, expectedProperties["checkout_revenue_in_usd_cents"])
+        assertEquals(50.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
     }
 

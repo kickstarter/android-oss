@@ -2,7 +2,8 @@ package com.kickstarter.libs
 
 import com.kickstarter.libs.KoalaContext.*
 import com.kickstarter.libs.KoalaEvent.ProjectAction
-import com.kickstarter.libs.utils.EventContext
+import com.kickstarter.libs.utils.EventContext.CtaContextName.ADD_ONS_CONTINUE
+import com.kickstarter.libs.utils.EventContext.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.libs.utils.KoalaUtils
@@ -13,8 +14,9 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.data.*
 import com.kickstarter.ui.data.Mailbox
-import java.util.*
 import kotlin.collections.HashMap
+
+private const val CONTEXT_CTA = "context_cta"
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
@@ -625,6 +627,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, props)
     }
 
+    /**
+     * Sends data associated with the initial pledge CTA click event to the client.
+     *
+     * @param projectData: The project data.
+     */
+    fun trackPledgeInitiateCTA(projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA to PLEDGE_INITIATE.contextName)
+        props.putAll(KoalaUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(EventName.CTA_CLICKED.eventName, props)
+    }
+
     fun trackSelectRewardButtonClicked(pledgeData: PledgeData) {
         val props = KoalaUtils.pledgeDataProperties(pledgeData, client.loggedInUser())
         client.track(SELECT_REWARD_BUTTON_CLICKED, props)
@@ -657,7 +670,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param pledgeData: The selected pledge data.
      */
     fun trackAddOnsContinueCTA(pledgeData: PledgeData) {
-        val props: HashMap<String, Any> = hashMapOf("context_cta" to EventContext.CtaContextName.ADD_ONS_CONTINUE.contextName)
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA to ADD_ONS_CONTINUE.contextName)
         props.putAll(KoalaUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(EventName.CTA_CLICKED.eventName, props)
     }

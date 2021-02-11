@@ -212,13 +212,14 @@ class ProjectCardViewHolder(
         val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
 
         binding.projectCardPhoto.photo.maxHeight = targetImageHeight
-
-        Picasso.with(context())
-            .load(avatarUrl)
-            .resize(targetImageWidth, targetImageHeight) // required to fit properly into apis < 18
-            .centerCrop()
-            .placeholder(ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null))
-            .into(binding.projectCardPhoto.photo)
+        avatarUrl?.let {
+            Picasso.with(context())
+                .load(it)
+                .resize(targetImageWidth, targetImageHeight) // required to fit properly into apis < 18
+                .centerCrop()
+                .placeholder(ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null))
+                .into(binding.projectCardPhoto.photo)
+        }
     }
 
     private fun setDeadlineCountdownText(project: Project) {

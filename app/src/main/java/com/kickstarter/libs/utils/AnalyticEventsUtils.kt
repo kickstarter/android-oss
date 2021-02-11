@@ -24,11 +24,9 @@ object AnalyticEventsUtils {
             put("payment_type", checkoutData.paymentType().rawValue())
             put("amount_total_usd", checkoutData.totalAmount() * project.staticUsdRate())
             put("shipping_amount", checkoutData.shippingAmount())
-            if (checkoutData.bonusAmount() != null) {
-                checkoutData.bonusAmount()?.let { bAmount ->
-                    put("bonus_amount", bAmount)
-                    put("bonus_amount_usd", Math.round(bAmount * project.staticUsdRate()))
-                }
+            checkoutData.bonusAmount()?.let { bAmount ->
+                put("bonus_amount", bAmount)
+                put("bonus_amount_usd", Math.round(bAmount * project.staticUsdRate()))
             }
         }
 
@@ -193,8 +191,7 @@ object AnalyticEventsUtils {
 
     @JvmOverloads
     fun activityProperties(activity: Activity, loggedInUser: User?, prefix: String = "activity_"): Map<String, Any> {
-        val props = HashMap<String, Any>()
-        props["category"] = activity.category()
+        val props: HashMap<String, Any> = hashMapOf("category" to activity.category())
 
         val properties = MapUtils.prefixKeys(props, prefix)
         activity.project()?.let { project ->

@@ -7,6 +7,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
@@ -629,8 +630,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // When a reward from a live project is clicked, start checkout.
         this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
-        this.lakeTest.assertValues("Select Reward Button Clicked", "CTA Clicked")
-        this.segmentTrack.assertValues("Select Reward Button Clicked", "CTA Clicked")
+        this.lakeTest.assertValues("Select Reward Button Clicked", EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues("Select Reward Button Clicked", EventName.CTA_CLICKED.eventName)
     }
 
     @Test

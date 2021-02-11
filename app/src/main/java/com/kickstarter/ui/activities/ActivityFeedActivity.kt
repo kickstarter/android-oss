@@ -32,10 +32,9 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
 
         currentUser = environment().currentUser()
         adapter = ActivityFeedAdapter(viewModel.inputs)
-        binding.recyclerView.apply {
-            adapter = adapter
-            layoutManager = LinearLayoutManager(this@ActivityFeedActivity)
-        }
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this@ActivityFeedActivity)
+
         recyclerViewPaginator = RecyclerViewPaginator(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities)
         swipeRefresher = SwipeRefresher(
             this, binding.activityFeedSwipeRefreshLayout, { viewModel.inputs.refresh() }

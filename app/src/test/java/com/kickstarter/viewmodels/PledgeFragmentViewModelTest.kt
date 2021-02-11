@@ -1061,7 +1061,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValue(true)
         this.vm.inputs.pledgeButtonClicked()
 
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
     }
 
@@ -1356,7 +1357,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValues(true, false, true)
         this.pledgeProgressIsGone.assertValues(false, true)
         this.showUpdatePaymentError.assertValueCount(1)
-        this.lakeTest.assertValues("Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Pledge Submit Button Clicked", "CTA Clicked")
     }
 
     @Test
@@ -1413,7 +1415,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.pledgeButtonIsEnabled.assertValues(true, false)
         this.pledgeProgressIsGone.assertValues(false)
         this.showUpdatePaymentSuccess.assertValueCount(1)
-        this.lakeTest.assertValues("Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Pledge Submit Button Clicked", "CTA Clicked")
     }
 
     @Test
@@ -1935,7 +1938,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
     }
 
@@ -1955,7 +1959,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
     }
 
@@ -1979,7 +1984,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertValueCount(1)
         this.showPledgeError.assertNoValues()
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
     }
 
@@ -2006,7 +2012,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
         this.showSCAFlow.assertNoValues()
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
     }
 
@@ -2033,7 +2040,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertNoValues()
         this.showSCAFlow.assertValueCount(1)
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
 
         this.vm.inputs.stripeSetupResultSuccessful(StripeIntentResult.Outcome.SUCCEEDED)
@@ -2074,7 +2082,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
     }
 
@@ -2110,7 +2119,8 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.showSelectedCard.assertValue(Pair(0, CardState.SELECTED))
         this.showPledgeSuccess.assertNoValues()
         this.showPledgeError.assertValueCount(1)
-        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked")
+        this.lakeTest.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Checkout Payment Page Viewed", "Pledge Submit Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Checkout Payment Page Viewed")
     }
 

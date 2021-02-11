@@ -8,6 +8,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.*
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
 import com.kickstarter.mock.services.MockApiClient
@@ -773,9 +774,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeToolbarNavigationClicked()
         this.expandPledgeSheet.assertValues(Pair(true, true), Pair(false, true))
         this.goBack.assertNoValues()
-        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", EventName.CTA_CLICKED.eventName)
         this.experimentsTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", EventName.CTA_CLICKED.eventName)
 
     }
 
@@ -787,9 +788,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
-        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", EventName.CTA_CLICKED.eventName)
         this.experimentsTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", EventName.CTA_CLICKED.eventName)
     }
 
     @Test

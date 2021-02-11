@@ -8,6 +8,9 @@ import com.kickstarter.libs.utils.EventContext.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContext.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.AnalyticEventsUtils
+import com.kickstarter.libs.utils.EventContext.PageViewedContextName.ADD_ONS
+import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_CTA
+import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
@@ -17,9 +20,6 @@ import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.data.*
 import com.kickstarter.ui.data.Mailbox
 import kotlin.collections.HashMap
-
-private const val CONTEXT_CTA = "context_cta"
-private const val CONTEXT_TYPE = "context_type"
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
@@ -660,7 +660,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param projectData: The project data.
      */
     fun trackPledgeInitiateCTA(projectData: ProjectData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA to PLEDGE_INITIATE.contextName)
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PLEDGE_INITIATE.contextName)
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         client.track(EventName.CTA_CLICKED.eventName, props)
     }
@@ -697,6 +697,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(ADD_ONS_PAGE_VIEWED, props)
     }
 
+    /**
+     * Sends data to the client when the add-ons screen is loaded.
+     *
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackAddOnsScreenViewed(pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to ADD_ONS.contextName)
+        props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
+        client.track(EventName.PAGE_VIEWED.eventName, props)
+    }
+
     fun trackAddOnsContinueButtonClicked(pledgeData: PledgeData) {
         val props = AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser())
         client.track(ADD_ONS_CONTINUED_BUTTON_CLICKED, props)
@@ -708,7 +719,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param pledgeData: The selected pledge data.
      */
     fun trackAddOnsContinueCTA(pledgeData: PledgeData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA to ADD_ONS_CONTINUE.contextName)
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to ADD_ONS_CONTINUE.contextName)
         props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(EventName.CTA_CLICKED.eventName, props)
     }

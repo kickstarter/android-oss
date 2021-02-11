@@ -37,4 +37,10 @@ class EventContext {
         REWARDS("rewards"),
         THANKS("thanks")
     }
+
+    enum class ContextPropertyName(val contextName: String) {
+        CONTEXT_CTA("context_cta"),
+        CONTEXT_PAGE("context_page"),
+        CONTEXT_TYPE("context_type")
+    }
 }

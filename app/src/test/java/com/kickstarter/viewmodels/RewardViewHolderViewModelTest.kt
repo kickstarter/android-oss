@@ -629,7 +629,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         // When a reward from a live project is clicked, start checkout.
         this.vm.inputs.rewardClicked(2)
         this.showPledgeFragment.assertValue(Pair.create(liveProject, reward))
-        this.lakeTest.assertValue("Select Reward Button Clicked")
+        this.lakeTest.assertValues("Select Reward Button Clicked", "CTA Clicked")
+        this.segmentTrack.assertValues("Select Reward Button Clicked", "CTA Clicked")
     }
 
     @Test

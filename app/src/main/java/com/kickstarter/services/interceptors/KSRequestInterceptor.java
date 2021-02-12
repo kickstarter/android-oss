@@ -1,10 +1,8 @@
 package com.kickstarter.services.interceptors;
 
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.perimeterx.PerimeterXClient;
 import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.utils.I18nUtils;
-import com.perimeterx.msdk.PXManager;
 
 import java.io.IOException;
 
@@ -31,12 +29,12 @@ public final class KSRequestInterceptor implements Interceptor {
   }
 
   private Request request(final @NonNull Request initialRequest) {
-    Request.Builder builder = initialRequest.newBuilder()
+    final Request.Builder builder = initialRequest.newBuilder()
             .header("Kickstarter-Android-App", this.build.versionCode().toString())
             .header("Kickstarter-App-Id", this.build.applicationId())
             .header("Accept-Language", I18nUtils.language());
 
-    pxManager.addHeaderTo(builder);
+    this.pxManager.addHeaderTo(builder);
     return builder.build();
   }
 }

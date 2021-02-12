@@ -8,7 +8,6 @@ import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.services.KSUri;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
@@ -40,11 +39,11 @@ public final class ApiRequestInterceptor implements Interceptor {
       return initialRequest;
     }
 
-    Request.Builder builder = initialRequest.newBuilder()
+    final Request.Builder builder = initialRequest.newBuilder()
             .addHeader("Accept", "application/json")
             .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().getId());
 
-    pxManager.addHeaderTo(builder);
+    this.pxManager.addHeaderTo(builder);
 
     return builder
       .url(url(initialRequest.url()))

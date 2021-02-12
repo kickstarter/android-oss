@@ -236,12 +236,12 @@ public class ApplicationModule {
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
       if (build.isDebug()) {
         manager = PXManager.getInstance()
-                .setNewHeadersCallback(
-                        headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
-                )
-                .setManagerReadyCallback(
-                        headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
-                );
+          .setNewHeadersCallback(
+            headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
+          )
+          .setManagerReadyCallback(
+            headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
+          );
       } else {
         manager = PXManager.getInstance();
       }
@@ -369,7 +369,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, @Nullable PerimeterXClientType manager) {
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, manager);
   }
 
@@ -579,7 +579,7 @@ public class ApplicationModule {
 
   @Provides
   static KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
-    final @WebEndpoint String webEndpoint) {
+    final @WebEndpoint String webEndpoint, final @NonNull PerimeterXClientType manager) {
     return new KSWebViewClient(okHttpClient, webEndpoint);
   }
 

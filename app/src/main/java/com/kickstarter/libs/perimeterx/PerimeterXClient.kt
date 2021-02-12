@@ -7,7 +7,7 @@ class PerimeterXClient(
         private val manager: PXManager?
 ):PerimeterXClientType {
 
-    override fun manager() = this.manager
+    override fun getClient() = this.manager
 
     override fun addHeaderTo(builder: Request.Builder?) {
         val headers = PXManager.httpHeaders()?.let { it.toMap() } ?: emptyMap()

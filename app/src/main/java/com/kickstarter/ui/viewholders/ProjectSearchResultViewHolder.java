@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -13,8 +16,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ProjectSearchResultHolderViewModel;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -92,7 +93,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   }
 
   private void setProjectImageUrl(final @NonNull String imageUrl) {
-    Picasso.with(context()).load(imageUrl).into(this.projectImageView);
+     Picasso.get().load(imageUrl).into(this.projectImageView);
   }
 
   @Override

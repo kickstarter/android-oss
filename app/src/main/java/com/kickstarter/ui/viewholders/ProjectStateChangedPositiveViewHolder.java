@@ -5,6 +5,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
@@ -17,9 +21,6 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindString;
@@ -123,7 +124,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
     // TODO: Switch to "You launched a project" if current user launched
     //return context.getString(R.string.creator_launched_a_project, activity.user().name(), activity.project().name());
 
-    Picasso.with(context)
+    Picasso.get()
       .load(photo.full())
       .into(this.projectPhotoImageView);
   }

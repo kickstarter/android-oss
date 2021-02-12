@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -18,8 +21,6 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -74,7 +75,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
     this.projectNameTextView.setText(project.name());
 
-    Picasso.with(context)
+    Picasso.get()
       .load(photo.little())
       .into(this.projectPhotoImageView);
 

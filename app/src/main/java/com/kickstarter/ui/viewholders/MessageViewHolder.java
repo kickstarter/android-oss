@@ -4,6 +4,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -12,9 +16,6 @@ import com.kickstarter.models.Message;
 import com.kickstarter.viewmodels.MessageHolderViewModel;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -82,7 +83,7 @@ public final class MessageViewHolder extends KSViewHolder {
   }
 
   private void setParticipantAvatarImageView(final @NonNull String avatarUrl) {
-    Picasso.with(this.context()).load(avatarUrl)
+    Picasso.get().load(avatarUrl)
       .transform(new CircleTransformation())
       .into(this.participantAvatarImageView);
   }

@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -12,8 +15,6 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -51,7 +52,7 @@ public final class ProjectContextViewHolder extends KSViewHolder {
 
     if (photo != null) {
       this.projectContextImageView.setVisibility(View.VISIBLE);
-      Picasso.with(this.context).load(photo.full()).into(this.projectContextImageView);
+      Picasso.get().load(photo.full()).into(this.projectContextImageView);
     } else {
       this.projectContextImageView.setVisibility(View.INVISIBLE);
     }

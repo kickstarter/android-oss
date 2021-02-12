@@ -4,13 +4,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -33,7 +34,7 @@ public class ProjectSocialViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    Picasso.with(context()).load(this.user.avatar().small())
+    Picasso.get().load(this.user.avatar().small())
     .transform(new CircleTransformation())
     .into(this.friendImageView);
 

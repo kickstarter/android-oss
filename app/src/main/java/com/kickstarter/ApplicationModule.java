@@ -84,8 +84,6 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
-import com.perimeterx.msdk.ManagerReadyCallback;
-import com.perimeterx.msdk.NewHeadersCallback;
 import com.perimeterx.msdk.PXManager;
 import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
@@ -112,6 +110,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import type.CustomType;
 
 @Module
@@ -232,15 +231,21 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static PerimeterXClientType provideParameterXManager(final @ApplicationContext @NonNull Context context) {
+  static PerimeterXClientType providePerimeterXManager(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     PXManager manager = null;
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      manager = PXManager.getInstance()
-      .setNewHeadersCallback(
-         headers -> System.out.println("New headers called back")
-      )
-      .setManagerReadyCallback(
-         headers -> System.out.println("Manager ready called back"));
+      if (build.isDebug()) {
+        manager = PXManager.getInstance()
+                .setNewHeadersCallback(
+                        headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
+                )
+                .setManagerReadyCallback(
+                        headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
+                );
+      } else {
+        manager = PXManager.getInstance();
+      }
+
       manager.start(context, Secrets.PERIMETERX_APPID);
     }
 

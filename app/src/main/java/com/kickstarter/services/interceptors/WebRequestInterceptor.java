@@ -8,7 +8,6 @@ import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.utils.WebUtils;
 import com.kickstarter.services.KSUri;
-import com.perimeterx.msdk.PXManager;
 
 import java.io.IOException;
 

@@ -36,22 +36,17 @@ public final class ApiRequestInterceptor implements Interceptor {
   }
 
   private Request request(final @NonNull Request initialRequest) {
-    String key = "";
-    String value = "";
-
     if (!shouldIntercept(initialRequest)) {
       return initialRequest;
     }
 
-    for (HashMap.Entry<String, String> entry : pxManager.httpHeaders().entrySet()) {
-      key = entry.getKey();
-      value = entry.getValue();
-    }
+    Request.Builder builder = initialRequest.newBuilder()
+            .addHeader("Accept", "application/json")
+            .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().getId());
 
-    return initialRequest.newBuilder()
-      .addHeader("Accept", "application/json")
-      .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().getId())
-      .addHeader(key, value)
+    pxManager.addHeaderTo(builder);
+
+    return builder
       .url(url(initialRequest.url()))
       .build();
   }

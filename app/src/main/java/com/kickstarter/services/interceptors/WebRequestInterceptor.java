@@ -27,6 +27,7 @@ public final class WebRequestInterceptor implements Interceptor {
   private final @NonNull String endpoint;
   private final @NonNull InternalToolsType internalTools;
   private final @NonNull Build build;
+  private final @NonNull PerimeterXClientType pxManager;
 
   public WebRequestInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String endpoint,
                                final @NonNull InternalToolsType internalTools, final @NonNull Build build, PerimeterXClientType manager) {
@@ -34,6 +35,7 @@ public final class WebRequestInterceptor implements Interceptor {
     this.endpoint = endpoint;
     this.internalTools = internalTools;
     this.build = build;
+    this.pxManager = manager;
   }
 
   @Override
@@ -55,6 +57,8 @@ public final class WebRequestInterceptor implements Interceptor {
     } else if (shouldAddBasicAuthorizationHeader(initialRequest) && isNotNull(basicAuthorizationHeader)) {
       requestBuilder.addHeader("Authorization", basicAuthorizationHeader);
     }
+
+    pxManager.addHeaderTo(requestBuilder);
 
     return requestBuilder.build();
   }

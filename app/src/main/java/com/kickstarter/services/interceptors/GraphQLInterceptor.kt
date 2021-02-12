@@ -21,23 +21,17 @@ class GraphQLInterceptor(private val clientId: String,
     override fun intercept(chain: Chain): Response {
         val original = chain.request()
         val builder = original.newBuilder().method(original.method, original.body)
-        var headerKey = ""
-        var headerValue = ""
 
         this.currentUser.observable()
                 .subscribe {
                     builder.addHeader("Authorization", "token " + this.currentUser.accessToken)
                 }
 
-        pxManager.httpHeaders().forEach { (key, value) ->
-            headerKey = key
-            headerValue = value
-        }
-
         builder.addHeader("User-Agent", WebUtils.userAgent(this.build))
                 .addHeader("X-KICKSTARTER-CLIENT", this.clientId)
                 .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().id)
-                .addHeader(headerKey, headerValue)
+
+        pxManager.addHeaderTo(builder)
 
         return chain.proceed(builder.build())
     }

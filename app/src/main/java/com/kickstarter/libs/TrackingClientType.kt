@@ -81,6 +81,10 @@ abstract class TrackingClientType {
             this["os_version"] = OSVersion()
             this["user_agent"] = userAgent() ?: ""
             this["user_is_logged_in"] = userIsLoggedIn
+            // - Add the optimizely experiments as part of the session properties
+            optimizely()?.let {
+                this.putAll(it.getTrackingProperties())
+            }
             this["wifi_connection"] = wifiConnection()
         }
 

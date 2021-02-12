@@ -56,7 +56,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     override fun track(eventName: String, additionalProperties: Map<String, Any>) {
         try {
-            val eventData = trackingData(eventName, combinedProperties(additionalProperties))
+            trackingData(eventName, combinedProperties(additionalProperties))
 
             if (this.build.isDebug) {
                 val dataForLogs = combinedProperties(additionalProperties).toString()

@@ -11,6 +11,8 @@ import com.kickstarter.libs.utils.ExperimentRevenueData
 import com.kickstarter.models.User
 import com.optimizely.ab.android.sdk.OptimizelyClient
 import com.optimizely.ab.android.sdk.OptimizelyManager
+import org.json.JSONArray
+import org.json.JSONObject
 
 class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManager, private val optimizelyEnvironment: OptimizelyEnvironment) : ExperimentsClientType {
     override fun appVersion(): String = BuildConfig.VERSION_NAME
@@ -50,5 +52,19 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
 
     override fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String? {
         return optimizelyClient().getVariation(experimentKey, userId(), attributes(experimentData, this.optimizelyEnvironment))?.key
+    }
+
+    override fun getTrackingProperties(): Map<String, Any> {
+        val experiments = JSONArray()
+        val properties = mutableMapOf<String, Any>()
+
+        this.optimizelyClient().optimizelyConfig?.experimentsMap?.map { entry ->
+            val variant:String  = this.optimizelyClient().getVariation(entry.key, userId())?.let { it.key } ?: ""
+            experiments.put(JSONObject(mapOf(entry.key to variant)))
+        }
+
+        properties["variants_optimizely"] = experiments
+
+        return properties.toMap()
     }
 }

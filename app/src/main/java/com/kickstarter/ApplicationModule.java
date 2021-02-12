@@ -580,7 +580,7 @@ public class ApplicationModule {
   @Provides
   static KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
     final @WebEndpoint String webEndpoint, final @NonNull PerimeterXClientType manager) {
-    return new KSWebViewClient(okHttpClient, webEndpoint);
+    return new KSWebViewClient(okHttpClient, webEndpoint, manager);
   }
 
   @Provides

@@ -1,53 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-
-  <androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/creator_dashboard_toolbar" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ProgressBar
-      android:id="@+id/creator_dashboard_progress_bar"
-      android:layout_gravity="center"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+        <include
+            android:id="@+id/creator_dashboard_toolbar"
+            layout="@layout/creator_dashboard_toolbar" />
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/creator_dashboard_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        <ProgressBar
+            android:id="@+id/creator_dashboard_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
-  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/creator_dashboard_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-  <View
-    android:id="@+id/creator_dashboard_bottom_sheet_scrim"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/black_alpha_17"
-    android:clickable="true"
-    android:fitsSystemWindows="true"
-    android:focusable="true"
-    android:visibility="gone" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-  <androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_marginTop="?attr/actionBarSize"
-    android:layout_height="match_parent">
+    <View
+        android:id="@+id/creator_dashboard_bottom_sheet_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_alpha_17"
+        android:clickable="true"
+        android:fitsSystemWindows="true"
+        android:focusable="true"
+        android:visibility="gone" />
 
-    <androidx.recyclerview.widget.RecyclerView
-      android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/kds_white"
-      app:behavior_hideable="true"
-      app:behavior_peekHeight="0dp"
-      app:layout_behavior="@string/bottom_sheet_behavior" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
 
-  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/creator_dashboard_bottom_sheet_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/kds_white"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight="0dp"
+            app:layout_behavior="@string/bottom_sheet_behavior" />
 
-</merge>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</LinearLayout>

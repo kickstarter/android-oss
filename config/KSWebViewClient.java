@@ -12,6 +12,7 @@ import com.kickstarter.libs.FormContents;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 
 public final class KSWebViewClient extends WebViewClient {
 

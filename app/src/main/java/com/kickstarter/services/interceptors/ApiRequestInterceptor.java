@@ -4,8 +4,8 @@ import android.net.Uri;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.services.KSUri;
-import com.perimeterx.msdk.PXManager;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,10 +20,10 @@ public final class ApiRequestInterceptor implements Interceptor {
   private final String clientId;
   private final CurrentUserType currentUser;
   private final String endpoint;
-  private final PXManager pxManager;
+  private final PerimeterXClientType pxManager;
 
   public ApiRequestInterceptor(final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
-                               final @NonNull String endpoint, PXManager manager) {
+                               final @NonNull String endpoint, final @NonNull PerimeterXClientType manager) {
     this.clientId = clientId;
     this.currentUser = currentUser;
     this.endpoint = endpoint;
@@ -43,11 +43,9 @@ public final class ApiRequestInterceptor implements Interceptor {
       return initialRequest;
     }
 
-    if (pxManager != null) {
-      for (HashMap.Entry<String, String> entry : pxManager.httpHeaders().entrySet()) {
-        key = entry.getKey();
-        value = entry.getValue();
-      }
+    for (HashMap.Entry<String, String> entry : pxManager.httpHeaders().entrySet()) {
+      key = entry.getKey();
+      value = entry.getValue();
     }
 
     return initialRequest.newBuilder()

@@ -45,6 +45,8 @@ import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.models.OptimizelyEnvironment;
+import com.kickstarter.libs.perimeterx.PerimeterXClient;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -92,7 +94,6 @@ import org.joda.time.DateTime;
 
 import java.net.CookieManager;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -230,8 +231,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @Nullable
-  static PXManager provideParameterXManager(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+  @NonNull
+  static PerimeterXClientType provideParameterXManager(final @ApplicationContext @NonNull Context context) {
     PXManager manager = null;
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
       manager = PXManager.getInstance()
@@ -243,7 +244,7 @@ public class ApplicationModule {
       manager.start(context, Secrets.PERIMETERX_APPID);
     }
 
-    return manager;
+    return new PerimeterXClient(manager);
   }
 
   @Provides
@@ -292,7 +293,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint, @Nullable PXManager manager) {
+    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint, final @NonNull PerimeterXClientType manager) {
     return new ApiRequestInterceptor(clientId, currentUser, endpoint.url(), manager);
   }
 
@@ -300,7 +301,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull Build build, @Nullable PXManager manager) {
+    final @NonNull CurrentUserType currentUser, final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
     return new GraphQLInterceptor(clientId, currentUser, build, manager);
   }
 
@@ -329,7 +330,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build, @Nullable PXManager manager) {
+  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
     return new KSRequestInterceptor(build, manager);
   }
 
@@ -363,7 +364,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, @Nullable PXManager manager) {
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, @Nullable PerimeterXClientType manager) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, manager);
   }
 

@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.InternalToolsType;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.utils.WebUtils;
 import com.kickstarter.services.KSUri;
 import com.perimeterx.msdk.PXManager;
@@ -28,7 +29,7 @@ public final class WebRequestInterceptor implements Interceptor {
   private final @NonNull Build build;
 
   public WebRequestInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String endpoint,
-                               final @NonNull InternalToolsType internalTools, final @NonNull Build build, PXManager manager) {
+                               final @NonNull InternalToolsType internalTools, final @NonNull Build build, PerimeterXClientType manager) {
     this.currentUser = currentUser;
     this.endpoint = endpoint;
     this.internalTools = internalTools;

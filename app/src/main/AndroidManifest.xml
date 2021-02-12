@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kickstarter">
     <!-- PERMISSIONS -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
     We need coarse location to find projects near a user. Could also see people being uncomfortable with providing

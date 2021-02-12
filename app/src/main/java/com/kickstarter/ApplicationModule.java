@@ -82,6 +82,9 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
+import com.perimeterx.msdk.ManagerReadyCallback;
+import com.perimeterx.msdk.NewHeadersCallback;
+import com.perimeterx.msdk.PXManager;
 import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
 
@@ -89,6 +92,7 @@ import org.joda.time.DateTime;
 
 import java.net.CookieManager;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Singleton;
@@ -226,6 +230,24 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @Nullable
+  static PXManager provideParameterXManager(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    PXManager manager = null;
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      manager = PXManager.getInstance()
+      .setNewHeadersCallback(
+         headers -> System.out.println("New headers called back")
+      )
+      .setManagerReadyCallback(
+         headers -> System.out.println("Manager ready called back"));
+      manager.start(context, Secrets.PERIMETERX_APPID);
+    }
+
+    return manager;
+  }
+
+  @Provides
+  @Singleton
   @NonNull
   static OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
     final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
@@ -270,16 +292,16 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
-    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url());
+    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint, @Nullable PXManager manager) {
+    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url(), manager);
   }
 
   @Provides
   @Singleton
   @NonNull
   static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull Build build) {
-    return new GraphQLInterceptor(clientId, currentUser, build);
+    final @NonNull CurrentUserType currentUser, final @NonNull Build build, @Nullable PXManager manager) {
+    return new GraphQLInterceptor(clientId, currentUser, build, manager);
   }
 
   @Provides
@@ -307,8 +329,8 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build) {
-    return new KSRequestInterceptor(build);
+  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build, @Nullable PXManager manager) {
+    return new KSRequestInterceptor(build, manager);
   }
 
   @Provides
@@ -341,8 +363,8 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
-    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, @Nullable PXManager manager) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, manager);
   }
 
   @Provides

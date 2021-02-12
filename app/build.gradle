@@ -238,6 +238,9 @@ dependencies {
     // Analytics
     implementation 'com.segment.analytics.android:analytics:4.9.0'
 
+    // Security
+    implementation 'com.perimeterx.sdk:msdk:1.12.13'
+
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-crashlytics'

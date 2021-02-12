@@ -10,6 +10,7 @@ import com.kickstarter.services.firebase.UnregisterTokenWorker;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
+import com.perimeterx.msdk.PXManager;
 
 public interface ApplicationGraph {
   Environment environment();
@@ -23,4 +24,5 @@ public interface ApplicationGraph {
   void inject(RegisterTokenWorker __);
   void inject(ResetDeviceIdWorker __);
   void inject(UnregisterTokenWorker __);
+  void inject(PXManager __);
 }

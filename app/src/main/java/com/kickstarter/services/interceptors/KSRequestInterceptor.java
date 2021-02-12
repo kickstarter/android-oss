@@ -2,6 +2,7 @@ package com.kickstarter.services.interceptors;
 
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.utils.I18nUtils;
+import com.perimeterx.msdk.PXManager;
 
 import java.io.IOException;
 
@@ -16,7 +17,7 @@ import okhttp3.Response;
 public final class KSRequestInterceptor implements Interceptor {
   private final Build build;
 
-  public KSRequestInterceptor(final @NonNull Build build) {
+  public KSRequestInterceptor(final @NonNull Build build, PXManager manager) {
     this.build = build;
   }
 

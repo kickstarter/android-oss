@@ -4,6 +4,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.utils.WebUtils
+import com.perimeterx.msdk.PXManager
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Response
@@ -14,7 +15,8 @@ import okhttp3.Response
  */
 class GraphQLInterceptor(private val clientId: String,
                          private val currentUser: CurrentUserType,
-                         private val build: Build) : Interceptor {
+                         private val build: Build,
+                         manager: PXManager) : Interceptor {
     override fun intercept(chain: Chain): Response {
         val original = chain.request()
         val builder = original.newBuilder().method(original.method, original.body)

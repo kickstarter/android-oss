@@ -7,6 +7,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.utils.WebUtils;
 import com.kickstarter.services.KSUri;
+import com.perimeterx.msdk.PXManager;
 
 import java.io.IOException;
 
@@ -27,7 +28,7 @@ public final class WebRequestInterceptor implements Interceptor {
   private final @NonNull Build build;
 
   public WebRequestInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String endpoint,
-    final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
+                               final @NonNull InternalToolsType internalTools, final @NonNull Build build, PXManager manager) {
     this.currentUser = currentUser;
     this.endpoint = endpoint;
     this.internalTools = internalTools;

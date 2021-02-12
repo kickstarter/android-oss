@@ -5,8 +5,10 @@ import android.net.Uri;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.services.KSUri;
+import com.perimeterx.msdk.PXManager;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import okhttp3.HttpUrl;
@@ -18,12 +20,14 @@ public final class ApiRequestInterceptor implements Interceptor {
   private final String clientId;
   private final CurrentUserType currentUser;
   private final String endpoint;
+  private final PXManager pxManager;
 
   public ApiRequestInterceptor(final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
-    final @NonNull String endpoint) {
+                               final @NonNull String endpoint, PXManager manager) {
     this.clientId = clientId;
     this.currentUser = currentUser;
     this.endpoint = endpoint;
+    this.pxManager = manager;
   }
 
   @Override
@@ -32,13 +36,24 @@ public final class ApiRequestInterceptor implements Interceptor {
   }
 
   private Request request(final @NonNull Request initialRequest) {
+    String key = "";
+    String value = "";
+
     if (!shouldIntercept(initialRequest)) {
       return initialRequest;
+    }
+
+    if (pxManager != null) {
+      for (HashMap.Entry<String, String> entry : pxManager.httpHeaders().entrySet()) {
+        key = entry.getKey();
+        value = entry.getValue();
+      }
     }
 
     return initialRequest.newBuilder()
       .addHeader("Accept", "application/json")
       .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().getId())
+      .addHeader(key, value)
       .url(url(initialRequest.url()))
       .build();
   }

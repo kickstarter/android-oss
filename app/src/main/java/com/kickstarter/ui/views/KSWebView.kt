@@ -10,6 +10,7 @@ import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.widget.FrameLayout
 import com.kickstarter.KSApplication
 import com.kickstarter.R
+import com.kickstarter.libs.Build
 import com.kickstarter.libs.WebViewJavascriptInterface
 import com.kickstarter.services.KSWebViewClient
 import com.kickstarter.services.RequestHandler
@@ -52,7 +53,9 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
             internal_web_view.settings.allowFileAccess = false
             this.client.setDelegate(this)
 
-            setWebContentsDebuggingEnabled(true)
+            if (Build.isInternal()) {
+                setWebContentsDebuggingEnabled(true)
+            }
 
             internal_web_view.addJavascriptInterface(WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface")
 

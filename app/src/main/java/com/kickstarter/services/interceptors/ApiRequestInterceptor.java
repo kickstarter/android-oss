@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.services.KSUri;
 
 import java.io.IOException;
@@ -18,12 +19,14 @@ public final class ApiRequestInterceptor implements Interceptor {
   private final String clientId;
   private final CurrentUserType currentUser;
   private final String endpoint;
+  private final PerimeterXClientType pxManager;
 
   public ApiRequestInterceptor(final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
-    final @NonNull String endpoint) {
+                               final @NonNull String endpoint, final @NonNull PerimeterXClientType manager) {
     this.clientId = clientId;
     this.currentUser = currentUser;
     this.endpoint = endpoint;
+    this.pxManager = manager;
   }
 
   @Override
@@ -36,9 +39,13 @@ public final class ApiRequestInterceptor implements Interceptor {
       return initialRequest;
     }
 
-    return initialRequest.newBuilder()
-      .addHeader("Accept", "application/json")
-      .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().getId())
+    final Request.Builder builder = initialRequest.newBuilder()
+            .addHeader("Accept", "application/json")
+            .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().getId());
+
+    this.pxManager.addHeaderTo(builder);
+
+    return builder
       .url(url(initialRequest.url()))
       .build();
   }

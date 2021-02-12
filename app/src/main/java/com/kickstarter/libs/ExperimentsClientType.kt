@@ -15,6 +15,10 @@ interface ExperimentsClientType {
         return ExperimentUtils.attributes(experimentData, appVersion(), OSVersion(), optimizelyEnvironment)
     }
 
+    /**
+     * Map with all the data available for a concrete Experiment
+     * TODO: method to be deleted on https://kickstarter.atlassian.net/browse/EP-187
+     */
     fun optimizelyProperties(experimentData: ExperimentData): Map<String, Any> {
         val experiments = JSONArray()
         val properties = mapOf("optimizely_api_key" to optimizelyEnvironment().sdkKey,
@@ -41,7 +45,7 @@ interface ExperimentsClientType {
     fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant?
 
     /**
-     * Map with all the experiments available to the app, with corresponding variant:
+     * Map with all the experiments available to the app, with the corresponding variant:
      * "session_variants_optimizely" : [ "Experiment1":"variant1",
      *                                   "Experiment2":"varian2"]
      */

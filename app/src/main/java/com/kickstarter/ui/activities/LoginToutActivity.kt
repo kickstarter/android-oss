@@ -1,166 +1,153 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
+import android.content.Intent
+import android.os.Bundle
+import com.facebook.AccessToken
+import com.kickstarter.R
+import com.kickstarter.databinding.LoginToutLayoutBinding
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.services.apiresponses.ErrorEnvelope.FacebookUser
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.views.LoginPopupMenu
+import com.kickstarter.viewmodels.LoginToutViewModel
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
 
-import com.facebook.AccessToken;
-import com.kickstarter.R;
-import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.toolbars.LoginToolbar;
-import com.kickstarter.ui.views.LoginPopupMenu;
-import com.kickstarter.viewmodels.LoginToutViewModel;
+@RequiresActivityViewModel(LoginToutViewModel.ViewModel::class)
+class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
 
-import java.util.Arrays;
+    private lateinit var binding: LoginToutLayoutBinding
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.Bind;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = LoginToutLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.loginToolbar.loginToolbar.title = getString(R.string.login_tout_navbar_title)
 
-import static com.kickstarter.libs.utils.TransitionUtils.fadeIn;
-import static com.kickstarter.libs.utils.TransitionUtils.transition;
+        viewModel.outputs.finishWithSuccessfulResult()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { finishWithSuccessfulResult() }
 
-@RequiresActivityViewModel(LoginToutViewModel.ViewModel.class)
-public final class LoginToutActivity extends BaseActivity<LoginToutViewModel.ViewModel> {
-  @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
-  @Bind(R.id.login_button) Button loginButton;
-  @Bind(R.id.facebook_login_button) Button facebookButton;
-  @Bind(R.id.sign_up_button) Button signupButton;
-  @Bind(R.id.help_button) TextView helpButton;
-  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+        viewModel.outputs.startLoginActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startLogin() }
 
-  @BindString(R.string.login_tout_navbar_title) String loginOrSignUpString;
-  @BindString(R.string.login_errors_title) String loginErrorTitleString;
-  @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
-  @BindString(R.string.general_error_oops) String errorTitleString;
-  @BindString(R.string.login_tout_errors_facebook_authorization_exception_message) String troubleLoggingInString;
-  @BindString(R.string.login_tout_errors_facebook_authorization_exception_button) String tryAgainString;
+        viewModel.outputs.startSignupActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startSignup() }
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+        viewModel.outputs.startFacebookConfirmationActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startFacebookConfirmationActivity(it.first, it.second) }
 
-    setContentView(R.layout.login_tout_layout);
-    ButterKnife.bind(this);
-    this.loginToolbar.setTitle(this.loginOrSignUpString);
+        viewModel.outputs.showFacebookAuthorizationErrorDialog()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                ViewUtils.showDialog(
+                    this,
+                    getString(R.string.general_error_oops),
+                    getString(R.string.login_tout_errors_facebook_authorization_exception_message),
+                    getString(R.string.login_tout_errors_facebook_authorization_exception_button)
+                )
+            }
+        showErrorMessageToasts()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(ViewUtils.showToast(this))
 
-    this.viewModel.outputs.finishWithSuccessfulResult()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> finishWithSuccessfulResult());
+        viewModel.outputs.startTwoFactorChallenge()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startTwoFactorFacebookChallenge() }
 
-    this.viewModel.outputs.startLoginActivity()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startLogin());
+        viewModel.outputs.showUnauthorizedErrorDialog()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.showDialog(this, getString(R.string.login_tout_navbar_title), it) }
 
-    this.viewModel.outputs.startSignupActivity()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startSignup());
+        binding.disclaimerTextView.setOnClickListener {
+            disclaimerTextViewClick()
+        }
 
-    this.viewModel.outputs.startFacebookConfirmationActivity()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ua -> startFacebookConfirmationActivity(ua.first, ua.second));
+        binding.facebookLoginButton.setOnClickListener {
+            facebookLoginClick()
+        }
 
-    this.viewModel.outputs.showFacebookAuthorizationErrorDialog()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showDialog(this, this.errorTitleString, this.troubleLoggingInString, this.tryAgainString));
+        binding.loginButton.setOnClickListener {
+            loginButtonClick()
+        }
 
-    showErrorMessageToasts()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ViewUtils.showToast(this));
+        binding.signUpButton.setOnClickListener {
+            signupButtonClick()
+        }
+    }
 
-    this.viewModel.outputs.startTwoFactorChallenge()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startTwoFactorFacebookChallenge());
+    private fun disclaimerTextViewClick() =
+        LoginPopupMenu(this, binding.loginToolbar.helpButton).show()
 
-    this.viewModel.outputs.showUnauthorizedErrorDialog()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(errorMessage -> ViewUtils.showDialog(this, this.loginErrorTitleString, errorMessage));
-  }
+    private fun facebookLoginClick() =
+        viewModel.inputs.facebookLoginClick(
+            this,
+            resources.getStringArray(R.array.facebook_permissions_array).asList())
 
-  private @NonNull Observable<String> showErrorMessageToasts() {
-    return this.viewModel.outputs.showMissingFacebookEmailErrorToast()
-      .map(ObjectUtils.coalesceWith(this.unableToLoginString))
-      .mergeWith(
-        this.viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
-          .map(ObjectUtils.coalesceWith(this.unableToLoginString))
-      );
-  }
+    private fun loginButtonClick() =
+        viewModel.inputs.loginClick()
 
-  @OnClick(R.id.disclaimer_text_view)
-  public void disclaimerTextViewClick() {
-    new LoginPopupMenu(this, this.helpButton).show();
-  }
+    private fun signupButtonClick() =
+        viewModel.inputs.signupClick()
 
-  @OnClick(R.id.facebook_login_button)
-  public void facebookLoginClick() {
-    this.viewModel.inputs.facebookLoginClick(this,
-      Arrays.asList(getResources().getStringArray(R.array.facebook_permissions_array))
-    );
-  }
+    private fun showErrorMessageToasts(): Observable<String?> {
+        return viewModel.outputs.showMissingFacebookEmailErrorToast()
+            .map(ObjectUtils.coalesceWith(getString(R.string.login_errors_unable_to_log_in)))
+            .mergeWith(
+                viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
+                    .map(ObjectUtils.coalesceWith(getString(R.string.login_errors_unable_to_log_in)))
+            )
+    }
 
-  @OnClick(R.id.login_button)
-  public void loginButtonClick() {
-    this.viewModel.inputs.loginClick();
-  }
+    private fun finishWithSuccessfulResult() {
+        setResult(RESULT_OK)
+        finish()
+    }
 
-  @OnClick(R.id.sign_up_button)
-  public void signupButtonClick() {
-    this.viewModel.inputs.signupClick();
-  }
+    private fun startFacebookConfirmationActivity(
+        facebookUser: FacebookUser,
+        accessTokenString: String
+    ) {
+        val intent = Intent(this, FacebookConfirmationActivity::class.java)
+            .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
+            .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+        TransitionUtils.transition(this, TransitionUtils.fadeIn())
+    }
 
-  private void finishWithSuccessfulResult() {
-    setResult(Activity.RESULT_OK);
-    finish();
-  }
+    private fun startLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+        TransitionUtils.transition(this, TransitionUtils.fadeIn())
+    }
 
-  public void startFacebookConfirmationActivity(final @NonNull ErrorEnvelope.FacebookUser facebookUser,
-    final @NonNull String accessTokenString) {
-    final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
-      .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
-      .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString);
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    transition(this, fadeIn());
-  }
+    private fun startSignup() {
+        val intent = Intent(this, SignupActivity::class.java)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+        TransitionUtils.transition(this, TransitionUtils.fadeIn())
+    }
 
-  private void startLogin() {
-    final Intent intent = new Intent(this, LoginActivity.class);
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    transition(this, fadeIn());
-  }
-
-  private void startSignup() {
-    final Intent intent = new Intent(this, SignupActivity.class);
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    transition(this, fadeIn());
-  }
-
-  public void startTwoFactorFacebookChallenge() {
-    final Intent intent = new Intent(this, TwoFactorActivity.class)
-      .putExtra(IntentKey.FACEBOOK_LOGIN, true)
-      .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken());
-
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    transition(this, fadeIn());
-  }
+    fun startTwoFactorFacebookChallenge() {
+        val intent = Intent(this, TwoFactorActivity::class.java)
+            .putExtra(IntentKey.FACEBOOK_LOGIN, true)
+            .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().token)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+        TransitionUtils.transition(this, TransitionUtils.fadeIn())
+    }
 }

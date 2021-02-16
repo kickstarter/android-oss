@@ -1,135 +1,128 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.util.Pair;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.os.Bundle
+import android.util.Pair
+import androidx.core.widget.doOnTextChanged
+import com.jakewharton.rxbinding.view.RxView
+import com.kickstarter.R
+import com.kickstarter.databinding.SignupLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.SwitchCompatUtils
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.views.LoginPopupMenu
+import com.kickstarter.viewmodels.SignupViewModel
+import rx.android.schedulers.AndroidSchedulers
 
-import com.jakewharton.rxbinding.view.RxView;
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.SwitchCompatUtils;
-import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.ui.extensions.ActivityExtKt;
-import com.kickstarter.ui.toolbars.LoginToolbar;
-import com.kickstarter.ui.views.LoginPopupMenu;
-import com.kickstarter.viewmodels.SignupViewModel;
+@RequiresActivityViewModel(SignupViewModel.ViewModel::class)
+class SignupActivity : BaseActivity<SignupViewModel.ViewModel>() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
-import butterknife.Bind;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
-import rx.android.schedulers.AndroidSchedulers;
+    private lateinit var binding: SignupLayoutBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = SignupLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.loginToolbar.loginToolbar.title = getString(R.string.signup_button)
+        viewModel.outputs.signupSuccess()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { onSuccess() }
 
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
+        viewModel.outputs.formSubmitting()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setFormDisabled(it) }
 
-@RequiresActivityViewModel(SignupViewModel.ViewModel.class)
-public final class SignupActivity extends BaseActivity<SignupViewModel.ViewModel> {
-  @Bind(R.id.name) EditText nameEditText;
-  @Bind(R.id.email) EditText emailEditText;
-  @Bind(R.id.help_button) TextView helpButton;
-  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
-  @Bind(R.id.password) EditText passwordEditText;
-  @Bind(R.id.signup_button) Button signupButton;
-  @Bind(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
-  @Bind(R.id.disclaimer) TextView disclaimerTextView;
+        viewModel.outputs.formIsValid()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setFormEnabled(it) }
 
-  @BindString(R.string.signup_button) String signUpString;
+        viewModel.outputs.sendNewslettersIsChecked()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                SwitchCompatUtils.setCheckedWithoutAnimation(binding.signupFormView.newsletterSwitch, it)
+            }
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+        viewModel.outputs.errorString()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.showDialog(this, null, it) }
 
-    setContentView(R.layout.signup_layout);
-    ButterKnife.bind(this);
-    this.loginToolbar.setTitle(this.signUpString);
+        RxView.clicks(binding.signupFormView.newsletterSwitch)
+            .skip(1)
+            .compose(bindToLifecycle())
+            .subscribe {
+                viewModel
+                    .inputs
+                    .sendNewslettersClick(binding.signupFormView.newsletterSwitch.isChecked)
+            }
 
-    this.viewModel.outputs.signupSuccess()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> onSuccess());
+        binding.signupFormView.disclaimer.setOnClickListener {
+            disclaimerClick()
+        }
 
-    this.viewModel.outputs.formSubmitting()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setFormDisabled);
+        binding.signupFormView.signupButton.setOnClickListener {
+            signupButtonOnClick()
+        }
 
-    this.viewModel.outputs.formIsValid()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setFormEnabled);
+        binding.signupFormView.name.doOnTextChanged { name, _, _, _ ->
+            name?.let { onNameTextChanged(it) }
+        }
 
-    this.viewModel.outputs.sendNewslettersIsChecked()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(this.newsletterSwitch, b));
+        binding.signupFormView.email.doOnTextChanged { email, _, _, _ ->
+            email?.let { onEmailTextChanged(it) }
+        }
 
-    this.viewModel.outputs.errorString()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(e -> ViewUtils.showDialog(this, null, e));
-
-    RxView.clicks(this.newsletterSwitch)
-      .skip(1)
-      .compose(bindToLifecycle())
-      .subscribe(__ -> this.viewModel.inputs.sendNewslettersClick(this.newsletterSwitch.isChecked()));
-  }
-
-  @OnClick(R.id.disclaimer)
-  public void disclaimerClick() {
-    new LoginPopupMenu(this, this.helpButton).show();
-  }
-
-  @OnTextChanged(R.id.name)
-  void onNameTextChanged(final @NonNull CharSequence name) {
-    this.viewModel.inputs.name(name.toString());
-  }
-
-  @OnTextChanged(R.id.email)
-  void onEmailTextChanged(final @NonNull CharSequence email) {
-    this.viewModel.inputs.email(email.toString());
-  }
-
-  @OnTextChanged(R.id.password)
-  void onPasswordTextChange(final @NonNull CharSequence password) {
-    this.viewModel.inputs.password(password.toString());
-  }
-
-  @OnClick(R.id.signup_button)
-  public void signupButtonOnClick() {
-    this.viewModel.inputs.signupClick();
-    ActivityExtKt.hideKeyboard(this);
-  }
-
-  public void onSuccess() {
-    setResult(Activity.RESULT_OK);
-    finish();
-  }
-
-  public void setFormEnabled(final boolean enabled) {
-    this.signupButton.setEnabled(enabled);
-  }
-
-  public void setFormDisabled(final boolean disabled) {
-    setFormEnabled(!disabled);
-  }
-
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
-  }
-
-  @Override
-  public void back() {
-    if (this.getSupportFragmentManager().getBackStackEntryCount() == 0) {
-      super.back();
+        binding.signupFormView.password.doOnTextChanged { password, _, _, _ ->
+            password?.let { onPasswordTextChange(it) }
+        }
     }
-  }
+
+    private fun disclaimerClick() {
+        LoginPopupMenu(this, binding.loginToolbar.helpButton).show()
+    }
+
+    private fun onNameTextChanged(name: CharSequence) {
+        viewModel.inputs.name(name.toString())
+    }
+
+    private fun onEmailTextChanged(email: CharSequence) {
+        viewModel.inputs.email(email.toString())
+    }
+
+    private fun onPasswordTextChange(password: CharSequence) {
+        viewModel.inputs.password(password.toString())
+    }
+
+    private fun signupButtonOnClick() {
+        viewModel.inputs.signupClick()
+        this.hideKeyboard()
+    }
+
+    private fun onSuccess() {
+        setResult(RESULT_OK)
+        finish()
+    }
+
+    private fun setFormEnabled(enabled: Boolean) {
+        binding.signupFormView.signupButton.isEnabled = enabled
+    }
+
+    private fun setFormDisabled(disabled: Boolean) {
+        setFormEnabled(!disabled)
+    }
+
+    override fun exitTransition(): Pair<Int, Int>? {
+        return TransitionUtils.slideInFromLeft()
+    }
+
+    override fun back() {
+        if (this.supportFragmentManager.backStackEntryCount == 0) {
+            super.back()
+        }
+    }
 }

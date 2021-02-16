@@ -5,7 +5,6 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.libs.utils.WebUtils
-import com.perimeterx.msdk.PXManager
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
 import okhttp3.Response
@@ -33,6 +32,6 @@ class GraphQLInterceptor(private val clientId: String,
 
         pxManager.addHeaderTo(builder)
 
-        return chain.proceed(builder.build())
+        return pxManager.intercep(chain.proceed(builder.build()))
     }
 }

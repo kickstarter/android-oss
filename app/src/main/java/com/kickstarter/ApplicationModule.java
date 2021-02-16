@@ -233,27 +233,12 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static PerimeterXClientType providePerimeterXManager(final @ApplicationContext @NonNull Context context) {
-    PXManager manager = null;
+    PerimeterXClient manager = new PerimeterXClient(context);
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      manager = PXManager.getInstance()
-        .setNewHeadersCallback(
-          headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
-        )
-        .setManagerReadyCallback(
-          headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
-        );
-      manager.start(context, Secrets.PERIMETERX_APPID);
-
-      manager.setBackButtonDisabled(true);
-      manager.setBackButtonPressedCallback(new BackButtonPressedCallBack() {
-        @Override
-        public void onBackButtonPressed(){
-          Timber.d("PXManager: BackButtonPressedCallBack :");
-        }
-      });
+      manager.start();
     }
 
-    return new PerimeterXClient(manager);
+    return manager;
   }
 
   @Provides

@@ -6,9 +6,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.services.KSUri;
-import com.perimeterx.msdk.CaptchaResultCallback;
-import com.perimeterx.msdk.PXManager;
-import com.perimeterx.msdk.PXResponse;
 
 import java.io.IOException;
 
@@ -34,28 +31,8 @@ public final class ApiRequestInterceptor implements Interceptor {
 
   @Override
   public Response intercept(final @NonNull Chain chain) throws IOException {
-
     Response response = chain.proceed(request(chain.request()));
-    if (response != null) {
-
-      PXResponse PXResponse = pxManager.checkError(chain.request().body().toString());
-      if (PXResponse.enforcement().name().equals("NOT_PX_BLOCK")){
-        return response;
-      } else {
-        PXManager.handleResponse(PXResponse, new CaptchaResultCallback() {
-          @Override
-          public void onCallback(Result result, CancelReason reason) {
-            switch (result) {
-              case SUCCESS:
-                break;
-              case CANCELED:
-                break;
-            }
-          }
-        });
-      }
-    }
-
+    pxManager.intercep(response);
     return response;
   }
 

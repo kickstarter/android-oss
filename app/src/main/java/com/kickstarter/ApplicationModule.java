@@ -231,21 +231,16 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static PerimeterXClientType providePerimeterXManager(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+  static PerimeterXClientType providePerimeterXManager(final @ApplicationContext @NonNull Context context) {
     PXManager manager = null;
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      if (build.isDebug()) {
-        manager = PXManager.getInstance()
-          .setNewHeadersCallback(
-            headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
-          )
-          .setManagerReadyCallback(
-            headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
-          );
-      } else {
-        manager = PXManager.getInstance();
-      }
-
+      manager = PXManager.getInstance()
+        .setNewHeadersCallback(
+          headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
+        )
+        .setManagerReadyCallback(
+          headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
+        );
       manager.start(context, Secrets.PERIMETERX_APPID);
     }
 

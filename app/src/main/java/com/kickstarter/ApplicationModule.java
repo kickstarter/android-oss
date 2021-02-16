@@ -84,8 +84,6 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
-import com.perimeterx.msdk.BackButtonPressedCallBack;
-import com.perimeterx.msdk.PXManager;
 import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
 
@@ -111,7 +109,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 import type.CustomType;
 
 @Module
@@ -233,7 +230,7 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static PerimeterXClientType providePerimeterXManager(final @ApplicationContext @NonNull Context context) {
-    PerimeterXClient manager = new PerimeterXClient(context);
+    final PerimeterXClient manager = new PerimeterXClient(context);
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
       manager.start();
     }

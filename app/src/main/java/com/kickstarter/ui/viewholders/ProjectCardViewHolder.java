@@ -331,7 +331,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     this.photoImageView.setMaxHeight(targetImageHeight);
 
-     Picasso.get()
+    Picasso.get()
       .load(avatarUrl)
       .resize(targetImageWidth, targetImageHeight)  // required to fit properly into apis < 18
       .centerCrop()

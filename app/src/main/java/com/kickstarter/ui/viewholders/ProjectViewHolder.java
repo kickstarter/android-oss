@@ -417,12 +417,12 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   private void setAvatar(final @NonNull String url) {
-     Picasso.get()
+    Picasso.get()
       .load(url)
       .transform(new CircleTransformation())
       .into(this.avatarImageView);
 
-     Picasso.get()
+    Picasso.get()
       .load(url)
       .transform(new CircleTransformation())
       .into(this.avatarVariantImageView);
@@ -460,7 +460,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     this.photoImageView.setMaxHeight(targetImageHeight);
 
-     Picasso.get()
+    Picasso.get()
       .load(photo.full())
       .resize(targetImageWidth, targetImageHeight)
       .centerCrop()

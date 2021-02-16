@@ -55,7 +55,7 @@ public class ActivitySampleFriendFollowViewHolder extends KSViewHolder {
 
     final User user = this.activity.user();
     if (user != null) {
-       Picasso.get().load(user.avatar()
+      Picasso.get().load(user.avatar()
         .small())
         .transform(new CircleTransformation())
         .into(this.activityImageView);

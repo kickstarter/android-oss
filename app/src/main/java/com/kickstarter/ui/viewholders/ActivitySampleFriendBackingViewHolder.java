@@ -64,7 +64,7 @@ public class ActivitySampleFriendBackingViewHolder extends KSViewHolder {
     if (user != null && project != null) {
       this.activityTitleTextView.setVisibility(View.GONE);
 
-       Picasso.get().load(user.avatar()
+      Picasso.get().load(user.avatar()
         .small())
         .transform(new CircleTransformation())
         .into(this.activityImageView);

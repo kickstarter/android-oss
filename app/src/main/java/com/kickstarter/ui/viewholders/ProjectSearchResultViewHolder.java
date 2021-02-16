@@ -93,7 +93,7 @@ public class ProjectSearchResultViewHolder extends KSViewHolder {
   }
 
   private void setProjectImageUrl(final @NonNull String imageUrl) {
-     Picasso.get().load(imageUrl).into(this.projectImageView);
+    Picasso.get().load(imageUrl).into(this.projectImageView);
   }
 
   @Override

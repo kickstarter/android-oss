@@ -7,6 +7,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -17,8 +20,6 @@ import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -66,7 +67,7 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
 
       final Photo photo = project.photo();
       if (photo != null) {
-        Picasso.with(context)
+        Picasso.get()
           .load(photo.little())
           .into(this.activityImageView);
       }

@@ -32,7 +32,7 @@ class LoggedInViewHolder(@NonNull view: View, @NonNull private val delegate: Del
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    Picasso.with(context())
+                    Picasso.get()
                             .load(it)
                             .transform(CircleTransformation())
                             .into(view.user_image_view)

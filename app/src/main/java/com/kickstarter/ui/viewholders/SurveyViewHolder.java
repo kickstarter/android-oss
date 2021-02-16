@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -16,8 +19,6 @@ import com.kickstarter.ui.activities.SurveyResponseActivity;
 import com.kickstarter.viewmodels.SurveyHolderViewModel;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -87,7 +88,7 @@ public final class SurveyViewHolder extends KSViewHolder {
   }
 
   private void setCreatorAvatarImage(final @NonNull String creatorAvatarImage) {
-    Picasso.with(context())
+    Picasso.get()
       .load(creatorAvatarImage)
       .transform(new CircleTransformation())
       .into(this.creatorAvatarImageView);

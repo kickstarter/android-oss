@@ -6,6 +6,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -14,8 +17,6 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -54,7 +55,7 @@ public class ActivitySampleFriendFollowViewHolder extends KSViewHolder {
 
     final User user = this.activity.user();
     if (user != null) {
-      Picasso.with(context).load(user.avatar()
+      Picasso.get().load(user.avatar()
         .small())
         .transform(new CircleTransformation())
         .into(this.activityImageView);

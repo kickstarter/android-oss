@@ -5,6 +5,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -16,8 +19,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -71,7 +72,7 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
       return;
     }
 
-    Picasso.with(context)
+    Picasso.get()
       .load(activityUser.avatar().small())
       .transform(new CircleTransformation())
       .into(this.avatarImageView);
@@ -82,7 +83,7 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
     this.projectNameTextView.setText(activityProject.name());
 
-    Picasso.with(context)
+    Picasso.get()
       .load(projectPhoto.little())
       .into(this.projectPhotoImageView);
 

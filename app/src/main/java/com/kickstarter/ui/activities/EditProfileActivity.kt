@@ -27,7 +27,7 @@ class EditProfileActivity : BaseActivity<EditProfileViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
                 .subscribe { url ->
-                    Picasso.with(this).load(url).transform(CircleTransformation()).into(avatar_image_view)
+                    Picasso.get().load(url).transform(CircleTransformation()).into(avatar_image_view)
                 }
 
         this.viewModel.outputs.user()

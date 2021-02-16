@@ -11,6 +11,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -26,9 +30,6 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;
@@ -330,7 +331,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     this.photoImageView.setMaxHeight(targetImageHeight);
 
-    Picasso.with(this.context())
+    Picasso.get()
       .load(avatarUrl)
       .resize(targetImageWidth, targetImageHeight)  // required to fit properly into apis < 18
       .centerCrop()
@@ -343,7 +344,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   private void setFriendAvatarUrl(final @NonNull String avatarUrl, final @NonNull ImageView imageView) {
-    Picasso.with(context()).load(avatarUrl)
+    Picasso.get().load(avatarUrl)
       .transform(new CircleTransformation())
       .into(imageView);
   }

@@ -7,6 +7,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -14,8 +17,6 @@ import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.BindString;
@@ -60,7 +61,7 @@ public final class ProfileCardViewHolder extends KSViewHolder {
 
     if (photo != null) {
       this.profileCardImageView.setVisibility(View.VISIBLE);
-      Picasso.with(context()).load(photo.med())
+      Picasso.get().load(photo.med())
         .placeholder(this.grayGradientDrawable)
         .into(this.profileCardImageView);
     } else {

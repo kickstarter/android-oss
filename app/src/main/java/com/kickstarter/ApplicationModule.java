@@ -84,6 +84,7 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
+import com.perimeterx.msdk.BackButtonPressedCallBack;
 import com.perimeterx.msdk.PXManager;
 import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
@@ -242,6 +243,14 @@ public class ApplicationModule {
           headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
         );
       manager.start(context, Secrets.PERIMETERX_APPID);
+
+      manager.setBackButtonDisabled(true);
+      manager.setBackButtonPressedCallback(new BackButtonPressedCallBack() {
+        @Override
+        public void onBackButtonPressed(){
+          Timber.d("PXManager: BackButtonPressedCallBack :");
+        }
+      });
     }
 
     return new PerimeterXClient(manager);

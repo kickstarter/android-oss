@@ -1,6 +1,7 @@
 package com.kickstarter.libs.perimeterx
 
 import com.perimeterx.msdk.PXManager
+import com.perimeterx.msdk.PXResponse
 import okhttp3.Request
 
 class PerimeterXClient(
@@ -16,4 +17,6 @@ class PerimeterXClient(
             builder?.addHeader(key, value)
         }
     }
+
+    override fun checkError(body: String): PXResponse = PXManager.checkError(body)
 }

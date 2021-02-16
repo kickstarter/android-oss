@@ -738,7 +738,10 @@ interface ProjectViewModel {
                     .compose<Pair<ProjectData, PledgeFlowContext?>>(takeWhen(this.nativeProjectActionButtonClicked))
                     .filter { it.first.project().isLive && !it.first.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackProjectPagePledgeButtonClicked(storeCurrentCookieRefTag(it.first), it.second) }
+                    .subscribe {
+                        this.lake.trackProjectPagePledgeButtonClicked(storeCurrentCookieRefTag(it.first), it.second)
+                        this.lake.trackPledgeInitiateCTA(it.first)
+                    }
 
             fullProjectDataAndPledgeFlowContext
                     .map { it.first }

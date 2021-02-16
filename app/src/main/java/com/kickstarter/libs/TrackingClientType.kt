@@ -1,6 +1,6 @@
 package com.kickstarter.libs
 
-import com.kickstarter.libs.utils.KoalaUtils
+import com.kickstarter.libs.utils.AnalyticEventsUtils.userProperties
 import com.kickstarter.libs.utils.MapUtils
 import com.kickstarter.models.User
 import org.json.JSONArray
@@ -46,7 +46,7 @@ abstract class TrackingClientType {
     private fun genericProperties(): Map<String, Any> {
         val hashMap = hashMapOf<String, Any>()
         loggedInUser()?.let {
-            hashMap.putAll(KoalaUtils.userProperties(it))
+            hashMap.putAll(userProperties(it))
             hashMap["user_country"] = userCountry(it)
         }
         hashMap.putAll(sessionProperties(loggedInUser() != null))

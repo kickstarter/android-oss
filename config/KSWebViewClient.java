@@ -12,6 +12,7 @@ import com.kickstarter.libs.FormContents;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 
 public final class KSWebViewClient extends WebViewClient {
 
@@ -23,12 +24,14 @@ public final class KSWebViewClient extends WebViewClient {
     void onReceivedError(final @NonNull String url);
   }
 
-  public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint) {
-    this(client, webEndpoint, null);
+  public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint, final @NonNull PerimeterXClientType manager) {
+    this(client, webEndpoint, null, manager);
   }
 
-  public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint,
-    final @Nullable Delegate delegate) {
+  public KSWebViewClient(final @NonNull OkHttpClient client,
+                         final @NonNull String webEndpoint,
+                         final @Nullable Delegate delegate,
+                         final @NonNull PerimeterXClientType manager) {
   }
 
   public void setDelegate(final @Nullable Delegate delegate) {

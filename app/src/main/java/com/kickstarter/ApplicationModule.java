@@ -45,6 +45,8 @@ import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.models.OptimizelyEnvironment;
+import com.kickstarter.libs.perimeterx.PerimeterXClient;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -82,6 +84,7 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
+import com.perimeterx.msdk.PXManager;
 import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
 
@@ -107,6 +110,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 import type.CustomType;
 
 @Module
@@ -227,6 +231,30 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
+  static PerimeterXClientType providePerimeterXManager(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    PXManager manager = null;
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      if (build.isDebug()) {
+        manager = PXManager.getInstance()
+          .setNewHeadersCallback(
+            headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
+          )
+          .setManagerReadyCallback(
+            headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
+          );
+      } else {
+        manager = PXManager.getInstance();
+      }
+
+      manager.start(context, Secrets.PERIMETERX_APPID);
+    }
+
+    return new PerimeterXClient(manager);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
   static OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
     final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
     final @NonNull Build build, final @NonNull WebRequestInterceptor webRequestInterceptor) {
@@ -270,16 +298,16 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
-    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url());
+    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint, final @NonNull PerimeterXClientType manager) {
+    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url(), manager);
   }
 
   @Provides
   @Singleton
   @NonNull
   static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull Build build) {
-    return new GraphQLInterceptor(clientId, currentUser, build);
+    final @NonNull CurrentUserType currentUser, final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
+    return new GraphQLInterceptor(clientId, currentUser, build, manager);
   }
 
   @Provides
@@ -307,8 +335,8 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build) {
-    return new KSRequestInterceptor(build);
+  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
+    return new KSRequestInterceptor(build, manager);
   }
 
   @Provides
@@ -341,8 +369,8 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
-    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, manager);
   }
 
   @Provides
@@ -551,8 +579,8 @@ public class ApplicationModule {
 
   @Provides
   static KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
-    final @WebEndpoint String webEndpoint) {
-    return new KSWebViewClient(okHttpClient, webEndpoint);
+    final @WebEndpoint String webEndpoint, final @NonNull PerimeterXClientType manager) {
+    return new KSWebViewClient(okHttpClient, webEndpoint, manager);
   }
 
   @Provides

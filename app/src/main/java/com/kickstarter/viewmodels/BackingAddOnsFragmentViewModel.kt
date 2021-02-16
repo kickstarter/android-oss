@@ -320,6 +320,7 @@ class BackingAddOnsFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe {
                         this.lake.trackAddOnsContinueButtonClicked(it.first)
+                        this.lake.trackAddOnsContinueCTA(it.first)
                         this.showPledgeFragment.onNext(it)
                     }
         }

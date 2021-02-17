@@ -8,8 +8,10 @@ import com.kickstarter.libs.utils.EventContext.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContext.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.AnalyticEventsUtils
+import com.kickstarter.libs.utils.EventContext
 import com.kickstarter.libs.utils.EventContext.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_CTA
+import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
@@ -628,8 +630,8 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param pledgeData: The selected pledge data.
      */
     fun trackPledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA to PLEDGE_SUBMIT.contextName)
-        props[CONTEXT_TYPE] = "credit_card"
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PLEDGE_SUBMIT.contextName)
+        props[CONTEXT_TYPE.contextName] = "credit_card"
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
         client.track(EventName.CTA_CLICKED.eventName, props)
     }
@@ -676,7 +678,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param pledgeData: The pledge data.
      */
     fun trackSelectRewardCTA(pledgeData: PledgeData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA to REWARD_CONTINUE.contextName)
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to REWARD_CONTINUE.contextName)
         props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(EventName.CTA_CLICKED.eventName, props)
     }

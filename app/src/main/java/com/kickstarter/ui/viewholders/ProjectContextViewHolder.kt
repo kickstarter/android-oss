@@ -30,7 +30,7 @@ class ProjectContextViewHolder(
         val photo = project?.photo()
         if (photo != null) {
             binding.projectContextImageView.visibility = View.VISIBLE
-            Picasso.with(context()).load(photo.full()).into(binding.projectContextImageView)
+            Picasso.get().load(photo.full()).into(binding.projectContextImageView)
         } else {
             binding.projectContextImageView.visibility = View.INVISIBLE
         }

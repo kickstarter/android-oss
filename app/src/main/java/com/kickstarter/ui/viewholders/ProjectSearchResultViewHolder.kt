@@ -53,7 +53,7 @@ class ProjectSearchResultViewHolder(private val binding: ProjectSearchResultView
     }
 
     private fun setProjectImageUrl(imageUrl: String) {
-        Picasso.with(context()).load(imageUrl).into(binding.projectImageView)
+        Picasso.get().load(imageUrl).into(binding.projectImageView)
     }
 
     override fun onClick(view: View) {

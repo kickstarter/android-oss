@@ -60,7 +60,7 @@ class MessageViewHolder(private val binding: MessageViewBinding) : KSViewHolder(
     }
 
     private fun setParticipantAvatarImageView(avatarUrl: String) {
-        Picasso.with(context()).load(avatarUrl)
+        Picasso.get().load(avatarUrl)
             .transform(CircleTransformation())
             .into(binding.messageSenderAvatarImageView)
     }

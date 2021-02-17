@@ -47,7 +47,7 @@ class MessageThreadViewHolder(private val binding: MessageThreadViewBinding) : K
     }
 
     private fun setParticipantAvatarImageView(avatarUrl: String) {
-        Picasso.with(context()).load(avatarUrl)
+        Picasso.get().load(avatarUrl)
             .transform(CircleTransformation())
             .into(binding.participantAvatarImageView)
     }

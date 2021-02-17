@@ -22,7 +22,7 @@ class ProjectStateChangedViewHolder(
         val user = activity().user()
         val photo = project?.photo()
         if (project != null && user != null && photo != null) {
-            Picasso.with(context())
+            Picasso.get()
                 .load(photo.little())
                 .into(binding.projectPhoto)
 

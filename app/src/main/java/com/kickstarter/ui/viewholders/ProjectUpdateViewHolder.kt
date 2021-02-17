@@ -31,7 +31,7 @@ class ProjectUpdateViewHolder(
         if (project != null && user != null && photo != null && update != null) {
             val publishedAt = ObjectUtils.coalesce(update.publishedAt(), DateTime())
             binding.projectName.text = project.name()
-            Picasso.with(context)
+            Picasso.get()
                 .load(photo.little())
                 .into(binding.projectPhoto)
             binding.timestamp.text = DateTimeUtils.relative(context, ksString, publishedAt)

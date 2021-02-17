@@ -12,7 +12,7 @@ class FriendFollowViewHolder(private val binding: ActivityFriendFollowViewBindin
         val context = context()
         val friend = activity().user() ?: return
         friend.avatar().small()?.let {
-            Picasso.with(context)
+            Picasso.get()
                 .load(it)
                 .transform(CircleTransformation())
                 .into(binding.avatar)

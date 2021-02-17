@@ -313,7 +313,10 @@ interface RewardViewHolderViewModel {
                     .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
                     .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackSelectRewardButtonClicked(it) }
+                    .subscribe {
+                        this.lake.trackSelectRewardButtonClicked(it)
+                        this.lake.trackSelectRewardCTA(it)
+                    }
 
             projectAndReward
                     .filter { RewardUtils.isNoReward(it.second) }

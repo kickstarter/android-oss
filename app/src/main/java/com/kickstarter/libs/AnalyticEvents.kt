@@ -5,6 +5,7 @@ import com.kickstarter.libs.KoalaEvent.ProjectAction
 import com.kickstarter.libs.utils.EventContext.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContext.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContext.CtaContextName.PLEDGE_SUBMIT
+import com.kickstarter.libs.utils.EventContext.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.ExperimentData
@@ -667,6 +668,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackSelectRewardButtonClicked(pledgeData: PledgeData) {
         val props = AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser())
         client.track(SELECT_REWARD_BUTTON_CLICKED, props)
+    }
+
+    /**
+     * Sends data associated with the select reward CTA click event to the client.
+     *
+     * @param pledgeData: The pledge data.
+     */
+    fun trackSelectRewardCTA(pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA to REWARD_CONTINUE.contextName)
+        props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
+        client.track(EventName.CTA_CLICKED.eventName, props)
     }
 
     fun trackThanksPageViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {

@@ -40,11 +40,11 @@ class PerimeterXClient(
     override fun start() {
         getClient()
                 .setNewHeadersCallback { newHeaders: HashMap<String, String> ->
-                    Timber.d("PXManager: NewHeadersCallback :$newHeaders")
+                    Timber.d("${this.javaClass.canonicalName} NewHeadersCallback :$newHeaders")
                     this.headers.onNext(newHeaders)
                 }
                 .setManagerReadyCallback { headers: HashMap<String?, String?> ->
-                    Timber.d("PXManager: ManagerReadyCallback :$headers")
+                    Timber.d("${this.javaClass.canonicalName} setManagerReadyCallback :$headers")
                     this.isManagerReady.onNext(true)
                 }
 
@@ -60,27 +60,26 @@ class PerimeterXClient(
                 if (pxResponse.enforcement().name == "NOT_PX_BLOCK") {
                     // Error response not challenged by PerimeterX
                 } else {
-                    handler(pxResponse)
+                    Timber.d("${this.javaClass.canonicalName} Response Challenged: $responseBody")
+                    PXManager.handleResponse(pxResponse) { result: CaptchaResultCallback.Result?, reason: CaptchaResultCallback.CancelReason? ->
+                        when (result) {
+                            CaptchaResultCallback.Result.SUCCESS -> {
+                                Timber.d("${this.javaClass.canonicalName} CaptchaResultCallback.Result.SUCCESS")
+                                this.captchaSuccess.onNext(true)
+                            }
+                            CaptchaResultCallback.Result.CANCELED -> {
+                                reason?.let { cancelReason ->
+                                    Timber.d("${this.javaClass.canonicalName} CaptchaResultCallback.Result.CANCELED reason: ${cancelReason.name}")
+                                    this.captchaCanceled.onNext(cancelReason)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
 
         return response
-    }
-
-    private fun handler(pxResponse: PXResponse) {
-        PXManager.handleResponse(pxResponse) { result: CaptchaResultCallback.Result?, reason: CaptchaResultCallback.CancelReason? ->
-            when (result) {
-                CaptchaResultCallback.Result.SUCCESS -> {
-                    this.captchaSuccess.onNext(true)
-                }
-                CaptchaResultCallback.Result.CANCELED -> {
-                    reason?.let { cancelReason ->
-                        this.captchaCanceled.onNext(cancelReason)
-                    }
-                }
-            }
-        }
     }
 
     override fun visitorId(): String = this.visitorID

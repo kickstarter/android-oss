@@ -1325,7 +1325,10 @@ interface PledgeFragmentViewModel {
                     .filter { shouldTrackPledgeSubmitButtonClicked(it.second.pledgeFlowContext()) }
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackPledgeSubmitButtonClicked(it.first, it.second) }
+                    .subscribe {
+                        this.lake.trackPledgeSubmitButtonClicked(it.first, it.second)
+                        this.lake.trackPledgeSubmitCTA(it.first, it.second)
+                    }
 
             // - Screen configuration Logic (Different configurations depending on: PledgeReason, Reward type, Shipping, AddOns)
             this.selectedReward

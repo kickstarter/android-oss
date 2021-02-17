@@ -16,14 +16,12 @@ class PerimeterXClient(
         private val context: Context
 ):PerimeterXClientType {
 
-    private val manager: PXManager = PXManager.getInstance()
-    private val visitorID = getClient().vid
     private val headers: PublishSubject<HashMap<String, String>> = PublishSubject.create()
     private val isManagerReady: PublishSubject<Boolean> = PublishSubject.create()
     private val captchaSuccess: PublishSubject<Boolean> = PublishSubject.create()
     private val captchaCanceled: PublishSubject<CaptchaResultCallback.CancelReason> = PublishSubject.create()
 
-    override fun getClient() = this.manager
+    override fun getClient(): PXManager = PXManager.getInstance()
 
     override fun addHeaderTo(builder: Request.Builder?) {
         val headers = PXManager.httpHeaders()?.let { it.toMap() } ?: emptyMap()
@@ -52,6 +50,7 @@ class PerimeterXClient(
     }
 
     override fun intercep(response: Response): Response {
+        Timber.d("${this.javaClass.canonicalName} intercept with VID :${this.visitorId()}")
         val code = response.code
         if (code != 200) {
             response.body?.let { responseBody ->
@@ -82,7 +81,7 @@ class PerimeterXClient(
         return response
     }
 
-    override fun visitorId(): String = this.visitorID
+    override fun visitorId(): String = PXManager.getInstance().vid
 
     override fun isCaptchaSucess(): Observable<Boolean> = this.captchaSuccess
     override fun isCaptchaCanceled(): Observable<CaptchaResultCallback.CancelReason> = this.captchaCanceled

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.SwipeRefresher
@@ -28,6 +27,7 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_backing.*
@@ -296,7 +296,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
     private fun setBackerImageView(url: String) {
         context?.apply {
-            Picasso.with(this).load(url)
+            Picasso.get().load(url)
                     .transform(CircleTransformation())
                     .into(backing_avatar)
         }

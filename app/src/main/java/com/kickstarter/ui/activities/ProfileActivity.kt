@@ -41,7 +41,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         this.viewModel.outputs.avatarImageViewUrl()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { url -> Picasso.with(this).load(url).transform(CircleTransformation()).into(avatar_image_view) }
+                .subscribe { url ->  Picasso.get().load(url).transform(CircleTransformation()).into(avatar_image_view) }
 
         this.viewModel.outputs.backedCountTextViewHidden()
                 .compose(bindToLifecycle())

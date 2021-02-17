@@ -8,7 +8,6 @@ import com.kickstarter.libs.utils.EventContext.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContext.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.AnalyticEventsUtils
-import com.kickstarter.libs.utils.EventContext
 import com.kickstarter.libs.utils.EventContext.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_TYPE

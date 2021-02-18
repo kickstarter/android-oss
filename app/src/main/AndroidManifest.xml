@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kickstarter">
     <!-- PERMISSIONS -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
     We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
@@ -10,7 +11,6 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- RECEIVE allows the app to register to receive GCM messages -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /> <!-- Used to determine if network connection Snackbar should be shown. -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".KSApplication"

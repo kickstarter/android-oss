@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.InternalToolsType;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.utils.WebUtils;
 import com.kickstarter.services.KSUri;
 
@@ -25,13 +26,16 @@ public final class WebRequestInterceptor implements Interceptor {
   private final @NonNull String endpoint;
   private final @NonNull InternalToolsType internalTools;
   private final @NonNull Build build;
+  private final @NonNull PerimeterXClientType pxManager;
 
   public WebRequestInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String endpoint,
-    final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
+                               final @NonNull InternalToolsType internalTools, final @NonNull Build build,
+                               final @NonNull PerimeterXClientType manager) {
     this.currentUser = currentUser;
     this.endpoint = endpoint;
     this.internalTools = internalTools;
     this.build = build;
+    this.pxManager = manager;
   }
 
   @Override
@@ -53,6 +57,8 @@ public final class WebRequestInterceptor implements Interceptor {
     } else if (shouldAddBasicAuthorizationHeader(initialRequest) && isNotNull(basicAuthorizationHeader)) {
       requestBuilder.addHeader("Authorization", basicAuthorizationHeader);
     }
+
+    this.pxManager.addHeaderTo(requestBuilder);
 
     return requestBuilder.build();
   }

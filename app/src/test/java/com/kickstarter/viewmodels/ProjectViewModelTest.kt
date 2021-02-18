@@ -773,8 +773,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.pledgeToolbarNavigationClicked()
         this.expandPledgeSheet.assertValues(Pair(true, true), Pair(false, true))
         this.goBack.assertNoValues()
-        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
+
     }
 
     @Test
@@ -785,8 +787,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.nativeProjectActionButtonClicked()
 
         this.expandPledgeSheet.assertValue(Pair(true, true))
-        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked", "CTA Clicked")
     }
 
     @Test

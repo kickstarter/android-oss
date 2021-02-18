@@ -5,7 +5,9 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include layout="@layout/thanks_toolbar" />
+  <include
+      android:id="@+id/thanks_toolbar"
+      layout="@layout/thanks_toolbar" />
 
   <androidx.recyclerview.widget.RecyclerView
     android:id="@+id/thanks_recycler_view"

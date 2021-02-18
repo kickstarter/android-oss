@@ -1,89 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-  android:id="@+id/messages_coordinator_layout"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:fitsSystemWindows="true">
-
-  <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/messages_app_bar_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <com.google.android.material.appbar.CollapsingToolbarLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/kds_white"
-      app:contentScrim="@color/kds_white"
-      app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-      <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/grid_8"
-        android:layout_marginStart="@dimen/grid_8"
-        android:layout_marginTop="@dimen/grid_10"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_collapseMode="parallax">
-
-        <TextView
-          android:id="@+id/messages_project_name_text_view"
-          style="@style/Headline"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:ellipsize="end"
-          android:fontFamily="@string/font_family_maison_neue_book"
-          android:gravity="center"
-          tools:text="This Cool Project I Backed" />
-
-        <TextView
-          android:id="@+id/messages_creator_name_text_view"
-          style="@style/FootnotePrimary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_5"
-          tools:text="by Some Creator" />
-
-      </LinearLayout>
-
-      <include layout="@layout/messages_toolbar" />
-
-    </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    <View
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_1"
-      android:background="@color/kds_white" />
-
-    <include layout="@layout/messages_backing_info_view" />
-
-  </com.google.android.material.appbar.AppBarLayout>
-
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/messages_recycler_view"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/messages_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/kds_white"
-    android:clipToPadding="false"
-    android:scrollbars="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:ignore="RtlSymmetry"
-    tools:listitem="@layout/message_view" />
+    android:fitsSystemWindows="true">
 
-  <ProgressBar
-    android:id="@+id/messages_loading_indicator"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_anchor="@id/messages_recycler_view"
-    app:layout_anchorGravity="center" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/messages_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-  <include
-    android:id="@+id/message_reply_layout"
-    layout="@layout/message_reply_layout" />
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/kds_white"
+            app:contentScrim="@color/kds_white"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/grid_8"
+                android:layout_marginTop="@dimen/grid_10"
+                android:layout_marginEnd="@dimen/grid_8"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax">
+
+                <TextView
+                    android:id="@+id/messages_project_name_text_view"
+                    style="@style/Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/grid_2"
+                    android:ellipsize="end"
+                    android:fontFamily="@string/font_family_maison_neue_book"
+                    android:gravity="center"
+                    tools:text="This Cool Project I Backed" />
+
+                <TextView
+                    android:id="@+id/messages_creator_name_text_view"
+                    style="@style/FootnotePrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/grid_5"
+                    tools:text="by Some Creator" />
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/messages_toolbar"
+                layout="@layout/messages_toolbar" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/grid_1"
+            android:background="@color/kds_white" />
+
+        <include
+            android:id="@+id/messages_backing_info_view"
+            layout="@layout/messages_backing_info_view" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messages_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/kds_white"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:ignore="RtlSymmetry"
+        tools:listitem="@layout/message_view" />
+
+    <ProgressBar
+        android:id="@+id/messages_loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/messages_recycler_view"
+        app:layout_anchorGravity="center" />
+
+    <include
+        android:id="@+id/message_reply_layout"
+        layout="@layout/message_reply_layout" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

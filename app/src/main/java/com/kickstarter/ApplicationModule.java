@@ -184,7 +184,7 @@ public class ApplicationModule {
     if (build.isRelease() && Build.isExternal()) {
       apiKey = Secrets.Segment.PRODUCTION;
     }
-    if (build.isDebug()) {
+    if (build.isDebug() || Build.isInternal()) {
       apiKey = Secrets.Segment.STAGING;
     }
 

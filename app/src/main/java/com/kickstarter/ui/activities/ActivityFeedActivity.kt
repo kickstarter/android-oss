@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFeedLayoutBinding
@@ -24,18 +23,23 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
     private var recyclerViewPaginator: RecyclerViewPaginator? = null
     private var swipeRefresher: SwipeRefresher? = null
     private lateinit var binding: ActivityFeedLayoutBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeedLayoutBinding.inflate(layoutInflater)
-        val view: View = binding.root
-        setContentView(view)
+
+        setContentView(binding.root)
 
         currentUser = environment().currentUser()
+
         adapter = ActivityFeedAdapter(viewModel.inputs)
+
         binding.recyclerView.adapter = adapter
+
         binding.recyclerView.layoutManager = LinearLayoutManager(this@ActivityFeedActivity)
 
         recyclerViewPaginator = RecyclerViewPaginator(binding.recyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingActivities)
+
         swipeRefresher = SwipeRefresher(
             this, binding.activityFeedSwipeRefreshLayout, { viewModel.inputs.refresh() }
         ) { viewModel.outputs.isFetchingActivities }
@@ -46,42 +50,52 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
             ?.compose(bindToLifecycle())
             ?.compose(Transformers.observeForUI())
             ?.subscribe { binding.activityFeedSwipeRefreshLayout.isEnabled = it }
+
         viewModel.outputs.activityList()
             .compose(bindToLifecycle())
             .compose<List<Activity?>>(Transformers.observeForUI())
             .subscribe { showActivities(it) }
+
         viewModel.outputs.erroredBackings()
             .compose(bindToLifecycle())
             .compose<List<ErroredBacking?>>(Transformers.observeForUI())
             .subscribe { showErroredBackings(it) }
+
         viewModel.outputs.goToDiscovery()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { resumeDiscoveryActivity() }
+
         viewModel.outputs.goToLogin()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { startActivityFeedLogin() }
+
         viewModel.outputs.goToProject()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { startProjectActivity(it) }
+
         viewModel.outputs.startFixPledge()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { startFixPledge(it) }
+
         viewModel.outputs.startUpdateActivity()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { startUpdateActivity(it) }
+
         viewModel.outputs.loggedOutEmptyStateIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { adapter?.showLoggedOutEmptyState(it) }
+
         viewModel.outputs.loggedInEmptyStateIsVisible()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { adapter?.showLoggedInEmptyState(it) }
+
         viewModel.outputs.surveys()
             .compose(bindToLifecycle())
             .compose<List<SurveyResponse?>>(Transformers.observeForUI())

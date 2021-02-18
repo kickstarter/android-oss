@@ -11,7 +11,7 @@ abstract class CheckoutData : Parcelable {
     abstract fun id(): Long?
     abstract fun paymentType(): CreditCardPaymentType
     abstract fun shippingAmount(): Double
-    abstract fun  bonusAmount(): Double?
+    abstract fun bonusAmount(): Double?
 
     @AutoParcel.Builder
     abstract class Builder {

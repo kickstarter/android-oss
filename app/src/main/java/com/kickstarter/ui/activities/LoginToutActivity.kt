@@ -60,6 +60,7 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
                     getString(R.string.login_tout_errors_facebook_authorization_exception_button)
                 )
             }
+
         showErrorMessageToasts()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -98,7 +99,8 @@ class LoginToutActivity : BaseActivity<LoginToutViewModel.ViewModel>() {
     private fun facebookLoginClick() =
         viewModel.inputs.facebookLoginClick(
             this,
-            resources.getStringArray(R.array.facebook_permissions_array).asList())
+            resources.getStringArray(R.array.facebook_permissions_array).asList()
+        )
 
     private fun loginButtonClick() =
         viewModel.inputs.loginClick()

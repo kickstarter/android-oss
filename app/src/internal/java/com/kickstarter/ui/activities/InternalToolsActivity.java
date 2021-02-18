@@ -37,7 +37,6 @@ import com.kickstarter.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
 
-import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -234,8 +233,8 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   private String getDeviceIP() {
-    WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-    String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+    final WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+    final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
     return ip;
   }

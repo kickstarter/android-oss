@@ -229,10 +229,10 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static PerimeterXClientType providePerimeterXManager(final @ApplicationContext @NonNull Context context) {
-    final PerimeterXClient manager = new PerimeterXClient(context);
+  static PerimeterXClientType providePerimeterXManager(final @ApplicationContext @NonNull Context context, final @NonNull Build build) {
+    final PerimeterXClient manager = new PerimeterXClient(build);
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      manager.start();
+      manager.start(context);
     }
 
     return manager;

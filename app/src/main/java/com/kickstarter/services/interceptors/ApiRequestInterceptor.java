@@ -32,7 +32,7 @@ public final class ApiRequestInterceptor implements Interceptor {
   @Override
   public Response intercept(final @NonNull Chain chain) throws IOException {
     final Response response = chain.proceed(request(chain.request()));
-    this.pxManager.intercep(response);
+    this.pxManager.intercept(response);
     return response;
   }
 

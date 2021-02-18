@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.kickstarter"
   xmlns:android="http://schemas.android.com/apk/res/android">
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
   <application>
     <activity android:name=".ui.activities.InternalToolsActivity" />

@@ -12,6 +12,7 @@ import rx.subjects.PublishSubject
 import timber.log.Timber
 
 
+private const val LOGTAG = "PerimeterXClient"
 class PerimeterXClient(private val build: Build):PerimeterXClientType {
 
     private val headers: PublishSubject<HashMap<String, String>> = PublishSubject.create()
@@ -38,11 +39,11 @@ class PerimeterXClient(private val build: Build):PerimeterXClientType {
     override fun initialize() {
         getClient()
                 .setNewHeadersCallback { newHeaders: HashMap<String, String> ->
-                    if (build.isDebug) Timber.d("${this.javaClass.canonicalName} NewHeadersCallback :$newHeaders")
+                    if (build.isDebug) Timber.d("$LOGTAG NewHeadersCallback :$newHeaders")
                     this.headers.onNext(newHeaders)
                 }
                 .setManagerReadyCallback { headers: HashMap<String?, String?> ->
-                    if (build.isDebug) Timber.d("${this.javaClass.canonicalName} setManagerReadyCallback :$headers")
+                    if (build.isDebug) Timber.d("$LOGTAG setManagerReadyCallback :$headers")
                     this.isManagerReady.onNext(true)
                 }
     }
@@ -54,7 +55,7 @@ class PerimeterXClient(private val build: Build):PerimeterXClientType {
             builder?.addHeader(key, value)
         }
 
-        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} addHeaders: $headers to builder:${builder?.toString()}")
+        if (build.isDebug) Timber.d("$LOGTAG headers: $headers added to requestBuilder: ${builder?.toString()}")
     }
 
     override fun vId():String = getClient().vid
@@ -62,7 +63,7 @@ class PerimeterXClient(private val build: Build):PerimeterXClientType {
     override fun start(context: Context) = getClient().start(context, Secrets.PERIMETERX_APPID)
 
     override fun intercept(response: Response): Response {
-        if (build.isDebug) Timber.d("${this.javaClass.canonicalName} intercept with VID :${this.vId()}")
+        if (build.isDebug) Timber.d("$LOGTAG intercepted response for request:${response.request.url} with VID :${this.vId()}")
 
         if (response.code != 200) {
             response.body?.let { responseBody ->
@@ -71,16 +72,16 @@ class PerimeterXClient(private val build: Build):PerimeterXClientType {
                 if (pxResponse.enforcement().name == "NOT_PX_BLOCK") {
                     // Error response not challenged by PerimeterX
                 } else {
-                    if (build.isDebug) Timber.d("${this.javaClass.canonicalName} Response Challenged: $responseBody")
+                    if (build.isDebug) Timber.d("$LOGTAG Response Challenged for Request: ${response.request.url}")
                     PXManager.handleResponse(pxResponse) { result: CaptchaResultCallback.Result?, reason: CaptchaResultCallback.CancelReason? ->
                         when (result) {
                             CaptchaResultCallback.Result.SUCCESS -> {
-                                if (build.isDebug) Timber.d("${this.javaClass.canonicalName} CaptchaResultCallback.Result.SUCCESS")
+                                if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.SUCCESS")
                                 this.captchaSuccess.onNext(true)
                             }
                             CaptchaResultCallback.Result.CANCELED -> {
                                 reason?.let { cancelReason ->
-                                    if (build.isDebug) Timber.d("${this.javaClass.canonicalName} CaptchaResultCallback.Result.CANCELED reason: ${cancelReason.name}")
+                                    if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.CANCELED reason: ${cancelReason.name}")
                                     this.captchaCanceled.onNext(cancelReason)
                                 }
                             }

@@ -1,291 +1,266 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Html;
-import android.util.Pair;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.content.Intent
+import android.os.Bundle
+import android.text.Html
+import android.util.Pair
+import android.view.View
+import android.view.WindowManager
+import androidx.core.widget.doOnTextChanged
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import com.jakewharton.rxbinding.view.RxView
+import com.kickstarter.R
+import com.kickstarter.databinding.MessagesLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.KSCurrency
+import com.kickstarter.libs.KSString
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.Backing
+import com.kickstarter.models.BackingWrapper
+import com.kickstarter.models.Message
+import com.kickstarter.models.Project
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.MessagesAdapter
+import com.kickstarter.viewmodels.MessagesViewModel
+import java.math.RoundingMode
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.jakewharton.rxbinding.view.RxView;
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.TransitionUtils;
-import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Backing;
-import com.kickstarter.models.BackingWrapper;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.MessagesAdapter;
-import com.kickstarter.ui.views.IconButton;
-import com.kickstarter.viewmodels.MessagesViewModel;
+@RequiresActivityViewModel(MessagesViewModel.ViewModel::class)
+class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
+    private lateinit var ksCurrency: KSCurrency
+    private lateinit var ksString: KSString
+    private lateinit var adapter: MessagesAdapter
 
-import java.math.RoundingMode;
+    private lateinit var binding: MessagesLayoutBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = MessagesLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.Bind;
-import butterknife.BindDimen;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
+        ksCurrency = environment().ksCurrency()
+        ksString = environment().ksString()
+        adapter = MessagesAdapter()
 
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+        binding.messagesRecyclerView.adapter = adapter
 
-@RequiresActivityViewModel(MessagesViewModel.ViewModel.class)
-public final class MessagesActivity extends BaseActivity<MessagesViewModel.ViewModel> {
-  private KSCurrency ksCurrency;
-  private KSString ksString;
-  private MessagesAdapter adapter;
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.stackFromEnd = true
+        binding.messagesRecyclerView.layoutManager = layoutManager
 
-  protected @Bind(R.id.messages_app_bar_layout) AppBarLayout appBarLayout;
-  protected @Bind(R.id.messages_toolbar_back_button) IconButton backButton;
-  protected @Bind(R.id.backing_amount_text_view) TextView backingAmountTextViewText;
-  protected @Bind(R.id.backing_info_view) View backingInfoView;
-  protected @Bind(R.id.messages_toolbar_close_button) IconButton closeButton;
-  protected @Bind(R.id.messages_creator_name_text_view) TextView creatorNameTextView;
-  protected @Bind(R.id.messages_loading_indicator) View loadingIndicatorView;
-  protected @Bind(R.id.message_edit_text) EditText messageEditText;
-  protected @Bind(R.id.messages_project_name_text_view) TextView projectNameTextView;
-  protected @Bind(R.id.messages_project_name_collapsed_text_view) TextView projectNameToolbarTextView;
-  protected @Bind(R.id.messages_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.send_message_button) Button sendMessageButton;
-  protected @Bind(R.id.messages_view_pledge_button) Button viewPledgeButton;
+        binding.messagesBackingInfoView.messagesViewPledgeButton.text = getString(R.string.project_view_button)
 
-  protected @BindDimen(R.dimen.message_reply_layout_height) int messageReplyLayoutHeightDimen;
+        setAppBarOffsetChangedListener(binding.messagesAppBarLayout)
 
-  protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
-  protected @BindString(R.string.Message_user_name) String messageUserNameString;
-  protected @BindString(R.string.pledge_amount_pledged_on_pledge_date) String pledgeAmountPledgedOnPledgeDateString;
-  protected @BindString(R.string.project_view_button) String viewPledgeString;
+        RxView.focusChanges(binding.messageReplyLayout.messageEditText)
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { viewModel.inputs.messageEditTextIsFocused(it) }
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.messages_layout);
-    ButterKnife.bind(this);
+        viewModel.outputs.backButtonIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(ViewUtils.setGone(binding.messagesToolbar.messagesToolbarBackButton))
 
-    this.ksCurrency = this.environment().ksCurrency();
-    this.ksString = this.environment().ksString();
+        viewModel.outputs.backingAndProject()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setBackingInfoView(it) }
 
-    this.adapter = new MessagesAdapter();
-    this.recyclerView.setAdapter(this.adapter);
+        viewModel.outputs.backingInfoViewIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { ViewUtils.setGone(binding.messagesBackingInfoView.backingInfoView, it) }
 
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    layoutManager.setStackFromEnd(true);
-    this.recyclerView.setLayoutManager(layoutManager);
+        viewModel.outputs.closeButtonIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(ViewUtils.setGone(binding.messagesToolbar.messagesToolbarCloseButton))
 
-    this.viewPledgeButton.setText(this.viewPledgeString);
+        viewModel.outputs.creatorNameTextViewText()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messagesCreatorNameTextView.text = ksString.format(getString(R.string.project_creator_by_creator), "creator_name", it) }
 
-    setAppBarOffsetChangedListener(this.appBarLayout);
+        viewModel.outputs.goBack()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { back() }
 
-    RxView.focusChanges(this.messageEditText)
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.viewModel.inputs::messageEditTextIsFocused);
+        viewModel.outputs.loadingIndicatorViewIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(ViewUtils.setGone(binding.messagesLoadingIndicator))
 
-    this.viewModel.outputs.backButtonIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.backButton));
+        viewModel.outputs.messageEditTextHint()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setMessageEditTextHint(it) }
 
-    this.viewModel.outputs.backingAndProject()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setBackingInfoView);
+        viewModel.outputs.messageEditTextShouldRequestFocus()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { requestFocusAndOpenKeyboard() }
 
-    this.viewModel.outputs.backingInfoViewIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(gone -> ViewUtils.setGone(this.backingInfoView, gone));
+        viewModel.outputs.messageList()
+            .compose(bindToLifecycle())
+            .compose<List<Message?>>(Transformers.observeForUI())
+            .subscribe { adapter.messages(it) }
 
-    this.viewModel.outputs.closeButtonIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.closeButton));
+        viewModel.outputs.projectNameTextViewText()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messagesProjectNameTextView.text = it }
 
-    this.viewModel.outputs.creatorNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(name ->
-        this.creatorNameTextView.setText(this.ksString.format(this.byCreatorString, "creator_name", name))
-      );
+        viewModel.outputs.projectNameToolbarTextViewText()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messagesToolbar.messagesProjectNameCollapsedTextView.text = it }
 
-    this.viewModel.outputs.goBack()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> back());
+        viewModel.outputs.recyclerViewDefaultBottomPadding()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setDefaultRecyclerViewBottomPadding() }
 
-    this.viewModel.outputs.loadingIndicatorViewIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.loadingIndicatorView));
+        viewModel.outputs.recyclerViewInitialBottomPadding()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setInitialRecyclerViewBottomPadding(it) }
 
-    this.viewModel.outputs.messageEditTextHint()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setMessageEditTextHint);
+        viewModel.outputs.scrollRecyclerViewToBottom()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messagesRecyclerView.scrollToPosition(adapter.itemCount - 1) }
 
-    this.viewModel.outputs.messageEditTextShouldRequestFocus()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.requestFocusAndOpenKeyboard());
+        viewModel.outputs.setMessageEditText()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messageReplyLayout.messageEditText.setText(it) }
 
-    this.viewModel.outputs.messageList()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.adapter::messages);
+        viewModel.outputs.sendMessageButtonIsEnabled()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messageReplyLayout.sendMessageButton.isEnabled = it }
 
-    this.viewModel.outputs.projectNameTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectNameTextView::setText);
+        viewModel.outputs.showMessageErrorToast()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { ViewUtils.showToast(this, it) }
 
-    this.viewModel.outputs.projectNameToolbarTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.projectNameToolbarTextView::setText);
+        viewModel.outputs.startBackingActivity()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startBackingActivity(it) }
 
-    this.viewModel.outputs.recyclerViewDefaultBottomPadding()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.setDefaultRecyclerViewBottomPadding());
+        viewModel.outputs.toolbarIsExpanded()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messagesAppBarLayout.setExpanded(it) }
 
-    this.viewModel.outputs.recyclerViewInitialBottomPadding()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setInitialRecyclerViewBottomPadding);
+        viewModel.outputs.viewPledgeButtonIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(ViewUtils.setGone(binding.messagesBackingInfoView.messagesViewPledgeButton))
 
-    this.viewModel.outputs.scrollRecyclerViewToBottom()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.recyclerView.scrollToPosition(this.adapter.getItemCount() - 1));
+        binding.messagesBackingInfoView.messagesViewPledgeButton.setOnClickListener {
+            viewPledgeButtonClicked()
+        }
 
-    this.viewModel.outputs.setMessageEditText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.messageEditText::setText);
+        binding.messageReplyLayout.sendMessageButton.setOnClickListener {
+            sendMessageButtonClicked()
+        }
 
-    this.viewModel.outputs.sendMessageButtonIsEnabled()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.sendMessageButton::setEnabled);
+        binding.messageReplyLayout.sendMessageButton.setOnClickListener {
+            sendMessageButtonClicked()
+        }
 
-    this.viewModel.outputs.showMessageErrorToast()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(error -> ViewUtils.showToast(this, error));
+        binding.messagesToolbar.messagesToolbarBackButton.setOnClickListener {
+            backOrCloseButtonClicked()
+        }
 
-    this.viewModel.outputs.startBackingActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::startBackingActivity);
+        binding.messagesToolbar.messagesToolbarCloseButton.setOnClickListener {
+            backOrCloseButtonClicked()
+        }
 
-    this.viewModel.outputs.toolbarIsExpanded()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.appBarLayout::setExpanded);
+        binding.messageReplyLayout.messageEditText.doOnTextChanged { message, _, _, _ ->
+            message?.let { onMessageEditTextChanged(it) }
+        }
+    }
 
-    this.viewModel.outputs.viewPledgeButtonIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.viewPledgeButton));
-  }
+    private fun backOrCloseButtonClicked() =
+        viewModel.inputs.backOrCloseButtonClicked()
 
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return this.backButton.getVisibility() == View.VISIBLE ? TransitionUtils.slideInFromLeft() : null;
-  }
+    private fun sendMessageButtonClicked() =
+        viewModel.inputs.sendMessageButtonClicked()
 
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    this.recyclerView.setAdapter(null);
-  }
+    private fun viewPledgeButtonClicked() =
+        viewModel.inputs.viewPledgeButtonClicked()
 
-  @OnClick({R.id.messages_toolbar_back_button, R.id.messages_toolbar_close_button})
-  protected void backOrCloseButtonClicked() {
-    this.viewModel.inputs.backOrCloseButtonClicked();
-  }
+    private fun onMessageEditTextChanged(message: CharSequence) =
+        viewModel.inputs.messageEditTextChanged(message.toString())
 
-  @OnClick(R.id.send_message_button)
-  protected void sendMessageButtonClicked() {
-    this.viewModel.inputs.sendMessageButtonClicked();
-  }
+    override fun exitTransition() = if (binding.messagesToolbar.messagesToolbarBackButton.visibility == View.VISIBLE)
+        TransitionUtils.slideInFromLeft() else null
 
-  @OnClick(R.id.messages_view_pledge_button)
-  protected void viewPledgeButtonClicked() {
-    this.viewModel.inputs.viewPledgeButtonClicked();
-  }
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.messagesRecyclerView.adapter = null
+    }
 
-  @OnTextChanged(R.id.message_edit_text)
-  public void onMessageEditTextChanged(final @NonNull CharSequence message) {
-    this.viewModel.inputs.messageEditTextChanged(message.toString());
-  }
+    private fun requestFocusAndOpenKeyboard() {
+        binding.messageReplyLayout.messageEditText.requestFocus()
+        this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+    }
 
-  private void requestFocusAndOpenKeyboard() {
-    this.messageEditText.requestFocus();
-    this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-  }
-
-  /**
-   * Sets an OffsetChangedListener for the view's AppBarLayout to:
-   * 1. determine the toolbar's alpha based on scroll range
-   * 2. adjust the view's bottom padding via inputs
-   */
-  private void setAppBarOffsetChangedListener(final @NonNull AppBarLayout appBarLayout) {
-    appBarLayout.addOnOffsetChangedListener((layout, offset) -> {
-      this.projectNameToolbarTextView.setAlpha(Math.abs(offset) / layout.getTotalScrollRange());
-
-      this.viewModel.inputs.appBarTotalScrollRange(layout.getTotalScrollRange());
-      this.viewModel.inputs.appBarOffset(offset);
-    });
-  }
-
-  private void setBackingInfoView(final @NonNull Pair<Backing, Project> backingAndProject) {
-    final String pledgeAmount = this.ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second, RoundingMode.HALF_UP);
-    final String pledgeDate = DateTimeUtils.relative(this, this.ksString, backingAndProject.first.pledgedAt());
-
-    this.backingAmountTextViewText.setText(
-      Html.fromHtml(
-        this.ksString.format(
-          this.pledgeAmountPledgedOnPledgeDateString, "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+    /**
+     * Sets an OffsetChangedListener for the view's AppBarLayout to:
+     * 1. determine the toolbar's alpha based on scroll range
+     * 2. adjust the view's bottom padding via inputs
+     */
+    private fun setAppBarOffsetChangedListener(appBarLayout: AppBarLayout) {
+        appBarLayout.addOnOffsetChangedListener(
+            OnOffsetChangedListener { layout: AppBarLayout, offset: Int ->
+                binding.messagesToolbar.messagesProjectNameCollapsedTextView.alpha = (Math.abs(offset) / layout.totalScrollRange).toFloat()
+                viewModel.inputs.appBarTotalScrollRange(layout.totalScrollRange)
+                viewModel.inputs.appBarOffset(offset)
+            }
         )
-      )
-    );
-  }
+    }
 
-  private void setDefaultRecyclerViewBottomPadding() {
-    this.recyclerView.setPadding(0, 0, 0, this.messageReplyLayoutHeightDimen);
-  }
+    private fun setBackingInfoView(backingAndProject: Pair<Backing, Project>) {
+        val pledgeAmount = ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second, RoundingMode.HALF_UP)
+        val pledgeDate = DateTimeUtils.relative(this, ksString, backingAndProject.first.pledgedAt())
+        binding.messagesBackingInfoView.backingAmountTextView.text = Html.fromHtml(
+            ksString.format(
+                getString(R.string.pledge_amount_pledged_on_pledge_date), "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+            )
+        )
+    }
 
-  private void setInitialRecyclerViewBottomPadding(final int bottomPadding) {
-    // Default padding is the height of the reply layout
-    this.recyclerView.setPadding(0, 0, 0, bottomPadding + this.messageReplyLayoutHeightDimen);
-  }
+    private fun setDefaultRecyclerViewBottomPadding() =
+        binding
+            .messagesRecyclerView
+            .setPadding(0, 0, 0, resources.getDimension(R.dimen.message_reply_layout_height).toInt())
 
-  private void setMessageEditTextHint(final @NonNull String name) {
-    this.messageEditText.setHint(this.ksString.format(this.messageUserNameString, "user_name", name));
-  }
+    private fun setInitialRecyclerViewBottomPadding(bottomPadding: Int) =
+        binding
+            .messagesRecyclerView
+            .setPadding(0, 0, 0, (bottomPadding + resources.getDimension(R.dimen.message_reply_layout_height)).toInt())
 
-  private void startBackingActivity(final @NonNull BackingWrapper projectAndBacker) {
-    final Intent intent = new Intent(this, BackingActivity.class)
-      .putExtra(IntentKey.BACKING, projectAndBacker.getBacking())
-      .putExtra(IntentKey.PROJECT, projectAndBacker.getProject())
-      .putExtra(IntentKey.BACKER, projectAndBacker.getUser())
-      .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true);
+    private fun setMessageEditTextHint(name: String) {
+        binding.messageReplyLayout.messageEditText.hint = ksString.format(getString(R.string.Message_user_name), "user_name", name)
+    }
 
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
+    private fun startBackingActivity(projectAndBacker: BackingWrapper) {
+        val intent = Intent(this, BackingActivity::class.java)
+            .putExtra(IntentKey.BACKING, projectAndBacker.backing)
+            .putExtra(IntentKey.PROJECT, projectAndBacker.project)
+            .putExtra(IntentKey.BACKER, projectAndBacker.user)
+            .putExtra(IntentKey.IS_FROM_MESSAGES_ACTIVITY, true)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
 }

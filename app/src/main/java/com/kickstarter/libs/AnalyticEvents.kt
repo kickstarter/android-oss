@@ -8,10 +8,12 @@ import com.kickstarter.libs.utils.EventContext.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContext.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.AnalyticEventsUtils
+import com.kickstarter.libs.utils.EventContext
 import com.kickstarter.libs.utils.EventContext.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.EventContext.ContextPropertyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.EventContext.PageViewedContextName.CHECKOUT
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
@@ -615,6 +617,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackCheckoutPaymentPageViewed(pledgeData: PledgeData) {
         val props = AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser())
         client.track(CHECKOUT_PAYMENT_PAGE_VIEWED, props)
+    }
+
+    /**
+     * Sends data to the client when the checkout screen is loaded.
+     *
+     * @param checkoutData: The checkout data.
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackCheckoutScreenViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CHECKOUT.contextName)
+        props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        client.track(EventName.PAGE_VIEWED.eventName, props)
     }
 
     fun trackPledgeSubmitButtonClicked(checkoutData: CheckoutData, pledgeData: PledgeData) {

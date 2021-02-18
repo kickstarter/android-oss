@@ -119,10 +119,4 @@ class SignupActivity : BaseActivity<SignupViewModel.ViewModel>() {
     override fun exitTransition(): Pair<Int, Int>? {
         return TransitionUtils.slideInFromLeft()
     }
-
-    override fun back() {
-        if (this.supportFragmentManager.backStackEntryCount == 0) {
-            super.back()
-        }
-    }
 }

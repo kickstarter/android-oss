@@ -48,60 +48,76 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
         setContentView(view)
 
         binding.commentsRecyclerView.adapter = adapter
+
         binding.commentsRecyclerView.layoutManager = LinearLayoutManager(this)
+
         recyclerViewPaginator = RecyclerViewPaginator(binding.commentsRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingComments)
+
         swipeRefresher = SwipeRefresher(
             this, binding.commentsSwipeRefreshLayout, { viewModel.inputs.refresh() }
         ) { viewModel.outputs.isFetchingComments }
+
         val commentBodyEditText = alertDialog
             .map { it?.findViewById<TextView>(R.id.comment_body) }
+
         val postCommentButton = alertDialog
             .map { it?.findViewById<TextView>(R.id.post_button) }
+
         val cancelButton = alertDialog
             .map { it?.findViewById<TextView>(R.id.cancel_button) }
+
         cancelButton
             .switchMap { it?.let { RxView.clicks(it) } }
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
             .subscribe { viewModel.inputs.commentDialogDismissed() }
+
         postCommentButton
             .switchMap { it?.let { RxView.clicks(it) } }
             .compose(bindToLifecycle())
             .subscribe { viewModel.inputs.postCommentClicked() }
+
         commentBodyEditText
-            .switchMap { it?.let { view -> RxTextView.textChanges(view).skip(1) } }
+            .switchMap { it?.let {view -> RxTextView.textChanges(view).skip(1) } }
             .map { obj: CharSequence -> obj.toString() }
             .compose(bindToLifecycle())
             .subscribe { viewModel.inputs.commentBodyChanged(it) }
+
         viewModel.outputs.currentCommentBody()
             .compose(Transformers.takePairWhen(commentBodyEditText))
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
             .subscribe { it.second?.append(it.first) }
+
         viewModel.outputs.commentsData()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { adapter.takeData(it) }
+
         viewModel.outputs.enablePostButton()
             .compose(Transformers.combineLatestPair(postCommentButton))
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setPostButtonEnabled(it.second, it.first) }
+
         viewModel.outputs.commentButtonHidden()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ViewUtils.setGone(binding.commentsToolbar.commentButton))
+
         viewModel.outputs.showCommentDialog()
             .filter { it != null }
             .map { it.first }
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showCommentDialog(it) }
+
         alertDialog
             .compose(Transformers.takeWhen(viewModel.outputs.dismissCommentDialog()))
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle())
             .subscribe { dismissCommentDialog(it) }
+
         lifecycle()
             .compose(Transformers.combineLatestPair(alertDialog))
             .filter { it.first == ActivityEvent.DESTROY }
@@ -111,12 +127,14 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
             // .compose(bindToLifecycle())
             .take(1)
             .subscribe { dismissCommentDialog(it) }
+
         toastMessages()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ViewUtils.showToast(this))
 
         findViewById<View>(R.id.project_context_view)?.setOnClickListener { projectContextViewClick() }
+
         findViewById<View>(R.id.comment_button)?.setOnClickListener { commentButtonClicked() }
     }
 
@@ -126,9 +144,7 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
         binding.commentsRecyclerView.adapter = null
     }
 
-    private fun projectContextViewClick() {
-        back()
-    }
+    private fun projectContextViewClick() = back()
 
     private fun commentsLogin() {
         val intent = Intent(this, LoginToutActivity::class.java)
@@ -136,13 +152,9 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
-    private fun commentButtonClicked() {
-        viewModel.inputs.commentButtonClicked()
-    }
+    private fun commentButtonClicked() = viewModel.inputs.commentButtonClicked()
 
-    private fun dismissCommentDialog(dialog: AlertDialog?) {
-        dialog?.dismiss()
-    }
+    private fun dismissCommentDialog(dialog: AlertDialog?) = dialog?.dismiss()
 
     private fun showCommentDialog(project: Project) {
         val commentDialog = AlertDialog.Builder(this)

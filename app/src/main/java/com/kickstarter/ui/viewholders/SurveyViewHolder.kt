@@ -42,7 +42,7 @@ class SurveyViewHolder(private val binding: ActivitySurveyViewBinding) :
     }
 
     private fun setCreatorAvatarImage(creatorAvatarImage: String) {
-        Picasso.with(context())
+        Picasso.get()
             .load(creatorAvatarImage)
             .transform(CircleTransformation())
             .into(binding.surveyAvatarImage)

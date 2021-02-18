@@ -55,7 +55,7 @@ class ProjectViewHolder(
         } else {
             binding.avatar
         }
-        Picasso.with(context())
+        Picasso.get()
             .load(url)
             .transform(CircleTransformation())
             .into(avatarImageView)
@@ -65,7 +65,7 @@ class ProjectViewHolder(
         } else {
             binding.creatorAvatarVerified?.avatarVariant
         }
-        Picasso.with(context())
+        Picasso.get()
             .load(url)
             .transform(CircleTransformation())
             .into(avatarVariantImageView)
@@ -123,12 +123,14 @@ class ProjectViewHolder(
         val targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth)
         binding.projectMediaHeaderLayout.projectPhoto.maxHeight = targetImageHeight
 
-        Picasso.with(context())
-            .load(photo.full())
-            .resize(targetImageWidth, targetImageHeight)
-            .centerCrop()
-            .placeholder(ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null))
-            .into(binding.projectMediaHeaderLayout.projectPhoto)
+        ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)?.let {
+            Picasso.get()
+                .load(photo.full())
+                .resize(targetImageWidth, targetImageHeight)
+                .centerCrop()
+                .placeholder(it)
+                .into(binding.projectMediaHeaderLayout.projectPhoto)
+        }
     }
 
     private fun setCanceledProjectStateView() {
@@ -503,7 +505,7 @@ class ProjectViewHolder(
             .compose(observeForUI())
             .subscribe { url: String? ->
                 url?.let {
-                    Picasso.with(context())
+                    Picasso.get()
                         .load(it)
                         .transform(CircleTransformation())
                         .into(binding.projectSocialImage)

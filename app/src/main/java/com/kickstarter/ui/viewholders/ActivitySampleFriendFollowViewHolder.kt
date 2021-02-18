@@ -25,10 +25,9 @@ class ActivitySampleFriendFollowViewHolder(
     }
 
     override fun onBind() {
-        val context = context()
         activity?.user()?.let { user ->
             user.avatar()?.small()?.let {
-                Picasso.with(context).load(it)
+                Picasso.get().load(it)
                     .transform(CircleTransformation())
                     .into(binding.activityImage)
             }

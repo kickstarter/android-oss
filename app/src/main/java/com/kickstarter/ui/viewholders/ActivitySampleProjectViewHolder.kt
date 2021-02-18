@@ -32,7 +32,7 @@ class ActivitySampleProjectViewHolder(
         activity?.project()?.let { project ->
             val photo = project.photo()
             photo?.let {
-                Picasso.with(context)
+                Picasso.get()
                     .load(photo.little())
                     .into(binding.activityImage)
             }

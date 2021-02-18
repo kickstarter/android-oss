@@ -43,7 +43,7 @@ class CommentViewHolder(private val binding: CommentCardViewBinding) : KSViewHol
                 }
 
             comment.author()?.avatar()?.small()?.let {
-                Picasso.with(context).load(it)
+                Picasso.get().load(it)
                     .transform(CircleTransformation())
                     .into(binding.avatar)
             }

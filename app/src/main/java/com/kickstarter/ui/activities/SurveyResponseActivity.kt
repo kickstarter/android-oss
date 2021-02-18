@@ -1,91 +1,83 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.os.Bundle;
-import android.webkit.WebView;
+import android.content.DialogInterface
+import android.net.Uri
+import android.os.Bundle
+import android.webkit.WebView
+import androidx.appcompat.app.AlertDialog
+import com.kickstarter.R
+import com.kickstarter.databinding.SurveyResponseLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.services.KSUri
+import com.kickstarter.services.RequestHandler
+import com.kickstarter.viewmodels.SurveyResponseViewModel
+import okhttp3.Request
+import java.util.*
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.services.KSUri;
-import com.kickstarter.services.RequestHandler;
-import com.kickstarter.ui.views.KSWebView;
-import com.kickstarter.viewmodels.SurveyResponseViewModel;
+@RequiresActivityViewModel(SurveyResponseViewModel.ViewModel::class)
+class SurveyResponseActivity : BaseActivity<SurveyResponseViewModel.ViewModel>() {
 
-import java.util.Arrays;
+    private lateinit var binding: SurveyResponseLayoutBinding
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import butterknife.Bind;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import okhttp3.Request;
-
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
-
-@RequiresActivityViewModel(SurveyResponseViewModel.ViewModel.class)
-public class SurveyResponseActivity extends BaseActivity<SurveyResponseViewModel.ViewModel> {
-  private AlertDialog confirmationDialog;
-
-  protected @Bind(R.id.survey_response_web_view) KSWebView ksWebView;
-
-  protected @BindString(R.string.general_alert_buttons_ok) String okString;
-  protected @BindString(R.string.Got_it_your_survey_response_has_been_submitted) String surveyResponseSubmittedString;
-
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.survey_response_layout);
-    ButterKnife.bind(this);
-
-    this.ksWebView.registerRequestHandlers(
-      Arrays.asList(
-        new RequestHandler(KSUri::isProjectSurveyUri, this::handleProjectSurveyUriRequest),
-        new RequestHandler(KSUri::isProjectUri, this::handleProjectUriRequest)
-      )
-    );
-
-    this.viewModel.outputs.goBack()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> back());
-
-    this.viewModel.outputs.showConfirmationDialog()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> lazyConfirmationDialog().show());
-  }
-
-  private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    this.viewModel.inputs.projectUriRequest(request);
-    return true;
-  }
-
-  private boolean handleProjectSurveyUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    this.viewModel.inputs.projectSurveyUriRequest(request);
-    return false;
-  }
-
-  private @NonNull AlertDialog lazyConfirmationDialog() {
-    if (this.confirmationDialog == null) {
-      this.confirmationDialog = new AlertDialog.Builder(this)
-        .setMessage(this.surveyResponseSubmittedString)
-        .setPositiveButton(this.okString, (__, ___) ->
-          this.viewModel.inputs.okButtonClicked()
-        )
-        .create();
+    private val confirmationDialog: AlertDialog by lazy {
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.Got_it_your_survey_response_has_been_submitted))
+            .setPositiveButton(
+                getString(R.string.general_alert_buttons_ok)
+            ) { _: DialogInterface?, _: Int -> viewModel.inputs.okButtonClicked() }
+            .create()
     }
-    return this.confirmationDialog;
-  }
 
-  @Override
-  protected void onResume() {
-    super.onResume();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = SurveyResponseLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    this.viewModel.outputs.webViewUrl()
-      .take(1)
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.ksWebView::loadUrl);
-  }
+        binding.surveyResponseWebView.registerRequestHandlers(
+            Arrays.asList(
+                RequestHandler(
+                    { uri: Uri, webEndpoint: String ->
+                        KSUri.isProjectSurveyUri(uri, webEndpoint)
+                    }) { request: Request, webView: WebView ->
+                    handleProjectSurveyUriRequest(request, webView)
+                },
+                RequestHandler({ uri: Uri, webEndpoint: String ->
+                    KSUri.isProjectUri(uri, webEndpoint)
+                }) { request: Request, webView: WebView ->
+                    handleProjectUriRequest(request, webView)
+                }
+            )
+        )
+
+        viewModel.outputs.goBack()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { back() }
+
+        viewModel.outputs.showConfirmationDialog()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { confirmationDialog.show() }
+    }
+
+    private fun handleProjectUriRequest(request: Request, webView: WebView): Boolean {
+        viewModel.inputs.projectUriRequest(request)
+        return true
+    }
+
+    private fun handleProjectSurveyUriRequest(request: Request, webView: WebView): Boolean {
+        viewModel.inputs.projectSurveyUriRequest(request)
+        return false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.outputs.webViewUrl()
+            .take(1)
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.surveyResponseWebView.loadUrl(it) }
+    }
 }

@@ -10,6 +10,7 @@ import okhttp3.Response
 import rx.Observable
 import rx.subjects.PublishSubject
 import timber.log.Timber
+import java.util.Date
 
 
 private const val LOGTAG = "PerimeterXClient"
@@ -61,6 +62,12 @@ class PerimeterXClient(private val build: Build):PerimeterXClientType {
     override fun vId():String = getClient().vid
 
     override fun start(context: Context) = getClient().start(context, Secrets.PERIMETERX_APPID)
+
+    override fun getCookieForWebView(): String {
+        val date = Date()
+        date.time = date.time + 60 * 60 * 1000 // - Set the expiration to one hour
+        return "_pxmvid=${this.vId()} expires= $date;"
+    }
 
     override fun intercept(response: Response): Response {
         if (build.isDebug) Timber.d("$LOGTAG intercepted response for request:${response.request.url} with VID :${this.vId()}")

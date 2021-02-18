@@ -65,6 +65,12 @@ interface PerimeterXClientType {
     fun intercept(response: Response): Response
 
     /**
+     * Added `_pxmvid` cookie to each loaded url, with 1 hour expiration time
+     * @see {@link https://docs.perimeterx.com/pxconsole/docs/android-sdk-integration-guide#section-web-view-integration}
+     */
+    fun getCookieForWebView(): String
+
+    /**
      * Identification for the PerimeterX sdk
      */
     fun vId(): String

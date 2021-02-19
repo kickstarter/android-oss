@@ -1,59 +1,41 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.os.Bundle;
-import android.util.Pair;
+import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kickstarter.databinding.ProjectSocialLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.ui.adapters.ProjectSocialAdapter
+import com.kickstarter.ui.viewholders.ProjectContextViewHolder
+import com.kickstarter.viewmodels.ProjectSocialViewModel
+import rx.android.schedulers.AndroidSchedulers
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.ui.adapters.ProjectSocialAdapter;
-import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
-import com.kickstarter.viewmodels.ProjectSocialViewModel;
+@RequiresActivityViewModel(ProjectSocialViewModel.ViewModel::class)
+class ProjectSocialActivity : BaseActivity<ProjectSocialViewModel.ViewModel>(), ProjectSocialAdapter.Delegate {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
+    private lateinit var binding: ProjectSocialLayoutBinding
 
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ProjectSocialLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-@RequiresActivityViewModel(ProjectSocialViewModel.ViewModel.class)
-public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewModel.ViewModel> implements ProjectSocialAdapter.Delegate {
-  protected @Bind(R.id.project_social_recycler_view) RecyclerView recyclerView;
+        val adapter = ProjectSocialAdapter(this)
+        binding.projectSocialRecyclerView.adapter = adapter
+        binding.projectSocialRecyclerView.layoutManager = LinearLayoutManager(this)
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.project_social_layout);
-    ButterKnife.bind(this);
+        viewModel.outputs.project()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { adapter.takeProject(it) }
+    }
 
-    final ProjectSocialAdapter adapter = new ProjectSocialAdapter(this);
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.projectSocialRecyclerView.adapter = null
+    }
 
-    this.recyclerView.setAdapter(adapter);
-    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    this.viewModel.outputs.project()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::takeProject);
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    this.recyclerView.setAdapter(null);
-  }
-
-  @Override
-  public void projectContextClicked(final @NonNull ProjectContextViewHolder viewHolder) {
-    back();
-  }
-
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
-  }
+    override fun exitTransition() = TransitionUtils.slideInFromLeft()
+    override fun projectContextClicked(viewHolder: ProjectContextViewHolder?) = back()
 }

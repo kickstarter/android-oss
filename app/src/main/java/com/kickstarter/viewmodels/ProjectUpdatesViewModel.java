@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.content.SharedPreferences;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -7,13 +8,16 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.extensions.ProjectDataExtKt;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.UpdatesEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectUpdatesActivity;
+import com.kickstarter.ui.data.ProjectData;
 
+import java.net.CookieManager;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -24,6 +28,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName.UPDATES;
 
 public interface ProjectUpdatesViewModel {
 
@@ -54,16 +59,32 @@ public interface ProjectUpdatesViewModel {
 
   final class ViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements Inputs, Outputs {
     private final ApiClientType client;
+    private final CookieManager cookieManager;
+    private final SharedPreferences sharedPreferences;
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       this.client = environment.apiClient();
+      this.cookieManager = environment.cookieManager();
+      this.sharedPreferences = environment.sharedPreferences();
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
         .take(1);
+
+      final Observable<ProjectData> projectData = intent()
+        .map(i -> i.getParcelableExtra(IntentKey.PROJECT_DATA))
+        .ofType(ProjectData.class)
+        .take(1);
+
+      projectData
+        .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, cookieManager, sharedPreferences))
+        .compose(bindToLifecycle())
+        .subscribe(
+           projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, UPDATES.getContextName())
+        );
 
       final Observable<Project> startOverWith = Observable.merge(
         project,

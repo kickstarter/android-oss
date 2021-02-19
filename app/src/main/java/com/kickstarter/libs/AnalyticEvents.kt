@@ -10,11 +10,13 @@ import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
@@ -597,6 +599,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
             props["context_pledge_flow"] = pledgeFlowContext.trackingString
         }
         client.track(PROJECT_PAGE_VIEWED, props)
+    }
+
+    /**
+     * Sends data to the client when the projects screen is loaded.
+     *
+     * @param pledgeData: The selected pledge data.
+     * @param pageSectionContext: The section of the project page being viewed.
+     */
+    fun trackProjectScreenViewed(projectData: ProjectData, pageSectionContext: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to PROJECT.contextName)
+        props[CONTEXT_SECTION.contextName] = pageSectionContext
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     fun trackSearchButtonClicked() {

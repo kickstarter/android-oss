@@ -7,7 +7,12 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.RefTagUtils
+import com.kickstarter.libs.utils.extensions.storeCurrentCookieRefTag
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.CampaignDetailsActivity
@@ -35,6 +40,8 @@ interface CampaignDetailsViewModel {
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<CampaignDetailsActivity>(environment), Inputs, Outputs {
+        private val cookieManager = environment.cookieManager()
+        private val sharedPreferences = environment.sharedPreferences()
         private val currentUser = environment.currentUser()
         private val optimizely = environment.optimizely()
 
@@ -51,6 +58,13 @@ interface CampaignDetailsViewModel {
             val projectData = intent()
                     .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as ProjectData? }
                     .ofType(ProjectData::class.java)
+
+            projectData
+                    .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
+                    .compose(bindToLifecycle())
+                    .subscribe {
+                        this.lake.trackProjectScreenViewed(it, ProjectContextSectionName.CAMPAIGN.contextName)
+                    }
 
             projectData
                     .filter { it.project().isLive && !it.project().isBacking }

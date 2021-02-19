@@ -37,4 +37,10 @@ class EventContextValues {
         REWARDS("rewards"),
         THANKS("thanks")
     }
+
+    enum class ProjectContextSectionName(val contextName: String) {
+        CAMPAIGN("campaign"),
+        OVERVIEW("overview"),
+        UPDATES("updates")
+    }
 }

@@ -39,7 +39,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
-import static com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName.UPDATES;
+import static com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName.COMMENTS;
 
 public interface CommentsViewModel {
 
@@ -133,7 +133,7 @@ public interface CommentsViewModel {
               .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, cookieManager, sharedPreferences))
               .compose(bindToLifecycle())
               .subscribe(
-                      projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, UPDATES.getContextName())
+                      projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, COMMENTS.getContextName())
               );
 
       final Observable<Project> initialProject = projectOrUpdate

@@ -73,5 +73,4 @@ interface PerimeterXClientType {
      * Identification for the PerimeterX sdk
      */
     fun vId(): String
-
 }

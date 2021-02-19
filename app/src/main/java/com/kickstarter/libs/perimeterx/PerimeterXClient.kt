@@ -14,7 +14,7 @@ import java.util.*
 
 
 private const val LOGTAG = "PerimeterXClient"
-class PerimeterXClient(private val build: Build):PerimeterXClientType {
+open class PerimeterXClient(private val build: Build):PerimeterXClientType {
 
     private val headers: PublishSubject<HashMap<String, String>> = PublishSubject.create()
     private val isManagerReady: PublishSubject<Boolean> = PublishSubject.create()

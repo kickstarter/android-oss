@@ -15,7 +15,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.UpdatesAdapter;
-import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
 

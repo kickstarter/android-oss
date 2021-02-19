@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTI
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
@@ -737,6 +738,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to ADD_ONS_CONTINUE.contextName)
         props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the rewards carousel is loaded.
+     *
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackRewardsCarouselViewed(projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to REWARDS.contextName)
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     //endregion

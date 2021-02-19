@@ -72,6 +72,10 @@ class RewardsFragmentViewModel {
 
         init {
 
+            projectData
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.lake.trackRewardsCarouselViewed(it)}
+
             this.projectDataInput
                     .map { filterOutNotStartedRewards(it) }
                     .compose(bindToLifecycle())
@@ -79,7 +83,7 @@ class RewardsFragmentViewModel {
 
             val project = this.projectData
                     .map { it.project() }
-            
+
             project
                     .filter { it.isBacking }
                     .map { indexOfBackedReward(it) }

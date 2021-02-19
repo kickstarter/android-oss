@@ -1,91 +1,79 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Pair;
+import android.content.Intent
+import android.os.Bundle
+import android.util.Pair
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxbinding.support.v7.widget.RecyclerViewScrollEvent
+import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView
+import com.kickstarter.R
+import com.kickstarter.databinding.SearchLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.RecyclerViewPaginator
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.InputUtils
+import com.kickstarter.models.Project
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.SearchAdapter
+import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.viewmodels.SearchViewModel
+import rx.android.schedulers.AndroidSchedulers
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+@RequiresActivityViewModel(SearchViewModel.ViewModel::class)
+class SearchActivity : BaseActivity<SearchViewModel.ViewModel>(), SearchAdapter.Delegate {
+    private lateinit var adapter: SearchAdapter
+    private lateinit var paginator: RecyclerViewPaginator
+    lateinit var binding: SearchLayoutBinding
 
-import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RecyclerViewPaginator;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.InputUtils;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.SearchAdapter;
-import com.kickstarter.ui.toolbars.SearchToolbar;
-import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.viewmodels.SearchViewModel;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = SearchLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
+        adapter = SearchAdapter(this)
+        binding.searchRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.searchRecyclerView.adapter = adapter
 
-@RequiresActivityViewModel(SearchViewModel.ViewModel.class)
-public final class SearchActivity extends BaseActivity<SearchViewModel.ViewModel> implements SearchAdapter.Delegate {
-  private SearchAdapter adapter;
-  private RecyclerViewPaginator paginator;
+        paginator = RecyclerViewPaginator(binding.searchRecyclerView, { viewModel.inputs.nextPage() }, viewModel.outputs.isFetchingProjects)
 
-  protected @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
-  protected @Bind(R.id.search_toolbar) SearchToolbar toolbar;
+        RxRecyclerView.scrollEvents(binding.searchRecyclerView)
+            .compose(bindToLifecycle())
+            .filter { scrollEvent: RecyclerViewScrollEvent -> scrollEvent.dy() != 0 } // Skip scroll events when y is 0, usually indicates new data
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { InputUtils.hideKeyboard(this, currentFocus) }
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.search_layout);
-    ButterKnife.bind(this);
+        viewModel.outputs.popularProjects()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { adapter.loadPopularProjects(it) }
 
-    this.adapter = new SearchAdapter(this);
-    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    this.recyclerView.setAdapter(this.adapter);
+        viewModel.outputs.searchProjects()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { adapter.loadSearchProjects(it) }
 
-    this.paginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage, this.viewModel.outputs.isFetchingProjects());
+        viewModel.outputs.startProjectActivity()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startProjectActivity(it) }
+    }
 
-    RxRecyclerView.scrollEvents(this.recyclerView)
-      .compose(bindToLifecycle())
-      .filter(scrollEvent -> scrollEvent.dy() != 0) // Skip scroll events when y is 0, usually indicates new data
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> InputUtils.hideKeyboard(this, getCurrentFocus()));
+    private fun startProjectActivity(projectAndRefTag: Pair<Project, RefTag>) {
+        val intent = Intent(this, ProjectActivity::class.java)
+            .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
+            .putExtra(IntentKey.REF_TAG, projectAndRefTag.second)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
 
-    this.viewModel.outputs.popularProjects()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.adapter::loadPopularProjects);
+    override fun onDestroy() {
+        super.onDestroy()
+        paginator.stop()
+        binding.searchRecyclerView.adapter = null
+    }
 
-    this.viewModel.outputs.searchProjects()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.adapter::loadSearchProjects);
-
-    this.viewModel.outputs.startProjectActivity()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startProjectActivity);
-  }
-
-  private void startProjectActivity(final @NonNull Pair<Project, RefTag> projectAndRefTag) {
-    final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, projectAndRefTag.first)
-      .putExtra(IntentKey.REF_TAG, projectAndRefTag.second);
-
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    this.paginator.stop();
-    this.recyclerView.setAdapter(null);
-  }
-
-  public void projectSearchResultClick(final @NonNull KSViewHolder viewHolder, final @NonNull Project project) {
-    this.viewModel.inputs.projectClicked(project);
-  }
+    override fun projectSearchResultClick(viewHolder: KSViewHolder?, project: Project?) {
+        project?.let { viewModel.inputs.projectClicked(it) }
+    }
 }

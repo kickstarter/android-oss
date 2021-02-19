@@ -743,7 +743,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     /**
      * Sends data to the client when the rewards carousel is loaded.
      *
-     * @param pledgeData: The selected pledge data.
+     * @param projectData: The selected project data.
      */
     fun trackRewardsCarouselViewed(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to REWARDS.contextName)

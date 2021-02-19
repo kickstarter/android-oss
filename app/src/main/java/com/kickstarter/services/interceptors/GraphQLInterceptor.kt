@@ -31,6 +31,10 @@ class GraphQLInterceptor(private val clientId: String,
                 .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().id)
 
         pxManager.addHeaderTo(builder)
-        return pxManager.intercept(chain.proceed(builder.build()))
+
+        val response = chain.proceed(builder.build())
+        pxManager.intercept(response)
+
+        return response
     }
 }

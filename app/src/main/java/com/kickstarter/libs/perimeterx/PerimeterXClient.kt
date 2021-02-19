@@ -10,7 +10,7 @@ import okhttp3.Response
 import rx.Observable
 import rx.subjects.PublishSubject
 import timber.log.Timber
-import java.util.Date
+import java.util.*
 
 
 private const val LOGTAG = "PerimeterXClient"
@@ -69,35 +69,47 @@ class PerimeterXClient(private val build: Build):PerimeterXClientType {
         return "_pxmvid=${this.vId()} expires= $date;"
     }
 
-    override fun intercept(response: Response): Response {
+    override fun intercept(response: Response) {
         if (build.isDebug) Timber.d("$LOGTAG intercepted response for request:${response.request.url} with VID :${this.vId()}")
 
-        if (response.code != 200) {
-            response.body?.let { responseBody ->
-                val pxResponse = PXManager.checkError(responseBody.string())
+        if (response.code == 403) {
+            this.checkChallengedResponse(this.cloneResponse(response))
+        }
+    }
 
-                if (pxResponse.enforcement().name == "NOT_PX_BLOCK") {
-                    // Error response not challenged by PerimeterX
-                } else {
-                    if (build.isDebug) Timber.d("$LOGTAG Response Challenged for Request: ${response.request.url}")
-                    PXManager.handleResponse(pxResponse) { result: CaptchaResultCallback.Result?, reason: CaptchaResultCallback.CancelReason? ->
-                        when (result) {
-                            CaptchaResultCallback.Result.SUCCESS -> {
-                                if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.SUCCESS")
-                                this.captchaSuccess.onNext(true)
-                            }
-                            CaptchaResultCallback.Result.CANCELED -> {
-                                reason?.let { cancelReason ->
-                                    if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.CANCELED reason: ${cancelReason.name}")
-                                    this.captchaCanceled.onNext(cancelReason)
-                                }
+    /**
+     * Accessing the body of the response more than once (down on the flow Retrofit/Apollo will access the response as well) will throw an IllegalStateException by OkHttp.
+     * Clone the response and access the body via `peekBody` to get a lightweight copy of it
+     */
+    private fun cloneResponse(response: Response) = response.newBuilder()
+            .code(response.code)
+            .request(response.request)
+            .body(response.peekBody(Long.MAX_VALUE))
+            .build()
+
+    private fun checkChallengedResponse(response: Response) {
+        response.body?.string().let {
+            val pxResponse = PXManager.checkError(it)
+
+            if (pxResponse.enforcement().name == "NOT_PX_BLOCK") {
+                // Error response not challenged by PerimeterX
+            } else {
+                if (build.isDebug) Timber.d("$LOGTAG Response Challenged for Request: ${response.request.url}")
+                PXManager.handleResponse(pxResponse) { result: CaptchaResultCallback.Result?, reason: CaptchaResultCallback.CancelReason? ->
+                    when (result) {
+                        CaptchaResultCallback.Result.SUCCESS -> {
+                            if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.SUCCESS")
+                            this.captchaSuccess.onNext(true)
+                        }
+                        CaptchaResultCallback.Result.CANCELED -> {
+                            reason?.let { cancelReason ->
+                                if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.CANCELED reason: ${cancelReason.name}")
+                                this.captchaCanceled.onNext(cancelReason)
                             }
                         }
                     }
                 }
             }
         }
-
-        return response
     }
 }

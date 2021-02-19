@@ -2,7 +2,6 @@ package com.kickstarter.libs.perimeterx
 
 import android.content.Context
 import com.perimeterx.msdk.CaptchaResultCallback
-import com.perimeterx.msdk.PXResponse
 import okhttp3.Request
 import okhttp3.Response
 import rx.Observable
@@ -62,7 +61,7 @@ interface PerimeterXClientType {
      *
      * - response not challenged none of the above will emit
      */
-    fun intercept(response: Response): Response
+    fun intercept(response: Response)
 
     /**
      * Added `_pxmvid` cookie to each loaded url, with 1 hour expiration time

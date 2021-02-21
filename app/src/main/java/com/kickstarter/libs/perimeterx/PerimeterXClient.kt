@@ -5,6 +5,7 @@ import com.kickstarter.libs.Build
 import com.kickstarter.libs.utils.Secrets
 import com.perimeterx.msdk.CaptchaResultCallback
 import com.perimeterx.msdk.PXManager
+import com.perimeterx.msdk.PXResponse
 import okhttp3.Request
 import okhttp3.Response
 import rx.Observable
@@ -19,26 +20,33 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
     private val headers: PublishSubject<HashMap<String, String>> = PublishSubject.create()
     private val isManagerReady: PublishSubject<Boolean> = PublishSubject.create()
     private val captchaSuccess: PublishSubject<Boolean> = PublishSubject.create()
-    private val captchaCanceled: PublishSubject<CaptchaResultCallback.CancelReason> = PublishSubject.create()
+    private val captchaCanceled: PublishSubject<String> = PublishSubject.create()
+
+    private val pxManager = PXManager.getInstance()
+    private var pxResponse: PXResponse? = null
 
     override val headersAdded: Observable<HashMap<String, String>>
         get() = this.headers
 
-    override val isCaptchaCanceled: Observable<CaptchaResultCallback.CancelReason>
+    override val isCaptchaCanceled: Observable<String>
         get() = this.captchaCanceled
 
     override val isCaptchaSuccess: Observable<Boolean>
-        get() = this.isCaptchaSuccess
+        get() = this.captchaSuccess
 
     override val isReady: Observable<Boolean>
         get() = this.isManagerReady
 
-    private fun getClient(): PXManager = PXManager.getInstance()
+    override fun getCookieForWebView(): String {
+        val date = Date()
+        date.time = date.time + 60 * 60 * 1000 // - Set the expiration to one hour
+        return "_pxmvid=${this.vId()} expires= $date;"
+    }
 
     override fun httpHeaders(): MutableMap<String, String>? = PXManager.httpHeaders()
 
-    override fun initialize() {
-        getClient()
+    private fun initialize() {
+        pxManager
                 .setNewHeadersCallback { newHeaders: HashMap<String, String> ->
                     if (build.isDebug) Timber.d("$LOGTAG NewHeadersCallback :$newHeaders")
                     this.headers.onNext(newHeaders)
@@ -59,21 +67,23 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
         if (build.isDebug) Timber.d("$LOGTAG headers: $headers added to requestBuilder: ${builder?.toString()}")
     }
 
-    override fun vId():String = getClient().vid
+    override fun vId():String = pxManager.vid
 
-    override fun start(context: Context) = getClient().start(context, Secrets.PERIMETERX_APPID)
-
-    override fun getCookieForWebView(): String {
-        val date = Date()
-        date.time = date.time + 60 * 60 * 1000 // - Set the expiration to one hour
-        return "_pxmvid=${this.vId()} expires= $date;"
+    override fun start(context: Context) {
+        initialize()
+        pxManager.start(context, Secrets.PERIMETERX_APPID)
     }
 
     override fun intercept(response: Response) {
         if (build.isDebug) Timber.d("$LOGTAG intercepted response for request:${response.request.url} with VID :${this.vId()}")
 
         if (response.code == 403) {
-            this.checkChallengedResponse(this.cloneResponse(response))
+            this.cloneResponse(response).body?.string()?.let {
+                if(this.isChallenged(it)){
+                    if (build.isDebug) Timber.d("$LOGTAG Response Challenged for Request: ${response.request.url}")
+                    this.handleChallengedResponse(it)
+                }
+            }
         }
     }
 
@@ -87,25 +97,23 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
             .body(response.peekBody(Long.MAX_VALUE))
             .build()
 
-    private fun checkChallengedResponse(response: Response) {
-        response.body?.string().let {
-            val pxResponse = PXManager.checkError(it)
+    override fun isChallenged(body: String): Boolean {
+        this.pxResponse = PXManager.checkError(body)
+        return pxResponse?.enforcement()?.name != "NOT_PX_BLOCK"
+    }
 
-            if (pxResponse.enforcement().name == "NOT_PX_BLOCK") {
-                // Error response not challenged by PerimeterX
-            } else {
-                if (build.isDebug) Timber.d("$LOGTAG Response Challenged for Request: ${response.request.url}")
-                PXManager.handleResponse(pxResponse) { result: CaptchaResultCallback.Result?, reason: CaptchaResultCallback.CancelReason? ->
-                    when (result) {
-                        CaptchaResultCallback.Result.SUCCESS -> {
-                            if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.SUCCESS")
-                            this.captchaSuccess.onNext(true)
-                        }
-                        CaptchaResultCallback.Result.CANCELED -> {
-                            reason?.let { cancelReason ->
-                                if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.CANCELED reason: ${cancelReason.name}")
-                                this.captchaCanceled.onNext(cancelReason)
-                            }
+    override fun handleChallengedResponse(body: String) {
+        pxResponse?.let { response ->
+            PXManager.handleResponse(response) { result: CaptchaResultCallback.Result?, reason: CaptchaResultCallback.CancelReason? ->
+                when (result) {
+                    CaptchaResultCallback.Result.SUCCESS -> {
+                        if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.SUCCESS")
+                        this.captchaSuccess.onNext(true)
+                    }
+                    CaptchaResultCallback.Result.CANCELED -> {
+                        reason?.let { cancelReason ->
+                            if (build.isDebug) Timber.d("$LOGTAG CaptchaResultCallback.Result.CANCELED reason: ${cancelReason.name}")
+                            this.captchaCanceled.onNext(cancelReason.name)
                         }
                     }
                 }

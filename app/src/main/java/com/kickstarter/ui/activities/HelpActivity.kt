@@ -22,6 +22,7 @@ open class HelpActivity : BaseActivity<HelpViewModel>() {
 
     @WebEndpoint
     private val webEndpoint: String? = null
+
     protected fun helpType(@HelpType helpType: Int) {
         this.helpType = helpType
     }
@@ -54,7 +55,9 @@ open class HelpActivity : BaseActivity<HelpViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HelpLayoutBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
+
         val url = getUrlForHelpType(helpType)
         binding.kickstarterWebView.loadUrl(url)
     }

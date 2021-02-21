@@ -1,58 +1,45 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.os.Bundle;
-import android.util.Pair;
+import android.os.Bundle
+import android.util.Pair
+import com.kickstarter.databinding.WebViewLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.viewmodels.WebViewViewModel
+import rx.android.schedulers.AndroidSchedulers
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.ui.toolbars.KSToolbar;
-import com.kickstarter.ui.views.KSWebView;
-import com.kickstarter.viewmodels.WebViewViewModel;
+@RequiresActivityViewModel(WebViewViewModel.ViewModel::class)
+class WebViewActivity : BaseActivity<WebViewViewModel.ViewModel>() {
+    private lateinit var binding: WebViewLayoutBinding
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = WebViewLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
+        viewModel.outputs.toolbarTitle()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.webViewToolbar.webViewToolbar.setTitle(it) }
 
-@RequiresActivityViewModel(WebViewViewModel.ViewModel.class)
-public final class WebViewActivity extends BaseActivity<WebViewViewModel.ViewModel> {
-  protected @Bind(R.id.web_view_toolbar) KSToolbar toolbar;
-  protected @Bind(R.id.web_view) KSWebView webView;
-
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.web_view_layout);
-    ButterKnife.bind(this);
-
-    this.viewModel.outputs.toolbarTitle()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.toolbar::setTitle);
-
-    this.viewModel.outputs.url()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.webView::loadUrl);
-  }
-
-  @Override
-  public void back() {
-    // This logic is sound only for web view activities without RequestHandlers.
-    // TODO: Refactor the client to update web history properly for activities with RequestHandlers.
-    if (this.webView.canGoBack()) {
-      this.webView.goBack();
-    } else {
-      super.back();
+        viewModel.outputs.url()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.webView.loadUrl(it) }
     }
-  }
 
-  @Override
-  protected @NonNull Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
-  }
+    override fun back() {
+        // This logic is sound only for web view activities without RequestHandlers.
+        // TODO: Refactor the client to update web history properly for activities with RequestHandlers.
+        if (binding.webView.canGoBack()) {
+            binding.webView.goBack()
+        } else {
+            super.back()
+        }
+    }
+
+    override fun exitTransition(): Pair<Int, Int> {
+        return TransitionUtils.slideInFromLeft()
+    }
 }

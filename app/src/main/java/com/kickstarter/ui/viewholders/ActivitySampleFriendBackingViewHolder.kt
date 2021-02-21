@@ -23,13 +23,12 @@ class ActivitySampleFriendBackingViewHolder(
     }
 
     override fun onBind() {
-        val context = context()
         val user = activity?.user()
         val project = activity?.project()
         if (user != null && project != null) {
             binding.activityTitle.visibility = View.GONE
             user.avatar().small()?.let {
-                Picasso.with(context).load(it)
+                Picasso.get().load(it)
                     .transform(CircleTransformation())
                     .into(binding.activityImage)
             }

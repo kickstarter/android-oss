@@ -32,9 +32,11 @@ class ProfileCardViewHolder(
         if (photo != null) {
             binding.profileCardImage.apply {
                 visibility = View.VISIBLE
-                Picasso.with(context()).load(photo.med())
-                    .placeholder(ContextCompat.getDrawable(context,R.drawable.gray_gradient))
-                    .into(this)
+                ContextCompat.getDrawable(context, R.drawable.gray_gradient)?.let {
+                    Picasso.get().load(photo.med())
+                        .placeholder(it)
+                        .into(this)
+                }
             }
         }
         binding.profileCardName.text = project?.name()

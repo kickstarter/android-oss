@@ -213,12 +213,14 @@ class ProjectCardViewHolder(
 
         binding.projectCardPhoto.photo.maxHeight = targetImageHeight
         avatarUrl?.let {
-            Picasso.with(context())
-                .load(it)
-                .resize(targetImageWidth, targetImageHeight) // required to fit properly into apis < 18
-                .centerCrop()
-                .placeholder(ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null))
-                .into(binding.projectCardPhoto.photo)
+            ResourcesCompat.getDrawable(context().resources, R.drawable.gray_gradient, null)?.let { placeholder ->
+                Picasso.get()
+                    .load(it)
+                    .resize(targetImageWidth, targetImageHeight) // required to fit properly into apis < 18
+                    .centerCrop()
+                    .placeholder(placeholder)
+                    .into(binding.projectCardPhoto.photo)
+            }
         }
     }
 
@@ -227,7 +229,7 @@ class ProjectCardViewHolder(
     }
 
     private fun setFriendAvatarUrl(avatarUrl: String, imageView: ImageView) {
-        Picasso.with(context()).load(avatarUrl)
+        Picasso.get().load(avatarUrl)
             .transform(CircleTransformation())
             .into(imageView)
     }

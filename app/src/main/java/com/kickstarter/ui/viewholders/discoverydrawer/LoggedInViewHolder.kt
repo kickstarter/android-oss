@@ -32,7 +32,7 @@ class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
                 .subscribe {
-                    Picasso.with(context())
+                    Picasso.get()
                             .load(it)
                             .transform(CircleTransformation())
                             .into(binding.userImageView)

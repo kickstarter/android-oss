@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities
 
 import android.os.Bundle
-import android.util.Pair
 import com.kickstarter.databinding.WebViewLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
@@ -39,7 +38,5 @@ class WebViewActivity : BaseActivity<WebViewViewModel.ViewModel>() {
         }
     }
 
-    override fun exitTransition(): Pair<Int, Int> {
-        return TransitionUtils.slideInFromLeft()
-    }
+    override fun exitTransition() = TransitionUtils.slideInFromLeft()
 }

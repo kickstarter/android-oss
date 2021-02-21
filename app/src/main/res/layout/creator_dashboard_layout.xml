@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/creator_dashboard_toolbar"
+            android:id="@+id/creator_dashboard_toolbar_layout"
             layout="@layout/creator_dashboard_toolbar" />
 
         <ProgressBar

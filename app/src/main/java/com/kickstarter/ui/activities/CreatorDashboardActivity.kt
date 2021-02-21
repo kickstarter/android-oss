@@ -28,8 +28,11 @@ class CreatorDashboardActivity : BaseActivity<CreatorDashboardViewModel.ViewMode
         super.onCreate(savedInstanceState)
         binding = CreatorDashboardLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         adapter = CreatorDashboardAdapter(viewModel.inputs)
+
         binding.creatorDashboardRecyclerView.adapter = adapter
+
         val layoutManager = LinearLayoutManager(this)
         binding.creatorDashboardRecyclerView.layoutManager = layoutManager
 
@@ -37,15 +40,19 @@ class CreatorDashboardActivity : BaseActivity<CreatorDashboardViewModel.ViewMode
         bottomSheetAdapter = CreatorDashboardBottomSheetAdapter(viewModel.inputs)
         binding.creatorDashboardBottomSheetRecyclerView.adapter = bottomSheetAdapter
         binding.creatorDashboardBottomSheetRecyclerView.layoutManager = LinearLayoutManager(this)
+
         bottomSheetBehavior = BottomSheetBehavior.from(binding.creatorDashboardBottomSheetRecyclerView)
+
         fadeAndTranslateToolbarTitleOnExpand(
-            binding.creatorDashboardToolbar.creatorDashboardAppBar,
-            binding.creatorDashboardToolbar.creatorDashboardProjectNameSmall
+            binding.creatorDashboardToolbarLayout.creatorDashboardAppBar,
+            binding.creatorDashboardToolbarLayout.creatorDashboardProjectNameSmall
         )
+
         viewModel.outputs.bottomSheetShouldExpand()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { bottomSheetShouldExpand(it) }
+
         viewModel.outputs.progressBarIsVisible()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -54,19 +61,24 @@ class CreatorDashboardActivity : BaseActivity<CreatorDashboardViewModel.ViewMode
                     binding.creatorDashboardProgressBar, !it
                 )
             }
+
         viewModel.outputs.projectDashboardData()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { adapter.takeProjectDashboardData(it) }
+
         viewModel.outputs.projectName()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setProjectNameTextViews(it) }
+
         viewModel.outputs.projectsForBottomSheet()
             .compose(bindToLifecycle())
             .compose(Transformers.observeForUI())
             .subscribe { setProjectsForDropdown(it) }
+
         createAndSetBottomSheetCallback()
+
         binding.creatorDashboardBottomSheetScrim.setOnClickListener { bottomSheetScrimClicked() }
     }
 
@@ -114,8 +126,8 @@ class CreatorDashboardActivity : BaseActivity<CreatorDashboardViewModel.ViewMode
     }
 
     private fun setProjectNameTextViews(projectName: String) {
-        binding.creatorDashboardToolbar.creatorDashboardProjectName.text = projectName
-        binding.creatorDashboardToolbar.creatorDashboardProjectNameSmall.text = projectName
+        binding.creatorDashboardToolbarLayout.creatorDashboardProjectName.text = projectName
+        binding.creatorDashboardToolbarLayout.creatorDashboardProjectNameSmall.text = projectName
     }
 
     private fun setProjectsForDropdown(projects: List<Project>) {

@@ -165,19 +165,6 @@
             tools:text="1.18.0" />
 
         </TableRow>
-
-        <TableRow style="@style/InternalToolsRow">
-
-          <TextView
-              style="@style/InternalToolsKey"
-              android:text="@string/Device_Ip" />
-
-          <TextView
-              android:id="@+id/device_ip"
-              style="@style/InternalToolsValue"
-              tools:text="1.18.0" />
-
-        </TableRow>
       </TableLayout>
 
       <include layout="@layout/horizontal_line_1dp_view" />

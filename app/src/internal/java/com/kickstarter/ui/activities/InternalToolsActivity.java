@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -78,7 +76,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
   @Bind(R.id.version_name) TextView versionName;
-  @Bind(R.id.device_ip) TextView deviceIp;
   @BindDrawable(android.R.drawable.ic_dialog_alert) Drawable icDialogAlertDrawable;
 
   @Override
@@ -229,14 +226,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     this.variant.setText(this.build.variant());
     this.versionCode.setText(this.build.versionCode().toString());
     this.versionName.setText(this.build.versionName());
-    this.deviceIp.setText(this.getDeviceIP());
-  }
-
-  private String getDeviceIP() {
-    final WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-    final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-
-    return ip;
   }
 
   private void setEndpointAndRelaunch(final @NonNull ApiEndpoint apiEndpoint) {

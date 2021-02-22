@@ -1,380 +1,351 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.content.Intent;
-import android.graphics.drawable.Animatable;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
+import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.drawable.Animatable
+import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout
+import com.kickstarter.BuildConfig
+import com.kickstarter.R
+import com.kickstarter.databinding.DiscoveryLayoutBinding
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.InternalToolsType
+import com.kickstarter.libs.KoalaContext
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.QualtricsIntercept
+import com.kickstarter.models.QualtricsResult
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter
+import com.kickstarter.ui.adapters.DiscoveryPagerAdapter
+import com.kickstarter.ui.data.LoginReason
+import com.kickstarter.ui.extensions.showErrorSnackBar
+import com.kickstarter.ui.extensions.showSuccessSnackBar
+import com.kickstarter.ui.fragments.DiscoveryFragment
+import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
+import com.kickstarter.viewmodels.DiscoveryViewModel
+import com.qualtrics.digital.*
+import rx.android.schedulers.AndroidSchedulers
+import java.util.*
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.tabs.TabLayout;
-import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
-import com.kickstarter.BuildConfig;
-import com.kickstarter.R;
-import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.InternalToolsType;
-import com.kickstarter.libs.KoalaContext;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.Secrets;
-import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.QualtricsIntercept;
-import com.kickstarter.models.QualtricsResult;
-import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
-import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
-import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.ui.extensions.ActivityExtKt;
-import com.kickstarter.ui.fragments.DiscoveryFragment;
-import com.kickstarter.ui.toolbars.DiscoveryToolbar;
-import com.kickstarter.ui.views.SortTabLayout;
-import com.kickstarter.viewmodels.DiscoveryViewModel;
-import com.qualtrics.digital.Qualtrics;
-import com.qualtrics.digital.QualtricsSurveyActivity;
+@RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
+class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {
+    private lateinit var drawerAdapter: DiscoveryDrawerAdapter
+    private lateinit var drawerLayoutManager: LinearLayoutManager
+    private lateinit var pagerAdapter: DiscoveryPagerAdapter
+    private lateinit var internalTools: InternalToolsType
+    private lateinit var binding: DiscoveryLayoutBinding
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DiscoveryLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-import butterknife.Bind;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import rx.android.schedulers.AndroidSchedulers;
+        internalTools = environment().internalTools()
 
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
-import static com.kickstarter.libs.utils.TransitionUtils.transition;
+        drawerLayoutManager = LinearLayoutManager(this)
 
-@RequiresActivityViewModel(DiscoveryViewModel.ViewModel.class)
-public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel.ViewModel> {
-  private DiscoveryDrawerAdapter drawerAdapter;
-  private LinearLayoutManager drawerLayoutManager;
-  private DiscoveryPagerAdapter pagerAdapter;
-  private InternalToolsType internalTools;
+        binding.discoveryDrawerRecyclerView.layoutManager = drawerLayoutManager
+        drawerAdapter = DiscoveryDrawerAdapter(viewModel.inputs)
+        binding.discoveryDrawerRecyclerView.adapter = drawerAdapter
 
-  protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
-  protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
-  protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
-  protected @Bind(R.id.menu_button) ImageButton menuImageButton;
-  protected @Bind(R.id.discovery_tab_layout) SortTabLayout sortTabLayout;
-  protected @Bind(R.id.discovery_view_pager) ViewPager sortViewPager;
-  protected @Bind(R.id.discovery_sort_app_bar_layout) AppBarLayout sortAppBarLayout;
-  protected @Bind(R.id.qualtrics_prompt) View qualtricsPrompt;
-  protected @Bind(R.id.discovery_anchor_view) CoordinatorLayout snackbarAnchor;
+        val viewPagerTitles = Arrays.asList(
+            getString(R.string.discovery_sort_types_magic),
+            getString(R.string.Popular),
+            getString(R.string.discovery_sort_types_newest),
+            getString(R.string.Ending_soon)
+        )
 
-  protected @BindString(R.string.A_newer_build_is_available) String aNewerBuildIsAvailableString;
-  protected @BindString(R.string.Upgrade_app) String upgradeAppString;
-  protected @BindString(R.string.discovery_sort_types_magic) String magicString;
-  protected @BindString(R.string.Popular) String popularString;
-  protected @BindString(R.string.discovery_sort_types_newest) String newestString;
-  protected @BindString(R.string.Ending_soon) String endingSoonString;
+        pagerAdapter = DiscoveryPagerAdapter(
+            supportFragmentManager, createFragments(viewPagerTitles.size), viewPagerTitles, viewModel.inputs
+        )
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.discovery_layout);
-    ButterKnife.bind(this);
+        binding.discoveryViewPager.adapter = pagerAdapter
+        binding.discoveryTabLayout.setupWithViewPager(binding.discoveryViewPager)
 
-    this.internalTools = environment().internalTools();
+        addTabSelectedListenerToTabLayout()
 
-    this.drawerLayoutManager = new LinearLayoutManager(this);
-    this.drawerRecyclerView.setLayoutManager(this.drawerLayoutManager);
-    this.drawerAdapter = new DiscoveryDrawerAdapter(this.viewModel.inputs);
-    this.drawerRecyclerView.setAdapter(this.drawerAdapter);
+        viewModel.outputs.expandSortTabLayout()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.discoverySortAppBarLayout.setExpanded(it) }
 
-    final List<String> viewPagerTitles = Arrays.asList(
-      this.magicString, this.popularString, this.newestString, this.endingSoonString);
+        viewModel.outputs.updateToolbarWithParams()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.discoveryToolbar.discoveryToolbar.loadParams(it) }
 
-    this.pagerAdapter = new DiscoveryPagerAdapter(
-      getSupportFragmentManager(), createFragments(viewPagerTitles.size()), viewPagerTitles, this.viewModel.inputs
-    );
+        viewModel.outputs.updateParamsForPage()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { pagerAdapter.takeParams(it) }
 
-    this.sortViewPager.setAdapter(this.pagerAdapter);
-    this.sortTabLayout.setupWithViewPager(this.sortViewPager);
-    addTabSelectedListenerToTabLayout();
+        viewModel.outputs.clearPages()
+            .compose(bindToLifecycle())
+            .compose<List<Int?>>(Transformers.observeForUI())
+            .subscribe { pagerAdapter.clearPages(it) }
 
-    this.viewModel.outputs.expandSortTabLayout()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.sortAppBarLayout::setExpanded);
+        viewModel.outputs.rootCategoriesAndPosition()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { pagerAdapter.takeCategoriesForPosition(it.first, it.second) }
 
-    this.viewModel.outputs.updateToolbarWithParams()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.discoveryToolbar::loadParams);
+        viewModel.outputs.showBuildCheckAlert()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { showBuildAlert(it) }
 
-    this.viewModel.outputs.updateParamsForPage()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.pagerAdapter::takeParams);
+        viewModel.outputs.showActivityFeed()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startActivityFeedActivity() }
 
-    this.viewModel.outputs.clearPages()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.pagerAdapter::clearPages);
+        viewModel.outputs.showCreatorDashboard()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startCreatorDashboardActivity() }
 
-    this.viewModel.outputs.rootCategoriesAndPosition()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(cp -> this.pagerAdapter.takeCategoriesForPosition(cp.first, cp.second));
+        viewModel.outputs.showHelp()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startHelpSettingsActivity() }
 
-    this.viewModel.outputs.showBuildCheckAlert()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::showBuildAlert);
+        viewModel.outputs.showInternalTools()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { internalTools.maybeStartInternalToolsActivity(this) }
 
-    this.viewModel.outputs.showActivityFeed()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startActivityFeedActivity());
+        viewModel.outputs.showLoginTout()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startLoginToutActivity() }
 
-    this.viewModel.outputs.showCreatorDashboard()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startCreatorDashboardActivity());
+        viewModel.outputs.showMessages()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startMessageThreadsActivity() }
 
-    this.viewModel.outputs.showHelp()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startHelpSettingsActivity());
+        viewModel.outputs.showProfile()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startProfileActivity() }
 
-    this.viewModel.outputs.showInternalTools()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.internalTools.maybeStartInternalToolsActivity(this));
+        viewModel.outputs.showSettings()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startSettingsActivity() }
 
-    this.viewModel.outputs.showLoginTout()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startLoginToutActivity());
+        viewModel.outputs.navigationDrawerData()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { drawerAdapter.takeData(it) }
 
-    this.viewModel.outputs.showMessages()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startMessageThreadsActivity());
+        viewModel.outputs.drawerIsOpen()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(RxDrawerLayout.open(binding.discoveryDrawerLayout, GravityCompat.START))
 
-    this.viewModel.outputs.showProfile()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startProfileActivity());
+        viewModel.outputs.drawerMenuIcon()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { drawerMenuIcon: Int -> updateDrawerMenuIcon(drawerMenuIcon) }
 
-    this.viewModel.outputs.showSettings()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(__ -> this.startSettingsActivity());
+        //region Qualtrics
+        viewModel.outputs.qualtricsPromptIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(ViewUtils.setInvisible(binding.qualtricsPromptLayout.qualtricsPrompt))
 
-    this.viewModel.outputs.navigationDrawerData()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.drawerAdapter::takeData);
+        viewModel.outputs.setUpQualtrics()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setUpQualtrics(it) }
 
-    this.viewModel.outputs.drawerIsOpen()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(RxDrawerLayout.open(this.discoveryLayout, GravityCompat.START));
+        viewModel.outputs.showQualtricsSurvey()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { showQualtricsSurvey(it) }
 
-    this.viewModel.outputs.drawerMenuIcon()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::updateDrawerMenuIcon);
+        viewModel.outputs.updateImpressionCount()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { updateImpressionCount(it) }
 
-    //region Qualtrics
-    this.viewModel.outputs.qualtricsPromptIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setInvisible(this.qualtricsPrompt));
+        //endregion
+        RxDrawerLayout.drawerOpen(binding.discoveryDrawerLayout, GravityCompat.START)
+            .skip(1)
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { viewModel.inputs.openDrawer(it) }
 
-    this.viewModel.outputs.setUpQualtrics()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setUpQualtrics);
+        viewModel.outputs.showSuccessMessage()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this@DiscoveryActivity.showSuccessSnackBar(binding.discoveryAnchorView, it) }
 
-    this.viewModel.outputs.showQualtricsSurvey()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::showQualtricsSurvey);
+        viewModel.outputs.showErrorMessage()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this@DiscoveryActivity.showErrorSnackBar(binding.discoveryAnchorView, it) }
 
-    this.viewModel.outputs.updateImpressionCount()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::updateImpressionCount);
-    //endregion
-
-    RxDrawerLayout.drawerOpen(this.discoveryLayout, GravityCompat.START)
-      .skip(1)
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.viewModel.inputs::openDrawer);
-    
-    this.viewModel.outputs.showSuccessMessage()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(message -> ActivityExtKt.showSuccessSnackBar(DiscoveryActivity.this, this.snackbarAnchor, message));
-
-    this.viewModel.outputs.showErrorMessage()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(message -> ActivityExtKt.showErrorSnackBar(DiscoveryActivity.this, this.snackbarAnchor, message));
-  }
-
-  private static @NonNull List<DiscoveryFragment> createFragments(final int pages) {
-    final List<DiscoveryFragment> fragments = new ArrayList<>(pages);
-    for (int position = 0; position <= pages; position++) {
-      fragments.add(DiscoveryFragment.newInstance(position));
-    }
-    return fragments;
-  }
-
-  public @NonNull DrawerLayout discoveryLayout() {
-    return this.discoveryLayout;
-  }
-
-  @Override
-  public void onNetworkConnectionChanged(final boolean isConnected) {
-    if (this.qualtricsPrompt.getVisibility() != View.VISIBLE) {
-      super.onNetworkConnectionChanged(isConnected);
-    }
-  }
-
-  @OnClick(R.id.qualtrics_confirm)
-  public void qualtricsConfirmClicked() {
-    this.viewModel.inputs.qualtricsConfirmClicked();
-  }
-
-  @OnClick(R.id.qualtrics_dismiss)
-  public void qualtricsDismissClicked() {
-    this.viewModel.inputs.qualtricsDismissClicked();
-  }
-
-  private void addTabSelectedListenerToTabLayout() {
-    this.sortTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-      @Override
-      public void onTabSelected(final TabLayout.Tab tab) {
-        DiscoveryActivity.this.viewModel.sortClicked(tab.getPosition());
-      }
-      @Override
-      public void onTabUnselected(final TabLayout.Tab tab) {
-
-      }
-      @Override
-      public void onTabReselected(final TabLayout.Tab tab) {
-        DiscoveryActivity.this.pagerAdapter.scrollToTop(tab.getPosition());
-        DiscoveryActivity.this.viewModel.sortClicked(tab.getPosition());
-      }
-    });
-  }
-
-  private void setUpQualtrics(final boolean firstAppSession) {
-    Qualtrics.instance().initialize(Secrets.Qualtrics.BRAND_ID,
-      Secrets.Qualtrics.ZONE_ID,
-      QualtricsIntercept.NATIVE_APP_FEEDBACK.id(BuildConfig.APPLICATION_ID),
-      this,
-      initializationResult -> {
-        if (initializationResult.passed()) {
-          updateQualtricsProperties(firstAppSession);
-
-          Qualtrics.instance().evaluateTargetingLogic(targetingResult -> DiscoveryActivity.this.viewModel.inputs.qualtricsResult(new QualtricsResult(targetingResult)));
+        binding.qualtricsPromptLayout.qualtricsConfirm.setOnClickListener {
+            qualtricsConfirmClicked()
         }
-      });
-  }
 
-  private void updateDrawerMenuIcon(final @NonNull Integer drawerMenuIcon) {
-    this.menuImageButton.setImageResource(drawerMenuIcon);
-    if (this.menuImageButton.getDrawable() instanceof Animatable) {
-      final Animatable menuDrawable = (Animatable) this.menuImageButton.getDrawable();
-      menuDrawable.start();
+        binding.qualtricsPromptLayout.qualtricsDismiss.setOnClickListener {
+            qualtricsDismissClicked()
+        }
     }
-  }
 
-  protected void startActivityFeedActivity() {
-    startActivity(new Intent(this, ActivityFeedActivity.class));
-  }
+    private fun qualtricsConfirmClicked() {
+        viewModel.inputs.qualtricsConfirmClicked()
+    }
 
-  protected void startCreatorDashboardActivity() {
-    startActivity(new Intent(this, CreatorDashboardActivity.class));
-  }
+    private fun qualtricsDismissClicked() {
+        viewModel.inputs.qualtricsDismissClicked()
+    }
 
-  protected void startHelpSettingsActivity() {
-    startActivity(new Intent(this, HelpSettingsActivity.class));
-  }
+    fun discoveryLayout(): DrawerLayout {
+        return binding.discoveryDrawerLayout
+    }
 
-  private void startLoginToutActivity() {
-    final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
-    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    transition(this, slideInFromRight());
-  }
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        if (binding.qualtricsPromptLayout.qualtricsPrompt.visibility != View.VISIBLE) {
+            super.onNetworkConnectionChanged(isConnected)
+        }
+    }
 
-  private void startMessageThreadsActivity() {
-    final Intent intent = new Intent(this, MessageThreadsActivity.class)
-      .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER);
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
+    private fun addTabSelectedListenerToTabLayout() {
+        binding.discoveryTabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                viewModel.sortClicked(tab.position)
+            }
 
-  private void startProfileActivity() {
-    final Intent intent = new Intent(this, ProfileActivity.class);
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                pagerAdapter.scrollToTop(tab.position)
+                viewModel.sortClicked(tab.position)
+            }
+        })
+    }
 
-  private void showQualtricsSurvey(final String surveyUrl) {
-    final Intent surveyIntent = new Intent(this, QualtricsSurveyActivity.class)
-      .putExtra("targetURL", surveyUrl);
+    private fun setUpQualtrics(firstAppSession: Boolean) {
+        Qualtrics.instance().initialize(
+            Secrets.Qualtrics.BRAND_ID,
+            Secrets.Qualtrics.ZONE_ID,
+            QualtricsIntercept.NATIVE_APP_FEEDBACK.id(BuildConfig.APPLICATION_ID),
+            this
+        ) { initializationResult: InitializationResult ->
+            if (initializationResult.passed()) {
+                updateQualtricsProperties(firstAppSession)
+                Qualtrics.instance().evaluateTargetingLogic { viewModel.inputs.qualtricsResult(QualtricsResult(it)) }
+            }
+        }
+    }
 
-    startActivity(surveyIntent);
-  }
+    private fun updateDrawerMenuIcon(drawerMenuIcon: Int) {
+        binding.discoveryToolbar.menuButton.setImageResource(drawerMenuIcon)
+        if (binding.discoveryToolbar.menuButton.drawable is Animatable) {
+            val menuDrawable = binding.discoveryToolbar.menuButton.drawable as Animatable
+            menuDrawable.start()
+        }
+    }
 
-  private void startSettingsActivity() {
-    final Intent intent = new Intent(this, SettingsActivity.class);
-    startActivity(intent);
-    overridePendingTransition(0, 0);
-  }
+    protected fun startActivityFeedActivity() {
+        startActivity(Intent(this, ActivityFeedActivity::class.java))
+    }
 
-  private void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {
-    new AlertDialog.Builder(this)
-      .setTitle(this.upgradeAppString)
-      .setMessage(this.aNewerBuildIsAvailableString)
-      .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-        final Intent intent = new Intent(this, DownloadBetaActivity.class)
-          .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope);
-        startActivity(intent);
-      })
-      .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-      })
-      .setIcon(android.R.drawable.ic_dialog_alert)
-      .show();
-  }
+    protected fun startCreatorDashboardActivity() {
+        startActivity(Intent(this, CreatorDashboardActivity::class.java))
+    }
 
-  private void updateImpressionCount(final @NonNull QualtricsIntercept qualtricsIntercept) {
-    final String key = qualtricsIntercept.impressionCountKey(BuildConfig.APPLICATION_ID);
+    protected fun startHelpSettingsActivity() {
+        startActivity(Intent(this, HelpSettingsActivity::class.java))
+    }
 
-    final double initialCount = ObjectUtils.coalesce(Qualtrics.instance().properties.getNumber(key), 0.0);
-    Qualtrics.instance().properties.setNumber(key, initialCount + 1.0);
-  }
+    private fun startLoginToutActivity() {
+        val intent = Intent(this, LoginToutActivity::class.java)
+            .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT)
+        startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
+        TransitionUtils.transition(this, TransitionUtils.slideInFromRight())
+    }
 
-  private void updateQualtricsProperties(final boolean firstAppSession) {
-    Qualtrics.instance().properties.setString("first_app_session", Boolean.toString(firstAppSession));
-    Qualtrics.instance().properties.setString("language", Locale.getDefault().getLanguage());
-    Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID);
-  }
+    private fun startMessageThreadsActivity() {
+        val intent = Intent(this, MessageThreadsActivity::class.java)
+            .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.DRAWER)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
 
-  @Override
-  protected void onDestroy() {
-    this.viewModel = null;
-    super.onDestroy();
-  }
+    private fun startProfileActivity() {
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
+
+    private fun showQualtricsSurvey(surveyUrl: String) {
+        val surveyIntent = Intent(this, QualtricsSurveyActivity::class.java)
+            .putExtra("targetURL", surveyUrl)
+        startActivity(surveyIntent)
+    }
+
+    private fun startSettingsActivity() {
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(0, 0)
+    }
+
+    private fun showBuildAlert(envelope: InternalBuildEnvelope) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.Upgrade_app)
+            .setMessage(getString(R.string.A_newer_build_is_available))
+            .setPositiveButton(android.R.string.yes) { dialog: DialogInterface?, which: Int ->
+                val intent = Intent(this, DownloadBetaActivity::class.java)
+                    .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope)
+                startActivity(intent)
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog: DialogInterface?, which: Int -> }
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show()
+    }
+
+    private fun updateImpressionCount(qualtricsIntercept: QualtricsIntercept) {
+        val key = qualtricsIntercept.impressionCountKey(BuildConfig.APPLICATION_ID)
+        val initialCount = ObjectUtils.coalesce(Qualtrics.instance().properties.getNumber(key), 0.0)
+        Qualtrics.instance().properties.setNumber(key, initialCount + 1.0)
+    }
+
+    private fun updateQualtricsProperties(firstAppSession: Boolean) {
+        Qualtrics.instance().properties.setString("first_app_session", java.lang.Boolean.toString(firstAppSession))
+        Qualtrics.instance().properties.setString("language", Locale.getDefault().language)
+        Qualtrics.instance().properties.setString("package_name", BuildConfig.APPLICATION_ID)
+    }
+
+    override fun onDestroy() {
+        viewModel = null
+        super.onDestroy()
+    }
+
+    companion object {
+        private fun createFragments(pages: Int): List<DiscoveryFragment> {
+            val fragments: MutableList<DiscoveryFragment> = ArrayList(pages)
+            for (position in 0..pages) {
+                fragments.add(newInstance(position))
+            }
+            return fragments
+        }
+    }
 }

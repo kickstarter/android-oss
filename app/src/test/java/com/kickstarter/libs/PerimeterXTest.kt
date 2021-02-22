@@ -38,7 +38,7 @@ class PerimeterXTest : KSRobolectricTestCase()  {
     fun testCookieForWebView() {
         val pxClient = PXClientFactory.pxChallengedSuccessful(build)
         val cookie = pxClient.getCookieForWebView()
-        val assertValue = "_pxmvid=${pxClient.vId()}"
+        val assertValue = "_pxmvid=${pxClient.visitorId()}"
 
         assert(cookie.contains(assertValue))
     }
@@ -46,7 +46,7 @@ class PerimeterXTest : KSRobolectricTestCase()  {
     @Test
     fun testVisitiorId() {
         val pxClient = PXClientFactory.pxChallengedSuccessful(build)
-        val vid = pxClient.vId()
+        val vid = pxClient.visitorId()
 
         assertNotNull(vid)
         assertEquals(vid, "VID")

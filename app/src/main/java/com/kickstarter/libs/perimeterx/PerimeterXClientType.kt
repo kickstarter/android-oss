@@ -64,11 +64,11 @@ interface PerimeterXClientType {
     /**
      * Identification for the PerimeterX sdk
      */
-    fun vId(): String
+    fun visitorId(): String
 
     /**
-     * Will evaluate the body of a request,
-     * in case that response has been marked as challenged
+     * Will evaluate the body of a response
+     * and say id that response was challenged or not
      */
     fun isChallenged(body: String): Boolean
 

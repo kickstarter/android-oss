@@ -40,7 +40,7 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
     override fun getCookieForWebView(): String {
         val date = Date()
         date.time = date.time + 60 * 60 * 1000 // - Set the expiration to one hour
-        return "_pxmvid=${this.vId()} expires= $date;"
+        return "_pxmvid=${this.visitorId()} expires= $date;"
     }
 
     override fun httpHeaders(): MutableMap<String, String>? = PXManager.httpHeaders()
@@ -67,7 +67,7 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
         if (build.isDebug) Timber.d("$LOGTAG headers: $headers added to requestBuilder: ${builder?.toString()}")
     }
 
-    override fun vId():String = pxManager.vid
+    override fun visitorId():String = pxManager.vid
 
     override fun start(context: Context) {
         initialize()
@@ -75,7 +75,7 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
     }
 
     override fun intercept(response: Response) {
-        if (build.isDebug) Timber.d("$LOGTAG intercepted response for request:${response.request.url} with VID :${this.vId()}")
+        if (build.isDebug) Timber.d("$LOGTAG intercepted response for request:${response.request.url} with VID :${this.visitorId()}")
 
         if (response.code == 403) {
             this.cloneResponse(response).body?.string()?.let {

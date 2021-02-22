@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities
 
 import android.os.Bundle
 import androidx.core.widget.doOnTextChanged
-import butterknife.ButterKnife
 import com.kickstarter.R
 import com.kickstarter.databinding.TwoFactorLayoutBinding
 import com.kickstarter.libs.BaseActivity
@@ -18,8 +17,8 @@ class TwoFactorActivity : BaseActivity<TwoFactorViewModel.ViewModel>() {
     private lateinit var binding: TwoFactorLayoutBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.two_factor_layout)
-        ButterKnife.bind(this)
+        binding = TwoFactorLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.loginToolbar.loginToolbar.setTitle(getString(R.string.two_factor_title))
 

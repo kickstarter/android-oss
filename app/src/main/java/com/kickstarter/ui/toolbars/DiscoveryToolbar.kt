@@ -1,70 +1,57 @@
-package com.kickstarter.ui.toolbars;
+package com.kickstarter.ui.toolbars
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.AttributeSet;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.content.Context
+import android.content.Intent
+import android.util.AttributeSet
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.core.view.GravityCompat
+import com.kickstarter.R
+import com.kickstarter.libs.KSString
+import com.kickstarter.services.DiscoveryParams
+import com.kickstarter.ui.activities.DiscoveryActivity
+import com.kickstarter.ui.activities.SearchActivity
 
-import com.kickstarter.R;
-import com.kickstarter.libs.KSString;
-import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.activities.SearchActivity;
+class DiscoveryToolbar @JvmOverloads constructor(
+    context: Context,
+    val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : KSToolbar(context, attrs, defStyleAttr) {
+    private lateinit var ksString: KSString
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.GravityCompat;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+    override fun onFinishInflate() {
+        super.onFinishInflate()
 
-public final class DiscoveryToolbar extends KSToolbar {
-  @Bind(R.id.filter_text_view) TextView filterTextView;
-  @Bind(R.id.menu_button) ImageButton menuButton;
-  @Bind(R.id.search_button) ImageButton searchButton;
+        if (isInEditMode) {
+            return
+        }
+        ksString = environment().ksString()
 
-  private KSString ksString;
+        (findViewById<ImageButton>(R.id.menu_button)).setOnClickListener {
+            menuButtonClick()
+        }
 
-  public DiscoveryToolbar(final @NonNull Context context) {
-    super(context);
-  }
+        (findViewById<TextView>(R.id.filter_text_view)).setOnClickListener {
+            menuButtonClick()
+        }
 
-  public DiscoveryToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
-    super(context, attrs);
-  }
-
-  public DiscoveryToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-  }
-
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-
-    if (isInEditMode()) {
-      return;
+        (findViewById<ImageButton>(R.id.search_button)).setOnClickListener {
+            searchButtonClick()
+        }
     }
 
-    ButterKnife.bind(this);
-    this.ksString = environment().ksString();
-  }
+    protected fun menuButtonClick() {
+        val activity = context as DiscoveryActivity
+        activity.discoveryLayout().openDrawer(GravityCompat.START)
+    }
 
-  @OnClick({R.id.menu_button, R.id.filter_text_view})
-  protected void menuButtonClick() {
-    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-    activity.discoveryLayout().openDrawer(GravityCompat.START);
-  }
+    fun loadParams(params: DiscoveryParams) {
+        val activity = context as DiscoveryActivity
+        (findViewById<TextView>(R.id.filter_text_view)).text = params.filterString(activity, ksString, true, false)
+    }
 
-  public void loadParams(final @NonNull DiscoveryParams params) {
-    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-
-    this.filterTextView.setText(params.filterString(activity, this.ksString, true, false));
-  }
-
-  @OnClick(R.id.search_button)
-  public void searchButtonClick() {
-    final Context context = getContext();
-    context.startActivity(new Intent(context, SearchActivity.class));
-  }
+    private fun searchButtonClick() {
+        val context = context
+        context.startActivity(Intent(context, SearchActivity::class.java))
+    }
 }

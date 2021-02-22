@@ -1,70 +1,59 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.app.DownloadManager;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.app.DownloadManager
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import com.kickstarter.databinding.DownloadBetaLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.viewmodels.DownloadBetaViewModel
+import rx.android.schedulers.AndroidSchedulers
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
-import com.kickstarter.viewmodels.DownloadBetaViewModel;
+@RequiresActivityViewModel(DownloadBetaViewModel::class)
+class DownloadBetaActivity : BaseActivity<DownloadBetaViewModel>() {
+    private lateinit var binding: DownloadBetaLayoutBinding
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+    public override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DownloadBetaLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-@RequiresActivityViewModel(DownloadBetaViewModel.class)
-public final class DownloadBetaActivity extends BaseActivity<DownloadBetaViewModel> {
-  protected @Bind(R.id.build) TextView buildTextView;
-  protected @Bind(R.id.changelog) TextView changelogTextView;
+        val build = viewModel.outputs.internalBuildEnvelope()
+            .map { it.build() }
+            .filter { ObjectUtils.isNotNull(it) }
+            .map { it.toString() }
 
-  @Override
-  public void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+        build
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.build.text = it }
 
-    setContentView(R.layout.download_beta_layout);
-    ButterKnife.bind(this);
+        build
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { requestDownload(it) }
 
-    final Observable<String> build = this.viewModel.outputs.internalBuildEnvelope()
-      .map(InternalBuildEnvelope::build)
-      .filter(ObjectUtils::isNotNull)
-      .map(Object::toString);
+        viewModel.outputs.internalBuildEnvelope()
+            .map { it.changelog() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding.changelog.text = it }
 
-    build
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.buildTextView::setText);
+        binding.openDownloadsButton.setOnClickListener {
+            openDownloadsOnClick()
+        }
+    }
 
-    build
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::requestDownload);
+    private fun openDownloadsOnClick() {
+        val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+        startActivity(intent)
+    }
 
-    this.viewModel.outputs.internalBuildEnvelope()
-      .map(InternalBuildEnvelope::changelog)
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.changelogTextView::setText);
-  }
-
-  @OnClick(R.id.open_downloads_button)
-  public void openDownloadsOnClick(final @NonNull View v) {
-    final Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
-    startActivity(intent);
-  }
-
-  private void requestDownload(final @NonNull String build) {
-    final Intent intent = new Intent(Intent.ACTION_VIEW)
-      .setData(Uri.parse("https://www.kickstarter.com/mobile/beta/builds/" + build));
-    startActivity(intent);
-  }
+    private fun requestDownload(build: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+            .setData(Uri.parse("https://www.kickstarter.com/mobile/beta/builds/$build"))
+        startActivity(intent)
+    }
 }

@@ -62,7 +62,6 @@
   <string name="verification_email_sent_inbox" formatted="false">Verification email sent</string>
   <string name="Version_code">Version Code</string>
   <string name="Version_name">Version Name</string>
-  <string name="Device_Ip"> Device IP</string>
   <string name="we_couldnt_resend_this_email_please_try_again" formatted="false">We couldn\'t resend this email — please try again</string>
 
   <bool name="isTablet">false</bool>

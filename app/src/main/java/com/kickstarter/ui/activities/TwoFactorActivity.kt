@@ -1,106 +1,88 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.app.Activity;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import android.util.Pair;
-import android.widget.Button;
-import android.widget.EditText;
+import android.os.Bundle
+import androidx.core.widget.doOnTextChanged
+import butterknife.ButterKnife
+import com.kickstarter.R
+import com.kickstarter.databinding.TwoFactorLayoutBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.viewmodels.TwoFactorViewModel
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.ui.toolbars.LoginToolbar;
-import com.kickstarter.viewmodels.TwoFactorViewModel;
+@RequiresActivityViewModel(TwoFactorViewModel.ViewModel::class)
+class TwoFactorActivity : BaseActivity<TwoFactorViewModel.ViewModel>() {
+    private lateinit var binding: TwoFactorLayoutBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.two_factor_layout)
+        ButterKnife.bind(this)
 
-import butterknife.Bind;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+        binding.loginToolbar.loginToolbar.setTitle(getString(R.string.two_factor_title))
 
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
+        viewModel.outputs.tfaSuccess()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { onSuccess() }
 
-@RequiresActivityViewModel(TwoFactorViewModel.ViewModel.class)
-public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel.ViewModel> {
-  public @Bind(R.id.code) EditText codeEditText;
-  public @Bind(R.id.resend_button) Button resendButton;
-  public @Bind(R.id.login_button) Button loginButton;
-  public @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+        viewModel.outputs.formSubmitting()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setFormDisabled(it) }
 
-  @BindString(R.string.two_factor_error_message) String codeMismatchString;
-  @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
-  @BindString(R.string.two_factor_title) String verifyString;
-  @BindString(R.string.login_errors_title) String errorTitleString;
+        viewModel.outputs.formIsValid()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setFormEnabled(it) }
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+        errorMessages()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.showDialog(this, getString(R.string.login_errors_title), it) }
 
-    setContentView(R.layout.two_factor_layout);
-    ButterKnife.bind(this);
-    this.loginToolbar.setTitle(this.verifyString);
+        binding.twoFactorFormView.code.doOnTextChanged { text, _, _, _ ->
+            text?.let { codeEditTextOnTextChanged(it) }
+        }
 
-    this.viewModel.outputs.tfaSuccess()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> onSuccess());
+        binding.twoFactorFormView.loginButton.setOnClickListener {
+            loginButtonOnClick()
+        }
 
-    this.viewModel.outputs.formSubmitting()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setFormDisabled);
+        binding.twoFactorFormView.resendButton.setOnClickListener {
+            resendButtonOnClick()
+        }
+    }
 
-    this.viewModel.outputs.formIsValid()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setFormEnabled);
+    private fun errorMessages(): Observable<String> {
+        return viewModel.outputs.tfaCodeMismatchError().map { getString(R.string.two_factor_error_message) }
+            .mergeWith(viewModel.outputs.genericTfaError().map { getString(R.string.login_errors_unable_to_log_in) })
+    }
 
-    errorMessages()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(e -> ViewUtils.showDialog(this, this.errorTitleString, e));
-  }
+    private fun codeEditTextOnTextChanged(code: CharSequence) {
+        viewModel.inputs.code(code.toString())
+    }
 
-  private Observable<String> errorMessages() {
-    return this.viewModel.outputs.tfaCodeMismatchError().map(__ -> this.codeMismatchString)
-      .mergeWith(this.viewModel.outputs.genericTfaError().map(__ -> this.unableToLoginString));
-  }
+    private fun resendButtonOnClick() {
+        viewModel.inputs.resendClick()
+    }
 
-  @OnTextChanged(R.id.code)
-  public void codeEditTextOnTextChanged(final @NonNull CharSequence code) {
-    this.viewModel.inputs.code(code.toString());
-  }
+    private fun loginButtonOnClick() {
+        viewModel.inputs.loginClick()
+    }
 
-  @OnClick(R.id.resend_button)
-  public void resendButtonOnClick() {
-    this.viewModel.inputs.resendClick();
-  }
+    private fun onSuccess() {
+        setResult(RESULT_OK)
+        finish()
+    }
 
-  @OnClick(R.id.login_button)
-  public void loginButtonOnClick() {
-    this.viewModel.inputs.loginClick();
-  }
+    private fun setFormEnabled(enabled: Boolean) {
+        binding.twoFactorFormView.loginButton.isEnabled = enabled
+    }
 
-  public void onSuccess() {
-    setResult(Activity.RESULT_OK);
-    finish();
-  }
+    private fun setFormDisabled(disabled: Boolean) = setFormEnabled(!disabled)
 
-  public void setFormEnabled(final boolean enabled) {
-    this.loginButton.setEnabled(enabled);
-  }
-
-  public void setFormDisabled(final boolean disabled) {
-    setFormEnabled(!disabled);
-  }
-
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
-  }
+    override fun exitTransition() = TransitionUtils.slideInFromLeft()
 }

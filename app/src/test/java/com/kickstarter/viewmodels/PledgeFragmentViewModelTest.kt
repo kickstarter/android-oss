@@ -11,7 +11,6 @@ import com.kickstarter.libs.MockSharedPreferences
 import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.models.Country
 import com.kickstarter.libs.utils.DateTimeUtils
-import com.kickstarter.libs.utils.EventContext
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.trimAllWhitespace

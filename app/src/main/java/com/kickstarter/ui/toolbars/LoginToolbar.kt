@@ -1,41 +1,27 @@
-package com.kickstarter.ui.toolbars;
+package com.kickstarter.ui.toolbars
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.widget.TextView;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import butterknife.ButterKnife
+import com.kickstarter.R
+import com.kickstarter.ui.views.LoginPopupMenu
 
-import com.kickstarter.R;
-import com.kickstarter.ui.views.LoginPopupMenu;
+class LoginToolbar @JvmOverloads constructor(
+    context: Context,
+    val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : KSToolbar(context, attrs, defStyleAttr) {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
-public class LoginToolbar extends KSToolbar {
-  @Bind(R.id.help_button) TextView helpButton;
-
-  public LoginToolbar(final @NonNull Context context) {
-    super(context);
-  }
-
-  public LoginToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
-    super(context, attrs);
-  }
-
-  public LoginToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-  }
-
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-    ButterKnife.bind(this);
-  }
-
-  @OnClick(R.id.help_button)
-  protected void helpButtonClick() {
-    new LoginPopupMenu(getContext(), this.helpButton).show();
-  }
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        ButterKnife.bind(this)
+        findViewById<View>(R.id.help_button).setOnClickListener {
+            helpButtonClick(it)
+        }
+    }
+    
+    fun helpButtonClick(view: View) {
+        LoginPopupMenu(context, view).show()
+    }
 }

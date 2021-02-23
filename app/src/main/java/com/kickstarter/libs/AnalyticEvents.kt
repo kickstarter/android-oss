@@ -703,7 +703,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackThanksScreenViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to EventContext.PageViewedContextName.THANKS.contextName)
-        props[CONTEXT_TYPE] = pledgeData.pledgeFlowContext()
+        props[CONTEXT_TYPE.contextName] = pledgeData.pledgeFlowContext().trackingString
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
         client.track(EventName.PAGE_VIEWED.eventName, props)
     }

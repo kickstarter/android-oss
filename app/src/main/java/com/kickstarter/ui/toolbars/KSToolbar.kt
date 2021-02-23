@@ -1,121 +1,96 @@
-package com.kickstarter.ui.toolbars;
+package com.kickstarter.ui.toolbars
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.util.AttributeSet;
-import android.widget.TextView;
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.util.AttributeSet
+import android.widget.TextView
+import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
+import com.kickstarter.KSApplication
+import com.kickstarter.R
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.qualifiers.WebEndpoint
+import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.ui.views.IconButton
+import rx.Subscription
+import rx.subscriptions.CompositeSubscription
 
-import com.kickstarter.KSApplication;
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.qualifiers.WebEndpoint;
-import com.kickstarter.libs.utils.Secrets;
+open class KSToolbar @JvmOverloads constructor(
+    context: Context,
+    val attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : Toolbar(context, attrs, defStyleAttr) {
 
-import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import butterknife.Bind;
-import butterknife.BindDimen;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
+    private var backgroundPaint: Paint? = null
 
-public class KSToolbar extends Toolbar {
-  protected @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
-  protected @BindDimen(R.dimen.grid_2) float grid_2;
+    @WebEndpoint
+    private var webEndpoint: String? = null
+    
+    private val subscriptions = CompositeSubscription()
 
-  private Paint backgroundPaint;
-  private @WebEndpoint String webEndpoint;
-
-  private final CompositeSubscription subscriptions = new CompositeSubscription();
-
-  public KSToolbar(final @NonNull Context context) {
-    super(context);
-
-    init(context);
-  }
-
-  public KSToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
-    super(context, attrs);
-
-    init(context);
-  }
-
-  public KSToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-
-    init(context);
-  }
-
-  @Override
-  protected void onDraw(final Canvas canvas) {
-    super.onDraw(canvas);
-
-    if (!isInEditMode() && !this.webEndpoint.equals(Secrets.WebEndpoint.PRODUCTION)) {
-      canvas.drawRect(0, 0, this.grid_2, getHeight(), this.backgroundPaint);
+    init {
+        init(context)
     }
-  }
-
-  @Nullable @OnClick(R.id.back_button)
-  protected void backButtonClick() {
-    if (getContext() instanceof BaseActivity) {
-      ((BaseActivity) getContext()).back();
-    } else {
-      ((AppCompatActivity) getContext()).onBackPressed();
+    private fun init(context: Context) {
+        if (!isInEditMode) {
+            backgroundPaint = Paint()
+            backgroundPaint?.style = Paint.Style.FILL
+            backgroundPaint?.color = ContextCompat.getColor(context, R.color.kds_trust_500)
+            webEndpoint = environment().webEndpoint()
+        }
     }
-  }
-
-  protected @NonNull Environment environment() {
-    return ((KSApplication) getContext().getApplicationContext()).component().environment();
-  }
-
-  /**
-   * If the toolbar has a textview with id title_text_view, set its title.
-   */
-  public void setTitle(final @NonNull String title) {
-    if (this.titleTextView != null) {
-      this.titleTextView.setText(title);
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        if (!isInEditMode && webEndpoint != Secrets.WebEndpoint.PRODUCTION) {
+            canvas.drawRect(0f, 0f, context.resources.getDimension(R.dimen.grid_2), height.toFloat(), backgroundPaint!!)
+        }
     }
-  }
 
-  @CallSuper
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-    ButterKnife.bind(this);
-  }
-
-  @CallSuper
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-  }
-
-  @CallSuper
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-
-    this.subscriptions.clear();
-  }
-
-  protected final void addSubscription(final @NonNull Subscription subscription) {
-    this.subscriptions.add(subscription);
-  }
-
-  private void init(final @NonNull Context context) {
-    if (!isInEditMode()) {
-      this.backgroundPaint = new Paint();
-      this.backgroundPaint.setStyle(Paint.Style.FILL);
-      this.backgroundPaint.setColor(ContextCompat.getColor(context, R.color.kds_trust_500));
-
-      this.webEndpoint = environment().webEndpoint();
+    protected fun environment(): Environment {
+        return (context.applicationContext as KSApplication).component().environment()
     }
-  }
+
+    /**
+     * If the toolbar has a textview with id title_text_view, set its title.
+     */
+    fun setTitle(title: String) {
+        findViewById<TextView>(R.id.title_text_view)?.let {
+            it.text = title
+        }
+    }
+
+    @CallSuper
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        findViewById<IconButton>(R.id.back_button)?.setOnClickListener {
+            backButtonClick()
+        }
+    }
+
+    @CallSuper
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+    }
+
+    @CallSuper
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        subscriptions.clear()
+    }
+
+    protected fun addSubscription(subscription: Subscription) {
+        subscriptions.add(subscription)
+    }
+
+    private fun backButtonClick() {
+        if (context is BaseActivity<*>) {
+            (context as BaseActivity<*>).back()
+        } else {
+            (context as AppCompatActivity).onBackPressed()
+        }
+    }
 }

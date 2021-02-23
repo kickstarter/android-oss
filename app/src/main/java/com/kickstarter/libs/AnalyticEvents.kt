@@ -10,9 +10,9 @@ import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
-import com.kickstarter.libs.utils.EventKeys.ContextPropertyKeyName.CONTEXT_CTA
-import com.kickstarter.libs.utils.EventKeys.ContextPropertyKeyName.CONTEXT_TYPE
-import com.kickstarter.libs.utils.EventKeys.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project

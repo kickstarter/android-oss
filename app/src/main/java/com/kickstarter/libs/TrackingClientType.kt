@@ -39,6 +39,12 @@ abstract class TrackingClientType {
     abstract fun identify(u: User)
     abstract fun reset()
 
+    /**
+     * Will determine if a concrete TrackingClient
+     * is enabled to send data
+     */
+    abstract fun isEnabled(): Boolean
+
     fun track(eventName: String) {
         track(eventName, HashMap())
     }

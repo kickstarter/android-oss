@@ -222,7 +222,7 @@ dependencies {
     final okhttp_version = "4.8.+"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
-    implementation "com.squareup.picasso:picasso:2.5.2"
+
     final retrofit_version = "2.9.+"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
@@ -238,12 +238,16 @@ dependencies {
     // Analytics
     implementation 'com.segment.analytics.android:analytics:4.9.0'
 
+    // Security
+    implementation 'com.perimeterx.sdk:msdk:1.13.1'
+
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:26.0.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'
     implementation "com.google.firebase:firebase-messaging"
+    implementation 'com.google.firebase:firebase-inappmessaging-display'
 
     // Testing
     testImplementation "junit:junit:4.12"

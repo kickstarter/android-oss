@@ -44,7 +44,7 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.viewModel.outputs.avatarImageViewUrl()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { url -> Picasso.with(this).load(url).transform(CircleTransformation()).into(profile_picture_image_view) }
+                .subscribe { url ->  Picasso.get().load(url).transform(CircleTransformation()).into(profile_picture_image_view) }
 
         this.viewModel.outputs.logout()
                 .compose(bindToLifecycle())

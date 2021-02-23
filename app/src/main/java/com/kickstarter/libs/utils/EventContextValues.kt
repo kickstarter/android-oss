@@ -1,6 +1,6 @@
 package com.kickstarter.libs.utils
 
-class EventContext {
+class EventContextValues {
 
     /**
      * Determines the button that was clicked or tapped by a user.

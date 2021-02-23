@@ -15,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
@@ -33,9 +37,6 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;
@@ -53,7 +54,7 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectViewHolder extends KSViewHolder {
-  private ProjectHolderViewModel.ViewModel viewModel;
+  private final ProjectHolderViewModel.ViewModel viewModel;
   private final Delegate delegate;
   private final KSString ksString;
 
@@ -337,7 +338,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(url ->
-        Picasso.with(context()).load(url)
+         Picasso.get().load(url)
           .transform(new CircleTransformation())
           .into(this.projectSocialImageView)
       );
@@ -416,12 +417,12 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   private void setAvatar(final @NonNull String url) {
-    Picasso.with(context())
+    Picasso.get()
       .load(url)
       .transform(new CircleTransformation())
       .into(this.avatarImageView);
 
-    Picasso.with(context())
+    Picasso.get()
       .load(url)
       .transform(new CircleTransformation())
       .into(this.avatarVariantImageView);
@@ -459,7 +460,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
     this.photoImageView.setMaxHeight(targetImageHeight);
 
-    Picasso.with(context())
+    Picasso.get()
       .load(photo.full())
       .resize(targetImageWidth, targetImageHeight)
       .centerCrop()

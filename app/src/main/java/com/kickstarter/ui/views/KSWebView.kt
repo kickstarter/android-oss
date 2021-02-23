@@ -1,25 +1,37 @@
 package com.kickstarter.ui.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.webkit.CookieManager
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView.setWebContentsDebuggingEnabled
 import android.widget.FrameLayout
 import com.kickstarter.KSApplication
 import com.kickstarter.R
+import com.kickstarter.libs.Build
 import com.kickstarter.libs.WebViewJavascriptInterface
+import com.kickstarter.libs.perimeterx.PerimeterXClientType
 import com.kickstarter.services.KSWebViewClient
 import com.kickstarter.services.RequestHandler
 import kotlinx.android.synthetic.main.web_view.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
+private const val LOGTAG = "KSWebView"
 class KSWebView : FrameLayout, KSWebViewClient.Delegate {
 
     @Inject
     lateinit var client: KSWebViewClient
+
+    @Inject
+    lateinit var build: Build
+
+    @Inject
+    lateinit var perimeterX: PerimeterXClientType
 
     private var delegate: Delegate? = null
 
@@ -41,6 +53,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
         init(context)
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.web_view, this, true)
 
@@ -52,7 +65,9 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
             internal_web_view.settings.allowFileAccess = false
             this.client.setDelegate(this)
 
-            setWebContentsDebuggingEnabled(true)
+            if (Build.isInternal() || build.isDebug) {
+                setWebContentsDebuggingEnabled(true)
+            }
 
             internal_web_view.addJavascriptInterface(WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface")
 
@@ -62,6 +77,20 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
             }
         }
 
+    }
+
+
+    /**
+     * Added `_pxmvid` cookie to each loaded url, with 1 hour expiration time
+     * @see {@link https://docs.perimeterx.com/pxconsole/docs/android-sdk-integration-guide#section-web-view-integration}
+     */
+    private fun setPerimeterXCookie(url: String?) {
+        val cookieManager: CookieManager = CookieManager.getInstance()
+        cookieManager.removeSessionCookies { }
+
+        val cookie = this.perimeterX.getCookieForWebView()
+        cookieManager.setCookie(url, cookie)
+        if (build.isDebug) Timber.d("$LOGTAG: for url:$url cookie:${cookieManager.getCookie(url)} ")
     }
 
     override fun externalLinkActivated(url: String) {
@@ -106,7 +135,10 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
     }
 
     fun loadUrl(url: String?) {
-        internal_web_view.loadUrl(url)
+        url?.let {
+            internal_web_view.loadUrl(it)
+            setPerimeterXCookie(it)
+        }
     }
 
     fun registerRequestHandlers(requestHandlers: List<RequestHandler>) {

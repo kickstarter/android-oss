@@ -11,6 +11,12 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.ContextCompat;
+
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -37,11 +43,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.TaskStackBuilder;
-import androidx.core.content.ContextCompat;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
@@ -408,7 +409,7 @@ public final class PushNotifications {
     }
 
     try {
-      RequestCreator requestCreator = Picasso.with(this.context).load(url).transform(new CropSquareTransformation());
+      RequestCreator requestCreator =  Picasso.get().load(url).transform(new CropSquareTransformation());
       if (transformIntoCircle) {
         requestCreator = requestCreator.transform(new CircleTransformation());
       }

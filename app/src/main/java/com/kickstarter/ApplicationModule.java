@@ -45,6 +45,8 @@ import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
 import com.kickstarter.libs.graphql.EmailAdapter;
 import com.kickstarter.libs.models.OptimizelyEnvironment;
+import com.kickstarter.libs.perimeterx.PerimeterXClient;
+import com.kickstarter.libs.perimeterx.PerimeterXClientType;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -182,7 +184,7 @@ public class ApplicationModule {
     if (build.isRelease() && Build.isExternal()) {
       apiKey = Secrets.Segment.PRODUCTION;
     }
-    if (build.isDebug()) {
+    if (build.isDebug() || Build.isInternal()) {
       apiKey = Secrets.Segment.STAGING;
     }
 
@@ -222,6 +224,18 @@ public class ApplicationModule {
       .serverUrl(webEndpoint + "/graph")
       .okHttpClient(okHttpClient)
       .build();
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  static PerimeterXClientType providePerimeterXManager(final @ApplicationContext @NonNull Context context, final @NonNull Build build) {
+    final PerimeterXClient manager = new PerimeterXClient(build);
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      manager.start(context);
+    }
+
+    return manager;
   }
 
   @Provides
@@ -269,17 +283,19 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
-    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url());
+  static ApiRequestInterceptor provideApiRequestInterceptor(
+          final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
+          final @NonNull ApiEndpoint endpoint, final @NonNull PerimeterXClientType manager,
+          final @NonNull Build build) {
+    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url(), manager, build);
   }
 
   @Provides
   @Singleton
   @NonNull
   static GraphQLInterceptor provideGraphQLInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull Build build) {
-    return new GraphQLInterceptor(clientId, currentUser, build);
+    final @NonNull CurrentUserType currentUser, final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
+    return new GraphQLInterceptor(clientId, currentUser, build, manager);
   }
 
   @Provides
@@ -307,8 +323,8 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build) {
-    return new KSRequestInterceptor(build);
+  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
+    return new KSRequestInterceptor(build, manager);
   }
 
   @Provides
@@ -341,8 +357,8 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
-    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull PerimeterXClientType manager) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, manager);
   }
 
   @Provides
@@ -551,8 +567,8 @@ public class ApplicationModule {
 
   @Provides
   static KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
-    final @WebEndpoint String webEndpoint) {
-    return new KSWebViewClient(okHttpClient, webEndpoint);
+    final @WebEndpoint String webEndpoint, final @NonNull PerimeterXClientType manager) {
+    return new KSWebViewClient(okHttpClient, webEndpoint, manager);
   }
 
   @Provides

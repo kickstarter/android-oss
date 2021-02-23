@@ -1,104 +1,84 @@
-package com.kickstarter.ui.activities;
+package com.kickstarter.ui.activities
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Pair;
-import android.widget.ProgressBar;
+import android.content.Intent
+import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kickstarter.R
+import com.kickstarter.databinding.ActivityUpdatesBinding
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.RecyclerViewPaginator
+import com.kickstarter.libs.SwipeRefresher
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
+import com.kickstarter.libs.rx.transformers.Transformers
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.models.Project
+import com.kickstarter.models.Update
+import com.kickstarter.ui.IntentKey
+import com.kickstarter.ui.adapters.UpdatesAdapter
+import com.kickstarter.viewmodels.ProjectUpdatesViewModel
+import rx.android.schedulers.AndroidSchedulers
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RecyclerViewPaginator;
-import com.kickstarter.libs.SwipeRefresher;
-import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
-import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Project;
-import com.kickstarter.models.Update;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.UpdatesAdapter;
-import com.kickstarter.ui.toolbars.KSToolbar;
-import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
+@RequiresActivityViewModel(ProjectUpdatesViewModel.ViewModel::class)
+class ProjectUpdatesActivity : BaseActivity<ProjectUpdatesViewModel.ViewModel>(), UpdatesAdapter.Delegate {
+    private val adapter: UpdatesAdapter = UpdatesAdapter(this)
+    private lateinit var recyclerViewPaginator: RecyclerViewPaginator
+    private lateinit var swipeRefresher: SwipeRefresher
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.Bind;
-import butterknife.BindString;
-import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
+    private lateinit var binding: ActivityUpdatesBinding
 
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityUpdatesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.updatesRecyclerView.adapter = adapter
+        binding.updatesRecyclerView.layoutManager = LinearLayoutManager(this)
+        
+        recyclerViewPaginator = RecyclerViewPaginator(
+            binding.updatesRecyclerView,
+            { viewModel.inputs.nextPage() }, 
+            viewModel.outputs.isFetchingUpdates
+        )
+        
+        swipeRefresher = SwipeRefresher(
+            this, binding.updatesSwipeRefreshLayout, { viewModel.inputs.refresh() }
+        ) { viewModel.outputs.isFetchingUpdates }
+        
+        binding.updatesToolbar.commentsToolbar.setTitle(getString(R.string.project_subpages_menu_buttons_updates))
+        
+        viewModel.outputs.horizontalProgressBarIsGone()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe(ViewUtils.setGone(binding.updatesProgressBar))
+        
+        viewModel.outputs.startUpdateActivity()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { startUpdateActivity(it.first, it.second) }
+        
+        viewModel.outputs.projectAndUpdates()
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { adapter.takeData(it) }
+    }
 
-@RequiresActivityViewModel(ProjectUpdatesViewModel.ViewModel.class)
-public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel.ViewModel> implements UpdatesAdapter.Delegate {
-  private UpdatesAdapter adapter;
-  private RecyclerViewPaginator recyclerViewPaginator;
-  private SwipeRefresher swipeRefresher;
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerViewPaginator.stop()
+        binding.updatesRecyclerView.adapter = null
+    }
 
-  protected @Bind(R.id.updates_progress_bar) ProgressBar updatesProgressBar;
-  protected @Bind(R.id.updates_toolbar) KSToolbar updatesToolbar;
-  protected @Bind(R.id.updates_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-  protected @Bind(R.id.updates_recycler_view) RecyclerView recyclerView;
+    override fun updateCardClicked(update: Update) {
+        viewModel.inputs.updateClicked(update)
+    }
 
-  protected @BindString(R.string.project_subpages_menu_buttons_updates) String updatesTitleString;
+    private fun startUpdateActivity(project: Project, update: Update) {
+        val intent = Intent(this, UpdateActivity::class.java)
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.UPDATE, update)
+        startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
+    }
 
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_updates);
-    ButterKnife.bind(this);
-
-    this.adapter = new UpdatesAdapter(this);
-    this.recyclerView.setAdapter(this.adapter);
-    this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    this.recyclerViewPaginator = new RecyclerViewPaginator(this.recyclerView, this.viewModel.inputs::nextPage, this.viewModel.outputs.isFetchingUpdates());
-    this.swipeRefresher = new SwipeRefresher(
-            this, this.swipeRefreshLayout, this.viewModel.inputs::refresh, this.viewModel.outputs::isFetchingUpdates
-    );
-    this.updatesToolbar.setTitle(this.updatesTitleString);
-
-    this.viewModel.outputs.horizontalProgressBarIsGone()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(this.updatesProgressBar));
-
-    this.viewModel.outputs.startUpdateActivity()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(pu -> this.startUpdateActivity(pu.first, pu.second));
-
-    this.viewModel.outputs.projectAndUpdates()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this.adapter::takeData);
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-
-    this.recyclerViewPaginator.stop();
-    this.recyclerView.setAdapter(null);
-  }
-
-  @Override
-  public void updateCardClicked(final @NonNull Update update) {
-    this.viewModel.inputs.updateClicked(update);
-  }
-
-  private void startUpdateActivity(final @NonNull Project project, final @NonNull Update update) {
-    final Intent intent = new Intent(this, UpdateActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.UPDATE, update);
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  @Override
-  protected @Nullable Pair<Integer, Integer> exitTransition() {
-    return slideInFromLeft();
-  }
-
+    override fun exitTransition() = TransitionUtils.slideInFromLeft()
 }

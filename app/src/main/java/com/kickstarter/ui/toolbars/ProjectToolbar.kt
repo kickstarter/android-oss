@@ -1,37 +1,25 @@
-package com.kickstarter.ui.toolbars;
+package com.kickstarter.ui.toolbars
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.content.Context
+import android.util.AttributeSet
+import com.kickstarter.R
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.ui.views.IconButton
 
-import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
+class ProjectToolbar @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : KSToolbar(context, attrs, defStyleAttr) {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        findViewById<IconButton>(R.id.back_icon)?.setOnClickListener {
+            backIconClick()
+        }
+    }
 
-public final class ProjectToolbar extends KSToolbar {
-  public ProjectToolbar(final @NonNull Context context) {
-    super(context);
-  }
-
-  public ProjectToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
-    super(context, attrs);
-  }
-
-  public ProjectToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-  }
-
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-    ButterKnife.bind(this);
-  }
-
-  @OnClick(R.id.back_icon)
-  public void backIconClick() {
-    ((BaseActivity) getContext()).back();
-  }
+    private fun backIconClick() {
+        (context as BaseActivity<*>).back()
+    }
 }

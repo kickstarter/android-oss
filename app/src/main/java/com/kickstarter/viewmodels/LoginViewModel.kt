@@ -80,7 +80,6 @@ interface LoginViewModel {
         private val showCreatedPasswordSnackbar = BehaviorSubject.create<Void>()
         private val showResetPasswordSuccessDialog = BehaviorSubject.create<Pair<Boolean, String>>()
         private val tfaChallenge: Observable<Void>
-        private val showInterstitial = BehaviorSubject.create<Void>()
 
         private val loginError = PublishSubject.create<ErrorEnvelope>()
 

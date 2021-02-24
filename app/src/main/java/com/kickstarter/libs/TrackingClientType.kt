@@ -39,6 +39,12 @@ abstract class TrackingClientType {
     abstract fun identify(u: User)
     abstract fun reset()
 
+    /**
+     * Will determine if a concrete TrackingClient
+     * is enabled to send data
+     */
+    abstract fun isEnabled(): Boolean
+
     fun track(eventName: String) {
         track(eventName, HashMap())
     }
@@ -81,6 +87,10 @@ abstract class TrackingClientType {
             this["os_version"] = OSVersion()
             this["user_agent"] = userAgent() ?: ""
             this["user_is_logged_in"] = userIsLoggedIn
+            // - Add the optimizely experiments as part of the session properties
+            optimizely()?.let {
+                this.putAll(it.getTrackingProperties())
+            }
             this["wifi_connection"] = wifiConnection()
         }
 

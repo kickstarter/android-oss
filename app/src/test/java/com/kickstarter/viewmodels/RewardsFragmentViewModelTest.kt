@@ -4,6 +4,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -36,6 +37,16 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.outputs.showPledgeFragment().subscribe(this.showPledgeFragment)
         this.vm.outputs.showAddOnsFragment().subscribe(this.showAddOnsFragment)
         this.vm.outputs.showAlert().subscribe(this.showAlert)
+    }
+
+    @Test
+    fun init_whenViewModelInstantiated_shouldSendPagedViewedEventToClient() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

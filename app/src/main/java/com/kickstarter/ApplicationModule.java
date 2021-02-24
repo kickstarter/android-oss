@@ -84,7 +84,6 @@ import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
-import com.perimeterx.msdk.PXManager;
 import com.segment.analytics.Analytics;
 import com.stripe.android.Stripe;
 
@@ -110,7 +109,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 import type.CustomType;
 
 @Module
@@ -186,7 +184,7 @@ public class ApplicationModule {
     if (build.isRelease() && Build.isExternal()) {
       apiKey = Secrets.Segment.PRODUCTION;
     }
-    if (build.isDebug()) {
+    if (build.isDebug() || Build.isInternal()) {
       apiKey = Secrets.Segment.STAGING;
     }
 
@@ -231,25 +229,13 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static PerimeterXClientType providePerimeterXManager(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
-    PXManager manager = null;
+  static PerimeterXClientType providePerimeterXManager(final @ApplicationContext @NonNull Context context, final @NonNull Build build) {
+    final PerimeterXClient manager = new PerimeterXClient(build);
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
-      if (build.isDebug()) {
-        manager = PXManager.getInstance()
-          .setNewHeadersCallback(
-            headers -> Timber.d("PXManager: NewHeadersCallback :" + headers.toString())
-          )
-          .setManagerReadyCallback(
-            headers -> Timber.d("PXManager: ManagerReadyCallback :" + headers.toString())
-          );
-      } else {
-        manager = PXManager.getInstance();
-      }
-
-      manager.start(context, Secrets.PERIMETERX_APPID);
+      manager.start(context);
     }
 
-    return new PerimeterXClient(manager);
+    return manager;
   }
 
   @Provides
@@ -297,9 +283,11 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint, final @NonNull PerimeterXClientType manager) {
-    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url(), manager);
+  static ApiRequestInterceptor provideApiRequestInterceptor(
+          final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
+          final @NonNull ApiEndpoint endpoint, final @NonNull PerimeterXClientType manager,
+          final @NonNull Build build) {
+    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url(), manager, build);
   }
 
   @Provides

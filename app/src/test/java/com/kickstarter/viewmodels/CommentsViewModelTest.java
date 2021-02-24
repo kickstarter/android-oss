@@ -7,7 +7,9 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.utils.EventName;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
+import com.kickstarter.mock.factories.ProjectDataFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.UpdateFactory;
 import com.kickstarter.mock.factories.UserFactory;
@@ -20,6 +22,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.data.CommentsData;
+import com.kickstarter.ui.data.ProjectData;
 
 import org.junit.Test;
 
@@ -30,6 +33,28 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class CommentsViewModelTest extends KSRobolectricTestCase {
+
+  @Test
+  public void init_whenViewModelInstantiated_shouldSendPageViewedEvent() {
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+        return Observable.empty();
+      }
+    };
+
+    final Environment env = environment().toBuilder().apiClient(apiClient).build();
+    final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(env);
+
+    final Project project = ProjectFactory.project();
+    final ProjectData projectData = ProjectDataFactory.Companion.project(project);
+
+    vm.intent(new Intent()
+            .putExtra(IntentKey.PROJECT_DATA, projectData)
+            .putExtra(IntentKey.PROJECT, project));
+
+    this.lakeTest.assertValue(EventName.PAGE_VIEWED.getEventName());
+  }
 
   @Test
   public void testCommentsViewModel_EmptyState() {

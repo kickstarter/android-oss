@@ -46,8 +46,8 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     final Environment env = environment().toBuilder().apiClient(apiClient).build();
     final CommentsViewModel.ViewModel vm = new CommentsViewModel.ViewModel(env);
 
-    Project project = ProjectFactory.project();
-    ProjectData projectData = ProjectDataFactory.Companion.project(project);
+    final Project project = ProjectFactory.project();
+    final ProjectData projectData = ProjectDataFactory.Companion.project(project);
 
     vm.intent(new Intent()
             .putExtra(IntentKey.PROJECT_DATA, projectData)

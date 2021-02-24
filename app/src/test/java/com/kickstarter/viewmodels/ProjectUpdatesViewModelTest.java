@@ -46,7 +46,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void init_whenViewModelInstantiated_shouldTrackPageViewEvent() {
-    Project project = ProjectFactory.project();
+    final Project project = ProjectFactory.project();
     setUpEnvironment(environment(), project, ProjectDataFactory.Companion.project(project));
 
     this.lakeTest.assertValue(EventName.PAGE_VIEWED.getEventName());
@@ -54,7 +54,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testHorizontalProgressBarIsGone() {
-    Project project = ProjectFactory.project();
+    final Project project = ProjectFactory.project();
     setUpEnvironment(environment(), project, ProjectDataFactory.Companion.project(project));
 
     this.horizontalProgressBarIsGone.assertValues(false, true);
@@ -62,7 +62,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testIsFetchingUpdates() {
-    Project project = ProjectFactory.project();
+    final Project project = ProjectFactory.project();
     setUpEnvironment(environment(), project, ProjectDataFactory.Companion.project(project));
 
     this.isFetchingUpdates.assertValues(true, false);

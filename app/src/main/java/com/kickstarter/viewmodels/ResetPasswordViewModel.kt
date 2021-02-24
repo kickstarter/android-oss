@@ -5,14 +5,12 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ResetPasswordActivity
-import com.noveogroup.android.log.Log
 import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -56,6 +54,8 @@ interface ResetPasswordViewModel {
         private val resetSuccess = PublishSubject.create<Void>()
         private val resetError = PublishSubject.create<ErrorEnvelope>()
         private val prefillEmail = BehaviorSubject.create<String>()
+
+        private val ERROR_GENERIC = "Something went wrong, please try again."
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -129,8 +129,8 @@ interface ResetPasswordViewModel {
         override fun resetError(): Observable<String> {
             return this.resetError
                     .takeUntil(this.resetSuccess)
-                    //.map { it.errorMessage() } /*  null pointer exception is thrown */
-                    .map { "bad request" }
+                    .map {  it?.errorMessage() ?: ERROR_GENERIC } /*  null pointer exception is thrown */
+                    //.map { "bad request" }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

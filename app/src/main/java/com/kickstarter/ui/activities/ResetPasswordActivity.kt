@@ -50,7 +50,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
         this.viewModel.outputs.resetError()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), getString(this.errorGenericString)) }
+                .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
 
         reset_password_button.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
 

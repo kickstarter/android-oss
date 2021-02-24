@@ -6,7 +6,6 @@ import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.User
-import com.kickstarter.libs.utils.ExperimentRevenueData
 import org.json.JSONArray
 import org.json.JSONObject
 import rx.Observable

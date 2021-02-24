@@ -59,7 +59,7 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         val properties = mutableMapOf<String, JSONArray>()
 
         this.optimizelyClient().optimizelyConfig?.experimentsMap?.map { entry ->
-            val variant:String  = this.optimizelyClient().getVariation(entry.key, userId())?.let { it.key } ?: ""
+            val variant:String  = this.optimizelyClient().getVariation(entry.key, userId())?.let { it.key } ?: "unknown"
             experiments.put(JSONObject(mapOf(entry.key to variant)))
         }
 

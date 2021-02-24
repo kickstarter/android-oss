@@ -51,7 +51,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    var message: Int = if( it == true ) this.errorNetworkMessageString
+                    val message: Int = if( it == true ) this.errorNetworkMessageString
                     else this.errorMessageString
                     ViewUtils.showDialog(this, getString(this.errorTitleString), getString(message)) }
 

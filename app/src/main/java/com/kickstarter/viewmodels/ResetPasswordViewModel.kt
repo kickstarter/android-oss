@@ -89,20 +89,17 @@ interface ResetPasswordViewModel {
                     .compose(errors())
                     .map {
                         // host -> internet related error or otherwise -> invalid email address
-                        return@map it?.message!!.contains("host")
+                        Log.e("ERROR", it?.localizedMessage!!)
+                        return@map it?.localizedMessage!!.contains("host")
                     }
                     //.filter { ObjectUtils.isNotNull(it) }
+                    .takeUntil(this.resetSuccess)
                     .compose(bindToLifecycle())
                     .subscribe(this.resetError)
 
             this.lake.trackForgotPasswordPageViewed()
         }
 
-        private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
-                if (notification.hasThrowable()) notification.throwable else null
-
-        private fun unwrapNotificationEnvelopeSuccess(notification: Notification<AccessTokenEnvelope>) =
-                if (notification.hasValue()) notification.value else null
 
         private fun success() {
             this.resetSuccess.onNext(null)

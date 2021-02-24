@@ -30,7 +30,6 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import butterknife.ButterKnife;
 
 public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
   private final T[] enumConstants;
@@ -72,7 +71,7 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
 
   @Override
   public final void bindView(final @NonNull T item, final int position, final @NonNull View view) {
-    final TextView tv = ButterKnife.findById(view, android.R.id.text1);
+    final TextView tv =view.findViewById(android.R.id.text1);
     tv.setText(getName(item));
   }
 

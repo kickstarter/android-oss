@@ -3,7 +3,6 @@ package com.kickstarter.ui.toolbars
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import butterknife.ButterKnife
 import com.kickstarter.R
 import com.kickstarter.ui.views.LoginPopupMenu
 
@@ -15,7 +14,6 @@ class LoginToolbar @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        ButterKnife.bind(this)
         findViewById<View>(R.id.help_button).setOnClickListener {
             helpButtonClick(it)
         }

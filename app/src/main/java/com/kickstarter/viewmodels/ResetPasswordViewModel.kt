@@ -17,6 +17,7 @@ import rx.Notification
 import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
+import java.lang.NullPointerException
 
 interface ResetPasswordViewModel {
 
@@ -88,9 +89,14 @@ interface ResetPasswordViewModel {
             resetPasswordNotification
                     .compose(errors())
                     .map {
-                        // host -> internet related error or otherwise -> invalid email address
-                        if( it !=  null) return@map it.localizedMessage!!.contains("host")
-                        else return@map false
+//                        // host -> internet related error or otherwise -> invalid email address
+                        try {
+                            it ?: return@map false
+                            return@map it.localizedMessage!!.contains("host")
+                        }catch (error: NullPointerException){
+                            return@map false
+                        }
+
                     }
                     //.filter { ObjectUtils.isNotNull(it) }
                     .takeUntil(this.resetSuccess)

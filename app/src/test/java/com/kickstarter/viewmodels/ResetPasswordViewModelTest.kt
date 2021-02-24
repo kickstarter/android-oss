@@ -61,14 +61,14 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
                 .build()
 
         val vm = ResetPasswordViewModel.ViewModel(environment)
-        val errorTest = TestSubscriber<String>()
+        val errorTest = TestSubscriber<Boolean>()
 
         vm.outputs.resetError().subscribe(errorTest)
 
         vm.inputs.email("hello@kickstarter.com")
         vm.inputs.resetPasswordClick()
 
-        errorTest.assertValue("bad request")
+        errorTest.assertValue(false)
 
         this.lakeTest.assertValue("Forgot Password Page Viewed")
     }

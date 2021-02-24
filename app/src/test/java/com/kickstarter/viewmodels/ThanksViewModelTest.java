@@ -9,6 +9,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
+import com.kickstarter.libs.utils.EventName;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.CheckoutDataFactory;
 import com.kickstarter.mock.factories.LocationFactory;
@@ -315,7 +316,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
             .putExtra(IntentKey.PROJECT, project);
     this.vm.intent(intent);
 
-    this.lakeTest.assertValue("Thanks Page Viewed");
+    this.lakeTest.assertValues("Thanks Page Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValues("Thanks Page Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test

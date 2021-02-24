@@ -179,7 +179,10 @@ public interface ThanksViewModel {
 
       checkoutAndPledgeData
         .compose(bindToLifecycle())
-        .subscribe(checkoutDataPledgeData -> this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second));
+        .subscribe(checkoutDataPledgeData -> {
+          this.lake.trackThanksPageViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
+          this.lake.trackThanksScreenViewed(checkoutDataPledgeData.first, checkoutDataPledgeData.second);
+        });
     }
 
     /**

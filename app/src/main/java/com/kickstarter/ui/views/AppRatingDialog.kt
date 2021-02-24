@@ -1,61 +1,59 @@
-package com.kickstarter.ui.views;
+package com.kickstarter.ui.views
 
-import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.widget.Button;
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatDialog
+import com.kickstarter.KSApplication
+import com.kickstarter.databinding.AppRatingPromptBinding
+import com.kickstarter.libs.preferences.BooleanPreferenceType
+import com.kickstarter.libs.qualifiers.AppRatingPreference
+import com.kickstarter.libs.utils.ViewUtils
+import javax.inject.Inject
 
-import com.kickstarter.KSApplication;
-import com.kickstarter.R;
-import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.qualifiers.AppRatingPreference;
-import com.kickstarter.libs.utils.ViewUtils;
+class AppRatingDialog(context: Context) : AppCompatDialog(context) {
+    @JvmField
+    @Inject
+    @AppRatingPreference
+    var hasSeenAppRatingPreference: BooleanPreferenceType? = null
 
-import javax.inject.Inject;
+    private lateinit var binding: AppRatingPromptBinding
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        binding = AppRatingPromptBinding.inflate(layoutInflater)
+        
+        setContentView(binding.root)
+        
+        (context.applicationContext as KSApplication).component().inject(this)
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDialog;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+        binding.noThanksButton.setOnClickListener {
+            noThanksButtonClick()
+        }
+        
+        binding.rateButton.setOnClickListener {
+            rateButtonClick()
+        }
+        
+        binding.remindButton.setOnClickListener {
+            remindButtonClick()
+        }
+    }
+    
+    private fun rateButtonClick() {
+        hasSeenAppRatingPreference?.set(true)
+        dismiss()
+        ViewUtils.openStoreRating(context, context.packageName)
+    }
 
-public class AppRatingDialog extends AppCompatDialog {
-  protected @Inject @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference;
+    private fun remindButtonClick() {
+        dismiss()
+    }
 
-  protected @Bind(R.id.no_thanks_button) Button noThanksButton;
-  protected @Bind(R.id.remind_button) Button remindButton;
-  protected @Bind(R.id.rate_button) Button rateButton;
-
-  public AppRatingDialog(final @NonNull Context context) {
-    super(context);
-  }
-
-  @Override
-  protected void onCreate(final @Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-    setContentView(R.layout.app_rating_prompt);
-    ButterKnife.bind(this);
-
-    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
-  }
-
-  @OnClick(R.id.rate_button)
-  protected void rateButtonClick() {
-    this.hasSeenAppRatingPreference.set(true);
-    dismiss();
-    ViewUtils.openStoreRating(getContext(), getContext().getPackageName());
-  }
-
-  @OnClick(R.id.remind_button)
-  protected void remindButtonClick() {
-    dismiss();
-  }
-
-  @OnClick(R.id.no_thanks_button)
-  protected void noThanksButtonClick() {
-    this.hasSeenAppRatingPreference.set(true);
-    dismiss();
-  }
+    private fun noThanksButtonClick() {
+        hasSeenAppRatingPreference?.set(true)
+        dismiss()
+    }
 }

@@ -1305,11 +1305,22 @@ interface PledgeFragmentViewModel {
                     .compose<Pair<PledgeReason, Pair<Project, Double>>>(combineLatestPair(projectAndTotal))
                     .map { it.second }
 
-            pledgeData
+            val checkoutAndPledgeData =
+                    Observable.combineLatest<Double, Double, String, CheckoutData>(
+                            shippingAmountSelectedRw,
+                            total,
+                            this.bonusAmount)
+                    { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null)}
+                            .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
+
+            checkoutAndPledgeData
                     .take(1)
-                    .filter { it.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
+                    .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackCheckoutPaymentPageViewed(it) }
+                    .subscribe {
+                        this.lake.trackCheckoutPaymentPageViewed(it.second)
+                        this.lake.trackCheckoutScreenViewed(it.first, it.second)
+                    }
 
             fullProjectDataAndPledgeData
                     .take(1)
@@ -1319,13 +1330,14 @@ interface PledgeFragmentViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.optimizely.track(CHECKOUT_PAYMENT_PAGE_VIEWED, it) }
 
-            Observable.combineLatest<Double, Double, String, CheckoutData>(shippingAmountSelectedRw, total, this.bonusAmount)
-            { s, t, b -> checkoutData(s, t, NumberUtils.parse(b), null) }
-                    .compose<Pair<CheckoutData, PledgeData>>(combineLatestPair(pledgeData))
+            checkoutAndPledgeData
                     .filter { shouldTrackPledgeSubmitButtonClicked(it.second.pledgeFlowContext()) }
                     .compose<Pair<CheckoutData, PledgeData>>(takeWhen(this.pledgeButtonClicked))
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackPledgeSubmitButtonClicked(it.first, it.second) }
+                    .subscribe {
+                        this.lake.trackPledgeSubmitButtonClicked(it.first, it.second)
+                        this.lake.trackPledgeSubmitCTA(it.first, it.second)
+                    }
 
             // - Screen configuration Logic (Different configurations depending on: PledgeReason, Reward type, Shipping, AddOns)
             this.selectedReward

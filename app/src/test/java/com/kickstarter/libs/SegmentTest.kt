@@ -484,7 +484,17 @@ class SegmentTest : KSRobolectricTestCase() {
                 override fun enabledFeatures(user: User?): List<String> {
                     return listOf("optimizely_feature")
                 }
+
+                override fun getTrackingProperties(): Map<String, JSONArray> {
+                    return getOptimizelySession()
+                }
             })
+
+    private fun getOptimizelySession(): Map<String, JSONArray> {
+        val experiment1 = JSONObject(mapOf("suggested_no_reward_amount" to "variation_3"))
+        val jsonArray = JSONArray().put(experiment1)
+        return mapOf("variants_optimizely" to jsonArray)
+    }
 
     private fun assertCheckoutProperties() {
         val expectedProperties = this.propertiesTest.value
@@ -499,6 +509,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
     }
 
+    //TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     private fun assertOptimizelyProperties() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(OptimizelyEnvironment.DEVELOPMENT.sdkKey, expectedProperties["optimizely_api_key"])
@@ -576,6 +587,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
+        assertEquals(getOptimizelySession()["variants_optimizely"].toString(), expectedProperties["session_variants_optimizely"].toString())
     }
 
     private fun mockCurrentConfig() = MockCurrentConfig().apply {

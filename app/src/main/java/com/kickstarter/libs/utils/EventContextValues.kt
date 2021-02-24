@@ -1,6 +1,6 @@
 package com.kickstarter.libs.utils
 
-class EventContext {
+class EventContextValues {
 
     /**
      * Determines the button that was clicked or tapped by a user.
@@ -36,5 +36,12 @@ class EventContext {
         PROJECT("project"),
         REWARDS("rewards"),
         THANKS("thanks")
+    }
+
+    enum class ProjectContextSectionName(val contextName: String) {
+        CAMPAIGN("campaign"),
+        COMMENTS("comments"),
+        OVERVIEW("overview"),
+        UPDATES("updates")
     }
 }

@@ -1,14 +1,15 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.errors
-import com.kickstarter.libs.rx.transformers.Transformers.values
+import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope
 import com.kickstarter.services.apiresponses.ErrorEnvelope
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ResetPasswordActivity
@@ -38,7 +39,7 @@ interface ResetPasswordViewModel {
         fun resetSuccess(): Observable<Void>
 
         /** Emits when password reset fails. */
-        fun resetError(): Observable<String>
+        fun resetError(): Observable<Boolean>
 
         /** Fill the view's email address when it's supplied from the intent.  */
         fun prefillEmail(): Observable<String>
@@ -53,7 +54,7 @@ interface ResetPasswordViewModel {
         private val isFormSubmitting = PublishSubject.create<Boolean>()
         private val isFormValid = PublishSubject.create<Boolean>()
         private val resetSuccess = PublishSubject.create<Void>()
-        private val resetError = PublishSubject.create<ErrorEnvelope>()
+        private val resetError = PublishSubject.create<Boolean>()
         private val prefillEmail = BehaviorSubject.create<String>()
 
         val inputs: Inputs = this
@@ -74,8 +75,10 @@ interface ResetPasswordViewModel {
                     .subscribe(this.isFormValid)
 
             val resetPasswordNotification = this.email
-                    .compose<String>(Transformers.takeWhen(this.resetPasswordClick))
+                    .compose<String>(takeWhen(this.resetPasswordClick))
                     .switchMap(this::submitEmail)
+                    .share()
+
 
             resetPasswordNotification
                     .compose(values())
@@ -84,13 +87,22 @@ interface ResetPasswordViewModel {
 
             resetPasswordNotification
                     .compose(errors())
-                    .map { ErrorEnvelope.fromThrowable(it) }
+                    .map {
+                        // host -> internet related error or otherwise -> invalid email address
+                        return@map it?.message!!.contains("host")
+                    }
                     //.filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.resetError)
 
             this.lake.trackForgotPasswordPageViewed()
         }
+
+        private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
+                if (notification.hasThrowable()) notification.throwable else null
+
+        private fun unwrapNotificationEnvelopeSuccess(notification: Notification<AccessTokenEnvelope>) =
+                if (notification.hasValue()) notification.value else null
 
         private fun success() {
             this.resetSuccess.onNext(null)
@@ -124,10 +136,8 @@ interface ResetPasswordViewModel {
             return this.resetSuccess
         }
 
-        override fun resetError(): Observable<String> {
+        override fun resetError(): Observable<Boolean> {
             return this.resetError
-                    .takeUntil(this.resetSuccess)
-                    .map { "" }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

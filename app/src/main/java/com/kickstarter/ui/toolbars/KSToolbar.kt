@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.View
 import android.widget.TextView
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +16,6 @@ import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.qualifiers.WebEndpoint
 import com.kickstarter.libs.utils.Secrets
-import com.kickstarter.ui.views.IconButton
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
@@ -66,7 +66,7 @@ open class KSToolbar @JvmOverloads constructor(
     @CallSuper
     override fun onFinishInflate() {
         super.onFinishInflate()
-        findViewById<IconButton>(R.id.back_button)?.setOnClickListener {
+        findViewById<View>(R.id.back_button)?.setOnClickListener {
             backButtonClick()
         }
     }

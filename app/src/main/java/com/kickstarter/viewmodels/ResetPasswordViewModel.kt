@@ -89,8 +89,8 @@ interface ResetPasswordViewModel {
                     .compose(errors())
                     .map {
                         // host -> internet related error or otherwise -> invalid email address
-                        Log.e("ERROR", it?.localizedMessage!!)
-                        return@map it?.localizedMessage!!.contains("host")
+                        if( it !=  null) return@map it.localizedMessage!!.contains("host")
+                        else return@map false
                     }
                     //.filter { ObjectUtils.isNotNull(it) }
                     .takeUntil(this.resetSuccess)

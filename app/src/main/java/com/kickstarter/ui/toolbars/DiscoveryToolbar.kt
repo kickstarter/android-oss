@@ -14,7 +14,7 @@ import com.kickstarter.ui.activities.SearchActivity
 
 class DiscoveryToolbar @JvmOverloads constructor(
     context: Context,
-    val attrs: AttributeSet? = null,
+    attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : KSToolbar(context, attrs, defStyleAttr) {
     private lateinit var ksString: KSString

@@ -8,7 +8,7 @@ import com.kickstarter.ui.views.LoginPopupMenu
 
 class LoginToolbar @JvmOverloads constructor(
     context: Context,
-    val attrs: AttributeSet? = null,
+    attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : KSToolbar(context, attrs, defStyleAttr) {
 

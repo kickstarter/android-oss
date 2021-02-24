@@ -11,12 +11,14 @@ import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_O
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
@@ -719,10 +721,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     fun trackThanksScreenViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to EventContext.PageViewedContextName.THANKS.contextName)
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to THANKS.contextName)
         props[CONTEXT_TYPE.contextName] = pledgeData.pledgeFlowContext().trackingString
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
-        client.track(EventName.PAGE_VIEWED.eventName, props)
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     fun trackFixPledgeButtonClicked(projectData: ProjectData) {

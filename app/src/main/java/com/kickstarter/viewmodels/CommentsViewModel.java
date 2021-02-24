@@ -9,6 +9,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.extensions.ProjectDataExtKt;
 import com.kickstarter.libs.utils.extensions.StringExt;
@@ -39,7 +40,6 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
-import static com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName;
 
 public interface CommentsViewModel {
 
@@ -133,7 +133,7 @@ public interface CommentsViewModel {
         .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, this.cookieManager, this.sharedPreferences))
         .compose(bindToLifecycle())
         .subscribe(
-          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, ProjectContextSectionName.COMMENTS.getContextName())
+          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, EventContextValues.ProjectContextSectionName.COMMENTS.getContextName())
         );
 
       final Observable<Project> initialProject = projectOrUpdate

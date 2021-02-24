@@ -7,6 +7,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.extensions.ProjectDataExtKt;
 import com.kickstarter.models.Project;
@@ -28,7 +29,6 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName;
 
 public interface ProjectUpdatesViewModel {
 
@@ -83,7 +83,7 @@ public interface ProjectUpdatesViewModel {
         .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, this.cookieManager, this.sharedPreferences))
         .compose(bindToLifecycle())
         .subscribe(
-          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, ProjectContextSectionName.UPDATES.getContextName())
+          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, EventContextValues.ProjectContextSectionName.UPDATES.getContextName())
         );
 
       final Observable<Project> startOverWith = Observable.merge(

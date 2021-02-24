@@ -54,9 +54,9 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         return optimizelyClient().getVariation(experimentKey, userId(), attributes(experimentData, this.optimizelyEnvironment))?.key
     }
 
-    override fun getTrackingProperties(): Map<String, Any> {
+    override fun getTrackingProperties(): Map<String, JSONArray> {
         val experiments = JSONArray()
-        val properties = mutableMapOf<String, Any>()
+        val properties = mutableMapOf<String, JSONArray>()
 
         this.optimizelyClient().optimizelyConfig?.experimentsMap?.map { entry ->
             val variant:String  = this.optimizelyClient().getVariation(entry.key, userId())?.let { it.key } ?: ""

@@ -130,7 +130,7 @@ interface ResetPasswordViewModel {
             return this.resetError
                     .takeUntil(this.resetSuccess)
                     //.map { it.errorMessage() } /*  null pointer exception is thrown */
-                    .map { "" }
+                    .map { "bad request" }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

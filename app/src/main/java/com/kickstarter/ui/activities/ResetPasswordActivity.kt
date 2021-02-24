@@ -23,7 +23,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
 
     private var forgotPasswordString = R.string.forgot_password_title
     private var errorMessageString = R.string.forgot_password_error
-    private var errorNetworkMessageString = R.string.social_error_no_internet_connection
+    private var errorGenericString = R.string.Something_went_wrong_please_try_again
     private var errorTitleString = R.string.general_error_oops
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,10 +50,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
         this.viewModel.outputs.resetError()
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    val message: Int = if( it == true ) this.errorNetworkMessageString
-                    else this.errorMessageString
-                    ViewUtils.showDialog(this, getString(this.errorTitleString), getString(message)) }
+                .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), getString(this.errorGenericString)) }
 
         reset_password_button.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
 

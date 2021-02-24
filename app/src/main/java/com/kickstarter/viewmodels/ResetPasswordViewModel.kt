@@ -85,7 +85,7 @@ interface ResetPasswordViewModel {
             resetPasswordNotification
                     .compose(errors())
                     .map { ErrorEnvelope.fromThrowable(it) }
-                    .filter { ObjectUtils.isNotNull(it) }
+                    //.filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.resetError)
 
@@ -127,7 +127,7 @@ interface ResetPasswordViewModel {
         override fun resetError(): Observable<String> {
             return this.resetError
                     .takeUntil(this.resetSuccess)
-                    .map { it.errorMessage() }
+                    .map { "" }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

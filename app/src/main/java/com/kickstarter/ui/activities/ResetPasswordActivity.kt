@@ -22,7 +22,7 @@ import rx.android.schedulers.AndroidSchedulers
 class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
 
     private var forgotPasswordString = R.string.forgot_password_title
-    private var errorMessageString = R.string.forgot_password_error
+    private var errorMessageString = R.string.Something_went_wrong_please_try_again
     private var errorTitleString = R.string.general_error_oops
 
     override fun onCreate(savedInstanceState: Bundle?) {

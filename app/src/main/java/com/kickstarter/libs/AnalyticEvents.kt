@@ -586,6 +586,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(EXPLORE_SORT_CLICKED, props)
     }
 
+    /**
+     * Sends data to the client when the any of the discover sort tabs are clicked.
+     *
+     * @param discoveryParams: The discovery parameters.
+     */
     fun trackDiscoverSortCTA(discoveryParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
         props[ContextPropertyKeyName.CONTEXT_LOCATION.contextName]  = DISCOVER_ADVANCED.contextName

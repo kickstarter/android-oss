@@ -261,7 +261,10 @@ public interface DiscoveryViewModel {
         .compose(takePairWhen(this.sortClicked.map(DiscoveryUtils::sortFromPosition)))
         .map(paramsAndSort -> paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
         .compose(bindToLifecycle())
-        .subscribe(this.lake::trackExploreSortClicked);
+        .subscribe(discoveryParams -> {
+          this.lake.trackExploreSortClicked(discoveryParams);
+          this.lake.trackDiscoverSortClicked(discoveryParams);
+        });
 
       paramsWithSort
         .compose(takeWhen(drawerParamsClicked))

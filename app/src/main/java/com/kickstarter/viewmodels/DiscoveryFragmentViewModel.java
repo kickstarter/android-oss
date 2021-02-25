@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
@@ -262,7 +263,11 @@ public interface DiscoveryFragmentViewModel {
         .compose(combineLatestPair(paginator.loadingPage().distinctUntilChanged()))
         .filter(paramsAndPage -> paramsAndPage.second == 1)
         .compose(bindToLifecycle())
-        .subscribe(paramsAndLoggedIn -> this.lake.trackExplorePageViewed(paramsAndLoggedIn.first));
+        .subscribe(paramsAndLoggedIn -> {
+                  this.lake.trackExplorePageViewed(paramsAndLoggedIn.first);
+          Log.d("sort", paramsAndLoggedIn.first.sort().toString());
+                }
+        );
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())

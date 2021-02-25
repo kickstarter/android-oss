@@ -20,6 +20,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
@@ -585,9 +586,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(EXPLORE_SORT_CLICKED, props)
     }
 
-    fun trackDiscoverSortClicked(discoveryParams: DiscoveryParams) {
+    fun trackDiscoverSortCTA(discoveryParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
-        props[ContextPropertyKeyName.CONTEXT_LOCATION.contextName]  = "discover_advanced"
+        props[ContextPropertyKeyName.CONTEXT_LOCATION.contextName]  = DISCOVER_ADVANCED.contextName
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
         client.track(CTA_CLICKED.eventName, props)
     }

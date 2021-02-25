@@ -263,7 +263,7 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(discoveryParams -> {
           this.lake.trackExploreSortClicked(discoveryParams);
-          this.lake.trackDiscoverSortClicked(discoveryParams);
+          this.lake.trackDiscoverSortCTA(discoveryParams);
         });
 
       paramsWithSort

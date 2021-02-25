@@ -45,4 +45,9 @@ class EventContextValues {
         OVERVIEW("overview"),
         UPDATES("updates")
     }
+
+    enum class LocationContextName(val contextName: String) {
+        DISCOVER_ADVANCED("discover_advanced")
+    }
+
 }

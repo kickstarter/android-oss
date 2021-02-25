@@ -129,8 +129,7 @@ interface ResetPasswordViewModel {
         override fun resetError(): Observable<String> {
             return this.resetError
                     .takeUntil(this.resetSuccess)
-                    .map {  it?.errorMessage() ?: ERROR_GENERIC } /*  null pointer exception is thrown */
-                    //.map { "bad request" }
+                    .map {  it?.errorMessage() ?: ERROR_GENERIC }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

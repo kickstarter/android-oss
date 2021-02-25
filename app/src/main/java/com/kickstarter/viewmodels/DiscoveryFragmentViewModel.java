@@ -263,11 +263,7 @@ public interface DiscoveryFragmentViewModel {
         .compose(combineLatestPair(paginator.loadingPage().distinctUntilChanged()))
         .filter(paramsAndPage -> paramsAndPage.second == 1)
         .compose(bindToLifecycle())
-        .subscribe(paramsAndLoggedIn -> {
-                  this.lake.trackExplorePageViewed(paramsAndLoggedIn.first);
-          Log.d("sort", paramsAndLoggedIn.first.sort().toString());
-                }
-        );
+        .subscribe(paramsAndLoggedIn -> this.lake.trackExplorePageViewed(paramsAndLoggedIn.first));
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())

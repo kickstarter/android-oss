@@ -216,7 +216,7 @@ dependencies {
     implementation "com.jakewharton.rxbinding:rxbinding-recyclerview-v7:$rx_binding_version"
     implementation "com.jakewharton.rxbinding:rxbinding-support-v4:$rx_binding_version"
     implementation "com.jakewharton.timber:timber:3.0.1"
-    implementation 'com.optimizely.ab:android-sdk:3.0.0'
+    implementation 'com.optimizely.ab:android-sdk:3.5.1'
     implementation 'com.qualtrics:digital:1.3'
     implementation "com.stripe:stripe-android:12.0.1"
     final okhttp_version = "4.8.+"

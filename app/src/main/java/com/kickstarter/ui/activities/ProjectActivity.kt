@@ -612,15 +612,17 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectUpdatesActivity(project: Project) {
+    private fun startProjectUpdatesActivity(projectAndData:  Pair<Project, ProjectData> ) {
         val intent = Intent(this, ProjectUpdatesActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT, projectAndData.first)
+                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startCommentsActivity(project: Project) {
+    private fun startCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
         val intent = Intent(this, CommentsActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.PROJECT, projectAndData.first)
+                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 

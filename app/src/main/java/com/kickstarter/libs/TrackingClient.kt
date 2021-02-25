@@ -121,6 +121,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
             if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "Landscape"
             else "Portrait"
 
+    //TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     override fun enabledFeatureFlags(): JSONArray {
         return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
                 .apply {

@@ -6,7 +6,6 @@ import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.User
-import com.kickstarter.libs.utils.ExperimentRevenueData
 import org.json.JSONArray
 import org.json.JSONObject
 import rx.Observable
@@ -52,4 +51,6 @@ open class MockExperimentsClientType(private val variant: OptimizelyExperiment.V
     override fun userId(): String = "device-id"
 
     override fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant = this.variant
+
+    override fun getTrackingProperties(): Map<String, JSONArray> = emptyMap()
 }

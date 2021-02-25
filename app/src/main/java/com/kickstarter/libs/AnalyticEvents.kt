@@ -10,11 +10,15 @@ import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
@@ -599,6 +603,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(PROJECT_PAGE_VIEWED, props)
     }
 
+    /**
+     * Sends data to the client when the projects screen is loaded.
+     *
+     * @param pledgeData: The selected pledge data.
+     * @param pageSectionContext: The section of the project page being viewed.
+     */
+    fun trackProjectScreenViewed(projectData: ProjectData, pageSectionContext: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to PROJECT.contextName)
+        props[CONTEXT_SECTION.contextName] = pageSectionContext
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
     fun trackSearchButtonClicked() {
         client.track(SEARCH_BUTTON_CLICKED)
     }
@@ -700,6 +718,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackThanksPageViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
         val props = AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser())
         client.track(THANKS_PAGE_VIEWED, props)
+    }
+
+    fun trackThanksScreenViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to THANKS.contextName)
+        props[CONTEXT_TYPE.contextName] = pledgeData.pledgeFlowContext().trackingString
+        props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     fun trackFixPledgeButtonClicked(projectData: ProjectData) {

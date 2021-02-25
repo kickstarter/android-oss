@@ -67,7 +67,10 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
         if (build.isDebug) Timber.d("$LOGTAG headers: $headers added to requestBuilder: ${builder?.toString()}")
     }
 
-    override fun visitorId():String = pxManager.vid
+    override fun visitorId():String {
+        val visitorID: String? = pxManager.vid
+        return visitorID?.let { it } ?: ""
+    }
 
     override fun start(context: Context) {
         initialize()

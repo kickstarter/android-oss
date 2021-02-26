@@ -12,6 +12,7 @@ import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.EventName;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.CategoryFactory;
 import com.kickstarter.mock.factories.InternalBuildEnvelopeFactory;
@@ -161,7 +162,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.sortClicked(1);
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
-    this.lakeTest.assertValue("Explore Sort Clicked");
+    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName());
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true);
@@ -176,7 +177,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true);
-    this.lakeTest.assertValues("Explore Sort Clicked", "Filter Clicked");
+    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked");
 
     // Select ART category from drawer.
     this.vm.inputs.childFilterViewHolderRowClick(null,
@@ -187,7 +188,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true, true);
-    this.lakeTest.assertValues("Explore Sort Clicked", "Filter Clicked", "Filter Clicked");
+    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", "Filter Clicked");
 
     // Simulate rotating the device and hitting initial inputs again.
     this.vm.outputs.updateToolbarWithParams().subscribe(this.rotatedUpdateToolbarWithParams);

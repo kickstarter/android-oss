@@ -14,5 +14,6 @@ enum class ContextPropertyKeyName(val contextName: String) {
     CONTEXT_CTA("context_cta"),
     CONTEXT_PAGE("context_page"),
     CONTEXT_SECTION("context_section"),
-    CONTEXT_TYPE("context_type")
+    CONTEXT_TYPE("context_type"),
+    CONTEXT_LOCATION("context_location")
 }

@@ -269,7 +269,10 @@ public interface DiscoveryViewModel {
       paramsWithSort
         .compose(takeWhen(drawerParamsClicked))
         .compose(bindToLifecycle())
-        .subscribe(this.lake::trackFilterClicked);
+        .subscribe(discoveryParams -> {
+          this.lake.trackFilterClicked(discoveryParams);
+          this.lake.trackDiscoverFilterCTA(discoveryParams);
+        });
 
       final Observable<List<Category>> categories = this.apiClient.fetchCategories()
         .compose(neverError())

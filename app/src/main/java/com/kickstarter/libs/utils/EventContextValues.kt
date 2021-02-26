@@ -17,7 +17,8 @@ class EventContextValues {
         PLEDGE_INITIATE("pledge_initiate"),
         PLEDGE_SUBMIT("pledge_submit"),
         REWARD_CONTINUE("reward_continue"),
-        DISCOVER_SORT("discover_sort");
+        DISCOVER_SORT("discover_sort"),
+        DISCOVER_FILTER("discover_filter")
     }
 
     /**
@@ -47,7 +48,16 @@ class EventContextValues {
     }
 
     enum class LocationContextName(val contextName: String) {
-        DISCOVER_ADVANCED("discover_advanced")
+        DISCOVER_ADVANCED("discover_advanced"),
+        DISCOVER_OVERLAY("discover_overlay")
     }
 
+    enum class DiscoveryContextType(val contextName: String) {
+        CATEGORY_NAME("category_name"),
+        PWL("pwl"),
+        RECOMMENDED("recommended"),
+        SOCIAL("social"),
+        SUBCATEGORY_NAME("subcategory_name"),
+        WATCHED("watched")
+    }
 }

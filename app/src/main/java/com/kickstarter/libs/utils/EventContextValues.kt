@@ -16,7 +16,8 @@ class EventContextValues {
         ADD_ONS_CONTINUE("add_ons_continue"),
         PLEDGE_INITIATE("pledge_initiate"),
         PLEDGE_SUBMIT("pledge_submit"),
-        REWARD_CONTINUE("reward_continue")
+        REWARD_CONTINUE("reward_continue"),
+        DISCOVER_SORT("discover_sort");
     }
 
     /**
@@ -44,4 +45,9 @@ class EventContextValues {
         OVERVIEW("overview"),
         UPDATES("updates")
     }
+
+    enum class LocationContextName(val contextName: String) {
+        DISCOVER_ADVANCED("discover_advanced")
+    }
+
 }

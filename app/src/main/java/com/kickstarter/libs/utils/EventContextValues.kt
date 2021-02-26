@@ -53,10 +53,10 @@ class EventContextValues {
     }
 
     enum class DiscoveryContextType(val contextName: String) {
-        RECOMMENDED("recommended"),
-        PWL("pwl"),
-        SOCIAL("social"),
         CATEGORY_NAME("category_name"),
+        PWL("pwl"),
+        RECOMMENDED("recommended"),
+        SOCIAL("social"),
         SUBCATEGORY_NAME("subcategory_name"),
         WATCHED("watched")
     }

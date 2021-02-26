@@ -16,7 +16,8 @@ class EventContextValues {
         ADD_ONS_CONTINUE("add_ons_continue"),
         PLEDGE_INITIATE("pledge_initiate"),
         PLEDGE_SUBMIT("pledge_submit"),
-        REWARD_CONTINUE("reward_continue")
+        REWARD_CONTINUE("reward_continue"),
+        SEARCH("search")
     }
 
     /**

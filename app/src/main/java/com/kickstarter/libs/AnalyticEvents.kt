@@ -2,7 +2,9 @@ package com.kickstarter.libs
 
 import com.kickstarter.libs.KoalaContext.*
 import com.kickstarter.libs.KoalaEvent.ProjectAction
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
@@ -600,7 +602,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackDiscoverSortCTA(discoveryParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
-        props[ContextPropertyKeyName.CONTEXT_LOCATION.contextName]  = DISCOVER_ADVANCED.contextName
+        props[CONTEXT_LOCATION.contextName]  = DISCOVER_ADVANCED.contextName
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -627,7 +629,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
             discoveryParams.category() != null -> SUBCATEGORY_NAME.contextName
             else -> ""
         }
-
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
 
         client.track(CTA_CLICKED.eventName, props)

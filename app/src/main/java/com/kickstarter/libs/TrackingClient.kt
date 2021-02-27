@@ -15,8 +15,10 @@ import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
 import com.kickstarter.models.User
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.kickstarter.libs.utils.extensions.SEGMENT_ENABLED
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
+import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
@@ -42,7 +44,10 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
                 }
 
         // Cache the most recent config for default Lake properties.
-        this.currentConfig.observable().subscribe { c -> this.config = c }
+        this.currentConfig.observable()
+                .subscribe { c ->
+                    this.config = c
+                }
     }
 
     override val isGooglePlayServicesAvailable: Boolean
@@ -55,27 +60,35 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
         }
 
     override fun track(eventName: String, additionalProperties: Map<String, Any>) {
-        try {
-            val eventData = trackingData(eventName, combinedProperties(additionalProperties))
+        if (isEnabled()) {
+            try {
+                trackingData(eventName, combinedProperties(additionalProperties))
 
-            if (this.build.isDebug) {
-                val dataForLogs = combinedProperties(additionalProperties).toString()
-                Timber.d("Queued ${type().tag} $eventName event: $dataForLogs")
+                if (this.build.isDebug) {
+                    val dataForLogs = combinedProperties(additionalProperties).toString()
+                    Timber.d("Queued ${type().tag} $eventName event: $dataForLogs")
+                }
+            } catch (e: JSONException) {
+                if (this.build.isDebug) {
+                    Timber.e("Failed to encode ${type().tag} event: $eventName")
+                }
+                FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
             }
-        } catch (e: JSONException) {
-            if (this.build.isDebug) {
-                Timber.e("Failed to encode ${type().tag} event: $eventName")
-            }
-            FirebaseCrashlytics.getInstance().log("E/${TrackingClient::class.java.simpleName}: Failed to encode ${type().tag} event: $eventName")
         }
     }
 
+    override fun isEnabled(): Boolean {
+        return if (type() == Type.SEGMENT) {
+            config?.isFeatureFlagEnabled(SEGMENT_ENABLED) ?: false
+        } else true
+    }
+
     override fun reset() {
-        this.loggedInUser = null
+        if (isEnabled()) this.loggedInUser = null
     }
 
     override fun identify(user: User) {
-        this.loggedInUser = user
+        if (isEnabled()) this.loggedInUser = user
     }
 
     override fun optimizely(): ExperimentsClientType = this.optimizely
@@ -108,6 +121,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
             if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "Landscape"
             else "Portrait"
 
+    //TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     override fun enabledFeatureFlags(): JSONArray {
         return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
                 .apply {

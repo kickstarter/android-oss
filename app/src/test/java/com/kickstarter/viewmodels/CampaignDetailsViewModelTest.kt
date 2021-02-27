@@ -4,6 +4,7 @@ import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.OptimizelyExperiment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
@@ -32,12 +33,19 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun init_whenCalled_shouldSendTrackingEvent() {
+        setUpEnvironment(environment(), ProjectDataFactory.project(ProjectFactory.project()))
+
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
     fun testGoBackToProject_whenPledgeActionButtonClicked() {
         setUpEnvironment(environment(), ProjectDataFactory.project(ProjectFactory.project()))
 
         this.vm.inputs.pledgeActionButtonClicked()
         this.goBackToProject.assertValueCount(1)
-        this.lakeTest.assertValue("Campaign Details Pledge Button Clicked")
+        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, "Campaign Details Pledge Button Clicked")
         this.experimentsTest.assertValue("Campaign Details Pledge Button Clicked")
     }
 

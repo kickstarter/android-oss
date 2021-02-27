@@ -9,6 +9,7 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
@@ -194,7 +195,7 @@ interface ProjectViewModel {
         fun startCampaignWebViewActivity(): Observable<ProjectData>
 
         /** Emits when we should start [com.kickstarter.ui.activities.CommentsActivity].  */
-        fun startCommentsActivity(): Observable<Project>
+        fun startCommentsActivity(): Observable<Pair<Project, ProjectData>>
 
         /** Emits when we should start the creator bio [com.kickstarter.ui.activities.CreatorBioActivity].  */
         fun startCreatorBioWebViewActivity(): Observable<Project>
@@ -209,7 +210,7 @@ interface ProjectViewModel {
         fun startMessagesActivity(): Observable<Project>
 
         /** Emits when we should start [com.kickstarter.ui.activities.ProjectUpdatesActivity].  */
-        fun startProjectUpdatesActivity(): Observable<Project>
+        fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>>
 
         /** Emits when we the pledge was successful and should start the [com.kickstarter.ui.activities.ThanksActivity]. */
         fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>>
@@ -284,12 +285,12 @@ interface ProjectViewModel {
         private val showUpdatePledge = PublishSubject.create<Pair<PledgeData, PledgeReason>>()
         private val showUpdatePledgeSuccess = PublishSubject.create<Void>()
         private val startCampaignWebViewActivity = PublishSubject.create<ProjectData>()
-        private val startCommentsActivity = PublishSubject.create<Project>()
+        private val startCommentsActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startCreatorBioWebViewActivity = PublishSubject.create<Project>()
         private val startCreatorDashboardActivity = PublishSubject.create<Project>()
         private val startLoginToutActivity = PublishSubject.create<Void>()
         private val startMessagesActivity = PublishSubject.create<Project>()
-        private val startProjectUpdatesActivity = PublishSubject.create<Project>()
+        private val startProjectUpdatesActivity = PublishSubject.create<Pair<Project, ProjectData>>()
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
@@ -450,6 +451,7 @@ interface ProjectViewModel {
 
             currentProject
                     .compose<Project>(takeWhen(this.commentsTextViewClicked))
+                    .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
                     .compose(bindToLifecycle())
                     .subscribe(this.startCommentsActivity)
 
@@ -460,6 +462,7 @@ interface ProjectViewModel {
 
             currentProject
                     .compose<Project>(takeWhen(this.updatesTextViewClicked))
+                    .compose<Pair<Project, ProjectData>>(combineLatestPair(projectData))
                     .compose(bindToLifecycle())
                     .subscribe(this.startProjectUpdatesActivity)
 
@@ -727,6 +730,7 @@ interface ProjectViewModel {
                         val dataWithStoredCookieRefTag = storeCurrentCookieRefTag(data)
 
                         this.lake.trackProjectPageViewed(dataWithStoredCookieRefTag, pledgeFlowContext)
+                        this.lake.trackProjectScreenViewed(dataWithStoredCookieRefTag, OVERVIEW.contextName)
                     }
 
             fullProjectDataAndCurrentUser
@@ -1074,7 +1078,7 @@ interface ProjectViewModel {
         override fun startCampaignWebViewActivity(): Observable<ProjectData> = this.startCampaignWebViewActivity
 
         @NonNull
-        override fun startCommentsActivity(): Observable<Project> = this.startCommentsActivity
+        override fun startCommentsActivity(): Observable<Pair<Project, ProjectData>> = this.startCommentsActivity
 
         @NonNull
         override fun startCreatorBioWebViewActivity(): Observable<Project> = this.startCreatorBioWebViewActivity
@@ -1092,7 +1096,7 @@ interface ProjectViewModel {
         override fun startThanksActivity(): Observable<Pair<CheckoutData, PledgeData>> = this.startThanksActivity
 
         @NonNull
-        override fun startProjectUpdatesActivity(): Observable<Project> = this.startProjectUpdatesActivity
+        override fun startProjectUpdatesActivity(): Observable<Pair<Project, ProjectData>> = this.startProjectUpdatesActivity
 
         @NonNull
         override fun startVideoActivity(): Observable<Project> = this.startVideoActivity

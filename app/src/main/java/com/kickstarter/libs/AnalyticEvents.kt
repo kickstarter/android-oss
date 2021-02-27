@@ -596,6 +596,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(SEARCH_BUTTON_CLICKED)
     }
 
+    /**
+     * Sends data associated with the search CTA click event to the client.
+     *
+     * @param discoveryParams: The discovery data.
+     */
+    fun trackSearchCTAButtonClicked(discoveryParams: DiscoveryParams) {
+        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams)
+        client.track(EventName.CTA_CLICKED.eventName, props)
+    }
+
     fun trackSearchPageViewed(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams)
         client.track(SEARCH_PAGE_VIEWED, props)

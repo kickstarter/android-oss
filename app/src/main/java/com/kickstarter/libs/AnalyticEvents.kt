@@ -16,7 +16,7 @@ import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECK
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH//EventContextValues.CtaContextName
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME

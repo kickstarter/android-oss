@@ -2,9 +2,7 @@ package com.kickstarter.libs
 
 import com.kickstarter.libs.KoalaContext.*
 import com.kickstarter.libs.KoalaEvent.ProjectAction
-import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.AnalyticEventsUtils
+import com.kickstarter.libs.utils.*
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
@@ -31,7 +29,6 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
-import com.kickstarter.libs.utils.EventName
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -673,8 +670,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param discoveryParams: The discovery data.
      */
     fun trackSearchCTAButtonClicked(discoveryParams: DiscoveryParams) {
-        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams)
-        client.track(EventName.CTA_CLICKED.eventName, props)
+        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
+        props["context_cta"] = EventContextValues.CtaContextName.SEARCH.contextName
+        props["context_location"] = "global_nav"
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackSearchPageViewed(discoveryParams: DiscoveryParams) {

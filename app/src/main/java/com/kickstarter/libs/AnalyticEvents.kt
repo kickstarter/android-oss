@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECK
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
@@ -31,6 +32,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -664,6 +666,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackSearchButtonClicked() {
         client.track(SEARCH_BUTTON_CLICKED)
+    }
+
+    /**
+     * Sends data associated with the search CTA click event to the client.
+     *
+     * @param discoveryParams: The discovery data.
+     */
+    fun trackSearchCTAButtonClicked(discoveryParams: DiscoveryParams) {
+        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
+        props[CONTEXT_CTA.contextName] = SEARCH.contextName
+        props[CONTEXT_LOCATION.contextName]  = GLOBAL_NAV.contextName
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackSearchPageViewed(discoveryParams: DiscoveryParams) {

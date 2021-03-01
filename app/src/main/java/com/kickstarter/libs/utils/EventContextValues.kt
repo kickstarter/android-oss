@@ -18,7 +18,8 @@ class EventContextValues {
         PLEDGE_SUBMIT("pledge_submit"),
         REWARD_CONTINUE("reward_continue"),
         DISCOVER_SORT("discover_sort"),
-        DISCOVER_FILTER("discover_filter")
+        DISCOVER_FILTER("discover_filter"),
+        SEARCH("search")
     }
 
     /**
@@ -49,7 +50,8 @@ class EventContextValues {
 
     enum class LocationContextName(val contextName: String) {
         DISCOVER_ADVANCED("discover_advanced"),
-        DISCOVER_OVERLAY("discover_overlay")
+        DISCOVER_OVERLAY("discover_overlay"),
+        GLOBAL_NAV("global_nav")
     }
 
     enum class DiscoveryContextType(val contextName: String) {

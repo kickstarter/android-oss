@@ -1,8 +1,8 @@
 package com.kickstarter.libs
 
-import com.kickstarter.libs.KoalaContext.*
 import com.kickstarter.libs.KoalaEvent.ProjectAction
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.AnalyticEventsUtils
+import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
@@ -27,15 +27,17 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
+import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.data.*
-import com.kickstarter.ui.data.Mailbox
+
 import kotlin.collections.HashMap
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
@@ -141,7 +143,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     // COMMENTS
-    fun trackLoadedOlderComments(project: Project, update: com.kickstarter.models.Update?, context: Comments) {
+    fun trackLoadedOlderComments(project: Project, update: com.kickstarter.models.Update?, context: KoalaContext.Comments) {
         val loggedInUser = client.loggedInUser()
 
         val props = update?.let {
@@ -158,7 +160,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     fun trackPostedComment(project: Project, update: com.kickstarter.models.Update?,
-                           context: CommentDialog) {
+                           context: KoalaContext.CommentDialog) {
         val loggedInUser = client.loggedInUser()
 
         val props = update?.let {
@@ -180,7 +182,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     fun trackViewedComments(project: Project, update: com.kickstarter.models.Update?,
-                            context: Comments) {
+                            context: KoalaContext.Comments) {
         val loggedInUser = client.loggedInUser()
 
         val props = update?.let {
@@ -462,7 +464,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     // SHARE
     fun trackShowProjectShareSheet(project: Project) {
         val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
-        props["context"] = Share.PROJECT
+        props["context"] = KoalaContext.Share.PROJECT
 
         // deprecated
         client.track(KoalaEvent.PROJECT_SHOW_SHARE_SHEET_LEGACY)
@@ -470,7 +472,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     // MESSAGES
-    fun trackSentMessage(project: Project, context: Message) {
+    fun trackSentMessage(project: Project, context: KoalaContext.Message) {
         val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
         props["context"] = context.trackingString
         client.track(KoalaEvent.SENT_MESSAGE, props)
@@ -519,7 +521,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     // PROJECT UPDATES
-    fun trackViewedUpdate(project: Project, context: Update) {
+    fun trackViewedUpdate(project: Project, context: KoalaContext.Update) {
         val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
         props["context"] = context.trackingString
         client.track(KoalaEvent.VIEWED_UPDATE, props)
@@ -545,7 +547,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     // WEBVIEWS
-    fun trackOpenedExternalLink(project: Project, context: ExternalLink) {
+    fun trackOpenedExternalLink(project: Project, context: KoalaContext.ExternalLink) {
         val props = AnalyticEventsUtils.projectProperties(project, client.loggedInUser())
         props["context"] = context.trackingString
         client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props)

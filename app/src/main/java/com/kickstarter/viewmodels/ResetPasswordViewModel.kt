@@ -87,7 +87,6 @@ interface ResetPasswordViewModel {
             resetPasswordNotification
                     .compose(errors())
                     .map { ErrorEnvelope.fromThrowable(it) }
-                    //.filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.resetError)
 

@@ -9,6 +9,7 @@ import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.libs.utils.EventName;
 
 import org.junit.Test;
 
@@ -61,29 +62,29 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     // Popular projects emit immediately.
     this.popularProjectsPresent.assertValues(true);
     this.searchProjectsPresent.assertNoValues();
-    this.lakeTest.assertValues("Search Button Clicked", "CTA Clicked", "Search Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
 
     // Searching shouldn't emit values immediately
     this.vm.inputs.search("hello");
     this.searchProjectsPresent.assertNoValues();
-    this.lakeTest.assertValues("Search Button Clicked", "CTA Clicked", "Search Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
 
     // Waiting a small amount time shouldn't emit values
     scheduler.advanceTimeBy(200, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertNoValues();
-    this.lakeTest.assertValues("Search Button Clicked", "CTA Clicked", "Search Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
 
     // Waiting the rest of the time makes the search happen
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertValues(false, true);
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", "CTA Clicked", "Search Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
 
     // Typing more search terms doesn't emit more values
     this.vm.inputs.search("hello world!");
     this.searchProjectsPresent.assertValues(false, true);
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", "CTA Clicked", "Search Page Viewed", "Search Results Loaded");
+    this.lakeTest.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", "Search Results Loaded");
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS);
@@ -106,7 +107,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     setUpEnvironment(env);
 
     this.searchProjectsPresent.assertNoValues();
-    this.lakeTest.assertValues("Search Button Clicked", "CTA Clicked",  "Search Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(),  "Search Page Viewed");
 
     this.vm.inputs.search("cats");
 

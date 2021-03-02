@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
@@ -372,7 +373,9 @@ interface ProjectViewModel {
 
             val projectOnUserChangeSave = initialProject
                     .compose(takeWhen<Project, User>(loggedInUserOnHeartClick))
-                    .switchMap { this.toggleProjectSave(it) }
+                    .switchMap {
+                        this.toggleProjectSave(it)
+                    }
                     .share()
 
             val refreshProjectEvent = Observable.merge(this.pledgeSuccessfullyCancelled,
@@ -406,7 +409,9 @@ interface ProjectViewModel {
                     .filter { su -> su.second != null }
                     .withLatestFrom<Project, Project>(initialProject) { _, p -> p }
                     .take(1)
-                    .switchMap { this.saveProject(it) }
+                    .switchMap {
+                        this.saveProject(it)
+                    }
                     .share()
 
             val currentProject = Observable.merge(
@@ -416,7 +421,13 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
-            projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
+            val projectSavedStatus = projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
+
+            projectSavedStatus
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.lake.trackWatchProjectCTA(it) }
+
+            projectSavedStatus
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())

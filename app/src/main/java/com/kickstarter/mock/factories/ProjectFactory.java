@@ -218,6 +218,14 @@ public final class ProjectFactory {
             .build();
   }
 
+  public static @NonNull Project projectWithAddOns() {
+    final Reward rwWithAddOn = RewardFactory.reward().toBuilder().hasAddons(true).build();
+    final Reward rw = RewardFactory.reward().toBuilder().hasAddons(false).build();
+    final Project pj = project().toBuilder().rewards(Arrays.asList(rw, rwWithAddOn)).build();
+
+    return pj;
+  }
+
 
   public static @NonNull Project backedSuccessfulProject() {
     final Project project = successfulProject();

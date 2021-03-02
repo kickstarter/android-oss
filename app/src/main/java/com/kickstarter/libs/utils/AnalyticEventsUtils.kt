@@ -211,7 +211,6 @@ object AnalyticEventsUtils {
                 properties.putAll(updateProperties(project, update, loggedInUser))
             }
         }
-f
         return properties
     }
 

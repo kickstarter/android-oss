@@ -30,6 +30,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
@@ -40,6 +41,7 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.data.*
 import com.kickstarter.ui.data.Mailbox
+import java.util.*
 import kotlin.collections.HashMap
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
@@ -612,6 +614,19 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackFilterClicked(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams)
         client.track(FILTER_CLICKED, props)
+    }
+
+
+    /**
+     * Sends data to the client when items in the discovery sort is selected.
+     *
+     * @param discoveryParams: The discovery parameters.
+     */
+    fun trackDiscoveryPageViewed(discoveryParams: DiscoveryParams) {
+        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
+        props[DISCOVER_SORT.contextName] = discoveryParams.sort()?.name?.toLowerCase(Locale.ROOT) ?: ""
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
+        client.track(PAGE_VIEWED.eventName, props)
     }
 
     /**

@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -433,6 +434,7 @@ public interface DiscoveryViewModel {
         })
         .compose(bindToLifecycle())
         .subscribe(this.showQualtricsSurvey);
+
     }
 
     private int currentDrawerMenuIcon(final @Nullable User user) {

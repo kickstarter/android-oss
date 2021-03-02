@@ -2,7 +2,6 @@ package com.kickstarter.viewmodels;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.R;
@@ -48,7 +47,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;

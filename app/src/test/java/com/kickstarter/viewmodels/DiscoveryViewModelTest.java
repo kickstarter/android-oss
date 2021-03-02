@@ -118,7 +118,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Drawer data should emit. Drawer should open, then close upon selection.
     this.navigationDrawerDataEmitted.assertValueCount(2);
     this.drawerIsOpen.assertValues(true, false);
-    this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked");
+    this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked", EventName.CTA_CLICKED.getEventName());
 
     // Open drawer and click a child filter.
     this.vm.inputs.openDrawer(true);
@@ -135,7 +135,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Drawer data should emit. Drawer should open, then close upon selection.
     this.navigationDrawerDataEmitted.assertValueCount(3);
     this.drawerIsOpen.assertValues(true, false, true, false);
-    this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked", "Hamburger Menu Clicked", "Filter Clicked");
+    this.lakeTest.assertValues("Hamburger Menu Clicked", "Filter Clicked", EventName.CTA_CLICKED.getEventName(), "Hamburger Menu Clicked", "Filter Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -177,7 +177,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true);
-    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked");
+    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", EventName.CTA_CLICKED.getEventName());
 
     // Select ART category from drawer.
     this.vm.inputs.childFilterViewHolderRowClick(null,
@@ -188,7 +188,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true, true);
-    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", "Filter Clicked");
+    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", EventName.CTA_CLICKED.getEventName());
 
     // Simulate rotating the device and hitting initial inputs again.
     this.vm.outputs.updateToolbarWithParams().subscribe(this.rotatedUpdateToolbarWithParams);

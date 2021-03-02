@@ -19,7 +19,8 @@ class EventContextValues {
         REWARD_CONTINUE("reward_continue"),
         DISCOVER_SORT("discover_sort"),
         DISCOVER_FILTER("discover_filter"),
-        SEARCH("search")
+        SEARCH("search"),
+        DISCOVER("discover"),
     }
 
     /**

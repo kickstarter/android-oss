@@ -47,7 +47,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;

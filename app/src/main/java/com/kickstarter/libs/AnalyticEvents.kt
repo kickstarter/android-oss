@@ -41,7 +41,7 @@ import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
 import com.kickstarter.ui.data.*
 import com.kickstarter.ui.data.Mailbox
-import java.util.*
+import java.util.Locale
 import kotlin.collections.HashMap
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {

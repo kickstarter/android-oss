@@ -432,7 +432,6 @@ public interface DiscoveryViewModel {
         })
         .compose(bindToLifecycle())
         .subscribe(this.showQualtricsSurvey);
-
     }
 
     private int currentDrawerMenuIcon(final @Nullable User user) {

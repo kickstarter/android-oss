@@ -4,13 +4,14 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
-import com.kickstarter.libs.utils.extensions.totalAmount
+import com.kickstarter.libs.utils.extensions.*
 import com.kickstarter.models.*
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 object AnalyticEventsUtils {
@@ -22,12 +23,17 @@ object AnalyticEventsUtils {
             put("amount", checkoutData.amount())
             checkoutData.id()?.let { put("id", it) }
             put("payment_type", checkoutData.paymentType().rawValue())
-            put("amount_total_usd", checkoutData.totalAmount() * project.staticUsdRate())
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
             put("shipping_amount", checkoutData.shippingAmount())
-            checkoutData.bonusAmount()?.let { bAmount ->
-                put("bonus_amount", bAmount)
-                put("bonus_amount_usd", Math.round(bAmount * project.staticUsdRate()))
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            checkoutData.bonusAmount()?.let {
+                put("bonus_amount", checkoutData.bonus())
+                put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
             }
+            put("reward_minimum_usd", pledgeData.rewardCost(project.staticUsdRate()))
+            put("add_ons_count_total", pledgeData.totalQuantity())
+            put("add_ons_count_unique", pledgeData.totalCountUnique())
+            put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
         }
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -205,7 +211,7 @@ object AnalyticEventsUtils {
                 properties.putAll(updateProperties(project, update, loggedInUser))
             }
         }
-
+f
         return properties
     }
 

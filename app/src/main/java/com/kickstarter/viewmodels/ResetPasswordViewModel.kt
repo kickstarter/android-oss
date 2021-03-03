@@ -5,7 +5,6 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.errors
 import com.kickstarter.libs.rx.transformers.Transformers.values
-import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.models.User
 import com.kickstarter.services.ApiClientType
@@ -56,6 +55,8 @@ interface ResetPasswordViewModel {
         private val resetError = PublishSubject.create<ErrorEnvelope>()
         private val prefillEmail = BehaviorSubject.create<String>()
 
+        private val ERROR_GENERIC = "Something went wrong, please try again."
+
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -76,6 +77,7 @@ interface ResetPasswordViewModel {
             val resetPasswordNotification = this.email
                     .compose<String>(Transformers.takeWhen(this.resetPasswordClick))
                     .switchMap(this::submitEmail)
+                    .share()
 
             resetPasswordNotification
                     .compose(values())
@@ -85,7 +87,6 @@ interface ResetPasswordViewModel {
             resetPasswordNotification
                     .compose(errors())
                     .map { ErrorEnvelope.fromThrowable(it) }
-                    .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.resetError)
 
@@ -127,7 +128,7 @@ interface ResetPasswordViewModel {
         override fun resetError(): Observable<String> {
             return this.resetError
                     .takeUntil(this.resetSuccess)
-                    .map { it.errorMessage() }
+                    .map {  it?.errorMessage() ?: ERROR_GENERIC }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

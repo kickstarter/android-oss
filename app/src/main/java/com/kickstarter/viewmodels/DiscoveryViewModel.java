@@ -47,7 +47,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -261,12 +260,18 @@ public interface DiscoveryViewModel {
         .compose(takePairWhen(this.sortClicked.map(DiscoveryUtils::sortFromPosition)))
         .map(paramsAndSort -> paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
         .compose(bindToLifecycle())
-        .subscribe(this.lake::trackExploreSortClicked);
+        .subscribe(discoveryParams -> {
+          this.lake.trackExploreSortClicked(discoveryParams);
+          this.lake.trackDiscoverSortCTA(discoveryParams);
+        });
 
       paramsWithSort
         .compose(takeWhen(drawerParamsClicked))
         .compose(bindToLifecycle())
-        .subscribe(this.lake::trackFilterClicked);
+        .subscribe(discoveryParams -> {
+          this.lake.trackFilterClicked(discoveryParams);
+          this.lake.trackDiscoverFilterCTA(discoveryParams);
+        });
 
       final Observable<List<Category>> categories = this.apiClient.fetchCategories()
         .compose(neverError())

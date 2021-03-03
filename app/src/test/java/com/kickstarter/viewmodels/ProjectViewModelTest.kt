@@ -300,8 +300,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.heartDrawableId.assertValues(R.drawable.icon__heart_outline, R.drawable.icon__heart_outline, R.drawable.icon__heart)
         this.showSavedPromptTest.assertValueCount(1)
 
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName)
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName)
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName)
     }
 
     @Test

@@ -102,6 +102,7 @@ object AnalyticEventsUtils {
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
         val properties = HashMap<String, Any>()
         properties["uid"] = user.id()
+        properties["is_admin"] = user.isAdmin ?: false
 
         return MapUtils.prefixKeys(properties, prefix)
     }
@@ -184,6 +185,11 @@ object AnalyticEventsUtils {
             put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser))
             put("user_is_backer", project.isBacking)
             put("user_has_watched", project.isStarred)
+
+            val hasAddOns = project.rewards()?.find {
+                it.hasAddons()
+            }
+            put("has_add_ons", hasAddOns?.hasAddons() ?: false)
         }
 
         return MapUtils.prefixKeys(properties, prefix)

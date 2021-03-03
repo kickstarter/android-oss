@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels;
 
+import android.util.Log;
+
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
@@ -182,6 +184,10 @@ public interface ActivityFeedViewModel {
         .take(1)
         .compose(this.bindToLifecycle())
         .subscribe(__ -> this.lake.trackActivityFeedViewed());
+
+      this.discoverProjectsClick
+        .compose(this.bindToLifecycle())
+        .subscribe( __ -> this.lake.trackDiscoverProjectCTAClicked());
     }
 
     private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();

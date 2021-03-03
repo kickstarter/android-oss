@@ -21,7 +21,6 @@ import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.activities.ProjectActivity
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.*
-import com.kickstarter.ui.intentmappers.IntentMapper
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper
 import com.kickstarter.ui.viewholders.ProjectViewHolder
 import rx.Observable

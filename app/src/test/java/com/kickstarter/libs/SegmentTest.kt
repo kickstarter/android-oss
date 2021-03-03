@@ -502,6 +502,11 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("CREDIT_CARD", expectedProperties["checkout_payment_type"])
         assertEquals(50.0, expectedProperties["checkout_amount_total_usd"])
         assertEquals(20.0, expectedProperties["checkout_shipping_amount"])
+        assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
+        assertEquals(0, expectedProperties["checkout_add_ons_count_total"])
+        assertEquals(0, expectedProperties["checkout_add_ons_count_unique"])
+        assertEquals(0.0, expectedProperties["checkout_add_ons_minimum_usd"])
+        assertEquals(0.0, expectedProperties["checkout_bonus_amount_usd"])
     }
 
     private fun assertContextProperties() {
@@ -529,6 +534,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["checkout_reward_is_limited_time"])
         assertEquals(false, expectedProperties["checkout_reward_is_limited_quantity"])
         assertEquals(10.0, expectedProperties["checkout_reward_minimum"])
+        assertEquals(10.0, expectedProperties["checkout_reward_minimum_usd"])
         assertEquals(true, expectedProperties["checkout_reward_shipping_enabled"])
         assertEquals("unrestricted", expectedProperties["checkout_reward_shipping_preference"])
         assertEquals("Digital Bundle", expectedProperties["checkout_reward_title"])

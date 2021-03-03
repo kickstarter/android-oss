@@ -26,11 +26,8 @@ object AnalyticEventsUtils {
             put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
             put("shipping_amount", checkoutData.shippingAmount())
             put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
-            checkoutData.bonusAmount()?.let {
-                put("bonus_amount", checkoutData.bonus())
-                put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
-            }
-            put("reward_minimum_usd", pledgeData.rewardCost(project.staticUsdRate()))
+            put("bonus_amount", checkoutData.bonus())
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
             put("add_ons_count_total", pledgeData.totalQuantity())
             put("add_ons_count_unique", pledgeData.totalCountUnique())
             put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
@@ -115,14 +112,16 @@ object AnalyticEventsUtils {
     fun pledgeDataProperties(pledgeData: PledgeData, loggedInUser: User?): MutableMap<String, Any> {
         val projectData = pledgeData.projectData()
         val props = projectProperties(projectData.project(), loggedInUser)
-        props.putAll(pledgeProperties(pledgeData.reward()))
+        props.putAll(pledgeProperties(pledgeData))
         props.putAll(refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         props["context_pledge_flow"] = pledgeData.pledgeFlowContext().trackingString
         return props
     }
 
     @JvmOverloads
-    fun pledgeProperties(reward: Reward, prefix: String = "checkout_reward_"): Map<String, Any> {
+    fun pledgeProperties(pledgeData: PledgeData, prefix: String = "checkout_reward_"): Map<String, Any> {
+        val reward = pledgeData.reward()
+        val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
             reward.estimatedDeliveryOn()?.let { deliveryDate ->
                 put("estimated_delivery_on", deliveryDate.millis / 1000 )
@@ -133,6 +132,7 @@ object AnalyticEventsUtils {
             put("is_limited_quantity", reward.limit() != null)
             put("minimum", reward.minimum())
             put("shipping_enabled", isShippable(reward))
+            put("minimum_usd", pledgeData.rewardCost(project.staticUsdRate()))
             reward.shippingPreference()?.let { put("shipping_preference", it) }
             reward.title()?.let { put("title", it) }
         }

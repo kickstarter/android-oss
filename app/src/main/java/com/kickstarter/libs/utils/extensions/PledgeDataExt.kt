@@ -2,7 +2,6 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.ui.data.PledgeData
-import kotlin.math.round
 
 
 /**
@@ -36,7 +35,7 @@ fun PledgeData.addOnsCost(usdRate: Float): Double {
         addOn.minimum() * (addOn.quantity() ?: 0)
     }?.sum() ?: 0
 
-    return round(amount.toDouble() * usdRate)
+    return amount.toDouble() * usdRate
 }
 
 /**
@@ -44,4 +43,4 @@ fun PledgeData.addOnsCost(usdRate: Float): Double {
  *
  * @return Double: e.g. 25.00
  */
-fun PledgeData.rewardCost(usdRate: Float): Double = round(this.reward().minimum() * usdRate)
+fun PledgeData.rewardCost(usdRate: Float): Double = this.reward().minimum() * usdRate

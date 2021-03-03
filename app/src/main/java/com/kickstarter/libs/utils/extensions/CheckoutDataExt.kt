@@ -2,7 +2,6 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.ui.data.CheckoutData
-import kotlin.math.round
 
 /**
  * Returns the total amount for a pledge.
@@ -13,9 +12,7 @@ import kotlin.math.round
  *
  * @return Double
  */
-fun CheckoutData.totalAmount(): Double {
-    return this.amount() + this.shippingAmount()
-}
+fun CheckoutData.totalAmount() = this.amount() + this.shippingAmount()
 
 /**
  * Returns the total amount for a pledge in USD.
@@ -26,7 +23,7 @@ fun CheckoutData.totalAmount(): Double {
  *
  * @return Double
  */
-fun CheckoutData.totalAmount(usdRate: Float) = round(this.totalAmount() * usdRate)
+fun CheckoutData.totalAmount(usdRate: Float) = this.totalAmount() * usdRate
 
 /**
  * Returns the bonus amount added to the pledge
@@ -40,11 +37,11 @@ fun CheckoutData.bonus() = this.bonusAmount()?.let { it } ?: 0.0
  *
  * @return Double
  */
-fun CheckoutData.bonus(usdRate: Float) = round(this.bonus() * usdRate)
+fun CheckoutData.bonus(usdRate: Float) = this.bonus() * usdRate
 
 /**
  * Returns the shipping amount in USD
  *
  * @return Double
  */
-fun CheckoutData.shippingAmount(usdRate: Float) = round(this.shippingAmount() * usdRate)
+fun CheckoutData.shippingAmount(usdRate: Float) = this.shippingAmount() * usdRate

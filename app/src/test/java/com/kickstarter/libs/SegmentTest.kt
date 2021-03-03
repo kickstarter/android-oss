@@ -54,6 +54,24 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = propertiesTest.value
         assertEquals(15L, expectedProperties["user_uid"])
+        assertEquals(false, expectedProperties["user_is_admin"])
+        assertEquals("NG", expectedProperties["user_country"])
+    }
+
+    @Test
+    fun testDefaultProperties_LoggedInUser_isAdmin() {
+        val user = user().toBuilder().isAdmin(true).build()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackAppOpen()
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(15L, expectedProperties["user_uid"])
+        assertEquals(true, expectedProperties["user_is_admin"])
         assertEquals("NG", expectedProperties["user_country"])
     }
 
@@ -193,6 +211,22 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues("Project Page Viewed")
 
         this.segmentIdentify.assertNoValues()
+    }
+
+    @Test
+    fun testProjectProperties_hasAddOns() {
+        val project = ProjectFactory.projectWithAddOns()
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(true, expectedProperties["project_has_add_ons"])
+
     }
 
     @Test
@@ -570,6 +604,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(5, expectedProperties["project_updates_count"])
         assertEquals("discovery", expectedProperties["session_ref_tag"])
         assertEquals("recommended", expectedProperties["session_referrer_credit"])
+        assertEquals(false, expectedProperties["project_has_add_ons"])
     }
 
     private fun assertSessionProperties(user: User?) {

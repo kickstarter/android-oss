@@ -1,11 +1,9 @@
 package com.kickstarter.libs
 
 import android.content.Context
-import android.os.Bundle
 import androidx.work.*
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.PlayServicesCapability
@@ -23,13 +21,14 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
      */
     override fun registerDevice() {
         if (this.playServicesCapability.isCapable) {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Firebase.analytics.logEvent("fetching_fcm_registration_token_failed", Bundle().apply {
-                        this.putString("Fetching FCM registration token failed", task.exception?.message.toString())
-                    })
-                    return@OnCompleteListener
-                }
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(
+                OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.fillInStackTrace()?.let {
+                            FirebaseCrashlytics.getInstance().recordException(it)
+                        }
+                        return@OnCompleteListener
+                    }
 
                 // Get new FCM registration token
                 val token = task.result

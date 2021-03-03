@@ -21,6 +21,7 @@ class EventContextValues {
         DISCOVER_FILTER("discover_filter"),
         SEARCH("search"),
         DISCOVER("discover"),
+        WATCH_PROJECT("watch_project")
     }
 
     /**
@@ -63,4 +64,11 @@ class EventContextValues {
         SUBCATEGORY_NAME("subcategory_name"),
         WATCHED("watched")
     }
+
+    enum class ContextTypeName(val contextName: String) {
+        CREDIT_CARD("credit_card"),
+        WATCH("watch"),
+        UNWATCH("unwatch")
+    }
+
 }

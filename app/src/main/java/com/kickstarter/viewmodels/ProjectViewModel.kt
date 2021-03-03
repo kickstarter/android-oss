@@ -416,7 +416,13 @@ interface ProjectViewModel {
                     savedProjectOnLoginSuccess
             )
 
-            projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
+            val projectSavedStatus = projectOnUserChangeSave.mergeWith(savedProjectOnLoginSuccess)
+
+            projectSavedStatus
+                    .compose(bindToLifecycle())
+                    .subscribe{ this.lake.trackWatchProjectCTA(it) }
+
+            projectSavedStatus
                     .filter { p -> p.isStarred && p.isLive && !p.isApproachingDeadline }
                     .compose(ignoreValues())
                     .compose(bindToLifecycle())

@@ -65,6 +65,20 @@ jobs:
           name: push to internal branch
           command: make internal
 
+  create_release:
+    <<: *base_job
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+            - v5-android-
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: push to release branch
+          command: make release
+
   internal:
     <<: *base_job
     steps:
@@ -149,13 +163,20 @@ workflows:
       - test:
           requires:
             - build
-      - release:
+      - create_release:
           requires:
             - build
             - test
           filters:
             branches:
               only: release-.*
+      - release:
+          requires:
+            - build
+            - test
+            filters:
+              branches:
+                only: external
 
 experimental:
   notify:

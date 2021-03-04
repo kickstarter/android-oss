@@ -71,3 +71,15 @@ internal:
 	@git branch -d internal
 
 	@echo "Deploy has been kicked off to CircleCI!"
+
+release:
+	@echo "Adding remotes..."
+	@git remote add private https://github.com/kickstarter/android-private
+
+	@echo "Deploying private/internal"
+
+	@git branch -f external
+	@git push -f private external
+	@git branch -d external
+
+	@echo "Deploy has been kicked off to CircleCI!"

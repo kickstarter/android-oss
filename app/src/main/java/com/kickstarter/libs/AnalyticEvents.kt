@@ -212,6 +212,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         }
     }
 
+    /**
+     * Tracks a discover project clicks on the activity screen.
+     */
+    fun trackDiscoverProjectCTAClicked(){
+        val props = hashMapOf<String, Any>()
+        props[CONTEXT_CTA.contextName] = DISCOVER.contextName
+        props[CONTEXT_LOCATION.contextName]  = GLOBAL_NAV.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
     // SEARCH
     fun trackSearchView() {
         client.track(KoalaEvent.VIEWED_SEARCH)

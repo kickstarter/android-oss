@@ -182,6 +182,10 @@ public interface ActivityFeedViewModel {
         .take(1)
         .compose(this.bindToLifecycle())
         .subscribe(__ -> this.lake.trackActivityFeedViewed());
+
+      this.discoverProjectsClick
+        .compose(this.bindToLifecycle())
+        .subscribe(__ -> this.lake.trackDiscoverProjectCTAClicked());
     }
 
     private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();

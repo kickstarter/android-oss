@@ -519,15 +519,15 @@ class SegmentTest : KSRobolectricTestCase() {
                     return listOf("optimizely_feature")
                 }
 
-                override fun getTrackingProperties(): Map<String, JSONArray> {
+                override fun getTrackingProperties(): Map<String, Array<Map<String, String>>> {
                     return getOptimizelySession()
                 }
             })
 
-    private fun getOptimizelySession(): Map<String, JSONArray> {
-        val experiment1 = JSONObject(mapOf("suggested_no_reward_amount" to "variation_3"))
-        val jsonArray = JSONArray().put(experiment1)
-        return mapOf("variants_optimizely" to jsonArray)
+    private fun getOptimizelySession(): Map<String, Array<Map<String, String>>> {
+        val experiment1 = mapOf("suggested_no_reward_amount" to "variation_3")
+        val array = arrayOf(experiment1)
+        return mapOf("variants_optimizely" to array)
     }
 
     private fun assertCheckoutProperties() {
@@ -557,7 +557,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
     private fun assertPledgeProperties() {
         val expectedProperties = this.propertiesTest.value
-        assertEquals((DateTime.parse("2019-03-26T19:26:09Z").millis / 1000).toString(), expectedProperties["checkout_reward_estimated_delivery_on"])
+        assertEquals(DateTime.parse("2019-03-26T19:26:09Z"), expectedProperties["checkout_reward_estimated_delivery_on"])
         assertEquals(false, expectedProperties["checkout_reward_has_items"])
         assertEquals("2", expectedProperties["checkout_reward_id"])
         assertEquals(false, expectedProperties["checkout_reward_is_limited_time"])
@@ -622,7 +622,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
-        assertEquals(getOptimizelySession()["variants_optimizely"].toString(), expectedProperties["session_variants_optimizely"].toString())
+        assertEquals(getOptimizelySession()["variants_optimizely"]?.first(), (expectedProperties["session_variants_optimizely"] as Array<*>).first())
     }
 
     private fun mockCurrentConfig() = MockCurrentConfig().apply {

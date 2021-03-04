@@ -150,6 +150,13 @@ workflows:
           filters:
             branches:
               only: master
+      - create_release:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: release-.*
       - internal:
           requires:
             - build
@@ -163,13 +170,6 @@ workflows:
       - test:
           requires:
             - build
-      - create_release:
-          requires:
-            - build
-            - test
-          filters:
-            branches:
-              only: release-.*
       - release:
           requires:
             - build

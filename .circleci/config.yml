@@ -167,9 +167,9 @@ workflows:
   release:
     jobs:
       - build
-          filters:
-            branches:
-              only: external
+        filters:
+          branches:
+            only: external
       - test:
           requires:
             - build

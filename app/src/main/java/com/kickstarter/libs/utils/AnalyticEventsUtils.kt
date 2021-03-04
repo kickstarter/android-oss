@@ -20,8 +20,8 @@ object AnalyticEventsUtils {
         val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
             put("amount", checkoutData.amount())
-            checkoutData.id()?.let { put("id", it) }
-            put("payment_type", checkoutData.paymentType().rawValue())
+            checkoutData.id()?.let { put("id", it.toString()) }
+            put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
             put("amount_total_usd", checkoutData.totalAmount() * project.staticUsdRate())
             put("shipping_amount", checkoutData.shippingAmount())
             checkoutData.bonusAmount()?.let { bAmount ->
@@ -77,7 +77,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun categoryProperties(category: Category, prefix: String = "category_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-                put("id", category.id())
+                put("id", category.id().toString())
                 put("name", category.name().toString())
             }
         return MapUtils.prefixKeys(properties, prefix)
@@ -86,7 +86,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun locationProperties(location: Location, prefix: String = "location_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-                put("id", location.id())
+                put("id", location.id().toString())
                 put("name", location.name())
                 put("displayable_name", location.displayableName())
                 location.city()?.let { put("city", it) }
@@ -101,7 +101,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
         val properties = HashMap<String, Any>()
-        properties["uid"] = user.id()
+        properties["uid"] = user.id().toString()
         properties["is_admin"] = user.isAdmin ?: false
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -120,10 +120,10 @@ object AnalyticEventsUtils {
     fun pledgeProperties(reward: Reward, prefix: String = "checkout_reward_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
             reward.estimatedDeliveryOn()?.let { deliveryDate ->
-                put("estimated_delivery_on", deliveryDate.millis / 1000 )
+                put("estimated_delivery_on", (deliveryDate.millis / 1000).toString() )
             }
             put("has_items", isItemized(reward))
-            put("id", reward.id())
+            put("id", reward.id().toString())
             put("is_limited_time", isTimeLimitedEnd(reward))
             put("is_limited_quantity", reward.limit() != null)
             put("minimum", reward.minimum())
@@ -153,12 +153,12 @@ object AnalyticEventsUtils {
             }
             project.commentsCount()?.let { put("comments_count", it) }
             put("country", project.country())
-            put("creator_uid", project.creator().id())
+            put("creator_uid", project.creator().id().toString())
             put("currency", project.currency())
             put("current_pledge_amount", project.pledged())
             put("current_amount_pledged_usd", project.pledged() * project.staticUsdRate())
             project.deadline()?.let { deadline ->
-                put("deadline", deadline.millis / 1000)
+                put("deadline", (deadline.millis / 1000).toString())
             }
             put("duration", ProjectUtils.timeInSecondsOfDuration(project).toFloat().roundToInt())
             put("goal", project.goal())
@@ -167,14 +167,14 @@ object AnalyticEventsUtils {
             put("hours_remaining", ceil((ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f).toDouble()).toInt())
             put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2)
             project.launchedAt()?.let { launchedAt ->
-                put("launched_at", launchedAt.millis / 1000)
+                put("launched_at", (launchedAt.millis / 1000).toString())
             }
             project.location()?.let { location ->
                 put("location", location.name())
             }
             put("name", project.name())
             put("percent_raised", project.percentageFunded() / 100.0f)
-            put("pid", project.id())
+            put("pid", project.id().toString())
             put("prelaunch_activated", BooleanUtils.isTrue(project.prelaunchActivated()))
             project.rewards()?.let { rewards ->
                 put("rewards_count", rewards.size)

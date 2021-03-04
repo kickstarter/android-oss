@@ -1,9 +1,12 @@
 package com.kickstarter.ui.adapters
 
 import android.util.Pair
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ItemUpdateCardBinding
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.EmptyViewHolder
@@ -41,11 +44,11 @@ class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyDataSetChanged()
     }
 
-    override fun viewHolder(@LayoutRes layout: Int, view: View): KSViewHolder {
+    override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return if (layout == R.layout.item_update_card) {
-            UpdateCardViewHolder(view, this.delegate)
+            UpdateCardViewHolder(ItemUpdateCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
         } else {
-            EmptyViewHolder(view)
+            EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 }

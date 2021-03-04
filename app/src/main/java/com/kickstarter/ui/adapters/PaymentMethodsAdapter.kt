@@ -1,8 +1,10 @@
 package com.kickstarter.ui.adapters
 
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.kickstarter.R
+import com.kickstarter.databinding.ItemPaymentMethodBinding
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.kickstarter.ui.viewholders.PaymentMethodsViewHolder
@@ -19,7 +21,7 @@ class PaymentMethodsAdapter(private val delegate: PaymentMethodsViewHolder.Deleg
 
     override fun layout(sectionRow: SectionRow): Int = R.layout.item_payment_method
 
-    override fun viewHolder(layout: Int, view: View): KSViewHolder = PaymentMethodsViewHolder(view, delegate)
+    override fun viewHolder(layout: Int, viewGroup: ViewGroup): KSViewHolder =PaymentMethodsViewHolder(ItemPaymentMethodBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), delegate)
 
     fun populateCards(cards: List<StoredCard>) {
         setSection(SECTION_CARDS, cards)

@@ -1,8 +1,15 @@
 package com.kickstarter.ui.adapters;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.CreatorDashboardProjectSwitcherViewBinding;
+import com.kickstarter.databinding.EmptyViewBinding;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.CreatorDashboardBottomSheetViewHolder;
@@ -12,15 +19,11 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 public final class CreatorDashboardBottomSheetAdapter extends KSAdapter {
   private static final int SECTION_PROJECTS_HEADER = 0;
   private static final int SECTION_PROJECTS = 1;
 
-  private Delegate delegate;
+  private final Delegate delegate;
 
   public interface Delegate extends CreatorDashboardBottomSheetViewHolder.Delegate {}
 
@@ -40,13 +43,13 @@ public final class CreatorDashboardBottomSheetAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     switch (layout) {
       case R.layout.creator_dashboard_project_switcher_view:
-        return new CreatorDashboardBottomSheetViewHolder(view, this.delegate);
+        return new CreatorDashboardBottomSheetViewHolder(CreatorDashboardProjectSwitcherViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.creator_dashboard_project_switcher_header:
       default:
-        return new EmptyViewHolder(view);
+        return new EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
 

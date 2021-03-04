@@ -166,10 +166,10 @@ workflows:
               only: internal
   release:
     jobs:
-      - build
-        filters:
-          branches:
-            only: external
+      - build:
+          filters:
+            branches:
+              only: external
       - test:
           requires:
             - build

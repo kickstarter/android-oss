@@ -1,13 +1,19 @@
 package com.kickstarter.ui.adapters
 
 import android.util.Pair
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import com.kickstarter.R
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ItemAddOnBinding
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.ui.viewholders.*
+import com.kickstarter.ui.viewholders.AddOnViewHolder
+import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
 
-class RewardAndAddOnsAdapter() : KSAdapter() {
+class RewardAndAddOnsAdapter : KSAdapter() {
 
     init {
         insertSection(SECTION_REWARD_CARD, emptyList<Reward>())
@@ -20,11 +26,10 @@ class RewardAndAddOnsAdapter() : KSAdapter() {
         else -> 0
     }
 
-    override fun viewHolder(layout: Int, view: View): KSViewHolder {
+    override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when(layout) {
-            R.layout.item_reward,
-            R.layout.item_add_on -> AddOnViewHolder(view)
-            else -> EmptyViewHolder(view)
+            R.layout.item_add_on -> AddOnViewHolder(ItemAddOnBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 

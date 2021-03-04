@@ -1,9 +1,15 @@
 package com.kickstarter.ui.adapters
 
 import android.util.Pair
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ItemAddCardBinding
+import com.kickstarter.databinding.ItemRewardSelectedCardBinding
+import com.kickstarter.databinding.ItemRewardUnselectedCardBinding
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.data.CardState
@@ -38,12 +44,12 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         }
     }
 
-    override fun viewHolder(layout: Int, view: View): KSViewHolder {
+    override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
-            R.layout.item_add_card -> RewardAddCardViewHolder(view, this.delegate)
-            R.layout.item_reward_selected_card -> RewardCardSelectedViewHolder(view)
-            R.layout.item_reward_unselected_card -> RewardCardUnselectedViewHolder(view, this.delegate)
-            else -> EmptyViewHolder(view)
+            R.layout.item_add_card -> RewardAddCardViewHolder(ItemAddCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup,false), this.delegate)
+            R.layout.item_reward_selected_card -> RewardCardSelectedViewHolder(ItemRewardSelectedCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            R.layout.item_reward_unselected_card -> RewardCardUnselectedViewHolder(ItemRewardUnselectedCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
+            else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 

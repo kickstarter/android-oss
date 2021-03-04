@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  android:id="@+id/project_scroll_view"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:background="@color/kds_white"
-  android:orientation="vertical">
+<LinearLayout android:id="@+id/project_scroll_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/kds_white"
+    android:orientation="vertical">
 
-  <include layout="@layout/project_creator_dashboard_header" />
+  <include
+      android:id="@+id/project_creator_dashboard_header"
+      layout="@layout/project_creator_dashboard_header" />
 
-  <include layout="@layout/project_media_header" />
+  <include
+      android:id="@+id/project_media_header_layout"
+      layout="@layout/project_media_header" />
 
   <LinearLayout
     android:id="@+id/project_info"
@@ -115,6 +117,8 @@
 
   </LinearLayout>
 
-  <include layout="@layout/project_creator_info" />
+  <include
+      android:id="@+id/project_creator_info_layout"
+      layout="@layout/project_creator_info" />
 
 </LinearLayout>

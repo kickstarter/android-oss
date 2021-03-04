@@ -1,9 +1,14 @@
 package com.kickstarter.ui.adapters;
 
 import android.util.Pair;
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.DashboardReferrerStatsRowViewBinding;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.ProjectStatsEnvelope;
 import com.kickstarter.ui.viewholders.CreatorDashboardReferrerStatsRowViewHolder;
@@ -11,8 +16,6 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 import rx.Observable;
 
 public class CreatorDashboardReferrerStatsAdapter extends KSAdapter {
@@ -21,8 +24,9 @@ public class CreatorDashboardReferrerStatsAdapter extends KSAdapter {
     return R.layout.dashboard_referrer_stats_row_view;
   }
 
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new CreatorDashboardReferrerStatsRowViewHolder(view);
+  @Override
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
+    return new CreatorDashboardReferrerStatsRowViewHolder(DashboardReferrerStatsRowViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
   }
 
   public void takeProjectAndReferrerStats(final @NonNull Pair<Project, List<ProjectStatsEnvelope.ReferrerStats>> projectAndReferrerStats) {

@@ -3,15 +3,16 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ActivityLifecycleType;
 import com.kickstarter.libs.Environment;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;

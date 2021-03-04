@@ -1,18 +1,17 @@
 package com.kickstarter.ui.viewholders
 
-import android.view.View
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
+import com.kickstarter.databinding.ItemErroredBackingBinding
 import com.kickstarter.libs.RelativeDateTimeOptions
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.DateTimeUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.viewmodels.ErroredBackingViewHolderViewModel
-import kotlinx.android.synthetic.main.item_errored_backing.view.*
 import org.joda.time.DateTime
 
-class ErroredBackingViewHolder(private val view: View, val delegate: Delegate?) : KSViewHolder(view) {
+class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, val delegate: Delegate?) : KSViewHolder(binding.root) {
 
     interface Delegate {
         fun managePledgeClicked(projectSlug: String)
@@ -36,9 +35,9 @@ class ErroredBackingViewHolder(private val view: View, val delegate: Delegate?) 
         this.viewModel.outputs.projectName()
                 .compose(bindToLifecycle())
                 .compose(observeForUI())
-                .subscribe { this.view.errored_backing_project_title.text = it }
+                .subscribe { binding.erroredBackingProjectTitle.text = it }
 
-        RxView.clicks(this.view.errored_backing_manage_button)
+        RxView.clicks(binding.erroredBackingManageButton)
                 .compose(bindToLifecycle())
                 .subscribe { this.viewModel.inputs.manageButtonClicked() }
 
@@ -52,7 +51,7 @@ class ErroredBackingViewHolder(private val view: View, val delegate: Delegate?) 
 
         val timeRemaining = DateTimeUtils.relative(context(), this.ksString, finalCollectionDate, options)
         val fixWithinTemplate = context().getString(R.string.Fix_within_time_remaining)
-        this.view.errored_backing_project_collection_date.text = this.ksString.format(fixWithinTemplate,
+        binding.erroredBackingProjectCollectionDate.text = this.ksString.format(fixWithinTemplate,
                 "time_remaining", timeRemaining)
     }
 
@@ -62,5 +61,4 @@ class ErroredBackingViewHolder(private val view: View, val delegate: Delegate?) 
 
         this.viewModel.inputs.configureWith(erroredBacking)
     }
-
 }

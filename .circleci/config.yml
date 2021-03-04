@@ -174,9 +174,9 @@ workflows:
           requires:
             - build
             - test
-            filters:
-              branches:
-                only: external
+          filters:
+            branches:
+              only: external
 
 experimental:
   notify:

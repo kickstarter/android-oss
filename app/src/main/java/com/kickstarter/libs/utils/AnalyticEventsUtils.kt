@@ -120,7 +120,7 @@ object AnalyticEventsUtils {
     fun pledgeProperties(reward: Reward, prefix: String = "checkout_reward_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
             reward.estimatedDeliveryOn()?.let { deliveryDate ->
-                put("estimated_delivery_on", (deliveryDate.millis / 1000).toString() )
+                put("estimated_delivery_on", deliveryDate)
             }
             put("has_items", isItemized(reward))
             put("id", reward.id().toString())

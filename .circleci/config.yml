@@ -93,6 +93,34 @@ jobs:
           name: Deploy Internal to Crashlytics and S3
           command: bundle exec fastlane internal
 
+  release:
+   <<: *base_job
+   steps:
+     - checkout
+     - restore_cache:
+         keys:
+           - v5-android-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+           - v5-android-
+     - restore_cache:
+         keys:
+           - v1-bundler-{{ checksum "Gemfile.lock" }}
+           - v1-bundler-
+     - run:
+         name: Bundle install
+         command: bundle check || bundle install --path vendor/bundle
+     - save_cache:
+         key: v1-bundler-{{ checksum "Gemfile.lock" }}
+         paths:
+           - ./vendor/bundle
+     - attach_workspace:
+         at: ~/project
+     - run:
+         name: Install Firebase CLI
+         command: curl -sL https://firebase.tools | bash
+     - run:
+         name: Deploy Internal to Crashlytics and S3
+         command: bundle exec fastlane external
+
 workflows:
   version: 2
   build_and_test:
@@ -115,6 +143,19 @@ workflows:
           filters:
             branches:
               only: internal
+  release:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - release:
+          requires:
+            - build
+            - test
+          filters:
+            branches:
+              only: release-.*
 
 experimental:
   notify:

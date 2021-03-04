@@ -156,7 +156,7 @@ workflows:
             - test
           filters:
             branches:
-              only: release-.*
+              only: release-test
       - internal:
           requires:
             - build

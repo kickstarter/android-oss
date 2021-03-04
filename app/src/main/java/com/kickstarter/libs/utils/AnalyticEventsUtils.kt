@@ -158,7 +158,7 @@ object AnalyticEventsUtils {
             put("current_pledge_amount", project.pledged())
             put("current_amount_pledged_usd", project.pledged() * project.staticUsdRate())
             project.deadline()?.let { deadline ->
-                put("deadline", (deadline.millis / 1000).toString())
+                put("deadline", deadline)
             }
             put("duration", ProjectUtils.timeInSecondsOfDuration(project).toFloat().roundToInt())
             put("goal", project.goal())
@@ -167,7 +167,7 @@ object AnalyticEventsUtils {
             put("hours_remaining", ceil((ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f).toDouble()).toInt())
             put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2)
             project.launchedAt()?.let { launchedAt ->
-                put("launched_at", (launchedAt.millis / 1000).toString())
+                put("launched_at", launchedAt)
             }
             project.location()?.let { location ->
                 put("location", location.name())

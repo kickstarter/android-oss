@@ -15,6 +15,7 @@ import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
+import com.kickstarter.libs.utils.EventName;
 
 import org.junit.Test;
 
@@ -97,7 +98,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
     this.startUpdateActivity.assertValueCount(1);
-    this.lakeTest.assertValue("Activity Feed Viewed");
+    this.lakeTest.assertValues("Activity Feed Viewed", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

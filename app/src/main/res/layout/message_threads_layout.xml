@@ -72,7 +72,9 @@
 
       </LinearLayout>
 
-      <include layout="@layout/message_threads_toolbar" />
+      <include
+          android:id="@+id/message_threads_toolbar"
+          layout="@layout/message_threads_toolbar" />
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 

@@ -1,14 +1,14 @@
 package com.kickstarter.ui.viewholders
 
-import android.view.View
+import com.kickstarter.databinding.ItemLightsOnBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.viewmodels.EditorialViewHolderViewModel
-import kotlinx.android.synthetic.main.item_lights_on.view.*
 
-class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder(view) {
+class EditorialViewHolder(val binding: ItemLightsOnBinding,
+                          val delegate: Delegate) : KSViewHolder(binding.root) {
 
-    interface Delegate {
+   interface Delegate {
         fun editorialViewHolderClicked(editorial: Editorial)
     }
 
@@ -19,12 +19,12 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
         this.vm.outputs.ctaTitle()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.title.setText(it) }
+                .subscribe { binding.title.setText(it) }
 
         this.vm.outputs.ctaDescription()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.description.setText(it) }
+                .subscribe { binding.description.setText(it) }
 
         this.vm.outputs.editorial()
                 .compose(bindToLifecycle())
@@ -34,9 +34,9 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
         this.vm.outputs.graphic()
                 .compose(bindToLifecycle())
                 .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.editorial_graphic.setImageResource(it) }
+                .subscribe { binding.editorialGraphic.setImageResource(it) }
 
-        this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
+        binding.lightsOnContainer.setOnClickListener { this.vm.inputs.editorialClicked() }
     }
 
     override fun bindData(data: Any?) {

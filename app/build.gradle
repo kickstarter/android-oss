@@ -158,6 +158,10 @@ android {
         resolutionStrategy.force 'com.android.support:customtabs:27.1.1'
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
 }
 
 buildscript {
@@ -209,7 +213,6 @@ dependencies {
     final dagger_version = "2.28.3"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.jakewharton:butterknife:7.0.1"
     implementation "com.jakewharton:process-phoenix:2.0.0"
     final rx_binding_version = "0.4.0"
     implementation "com.jakewharton.rxbinding:rxbinding:$rx_binding_version"

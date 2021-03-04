@@ -110,7 +110,7 @@
                 tools:text="abc123" />
 
               <include
-                android:id="@+id/device_id_loading_indicator"
+                android:id="@+id/device_id_loading_indicator_layout"
                 android:visibility="invisible"
                 layout="@layout/loading_placeholder_footnote" />
             </FrameLayout>

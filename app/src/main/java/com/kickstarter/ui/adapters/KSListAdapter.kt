@@ -12,7 +12,7 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.libs.utils.ExceptionUtils
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.trello.rxlifecycle.ActivityEvent
-import java.util.ArrayList
+import java.util.*
 
 abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter<Any, KSViewHolder>(diffUtil) {
     private val sections = ArrayList<List<Any>>()
@@ -60,7 +60,7 @@ abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter
     /**
      * Returns a new KSViewHolder given a layout and view.
      */
-    protected abstract fun viewHolder(@LayoutRes layout: Int, view: View): KSViewHolder
+    protected abstract fun viewHolder(@LayoutRes layout: Int, view: ViewGroup): KSViewHolder
 
     override fun onViewDetachedFromWindow(holder: KSViewHolder) {
         super.onViewDetachedFromWindow(holder)
@@ -84,8 +84,7 @@ abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, @LayoutRes layout: Int): KSViewHolder {
-        val view = inflateView(viewGroup, layout)
-        val viewHolder = viewHolder(layout, view)
+        val viewHolder = viewHolder(layout, viewGroup)
 
         viewHolder.lifecycleEvent(ActivityEvent.CREATE)
 

@@ -71,7 +71,7 @@ abstract class TrackingClientType {
         properties.apply {
             this["app_build_number"] = buildNumber()
             this["app_release_version"] = versionName()
-            this["platform"] = "android"
+            this["platform"] = "native_android"
             this["client"] = "native"
             this["current_variants"] = currentVariants() ?: ""
             this["device_distinct_id"] = deviceDistinctId()
@@ -83,7 +83,7 @@ abstract class TrackingClientType {
             this["enabled_features"] = enabledFeatureFlags()
             this["is_voiceover_running"] = isTalkBackOn
             this["mp_lib"] = "kickstarter_android"
-            this["os"] = "Android"
+            this["os"] = "android"
             this["os_version"] = OSVersion()
             this["user_agent"] = userAgent() ?: ""
             this["user_is_logged_in"] = userIsLoggedIn

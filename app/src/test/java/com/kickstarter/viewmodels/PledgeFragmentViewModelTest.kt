@@ -33,7 +33,6 @@ import rx.observers.TestSubscriber
 import java.math.RoundingMode
 import java.net.CookieManager
 import java.util.*
-import kotlin.math.E
 
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
@@ -530,7 +529,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.lakeTest.assertNoValues()
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -558,7 +557,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.lakeTest.assertNoValues()
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -589,7 +588,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValues(true, true)
         this.totalDividerIsGone.assertValue(true)
 
-        this.lakeTest.assertNoValues()
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -617,7 +616,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalDividerIsGone.assertValue(true)
         this.pledgeButtonIsEnabled.assertValue(true)
 
-        this.lakeTest.assertNoValues()
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -1288,7 +1287,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.showNewCardFragment.assertValue(backedProject)
-        this.lakeTest.assertNoValues()
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

@@ -4,13 +4,14 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
-import com.kickstarter.libs.utils.extensions.totalAmount
+import com.kickstarter.libs.utils.extensions.*
 import com.kickstarter.models.*
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 object AnalyticEventsUtils {
@@ -22,12 +23,14 @@ object AnalyticEventsUtils {
             put("amount", checkoutData.amount())
             checkoutData.id()?.let { put("id", it.toString()) }
             put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
-            put("amount_total_usd", checkoutData.totalAmount() * project.staticUsdRate())
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
             put("shipping_amount", checkoutData.shippingAmount())
-            checkoutData.bonusAmount()?.let { bAmount ->
-                put("bonus_amount", bAmount)
-                put("bonus_amount_usd", Math.round(bAmount * project.staticUsdRate()))
-            }
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            put("bonus_amount", checkoutData.bonus())
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
+            put("add_ons_count_total", pledgeData.totalQuantity())
+            put("add_ons_count_unique", pledgeData.totalCountUnique())
+            put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
         }
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -110,14 +113,16 @@ object AnalyticEventsUtils {
     fun pledgeDataProperties(pledgeData: PledgeData, loggedInUser: User?): MutableMap<String, Any> {
         val projectData = pledgeData.projectData()
         val props = projectProperties(projectData.project(), loggedInUser)
-        props.putAll(pledgeProperties(pledgeData.reward()))
+        props.putAll(pledgeProperties(pledgeData))
         props.putAll(refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         props["context_pledge_flow"] = pledgeData.pledgeFlowContext().trackingString
         return props
     }
 
     @JvmOverloads
-    fun pledgeProperties(reward: Reward, prefix: String = "checkout_reward_"): Map<String, Any> {
+    fun pledgeProperties(pledgeData: PledgeData, prefix: String = "checkout_reward_"): Map<String, Any> {
+        val reward = pledgeData.reward()
+        val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
             reward.estimatedDeliveryOn()?.let { deliveryDate ->
                 put("estimated_delivery_on", deliveryDate)
@@ -128,6 +133,7 @@ object AnalyticEventsUtils {
             put("is_limited_quantity", reward.limit() != null)
             put("minimum", reward.minimum())
             put("shipping_enabled", isShippable(reward))
+            put("minimum_usd", pledgeData.rewardCost(project.staticUsdRate()))
             reward.shippingPreference()?.let { put("shipping_preference", it) }
             reward.title()?.let { put("title", it) }
         }
@@ -211,7 +217,6 @@ object AnalyticEventsUtils {
                 properties.putAll(updateProperties(project, update, loggedInUser))
             }
         }
-
         return properties
     }
 

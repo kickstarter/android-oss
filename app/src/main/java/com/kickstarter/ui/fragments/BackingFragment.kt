@@ -260,13 +260,13 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     private fun stylizedTextViews(it: String) {
         binding?.receivedSectionLayout?.estimatedDeliveryLabel?.apply{
             val totalCharacters = text.length
-            text = "$text $it"
+            text = text.toString() + " " + it
             setBoldSpanOnTextView(totalCharacters, this, resources.getColor(R.color.kds_support_400, null))
 
         }
 
         binding?.estimatedDeliveryLabel2?.apply {
-            text = "$text $it"
+            text = text.toString() + " " + it
             val totalCharacters2 = text.length
                 setBoldSpanOnTextView(
                         totalCharacters2, this, resources.getColor(R.color.kds_support_400, null))

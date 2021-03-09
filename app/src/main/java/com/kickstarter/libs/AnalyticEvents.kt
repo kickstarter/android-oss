@@ -694,6 +694,19 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(PAGE_VIEWED.eventName, props)
     }
 
+    /**
+     * Sends data to the client when the projects screen is loaded.
+     *
+     * @param project: The selected project.
+     * @param pageContext: The page/screen of the app where the project card was clicked.
+     */
+    fun trackProjectCardCTA(project: Project, pageContext: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_TYPE.contextName to PROJECT.contextName)
+        props[CONTEXT_PAGE.contextName] = pageContext
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
     fun trackSearchButtonClicked() {
         client.track(SEARCH_BUTTON_CLICKED)
     }

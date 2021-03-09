@@ -72,4 +72,11 @@ class EventContextValues {
         UNWATCH("unwatch")
     }
 
+
+    enum class ProfileCardContextPage(val contextName: String) {
+        EXPLORE("explore"),
+        ACTIVITY_FEED("activity_feed"),
+        SEARCH("search"),
+        PROFILE("profile")
+    }
 }

@@ -98,7 +98,18 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
     this.startUpdateActivity.assertValueCount(1);
-    this.lakeTest.assertValues("Activity Feed Viewed", EventName.CTA_CLICKED.getEventName());
+    this.lakeTest.assertValues(
+            "Activity Feed Viewed",
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(
+            "Activity Feed Viewed",
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

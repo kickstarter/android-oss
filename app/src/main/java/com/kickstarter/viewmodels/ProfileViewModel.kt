@@ -6,6 +6,7 @@ import com.kickstarter.libs.ApiPaginator
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.models.Project
@@ -164,6 +165,10 @@ interface ProfileViewModel {
             this.startProjectActivity = this.projectCardClicked
             this.startMessageThreadsActivity = this.messagesButtonClicked
             this.userNameTextViewText = loggedInUser.map { it.name() }
+
+            projectCardClicked
+                    .compose(bindToLifecycle())
+                    .subscribe{ lake.trackProjectCardCTA(it, EventContextValues.ProfileCardContextPage.PROFILE.contextName) }
         }
 
         override fun emptyProfileViewHolderExploreProjectsClicked(viewHolder: EmptyProfileViewHolder) = this.exploreProjectsButtonClicked()

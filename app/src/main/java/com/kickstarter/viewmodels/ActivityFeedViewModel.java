@@ -4,6 +4,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.ErroredBacking;
@@ -107,6 +108,13 @@ public interface ActivityFeedViewModel {
         this.projectUpdateProjectClick
       )
         .map(Activity::project);
+
+      this.goToProject
+              .compose(bindToLifecycle())
+              .subscribe(p ->
+                      this.lake.trackProjectCardCTA(
+                              p,
+                              EventContextValues.ProfileCardContextPage.ACTIVITY_FEED.getContextName()));
 
       this.startUpdateActivity = this.projectUpdateClick;
 

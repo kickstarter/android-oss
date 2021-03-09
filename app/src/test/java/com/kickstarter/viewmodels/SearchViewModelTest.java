@@ -273,4 +273,20 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
 
     this.searchProjects.assertValueCount(2);
   }
+
+  @Test
+  public void init_whenProjectCardClicked_shouldTrackProjectEvent() {
+    final TestScheduler scheduler = new TestScheduler();
+    final Environment env = environment().toBuilder()
+            .scheduler(scheduler)
+            .build();
+
+    setUpEnvironment(env);
+
+    this.vm.inputs.search("hello");
+    this.vm.inputs.projectClicked(ProjectFactory.project());
+    this.lakeTest.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", EventName.CTA_CLICKED.getEventName());
+
+  }
 }

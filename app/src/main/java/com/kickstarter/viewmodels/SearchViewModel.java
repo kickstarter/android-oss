@@ -117,7 +117,7 @@ public interface SearchViewModel {
 
       final Observable<List<Project>> projects = Observable.merge(this.popularProjects, this.searchProjects);
 
-      projectClicked
+      this.projectClicked
               .compose(bindToLifecycle())
               .subscribe(p ->
                       this.lake.trackProjectCardClicked(

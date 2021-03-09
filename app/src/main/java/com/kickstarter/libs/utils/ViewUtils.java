@@ -180,6 +180,7 @@ public final class ViewUtils {
    * Sets the visiblity of a view to {@link View#VISIBLE} or {@link View#GONE}. Setting
    * the view to GONE removes it from the layout so that it no longer takes up any space.
    */
+  @Deprecated
   public static void setGone(final @NonNull View view, final boolean gone) {
     if (gone) {
       view.setVisibility(View.GONE);
@@ -188,6 +189,7 @@ public final class ViewUtils {
     }
   }
 
+  @Deprecated
   public static Action1<Boolean> setGone(final @NonNull View view) {
     return (gone) -> setGone(view, gone);
   }
@@ -196,6 +198,7 @@ public final class ViewUtils {
    * Sets the visibility of a view to {@link View#VISIBLE} or {@link View#INVISIBLE}. Setting
    * the view to INVISIBLE makes it hidden, but it still takes up space.
    */
+  @Deprecated
   public static void setInvisible(final @NonNull View view, final boolean hidden) {
     if (hidden) {
       view.setVisibility(View.INVISIBLE);
@@ -204,6 +207,7 @@ public final class ViewUtils {
     }
   }
 
+  @Deprecated
   public static Action1<Boolean> setInvisible(final @NonNull View view) {
     return (invisible) -> setInvisible(view, invisible);
   }

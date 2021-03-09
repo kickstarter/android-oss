@@ -40,7 +40,8 @@ class EventContextValues {
         CHECKOUT("checkout"),
         PROJECT("project"),
         REWARDS("rewards"),
-        THANKS("thanks")
+        THANKS("thanks"),
+        UPDATE_PLEDGE("update_pledge")
     }
 
     enum class ProjectContextSectionName(val contextName: String) {

@@ -21,6 +21,24 @@ public final class RewardFactory {
             .build();
   }
 
+  public static @NonNull Reward addOnSingle() {
+    return reward().toBuilder()
+            .quantity(1)
+            .isAddOn(true)
+            .isAvailable(true)
+            .limit(10)
+            .build();
+  }
+
+  public static @NonNull Reward addOnMultiple() {
+    return reward().toBuilder()
+            .quantity(5)
+            .isAddOn(true)
+            .isAvailable(true)
+            .limit(10)
+            .build();
+  }
+
   public static @NonNull Reward rewardHasAddOns() {
     return reward().toBuilder()
             .hasAddons(true)

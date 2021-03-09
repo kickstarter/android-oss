@@ -112,7 +112,7 @@ public interface ActivityFeedViewModel {
       this.goToProject
               .compose(bindToLifecycle())
               .subscribe(p ->
-                      this.lake.trackProjectCardCTA(
+                      this.lake.trackProjectCardClicked(
                               p,
                               EventContextValues.ProfileCardContextPage.ACTIVITY_FEED.getContextName()));
 

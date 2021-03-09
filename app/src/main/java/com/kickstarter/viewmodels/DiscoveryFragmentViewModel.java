@@ -168,7 +168,7 @@ public interface DiscoveryFragmentViewModel {
 
       projectCardClicked
               .compose(bindToLifecycle())
-              .subscribe(p -> lake.trackProjectCardCTA(p, EventContextValues.ProfileCardContextPage.EXPLORE.getContextName()));
+              .subscribe(p -> lake.trackProjectCardClicked(p, EventContextValues.ProfileCardContextPage.EXPLORE.getContextName()));
 
       final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
         .compose(takePairWhen(this.projectCardClicked))

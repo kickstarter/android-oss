@@ -192,7 +192,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.projectCardClicked(ProjectFactory.project())
         this.startProjectActivity.assertValueCount(1)
-        this.lakeTest.assertValue(EventName.CTA_CLICKED.eventName)
-        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+        this.lakeTest.assertValue(EventName.CARD_CLICKED.eventName)
+        this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 }

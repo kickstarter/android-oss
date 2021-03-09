@@ -36,10 +36,15 @@ class EventContextValues {
      * THANKS: The Thanks page.
      */
     enum class PageViewedContextName(val contextName: String) {
+        ACTIVITY_FEED("activity_feed"),
         ADD_ONS("add_ons"),
         CHECKOUT("checkout"),
+        DISCOVER("discover"),
+        EXPLORE("explore"),
+        PROFILE("profile"),
         PROJECT("project"),
         REWARDS("rewards"),
+        SEARCH("search"),
         THANKS("thanks"),
         UPDATE_PLEDGE("update_pledge")
     }
@@ -70,13 +75,5 @@ class EventContextValues {
         CREDIT_CARD("credit_card"),
         WATCH("watch"),
         UNWATCH("unwatch")
-    }
-
-
-    enum class ProfileCardContextPage(val contextName: String) {
-        EXPLORE("explore"),
-        ACTIVITY_FEED("activity_feed"),
-        SEARCH("search"),
-        PROFILE("profile")
     }
 }

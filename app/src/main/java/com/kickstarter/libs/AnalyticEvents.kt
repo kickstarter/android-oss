@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
@@ -734,6 +735,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackCheckoutScreenViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CHECKOUT.contextName)
+        props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the update pledge screen is view.
+     *
+     * @param checkoutData: The checkout data.
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackUpdatePledgePageViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to UPDATE_PLEDGE.contextName)
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
         client.track(PAGE_VIEWED.eventName, props)
     }

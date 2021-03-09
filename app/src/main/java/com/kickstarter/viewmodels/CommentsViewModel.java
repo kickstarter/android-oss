@@ -133,7 +133,7 @@ public interface CommentsViewModel {
         .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, this.cookieManager, this.sharedPreferences))
         .compose(bindToLifecycle())
         .subscribe(
-          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, EventContextValues.ProjectContextSectionName.COMMENTS.getContextName())
+          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, EventContextValues.ContextSectionName.COMMENTS.getContextName())
         );
 
       final Observable<Project> initialProject = projectOrUpdate

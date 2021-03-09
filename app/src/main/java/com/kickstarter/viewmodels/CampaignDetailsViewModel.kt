@@ -7,11 +7,8 @@ import com.kickstarter.libs.Environment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
-import com.kickstarter.libs.utils.EventContextValues
-import com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName
 import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.ProjectUtils
-import com.kickstarter.libs.utils.RefTagUtils
 import com.kickstarter.libs.utils.extensions.storeCurrentCookieRefTag
 import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
@@ -63,7 +60,7 @@ interface CampaignDetailsViewModel {
                     .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.lake.trackProjectScreenViewed(it, ProjectContextSectionName.CAMPAIGN.contextName)
+                        this.lake.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
                     }
 
             projectData

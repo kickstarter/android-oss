@@ -220,6 +220,7 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.backerUrl() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose(bindToLifecycle())
                     .subscribe(this.backerAvatar)
 
@@ -237,6 +238,7 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.amount() - it.shippingAmount() - it.bonusAmount() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .distinctUntilChanged()
@@ -267,6 +269,7 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.shippingAmount() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
                     .distinctUntilChanged()
@@ -275,6 +278,7 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.locationName()?.let { name -> name } }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.shippingLocation)
@@ -282,6 +286,7 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.amount()}
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .distinctUntilChanged()
@@ -300,7 +305,7 @@ interface BackingFragmentViewModel {
 
             val paymentSource = backing
                     .map { it.paymentSource() }
-                    .filter { it != null }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .ofType(Backing.PaymentSource::class.java)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
@@ -309,12 +314,14 @@ interface BackingFragmentViewModel {
                     .map { source ->
                         source.expirationDate()?.let { simpleDateFormat.format(it) } ?: ""
                     }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardExpiration)
 
             paymentSource
                     .map { cardIssuer(it) }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardIssuer)
@@ -327,6 +334,7 @@ interface BackingFragmentViewModel {
 
             paymentSource
                     .map { cardLogo(it) }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.cardLogo)
@@ -417,6 +425,7 @@ interface BackingFragmentViewModel {
 
             backing
                     .map { it.bonusAmount() }
+                    .filter { ObjectUtils.isNotNull(it) }
                     .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
                     .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
                     .distinctUntilChanged()

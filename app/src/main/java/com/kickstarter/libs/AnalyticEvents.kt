@@ -30,6 +30,7 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMM
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
+import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
@@ -39,6 +40,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -692,6 +694,19 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the projects screen is loaded.
+     *
+     * @param project: The selected project.
+     * @param pageContext: The page/screen of the app where the project card was clicked.
+     */
+    fun trackProjectCardClicked(project: Project, pageContext: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_TYPE.contextName to PROJECT.contextName)
+        props[CONTEXT_PAGE.contextName] = pageContext
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+        client.track(CARD_CLICKED.eventName, props)
     }
 
     fun trackSearchButtonClicked() {

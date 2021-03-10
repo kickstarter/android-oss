@@ -177,7 +177,7 @@ public final class ViewUtils {
   }
 
   /**
-   * Sets the visiblity of a view to {@link View#VISIBLE} or {@link View#GONE}. Setting
+   *  @deprecated Sets the visiblity of a view to {@link View#VISIBLE} or {@link View#GONE}. Setting
    * the view to GONE removes it from the layout so that it no longer takes up any space.
    */
   @Deprecated
@@ -195,7 +195,7 @@ public final class ViewUtils {
   }
 
   /**
-   * Sets the visibility of a view to {@link View#VISIBLE} or {@link View#INVISIBLE}. Setting
+   *  @deprecated Sets the visibility of a view to {@link View#VISIBLE} or {@link View#INVISIBLE}. Setting
    * the view to INVISIBLE makes it hidden, but it still takes up space.
    */
   @Deprecated

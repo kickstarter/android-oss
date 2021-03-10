@@ -42,6 +42,10 @@ secrets:
 	mkdir -p app/src/main/assets/www/
 	cp vendor/native-secrets/android/WebViewJavascript.html app/src/main/assets/www/WebViewJavascript.html || true
 
+	# Copy Signing files
+	cp vendor/native-secrets/android/signingFiles/signing.gradle app/signing.gradle
+	cp vendor/native-secrets/android/signingFiles/kickstarter.keystore app/kickstarter.keystore
+
 .PHONY: bootstrap bootstrap-circle dependencies secrets
 
 sync_oss_to_private:

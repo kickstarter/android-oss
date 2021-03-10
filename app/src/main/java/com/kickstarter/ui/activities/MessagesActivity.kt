@@ -233,12 +233,14 @@ class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
 
     private fun setBackingInfoView(backingAndProject: Pair<Backing, Project>) {
         val pledgeAmount = ksCurrency.format(backingAndProject.first.amount(), backingAndProject.second, RoundingMode.HALF_UP)
-        val pledgeDate = DateTimeUtils.relative(this, ksString, backingAndProject.first.pledgedAt())
-        binding.messagesBackingInfoView.backingAmountTextView.text = Html.fromHtml(
-            ksString.format(
-                getString(R.string.pledge_amount_pledged_on_pledge_date), "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+        backingAndProject.first.pledgedAt()?.let {
+            val pledgeDate = DateTimeUtils.relative(this, ksString, it)
+            binding.messagesBackingInfoView.backingAmountTextView.text = Html.fromHtml(
+                    ksString.format(
+                            getString(R.string.pledge_amount_pledged_on_pledge_date), "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+                    )
             )
-        )
+        }
     }
 
     private fun setDefaultRecyclerViewBottomPadding() =

@@ -115,6 +115,28 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testBackingObjectNullFields() {
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(BackingFactory.backingNull()))
+                .build()
+        setUpEnvironment(environment)
+        val project = ProjectFactory.backedProject().toBuilder().backing(BackingFactory.backingNull()).build()
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.backerName.assertNoValues()
+        this.backerAvatar.assertNoValues()
+        this.cardExpiration.assertNoValues()
+        this.cardLogo.assertNoValues()
+        this.cardLastFour.assertNoValues()
+        this.cardIssuer.assertNoValues()
+        this.pledgeAmount.assertValue("$0")
+        this.bonusAmount.assertValue("$0")
+        this.shippingAmount.assertValue("$0")
+        this.shippingLocation.assertNoValues()
+    }
+
+    @Test
     fun testBackerNumber() {
         val backing = BackingFactory.backing()
                 .toBuilder()
@@ -490,6 +512,24 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
 
         this.pledgeDate.assertValue(DateTimeUtils.longDate(pledgeDate))
+    }
+
+    @Test
+    fun testPledgeDateNull() {
+        val pledgeDate = null
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .pledgedAt(pledgeDate)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+
+        this.pledgeDate.assertNoValues()
     }
 
     @Test

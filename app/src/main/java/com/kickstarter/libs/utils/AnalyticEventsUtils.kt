@@ -4,13 +4,14 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
-import com.kickstarter.libs.utils.extensions.totalAmount
+import com.kickstarter.libs.utils.extensions.*
 import com.kickstarter.models.*
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 object AnalyticEventsUtils {
@@ -20,14 +21,16 @@ object AnalyticEventsUtils {
         val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
             put("amount", checkoutData.amount())
-            checkoutData.id()?.let { put("id", it) }
-            put("payment_type", checkoutData.paymentType().rawValue())
-            put("amount_total_usd", checkoutData.totalAmount() * project.staticUsdRate())
+            checkoutData.id()?.let { put("id", it.toString()) }
+            put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
             put("shipping_amount", checkoutData.shippingAmount())
-            checkoutData.bonusAmount()?.let { bAmount ->
-                put("bonus_amount", bAmount)
-                put("bonus_amount_usd", Math.round(bAmount * project.staticUsdRate()))
-            }
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            put("bonus_amount", checkoutData.bonus())
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
+            put("add_ons_count_total", pledgeData.totalQuantity())
+            put("add_ons_count_unique", pledgeData.totalCountUnique())
+            put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
         }
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -77,7 +80,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun categoryProperties(category: Category, prefix: String = "category_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-                put("id", category.id())
+                put("id", category.id().toString())
                 put("name", category.name().toString())
             }
         return MapUtils.prefixKeys(properties, prefix)
@@ -86,7 +89,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun locationProperties(location: Location, prefix: String = "location_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-                put("id", location.id())
+                put("id", location.id().toString())
                 put("name", location.name())
                 put("displayable_name", location.displayableName())
                 location.city()?.let { put("city", it) }
@@ -101,7 +104,7 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
         val properties = HashMap<String, Any>()
-        properties["uid"] = user.id()
+        properties["uid"] = user.id().toString()
         properties["is_admin"] = user.isAdmin ?: false
 
         return MapUtils.prefixKeys(properties, prefix)
@@ -110,24 +113,27 @@ object AnalyticEventsUtils {
     fun pledgeDataProperties(pledgeData: PledgeData, loggedInUser: User?): MutableMap<String, Any> {
         val projectData = pledgeData.projectData()
         val props = projectProperties(projectData.project(), loggedInUser)
-        props.putAll(pledgeProperties(pledgeData.reward()))
+        props.putAll(pledgeProperties(pledgeData))
         props.putAll(refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         props["context_pledge_flow"] = pledgeData.pledgeFlowContext().trackingString
         return props
     }
 
     @JvmOverloads
-    fun pledgeProperties(reward: Reward, prefix: String = "checkout_reward_"): Map<String, Any> {
+    fun pledgeProperties(pledgeData: PledgeData, prefix: String = "checkout_reward_"): Map<String, Any> {
+        val reward = pledgeData.reward()
+        val project = pledgeData.projectData().project()
         val properties = HashMap<String, Any>().apply {
             reward.estimatedDeliveryOn()?.let { deliveryDate ->
-                put("estimated_delivery_on", deliveryDate.millis / 1000 )
+                put("estimated_delivery_on", deliveryDate)
             }
             put("has_items", isItemized(reward))
-            put("id", reward.id())
+            put("id", reward.id().toString())
             put("is_limited_time", isTimeLimitedEnd(reward))
             put("is_limited_quantity", reward.limit() != null)
             put("minimum", reward.minimum())
             put("shipping_enabled", isShippable(reward))
+            put("minimum_usd", pledgeData.rewardCost(project.staticUsdRate()))
             reward.shippingPreference()?.let { put("shipping_preference", it) }
             reward.title()?.let { put("title", it) }
         }
@@ -153,12 +159,12 @@ object AnalyticEventsUtils {
             }
             project.commentsCount()?.let { put("comments_count", it) }
             put("country", project.country())
-            put("creator_uid", project.creator().id())
+            put("creator_uid", project.creator().id().toString())
             put("currency", project.currency())
             put("current_pledge_amount", project.pledged())
             put("current_amount_pledged_usd", project.pledged() * project.staticUsdRate())
             project.deadline()?.let { deadline ->
-                put("deadline", deadline.millis / 1000)
+                put("deadline", deadline)
             }
             put("duration", ProjectUtils.timeInSecondsOfDuration(project).toFloat().roundToInt())
             put("goal", project.goal())
@@ -167,14 +173,14 @@ object AnalyticEventsUtils {
             put("hours_remaining", ceil((ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f).toDouble()).toInt())
             put("is_repeat_creator", IntegerUtils.intValueOrZero(project.creator().createdProjectsCount()) >= 2)
             project.launchedAt()?.let { launchedAt ->
-                put("launched_at", launchedAt.millis / 1000)
+                put("launched_at", launchedAt)
             }
             project.location()?.let { location ->
                 put("location", location.name())
             }
             put("name", project.name())
             put("percent_raised", project.percentageFunded() / 100.0f)
-            put("pid", project.id())
+            put("pid", project.id().toString())
             put("prelaunch_activated", BooleanUtils.isTrue(project.prelaunchActivated()))
             project.rewards()?.let { rewards ->
                 put("rewards_count", rewards.size)
@@ -211,7 +217,6 @@ object AnalyticEventsUtils {
                 properties.putAll(updateProperties(project, update, loggedInUser))
             }
         }
-
         return properties
     }
 

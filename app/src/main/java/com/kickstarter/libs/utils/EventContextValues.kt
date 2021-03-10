@@ -36,11 +36,17 @@ class EventContextValues {
      * THANKS: The Thanks page.
      */
     enum class PageViewedContextName(val contextName: String) {
+        ACTIVITY_FEED("activity_feed"),
         ADD_ONS("add_ons"),
         CHECKOUT("checkout"),
+        DISCOVER("discover"),
+        EXPLORE("explore"),
+        PROFILE("profile"),
         PROJECT("project"),
         REWARDS("rewards"),
-        THANKS("thanks")
+        SEARCH("search"),
+        THANKS("thanks"),
+        UPDATE_PLEDGE("update_pledge")
     }
 
     enum class ProjectContextSectionName(val contextName: String) {
@@ -70,5 +76,4 @@ class EventContextValues {
         WATCH("watch"),
         UNWATCH("unwatch")
     }
-
 }

@@ -33,7 +33,7 @@ public abstract class Backing implements Parcelable, Relay {
   public abstract @Nullable Long locationId();
   public abstract @Nullable String locationName();
   public abstract @Nullable PaymentSource paymentSource();
-  public abstract DateTime pledgedAt();
+  public abstract @Nullable DateTime pledgedAt();
   public abstract @Nullable Project project();
   public abstract long projectId();
   public abstract @Nullable Reward reward();

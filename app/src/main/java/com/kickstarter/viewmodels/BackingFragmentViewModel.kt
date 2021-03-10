@@ -230,7 +230,8 @@ interface BackingFragmentViewModel {
                     .subscribe(this.backerNumber)
 
             backing
-                    .map { DateTimeUtils.longDate(it.pledgedAt()) }
+                    .filter { ObjectUtils.isNotNull(it.pledgedAt()) }
+                    .map { DateTimeUtils.longDate(ObjectUtils.requireNonNull(it.pledgedAt())) }
                     .distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe(this.pledgeDate)

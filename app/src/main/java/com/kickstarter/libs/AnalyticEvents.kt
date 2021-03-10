@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
@@ -29,6 +30,7 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMM
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
+import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
@@ -38,6 +40,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -693,6 +696,19 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(PAGE_VIEWED.eventName, props)
     }
 
+    /**
+     * Sends data to the client when the projects screen is loaded.
+     *
+     * @param project: The selected project.
+     * @param pageContext: The page/screen of the app where the project card was clicked.
+     */
+    fun trackProjectCardClicked(project: Project, pageContext: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_TYPE.contextName to PROJECT.contextName)
+        props[CONTEXT_PAGE.contextName] = pageContext
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+        client.track(CARD_CLICKED.eventName, props)
+    }
+
     fun trackSearchButtonClicked() {
         client.track(SEARCH_BUTTON_CLICKED)
     }
@@ -734,6 +750,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackCheckoutScreenViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CHECKOUT.contextName)
+        props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the update pledge screen is view.
+     *
+     * @param checkoutData: The checkout data.
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackUpdatePledgePageViewed(checkoutData: CheckoutData, pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to UPDATE_PLEDGE.contextName)
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
         client.track(PAGE_VIEWED.eventName, props)
     }

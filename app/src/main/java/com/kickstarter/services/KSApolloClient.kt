@@ -29,6 +29,7 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import org.joda.time.DateTime
 import rx.Observable
+import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import type.*
 import java.nio.charset.Charset
@@ -132,7 +133,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
                     })
             return@defer ps
-        }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun clearUnseenActivity(): Observable<Int> {
@@ -298,7 +299,7 @@ class KSApolloClient(val service: ApolloClient) : ApolloClientType {
                         }
                     })
             return@defer ps
-        }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun getProjectAddOns(slug: String, locationId: Location): Observable<List<Reward>> {

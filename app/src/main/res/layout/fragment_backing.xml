@@ -95,6 +95,7 @@
                         tools:text="@string/If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline" />
 
                     <include
+                        android:id="@+id/fragment_pledge_section_summary_pledge"
                         layout="@layout/fragment_pledge_section_summary_pledge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -102,6 +103,7 @@
                         android:visibility="visible" />
 
                     <include
+                        android:id="@+id/fragment_pledge_section_summary_shipping"
                         layout="@layout/fragment_pledge_section_summary_shipping"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -117,6 +119,7 @@
                         android:visibility="visible" />
 
                     <include
+                        android:id="@+id/fragment_backing_section_summary_total"
                         layout="@layout/fragment_backing_section_summary_total"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -142,6 +145,7 @@
                             android:text="@string/Payment_method" />
 
                         <include
+                            android:id="@+id/reward_card_details"
                             layout="@layout/reward_card_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -192,7 +196,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <include
-                        android:id="@+id/received_section"
+                        android:id="@+id/received_section_layout"
                         layout="@layout/fragment_backing_section_reward_delivery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

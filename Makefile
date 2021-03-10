@@ -44,7 +44,7 @@ secrets:
 
 	# Copy Signing files
 	cp vendor/native-secrets/android/signingFiles/signing.gradle app/signing.gradle || cp app/signing.gradle.example app/signing.gradle
-	cp vendor/native-secrets/android/signingFiles/kickstarter.keystore app/kickstarter.keystore
+	cp vendor/native-secrets/android/signingFiles/kickstarter.keystore app/kickstarter.keystore 2>/dev/null
 
 .PHONY: bootstrap bootstrap-circle dependencies secrets
 

@@ -211,10 +211,10 @@ public final class ViewUtils {
     }
   }
 
-/**
- *  @deprecated Sets the visibility of a view . Setting the view to INVISIBLE makes it hidden,
- *  but it still takes up space.
- */
+  /**
+   * @deprecated Sets the visibility of a view . Setting the view to INVISIBLE makes it hidden,
+   * but it still takes up space.
+   */
   @Deprecated
   public static Action1<Boolean> setInvisible(final @NonNull View view) {
     return (invisible) -> setInvisible(view, invisible);

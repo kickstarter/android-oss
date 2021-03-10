@@ -515,6 +515,24 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testPledgeDateNull() {
+        val pledgeDate = null
+        val backing = BackingFactory.backing()
+                .toBuilder()
+                .pledgedAt(pledgeDate)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .apolloClient(mockApolloClientForBacking(backing))
+                .build()
+        setUpEnvironment(environment)
+        this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.backedProject()))
+
+        this.pledgeDate.assertNoValues()
+    }
+
+    @Test
     fun testPledgeStatusData_whenProjectIsCanceled() {
         val backing = backingWithStatus(Backing.STATUS_PLEDGED)
         val deadline = DateTime.parse("2019-11-11T17:10:04+00:00")

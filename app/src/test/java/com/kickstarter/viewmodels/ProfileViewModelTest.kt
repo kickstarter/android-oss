@@ -6,6 +6,7 @@ import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.KoalaEvent
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -191,5 +192,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.projectCardClicked(ProjectFactory.project())
         this.startProjectActivity.assertValueCount(1)
+        this.lakeTest.assertValue(EventName.CARD_CLICKED.eventName)
+        this.segmentTrack.assertValue(EventName.CARD_CLICKED.eventName)
     }
 }

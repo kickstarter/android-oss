@@ -6,7 +6,10 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.Either
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
@@ -486,7 +489,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Creator Details Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName,EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName,EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Creator Details Clicked")
     }
 
@@ -530,8 +534,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorInfoVariantClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Creator Details Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Creator Details Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Creator Details Clicked")
     }
 

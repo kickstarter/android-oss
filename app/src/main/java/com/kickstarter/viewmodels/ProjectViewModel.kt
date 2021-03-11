@@ -9,7 +9,7 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
-import com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName.OVERVIEW
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing

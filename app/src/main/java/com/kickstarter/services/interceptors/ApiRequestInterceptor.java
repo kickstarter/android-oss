@@ -61,9 +61,9 @@ public final class ApiRequestInterceptor implements Interceptor {
   private HttpUrl url(final @NonNull HttpUrl initialHttpUrl) {
     final HttpUrl.Builder builder = initialHttpUrl.newBuilder()
       .setQueryParameter("client_id", this.clientId);
-    if (this.currentUser.exists()) {
-      builder.setQueryParameter("oauth_token", this.currentUser.getAccessToken());
-    }
+
+    this.currentUser.observable()
+      .subscribe(user -> builder.setQueryParameter("oauth_token", this.currentUser.getAccessToken()));
 
     return builder.build();
   }

@@ -939,6 +939,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackCreatorDetails(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(experimentProperties(projectData))
         client.track(CTA_CLICKED.eventName, props)
     }

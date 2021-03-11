@@ -21,7 +21,8 @@ class EventContextValues {
         DISCOVER_FILTER("discover_filter"),
         SEARCH("search"),
         DISCOVER("discover"),
-        WATCH_PROJECT("watch_project")
+        WATCH_PROJECT("watch_project"),
+        CAMPAIGN_DETAILS("campaign_details")
     }
 
     /**

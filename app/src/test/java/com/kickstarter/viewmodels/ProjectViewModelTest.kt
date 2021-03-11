@@ -396,8 +396,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 
@@ -441,8 +441,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 

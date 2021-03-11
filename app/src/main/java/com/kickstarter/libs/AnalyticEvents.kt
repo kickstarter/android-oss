@@ -930,8 +930,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     fun trackCampaignDetailsCTAClicked(projectData: ProjectData) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CAMPAIGN_DETAILS.contextName)
-        props[CONTEXT_CTA.contextName] = CAMPAIGN_DETAILS.contextName
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CAMPAIGN_DETAILS.contextName)
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }

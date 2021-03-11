@@ -782,7 +782,7 @@ interface ProjectViewModel {
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
                     .subscribe {
-                        this.lake.trackCreatorDetails(it)
+                        this.lake.trackCreatorDetailsCTA(it)
                         this.lake.trackCreatorDetailsClicked(it) }
 
             fullProjectDataAndCurrentUser

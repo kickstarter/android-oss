@@ -4,7 +4,8 @@ import com.kickstarter.libs.KoalaContext.*
 import com.kickstarter.libs.KoalaEvent.ProjectAction
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.ContextPropertyKeyName.*
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.*
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.*
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER

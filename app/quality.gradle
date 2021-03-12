@@ -27,7 +27,7 @@ task ktlint(type: JavaExec, group: "verification") {
     main = "com.pinterest.ktlint.Main"
     args "src/**/*.kt"
     // to generate report in checkstyle format prepend following args:
-    args "--reporter=checkstyle,output=${buildDir}/build/reports/checkstyle/ktlint.xml"
+    args "--reporter=html,output=${buildDir}/build/reports/checkstyle/ktlint.html"
     // to add a baseline to check against prepend following args:
     // "--baseline=ktlint-baseline.xml"
     // see https://github.com/pinterest/ktlint#usage for more

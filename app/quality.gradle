@@ -17,12 +17,21 @@ dependencies {
 }
 
 task ktlint(type: JavaExec, group: "verification") {
+    def outputFile = "${buildDir}/build/reports/checkstyle/ktlint.json"
+    ext.hasErrors = {
+        File file = new File(outputFile)
+        println file.text
+        return !file.text.contains("errors")
+    }
+
     description = "Check Kotlin code style."
     classpath = configurations.ktlint
     main = "com.pinterest.ktlint.Main"
     args "src/**/*.kt"
-    args "--reporter=checkstyle,output=${buildDir}/build/reports/checkstyle/ktlint.xml"
-    ignoreExitValue true
+    args "--reporter=json,output="+outputFile
+    hasErrors()
+    ignoreExitValue(true)
+    //ignoreExitValue(hasErrors()) --> once all the ktlint Errors are fixed on the exiting code uncomment this line
 }
 
 check.dependsOn 'checkstyle', 'ktlint'

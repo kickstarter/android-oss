@@ -20,10 +20,8 @@ task ktlint(type: JavaExec, group: "verification") {
     def outputFile = "${buildDir}/build/reports/checkstyle/ktlint.html"
     ext.hasErrors = {
         File file = new File(outputFile)
-        println file.text
         return !file.text.contains("errors")
     }
-
     description = "Check Kotlin code style."
     classpath = configurations.ktlint
     main = "com.pinterest.ktlint.Main"

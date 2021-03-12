@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMI
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
@@ -42,7 +43,6 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
-import com.kickstarter.libs.utils.EventName
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -965,6 +965,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     //region Experiments
     fun trackCampaignDetailsButtonClicked(projectData: ProjectData) {
         client.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, experimentProperties(projectData))
+    }
+
+    fun trackCampaignDetailsCTAClicked(projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CAMPAIGN_DETAILS.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackCampaignDetailsPledgeButtonClicked(projectData: ProjectData) {

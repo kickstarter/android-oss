@@ -17,7 +17,7 @@ dependencies {
 }
 
 task ktlint(type: JavaExec, group: "verification") {
-    def outputFile = "${buildDir}/build/reports/checkstyle/ktlint.json"
+    def outputFile = "${buildDir}/build/reports/checkstyle/ktlint.html"
     ext.hasErrors = {
         File file = new File(outputFile)
         println file.text
@@ -28,7 +28,7 @@ task ktlint(type: JavaExec, group: "verification") {
     classpath = configurations.ktlint
     main = "com.pinterest.ktlint.Main"
     args "src/**/*.kt"
-    args "--reporter=json,output="+outputFile
+    args "--reporter=html,output="+outputFile
     hasErrors()
     ignoreExitValue(true)
     //ignoreExitValue(hasErrors()) --> once all the ktlint Errors are fixed on the exiting code uncomment this line

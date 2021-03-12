@@ -19,6 +19,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
@@ -921,7 +922,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackLogInInitiateCtaClicked() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_INITIATE.contextName)
-        props[CONTEXT_PAGE.contextName] = LOGIN_INITIATE.contextName
+        props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
         client.track(CTA_CLICKED.eventName, props)
     }
 

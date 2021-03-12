@@ -21,7 +21,8 @@ task ktlint(type: JavaExec, group: "verification") {
     classpath = configurations.ktlint
     main = "com.pinterest.ktlint.Main"
     args "src/**/*.kt"
-    args "--reporter=html,output=${buildDir}/build/reports/checkstyle/ktlint.html"
+    args "--reporter=checkstyle,output=${buildDir}/build/reports/checkstyle/ktlint.xml"
+    ignoreExitValue true
 }
 
 check.dependsOn 'checkstyle', 'ktlint'
@@ -31,6 +32,7 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     classpath = configurations.ktlint
     main = "com.pinterest.ktlint.Main"
     args "-F", "src/**/*.kt"
+    ignoreExitValue true
 }
 
 task checkstyle(type: Checkstyle) {

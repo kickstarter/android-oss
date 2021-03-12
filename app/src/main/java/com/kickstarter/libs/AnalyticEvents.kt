@@ -39,6 +39,7 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
 import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY

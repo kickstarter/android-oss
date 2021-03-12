@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FIL
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
@@ -992,6 +993,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackCreatorDetailsClicked(projectData: ProjectData) {
         client.track(CREATOR_DETAILS_CLICKED, experimentProperties(projectData))
+    }
+
+    fun trackCreatorDetailsCTA(projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun reset() {

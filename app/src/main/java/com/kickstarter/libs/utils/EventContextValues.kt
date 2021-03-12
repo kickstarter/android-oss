@@ -48,7 +48,6 @@ class EventContextValues {
         ADD_ONS("add_ons"),
         CHECKOUT("checkout"),
         DISCOVER("discover"),
-        EXPLORE("explore"),
         PROFILE("profile"),
         PROJECT("project"),
         REWARDS("rewards"),

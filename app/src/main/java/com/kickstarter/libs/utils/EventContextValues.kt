@@ -46,7 +46,8 @@ class EventContextValues {
         REWARDS("rewards"),
         SEARCH("search"),
         THANKS("thanks"),
-        UPDATE_PLEDGE("update_pledge")
+        UPDATE_PLEDGE("update_pledge"),
+        CHANGE_PAYMENT("change_payment")
     }
 
     enum class ProjectContextSectionName(val contextName: String) {

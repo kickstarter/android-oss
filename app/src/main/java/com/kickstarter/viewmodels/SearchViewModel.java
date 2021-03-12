@@ -122,7 +122,7 @@ public interface SearchViewModel {
               .subscribe(p ->
                       this.lake.trackProjectCardClicked(
                               p,
-                              EventContextValues.PageViewedContextName.SEARCH.getContextName()));
+                              EventContextValues.ContextPageName.SEARCH.getContextName()));
 
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))

@@ -114,7 +114,7 @@ public interface ActivityFeedViewModel {
               .subscribe(p ->
                       this.lake.trackProjectCardClicked(
                               p,
-                              EventContextValues.PageViewedContextName.ACTIVITY_FEED.getContextName()));
+                              EventContextValues.ContextPageName.ACTIVITY_FEED.getContextName()));
 
       this.startUpdateActivity = this.projectUpdateClick;
 

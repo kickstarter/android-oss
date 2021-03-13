@@ -27,7 +27,8 @@ class EventContextValues {
         SEARCH("search"),
         DISCOVER("discover"),
         WATCH_PROJECT("watch_project"),
-        CAMPAIGN_DETAILS("campaign_details")
+        CAMPAIGN_DETAILS("campaign_details"),
+        LOGIN_OR_SIGN_UP("log_in_or_sign_up")
     }
 
     /**

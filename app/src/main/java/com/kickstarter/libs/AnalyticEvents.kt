@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FIL
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
@@ -270,9 +271,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Application Login or Signup", properties)
     }
 
-    fun trackLoginOrSignUpCtaClicked(type: String) {
+    fun trackLoginOrSignUpCtaClicked(type: String, page: String) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
-        props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
+        props[CONTEXT_PAGE.contextName] = page
+        type.let { props[CONTEXT_TYPE.contextName] = type }
         client.track(CTA_CLICKED.eventName, props)
     }
 

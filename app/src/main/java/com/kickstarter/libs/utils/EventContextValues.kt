@@ -123,6 +123,8 @@ class EventContextValues {
     enum class ContextTypeName(val contextName: String) {
         CREDIT_CARD("credit_card"),
         WATCH("watch"),
-        UNWATCH("unwatch")
+        UNWATCH("unwatch"),
+        FACEBOOK("facebook"),
+        APPLE("apple")
     }
 }

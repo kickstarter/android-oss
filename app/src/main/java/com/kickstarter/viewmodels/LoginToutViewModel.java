@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.util.Log;
 import android.util.Pair;
 
 import com.facebook.CallbackManager;

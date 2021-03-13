@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import android.util.Log
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.*
@@ -121,6 +122,13 @@ interface LoginViewModel {
                     .subscribe {
                         errors.onNext(unwrapNotificationEnvelopeError(it))
                         successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it))
+                    }
+
+            logInButtonClicked
+                    .compose(bindToLifecycle())
+                    .subscribe{
+                        Log.e("CLICKED", "LOGIN")
+                        this.lake.trackLogInButtonCtaClicked()
                     }
 
             emailAndReason

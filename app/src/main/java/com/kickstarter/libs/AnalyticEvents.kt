@@ -24,7 +24,9 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
@@ -928,6 +930,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackLogInButtonClicked() {
         client.track(LOG_IN_BUTTON_CLICKED)
+    }
+
+    /**
+     * Sends data to the client when the login button is clicked.
+     *
+     */
+    fun trackLogInButtonCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN.contextName)
+        props[CONTEXT_CTA.contextName] = LOGIN_SUBMIT.contextName
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackLogInSignUpButtonClicked() {

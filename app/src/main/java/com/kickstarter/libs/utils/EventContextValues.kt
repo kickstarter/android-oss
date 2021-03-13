@@ -28,7 +28,8 @@ class EventContextValues {
         DISCOVER("discover"),
         WATCH_PROJECT("watch_project"),
         CAMPAIGN_DETAILS("campaign_details"),
-        CREATOR_DETAILS("creator_details")
+        CREATOR_DETAILS("creator_details"),
+        LOGIN_SUBMIT("log_in_submit")
     }
 
     /**
@@ -54,7 +55,8 @@ class EventContextValues {
         REWARDS("rewards"),
         SEARCH("search"),
         THANKS("thanks"),
-        UPDATE_PLEDGE("update_pledge")
+        UPDATE_PLEDGE("update_pledge"),
+        LOGIN("log_in")
     }
 
     /**

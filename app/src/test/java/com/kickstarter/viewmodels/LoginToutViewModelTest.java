@@ -5,6 +5,7 @@ import android.content.Intent;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.libs.utils.EventName;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -78,8 +79,8 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertValueCount(1);
     this.finishWithSuccessfulResult.assertValueCount(1);
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
+    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -103,7 +104,7 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
     this.vm.facebookAccessToken.onNext("token");
     this.currentUser.assertNoValues();
     this.finishWithSuccessfulResult.assertNoValues();
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked");
+    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Facebook Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 }

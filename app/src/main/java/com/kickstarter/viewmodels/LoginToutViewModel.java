@@ -13,6 +13,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName;
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -149,7 +150,7 @@ public interface LoginToutViewModel {
         .compose(bindToLifecycle())
         .subscribe(__ -> {
           this.lake.trackFacebookLogInSignUpButtonClicked();
-          this.lake.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), );
+          this.lake.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), ContextPageName.LOGIN_SIGN_UP.getContextName());
         });
 
       this.loginClick

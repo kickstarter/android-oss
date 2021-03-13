@@ -274,7 +274,10 @@ public interface DiscoveryFragmentViewModel {
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
-        .subscribe(v -> this.lake.trackLogInSignUpButtonClicked());
+        .subscribe(v -> {
+          this.lake.trackLogInSignUpButtonClicked();
+          this.lake.trackLoginOrSignUpCtaClicked(EventContextValues.ContextPageName.DISCOVER.getContextName());
+        });
 
       this.paramsFromActivity
         .compose(takePairWhen(this.editorialClicked))

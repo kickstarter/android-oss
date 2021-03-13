@@ -127,7 +127,6 @@ interface LoginViewModel {
             logInButtonClicked
                     .compose(bindToLifecycle())
                     .subscribe{
-                        Log.e("CLICKED", "LOGIN")
                         this.lake.trackLogInButtonCtaClicked()
                     }
 

@@ -1352,7 +1352,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build(), PledgeReason.UPDATE_PLEDGE))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
-    }
+    }*/
 
     @Test
     fun testShowUpdatePledge_whenUpdatingPaymentMethod() {
@@ -1373,14 +1373,21 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.updatePaymentClicked()
 
-        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
+        val pledgeMockedData =Pair(PledgeData.builder()
+        .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(backedProject))
-                .build(), PledgeReason.UPDATE_PAYMENT))
-        this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
-        this.lakeTest.assertValue("Project Page Viewed")
-    }*/
+                .build(), PledgeReason.UPDATE_PAYMENT)
+        val pledgeData =this.showUpdatePledge.onNextEvents
+
+        assertEquals(pledgeData.first().first.projectData().project(),pledgeMockedData.first.projectData().project())
+        assertEquals(pledgeData.first().first.reward(),pledgeMockedData.first.reward())
+        assertEquals(pledgeData.first().second,pledgeMockedData.second)
+
+        this.lakeTest.assertValues("Project Page Viewed","Page Viewed","Page Viewed")
+        this.segmentTrack.assertValues("Project Page Viewed","Page Viewed","Page Viewed")
+
+    }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {

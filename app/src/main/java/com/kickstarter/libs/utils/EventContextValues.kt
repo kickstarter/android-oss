@@ -27,6 +27,7 @@ class EventContextValues {
         SEARCH("search"),
         DISCOVER("discover"),
         WATCH_PROJECT("watch_project"),
+        LOGIN_INITIATE("log_in_initiate"),
         CAMPAIGN_DETAILS("campaign_details"),
         CREATOR_DETAILS("creator_details"),
         LOGIN_SUBMIT("log_in_submit")
@@ -56,6 +57,7 @@ class EventContextValues {
         SEARCH("search"),
         THANKS("thanks"),
         UPDATE_PLEDGE("update_pledge"),
+        LOGIN_SIGN_UP("log_in_sign_up"),
         LOGIN("log_in")
     }
 

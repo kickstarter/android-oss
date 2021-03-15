@@ -1352,7 +1352,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
                 .build(), PledgeReason.UPDATE_PLEDGE))
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
-    }*/
+    }
 
     @Test
     fun testShowUpdatePledge_whenUpdatingPaymentMethod() {
@@ -1373,16 +1373,33 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.updatePaymentClicked()
 
-        val pledgeMockedData =Pair(PledgeData.builder()
-        .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
+        this.showUpdatePledge.assertValuesAndClear(Pair(PledgeData.builder()
+                .pledgeFlowContext(PledgeFlowContext.MANAGE_REWARD)
                 .reward(reward)
                 .projectData(ProjectDataFactory.project(backedProject))
-                .build(), PledgeReason.UPDATE_PAYMENT)
-        val pledgeData =this.showUpdatePledge.onNextEvents
+                .build(), PledgeReason.UPDATE_PAYMENT))
+        this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
+        this.lakeTest.assertValue("Project Page Viewed")
+    }*/
 
-        assertEquals(pledgeData.first().first.projectData().project(),pledgeMockedData.first.projectData().project())
-        assertEquals(pledgeData.first().first.reward(),pledgeMockedData.first.reward())
-        assertEquals(pledgeData.first().second,pledgeMockedData.second)
+    @Test
+    fun testSendingAnalyticsEvents_whenUpdatingPaymentMethod() {
+        setUpEnvironment(environment())
+
+        // Start the view model with a backed project
+        val reward = RewardFactory.reward()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .rewardId(reward.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.updatePaymentClicked()
 
         this.lakeTest.assertValues("Project Page Viewed","Page Viewed","Page Viewed")
         this.segmentTrack.assertValues("Project Page Viewed","Page Viewed","Page Viewed")

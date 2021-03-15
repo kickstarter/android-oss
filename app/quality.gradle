@@ -18,15 +18,15 @@ dependencies {
 
 task ktlint(type: JavaExec, group: "verification") {
     def outputFile = "${buildDir}/build/reports/checkstyle/ktlint.html"
-    ext.hasErrors = {
-        File file = new File(outputFile)
-        return !file.text.contains("errors")
-    }
     description = "Check Kotlin code style."
     classpath = configurations.ktlint
     main = "com.pinterest.ktlint.Main"
     args "src/**/*.kt"
     args "--reporter=html,output="+outputFile
+    ext.hasErrors = {
+        File file = new File(outputFile)
+        return !file.text.contains("errors")
+    }
     hasErrors()
     ignoreExitValue(true)
     //ignoreExitValue(hasErrors()) --> once all the ktlint Errors are fixed on the exiting code uncomment this line

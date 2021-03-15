@@ -10,6 +10,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITI
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
@@ -17,13 +18,14 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETA
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ADD_ONS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
@@ -39,7 +41,6 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
-import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
@@ -628,7 +629,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackDiscoverSortCTA(discoveryParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
         props[CONTEXT_LOCATION.contextName]  = DISCOVER_ADVANCED.contextName
-        props[CONTEXT_PAGE.contextName] = EventContextValues.ContextPageName.DISCOVER.contextName
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -647,7 +648,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackDiscoveryPageViewed(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
         props[DISCOVER_SORT.contextName] = discoveryParams.sort()?.name?.toLowerCase(Locale.ROOT) ?: ""
-        props[CONTEXT_PAGE.contextName] = EventContextValues.ContextPageName.DISCOVER.contextName
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         client.track(PAGE_VIEWED.eventName, props)
     }
 
@@ -659,7 +660,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackDiscoverFilterCTA(discoveryParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_FILTER.contextName)
         props[CONTEXT_LOCATION.contextName] = DISCOVER_OVERLAY.contextName
-        props[CONTEXT_PAGE.contextName] = EventContextValues.ContextPageName.DISCOVER.contextName
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {
             BooleanUtils.isTrue(discoveryParams.staffPicks()) -> PWL.contextName
             BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
@@ -726,7 +727,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackSearchCTAButtonClicked(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
-        props[CONTEXT_PAGE.contextName] = EventContextValues.ContextPageName.DISCOVER.contextName
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_CTA.contextName] = SEARCH.contextName
         props[CONTEXT_LOCATION.contextName]  = GLOBAL_NAV.contextName
         client.track(CTA_CLICKED.eventName, props)
@@ -928,6 +929,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackLogInButtonClicked() {
         client.track(LOG_IN_BUTTON_CLICKED)
+    }
+
+    fun trackLogInInitiateCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_INITIATE.contextName)
+        props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackLogInSignUpButtonClicked() {

@@ -28,6 +28,7 @@ task ktlint(type: JavaExec, group: "verification") {
         print file
         return !file.text.contains("errors")
     }
+    print outputFile
     //hasErrors()
     ignoreExitValue(true)
     //ignoreExitValue(hasErrors()) --> once all the ktlint Errors are fixed on the exiting code uncomment this line

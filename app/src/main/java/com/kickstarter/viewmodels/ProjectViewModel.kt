@@ -757,7 +757,10 @@ interface ProjectViewModel {
                     .compose<ProjectData>(takeWhen(blurbClicked))
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackCampaignDetailsButtonClicked(it) }
+                    .subscribe {
+                        this.lake.trackCampaignDetailsCTAClicked(it)
+                        this.lake.trackCampaignDetailsButtonClicked(it)
+                    }
 
             fullProjectDataAndCurrentUser
                     .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
@@ -781,7 +784,9 @@ interface ProjectViewModel {
                     .compose<ProjectData>(takeWhen(creatorInfoClicked))
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackCreatorDetailsClicked(it) }
+                    .subscribe {
+                        this.lake.trackCreatorDetailsCTA(it)
+                        this.lake.trackCreatorDetailsClicked(it) }
 
             fullProjectDataAndCurrentUser
                     .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }

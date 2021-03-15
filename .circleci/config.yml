@@ -48,10 +48,10 @@ jobs:
       - store_artifacts:
           path: app/build/reports
           destination: reports
+      - run: ./gradlew ktlintHasErrors
       - store_artifacts:
           path: app/build/outputs
           destination: tests
-      - run: ./gradlew ktlintHasErrors
 
   create_internal:
     <<: *base_job

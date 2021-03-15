@@ -34,9 +34,13 @@ task ktlintHasErrors(group: "verification") {
         return fileContent.contains("error")
     }
 
-    def syntaxErrors = hasErrors()
-    if (syntaxErrors) {
-        throw new GradleException('Fix style for kotlin code, see report: '+ outputFile)
+    if (file(outputFile).exists()) {
+        def syntaxErrors = hasErrors()
+        if (syntaxErrors) {
+            throw new GradleException('Fix style for kotlin code, see report: ' + outputFile)
+        }
+    } else {
+        print "Report not yet created"
     }
 }
 

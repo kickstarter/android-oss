@@ -26,6 +26,7 @@ task ktlint(type: JavaExec, group: "verification") {
     ignoreExitValue true
 }
 
+/*
 task ktlintHasErrors(group: "verification") {
     def outputFile = "${buildDir}/reports/checkstyle/ktlint.xml"
     ext.hasErrors = {
@@ -42,7 +43,7 @@ task ktlintHasErrors(group: "verification") {
     } else {
         print "Report not yet created"
     }
-}
+}*/
 
 check.dependsOn 'checkstyle'//, 'ktlint' --> add ktlint as dependency once all errors fixed
 

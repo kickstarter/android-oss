@@ -48,7 +48,6 @@ jobs:
       - store_artifacts:
           path: app/build/reports
           destination: reports
-      #- run: ./gradlew ktlintHasErrors -> Once all the ktlint errors are fixed, uncomment this line 
       - store_artifacts:
           path: app/build/outputs
           destination: tests

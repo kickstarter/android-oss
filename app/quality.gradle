@@ -25,9 +25,10 @@ task ktlint(type: JavaExec, group: "verification") {
     args "--reporter=html,output="+outputFile
     ext.hasErrors = {
         File file = new File(outputFile)
+        print file
         return !file.text.contains("errors")
     }
-    hasErrors()
+    //hasErrors()
     ignoreExitValue(true)
     //ignoreExitValue(hasErrors()) --> once all the ktlint Errors are fixed on the exiting code uncomment this line
 }

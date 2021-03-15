@@ -273,6 +273,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track("Application Login or Signup", properties)
     }
 
+    /**
+     * Tracks a login or sign up button clicked.
+     * @param type
+     * @param page
+     */
     fun trackLoginOrSignUpCtaClicked(type: String, page: String) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
         props[CONTEXT_PAGE.contextName] = page
@@ -280,6 +285,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
+    /**
+     * Tracks a login or sign up button clicked.
+     * @param page
+     */
     fun trackLoginOrSignUpCtaClicked(page: String) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
         props[CONTEXT_PAGE.contextName] = page

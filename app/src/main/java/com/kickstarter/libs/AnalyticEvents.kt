@@ -278,10 +278,10 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param type
      * @param page
      */
-    fun trackLoginOrSignUpCtaClicked(type: String, page: String) {
+    fun trackLoginOrSignUpCtaClicked(type: String?, page: String) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
         props[CONTEXT_PAGE.contextName] = page
-        props[CONTEXT_TYPE.contextName] = type
+        type?. let { props[CONTEXT_TYPE.contextName] = type }
         client.track(CTA_CLICKED.eventName, props)
     }
 

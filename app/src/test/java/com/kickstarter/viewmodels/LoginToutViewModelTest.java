@@ -11,6 +11,7 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.LoginReason;
+import com.kickstarter.libs.utils.EventName;
 
 import org.junit.Test;
 
@@ -48,8 +49,8 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.loginClick();
     this.startLoginActivity.assertValueCount(1);
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Log In Button Clicked");
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Log In Button Clicked");
+    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Log In Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Log In Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

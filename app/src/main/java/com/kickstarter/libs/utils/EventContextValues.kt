@@ -127,7 +127,6 @@ class EventContextValues {
         CREDIT_CARD("credit_card"),
         WATCH("watch"),
         UNWATCH("unwatch"),
-        FACEBOOK("facebook"),
-        APPLE("apple")
+        FACEBOOK("facebook")
     }
 }

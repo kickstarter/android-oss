@@ -12,7 +12,6 @@ import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.libs.utils.EventName;
 
 import org.junit.Test;
 

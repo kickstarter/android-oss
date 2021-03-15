@@ -42,19 +42,16 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run: ./gradlew checkstyle
+      - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease
       - run: ./gradlew testExternalRelease -PdisablePreDex
       - store_artifacts:
           path: app/build/reports
           destination: reports
-      - run: ./gradlew ktlint
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
-    
       - store_artifacts:
           path: app/build/outputs
           destination: tests
+      - run: ./gradlew ktlintHasErrors
 
   create_internal:
     <<: *base_job

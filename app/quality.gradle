@@ -17,19 +17,27 @@ dependencies {
 }
 
 task ktlint(type: JavaExec, group: "verification") {
-    def outputFile = "${buildDir}/reports/checkstyle/ktlint.html"
+    def outputFile = "${buildDir}/reports/checkstyle/ktlint.xml"
     description = "Check Kotlin code style."
     classpath = configurations.ktlint
     main = "com.pinterest.ktlint.Main"
     args "src/**/*.kt"
-    args "--reporter=html,output="+outputFile
+    args "--reporter=plain", "--reporter=checkstyle,output="+outputFile
+    ignoreExitValue true
+}
+
+task ktlintHasErrors(group: "verification") {
+    def outputFile = "${buildDir}/reports/checkstyle/ktlint.xml"
     ext.hasErrors = {
         File file = new File(outputFile)
-        return !file.text.contains("error")
+        def fileContent = file.text
+        return fileContent.contains("error")
     }
-    print hasErrors()
-    ignoreExitValue(true)
-    //ignoreExitValue(hasErrors()) --> once all the ktlint Errors are fixed on the exiting code uncomment this line
+
+    def syntaxErrors = hasErrors()
+    if (syntaxErrors) {
+        throw new GradleException('Fix style for kotlin code, see report: '+ outputFile)
+    }
 }
 
 check.dependsOn 'checkstyle', 'ktlint'

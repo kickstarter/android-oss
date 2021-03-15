@@ -155,7 +155,11 @@ public interface LoginToutViewModel {
 
       this.loginClick
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.lake.trackLogInButtonClicked());
+        .subscribe(__ -> {
+          this.lake.trackLogInButtonClicked();
+          this.lake.trackLogInInitiateCtaClicked();
+        }
+        );
 
       this.signupClick
         .compose(bindToLifecycle())

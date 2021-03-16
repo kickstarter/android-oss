@@ -11,7 +11,7 @@ import okhttp3.Response
 import rx.Observable
 import rx.subjects.PublishSubject
 import timber.log.Timber
-import java.util.*
+import java.util.Date
 
 private const val LOGTAG = "PerimeterXClient"
 open class PerimeterXClient(private val build: Build) : PerimeterXClientType {

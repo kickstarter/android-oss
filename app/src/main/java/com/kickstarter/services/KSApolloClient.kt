@@ -31,7 +31,12 @@ import org.joda.time.DateTime
 import rx.Observable
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
-import type.*
+import type.BackingState
+import type.CreditCardPaymentType
+import type.CurrencyCode
+import type.PaymentTypes
+import type.RewardType
+import type.ShippingPreference
 import java.nio.charset.Charset
 import kotlin.math.absoluteValue
 

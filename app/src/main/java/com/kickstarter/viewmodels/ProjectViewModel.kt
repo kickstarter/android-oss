@@ -783,11 +783,9 @@ interface ProjectViewModel {
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.nativeProjectActionButtonClicked))
                     .filter { ObjectUtils.isNotNull(it) }
                     .filter { it.first.project().isLive && it.first.project().isBacking }
-                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
+                    .map { pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD) }
                     .compose(bindToLifecycle())
-                    .subscribe{
-                        this.lake.trackManagePledgePageViewed(it.first)
-                    }
+                    .subscribe(this.lake::trackManagePledgePageViewed)
 
             fullProjectDataAndCurrentUser
                     .map { it.first }

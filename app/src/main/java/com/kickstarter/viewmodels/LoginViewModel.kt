@@ -5,7 +5,6 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.*
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.LoginHelper
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.extensions.isEmail
 import com.kickstarter.services.ApiClientType
@@ -121,6 +120,12 @@ interface LoginViewModel {
                     .subscribe {
                         errors.onNext(unwrapNotificationEnvelopeError(it))
                         successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it))
+                    }
+
+            logInButtonClicked
+                    .compose(bindToLifecycle())
+                    .subscribe{
+                        this.lake.trackLogInButtonCtaClicked()
                     }
 
             emailAndReason

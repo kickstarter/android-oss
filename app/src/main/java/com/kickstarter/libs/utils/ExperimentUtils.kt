@@ -6,7 +6,7 @@ import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.models.User
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import java.util.*
+import java.util.Locale
 
 object ExperimentUtils {
 

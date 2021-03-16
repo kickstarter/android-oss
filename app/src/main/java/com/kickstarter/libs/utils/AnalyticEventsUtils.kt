@@ -4,12 +4,23 @@ import com.kickstarter.libs.RefTag
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
-import com.kickstarter.libs.utils.extensions.*
-import com.kickstarter.models.*
+import com.kickstarter.libs.utils.extensions.addOnsCost
+import com.kickstarter.libs.utils.extensions.bonus
+import com.kickstarter.libs.utils.extensions.rewardCost
+import com.kickstarter.libs.utils.extensions.shippingAmount
+import com.kickstarter.libs.utils.extensions.totalAmount
+import com.kickstarter.libs.utils.extensions.totalCountUnique
+import com.kickstarter.libs.utils.extensions.totalQuantity
+import com.kickstarter.models.Activity
+import com.kickstarter.models.Category
+import com.kickstarter.models.Location
+import com.kickstarter.models.Project
+import com.kickstarter.models.Update
+import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import java.util.*
+import java.util.Locale
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 

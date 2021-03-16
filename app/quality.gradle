@@ -26,7 +26,7 @@ task ktlint(type: JavaExec, group: "verification") {
     ignoreExitValue true
 }
 
-/*
+/* // TODO: Uncomment once all the kotlin error are fixed, this will fail from that monment onwards on CI everytime a linter error is registered on the report file
 task ktlintHasErrors(group: "verification") {
     def outputFile = "${buildDir}/reports/checkstyle/ktlint.xml"
     ext.hasErrors = {

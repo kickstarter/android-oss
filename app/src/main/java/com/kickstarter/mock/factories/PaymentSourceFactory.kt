@@ -2,7 +2,7 @@ package com.kickstarter.mock.factories
 
 import com.kickstarter.models.Backing
 import type.CreditCardPaymentType
-import java.util.*
+import java.util.Date
 
 class PaymentSourceFactory private constructor() {
     companion object {

@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
@@ -800,6 +801,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         }
         client.track(MANAGE_PLEDGE_BUTTON_CLICKED, props)
     }
+
+    /**
+     * Sends data associated with page view event to the client.
+     *
+     * @param pledgeData: The selected pledge data.
+     */
+    fun trackManagePledgePageViewed(pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to MANAGE_PLEDGE.contextName)
+        props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
 
     fun trackProjectPagePledgeButtonClicked(projectData: ProjectData, pledgeFlowContext: PledgeFlowContext?) {
         val props = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())

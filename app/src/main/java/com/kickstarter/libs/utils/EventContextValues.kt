@@ -56,7 +56,8 @@ class EventContextValues {
         SEARCH("search"),
         THANKS("thanks"),
         UPDATE_PLEDGE("update_pledge"),
-        LOGIN_SIGN_UP("log_in_sign_up")
+        LOGIN_SIGN_UP("log_in_sign_up"),
+        MANAGE_PLEDGE("manage_pledge")
     }
 
     /**

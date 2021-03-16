@@ -779,6 +779,15 @@ interface ProjectViewModel {
                     .compose(bindToLifecycle())
                     .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
 
+            projectDataAndBackedReward
+                    .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.nativeProjectActionButtonClicked))
+                    .filter { it.first.project().isLive && it.first.project().isBacking }
+                    .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PLEDGE) }
+                    .compose(bindToLifecycle())
+                    .subscribe{
+                        this.lake.trackManagePledgePageViewed(it.first)
+                    }
+
             fullProjectDataAndCurrentUser
                     .map { it.first }
                     .compose<ProjectData>(takeWhen(creatorInfoClicked))
@@ -850,6 +859,7 @@ interface ProjectViewModel {
             return when {
                 ProjectUtils.userIsCreator(project, currentUser) -> null
                 project.isLive && !project.isBacking -> PledgeFlowContext.NEW_PLEDGE
+                project.isLive && project.isBacking -> PledgeFlowContext.MANAGE_REWARD
                 !project.isLive && project.backing()?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
                 else -> null
             }

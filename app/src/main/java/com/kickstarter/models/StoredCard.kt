@@ -5,7 +5,7 @@ import auto.parcel.AutoParcel
 import com.kickstarter.R
 import com.stripe.android.model.Card
 import type.CreditCardTypes
-import java.util.*
+import java.util.Date
 
 @AutoParcel
 abstract class StoredCard : Parcelable {

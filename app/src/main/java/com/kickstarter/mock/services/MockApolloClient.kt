@@ -15,7 +15,7 @@ import com.kickstarter.services.mutations.SavePaymentMethodData
 import com.kickstarter.services.mutations.UpdateBackingData
 import rx.Observable
 import type.CurrencyCode
-import java.util.*
+import java.util.Collections
 
 open class MockApolloClient : ApolloClientType {
 

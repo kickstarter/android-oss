@@ -30,7 +30,8 @@ class EventContextValues {
         LOGIN_INITIATE("log_in_initiate"),
         CAMPAIGN_DETAILS("campaign_details"),
         CREATOR_DETAILS("creator_details"),
-        LOGIN_SUBMIT("log_in_submit")
+        LOGIN_SUBMIT("log_in_submit"),
+        SIGN_UP_SUBMIT("sign_up_submit")
     }
 
     /**
@@ -58,6 +59,7 @@ class EventContextValues {
         THANKS("thanks"),
         UPDATE_PLEDGE("update_pledge"),
         LOGIN_SIGN_UP("log_in_sign_up"),
+        SIGN_UP("sign_up"),
         LOGIN("log_in")
     }
 

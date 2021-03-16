@@ -1,6 +1,11 @@
 package com.kickstarter.libs
 
-import com.kickstarter.libs.KoalaContext.*
+import com.kickstarter.libs.KoalaContext.CommentDialog
+import com.kickstarter.libs.KoalaContext.Comments
+import com.kickstarter.libs.KoalaContext.ExternalLink
+import com.kickstarter.libs.KoalaContext.Message
+import com.kickstarter.libs.KoalaContext.Share
+import com.kickstarter.libs.KoalaContext.Update
 import com.kickstarter.libs.KoalaEvent.ProjectAction
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.BooleanUtils

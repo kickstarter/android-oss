@@ -29,7 +29,8 @@ class EventContextValues {
         WATCH_PROJECT("watch_project"),
         LOGIN_INITIATE("log_in_initiate"),
         CAMPAIGN_DETAILS("campaign_details"),
-        CREATOR_DETAILS("creator_details")
+        CREATOR_DETAILS("creator_details"),
+        SIGN_UP_INITIATE("sign_up_initiate"),
     }
 
     /**

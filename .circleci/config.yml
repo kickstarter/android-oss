@@ -42,6 +42,7 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run: ./gradlew checkstyle
+      - run: ./gradlew ktlint
       - run: ./gradlew lintExternalRelease
       - run: ./gradlew testExternalRelease -PdisablePreDex
       - store_artifacts:

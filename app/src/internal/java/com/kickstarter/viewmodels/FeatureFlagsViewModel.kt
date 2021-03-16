@@ -1,7 +1,11 @@
 package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
-import com.kickstarter.libs.*
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.ui.activities.FeatureFlagsActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject

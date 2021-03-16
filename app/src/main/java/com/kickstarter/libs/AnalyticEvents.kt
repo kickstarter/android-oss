@@ -285,16 +285,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
-    /**
-     * Tracks a login or sign up button clicked.
-     * @param page
-     */
-    fun trackLoginOrSignUpCtaClicked(page: String) {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
-        props[CONTEXT_PAGE.contextName] = page
-        client.track(CTA_CLICKED.eventName, props)
-    }
-
     fun trackLoginSuccess() {
         client.track(KoalaEvent.LOGIN)
     }

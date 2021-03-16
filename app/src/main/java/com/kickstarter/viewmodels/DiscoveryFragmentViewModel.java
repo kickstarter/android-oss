@@ -276,7 +276,7 @@ public interface DiscoveryFragmentViewModel {
         .compose(bindToLifecycle())
         .subscribe(v -> {
           this.lake.trackLogInSignUpButtonClicked();
-          this.lake.trackLoginOrSignUpCtaClicked(EventContextValues.ContextPageName.DISCOVER.getContextName());
+          this.lake.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
         });
 
       this.paramsFromActivity

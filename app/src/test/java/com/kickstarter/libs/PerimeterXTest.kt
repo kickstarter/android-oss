@@ -11,21 +11,21 @@ import org.junit.Test
 import rx.observers.TestSubscriber
 import java.util.HashMap
 
-class PerimeterXTest : KSRobolectricTestCase()  {
+class PerimeterXTest : KSRobolectricTestCase() {
 
     lateinit var build: Build
 
     private val mockRequest = Request.Builder()
-            .url("http://url.com")
-            .build()
+        .url("http://url.com")
+        .build()
 
     private val mockResponse = Response.Builder()
-            .request(mockRequest)
-            .protocol(Protocol.HTTP_2)
-            .message("")
-            .code(403)
-            .body("body".toResponseBody())
-            .build()
+        .request(mockRequest)
+        .protocol(Protocol.HTTP_2)
+        .message("")
+        .code(403)
+        .body("body".toResponseBody())
+        .build()
 
     private val mockBody = mockResponse.body?.string() ?: ""
 
@@ -68,7 +68,7 @@ class PerimeterXTest : KSRobolectricTestCase()  {
     fun testAddHeaderToBuilder() {
         val pxClient = PXClientFactory.pxChallengedSuccessful(build)
         val mockRequestBuilder = Request.Builder()
-                .url("http://url.com")
+            .url("http://url.com")
 
         val headerVariable = mutableMapOf("h1" to "value1", "h2" to "value2")
 

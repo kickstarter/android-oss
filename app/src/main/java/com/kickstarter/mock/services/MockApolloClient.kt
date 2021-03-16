@@ -45,8 +45,14 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
-        return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
-                CreatePasswordMutation.User("", "sample@ksr.com", true))))
+        return Observable.just(
+            CreatePasswordMutation.Data(
+                CreatePasswordMutation.UpdateUserAccount(
+                    "",
+                    CreatePasswordMutation.User("", "sample@ksr.com", true)
+                )
+            )
+        )
     }
 
     override fun creatorDetails(slug: String): Observable<CreatorDetails> {
@@ -74,8 +80,14 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-        return Observable.just(SendEmailVerificationMutation.Data(SendEmailVerificationMutation.UserSendEmailVerification("",
-                "12345")))
+        return Observable.just(
+            SendEmailVerificationMutation.Data(
+                SendEmailVerificationMutation.UserSendEmailVerification(
+                    "",
+                    "12345"
+                )
+            )
+        )
     }
 
     override fun updateBacking(updateBackingData: UpdateBackingData): Observable<Checkout> {
@@ -83,22 +95,46 @@ open class MockApolloClient : ApolloClientType {
     }
 
     override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
-        return Observable.just(UpdateUserCurrencyMutation.Data(UpdateUserCurrencyMutation.UpdateUserProfile("",
-                UpdateUserCurrencyMutation.User("", "USD"))))
+        return Observable.just(
+            UpdateUserCurrencyMutation.Data(
+                UpdateUserCurrencyMutation.UpdateUserProfile(
+                    "",
+                    UpdateUserCurrencyMutation.User("", "USD")
+                )
+            )
+        )
     }
 
     override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
-        return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
-                UpdateUserPasswordMutation.User("", "some@email.com", true))))
+        return Observable.just(
+            UpdateUserPasswordMutation.Data(
+                UpdateUserPasswordMutation.UpdateUserAccount(
+                    "",
+                    UpdateUserPasswordMutation.User("", "some@email.com", true)
+                )
+            )
+        )
     }
 
     override fun updateUserEmail(email: String, currentPassword: String): Observable<UpdateUserEmailMutation.Data> {
-        return Observable.just(UpdateUserEmailMutation.Data(UpdateUserEmailMutation.UpdateUserAccount("",
-                UpdateUserEmailMutation.User("", "Some Name", "some@email.com"))))
+        return Observable.just(
+            UpdateUserEmailMutation.Data(
+                UpdateUserEmailMutation.UpdateUserAccount(
+                    "",
+                    UpdateUserEmailMutation.User("", "Some Name", "some@email.com")
+                )
+            )
+        )
     }
 
     override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-        return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "Some Name",
-                "some@email.com", true, true, true, true, "USD")))
+        return Observable.just(
+            UserPrivacyQuery.Data(
+                UserPrivacyQuery.Me(
+                    "", "Some Name",
+                    "some@email.com", true, true, true, true, "USD"
+                )
+            )
+        )
     }
 }

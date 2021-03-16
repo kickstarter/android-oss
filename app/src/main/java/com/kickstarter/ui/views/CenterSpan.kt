@@ -3,7 +3,6 @@ package com.kickstarter.ui.views
 import android.text.TextPaint
 import android.text.style.MetricAffectingSpan
 
-
 class CenterSpan : MetricAffectingSpan() {
     internal var ratio = 0.5f
 

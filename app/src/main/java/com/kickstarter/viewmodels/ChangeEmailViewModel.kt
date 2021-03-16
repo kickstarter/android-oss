@@ -95,74 +95,73 @@ interface ChangeEmailViewModel {
         init {
 
             val userPrivacy = this.apolloClient.userPrivacy()
-                    .compose(neverError())
+                .compose(neverError())
 
             userPrivacy
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.currentEmail.onNext(it.me()?.email())
-                        this.sendVerificationIsHidden.onNext(it.me()?.isEmailVerified)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.currentEmail.onNext(it.me()?.email())
+                    this.sendVerificationIsHidden.onNext(it.me()?.isEmailVerified)
+                }
 
             userPrivacy
-                    .map { getWarningText(it) }
-                    .subscribe { this.warningText.onNext(it) }
+                .map { getWarningText(it) }
+                .subscribe { this.warningText.onNext(it) }
 
             userPrivacy
-                    .map { getWarningTextColor(it) }
-                    .subscribe { this.warningTextColor.onNext(it) }
+                .map { getWarningTextColor(it) }
+                .subscribe { this.warningTextColor.onNext(it) }
 
             userPrivacy
-                    .map { getVerificationText(it) }
-                    .subscribe { this.verificationEmailButtonText.onNext(it) }
+                .map { getVerificationText(it) }
+                .subscribe { this.verificationEmailButtonText.onNext(it) }
 
             this.emailFocus
-                    .compose(combineLatestPair<Boolean, String>(this.email))
-                    .map { !it.first && it.second.isNotEmpty() && !it.second.isEmail()}
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe { this.emailErrorIsVisible.onNext(it) }
+                .compose(combineLatestPair<Boolean, String>(this.email))
+                .map { !it.first && it.second.isNotEmpty() && !it.second.isEmail() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe { this.emailErrorIsVisible.onNext(it) }
 
-            val changeEmail = Observable.combineLatest(this.email, this.password)
-            { email, password -> ChangeEmail(email, password) }
+            val changeEmail = Observable.combineLatest(this.email, this.password) { email, password -> ChangeEmail(email, password) }
 
             changeEmail
-                    .map { ce -> ce.isValid() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe { this.saveButtonIsEnabled.onNext(it) }
+                .map { ce -> ce.isValid() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe { this.saveButtonIsEnabled.onNext(it) }
 
             val updateEmailNotification = changeEmail
-                    .compose(takeWhen<ChangeEmail, Void>(this.updateEmailClicked))
-                    .switchMap { updateEmail(it).materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
+                .compose(takeWhen<ChangeEmail, Void>(this.updateEmailClicked))
+                .switchMap { updateEmail(it).materialize() }
+                .compose(bindToLifecycle())
+                .share()
 
             updateEmailNotification
-                    .compose(errors())
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(errors())
+                .subscribe { this.error.onNext(it.localizedMessage) }
 
             updateEmailNotification
-                    .compose(values())
-                    .subscribe {
-                        this.currentEmail.onNext(it.updateUserAccount()?.user()?.email())
-                        this.success.onNext(null)
-                    }
+                .compose(values())
+                .subscribe {
+                    this.currentEmail.onNext(it.updateUserAccount()?.user()?.email())
+                    this.success.onNext(null)
+                }
 
             val sendEmailNotification = this.sendVerificationEmailClick
-                    .compose(bindToLifecycle())
-                    .switchMap { sendEmailVerification().materialize() }
-                    .share()
+                .compose(bindToLifecycle())
+                .switchMap { sendEmailVerification().materialize() }
+                .share()
 
             sendEmailNotification
-                    .compose(errors())
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(errors())
+                .subscribe { this.error.onNext(it.localizedMessage) }
 
             sendEmailNotification
-                    .compose(values())
-                    .subscribe {
-                        this.success.onNext(null)
-                    }
+                .compose(values())
+                .subscribe {
+                    this.success.onNext(null)
+                }
         }
 
         override fun email(email: String) {
@@ -240,14 +239,14 @@ interface ChangeEmailViewModel {
 
         private fun sendEmailVerification(): Observable<SendEmailVerificationMutation.Data> {
             return this.apolloClient.sendVerificationEmail()
-                    .doOnSubscribe { this.showProgressBar.onNext(true) }
-                    .doAfterTerminate { this.showProgressBar.onNext(false) }
+                .doOnSubscribe { this.showProgressBar.onNext(true) }
+                .doAfterTerminate { this.showProgressBar.onNext(false) }
         }
 
         private fun updateEmail(changeEmail: ChangeEmail): Observable<UpdateUserEmailMutation.Data> {
             return this.apolloClient.updateUserEmail(changeEmail.email, changeEmail.password)
-                    .doOnSubscribe { this.showProgressBar.onNext(true) }
-                    .doAfterTerminate { this.showProgressBar.onNext(false) }
+                .doOnSubscribe { this.showProgressBar.onNext(true) }
+                .doAfterTerminate { this.showProgressBar.onNext(false) }
         }
 
         data class ChangeEmail(val email: String, val password: String) {

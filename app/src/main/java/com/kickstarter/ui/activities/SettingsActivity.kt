@@ -38,34 +38,36 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
         this.ksString = environment().ksString()
         this.logout = environment().logout()
 
-        version_name_text_view.text = ksString.format(getString(R.string.profile_settings_version_number),
-                "version_number", this.build.versionName())
+        version_name_text_view.text = ksString.format(
+            getString(R.string.profile_settings_version_number),
+            "version_number", this.build.versionName()
+        )
 
         this.viewModel.outputs.avatarImageViewUrl()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { url ->  Picasso.get().load(url).transform(CircleTransformation()).into(profile_picture_image_view) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(profile_picture_image_view) }
 
         this.viewModel.outputs.logout()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { logout() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { logout() }
 
         this.viewModel.outputs.showConfirmLogoutPrompt()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { show ->
-                    if (show) {
-                        lazyLogoutConfirmationDialog().show()
-                    } else {
-                        lazyLogoutConfirmationDialog().dismiss()
-                    }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { show ->
+                if (show) {
+                    lazyLogoutConfirmationDialog().show()
+                } else {
+                    lazyLogoutConfirmationDialog().dismiss()
                 }
+            }
 
         this.viewModel.outputs.userNameTextViewText()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { name_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { name_text_view.text = it }
 
         account_row.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))
@@ -105,12 +107,12 @@ class SettingsActivity : BaseActivity<SettingsViewModel.ViewModel>() {
     private fun lazyLogoutConfirmationDialog(): AlertDialog {
         if (this.logoutConfirmationDialog == null) {
             this.logoutConfirmationDialog = AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.profile_settings_logout_alert_title))
-                    .setMessage(getString(R.string.profile_settings_logout_alert_message))
-                    .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button)) { _, _ -> this.viewModel.inputs.confirmLogoutClicked() }
-                    .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button)) { _, _ -> this.viewModel.inputs.closeLogoutConfirmationClicked() }
-                    .setOnCancelListener { this.viewModel.inputs.closeLogoutConfirmationClicked() }
-                    .create()
+                .setTitle(getString(R.string.profile_settings_logout_alert_title))
+                .setMessage(getString(R.string.profile_settings_logout_alert_message))
+                .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button)) { _, _ -> this.viewModel.inputs.confirmLogoutClicked() }
+                .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button)) { _, _ -> this.viewModel.inputs.closeLogoutConfirmationClicked() }
+                .setOnCancelListener { this.viewModel.inputs.closeLogoutConfirmationClicked() }
+                .create()
         }
         return this.logoutConfirmationDialog!!
     }

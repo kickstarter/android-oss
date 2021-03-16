@@ -54,9 +54,9 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         val date: Date = calendar.time
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(date)
-                .build()
+            .toBuilder()
+            .expiration(date)
+            .build()
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationDate.assertValue("03/2019")
@@ -193,18 +193,18 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         val visa = StoredCardFactory.visa()
 
         val paymentSource = PaymentSourceFactory.visa()
-                .toBuilder()
-                .id(visa.id())
-                .build()
+            .toBuilder()
+            .id(visa.id())
+            .build()
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .paymentSource(paymentSource)
-                .status(Backing.STATUS_ERRORED)
-                .build()
+            .toBuilder()
+            .paymentSource(paymentSource)
+            .status(Backing.STATUS_ERRORED)
+            .build()
         val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
 
         this.vm.inputs.configureWith(Pair(visa, project))
 
@@ -217,17 +217,17 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         val visa = StoredCardFactory.visa()
 
         val paymentSource = PaymentSourceFactory.visa()
-                .toBuilder()
-                .id(visa.id())
-                .build()
+            .toBuilder()
+            .id(visa.id())
+            .build()
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .paymentSource(paymentSource)
-                .build()
+            .toBuilder()
+            .paymentSource(paymentSource)
+            .build()
         val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
 
         this.vm.inputs.configureWith(Pair(visa, project))
 
@@ -240,14 +240,14 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         val discover = StoredCardFactory.discoverCard()
 
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .paymentSource(PaymentSourceFactory.visa())
-                .status(Backing.STATUS_ERRORED)
-                .build()
+            .toBuilder()
+            .paymentSource(PaymentSourceFactory.visa())
+            .status(Backing.STATUS_ERRORED)
+            .build()
         val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
 
         this.vm.inputs.configureWith(Pair(discover, project))
 
@@ -260,13 +260,13 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
         val discover = StoredCardFactory.discoverCard()
 
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .paymentSource(PaymentSourceFactory.visa())
-                .build()
+            .toBuilder()
+            .paymentSource(PaymentSourceFactory.visa())
+            .build()
         val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
 
         this.vm.inputs.configureWith(Pair(discover, project))
 
@@ -292,5 +292,4 @@ class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.selectImageIsVisible.assertValue(false)
     }
-
 }

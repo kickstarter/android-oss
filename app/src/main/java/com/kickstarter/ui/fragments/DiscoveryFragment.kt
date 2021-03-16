@@ -148,8 +148,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             val layoutManager = discovery_recycler_view.layoutManager as? LinearLayoutManager
             val discoveryAdapter = discovery_recycler_view.adapter as? DiscoveryAdapter
             if (layoutManager != null && discoveryAdapter != null) {
-                for (i in layoutManager.findFirstVisibleItemPosition()..
-                          layoutManager.findLastVisibleItemPosition()) {
+                for (i in layoutManager.findFirstVisibleItemPosition()..layoutManager.findLastVisibleItemPosition()) {
                     val childView = layoutManager.getChildAt(i)
                     if (childView != null) {
                         val viewHolder = discovery_recycler_view.getChildViewHolder(childView)

@@ -35,7 +35,7 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     private val saveButtonIsEnabled = TestSubscriber<Boolean>()
     private val success = TestSubscriber<StoredCard>()
 
-    private fun setUpEnvironment(environment: Environment, modal : Boolean = false, project : Project? = ProjectFactory.project()) {
+    private fun setUpEnvironment(environment: Environment, modal: Boolean = false, project: Project? = ProjectFactory.project()) {
         this.vm = NewCardFragmentViewModel.ViewModel(environment)
         this.vm.outputs.allowedCardWarning().map { it.first }.subscribe(this.allowedCardWarning)
         this.vm.outputs.allowedCardWarningIsVisible().subscribe(this.allowedCardWarningIsVisible)
@@ -65,15 +65,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     fun testAllowedCardWarning() {
         setUpEnvironment(environment())
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardNumber("620")
         this.allowedCardWarning.assertValue(null)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.allowedCardWarning.assertValue(null)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.allowedCardWarning.assertValues(null, R.string.Unsupported_card_type)
     }
@@ -83,15 +83,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
         setUpEnvironment(environment(), true, project = project)
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardNumber("620")
         this.allowedCardWarning.assertValue(null)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.allowedCardWarning.assertValue(null)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.allowedCardWarning.assertValues(null, R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
     }
@@ -101,33 +101,35 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.mxProject()
         setUpEnvironment(environment(), true, project = project)
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardNumber("620")
         this.allowedCardWarning.assertValue(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.allowedCardWarning.assertValues(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country, null)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
-        this.allowedCardWarning.assertValues(R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country, null,
-                R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country)
+        this.allowedCardWarning.assertValues(
+            R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country, null,
+            R.string.You_cant_use_this_credit_card_to_back_a_project_from_project_country
+        )
     }
 
     @Test
     fun testAllowedCardWarningIsVisible() {
         setUpEnvironment(environment())
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardNumber("620")
         this.allowedCardWarningIsVisible.assertValue(false)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.allowedCardWarningIsVisible.assertValues(false)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.allowedCardWarningIsVisible.assertValues(false, true)
     }
@@ -136,15 +138,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     fun testAllowedCardWarningIsVisible_whenUSDProject() {
         setUpEnvironment(environment(), true)
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardNumber("620")
         this.allowedCardWarningIsVisible.assertValue(false)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.allowedCardWarningIsVisible.assertValues(false)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.allowedCardWarningIsVisible.assertValues(false, true)
     }
@@ -153,15 +155,15 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
     fun testAllowedCardWarningIsVisible_whenNonUSDProject() {
         setUpEnvironment(environment(), true, ProjectFactory.mxProject())
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardNumber("620")
         this.allowedCardWarningIsVisible.assertValue(true)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.allowedCardWarningIsVisible.assertValues(true, false)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.allowedCardWarningIsVisible.assertValues(true, false, true)
     }
@@ -192,16 +194,16 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.cardFocus(false)
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_dark_grey_500_horizontal)
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardFocus(true)
         this.vm.inputs.cardNumber("620")
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_green_horizontal)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_red_400_horizontal)
     }
@@ -218,20 +220,20 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.cardFocus(false)
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_dark_grey_500_horizontal)
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardFocus(true)
         this.vm.inputs.cardNumber("620")
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_green_horizontal)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
 
-        //Remains red until error is resolved
+        // Remains red until error is resolved
         this.vm.inputs.cardFocus(false)
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
     }
@@ -248,20 +250,20 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.cardFocus(false)
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_dark_grey_500_horizontal)
 
-        //Union Pay
+        // Union Pay
         this.vm.inputs.cardFocus(true)
         this.vm.inputs.cardNumber("620")
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal, R.drawable.divider_red_400_horizontal)
 
-        //Visa
+        // Visa
         this.vm.inputs.cardNumber("424")
         this.cardWidgetFocusDrawable.assertValuesAndClear(R.drawable.divider_green_horizontal)
 
-        //Unknown
+        // Unknown
         this.vm.inputs.cardNumber("000")
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
 
-        //Remains red until error is resolved
+        // Remains red until error is resolved
         this.vm.inputs.cardFocus(false)
         this.cardWidgetFocusDrawable.assertValue(R.drawable.divider_red_400_horizontal)
     }
@@ -539,13 +541,12 @@ class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
             }
         }
         return environment()
-                .toBuilder()
-                .apolloClient(apolloClient)
-                .build()
+            .toBuilder()
+            .apolloClient(apolloClient)
+            .build()
     }
 
     private fun futureYear(): Int {
         return Calendar.getInstance().get(Calendar.YEAR) + 2
     }
-
 }

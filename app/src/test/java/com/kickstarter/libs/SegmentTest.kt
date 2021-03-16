@@ -85,9 +85,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
-                .builder()
-                .sort(DiscoveryParams.Sort.MAGIC)
-                .build()
+            .builder()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
 
         segment.trackExplorePageViewed(params)
         this.segmentIdentify.assertValue(user.id())
@@ -121,10 +121,10 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
-                .builder()
-                .sort(DiscoveryParams.Sort.POPULAR)
-                .staffPicks(true)
-                .build()
+            .builder()
+            .sort(DiscoveryParams.Sort.POPULAR)
+            .staffPicks(true)
+            .build()
 
         segment.trackExplorePageViewed(params)
 
@@ -159,10 +159,10 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
-                .builder()
-                .category(CategoryFactory.ceramicsCategory())
-                .sort(DiscoveryParams.Sort.NEWEST)
-                .build()
+            .builder()
+            .category(CategoryFactory.ceramicsCategory())
+            .sort(DiscoveryParams.Sort.NEWEST)
+            .build()
 
         segment.trackExplorePageViewed(params)
 
@@ -226,7 +226,6 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val expectedProperties = this.propertiesTest.value
         assertEquals(true, expectedProperties["project_has_add_ons"])
-
     }
 
     @Test
@@ -258,14 +257,14 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testProjectProperties_LoggedInUser_IsBacker() {
         val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .id(4)
-                .category(CategoryFactory.ceramicsCategory())
-                .commentsCount(3)
-                .creator(creator())
-                .location(LocationFactory.unitedStates())
-                .updatesCount(5)
-                .build()
+            .toBuilder()
+            .id(4)
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .updatesCount(5)
+            .build()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -398,8 +397,10 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackPledgeSubmitButtonClicked(CheckoutDataFactory.checkoutData(20.0, 30.0),
-                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+        segment.trackPledgeSubmitButtonClicked(
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward())
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -420,14 +421,14 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testCheckoutProperties_whenFixingPledge() {
         val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .id(4)
-                .category(CategoryFactory.ceramicsCategory())
-                .commentsCount(3)
-                .creator(creator())
-                .location(LocationFactory.unitedStates())
-                .updatesCount(5)
-                .build()
+            .toBuilder()
+            .id(4)
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .updatesCount(5)
+            .build()
         val user = user()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
@@ -436,8 +437,10 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackPledgeSubmitButtonClicked(CheckoutDataFactory.checkoutData(20.0, 30.0),
-                PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward()))
+        segment.trackPledgeSubmitButtonClicked(
+            CheckoutDataFactory.checkoutData(20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.FIX_ERRORED_PLEDGE, projectData, reward())
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -466,8 +469,10 @@ class SegmentTest : KSRobolectricTestCase() {
 
         val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
 
-        segment.trackThanksPageViewed(CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
-                PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward()))
+        segment.trackThanksPageViewed(
+            CheckoutDataFactory.checkoutData(3L, 20.0, 30.0),
+            PledgeData.with(PledgeFlowContext.NEW_PLEDGE, projectData, reward())
+        )
 
         assertSessionProperties(user)
         assertProjectProperties(project)
@@ -510,19 +515,21 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
     }
 
-    private fun client(user: User?) = MockTrackingClient(user?.let { MockCurrentUser(it) }
+    private fun client(user: User?) = MockTrackingClient(
+        user?.let { MockCurrentUser(it) }
             ?: MockCurrentUser(),
-            mockCurrentConfig(),
-            TrackingClientType.Type.SEGMENT,
-            object : MockExperimentsClientType() {
-                override fun enabledFeatures(user: User?): List<String> {
-                    return listOf("optimizely_feature")
-                }
+        mockCurrentConfig(),
+        TrackingClientType.Type.SEGMENT,
+        object : MockExperimentsClientType() {
+            override fun enabledFeatures(user: User?): List<String> {
+                return listOf("optimizely_feature")
+            }
 
-                override fun getTrackingProperties(): Map<String, Array<Map<String, String>>> {
-                    return getOptimizelySession()
-                }
-            })
+            override fun getTrackingProperties(): Map<String, Array<Map<String, String>>> {
+                return getOptimizelySession()
+            }
+        }
+    )
 
     private fun getOptimizelySession(): Map<String, Array<Map<String, String>>> {
         val experiment1 = mapOf("suggested_no_reward_amount" to "variation_3")
@@ -548,7 +555,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(DateTime.parse("2018-11-02T18:42:05Z").millis / 1000, expectedProperties["context_timestamp"])
     }
 
-    //TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
+    // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     private fun assertOptimizelyProperties() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(OptimizelyEnvironment.DEVELOPMENT.sdkKey, expectedProperties["optimizely_api_key"])
@@ -633,43 +640,42 @@ class SegmentTest : KSRobolectricTestCase() {
 
     private fun mockCurrentConfig() = MockCurrentConfig().apply {
         val config = ConfigFactory.configWithFeatureEnabled("android_example_feature")
-                .toBuilder()
-                .abExperiments(mapOf(Pair("android_example_experiment", "control")))
-                .build()
+            .toBuilder()
+            .abExperiments(mapOf(Pair("android_example_experiment", "control")))
+            .build()
         config(config)
     }
 
     private fun creator() =
-            UserFactory.creator().toBuilder()
-                    .id(3)
-                    .backedProjectsCount(17)
-                    .starredProjectsCount(2)
-                    .build()
+        UserFactory.creator().toBuilder()
+            .id(3)
+            .backedProjectsCount(17)
+            .starredProjectsCount(2)
+            .build()
 
     private fun project() =
-            ProjectFactory.project().toBuilder()
-                    .id(4)
-                    .category(CategoryFactory.ceramicsCategory())
-                    .creator(creator())
-                    .commentsCount(3)
-                    .location(LocationFactory.unitedStates())
-                    .updatesCount(5)
-                    .build()
+        ProjectFactory.project().toBuilder()
+            .id(4)
+            .category(CategoryFactory.ceramicsCategory())
+            .creator(creator())
+            .commentsCount(3)
+            .location(LocationFactory.unitedStates())
+            .updatesCount(5)
+            .build()
 
     private fun reward() =
-            RewardFactory.rewardWithShipping().toBuilder()
-                    .id(2)
-                    .minimum(10.0)
-                    .build()
+        RewardFactory.rewardWithShipping().toBuilder()
+            .id(2)
+            .minimum(10.0)
+            .build()
 
     private fun user() =
-            UserFactory.user()
-                    .toBuilder()
-                    .id(15)
-                    .backedProjectsCount(3)
-                    .createdProjectsCount(2)
-                    .location(LocationFactory.nigeria())
-                    .starredProjectsCount(10)
-                    .build()
-
+        UserFactory.user()
+            .toBuilder()
+            .id(15)
+            .backedProjectsCount(3)
+            .createdProjectsCount(2)
+            .location(LocationFactory.nigeria())
+            .starredProjectsCount(10)
+            .build()
 }

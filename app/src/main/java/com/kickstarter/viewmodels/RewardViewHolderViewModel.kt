@@ -169,235 +169,232 @@ interface RewardViewHolderViewModel {
 
         init {
 
-            Observable.combineLatest(this.projectDataAndReward, this.currentUser.observable())
-            { data, user ->
+            Observable.combineLatest(this.projectDataAndReward, this.currentUser.observable()) { data, user ->
                 val experimentData = ExperimentData(user, data.first.refTagFromIntent(), data.first.refTagFromCookie())
                 val variant = this.optimizely.variant(OptimizelyExperiment.Key.SUGGESTED_NO_REWARD_AMOUNT, experimentData)
                 rewardAmountByVariant(variant)
             }
-            .distinctUntilChanged()
-            .compose(bindToLifecycle())
-            .subscribe(variantSuggestedAmount)
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(variantSuggestedAmount)
 
             val reward = this.projectDataAndReward
-                    .map { it.second }
-                    .compose<Pair<Reward, Int?>>(combineLatestPair(variantSuggestedAmount))
-                    .distinctUntilChanged()
-                    .map { updateReward(it) }
+                .map { it.second }
+                .compose<Pair<Reward, Int?>>(combineLatestPair(variantSuggestedAmount))
+                .distinctUntilChanged()
+                .map { updateReward(it) }
 
             val project = this.projectDataAndReward
-                    .map { it.first.project() }
+                .map { it.first.project() }
 
             val projectAndReward = project
-                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
-                    .map { Pair(it.first, it.second) }
-                    .distinctUntilChanged()
+                .compose<Pair<Project, Reward>>(combineLatestPair(reward))
+                .map { Pair(it.first, it.second) }
+                .distinctUntilChanged()
 
             projectAndReward
-                    .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.minimumAmountTitle)
+                .map { RewardViewUtils.styleCurrency(it.second.minimum(), it.first, this.ksCurrency) }
+                .compose(bindToLifecycle())
+                .subscribe(this.minimumAmountTitle)
 
             val userCreatedProject = this.currentUser.observable()
-                    .compose<Pair<User?, Project>>(combineLatestPair(project))
-                    .map { it.first?.id() == it.second.creator().id() }
+                .compose<Pair<User?, Project>>(combineLatestPair(project))
+                .map { it.first?.id() == it.second.creator().id() }
 
             projectAndReward
-                    .compose<Pair<Pair<Project, Reward>, Boolean>>(combineLatestPair(userCreatedProject))
-                    .map { buttonIsGone(it.first.first, it.first.second, it.second) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.buttonIsGone)
+                .compose<Pair<Pair<Project, Reward>, Boolean>>(combineLatestPair(userCreatedProject))
+                .map { buttonIsGone(it.first.first, it.first.second, it.second) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.buttonIsGone)
 
             projectAndReward
-                    .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.buttonCTA.onNext(it)
+                .map { RewardViewUtils.pledgeButtonText(it.first, it.second) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.buttonCTA.onNext(it)
+                }
+
+            projectAndReward
+                .map { it.first }
+                .map { it.currency() == it.currentCurrency() }
+                .compose(bindToLifecycle())
+                .subscribe(this.conversionIsGone)
+
+            projectAndReward
+                .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true) }
+                .compose(bindToLifecycle())
+                .subscribe(this.conversion)
+
+            projectAndReward
+                .filter { RewardUtils.isNoReward(it.second) }
+                .map { it.first.backing()?.isBacked(it.second) ?: false }
+                .map {
+                    when {
+                        it -> R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality
+                        else -> R.string.Back_it_because_you_believe_in_it
                     }
-
-            projectAndReward
-                    .map { it.first }
-                    .map { it.currency() == it.currentCurrency() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.conversionIsGone)
-
-            projectAndReward
-                    .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.conversion)
-
-            projectAndReward
-                    .filter { RewardUtils.isNoReward(it.second) }
-                    .map { it.first.backing()?.isBacked(it.second) ?: false }
-                    .map {
-                        when {
-                            it -> R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality
-                            else -> R.string.Back_it_because_you_believe_in_it
-                        }
-                    }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.descriptionForNoReward)
+                }
+                .compose(bindToLifecycle())
+                .subscribe(this.descriptionForNoReward)
 
             reward
-                    .filter { RewardUtils.isReward(it) }
-                    .map { it.description() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.descriptionForReward)
+                .filter { RewardUtils.isReward(it) }
+                .map { it.description() }
+                .compose(bindToLifecycle())
+                .subscribe(this.descriptionForReward)
 
             projectAndReward
-                    .map { RewardUtils.isReward(it.second) && it.second.description().isNullOrEmpty() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.descriptionIsGone)
+                .map { RewardUtils.isReward(it.second) && it.second.description().isNullOrEmpty() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.descriptionIsGone)
 
             projectAndReward
-                    .map { shouldContinueFlow(it.first, it.second) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.buttonIsEnabled.onNext(it)
-                    }
+                .map { shouldContinueFlow(it.first, it.second) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.buttonIsEnabled.onNext(it)
+                }
 
             projectAndReward
-                    .map { it.first.isLive && RewardUtils.isLimited(it.second) }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.remainingIsGone)
+                .map { it.first.isLive && RewardUtils.isLimited(it.second) }
+                .map { BooleanUtils.negate(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.remainingIsGone)
 
             reward
-                    .filter { RewardUtils.isLimited(it) }
-                    .map { it.remaining() }
-                    .map { remaining -> remaining?.let { NumberUtils.format(it) } }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.remaining)
+                .filter { RewardUtils.isLimited(it) }
+                .map { it.remaining() }
+                .map { remaining -> remaining?.let { NumberUtils.format(it) } }
+                .compose(bindToLifecycle())
+                .subscribe(this.remaining)
 
             reward
-                    .filter { RewardUtils.isItemized(it) }
-                    .map { it.rewardsItems() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardItems)
+                .filter { RewardUtils.isItemized(it) }
+                .map { it.rewardsItems() }
+                .compose(bindToLifecycle())
+                .subscribe(this.rewardItems)
 
             reward
-                    .map { RewardUtils.isItemized(it) }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardItemsAreGone)
+                .map { RewardUtils.isItemized(it) }
+                .map { BooleanUtils.negate(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.rewardItemsAreGone)
 
             reward
-                    .compose(bindToLifecycle())
-                    .subscribe(this.reward)
+                .compose(bindToLifecycle())
+                .subscribe(this.reward)
 
             reward
-                    .map { it.hasAddons() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.addOnsAvailable)
+                .map { it.hasAddons() }
+                .compose(bindToLifecycle())
+                .subscribe(this.addOnsAvailable)
 
             projectAndReward
-                    .map { expirationDateIsGone(it.first, it.second) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.endDateSectionIsGone)
+                .map { expirationDateIsGone(it.first, it.second) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.endDateSectionIsGone)
 
             projectAndReward
-                    .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
-                    .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showFragment)
+                .filter { shouldContinueFlow(it.first, it.second) && it.first.isLive }
+                .compose<Pair<Project, Reward>>(takeWhen(this.rewardClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.showFragment)
 
             this.projectDataAndReward
-                    .filter { it.first.project().isLive && !it.first.project().isBacking }
-                    .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
-                    .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.lake.trackSelectRewardButtonClicked(it)
-                        this.lake.trackSelectRewardCTA(it)
-                    }
+                .filter { it.first.project().isLive && !it.first.project().isBacking }
+                .compose<Pair<ProjectData, Reward>>(takeWhen(this.rewardClicked))
+                .map { PledgeData.with(PledgeFlowContext.NEW_PLEDGE, it.first, it.second) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackSelectRewardButtonClicked(it)
+                    this.lake.trackSelectRewardCTA(it)
+                }
 
             projectAndReward
-                    .filter { RewardUtils.isNoReward(it.second) }
-                    .map { it.first.backing()?.isBacked(it.second) ?: false }
-                    .map {
-                        when {
-                            it -> R.string.You_pledged_without_a_reward
-                            else -> R.string.Pledge_without_a_reward
-                        }
+                .filter { RewardUtils.isNoReward(it.second) }
+                .map { it.first.backing()?.isBacked(it.second) ?: false }
+                .map {
+                    when {
+                        it -> R.string.You_pledged_without_a_reward
+                        else -> R.string.Pledge_without_a_reward
                     }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleForNoReward)
+                }
+                .compose(bindToLifecycle())
+                .subscribe(this.titleForNoReward)
 
             projectAndReward
-                    .map { it.first.backing()?.isBacked(it.second) ?: false }
-                    .compose(bindToLifecycle())
-                    .subscribe{
-                        this.selectedRewardTagIsGone.onNext(!it)
-                    }
+                .map { it.first.backing()?.isBacked(it.second) ?: false }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.selectedRewardTagIsGone.onNext(!it)
+                }
 
             reward
-                    .filter { RewardUtils.isReward(it) }
-                    .map { it.title() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleForReward)
+                .filter { RewardUtils.isReward(it) }
+                .map { it.title() }
+                .compose(bindToLifecycle())
+                .subscribe(this.titleForReward)
 
             reward
-                    .map { RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleIsGone)
+                .map { RewardUtils.isReward(it) && it.title().isNullOrEmpty() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.titleIsGone)
 
             reward
-                    .filter { RewardUtils.isShippable(it) }
-                    .map { RewardUtils.shippingSummary(it) }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingSummary)
+                .filter { RewardUtils.isShippable(it) }
+                .map { RewardUtils.shippingSummary(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingSummary)
 
             projectAndReward
-                    .map { it.first.isLive && RewardUtils.isShippable(it.second) }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingSummaryIsGone)
+                .map { it.first.isLive && RewardUtils.isShippable(it.second) }
+                .map { BooleanUtils.negate(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingSummaryIsGone)
 
-            Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone, this.addOnsAvailable)
-            { endDateGone, remainingGone, shippingGone, addOnsAvailable -> endDateGone && remainingGone && shippingGone && !addOnsAvailable }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.limitContainerIsGone)
-
-            reward
-                    .map { RewardUtils.isNoReward(it) || !RewardUtils.hasBackers(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backersCountIsGone)
+            Observable.combineLatest(this.endDateSectionIsGone, this.remainingIsGone, this.shippingSummaryIsGone, this.addOnsAvailable) { endDateGone, remainingGone, shippingGone, addOnsAvailable -> endDateGone && remainingGone && shippingGone && !addOnsAvailable }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.limitContainerIsGone)
 
             reward
-                    .filter { RewardUtils.isReward(it) && RewardUtils.hasBackers(it) }
-                    .map { it.backersCount() as Int }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backersCount)
+                .map { RewardUtils.isNoReward(it) || !RewardUtils.hasBackers(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.backersCountIsGone)
 
             reward
-                    .map { RewardUtils.isNoReward(it) || ObjectUtils.isNull(it.estimatedDeliveryOn()) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.estimatedDeliveryIsGone)
+                .filter { RewardUtils.isReward(it) && RewardUtils.hasBackers(it) }
+                .map { it.backersCount() as Int }
+                .compose(bindToLifecycle())
+                .subscribe(this.backersCount)
 
             reward
-                    .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
-                    .map<DateTime> { it.estimatedDeliveryOn() }
-                    .map { DateTimeUtils.estimatedDeliveryOn(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.estimatedDelivery)
+                .map { RewardUtils.isNoReward(it) || ObjectUtils.isNull(it.estimatedDeliveryOn()) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.estimatedDeliveryIsGone)
 
-            reward.map{RewardUtils.isNoReward(it)}
-                    .compose(bindToLifecycle())
-                    .subscribe(this.isMinimumPledgeAmountGone)
+            reward
+                .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                .map<DateTime> { it.estimatedDeliveryOn() }
+                .map { DateTimeUtils.estimatedDeliveryOn(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.estimatedDelivery)
 
+            reward.map { RewardUtils.isNoReward(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.isMinimumPledgeAmountGone)
         }
 
         /**
@@ -405,8 +402,8 @@ interface RewardViewHolderViewModel {
          * - If the selected reward has no addOns the CTA button will be enable if available
          * - If the previously selected reward has addOns but not BackedAddOns CTA button available is reward available
          * - If the previously selected reward has add-ons and has Backed addOns, CTA button available (they still can update the addOns selection)
-        */
-        private fun shouldContinueFlow(project: Project, rw: Reward):Boolean {
+         */
+        private fun shouldContinueFlow(project: Project, rw: Reward): Boolean {
             val hasAddOns = rw.hasAddons()
             val backedRwId = project.backing()?.rewardId()
             val selectingOtherRw = backedRwId != rw.id()
@@ -421,13 +418,13 @@ interface RewardViewHolderViewModel {
         }
 
         private fun isUpdatingSameRewardWithBackedAddOns(hasAddOns: Boolean, project: Project, selectingOtherRw: Boolean, rw: Reward) =
-                hasAddOns && hasBackedAddOns(project) && !selectingOtherRw && RewardUtils.hasStarted(rw) && project.isLive
+            hasAddOns && hasBackedAddOns(project) && !selectingOtherRw && RewardUtils.hasStarted(rw) && project.isLive
 
-        private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?):Int? = when(variant) {
-                OptimizelyExperiment.Variant.CONTROL -> 1
-                OptimizelyExperiment.Variant.VARIANT_2 -> 10
-                OptimizelyExperiment.Variant.VARIANT_3 -> 20
-                OptimizelyExperiment.Variant.VARIANT_4 -> 50
+        private fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?): Int? = when (variant) {
+            OptimizelyExperiment.Variant.CONTROL -> 1
+            OptimizelyExperiment.Variant.VARIANT_2 -> 10
+            OptimizelyExperiment.Variant.VARIANT_3 -> 20
+            OptimizelyExperiment.Variant.VARIANT_4 -> 50
             else -> null
         }
 
@@ -439,7 +436,7 @@ interface RewardViewHolderViewModel {
          *
          * @return reward if modified value if needed
          */
-        private fun updateReward(rewardAndVariant: Pair<Reward, Int?>):Reward {
+        private fun updateReward(rewardAndVariant: Pair<Reward, Int?>): Reward {
             val reward = rewardAndVariant.first
 
             val updatedMinimum = rewardAndVariant.second?.let {
@@ -469,7 +466,7 @@ interface RewardViewHolderViewModel {
         private fun hasBackedAddOns(project: Project) = !project.backing()?.addOns().isNullOrEmpty()
 
         private fun isSelectable(@NonNull project: Project, @NonNull reward: Reward): Boolean {
-            if (project.backing()?.isBacked(reward) == true)  {
+            if (project.backing()?.isBacked(reward) == true) {
                 return false
             }
 

@@ -52,4 +52,3 @@ const val CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED = "Campaign Details Pledge Butt
 // region native_project_page_conversion_creator_details
 const val CREATOR_DETAILS_CLICKED = "Creator Details Clicked"
 // endregion
-

@@ -36,11 +36,13 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testError() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
-                return Observable.error(Exception("Oops"))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
+                    return Observable.error(Exception("Oops"))
+                }
+            }).build()
+        )
 
         this.vm.inputs.newPassword("passwo")
         this.vm.inputs.confirmPassword("password")
@@ -89,12 +91,20 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccess() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
-                return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
-                        CreatePasswordMutation.User("", "test@emai", true))))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
+                    return Observable.just(
+                        CreatePasswordMutation.Data(
+                            CreatePasswordMutation.UpdateUserAccount(
+                                "",
+                                CreatePasswordMutation.User("", "test@emai", true)
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.vm.inputs.newPassword("password")
         this.vm.inputs.confirmPassword("password")
@@ -117,9 +127,9 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-                .apolloClient(apolloClient)
-                .analytics(AnalyticEvents(listOf(trackingClient)))
-                .build()
+            .apolloClient(apolloClient)
+            .analytics(AnalyticEvents(listOf(trackingClient)))
+            .build()
 
         setUpEnvironment(environment)
 
@@ -140,16 +150,22 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
         // - Mock success response from apollo
         val apolloClient = object : MockApolloClient() {
             override fun createPassword(password: String, confirmPassword: String): Observable<CreatePasswordMutation.Data> {
-                return Observable.just(CreatePasswordMutation.Data(CreatePasswordMutation.UpdateUserAccount("",
-                        CreatePasswordMutation.User("", "test@emai", true))))
+                return Observable.just(
+                    CreatePasswordMutation.Data(
+                        CreatePasswordMutation.UpdateUserAccount(
+                            "",
+                            CreatePasswordMutation.User("", "test@emai", true)
+                        )
+                    )
+                )
             }
         }
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-                .apolloClient(apolloClient)
-                .analytics(AnalyticEvents(listOf(trackingClient)))
-                .build()
+            .apolloClient(apolloClient)
+            .analytics(AnalyticEvents(listOf(trackingClient)))
+            .build()
 
         setUpEnvironment(environment)
 
@@ -162,10 +178,11 @@ class CreatePasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
-            MockCurrentUser(user),
-            MockCurrentConfig(),
-            TrackingClientType.Type.SEGMENT,
-            MockExperimentsClientType()).apply {
+        MockCurrentUser(user),
+        MockCurrentConfig(),
+        TrackingClientType.Type.SEGMENT,
+        MockExperimentsClientType()
+    ).apply {
         this.identifiedId.subscribe(userId)
     }
 }

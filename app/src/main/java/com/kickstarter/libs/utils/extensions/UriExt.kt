@@ -4,15 +4,15 @@ package com.kickstarter.libs.utils.extensions
 import android.net.Uri
 
 fun Uri.host(): String {
-    return this.host?: ""
+    return this.host ?: ""
 }
 
 fun Uri.lastPathSegment(): String {
-    return this.lastPathSegment?: ""
+    return this.lastPathSegment ?: ""
 }
 
 fun Uri.path(): String {
-    return this.path?: ""
+    return this.path ?: ""
 }
 
 fun Uri.query(): String {

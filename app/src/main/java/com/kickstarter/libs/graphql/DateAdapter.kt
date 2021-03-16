@@ -6,7 +6,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateAdapter: CustomTypeAdapter<Date> {
+class DateAdapter : CustomTypeAdapter<Date> {
 
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 

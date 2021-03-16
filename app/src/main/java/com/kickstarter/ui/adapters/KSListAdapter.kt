@@ -104,7 +104,6 @@ abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter
                 FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
-
     }
 
     override fun getItemViewType(position: Int): Int {

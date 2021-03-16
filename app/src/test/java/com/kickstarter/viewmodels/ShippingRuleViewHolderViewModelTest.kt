@@ -28,8 +28,8 @@ class ShippingRuleViewHolderViewModelTest : KSRobolectricTestCase() {
         currentConfig.config(config)
 
         val environment = environment().toBuilder()
-                .currentConfig(currentConfig)
-                .build()
+            .currentConfig(currentConfig)
+            .build()
 
         setupEnvironment(environment)
 

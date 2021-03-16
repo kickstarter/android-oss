@@ -36,9 +36,9 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
         val date: Date = calendar.time
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(date)
-                .build()
+            .toBuilder()
+            .expiration(date)
+            .build()
 
         this.vm.inputs.card(creditCard)
 

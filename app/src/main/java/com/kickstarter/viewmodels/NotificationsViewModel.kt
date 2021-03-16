@@ -91,8 +91,8 @@ interface NotificationsViewModel {
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<NotificationsActivity>(environment), Inputs, Outputs, Errors {
         private val userInput = PublishSubject.create<User>()
 
-        private val creatorDigestFrequencyIsGone : Observable<Boolean>
-        private val creatorNotificationsAreGone : Observable<Boolean>
+        private val creatorDigestFrequencyIsGone: Observable<Boolean>
+        private val creatorNotificationsAreGone: Observable<Boolean>
         private val userOutput = BehaviorSubject.create<User>()
         private val updateSuccess = PublishSubject.create<Void>()
 
@@ -108,53 +108,53 @@ interface NotificationsViewModel {
         init {
 
             this.client.fetchCurrentUser()
-                    .retry(2)
-                    .compose(Transformers.neverError())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.currentUser.refresh(it) }
+                .retry(2)
+                .compose(Transformers.neverError())
+                .compose(bindToLifecycle())
+                .subscribe { this.currentUser.refresh(it) }
 
             val currentUser = this.currentUser.observable()
-                    .filter { ObjectUtils.isNotNull(it) }
+                .filter { ObjectUtils.isNotNull(it) }
 
             currentUser
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.userOutput.onNext(it) }
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe { this.userOutput.onNext(it) }
 
             this.creatorDigestFrequencyIsGone = Observable.merge(currentUser, this.userInput)
-                    .compose(bindToLifecycle())
-                    .map { it.notifyOfBackings() != true  }
-                    .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .map { it.notifyOfBackings() != true }
+                .distinctUntilChanged()
 
             this.creatorNotificationsAreGone = currentUser
-                    .compose(bindToLifecycle())
-                    .map { IntegerUtils.isZero(it.createdProjectsCount()?: 0) }
-                    .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .map { IntegerUtils.isZero(it.createdProjectsCount() ?: 0) }
+                .distinctUntilChanged()
 
             val updateSettingsNotification = this.userInput
-                    .concatMap { this.updateSettings(it) }
+                .concatMap { this.updateSettings(it) }
 
             updateSettingsNotification
-                    .compose(values())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.success(it) }
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe { this.success(it) }
 
             updateSettingsNotification
-                    .compose(errors())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.unableToSavePreferenceError)
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput)
 
             this.userOutput
-                    .window(2, 1)
-                    .flatMap<List<User>> { it.toList() }
-                    .map<User> { ListUtils.first(it) }
-                    .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
+                .window(2, 1)
+                .flatMap<List<User>> { it.toList() }
+                .map<User> { ListUtils.first(it) }
+                .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput)
         }
 
         override fun notifyMobileOfBackings(checked: Boolean) {
@@ -235,9 +235,9 @@ interface NotificationsViewModel {
 
         override fun user(): Observable<User> = this.userOutput
 
-        override fun unableToSavePreferenceError(): Observable<String> =  this.unableToSavePreferenceError
-                    .takeUntil(this.updateSuccess)
-                    .map { _ -> null }
+        override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
+            .takeUntil(this.updateSuccess)
+            .map { _ -> null }
 
         private fun success(user: User) {
             this.currentUser.refresh(user)
@@ -246,8 +246,8 @@ interface NotificationsViewModel {
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
-                    .materialize()
-                    .share()
+                .materialize()
+                .share()
         }
     }
 }

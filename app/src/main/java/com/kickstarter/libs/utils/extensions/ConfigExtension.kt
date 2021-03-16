@@ -12,8 +12,8 @@ import org.json.JSONArray
  */
 fun Config.isFeatureFlagEnabled(text: String): Boolean {
     val isEnabled = this
-            ?.features()
-            ?.get(text)
+        ?.features()
+        ?.get(text)
 
     return isEnabled ?: false
 }
@@ -23,15 +23,15 @@ fun Config.isFeatureFlagEnabled(text: String): Boolean {
  */
 fun Config.currentVariants(): JSONArray? {
     return this
-            ?.abExperiments()
-            ?.toSortedMap()
-            ?.let {
-                JSONArray().apply {
-                    for (feature in it) {
-                        put("${feature.key}[${feature.value}]")
-                    }
+        ?.abExperiments()
+        ?.toSortedMap()
+        ?.let {
+            JSONArray().apply {
+                for (feature in it) {
+                    put("${feature.key}[${feature.value}]")
                 }
             }
+        }
 }
 
 /**
@@ -39,17 +39,17 @@ fun Config.currentVariants(): JSONArray? {
  */
 fun Config.enabledFeatureFlags(): JSONArray? {
     return this
-            ?.features()
-            ?.filter { it.key.startsWith("android_") && it.value }
-            ?.keys
-            ?.sorted()
-            ?.let {
-                JSONArray().apply {
-                    for (feature in it) {
-                        put(feature)
-                    }
+        ?.features()
+        ?.filter { it.key.startsWith("android_") && it.value }
+        ?.keys
+        ?.sorted()
+        ?.let {
+            JSONArray().apply {
+                for (feature in it) {
+                    put(feature)
                 }
             }
+        }
 }
 
 /**

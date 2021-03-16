@@ -24,9 +24,6 @@ import androidx.transition.TransitionManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.KSApplication
 import com.kickstarter.R
-import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -48,7 +45,10 @@ import com.kickstarter.ui.data.CardState
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.onChange
 import com.kickstarter.ui.extensions.setTextAndSelection
+import com.kickstarter.ui.extensions.showErrorToast
 import com.kickstarter.ui.itemdecorations.RewardCardItemDecoration
 import com.kickstarter.viewmodels.PledgeFragmentViewModel
 import com.stripe.android.ApiResultCallback
@@ -56,14 +56,14 @@ import com.stripe.android.SetupIntentResult
 import kotlinx.android.synthetic.main.fragment_pledge.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_accountability.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_bonus_support.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.*
+import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_rules
+import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.view.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_footer.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_header_reward_sumary.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_payment.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_pledge_amount.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_reward_summary.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.*
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.shipping_rules
-import kotlinx.android.synthetic.main.fragment_pledge_section_editable_shipping.view.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_shipping.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_bonus.*
 import kotlinx.android.synthetic.main.fragment_pledge_section_summary_pledge.*
@@ -100,382 +100,382 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         bonus_amount.onChange { this.viewModel.inputs.bonusInput(it) }
 
         this.viewModel.outputs.additionalPledgeAmountIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(additional_pledge_amount_container, it) }
 
         this.viewModel.outputs.pledgeSectionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(pledge_container, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(pledge_container, it) }
 
         this.viewModel.outputs.decreasePledgeButtonIsEnabled()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { decrease_pledge.isEnabled = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { decrease_pledge.isEnabled = it }
 
         this.viewModel.outputs.increasePledgeButtonIsEnabled()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { increase_pledge.isEnabled = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { increase_pledge.isEnabled = it }
 
         this.viewModel.outputs.headerSectionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(pledge_header_container, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(pledge_header_container, it)
+            }
 
         this.viewModel.outputs.decreaseBonusButtonIsEnabled()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { decrease_bonus.isEnabled = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { decrease_bonus.isEnabled = it }
 
         this.viewModel.outputs.increaseBonusButtonIsEnabled()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { increase_bonus.isEnabled = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { increase_bonus.isEnabled = it }
 
         this.viewModel.outputs.estimatedDelivery()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    pledge_header_estimated_delivery_label.text = pledge_header_estimated_delivery_label.text.toString() + " " + it
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                pledge_header_estimated_delivery_label.text = pledge_header_estimated_delivery_label.text.toString() + " " + it
+            }
 
         this.viewModel.outputs.estimatedDeliveryInfoIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(pledge_header_estimated_delivery_label)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(pledge_header_estimated_delivery_label)
+            }
 
         this.viewModel.outputs.continueButtonIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(pledge_footer_continue_button, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(pledge_footer_continue_button, it) }
 
         this.viewModel.outputs.conversionTextViewIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(total_amount_conversion))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(total_amount_conversion))
 
         this.viewModel.outputs.conversionText()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setConversionTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setConversionTextView(it) }
 
         this.viewModel.outputs.paymentContainerIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(payment_container, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(payment_container, it) }
 
         this.viewModel.outputs.showSelectedCard()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { updatePledgeCardState(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { updatePledgeCardState(it) }
 
         this.viewModel.outputs.pledgeAmountHeader()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    pledge_header_summary_amount.text = it
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                pledge_header_summary_amount.text = it
+            }
 
         this.viewModel.outputs.pledgeAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    pledge_amount.setTextAndSelection(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                pledge_amount.setTextAndSelection(it)
+            }
 
         this.viewModel.outputs.bonusAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    bonus_amount.setTextAndSelection(it)
-                    bonus_summary_amount.text = it
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                bonus_amount.setTextAndSelection(it)
+                bonus_summary_amount.text = it
+            }
 
         this.viewModel.outputs.pledgeHint()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { pledge_amount.hint = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { pledge_amount.hint = it }
 
         this.viewModel.outputs.bonusHint()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe{ bonus_amount.hint = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { bonus_amount.hint = it }
 
         this.viewModel.outputs.pledgeMaximum()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    setPledgeMaximumText(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                setPledgeMaximumText(it)
+            }
 
         this.viewModel.outputs.pledgeMaximumIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setInvisible(pledge_maximum, it)
-                    ViewUtils.setInvisible(bonus_maximum, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setInvisible(pledge_maximum, it)
+                ViewUtils.setInvisible(bonus_maximum, it)
+            }
 
         this.viewModel.outputs.pledgeMinimum()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setPledgeMinimumText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setPledgeMinimumText(it) }
 
         this.viewModel.outputs.projectCurrencySymbol()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    setCurrencySymbols(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                setCurrencySymbols(it)
+            }
 
         this.viewModel.outputs.pledgeTextColor()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setTextColor(it, pledge_amount, pledge_symbol_start, pledge_symbol_end) }
 
         this.viewModel.outputs.cardsAndProject()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it.first, it.second) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { (cards_recycler.adapter as RewardCardAdapter).takeCards(it.first, it.second) }
 
         this.viewModel.outputs.addedCard()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    val position = (cards_recycler.adapter as RewardCardAdapter).insertCard(it)
-                    this.viewModel.inputs.addedCardPosition(position)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                val position = (cards_recycler.adapter as RewardCardAdapter).insertCard(it)
+                this.viewModel.inputs.addedCardPosition(position)
+            }
 
         this.viewModel.outputs.startLoginToutActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { startActivity(Intent(this.context, LoginToutActivity::class.java)) }
 
         this.viewModel.outputs.showNewCardFragment()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    fragmentManager
-                            ?.beginTransaction()
-                            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                            ?.add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
-                            ?.addToBackStack(NewCardFragment::class.java.simpleName)
-                            ?.commit()
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                fragmentManager
+                    ?.beginTransaction()
+                    ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+                    ?.add(R.id.secondary_container, NewCardFragment.newInstance(true, it), NewCardFragment::class.java.simpleName)
+                    ?.addToBackStack(NewCardFragment::class.java.simpleName)
+                    ?.commit()
+            }
 
         this.viewModel.outputs.selectedShippingRule()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    shipping_rules.setText(it.toString())
-                    shipping_rules_static.text = it.toString()
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                shipping_rules.setText(it.toString())
+                shipping_rules_static.text = it.toString()
+            }
 
         this.viewModel.outputs.shippingAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(shipping_amount_loading_view, true)
-                    setPlusTextView(shipping_amount, it)
-                    setPlusTextView(shipping_amount_static, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(shipping_amount_loading_view, true)
+                setPlusTextView(shipping_amount, it)
+                setPlusTextView(shipping_amount_static, it)
+            }
 
         this.viewModel.outputs.shippingSummaryAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setPlusTextView(shipping_summary_amount, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setPlusTextView(shipping_summary_amount, it) }
 
         this.viewModel.outputs.shippingSummaryLocation()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { shipping_label.text = String.format("%s: %s", getString(R.string.Shipping), it) }
 
         this.viewModel.outputs.shippingRulesAndProject()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .filter { ObjectUtils.isNotNull(context) }
-                .subscribe {
-                    displayShippingRules(it.first, it.second)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .filter { ObjectUtils.isNotNull(context) }
+            .subscribe {
+                displayShippingRules(it.first, it.second)
+            }
 
         this.viewModel.outputs.shippingRulesSectionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(shipping_rules_row, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(shipping_rules_row, it)
+            }
 
         this.viewModel.outputs.shippingRuleStaticIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(shipping_rules_row_static, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(shipping_rules_row_static, it)
+            }
 
         this.viewModel.outputs.shippingSummaryIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(shipping_summary, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(shipping_summary, it) }
 
         this.viewModel.outputs.pledgeSummaryAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { pledge_summary_amount.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { pledge_summary_amount.text = it }
 
         this.viewModel.outputs.bonusSummaryIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(bonus_summary, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(bonus_summary, it) }
 
         this.viewModel.outputs.bonusSummaryAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { bonus_summary_amount.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { bonus_summary_amount.text = it }
 
         this.viewModel.outputs.pledgeSummaryIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(pledge_summary, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(pledge_summary, it) }
 
         this.viewModel.outputs.totalDividerIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(divider_total, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(divider_total, it) }
 
         this.viewModel.outputs.totalAmount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(total_amount_loading_view, true)
-                    total_amount.text = it
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(total_amount_loading_view, true)
+                total_amount.text = it
+            }
 
         this.viewModel.outputs.totalAndDeadline()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setDeadlineWarning(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setDeadlineWarning(it) }
 
         this.viewModel.outputs.totalAndDeadlineIsVisible()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setInvisible(deadline_warning, false) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setInvisible(deadline_warning, false) }
 
         this.viewModel.outputs.showPledgeSuccess()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyCreated(it) }
 
         this.viewModel.outputs.showSCAFlow()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.viewModel.environment.stripe().authenticateSetup(this, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.viewModel.environment.stripe().authenticateSetup(this, it) }
 
         this.viewModel.outputs.showPledgeError()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.startChromeTab()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    activity?.let { activity ->
-                        ChromeTabsHelperActivity.openCustomTab(activity, UrlUtils.baseCustomTabsIntent(activity), Uri.parse(it), null)
-                    }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                activity?.let { activity ->
+                    ChromeTabsHelperActivity.openCustomTab(activity, UrlUtils.baseCustomTabsIntent(activity), Uri.parse(it), null)
                 }
+            }
 
         this.viewModel.outputs.baseUrlForTerms()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { setHtmlStrings(it) }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { setHtmlStrings(it) }
 
         this.viewModel.outputs.showUpdatePledgeError()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated() }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { (activity as PledgeDelegate?)?.pledgeSuccessfullyUpdated() }
 
         this.viewModel.outputs.showUpdatePaymentError()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { activity?.applicationContext?.let { showErrorToast(it, pledge_content, getString(R.string.general_error_something_wrong)) } }
 
         this.viewModel.outputs.showUpdatePaymentSuccess()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { (activity as PledgeDelegate?)?.pledgePaymentSuccessfullyUpdated() }
 
         this.viewModel.outputs.pledgeButtonCTA()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { pledge_footer_pledge_button.setText(it) }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { pledge_footer_pledge_button.setText(it) }
 
         this.viewModel.outputs.pledgeButtonIsEnabled()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { pledge_footer_pledge_button.isEnabled = it }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { pledge_footer_pledge_button.isEnabled = it }
 
         this.viewModel.outputs.pledgeButtonIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setInvisible(pledge_footer_pledge_button, it) }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { ViewUtils.setInvisible(pledge_footer_pledge_button, it) }
 
         this.viewModel.outputs.pledgeProgressIsGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(pledge_footer_pledge_button_progress, it) }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { ViewUtils.setGone(pledge_footer_pledge_button_progress, it) }
 
         this.viewModel.outputs.continueButtonIsEnabled()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe { pledge_footer_continue_button.isEnabled = it }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe { pledge_footer_continue_button.isEnabled = it }
 
         this.viewModel.outputs.headerSelectedItems()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    populateHeaderItems(it)
-                }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                populateHeaderItems(it)
+            }
 
         this.viewModel.outputs.isPledgeMinimumSubtitleGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    ViewUtils.setGone(pledge_minimum, it)
-                }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                ViewUtils.setGone(pledge_minimum, it)
+            }
 
         this.viewModel.outputs.isBonusSupportSectionGone()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    ViewUtils.setGone(bonus_container, it)
-                    pledge_container.setPadding(0, resources.getDimension(R.dimen.grid_4).toInt(), 0, 0)
-                }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                ViewUtils.setGone(bonus_container, it)
+                pledge_container.setPadding(0, resources.getDimension(R.dimen.grid_4).toInt(), 0, 0)
+            }
 
         this.viewModel.outputs.isNoReward()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    ViewUtils.setGone(pledge_header_container, it)
-                    pledge_header_container_no_reward.visibility = View.VISIBLE
-                }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                ViewUtils.setGone(pledge_header_container, it)
+                pledge_header_container_no_reward.visibility = View.VISIBLE
+            }
 
         this.viewModel.outputs.projectTitle()
-                .compose(observeForUI())
-                .compose(bindToLifecycle())
-                .subscribe {
-                    pledge_header_title_no_reward.text = it
-                }
+            .compose(observeForUI())
+            .compose(bindToLifecycle())
+            .subscribe {
+                pledge_header_title_no_reward.text = it
+            }
 
         pledge_amount.setOnTouchListener { _, _ ->
             pledge_amount.post {
@@ -513,18 +513,18 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         pledge_header_container.setOnClickListener {
             toggleAnimation(isExpanded)
         }
-      
+
         decrease_bonus.setOnClickListener { this.viewModel.inputs.decreaseBonusButtonClicked() }
 
         increase_bonus.setOnClickListener { this.viewModel.inputs.increaseBonusButtonClicked() }
 
         RxView.clicks(pledge_footer_pledge_button)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
+            .compose(bindToLifecycle())
+            .subscribe { this.viewModel.inputs.pledgeButtonClicked() }
 
         RxView.clicks(pledge_footer_continue_button)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.continueButtonClicked() }
+            .compose(bindToLifecycle())
+            .subscribe { this.viewModel.inputs.continueButtonClicked() }
     }
 
     private fun populateHeaderItems(selectedItems: List<Pair<Project, Reward>>) {
@@ -545,7 +545,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(pledge_header_container)
-        constraintSet.clear(R.id.header_summary_list, ConstraintSet.BOTTOM);
+        constraintSet.clear(R.id.header_summary_list, ConstraintSet.BOTTOM)
 
         val transition = ChangeBounds()
         transition.duration = 100
@@ -571,15 +571,18 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val stripe = this.viewModel.environment.stripe()
-        stripe.onSetupResult(requestCode, data, object : ApiResultCallback<SetupIntentResult> {
-            override fun onSuccess(result: SetupIntentResult) {
-                this@PledgeFragment.viewModel.inputs.stripeSetupResultSuccessful(result.outcome)
-            }
+        stripe.onSetupResult(
+            requestCode, data,
+            object : ApiResultCallback<SetupIntentResult> {
+                override fun onSuccess(result: SetupIntentResult) {
+                    this@PledgeFragment.viewModel.inputs.stripeSetupResultSuccessful(result.outcome)
+                }
 
-            override fun onError(e: Exception) {
-                this@PledgeFragment.viewModel.inputs.stripeSetupResultUnsuccessful(e)
+                override fun onError(e: Exception) {
+                    this@PledgeFragment.viewModel.inputs.stripeSetupResultUnsuccessful(e)
+                }
             }
-        })
+        )
     }
 
     override fun onDetach() {
@@ -606,7 +609,7 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         activity?.hideKeyboard()
         shipping_rules.clearFocus()
 
-        if(!pledge_footer_pledge_button.isEnabled){
+        if (!pledge_footer_pledge_button.isEnabled) {
             pledge_footer_pledge_button.isEnabled = true
         }
     }
@@ -646,9 +649,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val total = totalAndDeadline.first
         val deadline = totalAndDeadline.second
         val ksString = this.viewModel.environment.ksString()
-        val warning = ksString.format(getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline),
-                "total", total,
-                "project_deadline", deadline)
+        val warning = ksString.format(
+            getString(R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline),
+            "total", total,
+            "project_deadline", deadline
+        )
 
         val spannableWarning = SpannableString(warning)
 
@@ -744,9 +749,11 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
 
     private fun setConversionTextView(@NonNull amount: String) {
         val currencyConversionString = context?.getString(R.string.About_reward_amount)
-        total_amount_conversion.text = (currencyConversionString?.let {
-            this.viewModel.environment.ksString().format(it, "reward_amount", amount)
-        })
+        total_amount_conversion.text = (
+            currencyConversionString?.let {
+                this.viewModel.environment.ksString().format(it, "reward_amount", amount)
+            }
+            )
     }
 
     @SuppressLint("SetTextI18n")
@@ -758,15 +765,19 @@ class PledgeFragment : BaseFragment<PledgeFragmentViewModel.ViewModel>(), Reward
         val ksString = (activity?.applicationContext as KSApplication).component().environment().ksString()
         val byPledgingYouAgree = getString(R.string.By_pledging_you_agree_to_Kickstarters_Terms_of_Use_Privacy_Policy_and_Cookie_Policy)
 
-        val agreementWithUrls = ksString.format(byPledgingYouAgree, "terms_of_use_link", termsOfUseUrl,
-                "privacy_policy_link", privacyPolicyUrl, "cookie_policy_link", cookiePolicyUrl)
+        val agreementWithUrls = ksString.format(
+            byPledgingYouAgree, "terms_of_use_link", termsOfUseUrl,
+            "privacy_policy_link", privacyPolicyUrl, "cookie_policy_link", cookiePolicyUrl
+        )
 
         setClickableHtml(agreementWithUrls, pledge_footer_pledge_agreement)
 
         val trustUrl = UrlUtils.appendPath(baseUrl, "trust")
-        val accountabilityWithUrl = ksString.format(getString(R.string.Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability),
-                "trust_link",
-                trustUrl)
+        val accountabilityWithUrl = ksString.format(
+            getString(R.string.Its_a_way_to_bring_creative_projects_to_life_Learn_more_about_accountability),
+            "trust_link",
+            trustUrl
+        )
 
         setClickableHtml(accountabilityWithUrl, accountability)
         accountability_container.setOnClickListener {

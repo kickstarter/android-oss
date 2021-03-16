@@ -57,24 +57,24 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         setContentView(R.layout.activity_notifications)
 
         this.viewModel.outputs.creatorDigestFrequencyIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(email_frequency_row, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(email_frequency_row, it) }
 
         this.viewModel.outputs.creatorNotificationsAreGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(creator_notifications_section, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(creator_notifications_section, it) }
 
         this.viewModel.outputs.user()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.displayPreferences(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.displayPreferences(it) }
 
         this.viewModel.errors.unableToSavePreferenceError()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> ViewUtils.showToast(this, getString(this.unableToSaveString)) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { _ -> ViewUtils.showToast(this, getString(this.unableToSaveString)) }
 
         val emailFrequencyStrings = User.EmailFrequency.getStrings(this.resources)
         val arrayAdapter = ArrayAdapter<String>(this, R.layout.item_spinner, emailFrequencyStrings)
@@ -82,7 +82,6 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
         email_frequency_spinner.adapter = arrayAdapter
 
         setUpClickListeners()
-
     }
 
     private fun displayPreferences(user: User) {
@@ -118,7 +117,6 @@ class NotificationsActivity : BaseActivity<NotificationsViewModel.ViewModel>() {
 
         email_frequency_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

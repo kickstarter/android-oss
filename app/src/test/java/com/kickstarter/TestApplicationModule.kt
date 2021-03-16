@@ -12,7 +12,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class TestApplicationModule(private val application: Application): ApplicationModule(application) {
+class TestApplicationModule(private val application: Application) : ApplicationModule(application) {
 
     @Provides
     @Singleton

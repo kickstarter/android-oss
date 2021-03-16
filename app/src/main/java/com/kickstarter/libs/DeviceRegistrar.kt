@@ -13,8 +13,10 @@ import com.kickstarter.services.firebase.UnregisterTokenWorker
 import com.kickstarter.ui.IntentKey
 import java.util.concurrent.TimeUnit
 
-class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability,
-                      @param:ApplicationContext @field:ApplicationContext private val context: Context) : DeviceRegistrarType {
+class DeviceRegistrar(
+    private val playServicesCapability: PlayServicesCapability,
+    @param:ApplicationContext @field:ApplicationContext private val context: Context
+) : DeviceRegistrarType {
 
     /**
      * If Play Services is available on this device, start a service to register it in the backend.
@@ -30,11 +32,11 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
                         return@OnCompleteListener
                     }
 
-                // Get new FCM registration token
-                val token = task.result
-                registerToken(this.context, token)
-            })
-
+                    // Get new FCM registration token
+                    val token = task.result
+                    registerToken(this.context, token)
+                }
+            )
         }
     }
 
@@ -49,12 +51,12 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
 
     private fun unregisterToken() {
         val request = OneTimeWorkRequestBuilder<UnregisterTokenWorker>()
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, BACKOFF_DELAY, TimeUnit.SECONDS)
-                .setConstraints(WorkUtils.baseConstraints)
-                .build()
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, BACKOFF_DELAY, TimeUnit.SECONDS)
+            .setConstraints(WorkUtils.baseConstraints)
+            .build()
 
         WorkManager.getInstance(this.context)
-                .enqueueUniqueWork(UNREGISTER_TOKEN, ExistingWorkPolicy.REPLACE, request)
+            .enqueueUniqueWork(UNREGISTER_TOKEN, ExistingWorkPolicy.REPLACE, request)
     }
 
     companion object {
@@ -66,14 +68,13 @@ class DeviceRegistrar(private val playServicesCapability: PlayServicesCapability
             val data = workDataOf(IntentKey.PUSH_TOKEN to token)
 
             val request = OneTimeWorkRequestBuilder<RegisterTokenWorker>()
-                    .setInputData(data)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, BACKOFF_DELAY, TimeUnit.SECONDS)
-                    .setConstraints(WorkUtils.baseConstraints)
-                    .build()
+                .setInputData(data)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, BACKOFF_DELAY, TimeUnit.SECONDS)
+                .setConstraints(WorkUtils.baseConstraints)
+                .build()
 
             WorkManager.getInstance(context)
-                    .enqueueUniqueWork(REGISTER_TOKEN, ExistingWorkPolicy.REPLACE, request)
+                .enqueueUniqueWork(REGISTER_TOKEN, ExistingWorkPolicy.REPLACE, request)
         }
-
     }
 }

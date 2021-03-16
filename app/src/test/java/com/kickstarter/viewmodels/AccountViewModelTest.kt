@@ -34,12 +34,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUserCurrency() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  true, true, true, true, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", true, true, true, true, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.chosenCurrency.assertValue("MXN")
         this.showEmailErrorIcon.assertValue(false)
@@ -47,12 +55,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUserEmail() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "r@ksr.com",  true, true, true, true, "USD")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "r@ksr.com", true, true, true, true, "USD"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.email.assertValue("r@ksr.com")
         this.showEmailErrorIcon.assertValue(false)
@@ -60,12 +76,18 @@ class AccountViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testChosenCurrencyMutation() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
-                return Observable.just(UpdateUserCurrencyMutation.Data(UpdateUserCurrencyMutation.
-                        UpdateUserProfile("", UpdateUserCurrencyMutation.User("", currency.rawValue()))))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun updateUserCurrencyPreference(currency: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
+                    return Observable.just(
+                        UpdateUserCurrencyMutation.Data(
+                            UpdateUserCurrencyMutation
+                                .UpdateUserProfile("", UpdateUserCurrencyMutation.User("", currency.rawValue()))
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.chosenCurrency.assertValue("USD")
         this.vm.inputs.onSelectedCurrency(CurrencyCode.AUD)
@@ -81,12 +103,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isCreator = true
         val isDeliverable = false
         val isEmailVerified = true
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.showEmailErrorIcon.assertValue(true)
     }
@@ -97,12 +127,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isCreator = false
         val isDeliverable = false
         val isEmailVerified = false
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.showEmailErrorIcon.assertValue(true)
     }
@@ -113,12 +151,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isCreator = false
         val isDeliverable = true
         val isEmailVerified = true
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.showEmailErrorIcon.assertValue(false)
     }
@@ -129,12 +175,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isCreator = false
         val isDeliverable = true
         val isEmailVerified = false
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.passwordRequiredContainerIsVisible.assertValue(true)
     }
@@ -145,12 +199,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isCreator = false
         val isDeliverable = true
         val isEmailVerified = false
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.passwordRequiredContainerIsVisible.assertValue(false)
     }
@@ -161,12 +223,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isCreator = false
         val isDeliverable = true
         val isEmailVerified = false
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.showEmailErrorIcon.assertValue(false)
     }
@@ -177,12 +247,20 @@ class AccountViewModelTest : KSRobolectricTestCase() {
         val isCreator = true
         val isDeliverable = false
         val isEmailVerified = false
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
-                return Observable.just(UserPrivacyQuery.Data(UserPrivacyQuery.Me("", "",
-                        "",  hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN")))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun userPrivacy(): Observable<UserPrivacyQuery.Data> {
+                    return Observable.just(
+                        UserPrivacyQuery.Data(
+                            UserPrivacyQuery.Me(
+                                "", "",
+                                "", hasPassword, isCreator, isDeliverable, isEmailVerified, "MXN"
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.showEmailErrorIcon.assertValue(true)
     }

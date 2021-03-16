@@ -91,75 +91,74 @@ interface AddOnViewHolderViewModel {
 
         init {
             val reward = this.projectDataAndReward
-                    .map { it.second }
+                .map { it.second }
 
             val projectAndReward = this.projectDataAndReward
-                    .map { Pair(it.first.project(), it.second) }
+                .map { Pair(it.first.project(), it.second) }
 
             projectAndReward
-                    .map { buildCurrency(it.first, it.second) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.minimumAmountTitle)
+                .map { buildCurrency(it.first, it.second) }
+                .compose(bindToLifecycle())
+                .subscribe(this.minimumAmountTitle)
 
             projectAndReward
-                    .map { it.first }
-                    .map { it.currency() == it.currentCurrency() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.conversionIsGone)
+                .map { it.first }
+                .map { it.currency() == it.currentCurrency() }
+                .compose(bindToLifecycle())
+                .subscribe(this.conversionIsGone)
 
             projectAndReward
-                    .map { getCurrency(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.conversion)
+                .map { getCurrency(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.conversion)
 
             reward
-                    .filter { RewardUtils.isReward(it) }
-                    .map { it.description() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.descriptionForReward)
+                .filter { RewardUtils.isReward(it) }
+                .map { it.description() }
+                .compose(bindToLifecycle())
+                .subscribe(this.descriptionForReward)
 
             reward
-                    .filter { !it.isAddOn && RewardUtils.isNoReward(it)}
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.descriptionForNoReward.onNext(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
-                        this.titleForNoReward.onNext(R.string.You_pledged_without_a_reward)
-                    }
+                .filter { !it.isAddOn && RewardUtils.isNoReward(it) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.descriptionForNoReward.onNext(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
+                    this.titleForNoReward.onNext(R.string.You_pledged_without_a_reward)
+                }
 
             reward
-                    .filter { RewardUtils.isItemized(it) }
-                    .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardItems)
+                .filter { RewardUtils.isItemized(it) }
+                .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
+                .compose(bindToLifecycle())
+                .subscribe(this.rewardItems)
 
             reward
-                    .map { RewardUtils.isItemized(it) }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardItemsAreGone)
+                .map { RewardUtils.isItemized(it) }
+                .map { BooleanUtils.negate(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.rewardItemsAreGone)
 
             reward
-                    .filter { !it.isAddOn && RewardUtils.isReward(it) }
-                    .map { it.title() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleForReward)
+                .filter { !it.isAddOn && RewardUtils.isReward(it) }
+                .map { it.title() }
+                .compose(bindToLifecycle())
+                .subscribe(this.titleForReward)
 
             reward
-                    .map { !it.isAddOn }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleIsGone)
+                .map { !it.isAddOn }
+                .compose(bindToLifecycle())
+                .subscribe(this.titleIsGone)
 
             reward
-                    .filter { it.isAddOn && it.quantity()?.let { q -> q > 0 } ?: false }
-                    .map { reward -> parametersForTitle(reward)}
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleForAddOn)
-
+                .filter { it.isAddOn && it.quantity()?.let { q -> q > 0 } ?: false }
+                .map { reward -> parametersForTitle(reward) }
+                .compose(bindToLifecycle())
+                .subscribe(this.titleForAddOn)
         }
 
         private fun getCurrency(it: Pair<Project, Reward>) =
-                this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true)
+            this.ksCurrency.format(it.second.convertedMinimum(), it.first, true, RoundingMode.HALF_UP, true)
 
         private fun buildCurrency(project: Project, reward: Reward): String {
             val completeCurrency = ksCurrency.format(reward.minimum(), project, RoundingMode.HALF_UP)

@@ -37,11 +37,13 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     fun testCards() {
         val card = StoredCardFactory.discoverCard()
 
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<List<StoredCard>> {
-                return Observable.just(Collections.singletonList(card))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(Collections.singletonList(card))
+                }
+            }).build()
+        )
 
         this.cards.assertValue(Collections.singletonList(card))
     }
@@ -55,22 +57,26 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testDividerIsVisible_noCards() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<List<StoredCard>> {
-                return Observable.just(Collections.emptyList())
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.just(Collections.emptyList())
+                }
+            }).build()
+        )
 
         this.dividerIsVisible.assertValues(false)
     }
 
     @Test
     fun testErrorGettingCards() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun getStoredCards(): Observable<List<StoredCard>> {
-                return Observable.error(Exception("oops"))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun getStoredCards(): Observable<List<StoredCard>> {
+                    return Observable.error(Exception("oops"))
+                }
+            }).build()
+        )
 
         this.cards.assertNoValues()
         this.error.assertNoValues()
@@ -78,11 +84,13 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testErrorDeletingCard() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
-                return Observable.error(Throwable("eek"))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
+                    return Observable.error(Throwable("eek"))
+                }
+            }).build()
+        )
 
         this.vm.inputs.deleteCardClicked("id")
         this.vm.confirmDeleteCardClicked()
@@ -93,12 +101,12 @@ class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
     fun testProgressBarIsVisible() {
         setUpEnvironment(environment())
 
-        //getting the cards initially
+        // getting the cards initially
         this.progressBarIsVisible.assertValues(false)
         this.vm.inputs.deleteCardClicked("id")
         this.vm.inputs.confirmDeleteCardClicked()
-        //make the call to delete and reload the cards
-        this.progressBarIsVisible.assertValues( false, true, false)
+        // make the call to delete and reload the cards
+        this.progressBarIsVisible.assertValues(false, true, false)
     }
 
     @Test

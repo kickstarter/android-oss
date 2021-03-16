@@ -10,8 +10,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
-import com.kickstarter.ui.extensions.onChange
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
@@ -19,6 +17,8 @@ import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.ArgumentsKey
+import com.kickstarter.ui.extensions.onChange
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.NewCardFragmentViewModel
 import com.stripe.android.ApiResultCallback
 import com.stripe.android.model.Card
@@ -49,73 +49,73 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
         setHasOptionsMenu(true)
 
         this.viewModel.outputs.allowedCardWarning()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setAllowedCardWarning(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setAllowedCardWarning(it) }
 
         this.viewModel.outputs.allowedCardWarningIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(allowed_card_warning, !it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(allowed_card_warning, !it) }
 
         this.viewModel.outputs.cardWidgetFocusDrawable()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { card_focus.setImageResource(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { card_focus.setImageResource(it) }
 
         this.viewModel.outputs.progressBarIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter { this.activity != null && isVisible }
-                .subscribe {
-                    ViewUtils.setGone(progress_bar, !it)
-                    updateMenu(!it)
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { this.activity != null && isVisible }
+            .subscribe {
+                ViewUtils.setGone(progress_bar, !it)
+                updateMenu(!it)
+            }
 
         this.viewModel.outputs.saveButtonIsEnabled()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { updateMenu(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { updateMenu(it) }
 
         this.viewModel.outputs.success()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.onCardSavedListener?.cardSaved(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.onCardSavedListener?.cardSaved(it) }
 
         this.viewModel.outputs.error()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(new_card_toolbar, getString(R.string.Something_went_wrong_please_try_again)) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showSnackbar(new_card_toolbar, getString(R.string.Something_went_wrong_please_try_again)) }
 
         this.viewModel.outputs.modalError()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(modal_new_card_snackbar_anchor, getString(R.string.Something_went_wrong_please_try_again)) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showSnackbar(modal_new_card_snackbar_anchor, getString(R.string.Something_went_wrong_please_try_again)) }
 
         this.viewModel.outputs.reusableContainerIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(reusable_container, !it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(reusable_container, !it) }
 
         this.viewModel.outputs.appBarLayoutHasElevation()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { if (!it) new_card_app_bar_layout.stateListAnimator = null }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { if (!it) new_card_app_bar_layout.stateListAnimator = null }
 
         this.viewModel.outputs.dividerIsVisible()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { form_container.showDividers = if (it) LinearLayout.SHOW_DIVIDER_END else LinearLayout.SHOW_DIVIDER_NONE }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { form_container.showDividers = if (it) LinearLayout.SHOW_DIVIDER_END else LinearLayout.SHOW_DIVIDER_NONE }
 
         this.viewModel.outputs.createStripeToken()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { createStripeToken(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { createStripeToken(it) }
 
         RxView.clicks(reusable_switch)
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.viewModel.inputs.reusable(reusable_switch.isChecked) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.viewModel.inputs.reusable(reusable_switch.isChecked) }
 
         cardholder_name.onChange { this.viewModel.inputs.name(it) }
         postal_code.onChange { this.viewModel.inputs.postalCode(it) }
@@ -186,15 +186,18 @@ class NewCardFragment : BaseFragment<NewCardFragmentViewModel.ViewModel>() {
     }
 
     private fun createStripeToken(card: Card) {
-        this.viewModel.environment.stripe().createToken(card, object : ApiResultCallback<Token> {
-            override fun onSuccess(result: Token) {
-                this@NewCardFragment.viewModel.inputs.stripeTokenResultSuccessful(result)
-            }
+        this.viewModel.environment.stripe().createToken(
+            card,
+            object : ApiResultCallback<Token> {
+                override fun onSuccess(result: Token) {
+                    this@NewCardFragment.viewModel.inputs.stripeTokenResultSuccessful(result)
+                }
 
-            override fun onError(e: Exception) {
-                this@NewCardFragment.viewModel.inputs.stripeTokenResultUnsuccessful(e)
+                override fun onError(e: Exception) {
+                    this@NewCardFragment.viewModel.inputs.stripeTokenResultUnsuccessful(e)
+                }
             }
-        })
+        )
     }
 
     private fun modal(): Boolean {

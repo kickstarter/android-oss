@@ -37,9 +37,9 @@ class RewardCardSelectedViewHolderViewModelTest : KSRobolectricTestCase() {
         val date: Date = calendar.time
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(date)
-                .build()
+            .toBuilder()
+            .expiration(date)
+            .build()
         this.vm.inputs.configureWith(Pair(creditCard, ProjectFactory.project()))
 
         this.expirationDate.assertValue("03/2019")
@@ -75,5 +75,4 @@ class RewardCardSelectedViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.lastFour.assertValue("1234")
     }
-
 }

@@ -87,7 +87,6 @@ interface NewCardFragmentViewModel {
 
         /** Emits when the card was saved successfully. */
         fun success(): Observable<StoredCard>
-
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<NewCardFragment>(environment), Inputs, Outputs {
@@ -123,115 +122,116 @@ interface NewCardFragmentViewModel {
 
         init {
             val modal = arguments()
-                    .map { it?.getBoolean(ArgumentsKey.NEW_CARD_MODAL)?: false }
-                    .distinctUntilChanged()
+                .map { it?.getBoolean(ArgumentsKey.NEW_CARD_MODAL) ?: false }
+                .distinctUntilChanged()
 
             val project = arguments()
-                    .map<Project?> { it?.getParcelable(ArgumentsKey.NEW_CARD_PROJECT)?: null }
-                    .distinctUntilChanged()
+                .map<Project?> { it?.getParcelable(ArgumentsKey.NEW_CARD_PROJECT) ?: null }
+                .distinctUntilChanged()
 
             modal
-                    .map { BooleanUtils.negate(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.appBarLayoutHasElevation)
+                .map { BooleanUtils.negate(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.appBarLayoutHasElevation)
 
             modal
-                    .map { BooleanUtils.negate(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.dividerIsVisible)
+                .map { BooleanUtils.negate(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.dividerIsVisible)
 
             modal
-                    .compose(bindToLifecycle())
-                    .subscribe(this.reusableContainerIsVisible)
+                .compose(bindToLifecycle())
+                .subscribe(this.reusableContainerIsVisible)
 
             val initialReusable = modal
-                    .map { BooleanUtils.negate(it) }
+                .map { BooleanUtils.negate(it) }
 
             val reusable = Observable.merge(initialReusable, this.reusable)
 
-            val cardForm = Observable.combineLatest(this.name,
-                    this.card,
-                    this.cardNumber,
-                    this.postalCode,
-                    reusable)
-            { name, card, cardNumber, postalCode, reusable -> CardForm(name, card, cardNumber, postalCode, reusable) }
+            val cardForm = Observable.combineLatest(
+                this.name,
+                this.card,
+                this.cardNumber,
+                this.postalCode,
+                reusable
+            ) { name, card, cardNumber, postalCode, reusable -> CardForm(name, card, cardNumber, postalCode, reusable) }
 
             cardForm
-                    .compose<Pair<CardForm, Project?>>(combineLatestPair(project))
-                    .map { it.first.isValid(it.second) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.saveButtonIsEnabled)
+                .compose<Pair<CardForm, Project?>>(combineLatestPair(project))
+                .map { it.first.isValid(it.second) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.saveButtonIsEnabled)
 
             val warning = this.cardNumber
-                    .compose<Pair<String, Project?>>(combineLatestPair(project))
-                    .map<Pair<Int?, Project?>> { Pair(CardForm.warning(it.first, it.second), it.second) }
-                    .distinctUntilChanged()
+                .compose<Pair<String, Project?>>(combineLatestPair(project))
+                .map<Pair<Int?, Project?>> { Pair(CardForm.warning(it.first, it.second), it.second) }
+                .distinctUntilChanged()
 
             warning
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.allowedCardWarning)
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.allowedCardWarning)
 
             warning
-                    .map { ObjectUtils.isNotNull(it.first) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.allowedCardWarningIsVisible)
+                .map { ObjectUtils.isNotNull(it.first) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.allowedCardWarningIsVisible)
 
             this.allowedCardWarningIsVisible
-                    .startWith(false)
-                    .distinctUntilChanged()
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.cardFocus.startWith(false).distinctUntilChanged()))
-                    .map {
-                        val cardNotAllowed = it.first
-                        val hasFocus = it.second
-                        when {
-                            cardNotAllowed -> R.drawable.divider_red_400_horizontal
-                            hasFocus -> R.drawable.divider_green_horizontal
-                            else -> R.drawable.divider_dark_grey_500_horizontal
-                        }
+                .startWith(false)
+                .distinctUntilChanged()
+                .compose<Pair<Boolean, Boolean>>(combineLatestPair(this.cardFocus.startWith(false).distinctUntilChanged()))
+                .map {
+                    val cardNotAllowed = it.first
+                    val hasFocus = it.second
+                    when {
+                        cardNotAllowed -> R.drawable.divider_red_400_horizontal
+                        hasFocus -> R.drawable.divider_green_horizontal
+                        else -> R.drawable.divider_dark_grey_500_horizontal
                     }
-                    .distinctUntilChanged()
-                    .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
+                }
+                .distinctUntilChanged()
+                .subscribe { this.cardWidgetFocusDrawable.onNext(it) }
 
             cardForm
-                    .map { it.card?.toBuilder()?.name(it.name)?.addressZip(it.postalCode)?.build() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose<Card>(takeWhen(this.saveCardClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.createStripeToken.onNext(it)
-                        this.progressBarIsVisible.onNext(true)
-                    }
+                .map { it.card?.toBuilder()?.name(it.name)?.addressZip(it.postalCode)?.build() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Card>(takeWhen(this.saveCardClicked))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.createStripeToken.onNext(it)
+                    this.progressBarIsVisible.onNext(true)
+                }
 
             val saveCardNotification = this.stripeTokenResultSuccessful
-                    .map { token -> token.card?.id?.let { Pair(token.id, it) } }
-                    .compose<Pair<Pair<String, String>, Boolean>>(combineLatestPair(reusable))
-                    .map { SavePaymentMethodData(stripeToken = it.first.first, stripeCardId = it.first.second, reusable = it.second)  }
-                    .switchMap { this.apolloClient.savePaymentMethod(it).materialize() }
-                    .share()
+                .map { token -> token.card?.id?.let { Pair(token.id, it) } }
+                .compose<Pair<Pair<String, String>, Boolean>>(combineLatestPair(reusable))
+                .map { SavePaymentMethodData(stripeToken = it.first.first, stripeCardId = it.first.second, reusable = it.second) }
+                .switchMap { this.apolloClient.savePaymentMethod(it).materialize() }
+                .share()
 
             saveCardNotification
-                    .compose(values())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.success.onNext(it) }
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe { this.success.onNext(it) }
 
             val errors = Observable.merge(saveCardNotification.compose(errors()), this.stripeTokenResultUnsuccessful)
-                    .compose(ignoreValues())
+                .compose(ignoreValues())
 
             val errorsAndModal = errors
-                    .compose<Pair<Void, Boolean>>(combineLatestPair(modal))
+                .compose<Pair<Void, Boolean>>(combineLatestPair(modal))
 
             errorsAndModal
-                    .filter { !it.second }
-                    .map { it.first }
-                    .subscribe(this.error)
+                .filter { !it.second }
+                .map { it.first }
+                .subscribe(this.error)
 
             errorsAndModal
-                    .filter { it.second }
-                    .map { it.first }
-                    .subscribe(this.modalError)
+                .filter { it.second }
+                .map { it.first }
+                .subscribe(this.modalError)
 
             errors.subscribe { this.progressBarIsVisible.onNext(false) }
         }
@@ -299,9 +299,9 @@ interface NewCardFragmentViewModel {
         data class CardForm(val name: String, val card: Card?, val cardNumber: String, val postalCode: String, val reusable: Boolean) {
 
             fun isValid(project: Project?): Boolean {
-                return this.name.isNotEmpty()
-                        && this.postalCode.isNotEmpty()
-                        && isValidCard(project)
+                return this.name.isNotEmpty() &&
+                    this.postalCode.isNotEmpty() &&
+                    isValidCard(project)
             }
 
             private fun isValidCard(project: Project?): Boolean {
@@ -333,18 +333,22 @@ interface NewCardFragmentViewModel {
                     }
                 }
 
-                private val allowedCardTypes = arrayOf(Card.CardBrand.AMERICAN_EXPRESS,
-                        Card.CardBrand.DINERS_CLUB,
-                        Card.CardBrand.DISCOVER,
-                        Card.CardBrand.JCB,
-                        Card.CardBrand.MASTERCARD,
-                        Card.CardBrand.UNIONPAY,
-                        Card.CardBrand.VISA)
+                private val allowedCardTypes = arrayOf(
+                    Card.CardBrand.AMERICAN_EXPRESS,
+                    Card.CardBrand.DINERS_CLUB,
+                    Card.CardBrand.DISCOVER,
+                    Card.CardBrand.JCB,
+                    Card.CardBrand.MASTERCARD,
+                    Card.CardBrand.UNIONPAY,
+                    Card.CardBrand.VISA
+                )
 
                 private val usdCardTypes = allowedCardTypes
-                private val nonUsdCardTypes = arrayOf(Card.CardBrand.AMERICAN_EXPRESS,
-                        Card.CardBrand.MASTERCARD,
-                        Card.CardBrand.VISA)
+                private val nonUsdCardTypes = arrayOf(
+                    Card.CardBrand.AMERICAN_EXPRESS,
+                    Card.CardBrand.MASTERCARD,
+                    Card.CardBrand.VISA
+                )
             }
         }
     }

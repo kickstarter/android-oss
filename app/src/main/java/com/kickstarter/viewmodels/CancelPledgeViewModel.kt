@@ -69,67 +69,66 @@ interface CancelPledgeViewModel {
         init {
 
             val project = arguments()
-                    .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT) as Project? }
-                    .ofType(Project::class.java)
+                .map { it.getParcelable(ArgumentsKey.CANCEL_PLEDGE_PROJECT) as Project? }
+                .ofType(Project::class.java)
 
             val backing = project
-                    .map { it.backing() }
-                    .ofType(Backing::class.java)
+                .map { it.backing() }
+                .ofType(Backing::class.java)
 
             project
-                    .compose<Pair<Project, Backing>>(combineLatestPair(backing))
-                    .map { Pair(this.ksCurrency.format(it.second.amount(), it.first, RoundingMode.HALF_UP), it.first.name()) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeAmountAndProjectName)
+                .compose<Pair<Project, Backing>>(combineLatestPair(backing))
+                .map { Pair(this.ksCurrency.format(it.second.amount(), it.first, RoundingMode.HALF_UP), it.first.name()) }
+                .compose(bindToLifecycle())
+                .subscribe(this.pledgeAmountAndProjectName)
 
             val cancelBackingNotification = this.confirmCancellationClicked
-                    .compose<Pair<String, Backing>>(combineLatestPair(backing))
-                    .switchMap { cancelBacking(it.first, it.second) }
-                    .share()
+                .compose<Pair<String, Backing>>(combineLatestPair(backing))
+                .switchMap { cancelBacking(it.first, it.second) }
+                .share()
 
             val cancelBackingResponse = cancelBackingNotification
-                    .compose(values())
+                .compose(values())
 
             cancelBackingNotification
-                    .compose(errors())
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showServerError)
+                .compose(errors())
+                .compose(ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(this.showServerError)
 
             cancelBackingResponse
-                    .filter { it is Boolean && it == false }
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showServerError)
+                .filter { it is Boolean && it == false }
+                .compose(ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(this.showServerError)
 
             cancelBackingResponse
-                    .filter { it is Boolean && it == true }
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.success)
+                .filter { it is Boolean && it == true }
+                .compose(ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(this.success)
 
             cancelBackingResponse
-                    .filter { it is String }
-                    .ofType(String::class.java)
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showCancelError)
+                .filter { it is String }
+                .ofType(String::class.java)
+                .compose(bindToLifecycle())
+                .subscribe(this.showCancelError)
 
-             this.goBackButtonClicked
-                    .compose(bindToLifecycle())
-                    .subscribe(this.dismiss)
-
+            this.goBackButtonClicked
+                .compose(bindToLifecycle())
+                .subscribe(this.dismiss)
         }
 
         private fun cancelBacking(note: String, backing: Backing): Observable<Notification<Any>> {
             return this.apolloClient.cancelBacking(backing, note)
-                    .doOnSubscribe {
-                        this.progressBarIsVisible.onNext(true)
-                        this.cancelButtonIsVisible.onNext(false)
-                    }
-                    .doAfterTerminate {
-                        this.progressBarIsVisible.onNext(false)
-                        this.cancelButtonIsVisible.onNext(true)
-                    }.materialize()
+                .doOnSubscribe {
+                    this.progressBarIsVisible.onNext(true)
+                    this.cancelButtonIsVisible.onNext(false)
+                }
+                .doAfterTerminate {
+                    this.progressBarIsVisible.onNext(false)
+                    this.cancelButtonIsVisible.onNext(true)
+                }.materialize()
         }
 
         override fun confirmCancellationClicked(note: String) {

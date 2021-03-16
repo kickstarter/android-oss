@@ -14,7 +14,6 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-
 interface CreatePasswordViewModel {
 
     interface Inputs {
@@ -66,44 +65,46 @@ interface CreatePasswordViewModel {
 
         init {
 
-            val password = Observable.combineLatest(this.newPassword.startWith(""),
-                    this.confirmPassword.startWith("")) { new, confirm -> CreatePassword(new, confirm)}
+            val password = Observable.combineLatest(
+                this.newPassword.startWith(""),
+                this.confirmPassword.startWith("")
+            ) { new, confirm -> CreatePassword(new, confirm) }
 
             password
-                    .map { it.warning() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.passwordWarning)
+                .map { it.warning() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.passwordWarning)
 
             password
-                    .map { it.isValid() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.saveButtonIsEnabled)
+                .map { it.isValid() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.saveButtonIsEnabled)
 
             val createNewPasswordNotification = password
-                    .compose(takeWhen<CreatePassword, Void>(this.submitPasswordClicked))
-                    .switchMap { np -> submit(np).materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
+                .compose(takeWhen<CreatePassword, Void>(this.submitPasswordClicked))
+                .switchMap { np -> submit(np).materialize() }
+                .compose(bindToLifecycle())
+                .share()
 
             createNewPasswordNotification
-                    .compose(errors())
-                    .subscribe{this.error.onNext(it.localizedMessage)}
+                .compose(errors())
+                .subscribe { this.error.onNext(it.localizedMessage) }
 
             createNewPasswordNotification
-                    .compose(values())
-                    .map { it.updateUserAccount()?.user()?.email() }
-                    .subscribe {
-                        this.success.onNext(it)
-                        this.analytics.reset()
-                    }
+                .compose(values())
+                .map { it.updateUserAccount()?.user()?.email() }
+                .subscribe {
+                    this.success.onNext(it)
+                    this.analytics.reset()
+                }
         }
 
         private fun submit(createPassword: CreatePasswordViewModel.ViewModel.CreatePassword): Observable<CreatePasswordMutation.Data> {
             return this.apolloClient.createPassword(createPassword.newPassword, createPassword.confirmPassword)
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
         override fun confirmPassword(confirmPassword: String) = this.confirmPassword.onNext(confirmPassword)
@@ -124,9 +125,9 @@ interface CreatePasswordViewModel {
 
         data class CreatePassword(val newPassword: String, val confirmPassword: String) {
             fun isValid(): Boolean {
-                return  isNotEmptyAndAtLeast6Chars(this.newPassword)
-                        && isNotEmptyAndAtLeast6Chars(this.confirmPassword)
-                        && this.confirmPassword == this.newPassword
+                return isNotEmptyAndAtLeast6Chars(this.newPassword) &&
+                    isNotEmptyAndAtLeast6Chars(this.confirmPassword) &&
+                    this.confirmPassword == this.newPassword
             }
 
             fun warning(): Int? {

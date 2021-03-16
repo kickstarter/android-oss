@@ -91,21 +91,23 @@ interface LoginViewModel {
         init {
 
             val emailAndPassword = this.emailEditTextChanged
-                    .compose<Pair<String, String>>(combineLatestPair(this.passwordEditTextChanged))
+                .compose<Pair<String, String>>(combineLatestPair(this.passwordEditTextChanged))
 
             val isValid = emailAndPassword
-                    .map<Boolean> { isValid(it.first, it.second) }
+                .map<Boolean> { isValid(it.first, it.second) }
 
             val emailAndReason = intent()
-                    .filter{ it.hasExtra(IntentKey.EMAIL)}
-                    .map {
-                        Pair.create(it.getStringExtra(IntentKey.EMAIL),
-                                if (it.hasExtra(IntentKey.LOGIN_REASON)) {
-                                    it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
-                                } else {
-                                    LoginReason.DEFAULT
-                                })
-                    }
+                .filter { it.hasExtra(IntentKey.EMAIL) }
+                .map {
+                    Pair.create(
+                        it.getStringExtra(IntentKey.EMAIL),
+                        if (it.hasExtra(IntentKey.LOGIN_REASON)) {
+                            it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
+                        } else {
+                            LoginReason.DEFAULT
+                        }
+                    )
+                }
 
             // - Contain the errors if any from the login endpoint response
             val errors = PublishSubject.create<Throwable?>()
@@ -113,102 +115,102 @@ interface LoginViewModel {
             val successResponseData = PublishSubject.create<AccessTokenEnvelope>()
 
             emailAndPassword
-                    .compose(takeWhen(this.logInButtonClicked))
-                    .compose(bindToLifecycle())
-                    .switchMap { ep -> this.client.login(ep.first, ep.second).materialize() }
-                    .share()
-                    .subscribe {
-                        errors.onNext(unwrapNotificationEnvelopeError(it))
-                        successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it))
-                    }
+                .compose(takeWhen(this.logInButtonClicked))
+                .compose(bindToLifecycle())
+                .switchMap { ep -> this.client.login(ep.first, ep.second).materialize() }
+                .share()
+                .subscribe {
+                    errors.onNext(unwrapNotificationEnvelopeError(it))
+                    successResponseData.onNext(unwrapNotificationEnvelopeSuccess(it))
+                }
 
             logInButtonClicked
-                    .compose(bindToLifecycle())
-                    .subscribe{
-                        this.lake.trackLogInButtonCtaClicked()
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackLogInButtonCtaClicked()
+                }
 
             emailAndReason
-                    .map { it.first }
-                    .ofType(String::class.java)
-                    .compose(bindToLifecycle())
-                    .subscribe(this.prefillEmail)
+                .map { it.first }
+                .ofType(String::class.java)
+                .compose(bindToLifecycle())
+                .subscribe(this.prefillEmail)
 
             emailAndReason
-                    .filter { it.second == LoginReason.RESET_PASSWORD }
-                    .map { it.first }
-                    .ofType(String::class.java)
-                    .map { e -> Pair.create(true, e) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showResetPasswordSuccessDialog)
+                .filter { it.second == LoginReason.RESET_PASSWORD }
+                .map { it.first }
+                .ofType(String::class.java)
+                .map { e -> Pair.create(true, e) }
+                .compose(bindToLifecycle())
+                .subscribe(this.showResetPasswordSuccessDialog)
 
             emailAndReason
-                    .map { it.second }
-                    .ofType(LoginReason::class.java)
-                    .filter{ LoginReason.CHANGE_PASSWORD == it }
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showChangedPasswordSnackbar)
+                .map { it.second }
+                .ofType(LoginReason::class.java)
+                .filter { LoginReason.CHANGE_PASSWORD == it }
+                .compose(ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(this.showChangedPasswordSnackbar)
 
             emailAndReason
-                    .map { it.second }
-                    .ofType(LoginReason::class.java)
-                    .filter{ LoginReason.CREATE_PASSWORD == it }
-                    .compose(ignoreValues())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showCreatedPasswordSnackbar)
+                .map { it.second }
+                .ofType(LoginReason::class.java)
+                .filter { LoginReason.CREATE_PASSWORD == it }
+                .compose(ignoreValues())
+                .compose(bindToLifecycle())
+                .subscribe(this.showCreatedPasswordSnackbar)
 
             this.resetPasswordConfirmationDialogDismissed
-                    .map<Boolean> { BooleanUtils.negate(it) }
-                    .compose<Pair<Boolean, Pair<String, LoginReason>>>(combineLatestPair(emailAndReason))
-                    .map { Pair.create(it.first, it.second.first) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showResetPasswordSuccessDialog)
+                .map<Boolean> { BooleanUtils.negate(it) }
+                .compose<Pair<Boolean, Pair<String, LoginReason>>>(combineLatestPair(emailAndReason))
+                .map { Pair.create(it.first, it.second.first) }
+                .compose(bindToLifecycle())
+                .subscribe(this.showResetPasswordSuccessDialog)
 
             isValid
-                    .compose(bindToLifecycle())
-                    .subscribe(this.logInButtonIsEnabled)
+                .compose(bindToLifecycle())
+                .subscribe(this.logInButtonIsEnabled)
 
             successResponseData
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe { envelope ->
-                        this.success(envelope)
-                    }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe { envelope ->
+                    this.success(envelope)
+                }
 
             errors
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-                    .map { ErrorEnvelope.fromThrowable(it) }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.loginError)
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { ErrorEnvelope.fromThrowable(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.loginError)
 
             this.genericLoginError = this.loginError
-                    .filter { it.isGenericLoginError }
-                    .map { it.errorMessage() }
+                .filter { it.isGenericLoginError }
+                .map { it.errorMessage() }
 
             this.invalidloginError = this.loginError
-                    .filter { it.isInvalidLoginError }
-                    .map { it.errorMessage() }
+                .filter { it.isInvalidLoginError }
+                .map { it.errorMessage() }
 
             this.tfaChallenge = this.loginError
-                    .filter { it.isTfaRequiredError }
-                    .map { null }
+                .filter { it.isTfaRequiredError }
+                .map { null }
 
             this.logInButtonClicked
-                    .compose(combineLatestPair(emailAndPassword))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackLogInSubmitButtonClicked() }
+                .compose(combineLatestPair(emailAndPassword))
+                .compose(bindToLifecycle())
+                .subscribe { this.lake.trackLogInSubmitButtonClicked() }
         }
 
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =
-                if (notification.hasThrowable()) notification.throwable else null
+            if (notification.hasThrowable()) notification.throwable else null
 
         private fun unwrapNotificationEnvelopeSuccess(notification: Notification<AccessTokenEnvelope>) =
-                if (notification.hasValue()) notification.value else null
+            if (notification.hasValue()) notification.value else null
 
         private fun isValid(email: String, password: String) = email.isEmail() && password.isNotEmpty()
 

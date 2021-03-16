@@ -67,36 +67,36 @@ interface PaymentMethodsViewModel {
         init {
 
             getListOfStoredCards()
-                    .subscribe { this.cards.onNext(it) }
+                .subscribe { this.cards.onNext(it) }
 
             this.cards
-                    .map { it.isNotEmpty()  }
-                    .subscribe { this.dividerIsVisible.onNext(it)}
+                .map { it.isNotEmpty() }
+                .subscribe { this.dividerIsVisible.onNext(it) }
 
             this.deleteCardClicked
-                    .subscribe { this.showDeleteCardDialog.onNext(null) }
+                .subscribe { this.showDeleteCardDialog.onNext(null) }
 
             val deleteCardNotification = this.deleteCardClicked
-                    .compose<String>(takeWhen(this.confirmDeleteCardClicked))
-                    .switchMap { deletePaymentSource(it).materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
+                .compose<String>(takeWhen(this.confirmDeleteCardClicked))
+                .switchMap { deletePaymentSource(it).materialize() }
+                .compose(bindToLifecycle())
+                .share()
 
             deleteCardNotification
-                    .compose(values())
-                    .map { it.paymentSourceDelete()?.clientMutationId() }
-                    .subscribe {
-                        this.refreshCards.onNext(null)
-                        this.success.onNext(it)
-                    }
+                .compose(values())
+                .map { it.paymentSourceDelete()?.clientMutationId() }
+                .subscribe {
+                    this.refreshCards.onNext(null)
+                    this.success.onNext(it)
+                }
 
             deleteCardNotification
-                    .compose(Transformers.errors())
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(Transformers.errors())
+                .subscribe { this.error.onNext(it.localizedMessage) }
 
             this.refreshCards
-                    .switchMap { getListOfStoredCards() }
-                    .subscribe { this.cards.onNext(it) }
+                .switchMap { getListOfStoredCards() }
+                .subscribe { this.cards.onNext(it) }
         }
 
         override fun deleteCardButtonClicked(paymentMethodsViewHolder: PaymentMethodsViewHolder, paymentSourceId: String) {
@@ -123,17 +123,16 @@ interface PaymentMethodsViewModel {
 
         private fun getListOfStoredCards(): Observable<List<StoredCard>> {
             return this.client.getStoredCards()
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-                    .compose(bindToLifecycle())
-                    .compose(neverError())
+                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+                .compose(bindToLifecycle())
+                .compose(neverError())
         }
 
         private fun deletePaymentSource(paymentSourceId: String): Observable<DeletePaymentSourceMutation.Data> {
             return this.client.deletePaymentSource(paymentSourceId)
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
-
     }
 }

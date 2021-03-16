@@ -17,7 +17,7 @@ class SearchToolbar @JvmOverloads constructor(
 
     private val clearButton by lazy { findViewById<IconButton>(R.id.clear_button) }
     private val searchEditText by lazy { findViewById<EditText>(R.id.search_edit_text) }
-    
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         if (isInEditMode) {

@@ -21,8 +21,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
-import com.kickstarter.ui.extensions.hideKeyboard
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.*
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -33,6 +31,8 @@ import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ProjectAdapter
 import com.kickstarter.ui.data.*
+import com.kickstarter.ui.extensions.hideKeyboard
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.ui.fragments.*
 import com.kickstarter.viewmodels.ProjectViewModel
 import com.stripe.android.view.CardInputWidget
@@ -43,8 +43,12 @@ import kotlinx.android.synthetic.main.project_toolbar.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(ProjectViewModel.ViewModel::class)
-class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledgeFragment.CancelPledgeDelegate,
-        NewCardFragment.OnCardSavedListener, PledgeFragment.PledgeDelegate, BackingFragment.BackingDelegate {
+class ProjectActivity :
+    BaseActivity<ProjectViewModel.ViewModel>(),
+    CancelPledgeFragment.CancelPledgeDelegate,
+    NewCardFragment.OnCardSavedListener,
+    PledgeFragment.PledgeDelegate,
+    BackingFragment.BackingDelegate {
     private lateinit var adapter: ProjectAdapter
     private lateinit var ksString: KSString
 
@@ -87,179 +91,179 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         project_recycler_view.layoutManager = LinearLayoutManager(this)
 
         this.viewModel.outputs.backingDetailsSubtitle()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setBackingDetailsSubtitle(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setBackingDetailsSubtitle(it) }
 
         this.viewModel.outputs.backingDetailsTitle()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { backing_details_title.setText(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { backing_details_title.setText(it) }
 
         this.viewModel.outputs.backingDetailsIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { styleProjectActionButton(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { styleProjectActionButton(it) }
 
         this.viewModel.outputs.expandPledgeSheet()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { expandPledgeSheet(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { expandPledgeSheet(it) }
 
         this.viewModel.outputs.goBack()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { back() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { back() }
 
         this.viewModel.outputs.heartDrawableId()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { heart_icon.setImageDrawable(ContextCompat.getDrawable(this, it)) }
 
         this.viewModel.outputs.managePledgeMenu()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { updateManagePledgeMenu(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { updateManagePledgeMenu(it) }
 
         this.viewModel.outputs.pledgeActionButtonColor()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pledge_action_button.backgroundTintList = ContextCompat.getColorStateList(this, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { pledge_action_button.backgroundTintList = ContextCompat.getColorStateList(this, it) }
 
         this.viewModel.outputs.pledgeActionButtonContainerIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(pledge_action_buttons, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(pledge_action_buttons, it) }
 
         this.viewModel.outputs.pledgeActionButtonText()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setPledgeActionButtonCTA(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setPledgeActionButtonCTA(it) }
 
         this.viewModel.outputs.pledgeToolbarNavigationIcon()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pledge_toolbar.navigationIcon = ContextCompat.getDrawable(this, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { pledge_toolbar.navigationIcon = ContextCompat.getDrawable(this, it) }
 
         this.viewModel.outputs.pledgeToolbarTitle()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { pledge_toolbar.title = getString(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { pledge_toolbar.title = getString(it) }
 
         this.viewModel.outputs.prelaunchUrl()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { openProjectAndFinish(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { openProjectAndFinish(it) }
 
         this.viewModel.outputs.projectData()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { renderProject(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { renderProject(it) }
 
         this.viewModel.outputs.reloadProjectContainerIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(pledge_sheet_retry_container, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(pledge_sheet_retry_container, it) }
 
         this.viewModel.outputs.reloadProgressBarIsGone()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(pledge_sheet_progress_bar, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(pledge_sheet_progress_bar, it) }
 
         this.viewModel.outputs.scrimIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { animateScrimVisibility(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { animateScrimVisibility(it) }
 
         this.viewModel.outputs.setInitialRewardsContainerY()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setInitialRewardsContainerY() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setInitialRewardsContainerY() }
 
         this.viewModel.outputs.showCancelPledgeSuccess()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showCancelPledgeSuccess() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showCancelPledgeSuccess() }
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showUpdatePledgeSuccess() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showUpdatePledgeSuccess() }
 
         this.viewModel.outputs.showCancelPledgeFragment()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showCancelPledgeFragment(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showCancelPledgeFragment(it) }
 
         this.viewModel.outputs.showPledgeNotCancelableDialog()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showPledgeNotCancelableDialog() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showPledgeNotCancelableDialog() }
 
         this.viewModel.outputs.revealRewardsFragment()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { revealRewardsFragment() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { revealRewardsFragment() }
 
         this.viewModel.outputs.showSavedPrompt()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.showStarToast() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.showStarToast() }
 
         this.viewModel.outputs.showShareSheet()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startShareIntent(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startShareIntent(it) }
 
         this.viewModel.outputs.showUpdatePledge()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showPledgeFragment(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showPledgeFragment(it) }
 
         this.viewModel.outputs.startCampaignWebViewActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCampaignWebViewActivity(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startCampaignWebViewActivity(it) }
 
         this.viewModel.outputs.startCommentsActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCommentsActivity(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startCommentsActivity(it) }
 
         this.viewModel.outputs.startCreatorBioWebViewActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCreatorBioWebViewActivity(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startCreatorBioWebViewActivity(it) }
 
         this.viewModel.outputs.startCreatorDashboardActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startCreatorDashboardActivity(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startCreatorDashboardActivity(it) }
 
         this.viewModel.outputs.startProjectUpdatesActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startProjectUpdatesActivity(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startProjectUpdatesActivity(it) }
 
         this.viewModel.outputs.startLoginToutActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startLoginToutActivity() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startLoginToutActivity() }
 
         this.viewModel.outputs.startMessagesActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { startMessagesActivity(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { startMessagesActivity(it) }
 
         this.viewModel.outputs.startThanksActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showCreatePledgeSuccess(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showCreatePledgeSuccess(it) }
 
         this.viewModel.outputs.startVideoActivity()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.startVideoActivity(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.startVideoActivity(it) }
 
         setClickListeners()
     }
@@ -268,9 +272,9 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         super.onResume()
 
         this.viewModel.outputs.updateFragments()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { updateFragments(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { updateFragments(it) }
     }
 
     override fun back() {
@@ -341,22 +345,22 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         if (shouldAnimateIn || shouldAnimateOut) {
             val finalAlpha = if (show) 1f else 0f
             scrim.animate()
-                    .alpha(finalAlpha)
-                    .setDuration(200L)
-                    .setListener(object : AnimatorListenerAdapter() {
+                .alpha(finalAlpha)
+                .setDuration(200L)
+                .setListener(object : AnimatorListenerAdapter() {
 
-                        override fun onAnimationEnd(animation: Animator?) {
-                            if (!show) {
-                                ViewUtils.setGone(scrim, true)
-                            }
+                    override fun onAnimationEnd(animation: Animator?) {
+                        if (!show) {
+                            ViewUtils.setGone(scrim, true)
                         }
+                    }
 
-                        override fun onAnimationStart(animation: Animator?) {
-                            if (show) {
-                                ViewUtils.setGone(scrim, false)
-                            }
+                    override fun onAnimationStart(animation: Animator?) {
+                        if (show) {
+                            ViewUtils.setGone(scrim, false)
                         }
-                    })
+                    }
+                })
         }
     }
 
@@ -414,7 +418,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 override fun onAnimationStart(animation: Animator?) {
                     if (expand) {
                         pledge_container.visibility = View.VISIBLE
-                    } else if (animate){
+                    } else if (animate) {
                         pledge_action_buttons.visibility = View.VISIBLE
                     }
                 }
@@ -440,7 +444,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     }
 
     private fun pledgeFragment() = supportFragmentManager
-            .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
+        .findFragmentByTag(PledgeFragment::class.java.simpleName) as PledgeFragment?
 
     private fun renderProject(projectData: ProjectData) {
         this.adapter.takeProject(projectData)
@@ -455,11 +459,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
     private fun revealRewardsFragment() {
         rewardsFragment()?.let {
             supportFragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    .show(it)
-                    .addToBackStack(RewardsFragment::class.java.simpleName)
-                    .commit()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .show(it)
+                .addToBackStack(RewardsFragment::class.java.simpleName)
+                .commit()
         }
     }
 
@@ -471,7 +475,7 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         stringResOrTitle?.let { either ->
             @StringRes val stringRes = either.right()
             val title = either.left()
-            backing_details_subtitle.text = stringRes?.let { getString(it) }?: title
+            backing_details_subtitle.text = stringRes?.let { getString(it) } ?: title
         }
     }
 
@@ -532,11 +536,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val cancelPledgeFragment = CancelPledgeFragment.newInstance(project)
         val tag = CancelPledgeFragment::class.java.simpleName
         supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                .add(R.id.fragment_container, cancelPledgeFragment, tag)
-                .addToBackStack(tag)
-                .commit()
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+            .add(R.id.fragment_container, cancelPledgeFragment, tag)
+            .addToBackStack(tag)
+            .commit()
     }
 
     private fun showCancelPledgeSuccess() {
@@ -550,29 +554,31 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
         val projectData = pledgeData.projectData()
         if (clearFragmentBackStack()) {
             updateFragments(projectData)
-            startActivity(Intent(this, ThanksActivity::class.java)
+            startActivity(
+                Intent(this, ThanksActivity::class.java)
                     .putExtra(IntentKey.PROJECT, projectData.project())
                     .putExtra(IntentKey.CHECKOUT_DATA, checkoutData)
-                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData))
+                    .putExtra(IntentKey.PLEDGE_DATA, pledgeData)
+            )
         }
     }
 
     private fun showPledgeNotCancelableDialog() {
         AlertDialog.Builder(this, R.style.Dialog)
-                .setMessage(R.string.We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours)
-                .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ -> dialog.dismiss() }
-                .show()
+            .setMessage(R.string.We_dont_allow_cancelations_that_will_cause_a_project_to_fall_short_of_its_goal_within_the_last_24_hours)
+            .setPositiveButton(getString(R.string.general_alert_buttons_ok)) { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     private fun showPledgeFragment(pledgeDataAndPledgeReason: Pair<PledgeData, PledgeReason>) {
         val pledgeFragment = PledgeFragment.newInstance(pledgeDataAndPledgeReason.first, pledgeDataAndPledgeReason.second)
         val tag = PledgeFragment::class.java.simpleName
         supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                .add(R.id.fragment_container, pledgeFragment, tag)
-                .addToBackStack(tag)
-                .commit()
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+            .add(R.id.fragment_container, pledgeFragment, tag)
+            .addToBackStack(tag)
+            .commit()
     }
 
     private fun setPledgeActionButtonCTA(stringRes: Int) {
@@ -594,35 +600,35 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
     private fun startCampaignWebViewActivity(projectData: ProjectData) {
         val intent = Intent(this, CampaignDetailsActivity::class.java)
-                .putExtra(IntentKey.PROJECT_DATA, projectData)
+            .putExtra(IntentKey.PROJECT_DATA, projectData)
         startActivityForResult(intent, ActivityRequestCodes.SHOW_REWARDS)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startCreatorBioWebViewActivity(project: Project) {
         val intent = Intent(this, CreatorBioActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.URL, project.creatorBioUrl())
+            .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.URL, project.creatorBioUrl())
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startCreatorDashboardActivity(project: Project) {
         val intent = Intent(this, CreatorDashboardActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
-    private fun startProjectUpdatesActivity(projectAndData:  Pair<Project, ProjectData> ) {
+    private fun startProjectUpdatesActivity(projectAndData: Pair<Project, ProjectData>) {
         val intent = Intent(this, ProjectUpdatesActivity::class.java)
-                .putExtra(IntentKey.PROJECT, projectAndData.first)
-                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
+            .putExtra(IntentKey.PROJECT, projectAndData.first)
+            .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startCommentsActivity(projectAndData: Pair<Project, ProjectData>) {
         val intent = Intent(this, CommentsActivity::class.java)
-                .putExtra(IntentKey.PROJECT, projectAndData.first)
-                .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
+            .putExtra(IntentKey.PROJECT, projectAndData.first)
+            .putExtra(IntentKey.PROJECT_DATA, projectAndData.second)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
@@ -632,27 +638,29 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
 
         val url = projectNameAndShareUrl.second
         val intent = Intent(Intent.ACTION_SEND)
-                .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, "$shareMessage $url")
+            .setType("text/plain")
+            .putExtra(Intent.EXTRA_TEXT, "$shareMessage $url")
         startActivity(Intent.createChooser(intent, getString(this.projectShareLabelString)))
     }
 
     private fun startLoginToutActivity() {
         val intent = Intent(this, LoginToutActivity::class.java)
-                .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
+            .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT)
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
     }
 
     private fun startMessagesActivity(project: Project) {
-        startActivity(Intent(this, MessagesActivity::class.java)
+        startActivity(
+            Intent(this, MessagesActivity::class.java)
                 .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Message.PROJECT_PAGE)
                 .putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.BACKING, project.backing()))
+                .putExtra(IntentKey.BACKING, project.backing())
+        )
     }
 
     private fun startVideoActivity(project: Project) {
         val intent = Intent(this, VideoActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project)
         startActivity(intent)
     }
 
@@ -682,15 +690,15 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                     supportFragmentManager.backStackEntryCount == 0 -> when {
                         projectData.project().isBacking -> if (!rewardsFragment.isHidden) {
                             supportFragmentManager.beginTransaction()
-                                    .show(backingFragment)
-                                    .hide(rewardsFragment)
-                                    .commitNow()
+                                .show(backingFragment)
+                                .hide(rewardsFragment)
+                                .commitNow()
                         }
                         else -> if (!backingFragment.isHidden) {
                             supportFragmentManager.beginTransaction()
-                                    .show(rewardsFragment)
-                                    .hide(backingFragment)
-                                    .commitNow()
+                                .show(rewardsFragment)
+                                .hide(backingFragment)
+                                .commitNow()
                         }
                     }
                 }

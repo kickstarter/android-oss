@@ -66,65 +66,64 @@ interface MessageCreatorViewModel {
 
         init {
             val project = intent()
-                    .map { it.getParcelableExtra(IntentKey.PROJECT) as Project }
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project }
 
             project
-                    .map { it.creator().name() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.creatorName)
+                .map { it.creator().name() }
+                .compose(bindToLifecycle())
+                .subscribe(this.creatorName)
 
-            val sendMessage = Observable.combineLatest(project, this.messageBodyChanged.startWith(""))
-            { p, u -> SendMessage(p, u) }
+            val sendMessage = Observable.combineLatest(project, this.messageBodyChanged.startWith("")) { p, u -> SendMessage(p, u) }
 
             this.messageBodyChanged
-                    .map { it.isPresent() }
-                    .distinctUntilChanged()
-                    .subscribe(this.sendButtonIsEnabled)
+                .map { it.isPresent() }
+                .distinctUntilChanged()
+                .subscribe(this.sendButtonIsEnabled)
 
             val sendMessageNotification = sendMessage
-                    .compose(takeWhen<SendMessage, Void>(this.sendButtonClicked))
-                    .switchMap { sendMessage(it).materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
+                .compose(takeWhen<SendMessage, Void>(this.sendButtonClicked))
+                .switchMap { sendMessage(it).materialize() }
+                .compose(bindToLifecycle())
+                .share()
 
             sendMessageNotification
-                    .compose(errors())
-                    .map { R.string.social_error_could_not_send_message_backer }
-                    .subscribe {
-                        this.showSentError.onNext(it)
-                        this.progressBarIsVisible.onNext(false)
-                        this.sendButtonIsEnabled.onNext(true)
-                    }
+                .compose(errors())
+                .map { R.string.social_error_could_not_send_message_backer }
+                .subscribe {
+                    this.showSentError.onNext(it)
+                    this.progressBarIsVisible.onNext(false)
+                    this.sendButtonIsEnabled.onNext(true)
+                }
 
             sendMessageNotification
-                    .compose(values())
-                    .switchMap { fetchThread(it) }
-                    .filter(ObjectUtils::isNotNull)
-                    .subscribe(this.showMessageThread)
+                .compose(values())
+                .switchMap { fetchThread(it) }
+                .filter(ObjectUtils::isNotNull)
+                .subscribe(this.showMessageThread)
         }
 
         private fun fetchThread(conversationId: Long): Observable<MessageThread> {
             val fetchThreadNotification = this.apiClient.fetchMessagesForThread(conversationId)
-                    .compose(bindToLifecycle())
-                    .materialize()
-                    .share()
+                .compose(bindToLifecycle())
+                .materialize()
+                .share()
 
             fetchThreadNotification
-                    .compose(errors())
-                    .map { R.string.Your_message_has_been_sent }
-                    .subscribe(this.showSentSuccess)
+                .compose(errors())
+                .map { R.string.Your_message_has_been_sent }
+                .subscribe(this.showSentSuccess)
 
             return fetchThreadNotification
-                    .compose(values())
-                    .map { it.messageThread() }
+                .compose(values())
+                .map { it.messageThread() }
         }
 
         private fun sendMessage(sendMessage: SendMessage): Observable<Long> {
             return this.apolloClient.sendMessage(sendMessage.project, sendMessage.project.creator(), sendMessage.body)
-                    .doOnSubscribe {
-                        this.progressBarIsVisible.onNext(true)
-                        this.sendButtonIsEnabled.onNext(false)
-                    }
+                .doOnSubscribe {
+                    this.progressBarIsVisible.onNext(true)
+                    this.sendButtonIsEnabled.onNext(false)
+                }
         }
 
         override fun messageBodyChanged(messageBody: String) {

@@ -78,67 +78,66 @@ interface UpdateCardViewHolderViewModel {
         init {
 
             val update = this.projectAndUpdate
-                    .map { it.second }
+                .map { it.second }
 
             this.projectAndUpdate
-                    .map {
-                        when {
-                            it.first.isBacking -> false
-                            else -> BooleanUtils.negate(it.second.isPublic ?: false)
-                        }
+                .map {
+                    when {
+                        it.first.isBacking -> false
+                        else -> BooleanUtils.negate(it.second.isPublic ?: false)
                     }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backersOnlyContainerIsVisible)
+                }
+                .compose(bindToLifecycle())
+                .subscribe(this.backersOnlyContainerIsVisible)
 
             update
-                    .map { it.truncatedBody() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.blurb)
+                .map { it.truncatedBody() }
+                .compose(bindToLifecycle())
+                .subscribe(this.blurb)
 
             update
-                    .map { it.commentsCount() }
-                    .filter { it != null }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.commentsCount)
+                .map { it.commentsCount() }
+                .filter { it != null }
+                .compose(bindToLifecycle())
+                .subscribe(this.commentsCount)
 
             update
-                    .map { it.commentsCount() }
-                    .map { IntegerUtils.isNullOrZero(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.commentsCountIsGone)
+                .map { it.commentsCount() }
+                .map { IntegerUtils.isNullOrZero(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.commentsCountIsGone)
 
             update
-                    .map { it.likesCount() }
-                    .filter { it != null }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.likesCount)
+                .map { it.likesCount() }
+                .filter { it != null }
+                .compose(bindToLifecycle())
+                .subscribe(this.likesCount)
 
             update
-                    .map { it.likesCount() }
-                    .map { IntegerUtils.isNullOrZero(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.likesCountIsGone)
+                .map { it.likesCount() }
+                .map { IntegerUtils.isNullOrZero(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.likesCountIsGone)
 
             update
-                    .map { it.publishedAt() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.publishDate)
+                .map { it.publishedAt() }
+                .compose(bindToLifecycle())
+                .subscribe(this.publishDate)
 
             update
-                    .map { it.sequence() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.sequence)
+                .map { it.sequence() }
+                .compose(bindToLifecycle())
+                .subscribe(this.sequence)
 
             update
-                    .map { it.title() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.title)
+                .map { it.title() }
+                .compose(bindToLifecycle())
+                .subscribe(this.title)
 
             update
-                    .compose<Update>(takeWhen(this.updateClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showUpdateDetails)
-
+                .compose<Update>(takeWhen(this.updateClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.showUpdateDetails)
         }
 
         override fun configureWith(project: Project, update: Update) {
@@ -168,6 +167,5 @@ interface UpdateCardViewHolderViewModel {
         override fun showUpdateDetails(): Observable<Update> = this.showUpdateDetails
 
         override fun title(): Observable<String> = this.title
-
     }
 }

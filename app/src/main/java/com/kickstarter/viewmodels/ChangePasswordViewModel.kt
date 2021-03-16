@@ -14,7 +14,6 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-
 interface ChangePasswordViewModel {
 
     interface Inputs {
@@ -69,46 +68,48 @@ interface ChangePasswordViewModel {
 
         init {
 
-            val changePassword = Observable.combineLatest(this.currentPassword.startWith(""),
-                    this.newPassword.startWith(""),
-                    this.confirmPassword.startWith(""),
-                    { current, new, confirm -> ChangePassword(current, new, confirm) })
+            val changePassword = Observable.combineLatest(
+                this.currentPassword.startWith(""),
+                this.newPassword.startWith(""),
+                this.confirmPassword.startWith(""),
+                { current, new, confirm -> ChangePassword(current, new, confirm) }
+            )
 
             changePassword
-                    .map { it.warning() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.passwordWarning)
+                .map { it.warning() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.passwordWarning)
 
             changePassword
-                    .map { it.isValid() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.saveButtonIsEnabled)
+                .map { it.isValid() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.saveButtonIsEnabled)
 
             val changePasswordNotification = changePassword
-                    .compose(takeWhen<ChangePassword, Void>(this.changePasswordClicked))
-                    .switchMap { cp -> submit(cp).materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
+                .compose(takeWhen<ChangePassword, Void>(this.changePasswordClicked))
+                .switchMap { cp -> submit(cp).materialize() }
+                .compose(bindToLifecycle())
+                .share()
 
             changePasswordNotification
-                    .compose(errors())
-                    .subscribe({ this.error.onNext(it.localizedMessage) })
+                .compose(errors())
+                .subscribe({ this.error.onNext(it.localizedMessage) })
 
             changePasswordNotification
-                    .compose(values())
-                    .map { it.updateUserAccount()?.user()?.email() }
-                    .subscribe {
-                        this.analytics.reset()
-                        this.success.onNext(it)
-                    }
+                .compose(values())
+                .map { it.updateUserAccount()?.user()?.email() }
+                .subscribe {
+                    this.analytics.reset()
+                    this.success.onNext(it)
+                }
         }
 
         private fun submit(changePassword: ChangePasswordViewModel.ViewModel.ChangePassword): Observable<UpdateUserPasswordMutation.Data> {
             return this.apolloClient.updateUserPassword(changePassword.currentPassword, changePassword.newPassword, changePassword.confirmPassword)
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
+                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
 
         override fun changePasswordClicked() {
@@ -149,10 +150,10 @@ interface ChangePasswordViewModel {
 
         data class ChangePassword(val currentPassword: String, val newPassword: String, val confirmPassword: String) {
             fun isValid(): Boolean {
-                return isNotEmptyAndAtLeast6Chars(this.currentPassword)
-                        && isNotEmptyAndAtLeast6Chars(this.newPassword)
-                        && isNotEmptyAndAtLeast6Chars(this.confirmPassword)
-                        && this.confirmPassword == this.newPassword
+                return isNotEmptyAndAtLeast6Chars(this.currentPassword) &&
+                    isNotEmptyAndAtLeast6Chars(this.newPassword) &&
+                    isNotEmptyAndAtLeast6Chars(this.confirmPassword) &&
+                    this.confirmPassword == this.newPassword
             }
 
             fun warning(): Int? {

@@ -57,28 +57,28 @@ interface PaymentMethodsViewHolderViewModel {
 
         init {
             this.card
-                    .map { it.expiration() }
-                    .map { sdf.format(it).toString() }
-                    .subscribe(this.expirationDate)
+                .map { it.expiration() }
+                .map { sdf.format(it).toString() }
+                .subscribe(this.expirationDate)
 
             this.card
-                    .map { it.id() }
-                    .compose<String>(takeWhen(this.deleteCardClick))
-                    .subscribe(this.id)
+                .map { it.id() }
+                .compose<String>(takeWhen(this.deleteCardClick))
+                .subscribe(this.id)
 
             this.card
-                    .map { it.lastFourDigits() }
-                    .subscribe(this.lastFour)
+                .map { it.lastFourDigits() }
+                .subscribe(this.lastFour)
 
             this.card
-                    .map { it.type() }
-                    .map { StoredCard.getCardTypeDrawable(it) }
-                    .subscribe(this.issuerImage)
+                .map { it.type() }
+                .map { StoredCard.getCardTypeDrawable(it) }
+                .subscribe(this.issuerImage)
 
             this.card
-                    .map { it.type() }
-                    .map { StoredCard.issuer(it) }
-                    .subscribe(this.issuer)
+                .map { it.type() }
+                .map { StoredCard.issuer(it) }
+                .subscribe(this.issuer)
         }
 
         override fun card(creditCard: StoredCard) = this.card.onNext(creditCard)

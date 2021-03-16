@@ -42,8 +42,8 @@ interface PerimeterXClientType {
     fun httpHeaders(): MutableMap<String, String>?
 
     /**
-    * Start SDK with the given context.
-    */
+     * Start SDK with the given context.
+     */
     fun start(context: Context)
 
     /**

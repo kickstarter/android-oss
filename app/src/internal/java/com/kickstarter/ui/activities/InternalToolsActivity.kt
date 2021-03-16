@@ -49,7 +49,7 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
     var logout: Logout? = null
 
     private lateinit var binding: InternalToolsLayoutBinding
-    
+
     private val resetDeviceIdReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             showDeviceId(true)

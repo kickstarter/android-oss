@@ -46,8 +46,12 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
 
     @Test
     fun currentVarients_whenGivenMapOfExperiments_shouldReturnCorrectNumberOfCurrentVariants() {
-        val configWithExperiments = ConfigFactory.configWithExperiments(mapOf(Pair("pledge_button_copy", "experiment"),
-                Pair("add_new_card_vertical", "control")))
+        val configWithExperiments = ConfigFactory.configWithExperiments(
+            mapOf(
+                Pair("pledge_button_copy", "experiment"),
+                Pair("add_new_card_vertical", "control")
+            )
+        )
 
         val correctValue = JSONArray().apply {
             put("add_new_card_vertical[control]")
@@ -70,21 +74,32 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
 
     @Test
     fun enabledFeatureFlags_whenGivenMapOfFeatureFlags_shouldReturnCorrectNumberOfEnabledFeatureFlags() {
-        val configSeveralFeatureFlags = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("android_native_checkout", false),
+        val configSeveralFeatureFlags = ConfigFactory.configWithFeaturesEnabled(
+            mapOf(
+                Pair("android_native_checkout", false),
                 Pair("ios_go_rewardless", true),
-                Pair("ios_native_checkout", true)))
+                Pair("ios_native_checkout", true)
+            )
+        )
 
         assertEquals(JSONArray(), configSeveralFeatureFlags.enabledFeatureFlags())
     }
 
     @Test
     fun enabledFeatureFlags_whenGivenTrueFeatureFlag_shouldReturnTrueEnabledFeatureFlag() {
-        val configEnableFeatureFlag = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("android_native_checkout", true),
+        val configEnableFeatureFlag = ConfigFactory.configWithFeaturesEnabled(
+            mapOf(
+                Pair("android_native_checkout", true),
                 Pair("ios_go_rewardless", true),
-                Pair("ios_native_checkout", true)))
+                Pair("ios_native_checkout", true)
+            )
+        )
 
-        assertEquals(JSONArray().apply {
-            put("android_native_checkout")
-        }, configEnableFeatureFlag.enabledFeatureFlags())
+        assertEquals(
+            JSONArray().apply {
+                put("android_native_checkout")
+            },
+            configEnableFeatureFlag.enabledFeatureFlags()
+        )
     }
 }

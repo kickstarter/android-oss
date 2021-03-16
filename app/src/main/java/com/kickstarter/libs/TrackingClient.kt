@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.view.accessibility.AccessibilityManager
-import androidx.work.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.crashlytics.FirebaseCrashlytics

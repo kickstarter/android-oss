@@ -72,6 +72,10 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     }
 
     private fun onStateChanged(playbackState: Int) {
+        if(playbackState== Player.STATE_READY){
+
+        }
+
         if (playbackState == Player.STATE_ENDED) {
             finish()
         }

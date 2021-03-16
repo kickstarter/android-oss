@@ -54,8 +54,13 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.data.Editorial
+import com.kickstarter.ui.data.PledgeFlowContext
 import com.kickstarter.ui.data.Mailbox
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.LoginReason
 import java.util.Locale
 import kotlin.collections.HashMap
 

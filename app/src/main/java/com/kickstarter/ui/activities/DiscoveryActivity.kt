@@ -41,7 +41,8 @@ import com.qualtrics.digital.InitializationResult
 import com.qualtrics.digital.Qualtrics
 import com.qualtrics.digital.QualtricsSurveyActivity
 import rx.android.schedulers.AndroidSchedulers
-import java.util.*
+import java.util.Arrays
+import java.util.Locale
 
 @RequiresActivityViewModel(DiscoveryViewModel.ViewModel::class)
 class DiscoveryActivity : BaseActivity<DiscoveryViewModel.ViewModel>() {

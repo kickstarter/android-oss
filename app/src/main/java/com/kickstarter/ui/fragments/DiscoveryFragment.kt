@@ -11,7 +11,11 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.RecyclerViewPaginator
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse

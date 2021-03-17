@@ -24,8 +24,18 @@ import com.stripe.android.ApiResultCallback
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
 import com.stripe.android.view.CardInputListener
-import kotlinx.android.synthetic.main.form_new_card.*
-import kotlinx.android.synthetic.main.modal_fragment_new_card.*
+import kotlinx.android.synthetic.main.form_new_card.allowed_card_warning
+import kotlinx.android.synthetic.main.form_new_card.card_focus
+import kotlinx.android.synthetic.main.form_new_card.card_input_widget
+import kotlinx.android.synthetic.main.form_new_card.cardholder_name
+import kotlinx.android.synthetic.main.form_new_card.form_container
+import kotlinx.android.synthetic.main.form_new_card.new_card_app_bar_layout
+import kotlinx.android.synthetic.main.form_new_card.new_card_toolbar
+import kotlinx.android.synthetic.main.form_new_card.postal_code
+import kotlinx.android.synthetic.main.form_new_card.progress_bar
+import kotlinx.android.synthetic.main.form_new_card.reusable_container
+import kotlinx.android.synthetic.main.form_new_card.reusable_switch
+import kotlinx.android.synthetic.main.modal_fragment_new_card.modal_new_card_snackbar_anchor
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresFragmentViewModel(NewCardFragmentViewModel.ViewModel::class)

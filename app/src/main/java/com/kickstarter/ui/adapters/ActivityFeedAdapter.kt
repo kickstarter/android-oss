@@ -4,7 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
-import com.kickstarter.databinding.*
+import com.kickstarter.databinding.ActivityFriendBackingViewBinding
+import com.kickstarter.databinding.ActivityFriendFollowViewBinding
+import com.kickstarter.databinding.ActivityProjectStateChangedPositiveViewBinding
+import com.kickstarter.databinding.ActivityProjectStateChangedViewBinding
+import com.kickstarter.databinding.ActivityProjectUpdateViewBinding
+import com.kickstarter.databinding.ActivitySurveyHeaderViewBinding
+import com.kickstarter.databinding.ActivitySurveyViewBinding
+import com.kickstarter.databinding.EmptyActivityFeedViewBinding
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ItemErroredBackingBinding
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking

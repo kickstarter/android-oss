@@ -14,7 +14,16 @@ import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.viewmodels.SettingsViewModel
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.settings_layout.*
+import kotlinx.android.synthetic.main.settings_layout.account_row
+import kotlinx.android.synthetic.main.settings_layout.edit_profile_row
+import kotlinx.android.synthetic.main.settings_layout.help_row
+import kotlinx.android.synthetic.main.settings_layout.log_out_row
+import kotlinx.android.synthetic.main.settings_layout.name_text_view
+import kotlinx.android.synthetic.main.settings_layout.newsletters_row
+import kotlinx.android.synthetic.main.settings_layout.notification_row
+import kotlinx.android.synthetic.main.settings_layout.profile_picture_image_view
+import kotlinx.android.synthetic.main.settings_layout.rate_us_row
+import kotlinx.android.synthetic.main.settings_layout.version_name_text_view
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(SettingsViewModel.ViewModel::class)

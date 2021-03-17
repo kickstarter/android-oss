@@ -12,7 +12,7 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.libs.utils.ExceptionUtils
 import com.kickstarter.ui.viewholders.KSViewHolder
 import com.trello.rxlifecycle.ActivityEvent
-import java.util.*
+import java.util.ArrayList
 
 abstract class KSListAdapter(diffUtil: DiffUtil.ItemCallback<Any>) : ListAdapter<Any, KSViewHolder>(diffUtil) {
     private val sections = ArrayList<List<Any>>()

@@ -18,7 +18,17 @@ import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.SurveyResponse
-import com.kickstarter.ui.viewholders.*
+import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder
+import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.ErroredBackingViewHolder
+import com.kickstarter.ui.viewholders.FriendBackingViewHolder
+import com.kickstarter.ui.viewholders.FriendFollowViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder
+import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder
+import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder
+import com.kickstarter.ui.viewholders.SurveyHeaderViewHolder
+import com.kickstarter.ui.viewholders.SurveyViewHolder
 
 class ActivityFeedAdapter(private val delegate: Delegate?) : KSAdapter() {
     interface Delegate :

@@ -101,7 +101,10 @@ public interface LoginToutViewModel {
         .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
         .ofType(LoginReason.class)
         .compose(bindToLifecycle())
-        .subscribe(this.loginReason::onNext);
+        .subscribe(it -> {
+          this.loginReason.onNext(it);
+          this.lake.trackLoginOrSignUpPagedViewed();
+        });
 
       activityResult()
         .compose(bindToLifecycle())

@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SOR
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
@@ -26,8 +27,11 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
@@ -932,6 +936,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(LOG_IN_BUTTON_CLICKED)
     }
 
+    /**
+     * Sends data to the client when the login button is clicked.
+     *
+     */
+    fun trackLogInButtonCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN.contextName)
+        props[CONTEXT_CTA.contextName] = LOGIN_SUBMIT.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
     fun trackLogInInitiateCtaClicked() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_INITIATE.contextName)
         props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
@@ -958,6 +972,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackSignUpButtonClicked() {
         client.track(SIGN_UP_BUTTON_CLICKED)
+    }
+
+    /**
+     * Sends data to the client when the submit button is clicked.
+     *
+     */
+    fun trackSignUpSubmitCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to SIGN_UP_SUBMIT.contextName)
+        props[CONTEXT_PAGE.contextName] = SIGN_UP.contextName
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackSignUpSubmitButtonClicked() {

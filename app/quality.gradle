@@ -24,27 +24,17 @@ task ktlint(type: JavaExec, group: "verification") {
     args "src/**/*.kt"
     args "--reporter=plain", "--reporter=checkstyle,output="+outputFile
     ignoreExitValue true
-}
-
-task ktlintHasErrors(group: "verification") {
-    def outputFile = "${buildDir}/reports/checkstyle/ktlint.xml"
-    ext.hasErrors = {
-        File file = new File(outputFile)
-        def fileContent = file.text
-        return fileContent.contains("error")
-    }
-
-    if (file(outputFile).exists()) {
-        def syntaxErrors = hasErrors()
-        if (syntaxErrors) {
+    doLast {
+        def exitValue = executionResult.get().exitValue
+        if(exitValue == 0) {
+            print "ktlint finished successfully"
+        } else {
             throw new GradleException('Fix style for kotlin code, see report: ' + outputFile)
         }
-    } else {
-        print "Report not yet created"
     }
 }
 
-check.dependsOn 'checkstyle', 'ktlint'
+check.dependsOn 'checkstyle','ktlint'
 
 task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."

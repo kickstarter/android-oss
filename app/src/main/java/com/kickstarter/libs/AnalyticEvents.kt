@@ -291,7 +291,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
-     * Tracks a login or sign up button clicked.
+     * Tracks a login or sign up page viewed.
      * @param type
      * @param page
      */

@@ -7,12 +7,24 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.models.*
+import com.kickstarter.models.Backing
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
+import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -24,7 +36,7 @@ import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import type.CreditCardTypes
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 interface BackingFragmentViewModel {

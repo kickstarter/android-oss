@@ -3,7 +3,11 @@ package com.kickstarter.viewmodels
 import CreatePasswordMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockTrackingClient
+import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.UserFactory

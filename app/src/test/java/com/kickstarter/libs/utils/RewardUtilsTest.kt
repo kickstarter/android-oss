@@ -35,7 +35,7 @@ import org.joda.time.DateTimeUtils
 import org.joda.time.MutableDateTime
 import org.junit.Before
 import org.junit.Test
-import java.util.*
+import java.util.Date
 
 class RewardUtilsTest : KSRobolectricTestCase() {
 

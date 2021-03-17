@@ -7,7 +7,15 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockCurrentConfig
-import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.factories.ApiExceptionFactory
+import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.ShippingRuleFactory
+import com.kickstarter.mock.factories.ShippingRulesEnvelopeFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
 import com.kickstarter.models.Location

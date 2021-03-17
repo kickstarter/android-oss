@@ -4,7 +4,7 @@ import com.kickstarter.BuildConfig
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Build
 import org.junit.Test
-import java.util.*
+import java.util.Locale
 
 class WebUtilsTest : KSRobolectricTestCase() {
 

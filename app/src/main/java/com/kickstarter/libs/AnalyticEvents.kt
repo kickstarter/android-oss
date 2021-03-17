@@ -293,6 +293,14 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
+     * Tracks a sign up page viewed.
+     */
+    fun trackSignUpPageViewed() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to SIGN_UP.contextName)
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
      * Tracks a login or sign up page viewed.
      * @param type
      * @param page

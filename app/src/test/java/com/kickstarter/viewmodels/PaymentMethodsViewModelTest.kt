@@ -9,7 +9,7 @@ import com.kickstarter.models.StoredCard
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Collections
 
 class PaymentMethodsViewModelTest : KSRobolectricTestCase() {
 

@@ -8,7 +8,7 @@ import com.kickstarter.models.ProjectNotification
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Collections
 
 class ProjectNotificationSettingsViewModelTest : KSRobolectricTestCase() {
 

@@ -18,7 +18,12 @@ import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber

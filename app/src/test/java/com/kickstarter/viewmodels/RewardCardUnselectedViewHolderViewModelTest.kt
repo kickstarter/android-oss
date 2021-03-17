@@ -13,7 +13,8 @@ import com.kickstarter.models.StoredCard
 import com.stripe.android.model.Card
 import org.junit.Test
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Date
+import java.util.GregorianCalendar
 
 class RewardCardUnselectedViewHolderViewModelTest : KSRobolectricTestCase() {
 

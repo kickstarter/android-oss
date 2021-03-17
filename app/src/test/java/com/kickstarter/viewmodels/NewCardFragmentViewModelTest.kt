@@ -17,7 +17,7 @@ import com.stripe.android.model.Card
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Calendar
 
 class NewCardFragmentViewModelTest : KSRobolectricTestCase() {
 

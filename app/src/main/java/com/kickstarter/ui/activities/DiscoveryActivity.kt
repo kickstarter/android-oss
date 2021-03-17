@@ -37,7 +37,9 @@ import com.kickstarter.ui.extensions.showSuccessSnackBar
 import com.kickstarter.ui.fragments.DiscoveryFragment
 import com.kickstarter.ui.fragments.DiscoveryFragment.Companion.newInstance
 import com.kickstarter.viewmodels.DiscoveryViewModel
-import com.qualtrics.digital.*
+import com.qualtrics.digital.Qualtrics
+import com.qualtrics.digital.InitializationResult
+import com.qualtrics.digital.QualtricsSurveyActivity
 import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 

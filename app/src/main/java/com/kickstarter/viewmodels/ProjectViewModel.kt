@@ -650,7 +650,10 @@ interface ProjectViewModel {
                 .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
                 .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                 .compose(bindToLifecycle())
-                .subscribe(this.showUpdatePledge)
+                .subscribe(this.showUpdatePledge) {
+                    this.showUpdatePledge.onNext(it)
+                    this.lake.trackChangePaymentMethod(it.first)
+                }
 
             projectDataAndBackedReward
                 .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePledgeClicked))

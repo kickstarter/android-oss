@@ -61,8 +61,8 @@ public class LoginToutViewModelTest extends KSRobolectricTestCase {
 
     this.vm.inputs.signupClick();
     this.startSignupActivity.assertValueCount(1);
-    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Sign Up Button Clicked");
-    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Sign Up Button Clicked");
+    this.lakeTest.assertValues("Log In or Sign Up Page Viewed", "Sign Up Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues("Log In or Sign Up Page Viewed", "Sign Up Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

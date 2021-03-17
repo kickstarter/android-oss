@@ -11,6 +11,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMI
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
@@ -960,6 +961,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackLogInInitiateCtaClicked() {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_INITIATE.contextName)
+        props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    fun trackSignUpInitiateCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to SIGN_UP_INITIATE.contextName)
         props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
         client.track(CTA_CLICKED.eventName, props)
     }

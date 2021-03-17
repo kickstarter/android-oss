@@ -29,12 +29,23 @@ import com.kickstarter.mock.factories.StoredCardFactory
 import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.mock.services.MockApolloClient
-import com.kickstarter.models.*
+import com.kickstarter.models.Backing
+import com.kickstarter.models.Checkout
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
+import com.kickstarter.models.ShippingRule
+import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import com.kickstarter.services.apiresponses.ShippingRulesEnvelope
 import com.kickstarter.services.mutations.CreateBackingData
 import com.kickstarter.services.mutations.UpdateBackingData
 import com.kickstarter.ui.ArgumentsKey
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.CardState
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import com.stripe.android.StripeIntentResult
 import junit.framework.TestCase
 import org.joda.time.DateTime
@@ -43,7 +54,7 @@ import rx.Observable
 import rx.observers.TestSubscriber
 import java.math.RoundingMode
 import java.net.CookieManager
-import java.util.*
+import java.util.Collections
 
 class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 

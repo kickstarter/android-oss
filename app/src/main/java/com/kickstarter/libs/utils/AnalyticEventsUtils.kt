@@ -11,7 +11,6 @@ import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
 import java.util.*
 import kotlin.math.ceil
-import kotlin.math.round
 import kotlin.math.roundToInt
 
 object AnalyticEventsUtils {
@@ -117,6 +116,16 @@ object AnalyticEventsUtils {
         props.putAll(refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         props["context_pledge_flow"] = pledgeData.pledgeFlowContext().trackingString
         return props
+    }
+
+    @JvmOverloads
+    fun videoProperties(videoLength: Long, videoPosition: Long, prefix: String = "video_"): Map<String, Any> {
+
+        val properties = HashMap<String, Any>().apply {
+            put("length", videoLength)
+            put("position ",videoPosition)
+        }
+        return MapUtils.prefixKeys(properties, prefix)
     }
 
     @JvmOverloads

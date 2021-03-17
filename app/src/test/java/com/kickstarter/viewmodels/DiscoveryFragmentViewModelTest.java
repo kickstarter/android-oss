@@ -386,7 +386,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
 
     this.showLoginTout.assertValue(true);
-    this.lakeTest.assertValue("Log In or Signup Button Clicked");
+    this.lakeTest.assertValues("Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test

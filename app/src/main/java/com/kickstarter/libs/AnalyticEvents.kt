@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
@@ -275,6 +276,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         properties["intent"] = loginReason.trackingString()
 
         client.track("Application Login or Signup", properties)
+    }
+
+    /**
+     * Tracks a login or sign up button clicked.
+     * @param type
+     * @param page
+     */
+    fun trackLoginOrSignUpCtaClicked(type: String?, page: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
+        props[CONTEXT_PAGE.contextName] = page
+        type?. let { props[CONTEXT_TYPE.contextName] = it }
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackLoginSuccess() {

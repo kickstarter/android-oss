@@ -10,7 +10,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 interface PaymentMethodsViewHolderViewModel {
 

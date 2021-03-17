@@ -4,8 +4,10 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.rx.transformers.Transformers.errors
+import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.IntegerUtils
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -109,7 +111,7 @@ interface NotificationsViewModel {
 
             this.client.fetchCurrentUser()
                 .retry(2)
-                .compose(Transformers.neverError())
+                .compose(neverError())
                 .compose(bindToLifecycle())
                 .subscribe { this.currentUser.refresh(it) }
 

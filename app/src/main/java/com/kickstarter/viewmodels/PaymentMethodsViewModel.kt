@@ -3,8 +3,10 @@ package com.kickstarter.viewmodels
 import DeletePaymentSourceMutation
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.rx.transformers.Transformers.errors
+import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.activities.PaymentMethodsSettingsActivity
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
@@ -91,7 +93,7 @@ interface PaymentMethodsViewModel {
                 }
 
             deleteCardNotification
-                .compose(Transformers.errors())
+                .compose(errors())
                 .subscribe { this.error.onNext(it.localizedMessage) }
 
             this.refreshCards

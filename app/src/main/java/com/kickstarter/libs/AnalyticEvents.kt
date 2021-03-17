@@ -317,7 +317,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(PAGE_VIEWED.eventName, props)
     }
 
-
     fun trackLoginSuccess() {
         client.track(KoalaEvent.LOGIN)
     }

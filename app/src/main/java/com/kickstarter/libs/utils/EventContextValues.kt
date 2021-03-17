@@ -31,7 +31,8 @@ class EventContextValues {
         CAMPAIGN_DETAILS("campaign_details"),
         CREATOR_DETAILS("creator_details"),
         LOGIN_SUBMIT("log_in_submit"),
-        SIGN_UP_SUBMIT("sign_up_submit")
+        SIGN_UP_SUBMIT("sign_up_submit"),
+        SIGN_UP_INITIATE("sign_up_initiate"),
     }
 
     /**

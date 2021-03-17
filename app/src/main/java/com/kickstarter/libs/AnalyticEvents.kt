@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
@@ -47,6 +48,8 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
+import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
@@ -276,6 +279,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         properties["intent"] = loginReason.trackingString()
 
         client.track("Application Login or Signup", properties)
+    }
+
+    /**
+     * Tracks a login or sign up button clicked.
+     * @param type
+     * @param page
+     */
+    fun trackLoginOrSignUpCtaClicked(type: String?, page: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
+        props[CONTEXT_PAGE.contextName] = page
+        type?. let { props[CONTEXT_TYPE.contextName] = it }
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackLoginSuccess() {
@@ -932,6 +947,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackRewardsCarouselViewed(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to REWARDS.contextName)
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the payment method is changed.
+     *
+     * @param pledgeData: The selected pledge data for project.
+     */
+    fun trackChangePaymentMethod(pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CHANGE_PAYMENT.contextName)
+        props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(PAGE_VIEWED.eventName, props)
     }
 

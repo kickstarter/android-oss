@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels;
 
+import android.util.Log;
+
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
@@ -103,6 +105,8 @@ public interface SignupViewModel {
                 this.lake.trackSignUpSubmitButtonClicked();
                 this.lake.trackSignUpSubmitCtaClicked();
               });
+
+      this.lake.trackSignUpPageViewed();
     }
 
     private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {

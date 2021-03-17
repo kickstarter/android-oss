@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.util.Log;
-
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;

@@ -60,6 +60,7 @@ class EventContextValues {
         SEARCH("search"),
         THANKS("thanks"),
         UPDATE_PLEDGE("update_pledge"),
+        CHANGE_PAYMENT("change_payment"),
         LOGIN_SIGN_UP("log_in_sign_up"),
         SIGN_UP("sign_up"),
         LOGIN("log_in")

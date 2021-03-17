@@ -30,8 +30,10 @@ class EventContextValues {
         LOGIN_INITIATE("log_in_initiate"),
         CAMPAIGN_DETAILS("campaign_details"),
         CREATOR_DETAILS("creator_details"),
+        LOGIN_OR_SIGN_UP("log_in_or_sign_up"),
         LOGIN_SUBMIT("log_in_submit"),
-        SIGN_UP_SUBMIT("sign_up_submit")
+        SIGN_UP_SUBMIT("sign_up_submit"),
+        SIGN_UP_INITIATE("sign_up_initiate"),
     }
 
     /**
@@ -130,6 +132,7 @@ class EventContextValues {
     enum class ContextTypeName(val contextName: String) {
         CREDIT_CARD("credit_card"),
         WATCH("watch"),
-        UNWATCH("unwatch")
+        UNWATCH("unwatch"),
+        FACEBOOK("facebook")
     }
 }

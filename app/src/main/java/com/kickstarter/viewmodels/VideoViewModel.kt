@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels
 
+import java.util.concurrent.TimeUnit
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.utils.ObjectUtils
@@ -13,41 +14,49 @@ interface VideoViewModel {
     interface Outputs {
         /** Emits the url of the video for the player.  */
         fun preparePlayerWithUrl(): Observable<String>
-        fun onVideoStarted(): Observable<Pair<Long,Long>>
     }
 
-    class ViewModel(environment: Environment) : ActivityViewModel<VideoActivity>(environment), Outputs {
+    interface Inputs {
+        fun onVideoStarted(videoLength:Long, videoPosition:Long)
+    }
+
+    class ViewModel(environment: Environment) : ActivityViewModel<VideoActivity>(environment),Inputs ,Outputs {
         private val preparePlayerWithUrl = BehaviorSubject.create<String>()
         private val onVideoStarted = BehaviorSubject.create<Pair<Long,Long>>()
         @JvmField
         val outputs: Outputs = this
+
+        @JvmField
+        val inputs: Inputs = this
+
         override fun preparePlayerWithUrl(): Observable<String> {
             return preparePlayerWithUrl
         }
 
-        override fun onVideoStarted(): Observable<Pair<Long, Long>> {
-            return onVideoStarted
+        override fun onVideoStarted(videoLength:Long, videoPosition:Long) {
+            return onVideoStarted.onNext(Pair(videoLength,videoPosition))
         }
 
         init {
-            intent()
-                    .map<Any> { it.getParcelableExtra(IntentKey.PROJECT) }
-                    .ofType(Project::class.java)
-                    .filter {  ObjectUtils.isNotNull(it) }
-                    .map { it.video() }
+            val project = intent()
+                    .map { it.getParcelableExtra(IntentKey.PROJECT) as Project }
+
+            project.map { it.video() }
                     .filter { ObjectUtils.isNotNull(it) }
-                    .map {  it?.hls()?: it?.high() }
+                    .map { it?.hls() ?: it?.high() }
                     .distinctUntilChanged()
                     .take(1)
                     .compose(bindToLifecycle())
-                    .subscribe {  preparePlayerWithUrl.onNext(it) }
+                    .subscribe { preparePlayerWithUrl.onNext(it) }
 
-            onVideoStarted
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
+            Observable.combineLatest(project, onVideoStarted) { p, u ->
+               Pair(p,u)
+            }.distinctUntilChanged()
                     .compose(bindToLifecycle())
                     .subscribe {
-                      //  this.lake.onNext(it)
+                        this.lake.trackVideoStarted(it.first,
+                                TimeUnit.MILLISECONDS.toSeconds( it.second.first),
+                                TimeUnit.MILLISECONDS.toSeconds( it.second.second))
                     }
         }
     }

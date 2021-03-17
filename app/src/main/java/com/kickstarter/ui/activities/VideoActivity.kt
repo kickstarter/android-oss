@@ -72,8 +72,10 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     }
 
     private fun onStateChanged(playbackState: Int) {
-        if(playbackState== Player.STATE_READY){
-
+        if (playbackState == Player.STATE_READY) {
+            player?.duration?.let {
+                viewModel.inputs.onVideoStarted(it, playerPosition ?: 0L)
+            }
         }
 
         if (playbackState == Player.STATE_ENDED) {

@@ -135,4 +135,17 @@ class EventContextValues {
         UNWATCH("unwatch"),
         FACEBOOK("facebook")
     }
+
+    /**
+     * Indicates where on the page or screen the event fired based on the type of video.
+     *
+     * @param contextName: The name of the video context.
+     *
+     * LENGTH: Length of video.
+     * POSITION: Index position of the video playhead.
+     */
+    enum class VideoContextName(val contextName: String) {
+        LENGTH("length"),
+        POSITION("position")
+    }
 }

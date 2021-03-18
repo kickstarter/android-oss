@@ -50,7 +50,7 @@ public class VideoViewModelTest extends KSRobolectricTestCase {
 
     final TestSubscriber<String> preparePlayerWithUrl = new TestSubscriber<>();
     vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl);
-    vm.inputs.onVideoStarted(100,0);
+    vm.inputs.onVideoStarted(100, 0);
 
     // Configure the view model with a project intent.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));

@@ -59,10 +59,11 @@ open class HelpActivity : BaseActivity<HelpViewModel>() {
         setContentView(binding.root)
 
         val url = getUrlForHelpType(helpType)
-        binding.kickstarterWebView.loadUrl(url)
+
+        url?.let { binding.kickstarterWebView.loadUrl(it) }
     }
 
-    protected fun getUrlForHelpType(@HelpType helpType: Int): String {
+    private fun getUrlForHelpType(@HelpType helpType: Int): String? {
         val builder = Uri.parse(webEndpoint).buildUpon()
         when (helpType) {
             HELP_TYPE_TERMS -> builder.appendEncodedPath(TERMS_OF_USE)

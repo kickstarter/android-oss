@@ -687,7 +687,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param videoLength: Length of video in seconds.
      * @param videoPosition:Index position of the playhead,
      */
-    fun trackVideoStarted(project:Project,videoLength:Long, videoPosition:Long) {
+    fun trackVideoStarted(project: Project, videoLength: Long, videoPosition: Long) {
         val props: HashMap<String, Any> = HashMap()
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.videoProperties(videoLength, videoPosition))

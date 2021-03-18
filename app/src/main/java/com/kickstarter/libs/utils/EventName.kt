@@ -13,5 +13,4 @@ enum class EventName(val eventName: String) {
     CARD_CLICKED("Card Clicked"),
     PAGE_VIEWED("Page Viewed"),
     VIDEO_PLAYBACK_STARTED("Video Playback Started")
-
 }

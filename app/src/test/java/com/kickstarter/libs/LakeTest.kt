@@ -4,7 +4,14 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
-import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.factories.CheckoutDataFactory
+import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -487,8 +494,8 @@ class LakeTest : KSRobolectricTestCase() {
         assertProjectProperties(project)
         assertContextProperties()
 
-        lake.trackVideoStarted(project,videoLength,videoPosition)
-        assertVideoProperties(videoLength,videoPosition)
+        lake.trackVideoStarted(project, videoLength, videoPosition)
+        assertVideoProperties(videoLength, videoPosition)
 
         this.lakeTest.assertValues("Project Page Viewed", "Video Playback Started")
     }

@@ -131,7 +131,7 @@ object AnalyticEventsUtils {
 
         val properties = HashMap<String, Any>().apply {
             put(LENGTH.contextName, videoLength)
-            put(POSITION.contextName,videoPosition)
+            put(POSITION.contextName, videoPosition)
         }
         return MapUtils.prefixKeys(properties, prefix)
     }

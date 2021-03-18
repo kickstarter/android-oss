@@ -1,27 +1,77 @@
 package com.kickstarter.libs
 
-import com.kickstarter.libs.KoalaContext.*
+import com.kickstarter.libs.KoalaContext.CommentDialog
+import com.kickstarter.libs.KoalaContext.Comments
+import com.kickstarter.libs.KoalaContext.ExternalLink
+import com.kickstarter.libs.KoalaContext.Message
+import com.kickstarter.libs.KoalaContext.Share
+import com.kickstarter.libs.KoalaContext.Update
 import com.kickstarter.libs.KoalaEvent.ProjectAction
 import com.kickstarter.libs.utils.AnalyticEventsUtils
 import com.kickstarter.libs.utils.BooleanUtils
-import com.kickstarter.libs.utils.ContextPropertyKeyName.*
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.*
-import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.*
-import com.kickstarter.libs.utils.EventContextValues.CtaContextName.*
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ADD_ONS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
+import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
+import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.ADD_ONS_CONTINUE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
-import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.*
-import com.kickstarter.libs.utils.EventContextValues.LocationContextName.*
-import com.kickstarter.libs.utils.EventName.*
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMMENDED
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
+import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
+import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.EventName.CARD_CLICKED
+import com.kickstarter.libs.utils.EventName.CTA_CLICKED
+import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
+import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.Editorial
+import com.kickstarter.ui.data.LoginReason
 import com.kickstarter.ui.data.Mailbox
-import java.util.*
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.ProjectData
+import java.util.Locale
 import kotlin.collections.HashMap
 
 class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
@@ -642,7 +692,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.videoProperties(videoLength, videoPosition))
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
-        client.track(VIDEO_PLAYBACK_STARTED.eventName, props)
+        client.track(EventName.VIDEO_PLAYBACK_STARTED.eventName, props)
     }
     /**
      * Sends data to the client when the any of the discover sort tabs are clicked.

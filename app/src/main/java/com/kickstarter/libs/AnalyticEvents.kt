@@ -10,18 +10,29 @@ import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_INITI
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.PLEDGE_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.REWARD_CONTINUE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_FILTER
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_INITIATE
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_INITIATE
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER_SORT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CAMPAIGN_DETAILS
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.WATCH_PROJECT
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_OR_SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.CREATOR_DETAILS
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SIGN_UP_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.WATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
-import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.ADD_ONS
-import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.CHECKOUT
-import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.UPDATE_PLEDGE
-import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.REWARDS
-import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.PROJECT
-import com.kickstarter.libs.utils.EventContextValues.PageViewedContextName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ADD_ONS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.SEARCH
+import com.kickstarter.libs.utils.EventContextValues.CtaContextName.LOGIN_SUBMIT
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.PWL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.CATEGORY_NAME
@@ -37,11 +48,12 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
+import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
-import com.kickstarter.libs.utils.EventName
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
@@ -222,6 +234,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackDiscoverProjectCTAClicked(){
         val props = hashMapOf<String, Any>()
         props[CONTEXT_CTA.contextName] = DISCOVER.contextName
+        props[CONTEXT_PAGE.contextName] = ACTIVITY_FEED.contextName
         props[CONTEXT_LOCATION.contextName]  = GLOBAL_NAV.contextName
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -267,6 +280,37 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
         client.track("Application Login or Signup", properties)
     }
+
+    /**
+     * Tracks a login or sign up button clicked.
+     * @param type
+     * @param page
+     */
+    fun trackLoginOrSignUpCtaClicked(type: String?, page: String) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_OR_SIGN_UP.contextName)
+        props[CONTEXT_PAGE.contextName] = page
+        type?. let { props[CONTEXT_TYPE.contextName] = it }
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    /**
+     * Tracks a sign up page viewed.
+     */
+    fun trackSignUpPageViewed() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to SIGN_UP.contextName)
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Tracks a login or sign up page viewed.
+     * @param type
+     * @param page
+     */
+    fun trackLoginOrSignUpPagedViewed() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN_SIGN_UP.contextName)
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
 
     fun trackLoginSuccess() {
         client.track(KoalaEvent.LOGIN)
@@ -633,6 +677,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackDiscoverSortCTA(discoveryParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
         props[CONTEXT_LOCATION.contextName]  = DISCOVER_ADVANCED.contextName
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -663,6 +708,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackDiscoverFilterCTA(discoveryParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_FILTER.contextName)
         props[CONTEXT_LOCATION.contextName] = DISCOVER_OVERLAY.contextName
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_TYPE.contextName] = when {
             BooleanUtils.isTrue(discoveryParams.staffPicks()) -> PWL.contextName
             BooleanUtils.isTrue(discoveryParams.recommended()) -> RECOMMENDED.contextName
@@ -729,6 +775,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackSearchCTAButtonClicked(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_CTA.contextName] = SEARCH.contextName
         props[CONTEXT_LOCATION.contextName]  = GLOBAL_NAV.contextName
         client.track(CTA_CLICKED.eventName, props)
@@ -789,6 +836,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackPledgeSubmitCTA(checkoutData: CheckoutData, pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PLEDGE_SUBMIT.contextName)
         props[CONTEXT_TYPE.contextName] = CREDIT_CARD.contextName
+        props[CONTEXT_PAGE.contextName] = CHECKOUT.contextName
         props.putAll(AnalyticEventsUtils.checkoutDataProperties(checkoutData, pledgeData, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -820,6 +868,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackPledgeInitiateCTA(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to PLEDGE_INITIATE.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -836,6 +885,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackSelectRewardCTA(pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to REWARD_CONTINUE.contextName)
+        props[CONTEXT_PAGE.contextName] = REWARDS.contextName
         props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -882,6 +932,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackWatchProjectCTA(project: Project) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to WATCH_PROJECT.contextName)
         props[CONTEXT_TYPE.contextName] = if (project.isStarred) WATCH.contextName else UNWATCH.contextName
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -898,6 +949,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackAddOnsContinueCTA(pledgeData: PledgeData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to ADD_ONS_CONTINUE.contextName)
+        props[CONTEXT_PAGE.contextName] = ADD_ONS.contextName
         props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(CTA_CLICKED.eventName, props)
     }
@@ -910,6 +962,17 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     fun trackRewardsCarouselViewed(projectData: ProjectData) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to REWARDS.contextName)
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client when the payment method is changed.
+     *
+     * @param pledgeData: The selected pledge data for project.
+     */
+    fun trackChangePaymentMethod(pledgeData: PledgeData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to CHANGE_PAYMENT.contextName)
+        props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
         client.track(PAGE_VIEWED.eventName, props)
     }
 
@@ -927,6 +990,28 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(LOG_IN_BUTTON_CLICKED)
     }
 
+    /**
+     * Sends data to the client when the login button is clicked.
+     *
+     */
+    fun trackLogInButtonCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to LOGIN.contextName)
+        props[CONTEXT_CTA.contextName] = LOGIN_SUBMIT.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    fun trackLogInInitiateCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to LOGIN_INITIATE.contextName)
+        props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
+    fun trackSignUpInitiateCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to SIGN_UP_INITIATE.contextName)
+        props[CONTEXT_PAGE.contextName] = LOGIN_SIGN_UP.contextName
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
     fun trackLogInSignUpButtonClicked() {
         client.track(LOG_IN_OR_SIGNUP_BUTTON_CLICKED)
     }
@@ -941,6 +1026,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     fun trackSignUpButtonClicked() {
         client.track(SIGN_UP_BUTTON_CLICKED)
+    }
+
+    /**
+     * Sends data to the client when the submit button is clicked.
+     *
+     */
+    fun trackSignUpSubmitCtaClicked() {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to SIGN_UP_SUBMIT.contextName)
+        props[CONTEXT_PAGE.contextName] = SIGN_UP.contextName
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun trackSignUpSubmitButtonClicked() {
@@ -965,12 +1060,26 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CAMPAIGN_DETAILS_BUTTON_CLICKED, experimentProperties(projectData))
     }
 
+    fun trackCampaignDetailsCTAClicked(projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CAMPAIGN_DETAILS.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
+    }
+
     fun trackCampaignDetailsPledgeButtonClicked(projectData: ProjectData) {
         client.track(CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, experimentProperties(projectData))
     }
 
     fun trackCreatorDetailsClicked(projectData: ProjectData) {
         client.track(CREATOR_DETAILS_CLICKED, experimentProperties(projectData))
+    }
+
+    fun trackCreatorDetailsCTA(projectData: ProjectData) {
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CREATOR_DETAILS.contextName)
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        client.track(CTA_CLICKED.eventName, props)
     }
 
     fun reset() {

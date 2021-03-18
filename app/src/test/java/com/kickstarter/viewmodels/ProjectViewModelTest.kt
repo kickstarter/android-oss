@@ -6,7 +6,10 @@ import android.net.Uri
 import android.util.Pair
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.Either
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
@@ -396,8 +399,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbTextViewClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 
@@ -441,8 +444,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.blurbVariantClicked()
         this.startCampaignWebViewActivity.assertValues(ProjectDataFactory.project(project))
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Campaign Details Button Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Campaign Details Button Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Campaign Details Button Clicked")
     }
 
@@ -486,7 +489,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Creator Details Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName,EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName,EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Creator Details Clicked")
     }
 
@@ -530,8 +534,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorInfoVariantClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Creator Details Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Creator Details Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Creator Details Clicked")
     }
 
@@ -1377,6 +1381,30 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.koalaTest.assertValues("Project Page", "Manage Pledge Option Clicked")
         this.lakeTest.assertValue("Project Page Viewed")
     }*/
+
+    @Test
+    fun testSendingAnalyticsEvents_whenUpdatingPaymentMethod() {
+        setUpEnvironment(environment())
+
+        // Start the view model with a backed project
+        val reward = RewardFactory.reward()
+        val backedProject = ProjectFactory.backedProject()
+                .toBuilder()
+                .backing(BackingFactory.backing()
+                        .toBuilder()
+                        .rewardId(reward.id())
+                        .build())
+                .rewards(listOf(RewardFactory.noReward(), reward))
+                .build()
+
+        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
+
+        this.vm.inputs.updatePaymentClicked()
+
+        this.lakeTest.assertValues("Project Page Viewed","Page Viewed","Page Viewed")
+        this.segmentTrack.assertValues("Project Page Viewed","Page Viewed","Page Viewed")
+
+    }
 
     @Test
     fun testShowUpdatePledgeSuccess_whenUpdatingPayment() {

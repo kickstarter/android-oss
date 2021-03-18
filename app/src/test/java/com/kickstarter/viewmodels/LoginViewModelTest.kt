@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels
 import android.content.Intent
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ApiExceptionFactory
 import com.kickstarter.mock.factories.ConfigFactory.config
@@ -13,6 +14,7 @@ import com.kickstarter.ui.data.LoginReason
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
+
 
 class LoginViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoginViewModel.ViewModel
@@ -82,8 +84,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.genericLoginError.assertValueCount(1)
-        this.lakeTest.assertValue("Log In Submit Button Clicked")
-        this.segmentTrack.assertValue("Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 
     @Test
@@ -111,8 +113,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.invalidLoginError.assertValueCount(1)
-        this.lakeTest.assertValue("Log In Submit Button Clicked")
-        this.segmentTrack.assertValue("Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 
     @Test
@@ -140,8 +142,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.tfaChallenge.assertValueCount(1)
-        this.lakeTest.assertValue("Log In Submit Button Clicked")
-        this.segmentTrack.assertValue("Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 
     @Test
@@ -245,7 +247,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.loginClick()
 
         this.loginSuccess.assertValues(null, null)
-        this.lakeTest.assertValue("Log In Submit Button Clicked")
-        this.segmentTrack.assertValue("Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 }

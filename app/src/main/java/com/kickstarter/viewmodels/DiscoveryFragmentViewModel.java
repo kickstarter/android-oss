@@ -168,7 +168,7 @@ public interface DiscoveryFragmentViewModel {
 
       this.projectCardClicked
               .compose(bindToLifecycle())
-              .subscribe(p -> lake.trackProjectCardClicked(p, EventContextValues.PageViewedContextName.EXPLORE.getContextName()));
+              .subscribe(p -> lake.trackProjectCardClicked(p, EventContextValues.ContextPageName.DISCOVER.getContextName()));
 
       final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
         .compose(takePairWhen(this.projectCardClicked))
@@ -274,7 +274,10 @@ public interface DiscoveryFragmentViewModel {
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
-        .subscribe(v -> this.lake.trackLogInSignUpButtonClicked());
+        .subscribe(v -> {
+          this.lake.trackLogInSignUpButtonClicked();
+          this.lake.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
+        });
 
       this.paramsFromActivity
         .compose(takePairWhen(this.editorialClicked))

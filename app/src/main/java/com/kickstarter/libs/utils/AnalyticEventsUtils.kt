@@ -50,12 +50,7 @@ object AnalyticEventsUtils {
             put("ref_tag", DiscoveryParamsUtils.refTag(params).tag())
             params.term()?.let { put("search_term", it) }
             put("social", BooleanUtils.isIntTrue(params.social()))
-            put("sort", params.sort()?.let {
-                when (it) {
-                    DiscoveryParams.Sort.ENDING_SOON -> "ending_soon"
-                    else -> it.toString()
-                }
-            } ?: "")
+            put("sort", params.sort()?.toString() ?: "")
             params.tagId()?.let { put("tag", it) }
             put("watched", BooleanUtils.isIntTrue(params.starred()))
 

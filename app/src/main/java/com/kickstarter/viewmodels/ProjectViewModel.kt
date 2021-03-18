@@ -9,7 +9,7 @@ import com.kickstarter.libs.*
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.rx.transformers.Transformers.*
 import com.kickstarter.libs.utils.*
-import com.kickstarter.libs.utils.EventContextValues.ProjectContextSectionName.OVERVIEW
+import com.kickstarter.libs.utils.EventContextValues.ContextSectionName.OVERVIEW
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.models.Backing
@@ -618,7 +618,10 @@ interface ProjectViewModel {
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePaymentClicked))
                     .map { Pair(pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD), PledgeReason.UPDATE_PAYMENT) }
                     .compose(bindToLifecycle())
-                    .subscribe(this.showUpdatePledge)
+                    .subscribe{
+                        this.showUpdatePledge.onNext(it)
+                        this.lake.trackChangePaymentMethod(it.first)
+                    }
 
             projectDataAndBackedReward
                     .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.updatePledgeClicked))
@@ -757,7 +760,10 @@ interface ProjectViewModel {
                     .compose<ProjectData>(takeWhen(blurbClicked))
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackCampaignDetailsButtonClicked(it) }
+                    .subscribe {
+                        this.lake.trackCampaignDetailsCTAClicked(it)
+                        this.lake.trackCampaignDetailsButtonClicked(it)
+                    }
 
             fullProjectDataAndCurrentUser
                     .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }
@@ -781,7 +787,9 @@ interface ProjectViewModel {
                     .compose<ProjectData>(takeWhen(creatorInfoClicked))
                     .filter { it.project().isLive && !it.project().isBacking }
                     .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackCreatorDetailsClicked(it) }
+                    .subscribe {
+                        this.lake.trackCreatorDetailsCTA(it)
+                        this.lake.trackCreatorDetailsClicked(it) }
 
             fullProjectDataAndCurrentUser
                     .map { Pair(ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()), it.first.project()) }

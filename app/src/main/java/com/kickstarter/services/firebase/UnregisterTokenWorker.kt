@@ -25,7 +25,7 @@ class UnregisterTokenWorker(@ApplicationContext applicationContext: Context, pri
             FirebaseMessaging.getInstance().deleteToken()
             logSuccess()
             Result.success()
-        } catch (e: IOException){
+        } catch (e: IOException) {
             logError(e)
             Result.failure()
         }

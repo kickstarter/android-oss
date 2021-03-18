@@ -5,30 +5,31 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.view.accessibility.AccessibilityManager
-import androidx.work.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.kickstarter.BuildConfig
 import com.kickstarter.R
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.WebUtils
-import com.kickstarter.models.User
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.libs.utils.extensions.SEGMENT_ENABLED
 import com.kickstarter.libs.utils.extensions.currentVariants
 import com.kickstarter.libs.utils.extensions.enabledFeatureFlags
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
+import com.kickstarter.models.User
 import org.json.JSONArray
 import org.json.JSONException
 import timber.log.Timber
 import javax.inject.Inject
 
-abstract class TrackingClient(@param:ApplicationContext private val context: Context,
-                     @set:Inject var currentUser: CurrentUserType,
-                     @set:Inject var build: Build,
-                     @set:Inject var currentConfig: CurrentConfigType,
-                     @set:Inject var optimizely: ExperimentsClientType) : TrackingClientType() {
+abstract class TrackingClient(
+    @param:ApplicationContext private val context: Context,
+    @set:Inject var currentUser: CurrentUserType,
+    @set:Inject var build: Build,
+    @set:Inject var currentConfig: CurrentConfigType,
+    @set:Inject var optimizely: ExperimentsClientType
+) : TrackingClientType() {
 
     private var loggedInUser: User? = null
     private var config: Config? = null
@@ -37,17 +38,17 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
         // Cache the most recent logged in user for default Lake properties.
         this.currentUser.observable()
-                .distinctUntilChanged()
-                .subscribe { u ->
-                    this.loggedInUser = u
-                    this.loggedInUser?.let { identify(it) }
-                }
+            .distinctUntilChanged()
+            .subscribe { u ->
+                this.loggedInUser = u
+                this.loggedInUser?.let { identify(it) }
+            }
 
         // Cache the most recent config for default Lake properties.
         this.currentConfig.observable()
-                .subscribe { c ->
-                    this.config = c
-                }
+            .subscribe { c ->
+                this.config = c
+            }
     }
 
     override val isGooglePlayServicesAvailable: Boolean
@@ -101,7 +102,7 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
      */
     abstract fun trackingData(eventName: String, newProperties: Map<String, Any?>)
 
-    //Default property values
+    // Default property values
     override fun brand(): String = android.os.Build.BRAND
 
     override fun buildNumber(): Int = BuildConfig.VERSION_CODE
@@ -111,27 +112,27 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
     override fun deviceDistinctId(): String = FirebaseInstanceId.getInstance().id
 
     override fun deviceFormat(): String =
-            if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet"
-            else "phone"
+        if (this.context.resources.getBoolean(R.bool.isTablet)) "tablet"
+        else "phone"
 
     /**
      * Derives the device's orientation (portrait/landscape) from the `context`.
      */
     override fun deviceOrientation(): String =
-            if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "Landscape"
-            else "Portrait"
+        if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "Landscape"
+        else "Portrait"
 
-    //TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
+    // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     override fun enabledFeatureFlags(): JSONArray {
         return JSONArray(this.optimizely.enabledFeatures(this.loggedInUser))
-                .apply {
-                    val configFlags = this@TrackingClient.config?.enabledFeatureFlags()
-                    configFlags?.let {
-                        for (index in 0 until it.length()) {
-                            put(it.get(index))
-                        }
+            .apply {
+                val configFlags = this@TrackingClient.config?.enabledFeatureFlags()
+                configFlags?.let {
+                    for (index in 0 until it.length()) {
+                        put(it.get(index))
                     }
                 }
+            }
     }
 
     override fun manufacturer(): String = android.os.Build.MANUFACTURER
@@ -146,9 +147,9 @@ abstract class TrackingClient(@param:ApplicationContext private val context: Con
 
     override fun userAgent(): String = WebUtils.userAgent(this.build)
 
-    override fun userCountry(user: User): String =  user.location()?.country() ?: this.config?.countryCode() ?: ""
+    override fun userCountry(user: User): String = user.location()?.country() ?: this.config?.countryCode() ?: ""
 
-    override fun versionName(): String =  BuildConfig.VERSION_NAME
+    override fun versionName(): String = BuildConfig.VERSION_NAME
 
     override fun wifiConnection(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?

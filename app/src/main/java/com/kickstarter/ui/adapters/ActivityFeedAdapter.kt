@@ -4,12 +4,31 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
-import com.kickstarter.databinding.*
+import com.kickstarter.databinding.ActivityFriendBackingViewBinding
+import com.kickstarter.databinding.ActivityFriendFollowViewBinding
+import com.kickstarter.databinding.ActivityProjectStateChangedPositiveViewBinding
+import com.kickstarter.databinding.ActivityProjectStateChangedViewBinding
+import com.kickstarter.databinding.ActivityProjectUpdateViewBinding
+import com.kickstarter.databinding.ActivitySurveyHeaderViewBinding
+import com.kickstarter.databinding.ActivitySurveyViewBinding
+import com.kickstarter.databinding.EmptyActivityFeedViewBinding
+import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.ItemErroredBackingBinding
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.models.Activity
 import com.kickstarter.models.ErroredBacking
 import com.kickstarter.models.SurveyResponse
-import com.kickstarter.ui.viewholders.*
+import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder
+import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.ErroredBackingViewHolder
+import com.kickstarter.ui.viewholders.FriendBackingViewHolder
+import com.kickstarter.ui.viewholders.FriendFollowViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder
+import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder
+import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder
+import com.kickstarter.ui.viewholders.SurveyHeaderViewHolder
+import com.kickstarter.ui.viewholders.SurveyViewHolder
 
 class ActivityFeedAdapter(private val delegate: Delegate?) : KSAdapter() {
     interface Delegate :

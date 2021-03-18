@@ -2,7 +2,7 @@ package com.kickstarter.mock.factories
 
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
-import java.util.*
+import java.util.Date
 
 class TokenFactory private constructor() {
     companion object {

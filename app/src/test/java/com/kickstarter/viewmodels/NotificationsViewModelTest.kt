@@ -23,9 +23,11 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         currentUser.observable().subscribe(this.currentUserTest)
 
-        this.vm = NotificationsViewModel.ViewModel(environment.toBuilder()
+        this.vm = NotificationsViewModel.ViewModel(
+            environment.toBuilder()
                 .currentUser(currentUser)
-                .build())
+                .build()
+        )
 
         this.vm.outputs.creatorDigestFrequencyIsGone().subscribe(this.creatorDigestFrequencyIsGone)
         this.vm.outputs.creatorNotificationsAreGone().subscribe(this.creatorNotificationsAreGone)
@@ -155,8 +157,8 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.notifyMobileOfUpdates(true)
         this.currentUserTest.assertValues(user, user.toBuilder().notifyMobileOfUpdates(true).build())
-    } 
-    
+    }
+
     @Test
     fun testNotifyOfBackings() {
         val user = UserFactory.user().toBuilder().notifyOfBackings(false).build()
@@ -166,16 +168,19 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.notifyOfBackings(true)
         this.currentUserTest.assertValues(user, user.toBuilder().notifyOfBackings(true).build())
 
-
         this.vm.inputs.notifyOfCreatorDigest(true)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfBackings(true).build(),
-                user.toBuilder().notifyOfBackings(true).notifyOfCreatorDigest(true).build())
+        this.currentUserTest.assertValues(
+            user, user.toBuilder().notifyOfBackings(true).build(),
+            user.toBuilder().notifyOfBackings(true).notifyOfCreatorDigest(true).build()
+        )
 
-        //when we turn off backing emails, we also turn off the digest
+        // when we turn off backing emails, we also turn off the digest
         this.vm.inputs.notifyOfBackings(false)
-        this.currentUserTest.assertValues(user, user.toBuilder().notifyOfBackings(true).build(),
-                user.toBuilder().notifyOfBackings(true).notifyOfCreatorDigest(true).build(),
-                user.toBuilder().notifyOfBackings(false).notifyOfCreatorDigest(false).build())
+        this.currentUserTest.assertValues(
+            user, user.toBuilder().notifyOfBackings(true).build(),
+            user.toBuilder().notifyOfBackings(true).notifyOfCreatorDigest(true).build(),
+            user.toBuilder().notifyOfBackings(false).notifyOfCreatorDigest(false).build()
+        )
     }
 
     @Test
@@ -217,7 +222,7 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.notifyOfCreatorEdu(true)
         this.currentUserTest.assertValues(user, user.toBuilder().notifyOfCreatorEdu(true).build())
     }
-    
+
     @Test
     fun testNotifyOfFollower() {
         val user = UserFactory.user().toBuilder().notifyOfFollower(false).build()
@@ -262,11 +267,14 @@ class NotificationsViewModelTest : KSRobolectricTestCase() {
     fun testUnableToSavePreferenceError() {
         val user = UserFactory.user().toBuilder().notifyOfUpdates(false).build()
 
-        setUpEnvironment(user, environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun updateUserSettings(user: User): Observable<User> {
-                return Observable.error(Throwable("Error"))
-            }
-        }).build())
+        setUpEnvironment(
+            user,
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun updateUserSettings(user: User): Observable<User> {
+                    return Observable.error(Throwable("Error"))
+                }
+            }).build()
+        )
 
         this.vm.inputs.notifyMobileOfBackings(true)
         this.unableToSavePreferenceError.assertValueCount(1)

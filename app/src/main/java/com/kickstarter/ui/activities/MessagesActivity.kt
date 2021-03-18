@@ -236,9 +236,9 @@ class MessagesActivity : BaseActivity<MessagesViewModel.ViewModel>() {
         backingAndProject.first.pledgedAt()?.let {
             val pledgeDate = DateTimeUtils.relative(this, ksString, it)
             binding.messagesBackingInfoView.backingAmountTextView.text = Html.fromHtml(
-                    ksString.format(
-                            getString(R.string.pledge_amount_pledged_on_pledge_date), "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
-                    )
+                ksString.format(
+                    getString(R.string.pledge_amount_pledged_on_pledge_date), "pledge_amount", pledgeAmount, "pledge_date", pledgeDate
+                )
             )
         }
     }

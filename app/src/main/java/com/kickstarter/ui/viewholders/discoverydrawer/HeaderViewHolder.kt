@@ -13,4 +13,3 @@ class HeaderViewHolder(private val binding: DiscoveryDrawerHeaderBinding) : KSVi
         binding.discoveryDrawerHeaderTitle.setText(item)
     }
 }
-

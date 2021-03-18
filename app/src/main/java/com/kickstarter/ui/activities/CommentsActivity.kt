@@ -78,7 +78,7 @@ class CommentsActivity : BaseActivity<CommentsViewModel.ViewModel>(), CommentsAd
             .subscribe { viewModel.inputs.postCommentClicked() }
 
         commentBodyEditText
-            .switchMap { it?.let {view -> RxTextView.textChanges(view).skip(1) } }
+            .switchMap { it?.let { view -> RxTextView.textChanges(view).skip(1) } }
             .map { obj: CharSequence -> obj.toString() }
             .compose(bindToLifecycle())
             .subscribe { viewModel.inputs.commentBodyChanged(it) }

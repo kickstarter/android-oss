@@ -21,10 +21,10 @@ class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
     @LayoutRes
     override fun layout(sectionRow: SectionRow): Int {
         return if (sectionRow.section() == 0) {
-                R.layout.item_update_card
-            } else {
-                R.layout.empty_updates_layout
-            }
+            R.layout.item_update_card
+        } else {
+            R.layout.empty_updates_layout
+        }
     }
 
     fun takeData(data: Pair<Project, List<Update>>) {
@@ -33,9 +33,11 @@ class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
 
         sections().clear()
 
-        addSection(Observable.from(updates)
+        addSection(
+            Observable.from(updates)
                 .map { update -> Pair.create(project, update) }
-                .toList().toBlocking().single())
+                .toList().toBlocking().single()
+        )
 
         if (updates.isEmpty()) {
             sections().add(listOf(Pair<Project, List<Update>>(project, emptyList())))

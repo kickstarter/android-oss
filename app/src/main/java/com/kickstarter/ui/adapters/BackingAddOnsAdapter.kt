@@ -20,14 +20,14 @@ class BackingAddOnsAdapter(private val viewListener: BackingAddOnViewHolder.View
         insertSection(SECTION_BACKING_ADD_ONS_CARD, emptyList<Reward>())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()){
+    override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()) {
         SECTION_BACKING_ADD_ONS_CARD -> R.layout.item_add_on_pledge
         SECTION_NO_ADD_ONS_AVAILABLE -> R.layout.item_empty_add_on
         else -> 0
     }
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
-        return when(layout) {
+        return when (layout) {
             R.layout.item_empty_add_on -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
             R.layout.item_add_on_pledge -> BackingAddOnViewHolder(ItemAddOnPledgeBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), viewListener)
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))

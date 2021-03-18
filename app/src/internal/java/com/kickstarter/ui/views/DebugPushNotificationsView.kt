@@ -59,7 +59,7 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
         findViewById<Button>(R.id.simulate_project_failure_button).setOnClickListener {
             simulateProjectFailureButtonClick()
         }
-        
+
         findViewById<Button>(R.id.simulate_project_launch_button).setOnClickListener {
             simulateProjectLaunchButtonClick()
         }
@@ -163,7 +163,7 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
         val envelope: PushNotificationEnvelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build()
         pushNotifications?.add(envelope)
     }
-    
+
     fun simulateProjectFailureButtonClick() {
         val gcm = GCM.builder()
             .title("Kickstarter")
@@ -192,7 +192,7 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
         val envelope: PushNotificationEnvelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build()
         pushNotifications?.add(envelope)
     }
-    
+
     fun simulateProjectReminderButtonClick() {
         val gcm = GCM.builder()
             .title("Last call")
@@ -204,11 +204,11 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
             .build()
         pushNotifications?.add(envelope)
     }
-    
+
     fun simulateProjectSuccessButtonClick() {
         pushNotifications?.add(projectSuccessEnvelope())
     }
-    
+
     fun simulateProjectSurveyButtonClick() {
         val gcm = GCM.builder()
             .title("Backer survey")
@@ -225,7 +225,7 @@ class DebugPushNotificationsView @JvmOverloads constructor(context: Context, att
             .build()
         pushNotifications?.add(envelope)
     }
-    
+
     fun simulateProjectUpdateButtonClick() {
         val gcm = GCM.builder()
             .title("News from Taylor Moore")

@@ -23,36 +23,37 @@ class ErroredBackingViewHolder(private val binding: ItemErroredBackingBinding, v
     init {
 
         this.viewModel.outputs.notifyDelegateToStartFixPaymentMethod()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { delegate?.managePledgeClicked(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { delegate?.managePledgeClicked(it) }
 
         this.viewModel.outputs.projectFinalCollectionDate()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setProjectFinaCollectionDateText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setProjectFinaCollectionDateText(it) }
 
         this.viewModel.outputs.projectName()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.erroredBackingProjectTitle.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.erroredBackingProjectTitle.text = it }
 
         RxView.clicks(binding.erroredBackingManageButton)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.manageButtonClicked() }
-
+            .compose(bindToLifecycle())
+            .subscribe { this.viewModel.inputs.manageButtonClicked() }
     }
 
     private fun setProjectFinaCollectionDateText(finalCollectionDate: DateTime) {
         val options = RelativeDateTimeOptions.builder()
-                .absolute(true)
-                .relativeToDateTime(DateTime.now())
-                .build()
+            .absolute(true)
+            .relativeToDateTime(DateTime.now())
+            .build()
 
         val timeRemaining = DateTimeUtils.relative(context(), this.ksString, finalCollectionDate, options)
         val fixWithinTemplate = context().getString(R.string.Fix_within_time_remaining)
-        binding.erroredBackingProjectCollectionDate.text = this.ksString.format(fixWithinTemplate,
-                "time_remaining", timeRemaining)
+        binding.erroredBackingProjectCollectionDate.text = this.ksString.format(
+            fixWithinTemplate,
+            "time_remaining", timeRemaining
+        )
     }
 
     override fun bindData(data: Any?) {

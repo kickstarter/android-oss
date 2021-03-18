@@ -6,7 +6,7 @@ import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 
 @Implements(MultiDex::class)
-object ShadowAndroidXMultiDex{
+object ShadowAndroidXMultiDex {
 
     @JvmStatic
     @Implementation

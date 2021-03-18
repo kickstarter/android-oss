@@ -35,7 +35,6 @@ import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers.io
 
-
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
 class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
@@ -59,231 +58,228 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         setupRecyclerView()
 
         this.viewModel.outputs.backerAvatar()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setBackerImageView(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setBackerImageView(it) }
 
         this.viewModel.outputs.backerName()
-                .observeOn(io())
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe { binding?.backerName?.text = it }
+            .observeOn(io())
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe { binding?.backerName?.text = it }
 
         this.viewModel.outputs.backerNumber()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setBackerNumberText(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setBackerNumberText(it) }
 
         this.viewModel.outputs.cardLogo()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setImageResource(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.rewardCardDetails?.rewardCardLogo?.setImageResource(it) }
 
         this.viewModel.outputs.cardExpiration()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setCardExpirationText(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setCardExpirationText(it) }
 
         this.viewModel.outputs.cardIssuer()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setCardIssuerContentDescription(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setCardIssuerContentDescription(it) }
 
         this.viewModel.outputs.cardLastFour()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setCardLastFourText(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setCardLastFourText(it) }
 
         this.viewModel.outputs.fixPaymentMethodButtonIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    binding?.fixPaymentMethodButton?.setGone(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.fixPaymentMethodButton?.setGone(it)
+            }
 
         this.viewModel.outputs.fixPaymentMethodButtonIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    binding?.fixPaymentMethodMessage?.setGone(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.fixPaymentMethodMessage?.setGone(it)
+            }
 
         this.viewModel.outputs.notifyDelegateToRefreshProject()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { (activity as BackingDelegate?)?.refreshProject() }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { (activity as BackingDelegate?)?.refreshProject() }
 
         this.viewModel.outputs.notifyDelegateToShowFixPledge()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { (activity as BackingDelegate?)?.showFixPaymentMethod() }
 
         this.viewModel.outputs.paymentMethodIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    binding?.paymentMethod?.setGone(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.paymentMethod?.setGone(it)
+            }
 
         this.viewModel.outputs.pledgeAmount()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummaryAmount?.text = it }
 
         this.viewModel.outputs.pledgeDate()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setPledgeDateText(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setPledgeDateText(it) }
 
         this.viewModel.outputs.pledgeStatusData()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { setPledgeStatusText(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { setPledgeStatusText(it) }
 
         this.viewModel.outputs.pledgeSummaryIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.setGone(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.fragmentPledgeSectionSummaryPledge?.pledgeSummary?.setGone(it) }
 
         this.viewModel.outputs.projectDataAndReward()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    bindDataToRewardViewHolder(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                bindDataToRewardViewHolder(it)
+            }
 
         this.viewModel.outputs.receivedCheckboxChecked()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.isChecked = it }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.isChecked = it }
 
         this.viewModel.outputs.receivedSectionIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    binding?.receivedSectionLayout?.root?.setGone(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.receivedSectionLayout?.root?.setGone(it)
+            }
 
         this.viewModel.outputs.receivedSectionCreatorIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    binding?.estimatedDeliveryLabel2?.setGone(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.estimatedDeliveryLabel2?.setGone(it)
+            }
 
         this.viewModel.outputs.shippingAmount()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummaryAmount?.text = it }
 
         this.viewModel.outputs.shippingLocation()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {  binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingLabel?.text = String.format("%s: %s", getString(R.string.Shipping), it) }
 
         this.viewModel.outputs.shippingSummaryIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.setGone(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.fragmentPledgeSectionSummaryShipping?.shippingSummary?.setGone(it) }
 
         this.viewModel.outputs.showUpdatePledgeSuccess()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { showSnackbar(view, getString(R.string.Got_it_your_changes_have_been_saved)) }
 
         this.viewModel.outputs.totalAmount()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.fragmentBackingSectionSummaryTotal?.totalSummaryAmount?.text = it }
 
         this.viewModel.outputs.projectDataAndAddOns()
-                .filter { ObjectUtils.isNotNull(it) }
-                .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { populateAddOns(it) }
+            .filter { ObjectUtils.isNotNull(it) }
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { populateAddOns(it) }
 
         this.viewModel.outputs.bonusSupport()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {  binding?.sectionBonusSupport?.bonusSummaryAmount?.text = it }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding?.sectionBonusSupport?.bonusSummaryAmount?.text = it }
 
         this.viewModel.outputs.estimatedDelivery()
-                .distinctUntilChanged()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    stylizedTextViews(it)
-                }
+            .distinctUntilChanged()
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                stylizedTextViews(it)
+            }
 
         this.viewModel.outputs.deliveryDisclaimerSectionIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    binding?.pledgeDetailsLabel?.text = getString(R.string.Pledge_details)
-                    binding?.receivedSectionLayout?.root?.setGone(true)
-                    binding?.deliveryDisclaimerSection?.root?.setGone(it)
-                    binding?.estimatedDeliveryLabel2?.setGone(true)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                binding?.pledgeDetailsLabel?.text = getString(R.string.Pledge_details)
+                binding?.receivedSectionLayout?.root?.setGone(true)
+                binding?.deliveryDisclaimerSection?.root?.setGone(it)
+                binding?.estimatedDeliveryLabel2?.setGone(true)
+            }
 
-        binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply{
-            val sb =StringBuilder(text.toString() )
+        binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply {
+            val sb = StringBuilder(text.toString())
             sb.append(" " + resources.getString(R.string.Delays_or_changes_are_possible))
             text = sb.toString()
 
             val boldPortionLength = text.toString().split(".").first().length
             setBoldSpanOnTextView(boldPortionLength, this, resources.getColor(R.color.kds_support_400, null))
-
         }
 
         binding?.backingSwipeRefreshLayout?.let {
             SwipeRefresher(
-                    this, it, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
+                this, it, { this.viewModel.inputs.refreshProject() }, { this.viewModel.outputs.swipeRefresherProgressIsVisible() }
             )
         }
 
         binding?.fixPaymentMethodButton?.let {
             RxView.clicks(it)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.viewModel.inputs.fixPaymentMethodButtonClicked() }
+                .compose(bindToLifecycle())
+                .subscribe { this.viewModel.inputs.fixPaymentMethodButtonClicked() }
         }
 
-        binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.apply{
+        binding?.receivedSectionLayout?.estimatedDeliveryCheckbox?.apply {
             RxView.clicks(this)
-                    .compose(bindToLifecycle())
-                    .subscribe { viewModel.inputs.receivedCheckboxToggled(this.isChecked) }
-
+                .compose(bindToLifecycle())
+                .subscribe { viewModel.inputs.receivedCheckboxToggled(this.isChecked) }
         }
     }
 
     private fun stylizedTextViews(it: String) {
-        binding?.receivedSectionLayout?.estimatedDeliveryLabel?.apply{
+        binding?.receivedSectionLayout?.estimatedDeliveryLabel?.apply {
             val totalCharacters = text.length
             text = viewModel.ksString.format(
-                    getString(R.string.estimated_delivery_data),
-                    "title", text.toString(),
-                    "estimated_delivery_data",it
+                getString(R.string.estimated_delivery_data),
+                "title", text.toString(),
+                "estimated_delivery_data", it
             )
             setBoldSpanOnTextView(totalCharacters, this, resources.getColor(R.color.kds_support_400, null))
-
         }
 
         binding?.estimatedDeliveryLabel2?.apply {
             text = viewModel.ksString.format(
-                    getString(R.string.estimated_delivery_data),
-                    "title", text.toString(),
-            "estimated_delivery_data",it
+                getString(R.string.estimated_delivery_data),
+                "title", text.toString(),
+                "estimated_delivery_data", it
             )
 
             val totalCharacters2 = text.length
-                setBoldSpanOnTextView(
-                        totalCharacters2, this, resources.getColor(R.color.kds_support_400, null))
-
+            setBoldSpanOnTextView(
+                totalCharacters2, this, resources.getColor(R.color.kds_support_400, null)
+            )
         }
     }
 
-    fun isRefreshing(isRefreshing: Boolean){
+    fun isRefreshing(isRefreshing: Boolean) {
         binding?.backingSwipeRefreshLayout?.isRefreshing = isRefreshing
     }
 
@@ -291,9 +287,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         val spannable = SpannableString(textView.text)
         spannable.setSpan(ForegroundColorSpan(spanColor), 0, numCharacters, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannable.setSpan(
-                StyleSpan(Typeface.BOLD),
-                0, numCharacters,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            StyleSpan(Typeface.BOLD),
+            0, numCharacters,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         textView.text = spannable
     }
@@ -326,8 +323,8 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     private fun setBackerImageView(url: String) {
         context?.apply {
             Picasso.get().load(url)
-                    .transform(CircleTransformation())
-                    .into(binding?.backingAvatar)
+                .transform(CircleTransformation())
+                .into(binding?.backingAvatar)
         }
     }
 
@@ -336,8 +333,10 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setCardExpirationText(expiration: String) {
-        binding?.rewardCardDetails?.rewardCardExpirationDate?.text = this.viewModel.ksString.format(getString(R.string.Credit_card_expiration),
-                "expiration_date", expiration)
+        binding?.rewardCardDetails?.rewardCardExpirationDate?.text = this.viewModel.ksString.format(
+            getString(R.string.Credit_card_expiration),
+            "expiration_date", expiration
+        )
     }
 
     private fun setCardIssuerContentDescription(cardIssuerOrStringRes: Either<String, Int>) {
@@ -347,9 +346,11 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     }
 
     private fun setCardLastFourText(lastFour: String) {
-        binding?.rewardCardDetails?.rewardCardLastFour?.text = this.viewModel.ksString.format(getString(R.string.payment_method_last_four),
-                "last_four",
-                lastFour)
+        binding?.rewardCardDetails?.rewardCardLastFour?.text = this.viewModel.ksString.format(
+            getString(R.string.payment_method_last_four),
+            "last_four",
+            lastFour
+        )
     }
 
     private fun setPledgeDateText(pledgeDate: String) {
@@ -361,15 +362,19 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         val pledgeStatusText = pledgeStatusData.statusStringRes?.let {
             when (pledgeStatusData.statusStringRes) {
                 R.string.If_the_project_reaches_its_funding_goal_you_will_be_charged_total_on_project_deadline -> {
-                    ksString.format(getString(it),
-                            "total", pledgeStatusData.pledgeTotal,
-                            "project_deadline", pledgeStatusData.projectDeadline)
+                    ksString.format(
+                        getString(it),
+                        "total", pledgeStatusData.pledgeTotal,
+                        "project_deadline", pledgeStatusData.projectDeadline
+                    )
                 }
 
                 R.string.If_your_project_reaches_its_funding_goal_the_backer_will_be_charged_total_on_project_deadline -> {
-                    ksString.format(getString(it),
-                            "total", pledgeStatusData.pledgeTotal,
-                            "project_deadline", pledgeStatusData.projectDeadline)
+                    ksString.format(
+                        getString(it),
+                        "total", pledgeStatusData.pledgeTotal,
+                        "project_deadline", pledgeStatusData.projectDeadline
+                    )
                 }
 
                 else -> getString(it)

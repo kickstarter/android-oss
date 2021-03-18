@@ -522,6 +522,31 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValues("Project Page Pledge Button Clicked")
     }
 
+    @Test
+    fun testVideoProperties() {
+        val project = project()
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.lakeTest)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val videoLength = 100L
+        val videoPosition = 0L
+
+        val lake = AnalyticEvents(listOf(client))
+
+        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
+
+        assertSessionProperties(user)
+        assertProjectProperties(project)
+        assertContextProperties()
+
+        lake.trackVideoStarted(project, videoLength, videoPosition)
+        assertVideoProperties(videoLength, videoPosition)
+
+        this.lakeTest.assertValues("Project Page Viewed", "Video Playback Started")
+    }
+
     private fun client(user: User?) = MockTrackingClient(
         user?.let { MockCurrentUser(it) }
             ?: MockCurrentUser(),
@@ -643,6 +668,12 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
         assertEquals(getOptimizelySession()["variants_optimizely"]?.first(), (expectedProperties["session_variants_optimizely"] as Array<*>).first())
+    }
+
+    private fun assertVideoProperties(videoLength: Long, videoPosition: Long) {
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(videoLength, expectedProperties["video_length"])
+        assertEquals(videoPosition, expectedProperties["video_position"])
     }
 
     private fun mockCurrentConfig() = MockCurrentConfig().apply {

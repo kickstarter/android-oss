@@ -14,7 +14,7 @@ fun showErrorToast(applicationContext: Context, root: ViewGroup, message: String
     toastTextView.text = message
     val resources = applicationContext.resources
     val yOffset = resources.getDimensionPixelSize(R.dimen.ks_toolbar_height) + resources.getDimensionPixelSize(R.dimen.grid_1)
-    with (Toast(applicationContext)) {
+    with(Toast(applicationContext)) {
         setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL or Gravity.FILL_HORIZONTAL, 0, yOffset)
         duration = Toast.LENGTH_LONG
         view = layout

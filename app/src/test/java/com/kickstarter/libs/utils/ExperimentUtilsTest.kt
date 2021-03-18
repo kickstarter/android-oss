@@ -11,9 +11,9 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
     @Test
     fun attributes_loggedInUser_notProd() {
         val user = UserFactory.user()
-                .toBuilder()
-                .backedProjectsCount(10)
-                .build()
+            .toBuilder()
+            .backedProjectsCount(10)
+            .build()
         val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
         val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", OptimizelyEnvironment.DEVELOPMENT)
         assertNotNull(attributes["distinct_id"])
@@ -29,9 +29,9 @@ class ExperimentUtilsTest : KSRobolectricTestCase() {
     @Test
     fun attributes_loggedInUser_prod() {
         val user = UserFactory.user()
-                .toBuilder()
-                .backedProjectsCount(10)
-                .build()
+            .toBuilder()
+            .backedProjectsCount(10)
+            .build()
         val experimentData = ExperimentData(user, RefTag.discovery(), RefTag.search())
         val attributes = ExperimentUtils.attributes(experimentData, "9.9.9", "10", OptimizelyEnvironment.PRODUCTION)
         assertNull(attributes["distinct_id"])

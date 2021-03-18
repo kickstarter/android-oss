@@ -13,7 +13,6 @@ import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.AddOnViewHolderViewModel
 
-
 class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(binding.root) {
 
     private var viewModel = AddOnViewHolderViewModel.ViewModel(environment())
@@ -24,68 +23,72 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
         val rewardItemAdapter = setUpItemAdapter()
 
         this.viewModel.outputs.conversionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(binding.addOnConversionTextView))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.addOnConversionTextView))
 
         this.viewModel.outputs.conversion()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.addOnConversionTextView.text = this.ksString.format(this.currencyConversionString,
-                        "reward_amount", it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.addOnConversionTextView.text = this.ksString.format(
+                    this.currencyConversionString,
+                    "reward_amount", it
+                )
+            }
 
         this.viewModel.outputs.descriptionForNoReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.addOnDescriptionTextView.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.addOnDescriptionTextView.setText(it) }
 
         this.viewModel.outputs.titleForNoReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.titleContainer.addOnTitleNoSpannable.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.titleContainer.addOnTitleNoSpannable.setText(it) }
 
         this.viewModel.outputs.descriptionForReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.addOnDescriptionTextView.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.addOnDescriptionTextView.text = it }
 
         this.viewModel.outputs.minimumAmountTitle()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.addOnMinimumTextView.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.addOnMinimumTextView.text = it }
 
         this.viewModel.outputs.rewardItems()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { rewardItemAdapter.rewardsItems(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { rewardItemAdapter.rewardsItems(it) }
 
         this.viewModel.outputs.rewardItemsAreGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(binding.addOnItemsContainer.addOnItemLayout))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.addOnItemsContainer.addOnItemLayout))
 
         this.viewModel.outputs.isAddonTitleGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { shouldHideAddonAmount ->
-                    if (shouldHideAddonAmount) {
-                        binding.titleContainer.addOnTitleTextView.visibility = View.GONE
-                        binding.titleContainer.addOnTitleNoSpannable.visibility = View.VISIBLE
-                    } else {
-                        binding.titleContainer.addOnTitleNoSpannable.visibility = View.GONE
-                        binding.titleContainer.addOnTitleTextView.visibility = View.VISIBLE
-                    }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { shouldHideAddonAmount ->
+                if (shouldHideAddonAmount) {
+                    binding.titleContainer.addOnTitleTextView.visibility = View.GONE
+                    binding.titleContainer.addOnTitleNoSpannable.visibility = View.VISIBLE
+                } else {
+                    binding.titleContainer.addOnTitleNoSpannable.visibility = View.GONE
+                    binding.titleContainer.addOnTitleTextView.visibility = View.VISIBLE
                 }
+            }
 
         this.viewModel.outputs.titleForReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.titleContainer.addOnTitleNoSpannable.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.titleContainer.addOnTitleNoSpannable.text = it }
 
         this.viewModel.outputs.titleForAddOn()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.titleContainer.addOnTitleTextView.text = RewardViewUtils.styleTitleForAddOns(context(), it.first, it.second) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.titleContainer.addOnTitleTextView.text = RewardViewUtils.styleTitleForAddOns(context(), it.first, it.second) }
     }
 
     override fun bindData(data: Any?) {
@@ -107,5 +110,4 @@ class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(bind
         itemRecyclerView.layoutManager = LinearLayoutManager(context())
         return rewardItemAdapter
     }
-
 }

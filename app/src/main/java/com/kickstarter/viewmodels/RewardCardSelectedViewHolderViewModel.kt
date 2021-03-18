@@ -7,7 +7,7 @@ interface RewardCardSelectedViewHolderViewModel : BaseRewardCardViewHolderViewMo
     interface Inputs : BaseRewardCardViewHolderViewModel.Inputs
     interface Outputs : BaseRewardCardViewHolderViewModel.Outputs
 
-    class ViewModel(environment: Environment) : BaseRewardCardViewHolderViewModel.ViewModel(environment), Inputs, Outputs  {
+    class ViewModel(environment: Environment) : BaseRewardCardViewHolderViewModel.ViewModel(environment), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
     }

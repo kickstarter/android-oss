@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders.discoverydrawer
 
-
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding
@@ -29,56 +28,56 @@ class LoggedInViewHolder(private val binding: DiscoveryDrawerLoggedInViewBinding
     init {
 
         this.viewModel.outputs.avatarUrl()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    Picasso.get()
-                            .load(it)
-                            .transform(CircleTransformation())
-                            .into(binding.userImageView)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                Picasso.get()
+                    .load(it)
+                    .transform(CircleTransformation())
+                    .into(binding.userImageView)
+            }
 
         this.viewModel.outputs.name()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.userNameTextView.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.userNameTextView.text = it }
 
         this.viewModel.outputs.unreadMessagesCount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    binding.unreadMessagesCount.text = when {
-                        IntegerUtils.isNullOrZero(it) -> null
-                        else -> NumberUtils.format(it)
-                    }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.unreadMessagesCount.text = when {
+                    IntegerUtils.isNullOrZero(it) -> null
+                    else -> NumberUtils.format(it)
                 }
+            }
 
         this.viewModel.outputs.activityCount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    binding.unseenActivityCount.text = when {
-                        IntegerUtils.isNullOrZero(it) -> null
-                        else -> NumberUtils.format(it)
-                    }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.unseenActivityCount.text = when {
+                    IntegerUtils.isNullOrZero(it) -> null
+                    else -> NumberUtils.format(it)
                 }
+            }
 
         this.viewModel.outputs.activityCountTextColor()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.unseenActivityCount.setTextColor(ContextCompat.getColor(context(), it)) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.unseenActivityCount.setTextColor(ContextCompat.getColor(context(), it)) }
 
         this.viewModel.outputs.dashboardRowIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(binding.drawerDashboard, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(binding.drawerDashboard, it) }
 
         this.viewModel.outputs.user()
-                .subscribe { user ->
-                    binding.drawerSettings.setOnClickListener { this.delegate.loggedInViewHolderSettingsClick(this, user) }
-                    binding.drawerProfile.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
-                    binding.userContainer.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
-                }
+            .subscribe { user ->
+                binding.drawerSettings.setOnClickListener { this.delegate.loggedInViewHolderSettingsClick(this, user) }
+                binding.drawerProfile.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
+                binding.userContainer.setOnClickListener { this.delegate.loggedInViewHolderProfileClick(this, user) }
+            }
 
         binding.drawerActivity.setOnClickListener { this.delegate.loggedInViewHolderActivityClick(this) }
         binding.drawerDashboard.setOnClickListener { this.delegate.loggedInViewHolderDashboardClick(this) }

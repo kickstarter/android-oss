@@ -60,40 +60,39 @@ interface LoggedInViewHolderViewModel {
         init {
 
             this.user
-                    .map { it.name() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.name)
+                .map { it.name() }
+                .compose(bindToLifecycle())
+                .subscribe(this.name)
 
             this.user
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput)
 
             this.user
-                    .map { it.avatar().medium() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.avatarUrl)
+                .map { it.avatar().medium() }
+                .compose(bindToLifecycle())
+                .subscribe(this.avatarUrl)
 
             this.user
-                    .map { it.unreadMessagesCount() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.unreadMessagesCount)
+                .map { it.unreadMessagesCount() }
+                .compose(bindToLifecycle())
+                .subscribe(this.unreadMessagesCount)
 
             this.user
-                    .map { IntegerUtils.intValueOrZero(it.unseenActivityCount()) + IntegerUtils.intValueOrZero(it.erroredBackingsCount()) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.activityCount)
+                .map { IntegerUtils.intValueOrZero(it.unseenActivityCount()) + IntegerUtils.intValueOrZero(it.erroredBackingsCount()) }
+                .compose(bindToLifecycle())
+                .subscribe(this.activityCount)
 
             this.user
-                    .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.erroredBackingsCount())) }
-                    .map { if (BooleanUtils.isTrue(it)) R.color.text_primary else R.color.kds_alert }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.activityCountTextColor)
+                .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.erroredBackingsCount())) }
+                .map { if (BooleanUtils.isTrue(it)) R.color.text_primary else R.color.kds_alert }
+                .compose(bindToLifecycle())
+                .subscribe(this.activityCountTextColor)
 
             this.user
-                    .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.memberProjectsCount())) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.dashboardRowIsGone)
-
+                .map { IntegerUtils.isZero(IntegerUtils.intValueOrZero(it.memberProjectsCount())) }
+                .compose(bindToLifecycle())
+                .subscribe(this.dashboardRowIsGone)
         }
 
         override fun configureWith(@NonNull user: User) {
@@ -110,7 +109,7 @@ interface LoggedInViewHolderViewModel {
         override fun avatarUrl(): Observable<String> = this.avatarUrl
 
         @NonNull
-        override fun dashboardRowIsGone(): Observable<Boolean> =this.dashboardRowIsGone
+        override fun dashboardRowIsGone(): Observable<Boolean> = this.dashboardRowIsGone
 
         @NonNull
         override fun name(): Observable<String> = this.name

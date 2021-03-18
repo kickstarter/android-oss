@@ -3,7 +3,11 @@ package com.kickstarter.viewmodels
 import UpdateUserPasswordMutation
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockTrackingClient
+import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.UserFactory
@@ -35,11 +39,13 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testError() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
-                return Observable.error(Exception("Oops"))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
+                    return Observable.error(Exception("Oops"))
+                }
+            }).build()
+        )
 
         this.vm.inputs.currentPassword("password")
         this.vm.inputs.newPassword("password")
@@ -93,12 +99,20 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSuccess() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
-                return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
-                        UpdateUserPasswordMutation.User("", "test@email.com", false))))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
+                    return Observable.just(
+                        UpdateUserPasswordMutation.Data(
+                            UpdateUserPasswordMutation.UpdateUserAccount(
+                                "",
+                                UpdateUserPasswordMutation.User("", "test@email.com", false)
+                            )
+                        )
+                    )
+                }
+            }).build()
+        )
 
         this.vm.inputs.currentPassword("password")
         this.vm.inputs.newPassword("password")
@@ -122,9 +136,9 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-                .apolloClient(apolloClient)
-                .analytics(AnalyticEvents(listOf(trackingClient)))
-                .build()
+            .apolloClient(apolloClient)
+            .analytics(AnalyticEvents(listOf(trackingClient)))
+            .build()
 
         setUpEnvironment(environment)
 
@@ -146,16 +160,22 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
         // - Mock success response from apollo
         val apolloClient = object : MockApolloClient() {
             override fun updateUserPassword(currentPassword: String, newPassword: String, confirmPassword: String): Observable<UpdateUserPasswordMutation.Data> {
-                return Observable.just(UpdateUserPasswordMutation.Data(UpdateUserPasswordMutation.UpdateUserAccount("",
-                        UpdateUserPasswordMutation.User("", "test@email.com", false))))
+                return Observable.just(
+                    UpdateUserPasswordMutation.Data(
+                        UpdateUserPasswordMutation.UpdateUserAccount(
+                            "",
+                            UpdateUserPasswordMutation.User("", "test@email.com", false)
+                        )
+                    )
+                )
             }
         }
 
         // - Create environment with mocked objects
         val environment = environment().toBuilder()
-                .apolloClient(apolloClient)
-                .analytics(AnalyticEvents(listOf(trackingClient)))
-                .build()
+            .apolloClient(apolloClient)
+            .analytics(AnalyticEvents(listOf(trackingClient)))
+            .build()
 
         setUpEnvironment(environment)
 
@@ -169,10 +189,11 @@ class ChangePasswordViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
-            MockCurrentUser(user),
-            MockCurrentConfig(),
-            TrackingClientType.Type.SEGMENT,
-            MockExperimentsClientType()).apply {
-                this.identifiedId.subscribe(userId)
-            }
+        MockCurrentUser(user),
+        MockCurrentConfig(),
+        TrackingClientType.Type.SEGMENT,
+        MockExperimentsClientType()
+    ).apply {
+        this.identifiedId.subscribe(userId)
+    }
 }

@@ -6,8 +6,10 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
 import androidx.recyclerview.widget.RecyclerView
 
-class RewardDecoration(private val margin: Int,
-                       val interpolator: Interpolator = AccelerateDecelerateInterpolator()) : RecyclerView.ItemDecoration() {
+class RewardDecoration(
+    private val margin: Int,
+    val interpolator: Interpolator = AccelerateDecelerateInterpolator()
+) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         super.getItemOffsets(outRect, view, parent, state)

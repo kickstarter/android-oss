@@ -18,7 +18,7 @@ class LoginToolbar @JvmOverloads constructor(
             helpButtonClick(it)
         }
     }
-    
+
     fun helpButtonClick(view: View) {
         LoginPopupMenu(context, view).show()
     }

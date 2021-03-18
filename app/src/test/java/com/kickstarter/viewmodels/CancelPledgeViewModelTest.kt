@@ -56,13 +56,13 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
     fun testPledgeAmountAndProjectName() {
         var backedProject = ProjectFactory.backedProject()
         val amount = 30.0
-        val backing = (backedProject.backing()?: BackingFactory.backing())
-                .toBuilder()
-                .amount(amount)
-                .build()
+        val backing = (backedProject.backing() ?: BackingFactory.backing())
+            .toBuilder()
+            .amount(amount)
+            .build()
         backedProject = backedProject.toBuilder()
-                .backing(backing)
-                .build()
+            .backing(backing)
+            .build()
         val environment = environment()
         setUpEnvironment(environment, backedProject)
 
@@ -73,12 +73,14 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCancelingPledge_whenErrorMessage() {
-        setUpEnvironment(environment().toBuilder()
+        setUpEnvironment(
+            environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
                         return Observable.just("Error")
                     }
-                }).build())
+                }).build()
+        )
 
         this.vm.inputs.confirmCancellationClicked("")
         this.progressBarIsVisible.assertValuesAndClear(true, false)
@@ -90,12 +92,14 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCancelingPledge_whenBackingNotCancelled() {
-        setUpEnvironment(environment().toBuilder()
+        setUpEnvironment(
+            environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
                         return Observable.just(false)
                     }
-                }).build())
+                }).build()
+        )
 
         this.vm.inputs.confirmCancellationClicked("")
         this.progressBarIsVisible.assertValuesAndClear(true, false)
@@ -107,12 +111,14 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testCancelingPledge_whenServerError() {
-        setUpEnvironment(environment().toBuilder()
+        setUpEnvironment(
+            environment().toBuilder()
                 .apolloClient(object : MockApolloClient() {
                     override fun cancelBacking(backing: Backing, note: String): Observable<Any> {
                         return Observable.error(Throwable("error"))
                     }
-                }).build())
+                }).build()
+        )
 
         this.vm.inputs.confirmCancellationClicked("")
         this.progressBarIsVisible.assertValuesAndClear(true, false)
@@ -133,5 +139,4 @@ class CancelPledgeViewModelTest : KSRobolectricTestCase() {
         this.showServerError.assertNoValues()
         this.success.assertValueCount(1)
     }
-
 }

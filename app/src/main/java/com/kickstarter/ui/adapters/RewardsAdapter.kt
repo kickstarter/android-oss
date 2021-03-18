@@ -15,14 +15,14 @@ import rx.Observable
 
 class RewardsAdapter(private val delegate: Delegate) : KSAdapter() {
 
-    interface Delegate: RewardViewHolder.Delegate
+    interface Delegate : RewardViewHolder.Delegate
 
     override fun layout(sectionRow: SectionRow): Int {
         return R.layout.item_reward
     }
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
-        return when(layout) {
+        return when (layout) {
             R.layout.item_reward -> RewardViewHolder(ItemRewardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
@@ -34,7 +34,8 @@ class RewardsAdapter(private val delegate: Delegate) : KSAdapter() {
         val rewards = projectData.project().rewards()
 
         if (rewards != null) {
-            addSection(Observable.from(rewards)
+            addSection(
+                Observable.from(rewards)
                     .map { reward -> Pair.create(projectData, reward) }
                     .toList().toBlocking().single()
             )

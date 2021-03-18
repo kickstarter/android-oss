@@ -74,69 +74,69 @@ interface PrivacyViewModel {
 
         init {
             this.client.fetchCurrentUser()
-                    .retry(2)
-                    .compose(Transformers.neverError())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.currentUser.refresh(it) }
+                .retry(2)
+                .compose(Transformers.neverError())
+                .compose(bindToLifecycle())
+                .subscribe { this.currentUser.refresh(it) }
 
             val currentUser = this.currentUser.observable()
 
             currentUser
-                    .take(1)
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.userOutput.onNext(it) }
+                .take(1)
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe { this.userOutput.onNext(it) }
 
             currentUser
-                    .compose(bindToLifecycle())
-                    .filter(ObjectUtils::isNotNull)
-                    .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
-                    .subscribe(this.hidePrivateProfileRow)
+                .compose(bindToLifecycle())
+                .filter(ObjectUtils::isNotNull)
+                .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
+                .subscribe(this.hidePrivateProfileRow)
 
             val updateSettingsNotification = this.userInput
-                    .concatMap { this.updateSettings(it) }
+                .concatMap { this.updateSettings(it) }
 
             updateSettingsNotification
-                    .compose(values())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.success(it) }
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe { this.success(it) }
 
             updateSettingsNotification
-                    .compose(errors())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.unableToSavePreferenceError)
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput)
 
             this.userOutput
-                    .window(2, 1)
-                    .flatMap<List<User>> { it.toList() }
-                    .map<User> { ListUtils.first(it) }
-                    .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
+                .window(2, 1)
+                .flatMap<List<User>> { it.toList() }
+                .map<User> { ListUtils.first(it) }
+                .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput)
 
             this.optIntoFollowing
-                    .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter { checked -> checked }
-                    .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(true).build()) }
+                .compose<Boolean>(bindToLifecycle<Boolean>())
+                .filter { checked -> checked }
+                .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(true).build()) }
 
             this.optIntoFollowing
-                    .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter { checked -> !checked }
-                    .subscribe { _ -> this.showConfirmFollowingOptOutPrompt.onNext(null) }
+                .compose<Boolean>(bindToLifecycle<Boolean>())
+                .filter { checked -> !checked }
+                .subscribe { _ -> this.showConfirmFollowingOptOutPrompt.onNext(null) }
 
             this.optOutOfFollowing
-                    .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter { optOut -> optOut }
-                    .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(false).build()) }
+                .compose<Boolean>(bindToLifecycle<Boolean>())
+                .filter { optOut -> optOut }
+                .subscribe { _ -> this.userInput.onNext(this.userOutput.value.toBuilder().social(false).build()) }
 
             this.optOutOfFollowing
-                    .compose<Boolean>(bindToLifecycle<Boolean>())
-                    .filter { optOut -> !optOut }
-                    .subscribe { _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) }
+                .compose<Boolean>(bindToLifecycle<Boolean>())
+                .filter { optOut -> !optOut }
+                .subscribe { _ -> this.hideConfirmFollowingOptOutPrompt.onNext(null) }
         }
 
         override fun optIntoFollowing(checked: Boolean) {
@@ -164,8 +164,8 @@ interface PrivacyViewModel {
         override fun user(): Observable<User> = this.userOutput
 
         override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
-                .takeUntil(this.updateSuccess)
-                .map { _ -> null }
+            .takeUntil(this.updateSuccess)
+            .map { _ -> null }
 
         private fun success(user: User) {
             this.currentUser.refresh(user)
@@ -174,8 +174,8 @@ interface PrivacyViewModel {
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
-                    .materialize()
-                    .share()
+                .materialize()
+                .share()
         }
     }
 }

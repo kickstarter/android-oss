@@ -17,31 +17,31 @@ class ConfirmDialog @JvmOverloads constructor(
     val message: String,
     private val buttonText: String? = null
 ) : AppCompatDialog(context) {
-    
+
     private lateinit var binding: GenericDialogAlertBinding
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         binding = GenericDialogAlertBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-       
+
         if (title != null) {
             setTitleText(title)
         } else {
             binding.titleTextView.visibility = View.GONE
         }
-        
+
         if (buttonText != null) {
             setButtonText(buttonText)
         } else {
             setButtonText(context.getString(R.string.general_alert_buttons_ok))
         }
-        
+
         setMessage(message)
-        
-        binding.okButton.setOnClickListener { 
+
+        binding.okButton.setOnClickListener {
             okButtonClick()
         }
     }

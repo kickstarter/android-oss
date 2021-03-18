@@ -35,7 +35,7 @@ import org.joda.time.DateTimeUtils
 import org.joda.time.MutableDateTime
 import org.junit.Before
 import org.junit.Test
-import java.util.*
+import java.util.Date
 
 class RewardUtilsTest : KSRobolectricTestCase() {
 
@@ -50,7 +50,7 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     private lateinit var rewardMultipleShippingLocation: Reward
     private lateinit var rewardWorldWideShipping: Reward
     private lateinit var rewardSingleShippingLocation: Reward
-    private lateinit var rewardWithAddons : Reward
+    private lateinit var rewardWithAddons: Reward
 
     @Before
     fun setUpTests() {
@@ -83,8 +83,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownDetail_whenDaysLeft_returnsDayToGoString() {
         currentDate.addDays(31)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownDetail(reward, context, ksString), DAYS_TO_GO)
     }
 
@@ -92,8 +92,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownDetail_whenHoursLeft_returnsHoursToGoString() {
         currentDate.addHours(3)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownDetail(reward, context, ksString), HOURS_TO_GO)
     }
 
@@ -101,8 +101,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownDetail_whenSecondsLeft_returnsSecondsToGoString() {
         currentDate.addSeconds(3)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownDetail(reward, context, ksString), SECS_TO_GO)
     }
 
@@ -110,8 +110,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownUnit_whenDaysLeft_returnsDays() {
         currentDate.addDays(31)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownUnit(reward, context), DAYS)
     }
 
@@ -119,8 +119,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownUnit_whenHoursLeft_returnsHours() {
         currentDate.addHours(3)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownUnit(reward, context), HOURS)
     }
 
@@ -128,8 +128,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownUnit_whenMinutesLeft_returnsMinutes() {
         currentDate.addMinutes(3)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownUnit(reward, context), MINS)
     }
 
@@ -137,8 +137,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownUnit_whenSecondsLeft_returnsSecs() {
         currentDate.addSeconds(30)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownUnit(reward, context), SECS)
     }
 
@@ -146,8 +146,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownValue_whenMinutesLeft_returnsNumberOfMinutes() {
         currentDate.addSeconds(300)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownValue(reward), 5)
     }
 
@@ -155,8 +155,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownValue_whenHoursLeft_returnsNumberOfHours() {
         currentDate.addSeconds(3600)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownValue(reward), 60)
     }
 
@@ -164,8 +164,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownValue_whenDaysLeft_returnsNumberOfDays() {
         currentDate.addSeconds(86400)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownValue(reward), 24)
     }
 
@@ -173,8 +173,8 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun deadlineCountdownValue_whenSecondsLeft_returnsNumberOfSeconds() {
         currentDate.addSeconds(30)
         reward = RewardFactory.reward().toBuilder()
-                .endsAt(currentDate.toDateTime())
-                .build()
+            .endsAt(currentDate.toDateTime())
+            .build()
         assertEquals(deadlineCountdownValue(reward), 30)
     }
 
@@ -187,27 +187,27 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun isLimited_whenRemainingGreaterThanZeroAndLimitNotNull_returnsTrue() {
         reward = RewardFactory.reward().toBuilder()
-                .remaining(5)
-                .limit(10)
-                .build()
+            .remaining(5)
+            .limit(10)
+            .build()
         assertTrue(isLimited(reward))
     }
 
     @Test
     fun isLimited_whenRemainingZeroAndLimitNotNull_returnFalse() {
         reward = RewardFactory.reward().toBuilder()
-                .remaining(0)
-                .limit(10)
-                .build()
+            .remaining(0)
+            .limit(10)
+            .build()
         assertFalse(isLimited(reward))
     }
 
     @Test
     fun isLimited_whenLimitAndRemainingNull_returnFalse() {
         reward = RewardFactory.reward().toBuilder()
-                .remaining(null)
-                .limit(null)
-                .build()
+            .remaining(null)
+            .limit(null)
+            .build()
         assertFalse(isLimited(reward))
     }
 
@@ -221,26 +221,26 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun isLimitReached_whenLimitSetAndRemainingIsZero_returnTrue() {
         reward = RewardFactory.reward().toBuilder()
-                .limit(100)
-                .remaining(0)
-                .build()
+            .limit(100)
+            .remaining(0)
+            .build()
         assertTrue(isLimitReached(reward))
     }
 
     @Test
     fun isLimitReached_whenLimitSetButRemainingIsNull_returnFalse() {
         reward = RewardFactory.reward().toBuilder()
-                .limit(100)
-                .build()
+            .limit(100)
+            .build()
         assertFalse(isLimitReached(reward))
     }
 
     @Test
     fun isLimitReached_whenRemainingIsGreaterThanZero_returnFalse() {
         reward = RewardFactory.reward().toBuilder()
-                .limit(100)
-                .remaining(50)
-                .build()
+            .limit(100)
+            .remaining(50)
+            .build()
         assertFalse(isLimitReached(reward))
     }
 
@@ -259,9 +259,9 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun testIsShippable() {
         val rewardWithNullShipping = RewardFactory.reward()
-                .toBuilder()
-                .shippingType(null)
-                .build()
+            .toBuilder()
+            .shippingType(null)
+            .build()
         assertFalse(isShippable(rewardWithNullShipping))
         assertFalse(isShippable(reward))
         assertTrue(isShippable(rewardMultipleShippingLocation))
@@ -279,32 +279,32 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     fun isExpired_whenEndsAtPastDate_returnsTrue() {
         assertFalse(isExpired(reward))
         reward = RewardFactory.reward()
-                .toBuilder()
-                .endsAt(DateTime.now().minusDays(2))
-                .build()
+            .toBuilder()
+            .endsAt(DateTime.now().minusDays(2))
+            .build()
         assertTrue(isExpired(reward))
     }
 
     @Test
     fun isExpired_whenEndsAtFutureDate_returnsFalse() {
         reward = RewardFactory.reward()
-                .toBuilder()
-                .endsAt(DateTime.now().plusDays(2))
-                .build()
+            .toBuilder()
+            .endsAt(DateTime.now().plusDays(2))
+            .build()
         assertFalse(isExpired(reward))
     }
 
     @Test
     fun testShippingSummary() {
         val rewardWithNullShipping = RewardFactory.reward()
-                .toBuilder()
-                .shippingType(null)
-                .build()
+            .toBuilder()
+            .shippingType(null)
+            .build()
         val rewardWithNullLocation = RewardFactory.reward()
-                .toBuilder()
-                .shippingSingleLocation(null)
-                .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
-                .build()
+            .toBuilder()
+            .shippingSingleLocation(null)
+            .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
+            .build()
         assertNull(shippingSummary(rewardWithNullShipping))
         assertNull(shippingSummary(reward))
         assertEquals(Pair.create(R.string.Limited_shipping, ""), shippingSummary(rewardWithNullLocation))
@@ -331,10 +331,10 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun testRewardTimeLimitedStart_hasNotStarted() {
         val rewardLimitedByStart =
-                rewardWithAddons
-                        .toBuilder()
-                        .startsAt(DateTime.now().plusDays(1))
-                        .build()
+            rewardWithAddons
+                .toBuilder()
+                .startsAt(DateTime.now().plusDays(1))
+                .build()
         assertEquals(true, isTimeLimitedStart(rewardLimitedByStart))
         assertEquals(false, hasStarted(rewardLimitedByStart))
     }
@@ -342,10 +342,10 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun testRewardTimeLimitedEnd_hasEnded() {
         val rewardExpired =
-                rewardWithAddons
-                        .toBuilder()
-                        .endsAt(DateTime.now().minusDays(1))
-                        .build()
+            rewardWithAddons
+                .toBuilder()
+                .endsAt(DateTime.now().minusDays(1))
+                .build()
         assertEquals(true, isExpired(rewardExpired))
         assertEquals(false, isValidTimeRange(rewardExpired))
     }
@@ -353,10 +353,10 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun testValidTimeRage_limitedStart_hasNotStarted() {
         val rewardLimitedByStart =
-                rewardWithAddons
-                        .toBuilder()
-                        .startsAt(DateTime.now().plusDays(1))
-                        .build()
+            rewardWithAddons
+                .toBuilder()
+                .startsAt(DateTime.now().plusDays(1))
+                .build()
         assertEquals(false, isValidTimeRange(rewardLimitedByStart))
     }
 
@@ -369,10 +369,10 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun testValidTimeRage_limitedEnd_hasNotEnded() {
         val rewardLimitedByEnd =
-                rewardWithAddons
-                        .toBuilder()
-                        .endsAt(DateTime.now().plusDays(1))
-                        .build()
+            rewardWithAddons
+                .toBuilder()
+                .endsAt(DateTime.now().plusDays(1))
+                .build()
         assertEquals(false, isExpired(rewardLimitedByEnd))
         assertEquals(true, isValidTimeRange(rewardLimitedByEnd))
     }
@@ -380,11 +380,11 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun testValidTimeRange_limitedStartEnd_isValid() {
         val rewardLimitedBoth =
-                rewardWithAddons
-                        .toBuilder()
-                        .startsAt(DateTime.now())
-                        .endsAt(DateTime.now().plusDays(1))
-                        .build()
+            rewardWithAddons
+                .toBuilder()
+                .startsAt(DateTime.now())
+                .endsAt(DateTime.now().plusDays(1))
+                .build()
         assertEquals(false, isExpired(rewardLimitedBoth))
         assertEquals(true, hasStarted(rewardLimitedBoth))
         assertEquals(true, isValidTimeRange(rewardLimitedBoth))
@@ -393,11 +393,11 @@ class RewardUtilsTest : KSRobolectricTestCase() {
     @Test
     fun testValidTimeRange_limitedStartEnd_isInvalid() {
         val rewardLimitedBoth =
-                rewardWithAddons
-                        .toBuilder()
-                        .startsAt(DateTime.now().plusDays(1))
-                        .endsAt(DateTime.now().plusDays(2))
-                        .build()
+            rewardWithAddons
+                .toBuilder()
+                .startsAt(DateTime.now().plusDays(1))
+                .endsAt(DateTime.now().plusDays(2))
+                .build()
         assertEquals(false, isExpired(rewardLimitedBoth))
         assertEquals(false, hasStarted(rewardLimitedBoth))
         assertEquals(false, isValidTimeRange(rewardLimitedBoth))

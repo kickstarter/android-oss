@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.utils.EventName;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.factories.VideoFactory;
 import com.kickstarter.models.Project;
@@ -40,5 +41,21 @@ public class VideoViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     preparePlayerWithUrl.assertValue(project.video().high());
+  }
+
+  @Test
+  public void testVideoViewModel_VideoPlayStart() {
+    final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<String> preparePlayerWithUrl = new TestSubscriber<>();
+    vm.outputs.preparePlayerWithUrl().subscribe(preparePlayerWithUrl);
+    vm.inputs.onVideoStarted(100,0);
+
+    // Configure the view model with a project intent.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    preparePlayerWithUrl.assertValue(project.video().high());
+    this.segmentTrack.assertValues( EventName.VIDEO_PLAYBACK_STARTED.getEventName());
   }
 }

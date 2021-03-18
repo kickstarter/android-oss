@@ -208,6 +208,8 @@ interface LoginViewModel {
                 .compose(combineLatestPair(emailAndPassword))
                 .compose(bindToLifecycle())
                 .subscribe { this.lake.trackLogInSubmitButtonClicked() }
+
+            this.lake.trackLoginPagedViewed()
         }
 
         private fun unwrapNotificationEnvelopeError(notification: Notification<AccessTokenEnvelope>) =

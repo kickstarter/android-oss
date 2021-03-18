@@ -56,6 +56,6 @@ public class VideoViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     preparePlayerWithUrl.assertValue(project.video().high());
-    this.segmentTrack.assertValues( EventName.VIDEO_PLAYBACK_STARTED.getEventName());
+    this.segmentTrack.assertValues(EventName.VIDEO_PLAYBACK_STARTED.getEventName());
   }
 }

@@ -103,6 +103,8 @@ public interface SignupViewModel {
                 this.lake.trackSignUpSubmitButtonClicked();
                 this.lake.trackSignUpSubmitCtaClicked();
               });
+
+      this.lake.trackSignUpPageViewed();
     }
 
     private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {

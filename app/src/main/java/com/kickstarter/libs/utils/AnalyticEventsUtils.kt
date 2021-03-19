@@ -1,6 +1,8 @@
 package com.kickstarter.libs.utils
 
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.EventContextValues.VideoContextName.LENGTH
+import com.kickstarter.libs.utils.EventContextValues.VideoContextName.POSITION
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
@@ -122,6 +124,16 @@ object AnalyticEventsUtils {
         props.putAll(refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         props["context_pledge_flow"] = pledgeData.pledgeFlowContext().trackingString
         return props
+    }
+
+    @JvmOverloads
+    fun videoProperties(videoLength: Long, videoPosition: Long, prefix: String = "video_"): Map<String, Any> {
+
+        val properties = HashMap<String, Any>().apply {
+            put(LENGTH.contextName, videoLength)
+            put(POSITION.contextName, videoPosition)
+        }
+        return MapUtils.prefixKeys(properties, prefix)
     }
 
     @JvmOverloads

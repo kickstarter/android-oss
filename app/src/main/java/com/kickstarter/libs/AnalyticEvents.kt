@@ -53,9 +53,11 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHE
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
+import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
@@ -678,6 +680,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(EXPLORE_SORT_CLICKED, props)
     }
 
+    // VIDEO
+    /**
+     *Sends data to the client when the any of video started .
+     *
+     * @param videoLength: Length of video in seconds.
+     * @param videoPosition:Index position of the playhead,
+     */
+    fun trackVideoStarted(project: Project, videoLength: Long, videoPosition: Long) {
+        val props: HashMap<String, Any> = HashMap()
+        props[CONTEXT_PAGE.contextName] = PROJECT.contextName
+        props.putAll(AnalyticEventsUtils.videoProperties(videoLength, videoPosition))
+        props.putAll(AnalyticEventsUtils.projectProperties(project, client.loggedInUser()))
+        client.track(EventName.VIDEO_PLAYBACK_STARTED.eventName, props)
+    }
     /**
      * Sends data to the client when the any of the discover sort tabs are clicked.
      *

@@ -53,7 +53,6 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHE
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
-import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED

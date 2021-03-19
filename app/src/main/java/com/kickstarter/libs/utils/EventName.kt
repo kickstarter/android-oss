@@ -12,5 +12,6 @@ enum class EventName(val eventName: String) {
     CTA_CLICKED("CTA Clicked"),
     CARD_CLICKED("Card Clicked"),
     PAGE_VIEWED("Page Viewed"),
-    VIDEO_PLAYBACK_STARTED("Video Playback Started")
+    VIDEO_PLAYBACK_STARTED("Video Playback Started"),
+    VIDEO_PLAYBACK_COMPLETED("Video Playback Completed")
 }

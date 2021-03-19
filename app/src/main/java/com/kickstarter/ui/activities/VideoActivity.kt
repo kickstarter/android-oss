@@ -120,6 +120,9 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     private fun releasePlayer() {
         if (player != null) {
             playerPosition = player?.currentPosition
+            player?.duration?.let {
+                viewModel.inputs.onVideoCompleted(it, playerPosition ?: 0L)
+            }
             player?.removeListener(eventListener)
             player?.release()
             trackSelector = null

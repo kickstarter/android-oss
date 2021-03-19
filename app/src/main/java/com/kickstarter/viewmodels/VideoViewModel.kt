@@ -18,11 +18,13 @@ interface VideoViewModel {
 
     interface Inputs {
         fun onVideoStarted(videoLength: Long, videoPosition: Long)
+        fun onVideoCompleted(videoLength: Long, videoPosition: Long)
     }
 
     class ViewModel(environment: Environment) : ActivityViewModel<VideoActivity>(environment), Inputs, Outputs {
         private val preparePlayerWithUrl = BehaviorSubject.create<String>()
         private val onVideoStarted = BehaviorSubject.create<Pair<Long, Long>>()
+        private val onVideoCompleted = BehaviorSubject.create<Pair<Long, Long>>()
         @JvmField
         val outputs: Outputs = this
 
@@ -35,6 +37,10 @@ interface VideoViewModel {
 
         override fun onVideoStarted(videoLength: Long, videoPosition: Long) {
             return onVideoStarted.onNext(Pair(videoLength, videoPosition))
+        }
+
+        override fun onVideoCompleted(videoLength: Long, videoPosition: Long) {
+            return onVideoCompleted.onNext(Pair(videoLength, videoPosition))
         }
 
         init {
@@ -55,6 +61,18 @@ interface VideoViewModel {
                 .compose(bindToLifecycle())
                 .subscribe {
                     this.lake.trackVideoStarted(
+                        it.first,
+                        TimeUnit.MILLISECONDS.toSeconds(it.second.first),
+                        TimeUnit.MILLISECONDS.toSeconds(it.second.second)
+                    )
+                }
+
+            Observable.combineLatest(project, onVideoCompleted) { p, u ->
+                Pair(p, u)
+            }.distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackVideoCompleted(
                         it.first,
                         TimeUnit.MILLISECONDS.toSeconds(it.second.first),
                         TimeUnit.MILLISECONDS.toSeconds(it.second.second)

@@ -56,8 +56,8 @@ import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_
 import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.EventName.CTA_CLICKED
 import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
-import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
+import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.ExperimentData
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project

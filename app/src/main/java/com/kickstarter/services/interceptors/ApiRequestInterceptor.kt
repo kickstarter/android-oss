@@ -23,6 +23,7 @@ class ApiRequestInterceptor(
     private val pxManager: PerimeterXClientType,
     private val build: Build
 ) : Interceptor {
+
     @Throws(IOException::class)
 
     override fun intercept(chain: Chain): Response {
@@ -35,11 +36,14 @@ class ApiRequestInterceptor(
         if (!shouldIntercept(initialRequest)) {
             return initialRequest
         }
+
         val builder: Request.Builder = initialRequest.newBuilder()
             .addHeader("Accept", "application/json")
             .addHeader("Kickstarter-Android-App-UUID", FirebaseInstanceId.getInstance().id)
             .addHeader("User-Agent", userAgent(build))
+
         pxManager.addHeaderTo(builder)
+
         return builder
             .url(url(initialRequest.url))
             .build()

@@ -2,6 +2,8 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
+import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.CategoryFactory
@@ -527,24 +529,30 @@ class SegmentTest : KSRobolectricTestCase() {
         val project = project()
         val user = user()
         val client = client(user)
-        client.eventNames.subscribe(this.lakeTest)
+        client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
 
         val videoLength = 100L
-        val videoPosition = 0L
+        val videoStartedPosition = 0L
+        val videoCompletedPosition = 50L
 
-        val lake = AnalyticEvents(listOf(client))
+        val segment = AnalyticEvents(listOf(client))
 
-        lake.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
+        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), null)
 
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
 
-        lake.trackVideoStarted(project, videoLength, videoPosition)
-        assertVideoProperties(videoLength, videoPosition)
+        segment.trackVideoStarted(project, videoLength, videoStartedPosition)
 
-        this.lakeTest.assertValues("Project Page Viewed", "Video Playback Started")
+        assertVideoProperties(videoLength, videoStartedPosition)
+
+        segment.trackVideoCompleted(project, videoLength, videoCompletedPosition)
+
+        assertVideoProperties(videoLength, videoCompletedPosition)
+
+        this.segmentTrack.assertValues("Project Page Viewed", VIDEO_PLAYBACK_STARTED.eventName, VIDEO_PLAYBACK_COMPLETED.eventName)
     }
 
     private fun client(user: User?) = MockTrackingClient(

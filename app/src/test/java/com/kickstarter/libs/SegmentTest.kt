@@ -10,14 +10,7 @@ import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
-import com.kickstarter.mock.factories.CategoryFactory
-import com.kickstarter.mock.factories.CheckoutDataFactory
-import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.factories.LocationFactory
-import com.kickstarter.mock.factories.ProjectDataFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -515,10 +508,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
-
-        val expectedProperties = this.propertiesTest.value
-        assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_CTA.contextName])
-        assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertCtaContextProperty(ACTIVITY_FEED.contextName)
+        assertPageContextProperty(ACTIVITY_FEED.contextName)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }
@@ -700,6 +691,16 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
         assertEquals(getOptimizelySession()["variants_optimizely"]?.first(), (expectedProperties["session_variants_optimizely"] as Array<*>).first())
+    }
+
+    private fun assertCtaContextProperty(contextName: String) {
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(contextName, expectedProperties[CONTEXT_CTA.contextName])
+    }
+
+    private fun assertPageContextProperty(contextName: String) {
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(contextName, expectedProperties[CONTEXT_PAGE.contextName])
     }
 
     private fun assertVideoProperties(videoLength: Long, videoPosition: Long) {

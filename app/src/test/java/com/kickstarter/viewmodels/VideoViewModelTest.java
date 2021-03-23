@@ -58,4 +58,18 @@ public class VideoViewModelTest extends KSRobolectricTestCase {
     preparePlayerWithUrl.assertValue(project.video().high());
     this.segmentTrack.assertValues(EventName.VIDEO_PLAYBACK_STARTED.getEventName());
   }
+
+  @Test
+  public void testVideoViewModel_VideoPlayCompleted() {
+    final VideoViewModel.ViewModel vm = new VideoViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<String> preparePlayerWithUrl = new TestSubscriber<>();
+    vm.inputs.onVideoCompleted(10, 2);
+
+    // Configure the view model with a project intent.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    this.segmentTrack.assertValues(EventName.VIDEO_PLAYBACK_COMPLETED.getEventName());
+  }
 }

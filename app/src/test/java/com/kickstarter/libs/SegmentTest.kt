@@ -2,6 +2,9 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
@@ -513,8 +516,8 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
 
         val expectedProperties = this.propertiesTest.value
-        assertEquals("activity_feed", expectedProperties["context_cta"])
-        assertEquals("activity_feed", expectedProperties["context_page"])
+        assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValues("Page Viewed")
     }

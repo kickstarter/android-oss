@@ -5,6 +5,7 @@ import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
@@ -519,7 +520,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
-        this.segmentTrack.assertValues("Page Viewed")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

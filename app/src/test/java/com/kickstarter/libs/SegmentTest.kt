@@ -238,6 +238,21 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testProjectProperties_hasProject_prelaunch_activated() {
+        val project = ProjectFactory.projectWithAddOns()
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+
+        val expectedProperties = this.propertiesTest.value
+        assertNotNull(expectedProperties["project_prelaunch_activated"])
+    }
+
+    @Test
     fun testProjectProperties_LoggedInUser() {
         val project = project()
         val user = user()
@@ -630,6 +645,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("US", expectedProperties["project_country"])
         assertEquals("3", expectedProperties["project_creator_uid"])
         assertEquals("USD", expectedProperties["project_currency"])
+        assertNotNull(expectedProperties["project_prelaunch_activated"])
         assertEquals(50.0, expectedProperties["project_current_pledge_amount"])
         assertEquals(50.0, expectedProperties["project_current_amount_pledged_usd"])
         assertEquals(project.deadline(), expectedProperties["project_deadline"])

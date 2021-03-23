@@ -1,8 +1,8 @@
 package com.kickstarter.ui.viewholders
 
-import com.kickstarter.databinding.EmptyViewBinding
+import androidx.viewbinding.ViewBinding
 
-class EmptyViewHolder(binding: EmptyViewBinding) : KSViewHolder(binding.root) {
+class EmptyViewHolder(binding: ViewBinding) : KSViewHolder(binding.root) {
     @Throws(Exception::class)
     override fun bindData(data: Any?) {
     }

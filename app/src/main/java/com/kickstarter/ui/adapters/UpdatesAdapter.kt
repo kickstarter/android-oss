@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.kickstarter.R
-import com.kickstarter.databinding.EmptyViewBinding
+import com.kickstarter.databinding.EmptyUpdatesLayoutBinding
 import com.kickstarter.databinding.ItemUpdateCardBinding
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
@@ -50,7 +50,7 @@ class UpdatesAdapter(private val delegate: Delegate) : KSAdapter() {
         return if (layout == R.layout.item_update_card) {
             UpdateCardViewHolder(ItemUpdateCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
         } else {
-            EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
+            EmptyViewHolder(EmptyUpdatesLayoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 }

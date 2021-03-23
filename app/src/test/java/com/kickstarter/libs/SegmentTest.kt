@@ -6,14 +6,7 @@ import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
-import com.kickstarter.mock.factories.CategoryFactory
-import com.kickstarter.mock.factories.CheckoutDataFactory
-import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.factories.LocationFactory
-import com.kickstarter.mock.factories.ProjectDataFactory
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.mock.factories.UserFactory
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -497,6 +490,26 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.segmentTrack.assertValues("Thanks Page Viewed")
+    }
+
+    @Test
+    fun testActivityFeedsProperties() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackActivityFeedPageViewed()
+
+        assertSessionProperties(user)
+        assertContextProperties()
+
+        val expectedProperties = this.propertiesTest.value
+        assertEquals("activity_feed", expectedProperties["context_cta"])
+        assertEquals("activity_feed", expectedProperties["context_page"])
+
+        this.segmentTrack.assertValues("Page Viewed")
     }
 
     @Test

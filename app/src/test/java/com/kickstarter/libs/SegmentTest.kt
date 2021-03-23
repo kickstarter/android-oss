@@ -2,8 +2,11 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.CategoryFactory
@@ -553,6 +556,25 @@ class SegmentTest : KSRobolectricTestCase() {
         assertVideoProperties(videoLength, videoCompletedPosition)
 
         this.segmentTrack.assertValues("Project Page Viewed", VIDEO_PLAYBACK_STARTED.eventName, VIDEO_PLAYBACK_COMPLETED.eventName)
+    }
+
+    @Test
+    fun testLoginPageViewed() {
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackLoginPagedViewed()
+
+        assertSessionProperties(null)
+        assertContextProperties()
+
+        val properties = this.propertiesTest.value
+        assertEquals(LOGIN.contextName, properties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     private fun client(user: User?) = MockTrackingClient(

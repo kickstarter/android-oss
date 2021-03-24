@@ -189,7 +189,10 @@ public interface ActivityFeedViewModel {
       feedViewed
         .take(1)
         .compose(this.bindToLifecycle())
-        .subscribe(__ -> this.lake.trackActivityFeedViewed());
+        .subscribe(__ -> {
+          this.lake.trackActivityFeedViewed();
+          this.lake.trackActivityFeedPageViewed();
+        });
 
       this.discoverProjectsClick
         .compose(this.bindToLifecycle())

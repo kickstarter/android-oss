@@ -74,8 +74,8 @@ abstract class TrackingClientType {
             this["app_release_version"] = versionName()
             this["platform"] = "native_android"
             this["client"] = "native"
+            this["variants_internal"] = currentVariants() ?: ""
             this["country"] = sessionCountry()
-            this["current_variants"] = currentVariants() ?: ""
             this["device_distinct_id"] = deviceDistinctId()
             this["device_type"] = deviceFormat()
             this["device_manufacturer"] = manufacturer()

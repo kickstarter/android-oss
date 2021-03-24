@@ -2,11 +2,11 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig

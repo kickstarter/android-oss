@@ -702,6 +702,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
         assertEquals("native_android", expectedProperties["session_platform"])
         assertEquals("native", expectedProperties["session_client"])
+        assertEquals("US", expectedProperties["session_country"])
         assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
         assertEquals("phone", expectedProperties["session_device_type"])

@@ -179,6 +179,10 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
+  protected String sessionCountry() {
+    return "US";
+  }
+  @Override
   protected String versionName() {
     return "9.9.9";
   }

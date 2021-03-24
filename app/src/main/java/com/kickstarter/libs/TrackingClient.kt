@@ -107,7 +107,7 @@ abstract class TrackingClient(
 
     override fun buildNumber(): Int = BuildConfig.VERSION_CODE
 
-    override fun currentVariants(): JSONArray? = this.config?.currentVariants()
+    override fun currentVariants(): Array<String>? = this.config?.currentVariants()
 
     override fun deviceDistinctId(): String = FirebaseInstanceId.getInstance().id
 

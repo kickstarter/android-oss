@@ -20,7 +20,7 @@ abstract class TrackingClientType {
 
     protected abstract fun brand(): String
     protected abstract fun buildNumber(): Int
-    protected abstract fun currentVariants(): JSONArray?
+    protected abstract fun currentVariants(): Array<String>?
     protected abstract fun deviceDistinctId(): String
     protected abstract fun deviceFormat(): String
     protected abstract fun deviceOrientation(): String

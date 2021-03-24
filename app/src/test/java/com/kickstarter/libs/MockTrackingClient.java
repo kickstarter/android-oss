@@ -97,7 +97,7 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected JSONArray currentVariants() {
+  protected String[] currentVariants() {
     return ConfigExtension.currentVariants(this.config);
   }
 

@@ -258,9 +258,9 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testProjectProperties_hasProject_prelaunch_activated_true() {
         val project = ProjectFactory.projectWithAddOns()
-                .toBuilder()
-                .prelaunchActivated(true)
-                .build()
+            .toBuilder()
+            .prelaunchActivated(true)
+            .build()
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
@@ -274,9 +274,9 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testProjectProperties_hasProject_prelaunch_activated_false() {
         val project = ProjectFactory.projectWithAddOns()
-                .toBuilder()
-                .prelaunchActivated(false)
-                .build()
+            .toBuilder()
+            .prelaunchActivated(false)
+            .build()
         val client = client(null)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)

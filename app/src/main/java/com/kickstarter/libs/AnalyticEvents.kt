@@ -250,7 +250,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackActivityFeedPageViewed() {
         val props = hashMapOf<String, Any>()
-        props[CONTEXT_CTA.contextName] = ACTIVITY_FEED.contextName
         props[CONTEXT_PAGE.contextName] = ACTIVITY_FEED.contextName
         client.track(PAGE_VIEWED.eventName, props)
     }
@@ -811,9 +810,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * Sends data to the client open TwoFactorAuth screen
      */
     fun trackTwoFactorAuthPageViewed() {
-        val props = hashMapOf<String, Any>()
-        props[CONTEXT_CTA.contextName] = TWO_FACTOR_AUTH.contextName
-        props[CONTEXT_PAGE.contextName] = TWO_FACTOR_AUTH.contextName
+        val props = hashMapOf(CONTEXT_PAGE.contextName to TWO_FACTOR_AUTH.contextName)
         client.track(PAGE_VIEWED.eventName, props)
     }
 

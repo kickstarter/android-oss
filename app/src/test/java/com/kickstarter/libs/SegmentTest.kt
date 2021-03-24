@@ -534,7 +534,6 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(null)
         assertContextProperties()
-        assertCtaContextProperty(EventContextValues.ContextPageName.TWO_FACTOR_AUTH.contextName)
         assertPageContextProperty(EventContextValues.ContextPageName.TWO_FACTOR_AUTH.contextName)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)

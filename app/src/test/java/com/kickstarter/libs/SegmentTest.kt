@@ -12,15 +12,15 @@ import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CategoryFactory
-import com.kickstarter.mock.factories.CheckoutDataFactory
-import com.kickstarter.mock.factories.ConfigFactory
-import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.ProjectDataFactory
 import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.CheckoutDataFactory
+import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.mock.factories.AvatarFactory
+import com.kickstarter.mock.factories.RewardFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -87,11 +87,11 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testDefaultProperties_loggedInUser_nullProperties() {
         val user =
-                User.builder()
-                        .avatar(AvatarFactory.avatar())
-                        .name("Kickstarter")
-                        .id(12)
-                        .build()
+            User.builder()
+                .avatar(AvatarFactory.avatar())
+                .name("Kickstarter")
+                .id(12)
+                .build()
         val client = client(user)
         client.eventNames.subscribe(this.segmentTrack)
         client.eventProperties.subscribe(this.propertiesTest)
@@ -810,7 +810,6 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("native", expectedProperties["session_client"])
         assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_variants_internal"])
         assertEquals("US", expectedProperties["session_country"])
-        assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
         assertEquals("phone", expectedProperties["session_device_type"])
         assertEquals("Google", expectedProperties["session_device_manufacturer"])

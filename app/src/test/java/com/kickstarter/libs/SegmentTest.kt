@@ -4,13 +4,22 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.*
+import com.kickstarter.libs.utils.EventContextValues
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
-import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.factories.CategoryFactory
+import com.kickstarter.mock.factories.CheckoutDataFactory
+import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -525,8 +534,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(null)
         assertContextProperties()
-        assertCtaContextProperty(TWO_FACTOR_AUTH.contextName)
-        assertPageContextProperty(TWO_FACTOR_AUTH.contextName)
+        assertCtaContextProperty(EventContextValues.ContextPageName.TWO_FACTOR_AUTH.contextName)
+        assertPageContextProperty(EventContextValues.ContextPageName.TWO_FACTOR_AUTH.contextName)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }

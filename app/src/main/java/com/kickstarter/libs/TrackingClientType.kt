@@ -28,6 +28,7 @@ abstract class TrackingClientType {
     protected abstract fun manufacturer(): String
     protected abstract fun model(): String
     protected abstract fun OSVersion(): String
+    protected abstract fun sessionCountry(): String
     protected abstract fun time(): Long
     abstract fun type(): Type
     protected abstract fun userAgent(): String?
@@ -73,6 +74,7 @@ abstract class TrackingClientType {
             this["app_release_version"] = versionName()
             this["platform"] = "native_android"
             this["client"] = "native"
+            this["country"] = sessionCountry()
             this["current_variants"] = currentVariants() ?: ""
             this["device_distinct_id"] = deviceDistinctId()
             this["device_type"] = deviceFormat()

@@ -149,6 +149,8 @@ abstract class TrackingClient(
 
     override fun userCountry(user: User): String = user.location()?.country() ?: this.config?.countryCode() ?: ""
 
+    override fun sessionCountry(): String = this.config?.countryCode() ?: ""
+
     override fun versionName(): String = BuildConfig.VERSION_NAME
 
     override fun wifiConnection(): Boolean {

@@ -4,6 +4,7 @@ import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventName
@@ -563,8 +564,23 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
-        assertCtaContextProperty(ACTIVITY_FEED.contextName)
         assertPageContextProperty(ACTIVITY_FEED.contextName)
+
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun testTwoFactorAuthProperties() {
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackTwoFactorAuthPageViewed()
+
+        assertSessionProperties(null)
+        assertContextProperties()
+        assertPageContextProperty(EventContextValues.ContextPageName.TWO_FACTOR_AUTH.contextName)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }

@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.UNWATCH
@@ -249,7 +250,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      */
     fun trackActivityFeedPageViewed() {
         val props = hashMapOf<String, Any>()
-        props[CONTEXT_CTA.contextName] = ACTIVITY_FEED.contextName
         props[CONTEXT_PAGE.contextName] = ACTIVITY_FEED.contextName
         client.track(PAGE_VIEWED.eventName, props)
     }
@@ -803,6 +803,14 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props[CONTEXT_SECTION.contextName] = pageSectionContext
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
+     * Sends data to the client open TwoFactorAuth screen
+     */
+    fun trackTwoFactorAuthPageViewed() {
+        val props = hashMapOf(CONTEXT_PAGE.contextName to TWO_FACTOR_AUTH.contextName)
         client.track(PAGE_VIEWED.eventName, props)
     }
 

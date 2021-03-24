@@ -175,6 +175,7 @@ object AnalyticEventsUtils {
                 }
             }
             project.commentsCount()?.let { put("comments_count", it) }
+            project.prelaunchActivated()?.let { put("project_prelaunch_activated", it) }
             put("country", project.country())
             put("creator_uid", project.creator().id().toString())
             put("currency", project.currency())

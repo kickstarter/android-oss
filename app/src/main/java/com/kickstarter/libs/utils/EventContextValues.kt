@@ -63,7 +63,8 @@ class EventContextValues {
         CHANGE_PAYMENT("change_payment"),
         LOGIN_SIGN_UP("log_in_sign_up"),
         SIGN_UP("sign_up"),
-        LOGIN("log_in")
+        LOGIN("log_in"),
+        TWO_FACTOR_AUTH("two_factor_auth")
     }
 
     /**

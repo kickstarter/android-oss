@@ -245,6 +245,16 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     }
 
     /**
+     * Sends data to the client when Activity Screen viewed.
+     */
+    fun trackActivityFeedPageViewed() {
+        val props = hashMapOf<String, Any>()
+        props[CONTEXT_CTA.contextName] = ACTIVITY_FEED.contextName
+        props[CONTEXT_PAGE.contextName] = ACTIVITY_FEED.contextName
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
+    /**
      * Tracks a discover project clicks on the activity screen.
      */
     fun trackDiscoverProjectCTAClicked() {

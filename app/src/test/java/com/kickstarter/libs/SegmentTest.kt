@@ -256,6 +256,38 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testProjectProperties_hasProject_prelaunch_activated_true() {
+        val project = ProjectFactory.projectWithAddOns()
+                .toBuilder()
+                .prelaunchActivated(true)
+                .build()
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        val expectedProperties = this.propertiesTest.value
+        assertNotNull(expectedProperties["project_prelaunch_activated"])
+        assertEquals(true, expectedProperties["project_prelaunch_activated"])
+    }
+
+    @Test
+    fun testProjectProperties_hasProject_prelaunch_activated_false() {
+        val project = ProjectFactory.projectWithAddOns()
+                .toBuilder()
+                .prelaunchActivated(false)
+                .build()
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
+        val expectedProperties = this.propertiesTest.value
+        assertNotNull(expectedProperties["project_prelaunch_activated"])
+        assertEquals(false, expectedProperties["project_prelaunch_activated"])
+    }
+
+    @Test
     fun testProjectProperties_LoggedInUser() {
         val project = project()
         val user = user()

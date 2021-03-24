@@ -808,7 +808,6 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
         assertEquals("native_android", expectedProperties["session_platform"])
         assertEquals("native", expectedProperties["session_client"])
-        assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_variants_internal"])
         assertEquals("US", expectedProperties["session_country"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
         assertEquals("phone", expectedProperties["session_device_type"])
@@ -825,6 +824,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
         assertEquals(getOptimizelySession()["variants_optimizely"]?.first(), (expectedProperties["session_variants_optimizely"] as Array<*>).first())
+        assertEquals("android_example_experiment[control]", (expectedProperties["session_variants_internal"] as Array<*>).first())
     }
 
     private fun assertUserProperties(isAdmin: Boolean) {

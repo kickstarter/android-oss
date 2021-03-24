@@ -111,6 +111,8 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
         val properties = HashMap<String, Any>()
+        properties["backed_projects_count"] = user.backedProjectsCount() ?: 0
+        properties["launched_projects_count"] = user.memberProjectsCount() ?: 0
         properties["uid"] = user.id().toString()
         properties["is_admin"] = user.isAdmin ?: false
 

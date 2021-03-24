@@ -12,6 +12,7 @@ import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
+import com.kickstarter.mock.factories.AvatarFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -66,11 +67,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
-
-        val expectedProperties = propertiesTest.value
-        assertEquals("15", expectedProperties["user_uid"])
-        assertEquals(false, expectedProperties["user_is_admin"])
-        assertEquals("NG", expectedProperties["user_country"])
+        assertUserProperties(false)
     }
 
     @Test
@@ -84,10 +81,31 @@ class SegmentTest : KSRobolectricTestCase() {
 
         segment.trackAppOpen()
 
+        assertUserProperties(true)
+    }
+
+    @Test
+    fun testDefaultProperties_loggedInUser_nullProperties() {
+        val user =
+            User.builder()
+                .avatar(AvatarFactory.avatar())
+                .name("Kickstarter")
+                .id(12)
+                .build()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackActivityFeedPageViewed()
+
         val expectedProperties = propertiesTest.value
-        assertEquals("15", expectedProperties["user_uid"])
-        assertEquals(true, expectedProperties["user_is_admin"])
-        assertEquals("NG", expectedProperties["user_country"])
+        assertEquals(0, expectedProperties["user_backed_projects_count"])
+        assertEquals(false, expectedProperties["user_is_admin"])
+        assertEquals(0, expectedProperties["user_launched_projects_count"])
+        assertEquals("12", expectedProperties["user_uid"])
+        assertEquals("US", expectedProperties["user_country"])
     }
 
     @Test
@@ -145,6 +163,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["discover_category_id"])
@@ -183,6 +202,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
         assertEquals("1", expectedProperties["discover_category_id"])
@@ -218,6 +238,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertProjectProperties(project)
 
         val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["user_uid"])
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
@@ -240,6 +261,7 @@ class SegmentTest : KSRobolectricTestCase() {
         segment.trackProjectPageViewed(ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended()), PledgeFlowContext.NEW_PLEDGE)
 
         val expectedProperties = this.propertiesTest.value
+        assertNull(expectedProperties["user_uid"])
         assertEquals(true, expectedProperties["project_has_add_ons"])
     }
 
@@ -305,6 +327,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
@@ -338,6 +361,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
         assertNull(expectedProperties["context_pledge_flow"])
@@ -364,7 +388,15 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
 
         val expectedProperties = this.propertiesTest.value
+
         assertNull(expectedProperties["context_pledge_flow"])
+
+        assertEquals(17, expectedProperties["user_backed_projects_count"])
+        assertEquals(false, expectedProperties["user_is_admin"])
+        assertEquals(10, expectedProperties["user_launched_projects_count"])
+        assertEquals("3", expectedProperties["user_uid"])
+        assertEquals("US", expectedProperties["user_country"])
+
         assertEquals(false, expectedProperties["project_user_has_watched"])
         assertEquals(false, expectedProperties["project_user_is_backer"])
         assertEquals(true, expectedProperties["project_user_is_project_creator"])
@@ -386,6 +418,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
+        assertUserProperties(false)
 
         val expectedProperties = this.propertiesTest.value
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
@@ -411,6 +444,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
@@ -438,6 +472,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertProjectProperties(project)
         assertContextProperties()
         assertPledgeProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
@@ -469,6 +504,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertPledgeProperties()
         assertCheckoutProperties()
+        assertUserProperties(false)
 
         val expectedProperties = this.propertiesTest.value
         assertNull(expectedProperties["checkout_id"])
@@ -509,6 +545,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertPledgeProperties()
         assertCheckoutProperties()
+        assertUserProperties(false)
 
         val expectedProperties = this.propertiesTest.value
         assertNull(expectedProperties["checkout_id"])
@@ -541,6 +578,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
         assertPledgeProperties()
         assertCheckoutProperties()
+        assertUserProperties(false)
 
         val expectedProperties = this.propertiesTest.value
         assertEquals("3", expectedProperties["checkout_id"])
@@ -565,6 +603,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(user)
         assertContextProperties()
         assertPageContextProperty(ACTIVITY_FEED.contextName)
+        assertUserProperties(false)
 
         this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName)
     }
@@ -600,6 +639,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertProjectProperties(project)
         assertContextProperties()
         assertOptimizelyProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
         assertEquals("new_pledge", expectedProperties["context_pledge_flow"])
@@ -629,6 +669,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertSessionProperties(user)
         assertProjectProperties(project)
         assertContextProperties()
+        assertUserProperties(false)
 
         segment.trackVideoStarted(project, videoLength, videoStartedPosition)
 
@@ -655,6 +696,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertContextProperties()
 
         val properties = this.propertiesTest.value
+        assertNull(properties["user_uid"])
         assertEquals(LOGIN.contextName, properties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
@@ -767,7 +809,6 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("native_android", expectedProperties["session_platform"])
         assertEquals("native", expectedProperties["session_client"])
         assertEquals("US", expectedProperties["session_country"])
-        assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
         assertEquals("phone", expectedProperties["session_device_type"])
         assertEquals("Google", expectedProperties["session_device_manufacturer"])
@@ -783,6 +824,16 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
         assertEquals(getOptimizelySession()["variants_optimizely"]?.first(), (expectedProperties["session_variants_optimizely"] as Array<*>).first())
+        assertEquals("android_example_experiment[control]", (expectedProperties["session_variants_internal"] as Array<*>).first())
+    }
+
+    private fun assertUserProperties(isAdmin: Boolean) {
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(3, expectedProperties["user_backed_projects_count"])
+        assertEquals(5, expectedProperties["user_launched_projects_count"])
+        assertEquals("15", expectedProperties["user_uid"])
+        assertEquals("NG", expectedProperties["user_country"])
+        assertEquals(isAdmin, expectedProperties["user_is_admin"])
     }
 
     private fun assertCtaContextProperty(contextName: String) {
@@ -837,6 +888,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .toBuilder()
             .id(15)
             .backedProjectsCount(3)
+            .memberProjectsCount(5)
             .createdProjectsCount(2)
             .location(LocationFactory.nigeria())
             .starredProjectsCount(10)

@@ -917,7 +917,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     /**
      * Sends data associated with page view event to the client.
      *
-     * @param pledgeData: The selected pledge data.
+     * @param projectData: The selected project data.
+     * @param checkoutData: checkout data
+     * @param addOns: associated addons
      */
     fun trackManagePledgePageViewed(projectData: ProjectData, checkoutData: CheckoutData, addOns: List<Reward>?) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to MANAGE_PLEDGE.contextName)

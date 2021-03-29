@@ -33,7 +33,6 @@ import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.schedulers.Schedulers.io
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)

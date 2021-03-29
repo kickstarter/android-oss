@@ -407,9 +407,6 @@ interface BackingFragmentViewModel {
 
                     }
 
-
-
-
             val rewardIsReceivable = backing
                 .map { ObjectUtils.isNotNull(it.rewardId()) }
 

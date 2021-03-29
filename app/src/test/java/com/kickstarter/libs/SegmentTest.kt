@@ -547,7 +547,6 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(MANAGE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
-
     }
 
 

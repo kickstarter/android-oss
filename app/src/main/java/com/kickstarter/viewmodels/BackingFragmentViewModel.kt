@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.mock.factories.RewardFactory
@@ -38,7 +39,6 @@ import type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import com.kickstarter.libs.utils.checkoutProperties
 
 interface BackingFragmentViewModel {
     interface Inputs {
@@ -59,7 +59,6 @@ interface BackingFragmentViewModel {
 
         /** Called when the paged is viewed */
         fun pageViewed()
-
     }
 
     interface Outputs {
@@ -387,25 +386,24 @@ interface BackingFragmentViewModel {
                 .subscribe()
 
             backing
-                    .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
-                    .compose(takePairWhen<Pair<Backing, ProjectData>, Void>(this.pageViewed))
-                    .compose(bindToLifecycle())
-                    .subscribe{
+                .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
+                .compose(takePairWhen<Pair<Backing, ProjectData>, Void>(this.pageViewed))
+                .compose(bindToLifecycle())
+                .subscribe {
 
-                        val checkoutData = checkoutProperties(
-                               amount = it.first.first.amount(),
-                               checkoutId = null,
-                               bonus = it.first.first.bonusAmount(),
-                               shippingAmount = it.first.first.shippingAmount().toDouble()
-                        )
+                    val checkoutData = checkoutProperties(
+                        amount = it.first.first.amount(),
+                        checkoutId = null,
+                        bonus = it.first.first.bonusAmount(),
+                        shippingAmount = it.first.first.shippingAmount().toDouble()
+                    )
 
-                        this.lake.trackManagePledgePageViewed(
-                                checkoutData = checkoutData,
-                                projectData = it.first.second,
-                                addOns = it.first.first.addOns()
-                        )
-
-                    }
+                    this.lake.trackManagePledgePageViewed(
+                        checkoutData = checkoutData,
+                        projectData = it.first.second,
+                        addOns = it.first.first.addOns()
+                    )
+                }
 
             val rewardIsReceivable = backing
                 .map { ObjectUtils.isNotNull(it.rewardId()) }

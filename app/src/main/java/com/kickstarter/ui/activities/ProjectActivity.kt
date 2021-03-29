@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
@@ -292,9 +291,9 @@ class ProjectActivity :
             .subscribe { this.startVideoActivity(it) }
 
         this.viewModel.outputs.managePledgePageViewed()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.managePledgePageViewed() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.managePledgePageViewed() }
 
         setClickListeners()
     }

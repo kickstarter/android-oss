@@ -23,7 +23,7 @@ fun totalQuantity(addOns: List<Reward>?): Int {
  *
  * @return Integer
  */
-fun totalCountUnique( addOns: List<Reward>?) = addOns?.size ?: 0
+fun totalCountUnique(addOns: List<Reward>?) = addOns?.size ?: 0
 
 /**
  * The total amount for all selected add-ons, converted to USD
@@ -45,21 +45,19 @@ fun addOnsCost(usdRate: Float, addOns: List<Reward>?): Double {
  */
 fun rewardCost(usdRate: Float, reward: Reward): Double = reward.minimum() * usdRate
 
-
 fun checkoutProperties(
-        amount: Double,
-        checkoutId: Long?,
-        bonus: Double,
-        shippingAmount: Double,
-        paymentType: CreditCardPaymentType = CreditCardPaymentType.CREDIT_CARD
-) : CheckoutData {
+    amount: Double,
+    checkoutId: Long?,
+    bonus: Double,
+    shippingAmount: Double,
+    paymentType: CreditCardPaymentType = CreditCardPaymentType.CREDIT_CARD
+): CheckoutData {
 
     return CheckoutData.builder()
-            .amount(amount)
-            .id(checkoutId)
-            .paymentType(paymentType)
-            .bonusAmount(bonus)
-            .shippingAmount(shippingAmount)
-            .build()
-
+        .amount(amount)
+        .id(checkoutId)
+        .paymentType(paymentType)
+        .bonusAmount(bonus)
+        .shippingAmount(shippingAmount)
+        .build()
 }

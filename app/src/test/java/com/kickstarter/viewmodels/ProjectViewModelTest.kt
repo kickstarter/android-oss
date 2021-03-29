@@ -643,13 +643,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         val reward = RewardFactory.reward()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(BackingFactory.backing()
-                        .toBuilder()
-                        .rewardId(reward.id())
-                        .build())
-                .rewards(listOf(RewardFactory.noReward(), reward))
-                .build()
+            .toBuilder()
+            .backing(
+                BackingFactory.backing()
+                    .toBuilder()
+                    .rewardId(reward.id())
+                    .build()
+            )
+            .rewards(listOf(RewardFactory.noReward(), reward))
+            .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 

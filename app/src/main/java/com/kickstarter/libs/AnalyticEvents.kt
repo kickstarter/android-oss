@@ -20,11 +20,11 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYM
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.THANKS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.TWO_FACTOR_AUTH
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.UPDATE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextTypeName.CREDIT_CARD
@@ -52,12 +52,12 @@ import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.RECOMM
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SOCIAL
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.SUBCATEGORY_NAME
 import com.kickstarter.libs.utils.EventContextValues.DiscoveryContextType.WATCHED
-import com.kickstarter.libs.utils.EventName.CTA_CLICKED
-import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
-import com.kickstarter.libs.utils.EventName.CARD_CLICKED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_OVERLAY
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
+import com.kickstarter.libs.utils.EventName.CARD_CLICKED
+import com.kickstarter.libs.utils.EventName.CTA_CLICKED
+import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.ExperimentData
@@ -928,7 +928,6 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         client.track(PAGE_VIEWED.eventName, props)
     }
-
 
     fun trackProjectPagePledgeButtonClicked(projectData: ProjectData, pledgeFlowContext: PledgeFlowContext?) {
         val props = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())

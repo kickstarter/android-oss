@@ -258,18 +258,18 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         binding?.receivedSectionLayout?.estimatedDeliveryLabel?.apply {
             val totalCharacters = text.length
             text = viewModel.ksString.format(
-                    getString(R.string.estimated_delivery_data),
-                    "title", text.toString(),
-                    "estimated_delivery_data", it
+                getString(R.string.estimated_delivery_data),
+                "title", text.toString(),
+                "estimated_delivery_data", it
             )
             setBoldSpanOnTextView(totalCharacters, this, resources.getColor(R.color.kds_support_400, null))
         }
 
         binding?.estimatedDeliveryLabel2?.apply {
             text = viewModel.ksString.format(
-                    getString(R.string.estimated_delivery_data),
-                    "title", text.toString(),
-                    "estimated_delivery_data", it
+                getString(R.string.estimated_delivery_data),
+                "title", text.toString(),
+                "estimated_delivery_data", it
             )
 
             val totalCharacters2 = text.length

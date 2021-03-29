@@ -2,13 +2,13 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
-import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
-import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
@@ -520,14 +520,14 @@ class SegmentTest : KSRobolectricTestCase() {
     @Test
     fun testManagePledgePageViewed() {
         val project = ProjectFactory.backedProject()
-                .toBuilder()
-                .id(4)
-                .category(CategoryFactory.ceramicsCategory())
-                .commentsCount(3)
-                .creator(creator())
-                .location(LocationFactory.unitedStates())
-                .updatesCount(5)
-                .build()
+            .toBuilder()
+            .id(4)
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .updatesCount(5)
+            .build()
 
         val creator = creator()
         val client = client(creator)
@@ -548,7 +548,6 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
-
 
     @Test
     fun testCheckoutProperties_whenFixingPledge() {

@@ -2,8 +2,6 @@ package com.kickstarter.viewmodels
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
-import android.util.Log.*
 import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.R
@@ -821,15 +819,14 @@ interface ProjectViewModel {
                 .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
 
             projectDataAndBackedReward
-                    .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.nativeProjectActionButtonClicked))
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .filter { it.first.project().isLive && it.first.project().isBacking }
-                    .map { pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD) }
-                    .compose(bindToLifecycle())
-                    .subscribe{
-                        this.managePledgePageViewed.onNext(null)
-                    }
-
+                .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.nativeProjectActionButtonClicked))
+                .filter { ObjectUtils.isNotNull(it) }
+                .filter { it.first.project().isLive && it.first.project().isBacking }
+                .map { pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.managePledgePageViewed.onNext(null)
+                }
 
             fullProjectDataAndCurrentUser
                 .map { it.first }

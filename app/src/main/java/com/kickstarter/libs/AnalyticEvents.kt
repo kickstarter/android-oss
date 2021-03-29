@@ -730,11 +730,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param discoveryParams: The discovery parameters.
      */
-    fun trackDiscoverSortCTA(discoveryParams: DiscoveryParams) {
+    fun trackDiscoverSortCTA(currentSort: DiscoveryParams.Sort, discoverParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
         props[CONTEXT_LOCATION.contextName] = DISCOVER_ADVANCED.contextName
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
-        props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
+        props[CONTEXT_TYPE.contextName] = discoverParams.sort().toString()
+        props[DISCOVER_SORT.contextName] = currentSort.toString()
+        props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoverParams, currentSort = currentSort.toString()))
         client.track(CTA_CLICKED.eventName, props)
     }
 

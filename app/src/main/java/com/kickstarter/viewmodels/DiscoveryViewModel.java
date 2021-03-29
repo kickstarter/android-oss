@@ -256,13 +256,30 @@ public interface DiscoveryViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.updateParamsForPage);
 
+      paramsWithSort
+              .compose(takePairWhen(this.sortClicked.map(DiscoveryUtils::sortFromPosition)))
+              .map(paramsAndSort ->
+                      Pair.create(
+                              paramsAndSort.first.sort(),
+                              paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
+              )
+              .compose(bindToLifecycle())
+              .subscribe(previousSortAndDiscoverParams -> {
+                this.lake.trackDiscoverSortCTA(previousSortAndDiscoverParams.first, previousSortAndDiscoverParams.second);
+              });
+
+
       params
         .compose(takePairWhen(this.sortClicked.map(DiscoveryUtils::sortFromPosition)))
-        .map(paramsAndSort -> paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
+        .map(paramsAndSort ->
+          Pair.create(
+            paramsAndSort.first.sort(),
+            paramsAndSort.first.toBuilder().sort(paramsAndSort.second).build())
+        )
         .compose(bindToLifecycle())
-        .subscribe(discoveryParams -> {
-          this.lake.trackExploreSortClicked(discoveryParams);
-          this.lake.trackDiscoverSortCTA(discoveryParams);
+        .subscribe(previousSortAndDiscoverParams -> {
+          this.lake.trackExploreSortClicked(previousSortAndDiscoverParams.second);
+//          this.lake.trackDiscoverSortCTA(previousSortAndDiscoverParams.first, previousSortAndDiscoverParams.second);
         });
 
       paramsWithSort

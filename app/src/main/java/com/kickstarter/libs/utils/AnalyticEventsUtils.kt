@@ -55,7 +55,7 @@ object AnalyticEventsUtils {
     }
 
     @JvmOverloads
-    fun discoveryParamsProperties(params: DiscoveryParams, prefix: String = "discover_"): Map<String, Any> {
+    fun discoveryParamsProperties(params: DiscoveryParams, prefix: String = "discover_", currentSort: String = params.sort().toString()): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
             put("everything", BooleanUtils.isTrue(params.isAllProjects))
             put("pwl", BooleanUtils.isTrue(params.staffPicks()))
@@ -63,7 +63,10 @@ object AnalyticEventsUtils {
             put("ref_tag", DiscoveryParamsUtils.refTag(params).tag())
             params.term()?.let { put("search_term", it) }
             put("social", BooleanUtils.isIntTrue(params.social()))
-            put("sort", params.sort()?.toString() ?: "")
+//            if (!this.containsKey("discover_sort")) {
+//                put("sort", params.sort()?.toString() ?: "")
+//            }
+            put("sort", currentSort)
             params.tagId()?.let { put("tag", it) }
             put("watched", BooleanUtils.isIntTrue(params.starred()))
 

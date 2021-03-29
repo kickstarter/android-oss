@@ -1,12 +1,11 @@
 package com.kickstarter.ui.viewholders
 
-import android.view.View
 import androidx.core.content.ContextCompat
+import com.kickstarter.databinding.ItemFeatureFlagBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.viewmodels.FeatureFlagViewHolderViewModel
-import kotlinx.android.synthetic.internal.item_feature_flag.view.*
 
-class FeatureFlagViewHolder(val view: View) : KSViewHolder(view) {
+class FeatureFlagViewHolder(val binding: ItemFeatureFlagBinding) : KSViewHolder(binding.root) {
 
     private val vm: FeatureFlagViewHolderViewModel.ViewModel = FeatureFlagViewHolderViewModel.ViewModel(environment())
 
@@ -14,17 +13,17 @@ class FeatureFlagViewHolder(val view: View) : KSViewHolder(view) {
         this.vm.outputs.key()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.view.flag_key.text = it }
+            .subscribe { binding.flagKey.text = it }
 
         this.vm.outputs.value()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.view.flag_value.text = it }
+            .subscribe { binding.flagValue.text = it }
 
         this.vm.outputs.valueTextColor()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { this.view.flag_value.setTextColor(ContextCompat.getColor(context(), it)) }
+            .subscribe { binding.flagValue.setTextColor(ContextCompat.getColor(context(), it)) }
     }
 
     override fun bindData(data: Any?) {

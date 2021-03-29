@@ -2,6 +2,9 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.*
@@ -416,6 +419,40 @@ class SegmentTest : KSRobolectricTestCase() {
 
         this.segmentTrack.assertValues("Pledge Submit Button Clicked")
     }
+
+    @Test
+    fun testManagePledgePageViewed() {
+        val project = ProjectFactory.backedProject()
+                .toBuilder()
+                .id(4)
+                .category(CategoryFactory.ceramicsCategory())
+                .commentsCount(3)
+                .creator(creator())
+                .location(LocationFactory.unitedStates())
+                .updatesCount(5)
+                .build()
+
+        val creator = creator()
+        val client = client(creator)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackManagePledgePageViewed(projectData, CheckoutDataFactory.checkoutData(3L, 20.0, 30.0), project.backing()?.addOns())
+        assertSessionProperties(creator)
+        assertCheckoutProperties()
+        assertProjectProperties(project)
+        assertContextProperties()
+
+        val expectedProperties = this.propertiesTest.value
+        assertEquals(MANAGE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+
+    }
+
 
     @Test
     fun testCheckoutProperties_whenFixingPledge() {

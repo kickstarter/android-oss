@@ -48,7 +48,6 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_TYPE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_SECTION
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_LOCATION
-import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYMENT
 import com.kickstarter.libs.utils.EventContextValues.CtaContextName.DISCOVER
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVER_ADVANCED
@@ -56,6 +55,7 @@ import com.kickstarter.libs.utils.EventContextValues.LocationContextName.DISCOVE
 import com.kickstarter.libs.utils.EventContextValues.LocationContextName.GLOBAL_NAV
 import com.kickstarter.models.Activity
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
@@ -827,9 +827,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param pledgeData: The selected pledge data.
      */
-    fun trackManagePledgePageViewed(pledgeData: PledgeData) {
+    fun trackManagePledgePageViewed(projectData: ProjectData, checkoutData: CheckoutData, addOns: List<Reward>?) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to MANAGE_PLEDGE.contextName)
-        props.putAll(AnalyticEventsUtils.pledgeDataProperties(pledgeData, client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.checkoutProperties(checkoutData, projectData.project(), addOns))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         client.track(PAGE_VIEWED.eventName, props)
     }
 

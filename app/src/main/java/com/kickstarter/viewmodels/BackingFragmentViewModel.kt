@@ -26,6 +26,7 @@ import type.CreditCardTypes
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import com.kickstarter.libs.utils.checkoutProperties
 
 interface BackingFragmentViewModel {
     interface Inputs {
@@ -43,6 +44,10 @@ interface BackingFragmentViewModel {
 
         /** Call when the swipe refresh layout is triggered. */
         fun refreshProject()
+
+        /** Called when the paged is viewed */
+        fun pageViewed()
+
     }
 
     interface Outputs {
@@ -176,6 +181,7 @@ interface BackingFragmentViewModel {
         private val bonusSupport = BehaviorSubject.create<CharSequence>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
+        private val pageViewed = PublishSubject.create<Void>()
 
         private val apiClient = this.environment.apiClient()
         private val apolloClient = this.environment.apolloClient()
@@ -371,6 +377,30 @@ interface BackingFragmentViewModel {
                     .share()
                     .subscribe()
 
+            backing
+                    .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
+                    .compose(takePairWhen<Pair<Backing, ProjectData>, Void>(this.pageViewed))
+                    .compose(bindToLifecycle())
+                    .subscribe{
+
+                        val checkoutData = checkoutProperties(
+                               amount = it.first.first.amount(),
+                               checkoutId = null,
+                               bonus = it.first.first.bonusAmount(),
+                               shippingAmount = it.first.first.shippingAmount().toDouble()
+                        )
+
+                        this.lake.trackManagePledgePageViewed(
+                                checkoutData = checkoutData,
+                                projectData = it.first.second,
+                                addOns = it.first.first.addOns()
+                        )
+
+                    }
+
+
+
+
             val rewardIsReceivable = backing
                     .map { ObjectUtils.isNotNull(it.rewardId()) }
 
@@ -546,6 +576,10 @@ interface BackingFragmentViewModel {
 
         override fun refreshProject() {
             this.refreshProject.onNext(null)
+        }
+
+        override fun pageViewed() {
+            this.pageViewed.onNext(null)
         }
 
         override fun backerAvatar(): Observable<String> = this.backerAvatar

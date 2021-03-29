@@ -6,6 +6,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -33,8 +34,8 @@ import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.schedulers.Schedulers.io
-
 
 @RequiresFragmentViewModel(BackingFragmentViewModel.ViewModel::class)
 class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
@@ -228,7 +229,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 }
 
         binding?.deliveryDisclaimerSection?.deliveryReminderLabel?.apply{
-            val sb =StringBuilder(text.toString() )
+            val sb =StringBuilder(text.toString())
             sb.append(" " + resources.getString(R.string.Delays_or_changes_are_possible))
             text = sb.toString()
 
@@ -263,7 +264,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             text = viewModel.ksString.format(
                     getString(R.string.estimated_delivery_data),
                     "title", text.toString(),
-                    "estimated_delivery_data",it
+                    "estimated_delivery_data", it
             )
             setBoldSpanOnTextView(totalCharacters, this, resources.getColor(R.color.kds_support_400, null))
 
@@ -273,7 +274,7 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
             text = viewModel.ksString.format(
                     getString(R.string.estimated_delivery_data),
                     "title", text.toString(),
-            "estimated_delivery_data",it
+                    "estimated_delivery_data", it
             )
 
             val totalCharacters2 = text.length
@@ -301,6 +302,8 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     fun configureWith(projectData: ProjectData) {
         this.viewModel.inputs.configureWith(projectData)
     }
+
+    fun pageViewed() = this.viewModel.pageViewed()
 
     fun pledgeSuccessfullyUpdated() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()

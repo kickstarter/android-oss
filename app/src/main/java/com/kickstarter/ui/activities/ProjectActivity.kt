@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.util.Pair
 import android.view.MotionEvent
 import android.view.View
@@ -260,6 +261,11 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
                 .compose(bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { this.startVideoActivity(it) }
+
+        this.viewModel.outputs.managePledgePageViewed()
+                .compose(bindToLifecycle())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { this.managePledgePageViewed() }
 
         setClickListeners()
     }
@@ -708,4 +714,6 @@ class ProjectActivity : BaseActivity<ProjectViewModel.ViewModel>(), CancelPledge
             pledge_toolbar.menu.clear()
         }
     }
+
+    private fun managePledgePageViewed() = this.backingFragment()?.pageViewed()
 }

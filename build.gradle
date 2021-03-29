@@ -18,6 +18,7 @@ allprojects {
     repositories {
         google()
         maven { url = uri("https://dl.bintray.com/apollographql/android/") }
+        maven { url = uri("http://appboy.github.io/appboy-android-sdk/sdk") }
         jcenter()
         mavenCentral()
         maven {

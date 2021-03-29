@@ -113,7 +113,7 @@ public final class MockTrackingClient extends TrackingClientType {
 
   @Override
   protected String deviceOrientation() {
-    return "Portrait";
+    return "portrait";
   }
 
   @Override

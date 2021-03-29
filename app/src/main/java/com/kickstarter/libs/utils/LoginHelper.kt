@@ -54,10 +54,10 @@ object LoginHelper {
         if (supportFragmentManager.findFragmentByTag(EmailVerificationInterstitialFragment::class.java.simpleName) == null) {
             val emailValidationFragment: EmailVerificationInterstitialFragment = EmailVerificationInterstitialFragment.newInstance()
             val presented = supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    .add(loginViewId, emailValidationFragment)
-                    .addToBackStack(null)
-                    .commit()
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .add(loginViewId, emailValidationFragment)
+                .addToBackStack(null)
+                .commit()
 
             if (presented >= 0) {
                 emailValidationFragment.configureWithCallback(callbacks)

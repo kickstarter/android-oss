@@ -7,12 +7,9 @@ import com.kickstarter.libs.models.OptimizelyEnvironment
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.models.OptimizelyFeature
 import com.kickstarter.libs.utils.ExperimentData
-import com.kickstarter.libs.utils.ExperimentRevenueData
 import com.kickstarter.models.User
 import com.optimizely.ab.android.sdk.OptimizelyClient
 import com.optimizely.ab.android.sdk.OptimizelyManager
-import org.json.JSONArray
-import org.json.JSONObject
 
 class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManager, private val optimizelyEnvironment: OptimizelyEnvironment) : ExperimentsClientType {
     override fun appVersion(): String = BuildConfig.VERSION_NAME
@@ -26,9 +23,11 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
     override fun userId(): String = FirebaseInstanceId.getInstance().id
 
     override fun enabledFeatures(user: User?): List<String> {
-        return this.optimizelyClient().getEnabledFeatures(userId(),
-                attributes(ExperimentData(user, null, null), this.optimizelyEnvironment))
-                ?: emptyList()
+        return this.optimizelyClient().getEnabledFeatures(
+            userId(),
+            attributes(ExperimentData(user, null, null), this.optimizelyEnvironment)
+        )
+            ?: emptyList()
     }
 
     override fun isFeatureEnabled(feature: OptimizelyFeature.Key, experimentData: ExperimentData): Boolean {
@@ -59,7 +58,7 @@ class OptimizelyExperimentsClient(private val optimizelyManager: OptimizelyManag
         val properties = mutableMapOf<String, Array<Map<String, String>>>()
 
         this.optimizelyClient().optimizelyConfig?.experimentsMap?.map { entry ->
-            val variant:String  = this.optimizelyClient().getVariation(entry.key, userId())?.let { it.key } ?: "unknown"
+            val variant: String = this.optimizelyClient().getVariation(entry.key, userId())?.let { it.key } ?: "unknown"
             experimentsList.add(mapOf(entry.key to variant))
         }
 

@@ -13,12 +13,23 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
-import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.CheckoutDataFactory
+import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.data.*
+import com.kickstarter.ui.data.ActivityResult
+import com.kickstarter.ui.data.CheckoutData
+import com.kickstarter.ui.data.PledgeData
+import com.kickstarter.ui.data.PledgeFlowContext
+import com.kickstarter.ui.data.PledgeReason
+import com.kickstarter.ui.data.ProjectData
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
@@ -110,9 +121,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val initialProject = ProjectFactory.initialProject()
         val refreshedProject = ProjectFactory.project()
         val environment = environment()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProject(refreshedProject))
-                .build()
+            .toBuilder()
+            .apiClient(apiClientWithSuccessFetchingProject(refreshedProject))
+            .build()
 
         setUpEnvironment(environment)
 
@@ -135,19 +146,19 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val refreshedProject = ProjectFactory.project()
 
         val environment = environment()
-                .toBuilder()
-                .apiClient(object : MockApiClient() {
-                    override fun fetchProject(project: Project): Observable<Project> {
-                        val observable = when {
-                            error -> Observable.error(Throwable("boop"))
-                            else -> {
-                                Observable.just(refreshedProject)
-                            }
+            .toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchProject(project: Project): Observable<Project> {
+                    val observable = when {
+                        error -> Observable.error(Throwable("boop"))
+                        else -> {
+                            Observable.just(refreshedProject)
                         }
-                        return observable
                     }
-                })
-                .build()
+                    return observable
+                }
+            })
+            .build()
         setUpEnvironment(environment)
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, initialProject))
@@ -164,9 +175,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.pledgeActionButtonContainerIsGone.assertValues(true, false)
         this.prelaunchUrl.assertNoValues()
-        this.projectData.assertValues(ProjectDataFactory.project(initialProject),
-                ProjectDataFactory.project(initialProject),
-                ProjectDataFactory.project(refreshedProject))
+        this.projectData.assertValues(
+            ProjectDataFactory.project(initialProject),
+            ProjectDataFactory.project(initialProject),
+            ProjectDataFactory.project(refreshedProject)
+        )
         this.reloadProjectContainerIsGone.assertValues(false, true, true)
         this.reloadProgressBarIsGone.assertValues(false, true, false, true)
         this.updateFragments.assertValue(ProjectDataFactory.project(refreshedProject))
@@ -179,13 +192,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.project()
 
         val environment = environment()
-                .toBuilder()
-                .apiClient(object : MockApiClient(){
-                    override fun fetchProject(param: String): Observable<Project> {
-                        return Observable.just(project)
-                    }
-                })
-                .build()
+            .toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchProject(param: String): Observable<Project> {
+                    return Observable.just(project)
+                }
+            })
+            .build()
 
         setUpEnvironment(environment)
         val intent = deepLinkIntent()
@@ -206,17 +219,17 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val refreshedProject = ProjectFactory.project()
 
         val environment = environment()
-                .toBuilder()
-                .apiClient(object : MockApiClient() {
-                    override fun fetchProject(param: String): Observable<Project> {
-                        val observable = when {
-                            error -> Observable.error(Throwable("boop"))
-                            else -> Observable.just(refreshedProject)
-                        }
-                        return observable
+            .toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchProject(param: String): Observable<Project> {
+                    val observable = when {
+                        error -> Observable.error(Throwable("boop"))
+                        else -> Observable.just(refreshedProject)
                     }
-                })
-                .build()
+                    return observable
+                }
+            })
+            .build()
         setUpEnvironment(environment)
 
         this.vm.intent(deepLinkIntent())
@@ -247,13 +260,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val project = ProjectFactory.prelaunchProject(url)
 
         val environment = environment()
-                .toBuilder()
-                .apiClient(object : MockApiClient(){
-                    override fun fetchProject(param: String): Observable<Project> {
-                        return Observable.just(project)
-                    }
-                })
-                .build()
+            .toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchProject(param: String): Observable<Project> {
+                    return Observable.just(project)
+                }
+            })
+            .build()
 
         setUpEnvironment(environment)
         val uri = Uri.parse(url)
@@ -272,8 +285,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testLoggedOutStarProjectFlow() {
         val currentUser = MockCurrentUser()
         val environment = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
+            .currentUser(currentUser)
+            .build()
         environment.currentConfig().config(ConfigFactory.config())
 
         setUpEnvironment(environment)
@@ -314,16 +327,16 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val projectUrl = "https://www.kck.str/projects/" + creator.id().toString() + "/" + slug
 
         val webUrls = Project.Urls.Web.builder()
-                .project(projectUrl)
-                .rewards("$projectUrl/rewards")
-                .updates("$projectUrl/posts")
-                .build()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
 
         val project = ProjectFactory.project()
-                .toBuilder()
-                .name("Best Project 2K19")
-                .urls(Project.Urls.builder().web(webUrls).build())
-                .build()
+            .toBuilder()
+            .name("Best Project 2K19")
+            .urls(Project.Urls.builder().web(webUrls).build())
+            .build()
 
         setUpEnvironment(environment())
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project))
@@ -343,8 +356,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         val currentUser = MockCurrentUser()
         val environment = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
+            .currentUser(currentUser)
+            .build()
         environment.currentConfig().config(ConfigFactory.config())
 
         setUpEnvironment(environment)
@@ -368,8 +381,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testSaveProjectThatIsSuccessful() {
         val currentUser = MockCurrentUser()
         val environment = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
+            .currentUser(currentUser)
+            .build()
         environment.currentConfig().config(ConfigFactory.config())
 
         setUpEnvironment(environment)
@@ -489,8 +502,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.creatorNameTextViewClicked()
         this.startCreatorBioWebViewActivity.assertValues(project)
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName,EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
-        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName,EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
+        this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Creator Details Clicked")
         this.experimentsTest.assertValues("Project Page Viewed", "Creator Details Clicked")
     }
 
@@ -677,9 +690,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant1() {
-        setUpEnvironment(environment().toBuilder()
+        setUpEnvironment(
+            environment().toBuilder()
                 .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
-                .build())
+                .build()
+        )
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
@@ -689,9 +704,11 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testPledgeActionButtonUIOutputs_projectIsLiveAndNotBacked_variant2() {
-        setUpEnvironment(environment().toBuilder()
+        setUpEnvironment(
+            environment().toBuilder()
                 .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
-                .build())
+                .build()
+        )
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()))
 
@@ -703,9 +720,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testPledgeActionButtonUIOutputs_whenProjectIsEndedAndBacked() {
         setUpEnvironment(environment())
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_ended)
@@ -726,13 +743,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testPledgeActionButtonUIOutputs_whenCurrentUserIsProjectCreator() {
         val creator = UserFactory.creator()
         val creatorProject = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .build()
         val environment = environment()
-                .toBuilder()
-                .currentUser(MockCurrentUser(creator))
-                .build()
+            .toBuilder()
+            .currentUser(MockCurrentUser(creator))
+            .build()
         setUpEnvironment(environment)
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, creatorProject))
@@ -745,10 +762,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testPledgeActionButtonUIOutputs_whenBackingIsErrored() {
         setUpEnvironment(environment())
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
         this.pledgeActionButtonColor.assertValue(R.color.button_pledge_error)
@@ -804,9 +821,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
 
         this.pledgeToolbarTitle.assertValue(R.string.View_your_pledge)
@@ -826,7 +843,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Project Page Pledge Button Clicked", EventName.CTA_CLICKED.eventName)
         this.experimentsTest.assertValues("Project Page Viewed", "Project Page Pledge Button Clicked")
         this.segmentTrack.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, "Project Page Pledge Button Clicked", EventName.CTA_CLICKED.eventName)
-
     }
 
     @Test
@@ -919,8 +935,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isTrue() {
         setUpEnvironment(environment())
         val intent = Intent()
-                .putExtra(IntentKey.PROJECT, ProjectFactory.project())
-                .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, true)
         this.vm.intent(intent)
 
         this.expandPledgeSheet.assertValues(Pair(true, true))
@@ -932,8 +948,8 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isFalse() {
         setUpEnvironment(environment())
         val intent = Intent()
-                .putExtra(IntentKey.PROJECT, ProjectFactory.project())
-                .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, false)
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.EXPAND_PLEDGE_SHEET, false)
         this.vm.intent(intent)
 
         this.expandPledgeSheet.assertNoValues()
@@ -945,7 +961,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testExpandPledgeSheet_whenIntentExpandPledgeSheet_isNull() {
         setUpEnvironment(environment())
         val intent = Intent()
-                .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+            .putExtra(IntentKey.PROJECT, ProjectFactory.project())
         this.vm.intent(intent)
 
         this.expandPledgeSheet.assertNoValues()
@@ -998,23 +1014,23 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val environment = environment()
         setUpEnvironment(environment)
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .id(4)
-                .build()
+            .toBuilder()
+            .id(4)
+            .build()
 
         val amount = 34.0
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .amount(amount)
-                .shippingAmount(4f)
-                .rewardId(4)
-                .build()
+            .toBuilder()
+            .amount(amount)
+            .shippingAmount(4f)
+            .rewardId(4)
+            .build()
 
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .rewards(listOf(reward))
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .rewards(listOf(reward))
+            .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
         this.backingDetailsIsVisible.assertValue(true)
@@ -1029,15 +1045,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
         val amount = 13.5
         val noRewardBacking = BackingFactory.backing()
-                .toBuilder()
-                .amount(amount)
-                .reward(RewardFactory.noReward())
-                .build()
+            .toBuilder()
+            .amount(amount)
+            .reward(RewardFactory.noReward())
+            .build()
 
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(noRewardBacking)
-                .build()
+            .toBuilder()
+            .backing(noRewardBacking)
+            .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
         this.backingDetailsIsVisible.assertValue(true)
@@ -1051,10 +1067,10 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .backing(BackingFactory.backing(Backing.STATUS_ERRORED))
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedSuccessfulProject))
         this.backingDetailsIsVisible.assertValue(true)
@@ -1135,13 +1151,13 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with a backed project
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .status(Backing.STATUS_PREAUTH)
-                .build()
+            .toBuilder()
+            .status(Backing.STATUS_PREAUTH)
+            .build()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_preauth)
@@ -1153,9 +1169,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         // Start the view model with a backed project
         val successfulBackedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, successfulBackedProject))
 
         this.managePledgeMenu.assertValue(R.menu.manage_pledge_ended)
@@ -1192,15 +1208,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testShowCancelPledgeFragment_whenBackingIsCancelable() {
         setUpEnvironment(environment())
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .cancelable(true)
-                .build()
+            .toBuilder()
+            .cancelable(true)
+            .build()
 
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1215,15 +1231,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testShowCancelPledgeFragment_whenBackingIsNotCancelable() {
         setUpEnvironment(environment())
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .cancelable(false)
-                .build()
+            .toBuilder()
+            .cancelable(false)
+            .build()
 
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.nativeProjectActionButtonClicked()
@@ -1254,15 +1270,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testShowPledgeNotCancelableDialog_whenBackingIsCancelable() {
         setUpEnvironment(environment())
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .cancelable(true)
-                .build()
+            .toBuilder()
+            .cancelable(true)
+            .build()
 
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.cancelPledgeClicked()
@@ -1273,15 +1289,15 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     fun testShowPledgeNotCancelableDialog_whenBackingIsNotCancelable() {
         setUpEnvironment(environment())
         val backing = BackingFactory.backing()
-                .toBuilder()
-                .cancelable(false)
-                .build()
+            .toBuilder()
+            .cancelable(false)
+            .build()
 
         // Start the view model with a backed project
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(backing)
-                .build()
+            .toBuilder()
+            .backing(backing)
+            .build()
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.cancelPledgeClicked()
@@ -1411,21 +1427,22 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         // Start the view model with a backed project
         val reward = RewardFactory.reward()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(BackingFactory.backing()
-                        .toBuilder()
-                        .rewardId(reward.id())
-                        .build())
-                .rewards(listOf(RewardFactory.noReward(), reward))
-                .build()
+            .toBuilder()
+            .backing(
+                BackingFactory.backing()
+                    .toBuilder()
+                    .rewardId(reward.id())
+                    .build()
+            )
+            .rewards(listOf(RewardFactory.noReward(), reward))
+            .build()
 
         this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
 
         this.vm.inputs.updatePaymentClicked()
 
-        this.lakeTest.assertValues("Project Page Viewed","Page Viewed","Page Viewed")
-        this.segmentTrack.assertValues("Project Page Viewed","Page Viewed","Page Viewed")
-
+        this.lakeTest.assertValues("Project Page Viewed", "Page Viewed", "Page Viewed")
+        this.segmentTrack.assertValues("Project Page Viewed", "Page Viewed", "Page Viewed")
     }
 
     @Test
@@ -1433,9 +1450,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val initialBackedProject = ProjectFactory.backedProject()
         val refreshedProject = ProjectFactory.backedProject()
         val environment = environment()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
-                .build()
+            .toBuilder()
+            .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+            .build()
         setUpEnvironment(environment)
 
         // Start the view model with a backed project
@@ -1446,12 +1463,16 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgePaymentSuccessfullyUpdated()
-        this.projectData.assertValues(ProjectDataFactory.project(initialBackedProject),
-                ProjectDataFactory.project(refreshedProject))
+        this.projectData.assertValues(
+            ProjectDataFactory.project(initialBackedProject),
+            ProjectDataFactory.project(refreshedProject)
+        )
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject),
-                ProjectDataFactory.project(refreshedProject),
-                ProjectDataFactory.project(refreshedProject))
+        this.updateFragments.assertValues(
+            ProjectDataFactory.project(initialBackedProject),
+            ProjectDataFactory.project(refreshedProject),
+            ProjectDataFactory.project(refreshedProject)
+        )
     }
 
     @Test
@@ -1459,9 +1480,9 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         val initialBackedProject = ProjectFactory.backedProject()
         val refreshedProject = ProjectFactory.backedProject()
         val environment = environment()
-                .toBuilder()
-                .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
-                .build()
+            .toBuilder()
+            .apiClient(apiClientWithSuccessFetchingProjectFromSlug(refreshedProject))
+            .build()
         setUpEnvironment(environment)
 
         // Start the view model with a backed project
@@ -1472,12 +1493,16 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
         this.updateFragments.assertValue(ProjectDataFactory.project(initialBackedProject))
 
         this.vm.inputs.pledgeSuccessfullyUpdated()
-        this.projectData.assertValues(ProjectDataFactory.project(initialBackedProject),
-                ProjectDataFactory.project(refreshedProject))
+        this.projectData.assertValues(
+            ProjectDataFactory.project(initialBackedProject),
+            ProjectDataFactory.project(refreshedProject)
+        )
         this.showUpdatePledgeSuccess.assertValueCount(1)
-        this.updateFragments.assertValues(ProjectDataFactory.project(initialBackedProject),
-                ProjectDataFactory.project(refreshedProject),
-                ProjectDataFactory.project(refreshedProject))
+        this.updateFragments.assertValues(
+            ProjectDataFactory.project(initialBackedProject),
+            ProjectDataFactory.project(refreshedProject),
+            ProjectDataFactory.project(refreshedProject)
+        )
     }
 
     @Test
@@ -1533,5 +1558,5 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
-            environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
+        environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
 }

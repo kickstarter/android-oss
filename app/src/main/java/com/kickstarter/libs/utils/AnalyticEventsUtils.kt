@@ -1,18 +1,25 @@
 package com.kickstarter.libs.utils
 
 import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.utils.EventContextValues.VideoContextName.LENGTH
+import com.kickstarter.libs.utils.EventContextValues.VideoContextName.POSITION
 import com.kickstarter.libs.utils.RewardUtils.isItemized
 import com.kickstarter.libs.utils.RewardUtils.isShippable
 import com.kickstarter.libs.utils.RewardUtils.isTimeLimitedEnd
-import com.kickstarter.libs.utils.extensions.*
+import com.kickstarter.libs.utils.extensions.addOnsCost
+import com.kickstarter.libs.utils.extensions.bonus
+import com.kickstarter.libs.utils.extensions.rewardCost
+import com.kickstarter.libs.utils.extensions.shippingAmount
+import com.kickstarter.libs.utils.extensions.totalAmount
+import com.kickstarter.libs.utils.extensions.totalCountUnique
+import com.kickstarter.libs.utils.extensions.totalQuantity
 import com.kickstarter.models.*
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
-import com.kickstarter.ui.data.ProjectData
 import java.util.*
+import java.util.Locale
 import kotlin.math.ceil
-import kotlin.math.round
 import kotlin.math.roundToInt
 
 object AnalyticEventsUtils {
@@ -96,23 +103,23 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun categoryProperties(category: Category, prefix: String = "category_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-                put("id", category.id().toString())
-                put("name", category.name().toString())
-            }
+            put("id", category.id().toString())
+            put("name", category.name().toString())
+        }
         return MapUtils.prefixKeys(properties, prefix)
     }
 
     @JvmOverloads
     fun locationProperties(location: Location, prefix: String = "location_"): Map<String, Any> {
         val properties = HashMap<String, Any>().apply {
-                put("id", location.id().toString())
-                put("name", location.name())
-                put("displayable_name", location.displayableName())
-                location.city()?.let { put("city", it) }
-                location.state()?.let { put("state", it) }
-                put("country", location.country())
-                location.projectsCount()?.let { put("projects_count", it) }
-            }
+            put("id", location.id().toString())
+            put("name", location.name())
+            put("displayable_name", location.displayableName())
+            location.city()?.let { put("city", it) }
+            location.state()?.let { put("state", it) }
+            put("country", location.country())
+            location.projectsCount()?.let { put("projects_count", it) }
+        }
 
         return MapUtils.prefixKeys(properties, prefix)
     }
@@ -120,6 +127,8 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
         val properties = HashMap<String, Any>()
+        properties["backed_projects_count"] = user.backedProjectsCount() ?: 0
+        properties["launched_projects_count"] = user.memberProjectsCount() ?: 0
         properties["uid"] = user.id().toString()
         properties["is_admin"] = user.isAdmin ?: false
 
@@ -133,6 +142,16 @@ object AnalyticEventsUtils {
         props.putAll(refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         props["context_pledge_flow"] = pledgeData.pledgeFlowContext().trackingString
         return props
+    }
+
+    @JvmOverloads
+    fun videoProperties(videoLength: Long, videoPosition: Long, prefix: String = "video_"): Map<String, Any> {
+
+        val properties = HashMap<String, Any>().apply {
+            put(LENGTH.contextName, videoLength)
+            put(POSITION.contextName, videoPosition)
+        }
+        return MapUtils.prefixKeys(properties, prefix)
     }
 
     @JvmOverloads
@@ -174,6 +193,7 @@ object AnalyticEventsUtils {
                 }
             }
             project.commentsCount()?.let { put("comments_count", it) }
+            project.prelaunchActivated()?.let { put("project_prelaunch_activated", it) }
             put("country", project.country())
             put("creator_uid", project.creator().id().toString())
             put("currency", project.currency())
@@ -218,9 +238,9 @@ object AnalyticEventsUtils {
     }
 
     fun refTagProperties(intentRefTag: RefTag?, cookieRefTag: RefTag?) = HashMap<String, Any>().apply {
-                intentRefTag?.tag()?.let { put("session_ref_tag", it) }
-                cookieRefTag?.tag()?.let { put("session_referrer_credit", it) }
-            }
+        intentRefTag?.tag()?.let { put("session_ref_tag", it) }
+        cookieRefTag?.tag()?.let { put("session_referrer_credit", it) }
+    }
 
     @JvmOverloads
     fun activityProperties(activity: Activity, loggedInUser: User?, prefix: String = "activity_"): Map<String, Any> {

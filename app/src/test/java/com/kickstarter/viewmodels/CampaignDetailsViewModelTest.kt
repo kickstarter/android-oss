@@ -59,9 +59,9 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPledgeContainerIsVisible_whenProjectIsLiveNotBacked_variant1() {
         val environment = environment()
-                .toBuilder()
-                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
-                .build()
+            .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_1))
+            .build()
         setUpEnvironment(environment, ProjectDataFactory.project(ProjectFactory.project()))
 
         this.pledgeContainerIsVisible.assertValue(false)
@@ -70,9 +70,9 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testPledgeContainerIsVisible_whenProjectIsLiveNotBacked_variant2() {
         val environment = environment()
-                .toBuilder()
-                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
-                .build()
+            .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
+            .build()
         setUpEnvironment(environment, ProjectDataFactory.project(ProjectFactory.project()))
 
         this.pledgeContainerIsVisible.assertValue(true)
@@ -96,18 +96,17 @@ class CampaignDetailsViewModelTest : KSRobolectricTestCase() {
     fun testUrl() {
         val projectUrl = "https://www.kickstarter.com/projects/creator/slug"
         val web = Project.Urls.Web.builder()
-                .project(projectUrl)
-                .rewards("$projectUrl/rewards")
-                .updates("$projectUrl/posts")
-                .build()
+            .project(projectUrl)
+            .rewards("$projectUrl/rewards")
+            .updates("$projectUrl/posts")
+            .build()
         val project = ProjectFactory.project()
-                .toBuilder()
-                .urls(Project.Urls.builder().web(web).build())
-                .build()
+            .toBuilder()
+            .urls(Project.Urls.builder().web(web).build())
+            .build()
 
         setUpEnvironment(environment(), ProjectDataFactory.project(project))
 
         this.url.assertValue("https://www.kickstarter.com/projects/creator/slug/description")
     }
-
 }

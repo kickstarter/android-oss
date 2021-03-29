@@ -35,7 +35,7 @@ fun EditText.text() = this.text.toString()
  */
 fun EditText.setTextAndSelection(text: String) {
     val maxLength = resources.getInteger(R.integer.max_length)
-    val stringAmount = if (text.length >= maxLength) text.substring(0, maxLength -1) else text
+    val stringAmount = if (text.length >= maxLength) text.substring(0, maxLength - 1) else text
     this.setText(stringAmount)
     this.setSelection(stringAmount.length)
 }

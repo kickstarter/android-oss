@@ -97,7 +97,7 @@ public final class MockTrackingClient extends TrackingClientType {
   }
 
   @Override
-  protected JSONArray currentVariants() {
+  protected String[] currentVariants() {
     return ConfigExtension.currentVariants(this.config);
   }
 
@@ -178,6 +178,10 @@ public final class MockTrackingClient extends TrackingClientType {
     return location != null ? location.country() : configCountry;
   }
 
+  @Override
+  protected String sessionCountry() {
+    return "US";
+  }
   @Override
   protected String versionName() {
     return "9.9.9";

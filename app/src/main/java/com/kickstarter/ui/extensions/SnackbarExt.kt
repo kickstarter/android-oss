@@ -18,7 +18,7 @@ fun snackbar(anchor: View, message: String): Snackbar {
  * @return snackbar
  */
 fun showSnackbarWithColor(anchor: View, message: String, @ColorInt backGroundColor: Int, @ColorInt textColor: Int) =
-        snackbar(anchor, message).apply {
-            setBackgroundTint(backGroundColor)
-            setTextColor(textColor)
-        }.show()
+    snackbar(anchor, message).apply {
+        setBackgroundTint(backGroundColor)
+        setTextColor(textColor)
+    }.show()

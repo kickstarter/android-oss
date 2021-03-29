@@ -13,5 +13,5 @@ interface LakeService {
 
     @Headers("Content-Type: application/json")
     @PUT("record")
-    fun track(@Body body: RequestBody, @Query("client_id") clientId: String) : Observable<Response<ResponseBody>>
+    fun track(@Body body: RequestBody, @Query("client_id") clientId: String): Observable<Response<ResponseBody>>
 }

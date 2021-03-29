@@ -72,6 +72,12 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     }
 
     private fun onStateChanged(playbackState: Int) {
+        if (playbackState == Player.STATE_READY) {
+            player?.duration?.let {
+                viewModel.inputs.onVideoStarted(it, playerPosition ?: 0L)
+            }
+        }
+
         if (playbackState == Player.STATE_ENDED) {
             finish()
         }
@@ -114,6 +120,9 @@ class VideoActivity : BaseActivity<VideoViewModel.ViewModel>() {
     private fun releasePlayer() {
         if (player != null) {
             playerPosition = player?.currentPosition
+            player?.duration?.let {
+                viewModel.inputs.onVideoCompleted(it, playerPosition ?: 0L)
+            }
             player?.removeListener(eventListener)
             player?.release()
             trackSelector = null

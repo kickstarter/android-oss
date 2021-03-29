@@ -16,30 +16,30 @@ import kotlinx.android.synthetic.main.activity_campaign_details.*
 import rx.android.schedulers.AndroidSchedulers
 
 @RequiresActivityViewModel(CampaignDetailsViewModel.ViewModel::class)
-class CampaignDetailsActivity : BaseActivity<CampaignDetailsViewModel.ViewModel>(){
+class CampaignDetailsActivity : BaseActivity<CampaignDetailsViewModel.ViewModel>() {
 
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_campaign_details)
 
         this.viewModel.outputs.goBackToProject()
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle())
-                .subscribe { goBackToProject() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindToLifecycle())
+            .subscribe { goBackToProject() }
 
         this.viewModel.outputs.pledgeContainerIsVisible()
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle())
-                .subscribe { ViewUtils.setGone(campaign_details_pledge_container, !it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindToLifecycle())
+            .subscribe { ViewUtils.setGone(campaign_details_pledge_container, !it) }
 
         this.viewModel.outputs.url()
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle())
-                .subscribe { web_view.loadUrl(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindToLifecycle())
+            .subscribe { web_view.loadUrl(it) }
 
         RxView.clicks(campaign_details_pledge_action_button)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.pledgeActionButtonClicked() }
+            .compose(bindToLifecycle())
+            .subscribe { this.viewModel.inputs.pledgeActionButtonClicked() }
     }
 
     @NonNull

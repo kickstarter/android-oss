@@ -46,23 +46,23 @@ interface ErroredBackingViewHolderViewModel {
         init {
 
             val project = this.erroredBacking
-                    .map { it.project() }
+                .map { it.project() }
 
             project
-                    .map { it.name() }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.projectName.onNext(it) }
+                .map { it.name() }
+                .compose(bindToLifecycle())
+                .subscribe { this.projectName.onNext(it) }
 
             project
-                    .map { it.finalCollectionDate() }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.projectFinalCollectionDate.onNext(it) }
+                .map { it.finalCollectionDate() }
+                .compose(bindToLifecycle())
+                .subscribe { this.projectFinalCollectionDate.onNext(it) }
 
             project
-                    .map { it.slug() }
-                    .compose<String>(takeWhen(this.manageButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.notifyDelegateToStartFixPaymentMethod.onNext(it) }
+                .map { it.slug() }
+                .compose<String>(takeWhen(this.manageButtonClicked))
+                .compose(bindToLifecycle())
+                .subscribe { this.notifyDelegateToStartFixPaymentMethod.onNext(it) }
         }
 
         override fun configureWith(erroredBacking: ErroredBacking) {
@@ -78,6 +78,5 @@ interface ErroredBackingViewHolderViewModel {
         override fun projectFinalCollectionDate(): Observable<DateTime> = this.projectFinalCollectionDate
 
         override fun projectName(): Observable<String> = this.projectName
-
     }
 }

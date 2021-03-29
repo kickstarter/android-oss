@@ -6,8 +6,7 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import java.text.ParseException
 
-
-class DateTimeAdapter: CustomTypeAdapter<DateTime> {
+class DateTimeAdapter : CustomTypeAdapter<DateTime> {
 
     override fun encode(value: DateTime): CustomTypeValue<*> {
         return CustomTypeValue.GraphQLNumber(value.toString().toLong() / 1000L)

@@ -5,7 +5,10 @@ import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.rx.transformers.Transformers.*
+import com.kickstarter.libs.rx.transformers.Transformers.errors
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
+import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
+import com.kickstarter.libs.rx.transformers.Transformers.values
 import com.kickstarter.libs.utils.BooleanUtils.isTrue
 import com.kickstarter.libs.utils.ListUtils
 import com.kickstarter.libs.utils.ObjectUtils
@@ -93,59 +96,60 @@ interface NewsletterViewModel {
         init {
 
             this.client.fetchCurrentUser()
-                    .retry(2)
-                    .compose(Transformers.neverError())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.currentUser::refresh)
+                .retry(2)
+                .compose(Transformers.neverError())
+                .compose(bindToLifecycle())
+                .subscribe(this.currentUser::refresh)
 
             val currentUser = this.currentUser.observable()
-                    .filter { ObjectUtils.isNotNull(it) }
+                .filter { ObjectUtils.isNotNull(it) }
 
             currentUser
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput::onNext)
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput::onNext)
 
             currentUser
-                    .compose<Pair<User, Pair<Boolean, Newsletter>>>(takePairWhen<User, Pair<Boolean, Newsletter>>(this.newsletterInput))
-                    .filter { us -> requiresDoubleOptIn(us.first, us.second.first) }
-                    .map { us -> us.second.second }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showOptInPrompt)
+                .compose<Pair<User, Pair<Boolean, Newsletter>>>(takePairWhen<User, Pair<Boolean, Newsletter>>(this.newsletterInput))
+                .filter { us -> requiresDoubleOptIn(us.first, us.second.first) }
+                .map { us -> us.second.second }
+                .compose(bindToLifecycle())
+                .subscribe(this.showOptInPrompt)
 
             currentUser
-                    .map { isSubscribedToAllNewsletters(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.subscribeAll::onNext)
+                .map { isSubscribedToAllNewsletters(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.subscribeAll::onNext)
 
             val updateUserNotification = this.userInput
-                    .concatMap<Notification<User>> { this.updateSettings(it) }
+                .concatMap<Notification<User>> { this.updateSettings(it) }
 
             updateUserNotification
-                    .compose(values())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.success(it) }
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe { this.success(it) }
 
             updateUserNotification
-                    .compose(errors())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.unableToSavePreferenceError)
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput)
 
             this.userOutput
-                    .window(2, 1)
-                    .flatMap<List<User>> { it.toList() }
-                    .map<User> { ListUtils.first(it) }
-                    .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.userOutput)
+                .window(2, 1)
+                .flatMap<List<User>> { it.toList() }
+                .map<User> { ListUtils.first(it) }
+                .compose<User>(takeWhen<User, Throwable>(this.unableToSavePreferenceError))
+                .compose(bindToLifecycle())
+                .subscribe(this.userOutput)
         }
 
         override fun sendAllNewsletter(checked: Boolean) {
-            this.userInput.onNext(this.userOutput.value.toBuilder()
+            this.userInput.onNext(
+                this.userOutput.value.toBuilder()
                     .alumniNewsletter(checked)
                     .artsCultureNewsletter(checked)
                     .filmNewsletter(checked)
@@ -156,7 +160,8 @@ interface NewsletterViewModel {
                     .promoNewsletter(checked)
                     .publishingNewsletter(checked)
                     .weeklyNewsletter(checked)
-                    .build())
+                    .build()
+            )
             this.newsletterInput.onNext(Pair(checked, Newsletter.ALL))
         }
 
@@ -210,24 +215,24 @@ interface NewsletterViewModel {
             this.newsletterInput.onNext(Pair(checked, Newsletter.WEEKLY))
         }
 
-        override fun showOptInPrompt(): Observable<Newsletter>  = this.showOptInPrompt
+        override fun showOptInPrompt(): Observable<Newsletter> = this.showOptInPrompt
 
         override fun subscribeAll(): Observable<Boolean> = this.subscribeAll
 
         override fun user(): Observable<User> = this.userOutput
 
-        override fun unableToSavePreferenceError() : Observable<String> {
-           return this.unableToSavePreferenceError
-                    .takeUntil(this.updateSuccess)
-                    .map {_ -> null }
+        override fun unableToSavePreferenceError(): Observable<String> {
+            return this.unableToSavePreferenceError
+                .takeUntil(this.updateSuccess)
+                .map { _ -> null }
         }
 
         private fun isSubscribedToAllNewsletters(@NonNull user: User): Boolean {
             return isTrue(user.alumniNewsletter()) && isTrue(user.artsCultureNewsletter()) &&
-            isTrue(user.filmNewsletter()) && isTrue(user.gamesNewsletter()) &&
-                    isTrue(user.happeningNewsletter()) && isTrue(user.inventNewsletter()) &&
-                    isTrue(user.musicNewsletter()) && isTrue(user.promoNewsletter()) &&
-                    isTrue(user.publishingNewsletter()) && isTrue(user.weeklyNewsletter())
+                isTrue(user.filmNewsletter()) && isTrue(user.gamesNewsletter()) &&
+                isTrue(user.happeningNewsletter()) && isTrue(user.inventNewsletter()) &&
+                isTrue(user.musicNewsletter()) && isTrue(user.promoNewsletter()) &&
+                isTrue(user.publishingNewsletter()) && isTrue(user.weeklyNewsletter())
         }
 
         private fun requiresDoubleOptIn(user: User, checked: Boolean) = user.isLocationGermany() && checked
@@ -239,8 +244,8 @@ interface NewsletterViewModel {
 
         private fun updateSettings(user: User): Observable<Notification<User>> {
             return this.client.updateUserSettings(user)
-                    .materialize()
-                    .share()
+                .materialize()
+                .share()
         }
     }
 }

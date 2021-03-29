@@ -53,52 +53,52 @@ interface CampaignDetailsViewModel {
 
         init {
             val projectData = intent()
-                    .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as ProjectData? }
-                    .ofType(ProjectData::class.java)
+                .map { it.getParcelableExtra(IntentKey.PROJECT_DATA) as ProjectData? }
+                .ofType(ProjectData::class.java)
 
             projectData
-                    .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.lake.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
-                    }
+                .map { it.storeCurrentCookieRefTag(cookieManager, sharedPreferences) }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackProjectScreenViewed(it, ContextSectionName.CAMPAIGN.contextName)
+                }
 
             projectData
-                    .filter { it.project().isLive && !it.project().isBacking }
-                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
-                    .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                    .map { this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
-                    .map { it == OptimizelyExperiment.Variant.VARIANT_2 }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeContainerIsVisible)
+                .filter { it.project().isLive && !it.project().isBacking }
+                .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+                .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
+                .map { this.optimizely.variant(OptimizelyExperiment.Key.CAMPAIGN_DETAILS, it) }
+                .map { it == OptimizelyExperiment.Variant.VARIANT_2 }
+                .compose(bindToLifecycle())
+                .subscribe(this.pledgeContainerIsVisible)
 
             projectData
-                    .filter { !it.project().isLive || it.project().isBacking }
-                    .map { false }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeContainerIsVisible)
+                .filter { !it.project().isLive || it.project().isBacking }
+                .map { false }
+                .compose(bindToLifecycle())
+                .subscribe(this.pledgeContainerIsVisible)
 
             projectData
-                    .map { it.project() }
-                    .map { it.descriptionUrl() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.url)
+                .map { it.project() }
+                .map { it.descriptionUrl() }
+                .compose(bindToLifecycle())
+                .subscribe(this.url)
 
             this.pledgeButtonClicked
-                    .compose(bindToLifecycle())
-                    .subscribe(this.goBackToProject)
+                .compose(bindToLifecycle())
+                .subscribe(this.goBackToProject)
 
             projectData
-                    .compose<ProjectData>(takeWhen(this.pledgeButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.lake.trackCampaignDetailsPledgeButtonClicked(it) }
+                .compose<ProjectData>(takeWhen(this.pledgeButtonClicked))
+                .compose(bindToLifecycle())
+                .subscribe { this.lake.trackCampaignDetailsPledgeButtonClicked(it) }
 
             projectData
-                    .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
-                    .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
-                    .compose<ExperimentData>(takeWhen(this.pledgeButtonClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, it) }
+                .compose<Pair<ProjectData, User?>>(combineLatestPair(this.currentUser.observable()))
+                .map { ExperimentData(it.second, it.first.refTagFromIntent(), it.first.refTagFromCookie()) }
+                .compose<ExperimentData>(takeWhen(this.pledgeButtonClicked))
+                .compose(bindToLifecycle())
+                .subscribe { this.optimizely.track(CAMPAIGN_DETAILS_PLEDGE_BUTTON_CLICKED, it) }
         }
 
         override fun pledgeActionButtonClicked() = this.pledgeButtonClicked.onNext(null)

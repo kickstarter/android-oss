@@ -28,8 +28,10 @@ class CreatorBioViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.url().subscribe(this.url)
 
         // Configure the view model with a project and url intent.
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, project)
-                .putExtra(IntentKey.URL, "http://www.project.com/creator-bio"))
+        this.vm.intent(
+            Intent().putExtra(IntentKey.PROJECT, project)
+                .putExtra(IntentKey.URL, "http://www.project.com/creator-bio")
+        )
     }
 
     @Test

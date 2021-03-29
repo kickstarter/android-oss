@@ -657,7 +657,7 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.nativeProjectActionButtonClicked()
 
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
+        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

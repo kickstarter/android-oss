@@ -22,7 +22,7 @@ public final class BackingActivity extends BaseActivity<BackingViewModel.ViewMod
 
     this.viewModel.outputs.showBackingFragment()
             .compose(bindToLifecycle())
-            .subscribe( it -> {
+            .subscribe(it -> {
               this.startBackingFragment(it);
               this.backingFragment().pageViewed();
             });

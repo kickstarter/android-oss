@@ -32,7 +32,6 @@ import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.BackingFragmentViewModel
 import com.squareup.picasso.Picasso
-import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers.io
 
@@ -253,7 +252,6 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .subscribe { viewModel.inputs.receivedCheckboxToggled(this.isChecked) }
         }
-
     }
 
     private fun stylizedTextViews(it: String) {
@@ -336,8 +334,8 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
     override fun onStart() {
         super.onStart()
         this.activity?.let {
-           if( !it.localClassName.contains("ProjectActivity") )
-               this.pageViewed()
+            if (!it.localClassName.contains("ProjectActivity"))
+                this.pageViewed()
         }
     }
 

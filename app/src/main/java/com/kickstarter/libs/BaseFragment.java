@@ -29,6 +29,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
   FragmentLifecycleType {
 
   private final BehaviorSubject<FragmentEvent> lifecycle = BehaviorSubject.create();
+
   private static final String VIEW_MODEL_KEY = "FragmentViewModel";
   protected ViewModelType viewModel;
   private final BroadcastReceiver optimizelyReadyReceiver = new BroadcastReceiver() {
@@ -217,6 +218,21 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
     super.onActivityResult(requestCode, resultCode, data);
     Timber.d("onActivityResult %s", this.toString());
     this.viewModel.activityResult(ActivityResult.create(requestCode, resultCode, data));
+  }
+
+  /**
+   * setState will indicate if the fragment has suffer any animation changes on the parents container
+   * - In case no animation externally applied to the fragment call this method with `false` value
+   * - In case some animation externally applied to the Fragment as is the case for:
+   *  `BackingFragment` and `RewardsFragment` call this method with `true` value when needed
+   *
+   * @param state = true in case the fragment is displayed on the screen with full width/height
+   *        state = false in case the fragment is displayed on the screen but hidden or width/Height = 0
+   */
+  public void setState(final Boolean state) {
+    if (this.viewModel != null) {
+        this.viewModel.isExpanded(state);
+    }
   }
 
   private void assignViewModel(final @Nullable Bundle viewModelEnvelope) {

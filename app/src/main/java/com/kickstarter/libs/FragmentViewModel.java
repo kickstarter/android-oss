@@ -11,6 +11,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -24,6 +25,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
+  protected final BehaviorSubject<Boolean> isExpanded = BehaviorSubject.create();
   protected final AnalyticEvents lake;
   protected final PublishSubject<Void> optimizelyReady = PublishSubject.create();
 
@@ -116,5 +118,9 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
       this.view.switchMap(FragmentLifecycleType::lifecycle)
         .filter(FragmentEvent.DETACH::equals)
     );
+  }
+
+  public void isExpanded(boolean state) {
+    this.isExpanded.onNext(state);
   }
 }

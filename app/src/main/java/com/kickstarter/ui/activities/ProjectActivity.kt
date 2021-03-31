@@ -425,6 +425,7 @@ class ProjectActivity :
                 override fun onAnimationCancel(animation: Animator?) {}
 
                 override fun onAnimationEnd(animation: Animator?) {
+                    setFragmentsState(expand)
                     if (expand) {
                         pledge_action_buttons.visibility = View.GONE
                         project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
@@ -450,6 +451,12 @@ class ProjectActivity :
             })
 
             start()
+        }
+    }
+
+    private fun setFragmentsState(expand: Boolean) {
+        supportFragmentManager.fragments.map { fragment ->
+            (fragment as BaseFragment<*>).setState(expand && fragment.isVisible)
         }
     }
 

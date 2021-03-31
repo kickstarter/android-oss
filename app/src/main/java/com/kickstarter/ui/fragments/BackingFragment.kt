@@ -26,6 +26,7 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.libs.utils.extensions.setGone
 import com.kickstarter.models.Reward
+import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardAndAddOnsAdapter
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
@@ -252,6 +253,11 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
                 .compose(bindToLifecycle())
                 .subscribe { viewModel.inputs.receivedCheckboxToggled(this.isChecked) }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        this.setState(activity is BackingActivity)
     }
 
     private fun stylizedTextViews(it: String) {

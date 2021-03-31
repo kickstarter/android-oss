@@ -23,6 +23,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.KoalaContext

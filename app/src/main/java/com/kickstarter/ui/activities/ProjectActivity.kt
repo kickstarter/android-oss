@@ -291,11 +291,6 @@ class ProjectActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { this.startVideoActivity(it) }
 
-        this.viewModel.outputs.managePledgePageViewed()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { this.managePledgePageViewed() }
-
         setClickListeners()
     }
 
@@ -754,6 +749,4 @@ class ProjectActivity :
             pledge_toolbar.menu.clear()
         }
     }
-
-    private fun managePledgePageViewed() = this.backingFragment()?.pageViewed()
 }

@@ -818,16 +818,6 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe { this.optimizely.track(PROJECT_PAGE_PLEDGE_BUTTON_CLICKED, it.first) }
 
-            projectDataAndBackedReward
-                .compose(takeWhen<Pair<ProjectData, Reward>, Void>(this.nativeProjectActionButtonClicked))
-                .filter { ObjectUtils.isNotNull(it) }
-                .filter { it.first.project().isLive && it.first.project().isBacking }
-                .map { pledgeData(it.second, it.first, PledgeFlowContext.MANAGE_REWARD) }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.managePledgePageViewed.onNext(null)
-                }
-
             fullProjectDataAndCurrentUser
                 .map { it.first }
                 .compose<ProjectData>(takeWhen(creatorInfoClicked))

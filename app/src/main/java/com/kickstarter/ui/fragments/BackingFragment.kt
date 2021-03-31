@@ -305,8 +305,6 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
         this.viewModel.inputs.configureWith(projectData)
     }
 
-    fun pageViewed() = this.viewModel.pageViewed()
-
     fun pledgeSuccessfullyUpdated() {
         this.viewModel.inputs.pledgeSuccessfullyUpdated()
     }

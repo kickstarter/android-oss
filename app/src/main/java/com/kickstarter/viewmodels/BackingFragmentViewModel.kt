@@ -223,15 +223,6 @@ interface BackingFragmentViewModel {
                 .filter { ObjectUtils.isNotNull(it) }
                 .share()
 
-            this.isExpanded
-                .filter { it }
-                .compose(combineLatestPair(backing))
-                .map { it.second }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    // this.lake.trackManagePledgePageViewed(it)
-                }
-
             val isCreator = Observable.combineLatest(this.currentUser.observable(), backedProject) { user, project ->
                 Pair(user, project)
             }
@@ -396,7 +387,8 @@ interface BackingFragmentViewModel {
 
             backing
                 .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
-                .compose(takePairWhen<Pair<Backing, ProjectData>, Void>(this.pageViewed))
+                .compose(takePairWhen(this.isExpanded))
+                .filter { it.second }
                 .compose(bindToLifecycle())
                 .subscribe {
 

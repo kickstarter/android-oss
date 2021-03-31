@@ -56,9 +56,6 @@ interface BackingFragmentViewModel {
 
         /** Call when the swipe refresh layout is triggered. */
         fun refreshProject()
-
-        /** Called when the paged is viewed */
-        fun pageViewed()
     }
 
     interface Outputs {
@@ -579,10 +576,6 @@ interface BackingFragmentViewModel {
 
         override fun refreshProject() {
             this.refreshProject.onNext(null)
-        }
-
-        override fun pageViewed() {
-            this.pageViewed.onNext(null)
         }
 
         override fun backerAvatar(): Observable<String> = this.backerAvatar

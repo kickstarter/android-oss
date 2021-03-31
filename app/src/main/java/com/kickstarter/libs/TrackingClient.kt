@@ -107,7 +107,7 @@ abstract class TrackingClient(
 
     override fun buildNumber(): Int = BuildConfig.VERSION_CODE
 
-    override fun currentVariants(): JSONArray? = this.config?.currentVariants()
+    override fun currentVariants(): Array<String>? = this.config?.currentVariants()
 
     override fun deviceDistinctId(): String = FirebaseInstanceId.getInstance().id
 
@@ -119,8 +119,8 @@ abstract class TrackingClient(
      * Derives the device's orientation (portrait/landscape) from the `context`.
      */
     override fun deviceOrientation(): String =
-        if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "Landscape"
-        else "Portrait"
+        if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "landscape"
+        else "portrait"
 
     // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     override fun enabledFeatureFlags(): JSONArray {
@@ -148,6 +148,8 @@ abstract class TrackingClient(
     override fun userAgent(): String = WebUtils.userAgent(this.build)
 
     override fun userCountry(user: User): String = user.location()?.country() ?: this.config?.countryCode() ?: ""
+
+    override fun sessionCountry(): String = this.config?.countryCode() ?: ""
 
     override fun versionName(): String = BuildConfig.VERSION_NAME
 

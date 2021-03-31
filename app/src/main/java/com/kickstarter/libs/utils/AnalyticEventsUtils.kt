@@ -111,6 +111,11 @@ object AnalyticEventsUtils {
     @JvmOverloads
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
         val properties = HashMap<String, Any>()
+        properties["backed_projects_count"] = user.backedProjectsCount() ?: 0
+        properties["launched_projects_count"] = user.memberProjectsCount() ?: 0
+        properties["created_projects_count"] = user.createdProjectsCount() ?: 0
+        properties["facebook_connected"] = user.facebookConnected() ?: false
+        properties["watched_projects_count"] = user.starredProjectsCount() ?: 0
         properties["uid"] = user.id().toString()
         properties["is_admin"] = user.isAdmin ?: false
 
@@ -175,6 +180,7 @@ object AnalyticEventsUtils {
                 }
             }
             project.commentsCount()?.let { put("comments_count", it) }
+            project.prelaunchActivated()?.let { put("project_prelaunch_activated", it) }
             put("country", project.country())
             put("creator_uid", project.creator().id().toString())
             put("currency", project.currency())

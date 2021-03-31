@@ -21,17 +21,18 @@ fun Config.isFeatureFlagEnabled(text: String): Boolean {
 /**
  * @return The actual list of variants
  */
-fun Config.currentVariants(): JSONArray? {
+fun Config.currentVariants(): Array<String>? {
     return this
         ?.abExperiments()
         ?.toSortedMap()
         ?.let {
-            JSONArray().apply {
+            mutableListOf<String>().apply {
                 for (feature in it) {
-                    put("${feature.key}[${feature.value}]")
+                    add("${feature.key}[${feature.value}]")
                 }
             }
         }
+        ?.toTypedArray()
 }
 
 /**

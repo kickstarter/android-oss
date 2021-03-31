@@ -562,12 +562,11 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals("9.9.9", expectedProperties["session_app_release_version"])
         assertEquals("native_android", expectedProperties["session_platform"])
         assertEquals("native", expectedProperties["session_client"])
-        assertEquals(JSONArray().put("android_example_experiment[control]"), expectedProperties["session_current_variants"])
         assertEquals("uuid", expectedProperties["session_device_distinct_id"])
         assertEquals("phone", expectedProperties["session_device_type"])
         assertEquals("Google", expectedProperties["session_device_manufacturer"])
         assertEquals("Pixel 3", expectedProperties["session_device_model"])
-        assertEquals("Portrait", expectedProperties["session_device_orientation"])
+        assertEquals("portrait", expectedProperties["session_device_orientation"])
         assertEquals("en", expectedProperties["session_display_language"])
         assertEquals(JSONArray().put("optimizely_feature").put("android_example_feature"), expectedProperties["session_enabled_features"])
         assertEquals(false, expectedProperties["session_is_voiceover_running"])
@@ -577,6 +576,7 @@ class LakeTest : KSRobolectricTestCase() {
         assertEquals("agent", expectedProperties["session_user_agent"])
         assertEquals(user != null, expectedProperties["session_user_is_logged_in"])
         assertEquals(false, expectedProperties["session_wifi_connection"])
+        assertEquals("android_example_experiment[control]", (expectedProperties["session_variants_internal"] as Array<*>).first())
     }
 
     private fun mockCurrentConfig() = MockCurrentConfig().apply {

@@ -247,9 +247,6 @@ interface ProjectViewModel {
 
         /** Emits when we should update the [com.kickstarter.ui.fragments.BackingFragment] and [com.kickstarter.ui.fragments.RewardsFragment].  */
         fun updateFragments(): Observable<ProjectData>
-
-        /** Emits when manage page is viewed. */
-        fun managePledgePageViewed(): Observable<Void>
     }
 
     class ViewModel(@NonNull val environment: Environment) : ActivityViewModel<ProjectActivity>(environment), ProjectAdapter.Delegate, Inputs, Outputs {
@@ -324,7 +321,6 @@ interface ProjectViewModel {
         private val startThanksActivity = PublishSubject.create<Pair<CheckoutData, PledgeData>>()
         private val startVideoActivity = PublishSubject.create<Project>()
         private val updateFragments = BehaviorSubject.create<ProjectData>()
-        private val managePledgePageViewed = PublishSubject.create<Void>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -1154,8 +1150,6 @@ interface ProjectViewModel {
 
         @NonNull
         override fun updateFragments(): Observable<ProjectData> = this.updateFragments
-
-        override fun managePledgePageViewed(): Observable<Void> = this.managePledgePageViewed
 
         private fun backingDetailsSubtitle(project: Project): Either<String, Int>? {
             return project.backing()?.let { backing ->

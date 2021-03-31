@@ -24,6 +24,7 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   private final PublishSubject<Bundle> arguments = PublishSubject.create();
+  protected final PublishSubject<Boolean> isExpanded = PublishSubject.create();
   protected final AnalyticEvents lake;
   protected final PublishSubject<Void> optimizelyReady = PublishSubject.create();
 
@@ -116,5 +117,9 @@ public class FragmentViewModel<ViewType extends FragmentLifecycleType> {
       this.view.switchMap(FragmentLifecycleType::lifecycle)
         .filter(FragmentEvent.DETACH::equals)
     );
+  }
+
+  public void isExpanded(final boolean state) {
+    this.isExpanded.onNext(state);
   }
 }

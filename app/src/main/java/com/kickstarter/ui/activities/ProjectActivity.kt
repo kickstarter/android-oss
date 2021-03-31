@@ -23,6 +23,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.kickstarter.R
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.Either
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.KoalaContext
@@ -430,6 +431,7 @@ class ProjectActivity :
                 override fun onAnimationCancel(animation: Animator?) {}
 
                 override fun onAnimationEnd(animation: Animator?) {
+                    setFragmentsState(expand)
                     if (expand) {
                         pledge_action_buttons.visibility = View.GONE
                         project_recycler_view.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
@@ -455,6 +457,12 @@ class ProjectActivity :
             })
 
             start()
+        }
+    }
+
+    private fun setFragmentsState(expand: Boolean) {
+        supportFragmentManager.fragments.map { fragment ->
+            (fragment as BaseFragment<*>).setState(expand && fragment.isVisible)
         }
     }
 

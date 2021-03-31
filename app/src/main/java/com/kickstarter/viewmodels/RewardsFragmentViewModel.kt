@@ -4,6 +4,7 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.RewardUtils
@@ -72,7 +73,10 @@ class RewardsFragmentViewModel {
 
         init {
 
-            projectData
+            this.isExpanded
+                .filter { it }
+                .compose(combineLatestPair(this.projectDataInput))
+                .map { it.second }
                 .compose(bindToLifecycle())
                 .subscribe { this.lake.trackRewardsCarouselViewed(it) }
 

@@ -17,7 +17,6 @@ import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.libs.utils.ProjectViewUtils
 import com.kickstarter.libs.utils.RewardUtils
-import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.mock.factories.RewardFactory
@@ -382,25 +381,14 @@ interface BackingFragmentViewModel {
                 .share()
                 .subscribe()
 
-            backing
+            this.isExpanded
+                .filter { it }
+                .compose(combineLatestPair(backing))
+                .map { it.second }
                 .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
-                .compose(takePairWhen(this.isExpanded))
-                .filter { it.second }
                 .compose(bindToLifecycle())
                 .subscribe {
-
-                    val checkoutData = checkoutProperties(
-                        amount = it.first.first.amount(),
-                        checkoutId = null,
-                        bonus = it.first.first.bonusAmount(),
-                        shippingAmount = it.first.first.shippingAmount().toDouble()
-                    )
-
-                    this.lake.trackManagePledgePageViewed(
-                        checkoutData = checkoutData,
-                        projectData = it.first.second,
-                        addOns = it.first.first.addOns()
-                    )
+                    this.lake.trackManagePledgePageViewed(it.first, it.second)
                 }
 
             val rewardIsReceivable = backing

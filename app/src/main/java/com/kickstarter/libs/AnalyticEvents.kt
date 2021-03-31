@@ -61,9 +61,10 @@ import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.models.Activity
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
-import com.kickstarter.models.Reward
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope
@@ -917,14 +918,20 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
     /**
      * Sends data associated with page view event to the client.
      *
-     * @param projectData: The selected project data.
-     * @param checkoutData: checkout data
-     * @param addOns: associated addons
+     * @param backing Information regarding the backing
+     * @param projectData Information regarding projectData
      */
-    fun trackManagePledgePageViewed(projectData: ProjectData, checkoutData: CheckoutData, addOns: List<Reward>?) {
+    fun trackManagePledgePageViewed(backing: Backing, projectData: ProjectData) {
+        val checkoutData = checkoutProperties(
+            amount = backing.amount(),
+            checkoutId = null,
+            bonus = backing.bonusAmount(),
+            shippingAmount = backing.shippingAmount().toDouble()
+        )
+
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to MANAGE_PLEDGE.contextName)
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
-        props.putAll(AnalyticEventsUtils.checkoutProperties(checkoutData, projectData.project(), addOns))
+        props.putAll(AnalyticEventsUtils.checkoutProperties(checkoutData, projectData.project(), backing.addOns()))
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         client.track(PAGE_VIEWED.eventName, props)
     }

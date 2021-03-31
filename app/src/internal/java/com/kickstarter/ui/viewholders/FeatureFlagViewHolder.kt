@@ -18,7 +18,7 @@ class FeatureFlagViewHolder(val binding: ItemFeatureFlagBinding) : KSViewHolder(
         this.vm.outputs.value()
             .compose(bindToLifecycle())
             .compose(observeForUI())
-            .subscribe { binding.flagValue.text = it }
+            .subscribe { binding.flagValue.isChecked = it }
 
         this.vm.outputs.valueTextColor()
             .compose(bindToLifecycle())

@@ -19,7 +19,7 @@ interface FeatureFlagViewHolderViewModel {
         fun key(): Observable<String>
 
         /** Emits the value of the flag. */
-        fun value(): Observable<String>
+        fun value(): Observable<Boolean>
 
         /** Emits the text color of the flag value. */
         fun valueTextColor(): Observable<Int>
@@ -30,7 +30,7 @@ interface FeatureFlagViewHolderViewModel {
         private val featureFlag = PublishSubject.create<Pair<String, Boolean>>()
 
         private val key = BehaviorSubject.create<String>()
-        private val value = BehaviorSubject.create<String>()
+        private val value = BehaviorSubject.create<Boolean>()
         private val valueTextColor = BehaviorSubject.create<Int>()
 
         val inputs: Inputs = this
@@ -47,7 +47,7 @@ interface FeatureFlagViewHolderViewModel {
                 .map { it.second }
 
             enabled
-                .map { it.toString() }
+                .map { it }
                 .compose(bindToLifecycle())
                 .subscribe(this.value)
 
@@ -61,7 +61,7 @@ interface FeatureFlagViewHolderViewModel {
 
         override fun key(): Observable<String> = this.key
 
-        override fun value(): Observable<String> = this.value
+        override fun value(): Observable<Boolean> = this.value
 
         override fun valueTextColor(): Observable<Int> = this.valueTextColor
     }

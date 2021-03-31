@@ -15,7 +15,7 @@ class FeatureFlagsAdapter : KSAdapter() {
 
     override fun viewHolder(layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
-            R.layout.item_feature_flag -> FeatureFlagViewHolder(ItemFeatureFlagBinding.inflate(LayoutInflater.from(viewGroup.context)))
+            R.layout.item_feature_flag -> FeatureFlagViewHolder(ItemFeatureFlagBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }

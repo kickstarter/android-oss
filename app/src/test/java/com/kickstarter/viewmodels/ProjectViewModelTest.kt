@@ -637,30 +637,6 @@ class ProjectViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testManageButtonClicked_whenProjectIsLiveAndBacked() {
-        setUpEnvironment(environment())
-
-        // Start the view model with a backed project
-        val reward = RewardFactory.reward()
-        val backedProject = ProjectFactory.backedProject()
-            .toBuilder()
-            .backing(
-                BackingFactory.backing()
-                    .toBuilder()
-                    .rewardId(reward.id())
-                    .build()
-            )
-            .rewards(listOf(RewardFactory.noReward(), reward))
-            .build()
-
-        this.vm.intent(Intent().putExtra(IntentKey.PROJECT, backedProject))
-
-        this.vm.inputs.nativeProjectActionButtonClicked()
-
-        this.lakeTest.assertValues("Project Page Viewed", EventName.PAGE_VIEWED.eventName)
-    }
-
-    @Test
     fun testPledgeActionButtonUIOutputs_whenProjectIsLiveAndBacked() {
         setUpEnvironment(environment())
 

@@ -886,7 +886,6 @@ interface ProjectViewModel {
             return when {
                 ProjectUtils.userIsCreator(project, currentUser) -> null
                 project.isLive && !project.isBacking -> PledgeFlowContext.NEW_PLEDGE
-                project.isLive && project.isBacking -> PledgeFlowContext.MANAGE_REWARD
                 !project.isLive && project.backing()?.isErrored() ?: false -> PledgeFlowContext.FIX_ERRORED_PLEDGE
                 else -> null
             }

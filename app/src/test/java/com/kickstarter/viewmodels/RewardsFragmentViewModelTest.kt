@@ -46,7 +46,19 @@ class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
-        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.vm.isExpanded(true)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun init_whenViewModelInstantiated_FragmentCollapsed_shouldNotSendPagedViewedEvent() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.vm.isExpanded(false)
+        this.segmentTrack.assertNoValues()
     }
 
     @Test

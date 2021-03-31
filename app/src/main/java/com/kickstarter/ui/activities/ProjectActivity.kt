@@ -228,7 +228,10 @@ class ProjectActivity :
         this.viewModel.outputs.revealRewardsFragment()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { revealRewardsFragment() }
+            .subscribe {
+                this.viewModel.inputs.rewardsFragmentRevealed(null)
+                revealRewardsFragment()
+            }
 
         this.viewModel.outputs.showSavedPrompt()
             .compose(bindToLifecycle())
@@ -490,6 +493,7 @@ class ProjectActivity :
                 .addToBackStack(RewardsFragment::class.java.simpleName)
                 .commit()
         }
+        viewModel.rewardsFragmentRevealed(rewardsFragment().isVisible)
     }
 
     private fun rewardsFragment() = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?

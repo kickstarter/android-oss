@@ -136,6 +136,8 @@ interface ProjectViewModel {
 
         /** Call when the view rewards option is clicked.  */
         fun viewRewardsClicked()
+
+        fun rewardsFragmentRevealed()
     }
 
     interface Outputs {
@@ -284,6 +286,7 @@ interface ProjectViewModel {
         private val updatePledgeClicked = PublishSubject.create<Void>()
         private val updatesTextViewClicked = PublishSubject.create<Void>()
         private val viewRewardsClicked = PublishSubject.create<Void>()
+        private val rewardFragmentIsVisible = PublishSubject.create<Boolean>()
 
         private val backingDetailsIsVisible = BehaviorSubject.create<Boolean>()
         private val backingDetailsSubtitle = BehaviorSubject.create<Either<String, Int>?>()
@@ -665,6 +668,17 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.revealRewardsFragment)
 
+//            val sendRewardsPageViewedEvent = Observable.combineLatest(rewardFragmentIsVisible, projectData) {
+//                isVisible, projectData -> Pair
+//            }
+
+//            this.rewardFragmentIsVisible
+//                    .filter { it }
+//                    .compose(combineLatestPair(projectData))
+//                    .map { it -> it.second}
+//                    .compose(bindToLifecycle())
+//                    .subscribe(lake.trackRewardsCarouselViewed(projectData))
+
             currentProject
                 .map { it.isBacking && it.isLive || it.backing()?.isErrored() == true }
                 .distinctUntilChanged()
@@ -1041,6 +1055,10 @@ interface ProjectViewModel {
 
         override fun viewRewardsClicked() {
             this.viewRewardsClicked.onNext(null)
+        }
+
+        override fun rewardsFragmentRevealed(isShowing: Boolean) {
+            this.rewardFragmentIsVisible.onNext(isShowing)
         }
 
         @NonNull

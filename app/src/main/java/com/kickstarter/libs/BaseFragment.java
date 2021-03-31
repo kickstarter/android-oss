@@ -231,7 +231,7 @@ public class BaseFragment<ViewModelType extends FragmentViewModel> extends Fragm
    */
   public void setState(final Boolean state) {
     if (this.viewModel != null) {
-        this.viewModel.isExpanded(state);
+      this.viewModel.isExpanded(state);
     }
   }
 

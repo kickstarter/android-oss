@@ -297,10 +297,6 @@ class BackingFragment : BaseFragment<BackingFragmentViewModel.ViewModel>() {
 
     fun configureWith(projectData: ProjectData) {
         this.viewModel.inputs.configureWith(projectData)
-        this.activity?.let {
-            if (!it.localClassName.contains("ProjectActivity"))
-                this.pageViewed()
-        }
     }
 
     fun pageViewed() = this.viewModel.pageViewed()

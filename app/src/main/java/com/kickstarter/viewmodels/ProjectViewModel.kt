@@ -665,17 +665,6 @@ interface ProjectViewModel {
                 .compose(bindToLifecycle())
                 .subscribe(this.revealRewardsFragment)
 
-//            val sendRewardsPageViewedEvent = Observable.combineLatest(rewardFragmentIsVisible, projectData) {
-//                isVisible, projectData -> Pair
-//            }
-
-//            this.rewardFragmentIsVisible
-//                    .filter { it }
-//                    .compose(combineLatestPair(projectData))
-//                    .map { it -> it.second}
-//                    .compose(bindToLifecycle())
-//                    .subscribe(lake.trackRewardsCarouselViewed(projectData))
-
             currentProject
                 .map { it.isBacking && it.isLive || it.backing()?.isErrored() == true }
                 .distinctUntilChanged()

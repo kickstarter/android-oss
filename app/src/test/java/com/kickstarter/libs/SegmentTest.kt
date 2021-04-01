@@ -7,12 +7,14 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.AvatarFactory
+import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -517,6 +519,60 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["project_user_is_project_creator"])
 
         this.segmentTrack.assertValues("Pledge Submit Button Clicked")
+    }
+
+    @Test
+    fun testManagePledgePageViewed() {
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .id(4)
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .updatesCount(5)
+            .build()
+
+        val addOn1 = RewardFactory.addOn()
+        val addOn2 = RewardFactory.addOnMultiple()
+
+        val backing = BackingFactory.backing().toBuilder()
+            .project(project)
+            .addOns(listOf(addOn1, addOn2))
+            .bonusAmount(35.0)
+            .shippingAmount(20f)
+            .location(LocationFactory.germany())
+            .locationId(LocationFactory.germany().id())
+            .build()
+
+        val creator = creator()
+        val client = client(creator)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackManagePledgePageViewed(backing = backing, projectData = projectData)
+
+        assertSessionProperties(creator)
+        assertProjectProperties(project)
+        assertContextProperties()
+
+        val expectedProperties = this.propertiesTest.value
+
+        // - we test asserting this properties all methods in SharedFunctions.kt
+        assertEquals(10.0, expectedProperties["checkout_amount"])
+        assertEquals("credit_card", expectedProperties["checkout_payment_type"])
+        assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
+        assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
+        assertEquals(5, expectedProperties["checkout_add_ons_count_total"])
+        assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
+        assertEquals(100.0, expectedProperties["checkout_add_ons_minimum_usd"])
+        assertEquals(35.0, expectedProperties["checkout_bonus_amount_usd"])
+        assertEquals(MANAGE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

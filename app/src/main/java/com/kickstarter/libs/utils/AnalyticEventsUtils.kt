@@ -17,6 +17,7 @@ import com.kickstarter.models.Activity
 import com.kickstarter.models.Category
 import com.kickstarter.models.Location
 import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -43,6 +44,26 @@ object AnalyticEventsUtils {
             put("add_ons_count_total", pledgeData.totalQuantity())
             put("add_ons_count_unique", pledgeData.totalCountUnique())
             put("add_ons_minimum_usd", pledgeData.addOnsCost(project.staticUsdRate()))
+        }
+
+        return MapUtils.prefixKeys(properties, prefix)
+    }
+
+    @JvmOverloads
+    fun checkoutProperties(checkoutData: CheckoutData, project: Project, addOns: List<Reward>?, prefix: String = "checkout_"): Map<String, Any> {
+        val properties = HashMap<String, Any>().apply {
+            put("amount", checkoutData.amount())
+            put("checkout_amount", checkoutData.totalAmount(project.staticUsdRate()))
+            checkoutData.id()?.let { put("id", it.toString()) }
+            put("payment_type", checkoutData.paymentType().rawValue().toLowerCase(Locale.getDefault()))
+            put("amount_total_usd", checkoutData.totalAmount(project.staticUsdRate()))
+            put("shipping_amount", checkoutData.shippingAmount())
+            put("shipping_amount_usd", checkoutData.shippingAmount(project.staticUsdRate()))
+            put("bonus_amount", checkoutData.bonus())
+            put("bonus_amount_usd", checkoutData.bonus(project.staticUsdRate()))
+            put("add_ons_count_total", totalQuantity(addOns))
+            put("add_ons_count_unique", totalCountUnique(addOns))
+            put("add_ons_minimum_usd", addOnsCost(project.staticUsdRate(), addOns))
         }
 
         return MapUtils.prefixKeys(properties, prefix)

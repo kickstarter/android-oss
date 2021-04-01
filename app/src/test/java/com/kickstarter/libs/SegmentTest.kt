@@ -948,17 +948,16 @@ class SegmentTest : KSRobolectricTestCase() {
             .build()
 
     private fun discoveryParams() =
-            DiscoveryParams
-                    .builder()
-                    .staffPicks(true)
-                    .recommended(false)
-                    .location(LocationFactory.germany())
-                    .starred(1)
-                    .term("hello world")
-                    .social(2)
-                    .sort(DiscoveryParams.Sort.ENDING_SOON)
-                    .tagId(123)
-                    .category(CategoryFactory.ceramicsCategory())
-                    .build()
+        DiscoveryParams
+            .builder()
+            .staffPicks(true)
+            .recommended(false)
+            .location(LocationFactory.germany())
+            .starred(1)
+            .term("hello world")
+            .social(2)
+            .sort(DiscoveryParams.Sort.ENDING_SOON)
+            .tagId(123)
+            .category(CategoryFactory.ceramicsCategory())
+            .build()
 }
-

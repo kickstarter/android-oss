@@ -226,9 +226,9 @@ class ProjectActivity :
             .subscribe { showPledgeNotCancelableDialog() }
 
         this.viewModel.outputs.revealRewardsFragment()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { revealRewardsFragment() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { revealRewardsFragment() }
 
         this.viewModel.outputs.showSavedPrompt()
             .compose(bindToLifecycle())
@@ -484,11 +484,11 @@ class ProjectActivity :
     private fun revealRewardsFragment() {
         rewardsFragment()?.let {
             supportFragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    .show(it)
-                    .addToBackStack(RewardsFragment::class.java.simpleName)
-                    .commit()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                .show(it)
+                .addToBackStack(RewardsFragment::class.java.simpleName)
+                .commit()
         }
     }
 

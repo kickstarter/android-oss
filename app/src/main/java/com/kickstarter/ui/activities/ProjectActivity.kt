@@ -225,14 +225,6 @@ class ProjectActivity :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { showPledgeNotCancelableDialog() }
 
-        this.viewModel.outputs.revealRewardsFragment()
-            .compose(bindToLifecycle())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                this.viewModel.inputs.rewardsFragmentRevealed(null)
-                revealRewardsFragment()
-            }
-
         this.viewModel.outputs.showSavedPrompt()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -482,18 +474,6 @@ class ProjectActivity :
     private fun renderProject(backingFragment: BackingFragment, rewardsFragment: RewardsFragment, projectData: ProjectData) {
         rewardsFragment.configureWith(projectData)
         backingFragment.configureWith(projectData)
-    }
-
-    private fun revealRewardsFragment() {
-        rewardsFragment()?.let {
-            supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                .show(it)
-                .addToBackStack(RewardsFragment::class.java.simpleName)
-                .commit()
-        }
-        viewModel.rewardsFragmentRevealed(rewardsFragment().isVisible)
     }
 
     private fun rewardsFragment() = supportFragmentManager.findFragmentById(R.id.fragment_rewards) as RewardsFragment?

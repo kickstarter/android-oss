@@ -104,7 +104,7 @@ interface LoginViewModel {
                 .filter { it.hasExtra(IntentKey.EMAIL) }
                 .map {
                     Pair.create(
-                        it.getStringExtra(IntentKey.EMAIL),
+                        it.getStringExtra(IntentKey.EMAIL) ?: "",
                         if (it.hasExtra(IntentKey.LOGIN_REASON)) {
                             it.getSerializableExtra(IntentKey.LOGIN_REASON) as LoginReason
                         } else {

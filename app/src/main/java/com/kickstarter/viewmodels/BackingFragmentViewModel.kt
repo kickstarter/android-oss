@@ -187,7 +187,6 @@ interface BackingFragmentViewModel {
         private val bonusSupport = BehaviorSubject.create<CharSequence>()
         private val estimatedDelivery = BehaviorSubject.create<String>()
         private val deliveryDisclaimerSectionIsGone = BehaviorSubject.create<Boolean>()
-        private val pageViewed = PublishSubject.create<Void>()
 
         private val apiClient = this.environment.apiClient()
         private val apolloClient = this.environment.apolloClient()

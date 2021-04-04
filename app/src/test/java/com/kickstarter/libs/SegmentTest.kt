@@ -145,9 +145,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val segment = AnalyticEvents(listOf(client))
 
         val params = DiscoveryParams
-                .builder()
-                .sort(DiscoveryParams.Sort.MAGIC)
-                .build()
+            .builder()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
 
         segment.trackDiscoveryPageViewed(params)
         this.segmentIdentify.assertValue(user.id())

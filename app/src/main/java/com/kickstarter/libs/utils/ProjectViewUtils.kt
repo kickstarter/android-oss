@@ -138,7 +138,7 @@ object ProjectViewUtils {
         val formattedCurrency = ksCurrency.format(value, project, RoundingMode.HALF_UP)
 
         val country = Country.findByCurrencyCode(project.currency())
-                ?: return SpannableStringBuilder()
+            ?: return SpannableStringBuilder()
 
         val currencySymbolToDisplay = ksCurrency.getCurrencySymbol(country, true)
 

@@ -63,55 +63,55 @@ interface EditorialViewModel {
 
         init {
             val editorial = intent()
-                    .map { it.getSerializableExtra(IntentKey.EDITORIAL) }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .ofType(Editorial::class.java)
+                .map { it.getSerializableExtra(IntentKey.EDITORIAL) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .ofType(Editorial::class.java)
 
             val categoriesNotification = Observable.merge(fetchCategories(), this.retryContainerClicked.switchMap { fetchCategories() })
 
             categoriesNotification
-                    .compose(values())
-                    .map { it.filter { category -> category.isRoot } }
-                    .map { it.sorted() }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.rootCategories.onNext(it) }
+                .compose(values())
+                .map { it.filter { category -> category.isRoot } }
+                .map { it.sorted() }
+                .compose(bindToLifecycle())
+                .subscribe { this.rootCategories.onNext(it) }
 
             categoriesNotification
-                    .compose(errors())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.retryContainerIsGone.onNext(false) }
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe { this.retryContainerIsGone.onNext(false) }
 
             editorial
-                    .map { it.tagId }
-                    .map { DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).tagId(it).build() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.discoveryParams)
+                .map { it.tagId }
+                .map { DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).tagId(it).build() }
+                .compose(bindToLifecycle())
+                .subscribe(this.discoveryParams)
 
             editorial
-                    .map { it.graphic }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.graphic)
+                .map { it.graphic }
+                .compose(bindToLifecycle())
+                .subscribe(this.graphic)
 
             editorial
-                    .map { it.title }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.title)
+                .map { it.title }
+                .compose(bindToLifecycle())
+                .subscribe(this.title)
 
             editorial
-                    .map { it.description }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.description)
+                .map { it.description }
+                .compose(bindToLifecycle())
+                .subscribe(this.description)
 
             this.retryContainerClicked
-                    .compose(bindToLifecycle())
-                    .subscribe(this.refreshDiscoveryFragment)
+                .compose(bindToLifecycle())
+                .subscribe(this.refreshDiscoveryFragment)
         }
 
         private fun fetchCategories(): Observable<Notification<MutableList<Category>>>? {
             return this.apiClient.fetchCategories()
-                    .doOnSubscribe { this.retryContainerIsGone.onNext(true) }
-                    .materialize()
-                    .share()
+                .doOnSubscribe { this.retryContainerIsGone.onNext(true) }
+                .materialize()
+                .share()
         }
 
         override fun retryContainerClicked() = this.retryContainerClicked.onNext(null)

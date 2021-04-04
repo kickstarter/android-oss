@@ -48,59 +48,59 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
         password.onChange { this.viewModel.inputs.password(it) }
 
         errorMessages()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { e -> ViewUtils.showDialog(this, getString(this.errorTitleString), e) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { e -> ViewUtils.showDialog(this, getString(this.errorTitleString), e) }
 
         this.viewModel.outputs.tfaChallenge()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { startTwoFactorActivity() }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { startTwoFactorActivity() }
 
         this.viewModel.outputs.loginSuccess()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { onSuccess() }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { onSuccess() }
 
         this.viewModel.outputs.prefillEmail()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    email.setText(it)
-                    email.setSelection(it.length)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                email.setText(it)
+                email.setSelection(it.length)
+            }
 
         this.viewModel.outputs.showChangedPasswordSnackbar()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         this.viewModel.outputs.showCreatedPasswordSnackbar()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { showSnackbar(login_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
         this.viewModel.outputs.showResetPasswordSuccessDialog()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { showAndEmail ->
-                    val show = showAndEmail.first
-                    val email = showAndEmail.second
-                    if (show) {
-                        resetPasswordSuccessDialog(email).show()
-                    } else {
-                        resetPasswordSuccessDialog(email).dismiss()
-                    }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { showAndEmail ->
+                val show = showAndEmail.first
+                val email = showAndEmail.second
+                if (show) {
+                    resetPasswordSuccessDialog(email).show()
+                } else {
+                    resetPasswordSuccessDialog(email).dismiss()
                 }
+            }
 
         this.viewModel.outputs.loginButtonIsEnabled()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe({ this.setLoginButtonEnabled(it) })
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe({ this.setLoginButtonEnabled(it) })
 
         forgot_your_password_text_view.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
-                    .putExtra(IntentKey.EMAIL, email.text.toString())
+                .putExtra(IntentKey.EMAIL, email.text.toString())
             startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
         }
 
@@ -119,20 +119,20 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
             this.confirmResetPasswordSuccessDialog = ConfirmDialog(this, null, message)
 
             this.confirmResetPasswordSuccessDialog!!
-                    .setOnDismissListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
+                .setOnDismissListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
             this.confirmResetPasswordSuccessDialog!!
-                    .setOnCancelListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
+                .setOnCancelListener { this.viewModel.inputs.resetPasswordConfirmationDialogDismissed() }
         }
         return this.confirmResetPasswordSuccessDialog!!
     }
 
     private fun errorMessages() =
-            this.viewModel.outputs.invalidLoginError()
-                    .map(ObjectUtils.coalesceWith(getString(this.loginDoesNotMatchString)))
-                    .mergeWith(
-                            this.viewModel.outputs.genericLoginError()
-                                    .map(ObjectUtils.coalesceWith(getString(this.unableToLoginString)))
-                    )
+        this.viewModel.outputs.invalidLoginError()
+            .map(ObjectUtils.coalesceWith(getString(this.loginDoesNotMatchString)))
+            .mergeWith(
+                this.viewModel.outputs.genericLoginError()
+                    .map(ObjectUtils.coalesceWith(getString(this.unableToLoginString)))
+            )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
@@ -155,8 +155,8 @@ class LoginActivity : BaseActivity<LoginViewModel.ViewModel>() {
 
     private fun startTwoFactorActivity() {
         val intent = Intent(this, TwoFactorActivity::class.java)
-                .putExtra(IntentKey.EMAIL, email.text())
-                .putExtra(IntentKey.PASSWORD, password.text())
+            .putExtra(IntentKey.EMAIL, email.text())
+            .putExtra(IntentKey.PASSWORD, password.text())
         startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW)
         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }

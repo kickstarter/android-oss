@@ -13,6 +13,7 @@ import com.kickstarter.libs.models.OptimizelyFeature;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.ExperimentData;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -165,6 +166,10 @@ public interface DiscoveryFragmentViewModel {
       final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
         .map(p -> Pair.create(p, RefTag.activitySample()));
 
+      this.projectCardClicked
+              .compose(bindToLifecycle())
+              .subscribe(p -> lake.trackProjectCardClicked(p, EventContextValues.ContextPageName.DISCOVER.getContextName()));
+
       final Observable<Pair<Project, RefTag>> projectCardClick = this.paramsFromActivity
         .compose(takePairWhen(this.projectCardClicked))
         .map(pp -> RefTagUtils.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
@@ -269,7 +274,10 @@ public interface DiscoveryFragmentViewModel {
 
       this.discoveryOnboardingLoginToutClick
         .compose(bindToLifecycle())
-        .subscribe(v -> this.lake.trackLogInSignUpButtonClicked());
+        .subscribe(v -> {
+          this.lake.trackLogInSignUpButtonClicked();
+          this.lake.trackLoginOrSignUpCtaClicked(null, EventContextValues.ContextPageName.DISCOVER.getContextName());
+        });
 
       this.paramsFromActivity
         .compose(takePairWhen(this.editorialClicked))

@@ -12,7 +12,6 @@ import rx.observers.TestSubscriber
 
 class ResetPasswordViewModelTest : KSRobolectricTestCase() {
 
-
     @Test
     fun testResetPasswordViewModel_formValidation() {
         val vm = ResetPasswordViewModel.ViewModel(environment())
@@ -57,8 +56,8 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         }
 
         val environment = environment().toBuilder()
-                .apiClient(apiClient)
-                .build()
+            .apiClient(apiClient)
+            .build()
 
         val vm = ResetPasswordViewModel.ViewModel(environment)
         val errorTest = TestSubscriber<String>()
@@ -83,6 +82,5 @@ class ResetPasswordViewModelTest : KSRobolectricTestCase() {
         vm.intent(Intent().putExtra(IntentKey.EMAIL, "hello@kickstarter.com"))
 
         preFillEmail.assertValue("hello@kickstarter.com")
-
     }
 }

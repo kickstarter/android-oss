@@ -39,22 +39,22 @@ interface FeatureFlagViewHolderViewModel {
         init {
 
             this.featureFlag
-                    .map { it.first }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.key)
+                .map { it.first }
+                .compose(bindToLifecycle())
+                .subscribe(this.key)
 
             val enabled = this.featureFlag
-                    .map { it.second }
+                .map { it.second }
 
             enabled
-                    .map { it.toString() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.value)
+                .map { it.toString() }
+                .compose(bindToLifecycle())
+                .subscribe(this.value)
 
             enabled
-                    .map { if (it) R.color.text_primary else R.color.text_secondary }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.valueTextColor)
+                .map { if (it) R.color.text_primary else R.color.text_secondary }
+                .compose(bindToLifecycle())
+                .subscribe(this.valueTextColor)
         }
 
         override fun featureFlag(flag: Pair<String, Boolean>) = this.featureFlag.onNext(flag)

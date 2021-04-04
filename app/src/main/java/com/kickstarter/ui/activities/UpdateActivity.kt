@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.update_toolbar.share_icon_button
 import kotlinx.android.synthetic.main.update_toolbar.update_toolbar
 import okhttp3.Request
 
-
 @RequiresActivityViewModel(UpdateViewModel.ViewModel::class)
 class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Delegate {
     private lateinit var ksString: KSString
@@ -38,65 +37,64 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
 
         update_web_view.setDelegate(this)
         update_web_view.registerRequestHandlers(
-                listOf(
-                        RequestHandler({ uri: Uri?, webEndpoint: String ->
-                            KSUri.isProjectUpdateUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
-                        })
-                        { request: Request, _ -> handleProjectUpdateUriRequest(request) },
-                        RequestHandler({ uri: Uri?, webEndpoint: String ->
-                            KSUri.isProjectUpdateCommentsUri(uri?.let { it }
-                                    ?: Uri.EMPTY, webEndpoint)
-                        })
-                        { request: Request, _ -> handleProjectUpdateCommentsUriRequest(request) },
-                        RequestHandler({ uri: Uri?, webEndpoint: String ->
-                            KSUri.isProjectUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
-                        })
-                        { request: Request, webView: WebView -> handleProjectUriRequest(request, webView) }
-                )
+            listOf(
+                RequestHandler({ uri: Uri?, webEndpoint: String ->
+                    KSUri.isProjectUpdateUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
+                }) { request: Request, _ -> handleProjectUpdateUriRequest(request) },
+                RequestHandler({ uri: Uri?, webEndpoint: String ->
+                    KSUri.isProjectUpdateCommentsUri(
+                        uri?.let { it }
+                            ?: Uri.EMPTY,
+                        webEndpoint
+                    )
+                }) { request: Request, _ -> handleProjectUpdateCommentsUriRequest(request) },
+                RequestHandler({ uri: Uri?, webEndpoint: String ->
+                    KSUri.isProjectUri(uri?.let { it } ?: Uri.EMPTY, webEndpoint)
+                }) { request: Request, webView: WebView -> handleProjectUriRequest(request, webView) }
+            )
         )
 
         // - this.viewModel instantiated in super.onCreate it will never be null at this point
         val viewModel = requireNotNull(this.viewModel)
 
         viewModel.outputs.openProjectExternally()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { projectUrl ->
-                    openProjectExternally(projectUrl)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { projectUrl ->
+                openProjectExternally(projectUrl)
+            }
 
         viewModel.outputs.startCommentsActivity()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { update ->
-                    startCommentsActivity(update)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { update ->
+                startCommentsActivity(update)
+            }
 
         viewModel.outputs.startProjectActivity()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { uriAndRefTag ->
-                    startProjectActivity(uriAndRefTag.first, uriAndRefTag.second)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { uriAndRefTag ->
+                startProjectActivity(uriAndRefTag.first, uriAndRefTag.second)
+            }
 
         viewModel.outputs.startShareIntent()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { updateAndShareUrl ->
-                    startShareIntent(updateAndShareUrl)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { updateAndShareUrl ->
+                startShareIntent(updateAndShareUrl)
+            }
 
         viewModel.outputs.updateSequence()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { updateSequence ->
-                    update_toolbar.setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { updateSequence ->
+                update_toolbar.setTitle(ksString.format(resources.getString(R.string.social_update_number), "update_number", updateSequence))
+            }
 
         share_icon_button.setOnClickListener {
             viewModel.inputs.shareIconButtonClicked()
         }
-
     }
 
     override fun onDestroy() {
@@ -112,18 +110,16 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
         // we need to reload the webview with the updates url to refresh the UI
         this.viewModel?.let { vm ->
             vm.webViewUrl()
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .compose(observeForUI())
-                    .subscribe { url ->
-                        url?.let {
-                            update_web_view.loadUrl(it)
-                        }
+                .take(1)
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { url ->
+                    url?.let {
+                        update_web_view.loadUrl(it)
                     }
-
+                }
         }
     }
-
 
     private fun handleProjectUpdateCommentsUriRequest(request: Request): Boolean {
         this.viewModel?.inputs?.goToCommentsRequest(request)
@@ -146,25 +142,27 @@ class UpdateActivity : BaseActivity<UpdateViewModel.ViewModel?>(), KSWebView.Del
 
     private fun startCommentsActivity(update: Update) {
         val intent = Intent(this, CommentsActivity::class.java)
-                .putExtra(IntentKey.UPDATE, update)
+            .putExtra(IntentKey.UPDATE, update)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startProjectActivity(uri: Uri, refTag: RefTag) {
         val intent = Intent(this, ProjectActivity::class.java)
-                .setData(uri)
-                .putExtra(IntentKey.REF_TAG, refTag)
+            .setData(uri)
+            .putExtra(IntentKey.REF_TAG, refTag)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startShareIntent(updateAndShareUrl: Pair<Update, String>) {
         val update = updateAndShareUrl.first
         val shareUrl = updateAndShareUrl.second
-        val shareMessage = (ksString.format(resources.getString(R.string.activity_project_update_update_count), "update_count", NumberUtils.format(update.sequence()))
-                + ": " + update.title())
+        val shareMessage = (
+            ksString.format(resources.getString(R.string.activity_project_update_update_count), "update_count", NumberUtils.format(update.sequence())) +
+                ": " + update.title()
+            )
         val intent = Intent(Intent.ACTION_SEND)
-                .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, "$shareMessage $shareUrl")
+            .setType("text/plain")
+            .putExtra(Intent.EXTRA_TEXT, "$shareMessage $shareUrl")
         startActivity(Intent.createChooser(intent, getString(R.string.Share_update)))
     }
 

@@ -51,35 +51,35 @@ interface CreatorBioViewModel {
 
         init {
             intent()
-                    .map { it.getStringExtra(IntentKey.URL) }
-                    .ofType(String::class.java)
-                    .compose(bindToLifecycle())
-                    .subscribe(this.url)
+                .map { it.getStringExtra(IntentKey.URL) }
+                .ofType(String::class.java)
+                .compose(bindToLifecycle())
+                .subscribe(this.url)
 
             val project = intent()
-                    .map { it.getParcelableExtra(IntentKey.PROJECT) as Project }
+                .map { it.getParcelableExtra(IntentKey.PROJECT) as Project }
 
             this.currentUser.observable()
-                    .compose(combineLatestPair<User, Project>(project))
-                    .map { userIsLoggedOutOrProjectCreator(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.messageIconIsGone)
+                .compose(combineLatestPair<User, Project>(project))
+                .map { userIsLoggedOutOrProjectCreator(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.messageIconIsGone)
 
             project
-                    .compose<Project>(takeWhen(this.messageButtonClicked))
-                    .filter { !it.isBacking }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startComposeMessageActivity)
+                .compose<Project>(takeWhen(this.messageButtonClicked))
+                .filter { !it.isBacking }
+                .compose(bindToLifecycle())
+                .subscribe(this.startComposeMessageActivity)
 
             project
-                    .compose<Project>(takeWhen(this.messageButtonClicked))
-                    .filter { it.isBacking }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startMessageActivity)
+                .compose<Project>(takeWhen(this.messageButtonClicked))
+                .filter { it.isBacking }
+                .compose(bindToLifecycle())
+                .subscribe(this.startMessageActivity)
         }
 
         private fun userIsLoggedOutOrProjectCreator(userAndProject: Pair<User, Project>) =
-                userAndProject.first == null || userAndProject.first?.id() == userAndProject.second?.creator()?.id()
+            userAndProject.first == null || userAndProject.first?.id() == userAndProject.second?.creator()?.id()
 
         override fun messageButtonClicked() {
             this.messageButtonClicked.onNext(null)
@@ -96,6 +96,5 @@ interface CreatorBioViewModel {
 
         @NonNull
         override fun url(): Observable<String> = this.url
-
     }
 }

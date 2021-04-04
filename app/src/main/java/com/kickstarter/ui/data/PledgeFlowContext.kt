@@ -7,8 +7,8 @@ enum class PledgeFlowContext(val trackingString: String) {
     NEW_PLEDGE("new_pledge");
 
     companion object {
-        fun forPledgeReason(pledgeReason: PledgeReason) : PledgeFlowContext {
-           return when (pledgeReason) {
+        fun forPledgeReason(pledgeReason: PledgeReason): PledgeFlowContext {
+            return when (pledgeReason) {
                 PledgeReason.FIX_PLEDGE -> FIX_ERRORED_PLEDGE
                 PledgeReason.PLEDGE -> NEW_PLEDGE
                 PledgeReason.UPDATE_REWARD -> CHANGE_REWARD

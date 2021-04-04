@@ -1,12 +1,14 @@
 package com.kickstarter.ui.viewholders
 
-import android.view.View
+import com.kickstarter.databinding.ItemLightsOnBinding
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.viewmodels.EditorialViewHolderViewModel
-import kotlinx.android.synthetic.main.item_lights_on.view.*
 
-class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder(view) {
+class EditorialViewHolder(
+    val binding: ItemLightsOnBinding,
+    val delegate: Delegate
+) : KSViewHolder(binding.root) {
 
     interface Delegate {
         fun editorialViewHolderClicked(editorial: Editorial)
@@ -17,30 +19,29 @@ class EditorialViewHolder(val view: View, val delegate: Delegate) : KSViewHolder
     init {
 
         this.vm.outputs.ctaTitle()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.title.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.title.setText(it) }
 
         this.vm.outputs.ctaDescription()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.description.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.description.setText(it) }
 
         this.vm.outputs.editorial()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.delegate.editorialViewHolderClicked(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { this.delegate.editorialViewHolderClicked(it) }
 
         this.vm.outputs.graphic()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { this.itemView.editorial_graphic.setImageResource(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.editorialGraphic.setImageResource(it) }
 
-        this.itemView.setOnClickListener { this.vm.inputs.editorialClicked() }
+        binding.lightsOnContainer.setOnClickListener { this.vm.inputs.editorialClicked() }
     }
 
     override fun bindData(data: Any?) {
         this.vm.inputs.configureWith(data as Editorial)
     }
-
 }

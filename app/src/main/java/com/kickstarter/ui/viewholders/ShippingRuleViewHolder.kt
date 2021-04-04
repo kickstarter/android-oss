@@ -20,9 +20,9 @@ class ShippingRuleViewHolder(private val view: View, val delegate: Delegate) : K
     init {
 
         this.viewModel.outputs.shippingRuleText()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.view.shipping_rules_item_text_view.text = it }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.view.shipping_rules_item_text_view.text = it }
 
         this.view.shipping_rule_root.setOnClickListener {
             this.delegate.ruleSelected(this.shippingRule)

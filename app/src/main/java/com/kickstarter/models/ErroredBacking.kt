@@ -46,7 +46,5 @@ abstract class ErroredBacking : Parcelable {
                 return AutoParcel_ErroredBacking_Project.Builder()
             }
         }
-
     }
-
 }

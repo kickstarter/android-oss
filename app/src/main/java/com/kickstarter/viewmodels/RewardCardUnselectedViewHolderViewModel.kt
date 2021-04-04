@@ -37,7 +37,7 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         fun selectImageIsVisible(): Observable<Boolean>
     }
 
-    class ViewModel(environment: Environment) : BaseRewardCardViewHolderViewModel.ViewModel(environment), Inputs, Outputs  {
+    class ViewModel(environment: Environment) : BaseRewardCardViewHolderViewModel.ViewModel(environment), Inputs, Outputs {
         val inputs: Inputs = this
         val outputs: Outputs = this
 
@@ -53,45 +53,45 @@ interface RewardCardUnselectedViewHolderViewModel : BaseRewardCardViewHolderView
         init {
 
             val allowedCardType = this.cardAndProject
-                    .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
+                .map { ProjectUtils.acceptedCardType(it.first.type(), it.second) }
 
             allowedCardType
-                    .compose(bindToLifecycle())
-                    .subscribe(this.isClickable)
+                .compose(bindToLifecycle())
+                .subscribe(this.isClickable)
 
             allowedCardType
-                    .map { if (it) 1.0f else .5f }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.issuerImageAlpha)
+                .map { if (it) 1.0f else .5f }
+                .compose(bindToLifecycle())
+                .subscribe(this.issuerImageAlpha)
 
             allowedCardType
-                    .map { if (it) R.color.text_primary else R.color.text_secondary }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.lastFourTextColor)
+                .map { if (it) R.color.text_primary else R.color.text_secondary }
+                .compose(bindToLifecycle())
+                .subscribe(this.lastFourTextColor)
 
             allowedCardType
-                    .map { BooleanUtils.negate(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.notAvailableCopyIsVisible)
+                .map { BooleanUtils.negate(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.notAvailableCopyIsVisible)
 
             allowedCardType
-                    .compose(bindToLifecycle())
-                    .subscribe(this.selectImageIsVisible)
+                .compose(bindToLifecycle())
+                .subscribe(this.selectImageIsVisible)
 
             this.cardAndProject
-                    .map { it.first }
-                    .compose<Pair<StoredCard, Int>>(takePairWhen(this.cardSelected))
-                    .compose(bindToLifecycle())
-                    .subscribe { this.notifyDelegateCardSelected.onNext(it) }
+                .map { it.first }
+                .compose<Pair<StoredCard, Int>>(takePairWhen(this.cardSelected))
+                .compose(bindToLifecycle())
+                .subscribe { this.notifyDelegateCardSelected.onNext(it) }
         }
 
         override fun cardSelected(position: Int) = this.cardSelected.onNext(position)
 
-        override fun isClickable() : Observable<Boolean> = this.isClickable
+        override fun isClickable(): Observable<Boolean> = this.isClickable
 
-        override fun issuerImageAlpha() : Observable<Float> = this.issuerImageAlpha
+        override fun issuerImageAlpha(): Observable<Float> = this.issuerImageAlpha
 
-        override fun lastFourTextColor() : Observable<Int> = this.lastFourTextColor
+        override fun lastFourTextColor(): Observable<Int> = this.lastFourTextColor
 
         override fun notAvailableCopyIsVisible(): Observable<Boolean> = this.notAvailableCopyIsVisible
 

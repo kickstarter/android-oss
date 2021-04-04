@@ -1,7 +1,13 @@
 package com.kickstarter.libs.models
 
-enum class Country(val countryCode: String, val currencyCode: String, val currencySymbol: String,
-                   val minPledge: Int, val maxPledge: Int, val trailingCode: Boolean) {
+enum class Country(
+    val countryCode: String,
+    val currencyCode: String,
+    val currencySymbol: String,
+    val minPledge: Int,
+    val maxPledge: Int,
+    val trailingCode: Boolean
+) {
     AT("AT", "EUR", "€", 1, 8_500, false),
     AU("AU", "AUD", "$", 1, 13_000, true),
     BE("BE", "EUR", "€", 1, 8_500, false),

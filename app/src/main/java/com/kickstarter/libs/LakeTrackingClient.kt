@@ -1,7 +1,11 @@
 package com.kickstarter.libs
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.BackoffPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.MapUtils
 import com.kickstarter.libs.utils.WorkUtils
@@ -13,11 +17,12 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class LakeTrackingClient(
-        @param:ApplicationContext private val context: Context,
-        currentUser: CurrentUserType,
-        build: Build,
-        currentConfig: CurrentConfigType,
-        optimizely: ExperimentsClientType) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
+    @param:ApplicationContext private val context: Context,
+    currentUser: CurrentUserType,
+    build: Build,
+    currentConfig: CurrentConfigType,
+    optimizely: ExperimentsClientType
+) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
     private var loggedInUser: User? = null
     private var config: Config? = null
 
@@ -26,7 +31,7 @@ class LakeTrackingClient(
         this.currentConfig.observable().subscribe { c -> this.config = c }
     }
 
-    override fun type() =  Type.LAKE
+    override fun type() = Type.LAKE
 
     @Throws(JSONException::class)
     override fun trackingData(eventName: String, newProperties: Map<String, Any?>) {
@@ -53,21 +58,22 @@ class LakeTrackingClient(
      */
     private fun callLakeServiceWithEvent(eventName: String, data: String) {
 
-        val data = workDataOf(IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
-                IntentKey.EVENT_NAME to eventName,
-                IntentKey.EVENT_DATA to data)
+        val data = workDataOf(
+            IntentKey.TRACKING_CLIENT_TYPE_TAG to type().tag,
+            IntentKey.EVENT_NAME to eventName,
+            IntentKey.EVENT_DATA to data
+        )
 
-        val requestBuilder =  OneTimeWorkRequestBuilder<LakeWorker>()
+        val requestBuilder = OneTimeWorkRequestBuilder<LakeWorker>()
         requestBuilder.apply {
             val request = this
-                    .setInputData(data)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
-                    .setConstraints(WorkUtils.baseConstraints)
-                    .build()
+                .setInputData(data)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 10, TimeUnit.SECONDS)
+                .setConstraints(WorkUtils.baseConstraints)
+                .build()
 
             WorkManager.getInstance(context)
-                    .enqueueUniqueWork(WorkUtils.uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
+                .enqueueUniqueWork(WorkUtils.uniqueWorkName(type().tag), ExistingWorkPolicy.APPEND, request)
         }
     }
-
 }

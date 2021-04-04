@@ -13,7 +13,6 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
-
 interface SettingsViewModel {
 
     interface Inputs {
@@ -60,22 +59,22 @@ interface SettingsViewModel {
         init {
 
             this.client.fetchCurrentUser()
-                    .retry(2)
-                    .compose(Transformers.neverError())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.currentUser.refresh(it) }
+                .retry(2)
+                .compose(Transformers.neverError())
+                .compose(bindToLifecycle())
+                .subscribe { this.currentUser.refresh(it) }
 
             this.currentUser.observable()
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe({ this.userOutput.onNext(it) })
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe({ this.userOutput.onNext(it) })
 
             this.confirmLogoutClicked
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.analytics.reset()
-                        this.logout.onNext(null)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.analytics.reset()
+                    this.logout.onNext(null)
+                }
 
             this.avatarImageViewUrl = this.currentUser.loggedInUser().map { u -> u.avatar().medium() }
 
@@ -95,6 +94,5 @@ interface SettingsViewModel {
         override fun showConfirmLogoutPrompt(): Observable<Boolean> = this.showConfirmLogoutPrompt
 
         override fun userNameTextViewText() = this.userNameTextViewText
-
     }
 }

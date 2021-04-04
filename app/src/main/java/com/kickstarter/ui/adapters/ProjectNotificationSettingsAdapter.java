@@ -1,16 +1,18 @@
 package com.kickstarter.ui.adapters;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.ProjectNotificationViewBinding;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 
 import java.util.List;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 
 public final class ProjectNotificationSettingsAdapter extends KSAdapter {
   /**
@@ -28,7 +30,8 @@ public final class ProjectNotificationSettingsAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new ProjectNotificationViewHolder(view);
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
+    return new ProjectNotificationViewHolder(ProjectNotificationViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
   }
+
 }

@@ -6,13 +6,13 @@ import android.content.SharedPreferences
 import android.content.res.AssetManager
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
-import com.kickstarter.libs.qualifiers.*
+import com.kickstarter.libs.qualifiers.ApplicationContext
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class TestApplicationModule(private val application: Application): ApplicationModule(application) {
+class TestApplicationModule(private val application: Application) : ApplicationModule(application) {
 
     @Provides
     @Singleton

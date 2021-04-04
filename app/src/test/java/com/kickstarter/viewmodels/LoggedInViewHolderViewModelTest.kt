@@ -34,10 +34,10 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val user = UserFactory.user()
-                .toBuilder()
-                .erroredBackingsCount(3)
-                .unseenActivityCount(2)
-                .build()
+            .toBuilder()
+            .erroredBackingsCount(3)
+            .unseenActivityCount(2)
+            .build()
         this.vm.inputs.configureWith(user)
 
         this.activityCount.assertValue(5)
@@ -48,9 +48,9 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val user = UserFactory.user()
-                .toBuilder()
-                .unseenActivityCount(2)
-                .build()
+            .toBuilder()
+            .unseenActivityCount(2)
+            .build()
         this.vm.inputs.configureWith(user)
 
         this.activityCount.assertValue(2)
@@ -61,9 +61,9 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val user = UserFactory.user()
-                .toBuilder()
-                .erroredBackingsCount(3)
-                .build()
+            .toBuilder()
+            .erroredBackingsCount(3)
+            .build()
         this.vm.inputs.configureWith(user)
 
         this.activityCount.assertValue(3)
@@ -83,9 +83,9 @@ class LoggedInViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val user = UserFactory.user()
-                .toBuilder()
-                .erroredBackingsCount(3)
-                .build()
+            .toBuilder()
+            .erroredBackingsCount(3)
+            .build()
         this.vm.inputs.configureWith(user)
 
         this.activityCountTextColor.assertValue(R.color.kds_alert)

@@ -28,11 +28,11 @@ object RewardViewUtils {
         val backing = project.backing()
         val hasAddOnsSelected = backing?.addOns()?.isNotEmpty() ?: false
 
-        if((backing == null || !backing.isBacked(reward)) && RewardUtils.isAvailable(project, reward)) {
+        if ((backing == null || !backing.isBacked(reward)) && RewardUtils.isAvailable(project, reward)) {
             return R.string.Select
         }
 
-        return if(backing != null && backing.isBacked(reward)) {
+        return if (backing != null && backing.isBacked(reward)) {
             when {
                 !reward.hasAddons() -> R.string.Selected
                 reward.hasAddons() || hasAddOnsSelected -> R.string.Continue
@@ -93,9 +93,10 @@ object RewardViewUtils {
         val numberGreenCharacters = quantity.toString().length + symbol.length
         val spannable = SpannableString(quantity.toString() + symbol + title)
         spannable.setSpan(
-                ForegroundColorSpan(context.getColor(R.color.kds_create_700)),
-                0, numberGreenCharacters,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            ForegroundColorSpan(context.getColor(R.color.kds_create_700)),
+            0, numberGreenCharacters,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return spannable
     }
 }

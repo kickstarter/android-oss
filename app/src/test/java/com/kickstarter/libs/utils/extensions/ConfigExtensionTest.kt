@@ -35,25 +35,28 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
     @Test
     fun currentVariants_whenExperimentsEmpty_currentVariantsShouldBeEmpty() {
         val configEmpty = ConfigFactory.configWithExperiments(Collections.emptyMap())
-        assertEquals(JSONArray(), configEmpty.currentVariants())
+        assertEquals(0, configEmpty.currentVariants()?.size)
     }
 
     @Test
-    fun currentVarients_whenGivenOneExperiment_shouldReturnOneCurrentVariant() {
+    fun currentVariants_whenGivenOneExperiment_shouldReturnOneCurrentVariant() {
         val configWithExperiment = ConfigFactory.configWithExperiment("pledge_button_copy", "experiment")
-        assertEquals(JSONArray().apply { put("pledge_button_copy[experiment]") }, configWithExperiment.currentVariants())
+        assertEquals(1, configWithExperiment.currentVariants()?.size)
+        assertEquals("pledge_button_copy[experiment]", configWithExperiment.currentVariants()?.get(0))
     }
 
     @Test
-    fun currentVarients_whenGivenMapOfExperiments_shouldReturnCorrectNumberOfCurrentVariants() {
-        val configWithExperiments = ConfigFactory.configWithExperiments(mapOf(Pair("pledge_button_copy", "experiment"),
-                Pair("add_new_card_vertical", "control")))
+    fun currentVariants_whenGivenMapOfExperiments_shouldReturnCorrectNumberOfCurrentVariants() {
+        val configWithExperiments = ConfigFactory.configWithExperiments(
+            mapOf(
+                Pair("pledge_button_copy", "experiment"),
+                Pair("add_new_card_vertical", "control")
+            )
+        )
 
-        val correctValue = JSONArray().apply {
-            put("add_new_card_vertical[control]")
-            put("pledge_button_copy[experiment]")
-        }
-        assertEquals(correctValue, configWithExperiments.currentVariants())
+        assertEquals(2, configWithExperiments.currentVariants()?.size)
+        assertEquals("add_new_card_vertical[control]", configWithExperiments.currentVariants()?.get(0))
+        assertEquals("pledge_button_copy[experiment]", configWithExperiments.currentVariants()?.get(1))
     }
 
     @Test
@@ -70,21 +73,32 @@ class ConfigExtensionTest : KSRobolectricTestCase() {
 
     @Test
     fun enabledFeatureFlags_whenGivenMapOfFeatureFlags_shouldReturnCorrectNumberOfEnabledFeatureFlags() {
-        val configSeveralFeatureFlags = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("android_native_checkout", false),
+        val configSeveralFeatureFlags = ConfigFactory.configWithFeaturesEnabled(
+            mapOf(
+                Pair("android_native_checkout", false),
                 Pair("ios_go_rewardless", true),
-                Pair("ios_native_checkout", true)))
+                Pair("ios_native_checkout", true)
+            )
+        )
 
         assertEquals(JSONArray(), configSeveralFeatureFlags.enabledFeatureFlags())
     }
 
     @Test
     fun enabledFeatureFlags_whenGivenTrueFeatureFlag_shouldReturnTrueEnabledFeatureFlag() {
-        val configEnableFeatureFlag = ConfigFactory.configWithFeaturesEnabled(mapOf(Pair("android_native_checkout", true),
+        val configEnableFeatureFlag = ConfigFactory.configWithFeaturesEnabled(
+            mapOf(
+                Pair("android_native_checkout", true),
                 Pair("ios_go_rewardless", true),
-                Pair("ios_native_checkout", true)))
+                Pair("ios_native_checkout", true)
+            )
+        )
 
-        assertEquals(JSONArray().apply {
-            put("android_native_checkout")
-        }, configEnableFeatureFlag.enabledFeatureFlags())
+        assertEquals(
+            JSONArray().apply {
+                put("android_native_checkout")
+            },
+            configEnableFeatureFlag.enabledFeatureFlags()
+        )
     }
 }

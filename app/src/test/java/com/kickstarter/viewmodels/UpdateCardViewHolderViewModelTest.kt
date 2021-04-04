@@ -71,9 +71,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .body("Here are some details.")
-                .build()
+            .toBuilder()
+            .body("Here are some details.")
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.blurb.assertValue("Here are some details.")
@@ -84,9 +84,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .commentsCount(33)
-                .build()
+            .toBuilder()
+            .commentsCount(33)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCount.assertValue(33)
@@ -97,9 +97,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .commentsCount(null)
-                .build()
+            .toBuilder()
+            .commentsCount(null)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCountIsGone.assertValue(true)
@@ -110,9 +110,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .commentsCount(0)
-                .build()
+            .toBuilder()
+            .commentsCount(0)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCountIsGone.assertValue(true)
@@ -123,9 +123,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .commentsCount(33)
-                .build()
+            .toBuilder()
+            .commentsCount(33)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.commentsCountIsGone.assertValue(false)
@@ -136,9 +136,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .likesCount(22)
-                .build()
+            .toBuilder()
+            .likesCount(22)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCount.assertValue(22)
@@ -149,9 +149,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .likesCount(null)
-                .build()
+            .toBuilder()
+            .likesCount(null)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCountIsGone.assertValue(true)
@@ -162,9 +162,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .likesCount(0)
-                .build()
+            .toBuilder()
+            .likesCount(0)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCountIsGone.assertValue(true)
@@ -175,9 +175,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .likesCount(33)
-                .build()
+            .toBuilder()
+            .likesCount(33)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.likesCountIsGone.assertValue(false)
@@ -189,9 +189,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         val timestamp = DateTime.parse("2020-02-26T17:41:07+00:00")
         val update = UpdateFactory.update()
-                .toBuilder()
-                .publishedAt(timestamp)
-                .build()
+            .toBuilder()
+            .publishedAt(timestamp)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.publishDate.assertValue(timestamp)
@@ -202,9 +202,9 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .sequence(3)
-                .build()
+            .toBuilder()
+            .sequence(3)
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.sequence.assertValue(3)
@@ -226,12 +226,11 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val update = UpdateFactory.update()
-                .toBuilder()
-                .title("Wow, big news!")
-                .build()
+            .toBuilder()
+            .title("Wow, big news!")
+            .build()
         this.vm.inputs.configureWith(ProjectFactory.project(), update)
 
         this.title.assertValue("Wow, big news!")
     }
-
 }

@@ -150,6 +150,33 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testDiscoveryPageViewed() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val params = DiscoveryParams
+                .builder()
+                .sort(DiscoveryParams.Sort.MAGIC)
+                .build()
+
+        segment.trackDiscoveryPageViewed(params)
+        this.segmentIdentify.assertValue(user.id())
+
+        assertSessionProperties(user)
+        assertContextProperties()
+
+        val expectedProperties = propertiesTest.value
+
+        assertEquals("magic", expectedProperties[EventContextValues.CtaContextName.DISCOVER_SORT.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
     fun testDiscoveryProperties_NoCategory() {
         val user = user()
         val client = client(user)

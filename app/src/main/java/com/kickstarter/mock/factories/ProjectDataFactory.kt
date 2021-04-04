@@ -8,16 +8,16 @@ class ProjectDataFactory private constructor() {
     companion object {
         fun project(project: Project): ProjectData {
             return ProjectData.builder()
-                    .project(project)
-                    .build()
+                .project(project)
+                .build()
         }
 
         fun project(project: Project, intentRefTag: RefTag?, cookieRefTag: RefTag?): ProjectData {
             return ProjectData.builder()
-                    .project(project)
-                    .refTagFromIntent(intentRefTag)
-                    .refTagFromCookie(cookieRefTag)
-                    .build()
+                .project(project)
+                .refTagFromIntent(intentRefTag)
+                .refTagFromCookie(cookieRefTag)
+                .build()
         }
     }
 }

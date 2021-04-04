@@ -8,12 +8,13 @@ import com.segment.analytics.Traits
 import timber.log.Timber
 
 class SegmentTrackingClient(
-        build: Build,
-        context: Context,
-        currentConfig: CurrentConfigType,
-        currentUser: CurrentUserType,
-        optimizely: ExperimentsClientType,
-        private val segmentAnalytics: Analytics?) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
+    build: Build,
+    context: Context,
+    currentConfig: CurrentConfigType,
+    currentUser: CurrentUserType,
+    optimizely: ExperimentsClientType,
+    private val segmentAnalytics: Analytics?
+) : TrackingClient(context, currentUser, build, currentConfig, optimizely) {
 
     /**
      * Perform the request to the Segment third party library

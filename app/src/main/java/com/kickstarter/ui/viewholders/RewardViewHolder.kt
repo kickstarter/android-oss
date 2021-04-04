@@ -8,11 +8,18 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
+import com.kickstarter.databinding.ItemRewardBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
 import com.kickstarter.libs.utils.ObjectUtils.requireNonNull
+import com.kickstarter.libs.utils.RewardItemDecorator
+import com.kickstarter.libs.utils.RewardUtils
+import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.TransitionUtils.slideInFromRight
 import com.kickstarter.libs.utils.TransitionUtils.transition
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.IntentKey
@@ -20,9 +27,8 @@ import com.kickstarter.ui.activities.BackingActivity
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.RewardViewHolderViewModel
-import kotlinx.android.synthetic.main.item_reward.view.*
 
-class RewardViewHolder(private val view: View, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(view) {
+class RewardViewHolder(private val binding: ItemRewardBinding, val delegate: Delegate?, private val inset: Boolean = false) : KSViewHolder(binding.root) {
 
     interface Delegate {
         fun rewardClicked(reward: Reward)
@@ -39,165 +45,164 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
         val rewardItemAdapter = setUpRewardItemsAdapter()
 
         this.viewModel.outputs.conversionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(this.view.reward_conversion_text_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(this.binding.rewardConversionTextView))
 
         this.viewModel.outputs.conversion()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setConversionTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setConversionTextView(it) }
 
         this.viewModel.outputs.descriptionForNoReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_description_text_view.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardDescriptionTextView.setText(it) }
 
         this.viewModel.outputs.descriptionForReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_description_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardDescriptionTextView.text = it }
 
         this.viewModel.outputs.descriptionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_description_container, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(this.binding.rewardDescriptionContainer, it) }
 
         this.viewModel.outputs.buttonIsEnabled()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_button.isEnabled = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardPledgeButton.isEnabled = it }
 
         this.viewModel.outputs.remainingIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(this.view.reward_remaining_text_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(this.binding.rewardRemainingTextView))
 
         this.viewModel.outputs.limitContainerIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(this.view.reward_limit_container, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(this.binding.rewardLimitContainer, it)
+            }
 
         this.viewModel.outputs.remaining()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setRemainingRewardsTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setRemainingRewardsTextView(it) }
 
         this.viewModel.outputs.buttonCTA()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_pledge_button.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardPledgeButton.setText(it) }
 
         this.viewModel.outputs.shippingSummary()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setShippingSummaryText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setShippingSummaryText(it) }
 
         this.viewModel.outputs.shippingSummaryIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_shipping_summary, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(this.binding.rewardShippingSummary, it) }
 
         this.viewModel.outputs.minimumAmountTitle()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_minimum_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardMinimumTextView.text = it }
 
         this.viewModel.outputs.reward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_ending_text_view.text = formattedExpirationString(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardEndingTextView.text = formattedExpirationString(it) }
 
         this.viewModel.outputs.endDateSectionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_ending_text_view, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(this.binding.rewardEndingTextView, it) }
 
         this.viewModel.outputs.rewardItems()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { rewardItemAdapter.rewardsItems(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { rewardItemAdapter.rewardsItems(it) }
 
         this.viewModel.outputs.rewardItemsAreGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(this.view.rewards_item_section))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(this.binding.rewardsItemSection))
 
         this.viewModel.outputs.titleForNoReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_title_text_view.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardTitleTextView.setText(it) }
 
         this.viewModel.outputs.titleForReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_title_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardTitleTextView.text = it }
 
         this.viewModel.outputs.titleIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_title_text_view, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(this.binding.rewardTitleTextView, it) }
 
         this.viewModel.outputs.showFragment()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.delegate?.rewardClicked(it.second) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.delegate?.rewardClicked(it.second) }
 
         this.viewModel.outputs.buttonIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setPledgeButtonVisibility(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setPledgeButtonVisibility(it) }
 
         this.viewModel.outputs.backersCount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setBackersCountTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setBackersCountTextView(it) }
 
         this.viewModel.outputs.backersCountIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_backers_count, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(this.binding.rewardBackersCount, it) }
 
         this.viewModel.outputs.estimatedDelivery()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_estimated_delivery.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.binding.rewardEstimatedDelivery.text = it }
 
         this.viewModel.outputs.estimatedDeliveryIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.reward_estimated_delivery_section, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(this.binding.rewardEstimatedDeliverySection, it) }
 
         this.viewModel.outputs.isMinimumPledgeAmountGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(this.view.reward_conversion_text_view, it)
-                    ViewUtils.setGone(this.view.reward_minimum_text_view, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(this.binding.rewardConversionTextView, it)
+                ViewUtils.setGone(this.binding.rewardMinimumTextView, it)
+            }
 
-        RxView.clicks(this.view.reward_pledge_button)
-                .compose(bindToLifecycle())
-                .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
+        RxView.clicks(this.binding.rewardPledgeButton)
+            .compose(bindToLifecycle())
+            .subscribe { this.viewModel.inputs.rewardClicked(this.adapterPosition) }
 
         this.viewModel.outputs.hasAddOnsAvailable()
-                .filter { ObjectUtils.isNotNull(it) }
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(this.view.reward_add_ons_available, !it)
-                }
+            .filter { ObjectUtils.isNotNull(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(this.binding.rewardAddOnsAvailable, !it)
+            }
 
         this.viewModel.outputs.selectedRewardTagIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { isGone ->
-                    if (!isGone) this.view.reward_selected_reward_tag.visibility = View.VISIBLE
-                    else ViewUtils.setGone(this.view.reward_selected_reward_tag, true)
-                }
-
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { isGone ->
+                if (!isGone) this.binding.rewardSelectedRewardTag.visibility = View.VISIBLE
+                else ViewUtils.setGone(this.binding.rewardSelectedRewardTag, true)
+            }
     }
 
     override fun bindData(data: Any?) {
@@ -216,42 +221,48 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
     }
 
     private fun setBackersCountTextView(count: Int) {
-        val backersCountText = this.ksString.format("rewards_info_backer_count_backers", count,
-                "backer_count", NumberUtils.format(count))
-        this.view.reward_backers_count.text = backersCountText
+        val backersCountText = this.ksString.format(
+            "rewards_info_backer_count_backers", count,
+            "backer_count", NumberUtils.format(count)
+        )
+        this.binding.rewardBackersCount.text = backersCountText
     }
 
     private fun setConversionTextView(@NonNull amount: String) {
-        this.view.reward_conversion_text_view.text = this.ksString.format(this.currencyConversionString,
-                "reward_amount", amount)
+        this.binding.rewardConversionTextView.text = this.ksString.format(
+            this.currencyConversionString,
+            "reward_amount", amount
+        )
     }
 
     private fun setPledgeButtonVisibility(gone: Boolean) {
         if (BooleanUtils.isTrue(this.inset)) {
-            ViewUtils.setGone(this.view.reward_button_container, true)
-            ViewUtils.setGone(this.view.reward_button_placeholder, true)
+            ViewUtils.setGone(this.binding.rewardButtonContainer, true)
+            ViewUtils.setGone(this.binding.rewardButtonPlaceholder, true)
         } else {
-            ViewUtils.setGone(this.view.reward_button_container, gone)
+            ViewUtils.setGone(this.binding.rewardButtonContainer, gone)
             when {
-                gone -> ViewUtils.setGone(this.view.reward_button_placeholder, true)
-                else -> ViewUtils.setInvisible(this.view.reward_button_placeholder, true)
+                gone -> ViewUtils.setGone(this.binding.rewardButtonPlaceholder, true)
+                else -> ViewUtils.setInvisible(this.binding.rewardButtonPlaceholder, true)
             }
         }
     }
 
     private fun setRemainingRewardsTextView(@NonNull remaining: String) {
-        this.view.reward_remaining_text_view.text = this.ksString.format(this.remainingRewardsString,
-                "left_count", remaining)
+        this.binding.rewardRemainingTextView.text = this.ksString.format(
+            this.remainingRewardsString,
+            "left_count", remaining
+        )
     }
 
     private fun setShippingSummaryText(stringResAndLocationName: Pair<Int, String?>) {
-        this.view.reward_shipping_summary.text = RewardViewUtils.shippingSummary(context(), this.ksString, stringResAndLocationName)
+        this.binding.rewardShippingSummary.text = RewardViewUtils.shippingSummary(context(), this.ksString, stringResAndLocationName)
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun setUpRewardItemsAdapter(): RewardItemsAdapter {
         val rewardItemAdapter = RewardItemsAdapter()
-        val itemRecyclerView = view.rewards_item_recycler_view
+        val itemRecyclerView = binding.rewardsItemRecyclerView
         itemRecyclerView.adapter = rewardItemAdapter
         itemRecyclerView.layoutManager = LinearLayoutManager(context())
         this.context().getDrawable(R.drawable.divider_grey_300_horizontal)?.let {
@@ -263,10 +274,9 @@ class RewardViewHolder(private val view: View, val delegate: Delegate?, private 
     private fun startBackingActivity(@NonNull project: Project) {
         val context = context()
         val intent = Intent(context, BackingActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project)
 
         context.startActivity(intent)
         transition(context, slideInFromRight())
     }
-
 }

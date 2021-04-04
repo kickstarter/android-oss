@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.EventName;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.factories.ConfigFactory;
 import com.kickstarter.mock.services.MockApiClient;
@@ -62,8 +63,8 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
     formSubmittingTest.assertValues(true, false);
     signupSuccessTest.assertValueCount(1);
-    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
-    this.segmentTrack.assertValues("Sign Up Submit Button Clicked");
+    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Sign Up Submit Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), "Sign Up Submit Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -101,8 +102,8 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     formSubmittingTest.assertValues(true, false);
     signupSuccessTest.assertValueCount(0);
     signupErrorTest.assertValueCount(1);
-    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
-    this.segmentTrack.assertValues("Sign Up Submit Button Clicked");
+    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Sign Up Submit Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), "Sign Up Submit Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -138,8 +139,8 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     formSubmittingTest.assertValues(true, false);
     signupSuccessTest.assertValueCount(0);
     signupErrorTest.assertValueCount(1);
-    this.lakeTest.assertValues("Sign Up Submit Button Clicked");
-    this.segmentTrack.assertValues("Sign Up Submit Button Clicked");
+    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Sign Up Submit Button Clicked", EventName.CTA_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), "Sign Up Submit Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
 }

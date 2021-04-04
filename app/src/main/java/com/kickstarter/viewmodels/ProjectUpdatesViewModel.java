@@ -83,7 +83,7 @@ public interface ProjectUpdatesViewModel {
         .map(it -> ProjectDataExtKt.storeCurrentCookieRefTag(it, this.cookieManager, this.sharedPreferences))
         .compose(bindToLifecycle())
         .subscribe(
-          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, EventContextValues.ProjectContextSectionName.UPDATES.getContextName())
+          projectAndData -> this.lake.trackProjectScreenViewed(projectAndData, EventContextValues.ContextSectionName.UPDATES.getContextName())
         );
 
       final Observable<Project> startOverWith = Observable.merge(

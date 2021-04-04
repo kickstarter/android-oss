@@ -386,7 +386,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.discoveryOnboardingViewHolderLoginToutClick(null);
 
     this.showLoginTout.assertValue(true);
-    this.lakeTest.assertValue("Log In or Signup Button Clicked");
+    this.lakeTest.assertValues("Log In or Signup Button Clicked", EventName.CTA_CLICKED.getEventName());
   }
 
   @Test
@@ -421,7 +421,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.collection(518)));
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName());
   }
 
   @Test
@@ -436,7 +437,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectCardViewHolderClicked(project);
 
     this.startProjectActivity.assertValue(Pair.create(project, RefTag.discovery()));
-    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed");
+    this.lakeTest.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName());
+    this.segmentTrack.assertValues(EventName.PAGE_VIEWED.getEventName(), "Explore Page Viewed", EventName.CARD_CLICKED.getEventName());
   }
 
   @Test

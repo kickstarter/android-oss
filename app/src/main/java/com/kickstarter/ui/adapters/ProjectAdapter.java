@@ -1,17 +1,20 @@
 package com.kickstarter.ui.adapters;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.EmptyViewBinding;
+import com.kickstarter.databinding.ProjectMainLayoutBinding;
 import com.kickstarter.ui.data.ProjectData;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
 import java.util.Collections;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 
 public final class ProjectAdapter extends KSAdapter {
   private final Delegate delegate;
@@ -39,10 +42,11 @@ public final class ProjectAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  @Override
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     if (layout == R.layout.project_main_layout) {
-      return new ProjectViewHolder(view, this.delegate);
+      return new ProjectViewHolder(ProjectMainLayoutBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     }
-    return new EmptyViewHolder(view);
+    return new EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
   }
 }

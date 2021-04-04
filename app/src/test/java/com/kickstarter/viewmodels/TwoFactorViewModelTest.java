@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.EventName;
 import com.kickstarter.mock.factories.ApiExceptionFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.services.ApiClientType;
@@ -47,7 +48,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.code("");
     this.formIsValid.assertValues(true, false);
 
-    this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
+    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -70,7 +71,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
+    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -93,7 +94,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertValueCount(1);
 
-    this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
+    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -112,7 +113,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
+    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -131,7 +132,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.resendClick();
 
     this.showResendCodeConfirmation.assertValueCount(1);
-    this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
+    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -168,7 +169,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.genericTfaError.assertValueCount(1);
-    this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
+    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -203,6 +204,6 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     this.formSubmitting.assertValues(true, false);
     this.tfaSuccess.assertNoValues();
     this.tfaCodeMismatchError.assertValueCount(1);
-    this.lakeTest.assertValue("Two-Factor Confirmation Viewed");
+    this.lakeTest.assertValues("Two-Factor Confirmation Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 }

@@ -19,10 +19,10 @@ class LakeWorker(@ApplicationContext applicationContext: Context, params: Worker
         (applicationContext as KSApplication).component().inject(this)
         val body = this.eventData.toRequestBody("application/json".toMediaTypeOrNull())
         val result = this.lakeService
-                .track(body, this.clientId)
-                .subscribeOn(Schedulers.io())
-                .toBlocking()
-                .first()
+            .track(body, this.clientId)
+            .subscribeOn(Schedulers.io())
+            .toBlocking()
+            .first()
         return handleResult(result)
     }
 }

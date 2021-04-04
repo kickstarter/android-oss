@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.CustomTypeValue
 import org.joda.time.DateTime
 import java.text.ParseException
 
-class Iso8601DateTimeAdapter: CustomTypeAdapter<DateTime> {
+class Iso8601DateTimeAdapter : CustomTypeAdapter<DateTime> {
 
     override fun encode(value: DateTime): CustomTypeValue<*> {
         return CustomTypeValue.GraphQLString(value.toString())

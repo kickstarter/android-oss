@@ -76,9 +76,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
                 web_view_error.visibility = View.GONE
             }
         }
-
     }
-
 
     /**
      * Added `_pxmvid` cookie to each loaded url, with 1 hour expiration time
@@ -127,7 +125,7 @@ class KSWebView : FrameLayout, KSWebViewClient.Delegate {
     }
 
     fun evaluateJavascript(javascript: String?, resultCallback: ValueCallback<String>?) {
-        internal_web_view.evaluateJavascript(javascript, resultCallback)
+        javascript?.let { internal_web_view.evaluateJavascript(it, resultCallback) }
     }
 
     fun goBack() {

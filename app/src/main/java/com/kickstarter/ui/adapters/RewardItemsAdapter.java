@@ -1,16 +1,18 @@
 package com.kickstarter.ui.adapters;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.RewardsItemViewBinding;
 import com.kickstarter.models.RewardsItem;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.RewardsItemViewHolder;
 
 import java.util.List;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 
 import static java.util.Collections.emptyList;
 
@@ -31,7 +33,7 @@ public final class RewardItemsAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new RewardsItemViewHolder(view);
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
+    return new RewardsItemViewHolder(RewardsItemViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
   }
 }

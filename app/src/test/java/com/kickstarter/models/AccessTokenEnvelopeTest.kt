@@ -25,7 +25,7 @@ class AccessTokenEnvelopeTest : TestCase() {
     fun testEquals_whenSameUserDifferentToken_returnFalse() {
         val user = UserFactory.user()
         val envelopA = AccessTokenEnvelope.builder().user(user).accessToken("SomeToken").build()
-        val envelopB =  AccessTokenEnvelope.builder().user(user).accessToken("OtherToken").build()
+        val envelopB = AccessTokenEnvelope.builder().user(user).accessToken("OtherToken").build()
 
         assertFalse(envelopA == envelopB)
     }
@@ -35,7 +35,7 @@ class AccessTokenEnvelopeTest : TestCase() {
         val userA = UserFactory.user()
         val userB = UserFactory.germanUser()
         val envelopA = AccessTokenEnvelope.builder().user(userA).accessToken(token).build()
-        val envelopB =  AccessTokenEnvelope.builder().user(userB).accessToken(token).build()
+        val envelopB = AccessTokenEnvelope.builder().user(userB).accessToken(token).build()
 
         assertFalse(envelopA == envelopB)
     }

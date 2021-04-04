@@ -6,7 +6,7 @@ import com.kickstarter.libs.qualifiers.AutoGson
 
 @AutoGson
 @AutoParcel
-abstract class EmailVerificationEnvelope: Parcelable {
+abstract class EmailVerificationEnvelope : Parcelable {
     abstract fun message(): String
     abstract fun code(): Int
 

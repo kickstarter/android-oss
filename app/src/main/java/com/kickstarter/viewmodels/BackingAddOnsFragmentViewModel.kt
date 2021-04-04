@@ -109,237 +109,240 @@ class BackingAddOnsFragmentViewModel {
         init {
 
             val pledgeData = arguments()
-                    .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
-                    .ofType(PledgeData::class.java)
+                .map { it.getParcelable(ArgumentsKey.PLEDGE_PLEDGE_DATA) as PledgeData? }
+                .ofType(PledgeData::class.java)
 
             pledgeData
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.lake.trackAddOnsPageViewed(it)
-                        this.lake.trackAddOnsScreenViewed(it)
-                    }
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackAddOnsPageViewed(it)
+                    this.lake.trackAddOnsScreenViewed(it)
+                }
 
             val pledgeReason = arguments()
-                    .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
+                .map { it.getSerializable(ArgumentsKey.PLEDGE_PLEDGE_REASON) as PledgeReason }
 
             val projectData = pledgeData
-                    .map { it.projectData() }
+                .map { it.projectData() }
 
             val project = projectData
-                    .map { it.project() }
+                .map { it.project() }
 
             val rewardPledge = pledgeData
-                    .map { it.reward() }
+                .map { it.reward() }
 
             val backing = projectData
-                    .map { getBackingFromProjectData(it) }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
+                .map { getBackingFromProjectData(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             val backingReward = backing
-                    .map { it.reward() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
+                .map { it.reward() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             val isSameReward = rewardPledge
-                    .compose<Pair<Reward, Reward>>(combineLatestPair(backingReward))
-                    .map { it.first.id() == it.second.id() }
+                .compose<Pair<Reward, Reward>>(combineLatestPair(backingReward))
+                .map { it.first.id() == it.second.id() }
 
             isSameReward
-                    .filter { !it }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.currentSelection.value?.clear()
-                    }
+                .filter { !it }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.currentSelection.value?.clear()
+                }
 
             val filteredBackingReward = backingReward
-                    .compose<Pair<Reward, Boolean>>(combineLatestPair(isSameReward))
-                    .filter { it.second }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-                    .map { it.first }
+                .compose<Pair<Reward, Boolean>>(combineLatestPair(isSameReward))
+                .filter { it.second }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .map { it.first }
 
             val reward = Observable.merge(rewardPledge, filteredBackingReward)
 
             projectAndReward = project
-                    .compose<Pair<Project, Reward>>(combineLatestPair(reward))
+                .compose<Pair<Project, Reward>>(combineLatestPair(reward))
 
             // - If changing rewards do not emmit the backing information
             val backingShippingRule = backing
-                    .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
-                    .filter { it.second }
-                    .map { it.first }
-                    .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
-                    .map {
-                        it.second.first { rule ->
-                            rule.location().id() == it.first.locationId()
-                        }
+                .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
+                .filter { it.second }
+                .map { it.first }
+                .compose<Pair<Backing, List<ShippingRule>>>(combineLatestPair(shippingRules))
+                .map {
+                    it.second.first { rule ->
+                        rule.location().id() == it.first.locationId()
                     }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
 
             // - In case of digital Reward to follow the same flow as the rest of use cases use and empty shippingRule
             reward
-                    .filter { isDigital(it) || !isShippable(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingSelectorIsGone.onNext(true)
-                    }
+                .filter { isDigital(it) || !isShippable(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.shippingSelectorIsGone.onNext(true)
+                }
 
             val addOnsFromBacking = backing
-                    .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
-                    .filter { it.second }
-                    .map { it.first }
-                    .map { it.addOns()?.toList() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .map { requireNotNull(it) }
-                    .distinctUntilChanged()
+                .compose<Pair<Backing, Boolean>>(combineLatestPair(isSameReward))
+                .filter { it.second }
+                .map { it.first }
+                .map { it.addOns()?.toList() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .map { requireNotNull(it) }
+                .distinctUntilChanged()
 
             val combinedList = addOnsFromBacking
-                    .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
-                    .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
-                    .distinctUntilChanged()
+                .compose<Pair<List<Reward>, List<Reward>>>(combineLatestPair(addOnsFromGraph))
+                .map { joinSelectedWithAvailableAddOns(it.first, it.second) }
+                .distinctUntilChanged()
 
             val addonsList = Observable.merge(addOnsFromGraph, combinedList)
-                    .map { filterOutUnAvailableOrEndedExceptIfBacked(it) }
-                    .distinctUntilChanged()
+                .map { filterOutUnAvailableOrEndedExceptIfBacked(it) }
+                .distinctUntilChanged()
 
             shippingRules
-                    .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingRulesAndProject)
+                .compose<Pair<List<ShippingRule>, Project>>(combineLatestPair(project))
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingRulesAndProject)
 
             val defaultShippingRule = shippingRules
-                    .filter { it.isNotEmpty() }
-                    .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
-                    .filter { !isDigital(it.second) && isShippable(it.second) }
-                    .switchMap { defaultShippingRule(it.first) }
+                .filter { it.isNotEmpty() }
+                .compose<Pair<List<ShippingRule>, Reward>>(combineLatestPair(reward))
+                .filter { !isDigital(it.second) && isShippable(it.second) }
+                .switchMap { defaultShippingRule(it.first) }
 
             val shippingRule = getSelectedShippingRule(defaultShippingRule, isSameReward, backingShippingRule, reward)
 
             shippingRule
-                    .distinctUntilChanged { rule1, rule2 ->
-                        rule1.location().id() == rule2.location().id() && rule1.cost() == rule2.cost()
-                    }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingRuleSelected.onNext(it)
-                    }
-
-
-            Observable
-                    .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
-                        return@combineLatest this.apiClient
-                                .fetchShippingRules(projectAndReward.first, projectAndReward.second)
-                                .doOnError {
-                                    this.showErrorDialog.onNext(true)
-                                    this.shippingSelectorIsGone.onNext(true)
-                                }
-                                .onErrorResumeNext(Observable.empty())
-                    }
-                    .switchMap { it }
-                    .map { it.shippingRules() }
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        shippingRules.onNext(it)
-                    }
+                .distinctUntilChanged { rule1, rule2 ->
+                    rule1.location().id() == rule2.location().id() && rule1.cost() == rule2.cost()
+                }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.shippingRuleSelected.onNext(it)
+                }
 
             Observable
-                    .combineLatest(this.retryButtonPressed.startWith(false), project, this.shippingRuleSelected) {
-                        _, pj, shipRule ->
+                .combineLatest(this.retryButtonPressed.startWith(false), projectAndReward) { _, projectAndReward ->
+                    return@combineLatest this.apiClient
+                        .fetchShippingRules(projectAndReward.first, projectAndReward.second)
+                        .doOnError {
+                            this.showErrorDialog.onNext(true)
+                            this.shippingSelectorIsGone.onNext(true)
+                        }
+                        .onErrorResumeNext(Observable.empty())
+                }
+                .switchMap { it }
+                .map { it.shippingRules() }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    shippingRules.onNext(it)
+                }
 
-                        val projectSlug = pj.slug() ?: ""
-                        val location = shipRule.location()
-                        return@combineLatest this.apolloClient
-                                .getProjectAddOns(projectSlug, location)
-                                .doOnError {
-                                    this.showErrorDialog.onNext(true)
-                                    this.shippingSelectorIsGone.onNext(true)}
-                                .onErrorResumeNext(Observable.empty())
-                    }
-                    .switchMap { it }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .subscribe(addOnsFromGraph)
+            Observable
+                .combineLatest(this.retryButtonPressed.startWith(false), project, this.shippingRuleSelected) {
+                    _, pj, shipRule ->
+
+                    val projectSlug = pj.slug() ?: ""
+                    val location = shipRule.location()
+                    return@combineLatest this.apolloClient
+                        .getProjectAddOns(projectSlug, location)
+                        .doOnError {
+                            this.showErrorDialog.onNext(true)
+                            this.shippingSelectorIsGone.onNext(true)
+                        }
+                        .onErrorResumeNext(Observable.empty())
+                }
+                .switchMap { it }
+                .filter { ObjectUtils.isNotNull(it) }
+                .subscribe(addOnsFromGraph)
 
             val filteredAddOns = Observable.combineLatest(addonsList, projectData, this.shippingRuleSelected, reward) {
                 list, pData, rule, rw ->
                 return@combineLatest filterByLocation(list, pData, rule, rw)
             }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
 
             filteredAddOns
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.addOnsListFiltered)
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.addOnsListFiltered)
 
             filteredAddOns
-                    .map { it.second.isEmpty() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.isEmptyState)
+                .map { it.second.isEmpty() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.isEmptyState)
 
             this.quantityPerId
-                    .compose<Pair<Pair<Int, Long>, Triple<ProjectData, List<Reward>, ShippingRule>>>(combineLatestPair(this.addOnsListFiltered))
-                    .compose(bindToLifecycle())
-                    .distinctUntilChanged()
-                    .subscribe {
-                        updateQuantityById(it.first)
-                        calculateTotal(it.second.second)
-                    }
+                .compose<Pair<Pair<Int, Long>, Triple<ProjectData, List<Reward>, ShippingRule>>>(combineLatestPair(this.addOnsListFiltered))
+                .compose(bindToLifecycle())
+                .distinctUntilChanged()
+                .subscribe {
+                    updateQuantityById(it.first)
+                    calculateTotal(it.second.second)
+                }
 
             // - .startWith(ShippingRuleFactory.emptyShippingRule()) because we need to trigger this validation every time the AddOns selection changes for digital rewards as well
             val isButtonEnabled = Observable.combineLatest(
-                    backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
-                    addOnsFromBacking,
-                    this.shippingRuleSelected,
-                    this.currentSelection.take(1),
-                    this.quantityPerId
+                backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
+                addOnsFromBacking,
+                this.shippingRuleSelected,
+                this.currentSelection.take(1),
+                this.quantityPerId
             ) {
                 backedRule, backedList, actualRule, currentSelection, _ ->
                 return@combineLatest isDifferentLocation(backedRule, actualRule) || isDifferentSelection(backedList, currentSelection)
             }
-                    .distinctUntilChanged()
+                .distinctUntilChanged()
 
             isButtonEnabled
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.isEnabledCTAButton.onNext(it)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.isEnabledCTAButton.onNext(it)
+                }
 
             val updatedPledgeDataAndReason = getUpdatedPledgeData(
-                    this.addOnsListFiltered,
-                    pledgeData,
-                    pledgeReason,
-                    reward,
-                    this.shippingRuleSelected,
-                    this.currentSelection.take(1),
-                    this.continueButtonPressed)
+                this.addOnsListFiltered,
+                pledgeData,
+                pledgeReason,
+                reward,
+                this.shippingRuleSelected,
+                this.currentSelection.take(1),
+                this.continueButtonPressed
+            )
 
             updatedPledgeDataAndReason
-                    .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.continueButtonPressed))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.lake.trackAddOnsContinueButtonClicked(it.first)
-                        this.lake.trackAddOnsContinueCTA(it.first)
-                        this.showPledgeFragment.onNext(it)
-                    }
+                .compose<Pair<PledgeData, PledgeReason>>(takeWhen(this.continueButtonPressed))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackAddOnsContinueButtonClicked(it.first)
+                    this.lake.trackAddOnsContinueCTA(it.first)
+                    this.showPledgeFragment.onNext(it)
+                }
         }
 
         /**
          * Observable containing the correct shippingRule to each case
          */
         private fun getSelectedShippingRule(
-                defaultShippingRule: Observable<ShippingRule>,
-                isSameReward: Observable<Boolean>,
-                backingShippingRule: Observable<ShippingRule>,
-                reward: Observable<Reward>): Observable<ShippingRule> {
-            return Observable.combineLatest(defaultShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
-                    isSameReward.startWith(false),
-                    backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
-                    reward
+            defaultShippingRule: Observable<ShippingRule>,
+            isSameReward: Observable<Boolean>,
+            backingShippingRule: Observable<ShippingRule>,
+            reward: Observable<Reward>
+        ): Observable<ShippingRule> {
+            return Observable.combineLatest(
+                defaultShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
+                isSameReward.startWith(false),
+                backingShippingRule.startWith(ShippingRuleFactory.emptyShippingRule()),
+                reward
             ) { defaultShipping, sameRw, backingRule, rw ->
                 return@combineLatest chooseShippingRule(defaultShipping, backingRule, sameRw, rw)
             }
@@ -352,11 +355,11 @@ class BackingAddOnsFragmentViewModel {
          * - Choosing to update same reward use the backing shippingRule
          */
         private fun chooseShippingRule(defaultShipping: ShippingRule, backingShippingRule: ShippingRule, sameReward: Boolean, rw: Reward): ShippingRule =
-                when {
-                    isDigital(rw) || !isShippable(rw) -> ShippingRuleFactory.emptyShippingRule()
-                    sameReward -> backingShippingRule
-                    else -> defaultShipping
-                }
+            when {
+                isDigital(rw) || !isShippable(rw) -> ShippingRuleFactory.emptyShippingRule()
+                sameReward -> backingShippingRule
+                else -> defaultShipping
+            }
 
         /**
          * Updates the pledgeData object if necessary. This observable should
@@ -367,13 +370,13 @@ class BackingAddOnsFragmentViewModel {
          * if any addOn has been selected
          */
         private fun getUpdatedPledgeData(
-                filteredList: Observable<Triple<ProjectData, List<Reward>, ShippingRule>>,
-                pledgeData: Observable<PledgeData>,
-                pledgeReason: Observable<PledgeReason>,
-                reward: Observable<Reward>,
-                shippingRule: Observable<ShippingRule>,
-                currentSelection: Observable<MutableMap<Long, Int>>,
-                continueButtonPressed: Observable<Void>
+            filteredList: Observable<Triple<ProjectData, List<Reward>, ShippingRule>>,
+            pledgeData: Observable<PledgeData>,
+            pledgeReason: Observable<PledgeReason>,
+            reward: Observable<Reward>,
+            shippingRule: Observable<ShippingRule>,
+            currentSelection: Observable<MutableMap<Long, Int>>,
+            continueButtonPressed: Observable<Void>
         ): Observable<Pair<PledgeData, PledgeReason>> {
             return Observable.combineLatest(filteredList, pledgeData, pledgeReason, reward, shippingRule, currentSelection, continueButtonPressed) {
                 listAddOns, pledgeData, pledgeReason, rw, shippingRule, currentSelection, _ ->
@@ -408,19 +411,19 @@ class BackingAddOnsFragmentViewModel {
          * @return pledgeData
          */
         private fun updatePledgeData(finalList: List<Reward>, rw: Reward, pledgeData: PledgeData, shippingRule: ShippingRule) =
-                if (finalList.isNotEmpty()) {
-                    if (isShippable(rw) && !isDigital(rw)) {
-                        pledgeData.toBuilder()
-                            .addOns(finalList as java.util.List<Reward>)
-                            .shippingRule(shippingRule)
-                            .build()
-                    } else pledgeData.toBuilder()
-                        .addOns(finalList as java.util.List<Reward>)
-                        .build()
-                } else {
+            if (finalList.isNotEmpty()) {
+                if (isShippable(rw) && !isDigital(rw)) {
                     pledgeData.toBuilder()
+                        .addOns(finalList as java.util.List<Reward>)
+                        .shippingRule(shippingRule)
                         .build()
-                }
+                } else pledgeData.toBuilder()
+                    .addOns(finalList as java.util.List<Reward>)
+                    .build()
+            } else {
+                pledgeData.toBuilder()
+                    .build()
+            }
 
         /**
          *  Update the items in the list with the current selected amount.
@@ -473,9 +476,9 @@ class BackingAddOnsFragmentViewModel {
 
             val backedSelection: MutableMap<Long, Int> = mutableMapOf()
             backedList
-                    .map {
-                        backedSelection.put(it.id(), it.quantity() ?: 0)
-                    }
+                .map {
+                    backedSelection.put(it.id(), it.quantity() ?: 0)
+                }
 
             val isBackedItemList = currentSelection.map { item ->
                 if (backedSelection.containsKey(item.key)) backedSelection[item.key] == item.value
@@ -493,22 +496,22 @@ class BackingAddOnsFragmentViewModel {
         }
 
         private fun isDifferentLocation(backedRule: ShippingRule, actualRule: ShippingRule) =
-                backedRule.location().id() != actualRule.location().id()
+            backedRule.location().id() != actualRule.location().id()
 
         private fun calculateTotal(list: List<Reward>) =
             this.currentSelection
-                    .take(1)
-                    .subscribe { map ->
-                        var total = 0
-                        list.map { total += map[it.id()] ?: 0 }
-                        this.totalSelectedAddOns.onNext(total)
-                    }
+                .take(1)
+                .subscribe { map ->
+                    var total = 0
+                    list.map { total += map[it.id()] ?: 0 }
+                    this.totalSelectedAddOns.onNext(total)
+                }
 
         private fun joinSelectedWithAvailableAddOns(backingList: List<Reward>, graphList: List<Reward>): List<Reward> {
             return graphList
-                    .map { graphAddOn ->
-                        modifyIfBacked(backingList, graphAddOn)
-                    }
+                .map { graphAddOn ->
+                    modifyIfBacked(backingList, graphAddOn)
+                }
         }
 
         /**
@@ -520,27 +523,26 @@ class BackingAddOnsFragmentViewModel {
         private fun modifyIfBacked(backingList: List<Reward>, graphAddOn: Reward): Reward {
             return backingList.firstOrNull { it.id() == graphAddOn.id() }?.let {
                 return@let it.toBuilder().shippingRules(graphAddOn.shippingRules()).build()
-            }?: graphAddOn
+            } ?: graphAddOn
         }
 
         private fun getBackingFromProjectData(pData: ProjectData?) = pData?.project()?.backing()
-                ?: pData?.backing()
+            ?: pData?.backing()
 
         private fun updateQuantityById(updated: Pair<Int, Long>) =
             this.currentSelection
-                    .take(1)
-                    .subscribe { selection ->
-                        selection[updated.second] = updated.first
-                    }
-
+                .take(1)
+                .subscribe { selection ->
+                    selection[updated.second] = updated.first
+                }
 
         private fun defaultShippingRule(shippingRules: List<ShippingRule>): Observable<ShippingRule> {
             return this.currentConfig.observable()
-                    .map { it.countryCode() }
-                    .map { countryCode ->
-                        shippingRules.firstOrNull { it.location().country() == countryCode }
-                                ?: shippingRules.first()
-                    }
+                .map { it.countryCode() }
+                .map { countryCode ->
+                    shippingRules.firstOrNull { it.location().country() == countryCode }
+                        ?: shippingRules.first()
+                }
         }
 
         // - This will disappear when the query is ready in the backend [CT-649]
@@ -568,10 +570,10 @@ class BackingAddOnsFragmentViewModel {
 
         private fun containsLocation(rule: ShippingRule, reward: Reward): Boolean {
             val idLocations = reward
-                    .shippingRules()
-                    ?.map {
-                        it.location().id()
-                    } ?: emptyList()
+                .shippingRules()
+                ?.map {
+                    it.location().id()
+                } ?: emptyList()
 
             return idLocations.contains(rule.location().id())
         }

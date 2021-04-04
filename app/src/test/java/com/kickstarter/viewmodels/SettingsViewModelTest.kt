@@ -1,7 +1,11 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
-import com.kickstarter.libs.*
+import com.kickstarter.libs.AnalyticEvents
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.libs.MockTrackingClient
+import com.kickstarter.libs.TrackingClientType
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.UserFactory
@@ -20,9 +24,9 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(user: User) {
         val currentUser = MockCurrentUser(user)
         val environment = environment().toBuilder()
-                .currentUser(currentUser)
-                .analytics(AnalyticEvents(listOf(getMockClientWithUser(user))))
-                .build()
+            .currentUser(currentUser)
+            .analytics(AnalyticEvents(listOf(getMockClientWithUser(user))))
+            .build()
 
         setUpEnvironment(environment)
         currentUser.observable().subscribe(this.currentUserTest)
@@ -82,10 +86,11 @@ class SettingsViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun getMockClientWithUser(user: User) = MockTrackingClient(
-            MockCurrentUser(user),
-            MockCurrentConfig(),
-            TrackingClientType.Type.SEGMENT,
-            MockExperimentsClientType()).apply {
+        MockCurrentUser(user),
+        MockCurrentConfig(),
+        TrackingClientType.Type.SEGMENT,
+        MockExperimentsClientType()
+    ).apply {
         this.identifiedId.subscribe(userId)
     }
 }

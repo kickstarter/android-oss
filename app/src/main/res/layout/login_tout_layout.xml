@@ -1,85 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:background="@color/kds_white"
-  android:orientation="vertical"
-  tools:context=".ui.activities.LoginToutActivity">
-
-  <LinearLayout
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <include layout="@layout/login_toolbar" />
+    android:layout_height="match_parent"
+    android:background="@color/kds_white"
+    android:orientation="vertical"
+    tools:context=".ui.activities.LoginToutActivity">
 
     <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center_horizontal"
-      android:orientation="vertical"
-      android:paddingEnd="@dimen/grid_4"
-      android:paddingStart="@dimen/grid_4">
-
-      <include
-        layout="@layout/logo_call_to_action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_6"
-        android:layout_marginTop="@dimen/grid_6" />
-
-      <com.google.android.material.button.MaterialButton
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/grid_2"
-        android:id="@+id/facebook_login_button"
-        style="@style/FacebookButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_1" />
+        android:orientation="vertical">
 
-      <TextView
-        style="@style/Caption1Secondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_3"
-        android:background="@drawable/click_indicator_light_masked"
-        android:gravity="center"
-        android:text="@string/Facebook_login_disclaimer_update" />
+        <include
+            android:id="@+id/login_toolbar"
+            layout="@layout/login_toolbar" />
 
-      <Button
-        android:id="@+id/login_button"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/grid_3"
-        android:text="@string/login_buttons_log_in_email" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/grid_4"
+            android:paddingEnd="@dimen/grid_4">
 
-      <Button
-        android:id="@+id/sign_up_button"
-        style="@style/BorderButton"
-        android:layout_width="match_parent"
-        android:text="@string/signup_button_email" />
+            <include
+                layout="@layout/logo_call_to_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/grid_6"
+                android:layout_marginBottom="@dimen/grid_6" />
 
-      <com.kickstarter.ui.views.HtmlTextView
-        android:id="@+id/disclaimer_text_view"
-        style="@style/Caption1Secondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:layout_marginTop="@dimen/grid_1"
-        android:background="@drawable/click_indicator_light_masked"
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/grid_1"
-        android:paddingEnd="@dimen/grid_1"
-        android:paddingStart="@dimen/grid_1"
-        android:paddingTop="@dimen/grid_1"
-        android:text="@string/login_tout_disclaimer_agree_to_terms_html"
-        android:textColor="@color/kds_support_400" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/facebook_login_button"
+                style="@style/FacebookButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/grid_1"
+                app:iconGravity="textStart"
+                app:iconPadding="@dimen/grid_2" />
+
+            <TextView
+                style="@style/Caption1Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/grid_3"
+                android:background="@drawable/click_indicator_light_masked"
+                android:gravity="center"
+                android:text="@string/Facebook_login_disclaimer_update" />
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/grid_3"
+                android:text="@string/login_buttons_log_in_email" />
+
+            <Button
+                android:id="@+id/sign_up_button"
+                style="@style/BorderButton"
+                android:layout_width="match_parent"
+                android:text="@string/signup_button_email" />
+
+            <com.kickstarter.ui.views.HtmlTextView
+                android:id="@+id/disclaimer_text_view"
+                style="@style/Caption1Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/grid_1"
+                android:layout_marginBottom="@dimen/grid_2"
+                android:background="@drawable/click_indicator_light_masked"
+                android:gravity="center_horizontal"
+                android:paddingStart="@dimen/grid_1"
+                android:paddingTop="@dimen/grid_1"
+                android:paddingEnd="@dimen/grid_1"
+                android:paddingBottom="@dimen/grid_1"
+                android:text="@string/login_tout_disclaimer_agree_to_terms_html"
+                android:textColor="@color/kds_support_400" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-  </LinearLayout>
 
 </ScrollView>

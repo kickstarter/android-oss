@@ -40,5 +40,4 @@ class BottomCropImageView : AppCompatImageView {
 
         return super.setFrame(l, t, r, b)
     }
-
 }

@@ -33,25 +33,25 @@ abstract class PledgeData : Parcelable {
         }
 
         fun with(pledgeFlowContext: PledgeFlowContext, projectData: ProjectData, reward: Reward, addOns: List<Reward>? = null, shippingRule: ShippingRule? = null) =
-                addOns?.let {addOns ->
-                    shippingRule?.let { shippingRule ->
-                        return@let builder()
-                                .pledgeFlowContext(pledgeFlowContext)
-                                .projectData(projectData)
-                                .reward(reward)
-                                .addOns(addOns)
-                                .shippingRule(shippingRule)
-                                .build()
-                    }?: builder()
-                            .pledgeFlowContext(pledgeFlowContext)
-                            .projectData(projectData)
-                            .reward(reward)
-                            .addOns(addOns)
-                            .build()
-                }?: builder()
+            addOns?.let { addOns ->
+                shippingRule?.let { shippingRule ->
+                    return@let builder()
+                        .pledgeFlowContext(pledgeFlowContext)
+                        .projectData(projectData)
+                        .reward(reward)
+                        .addOns(addOns)
+                        .shippingRule(shippingRule)
+                        .build()
+                } ?: builder()
                     .pledgeFlowContext(pledgeFlowContext)
                     .projectData(projectData)
                     .reward(reward)
+                    .addOns(addOns)
                     .build()
+            } ?: builder()
+                .pledgeFlowContext(pledgeFlowContext)
+                .projectData(projectData)
+                .reward(reward)
+                .build()
     }
 }

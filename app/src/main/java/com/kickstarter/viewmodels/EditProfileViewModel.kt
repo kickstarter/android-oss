@@ -66,55 +66,54 @@ interface EditProfileViewModel {
             val currentUser = this.currentUser.observable()
 
             this.client.fetchCurrentUser()
-                    .retry(2)
-                    .compose(Transformers.neverError())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.currentUser.refresh(it) }
+                .retry(2)
+                .compose(Transformers.neverError())
+                .compose(bindToLifecycle())
+                .subscribe { this.currentUser.refresh(it) }
 
             currentUser
-                    .take(1)
-                    .compose(bindToLifecycle())
-                    .subscribe { this.user.onNext(it) }
+                .take(1)
+                .compose(bindToLifecycle())
+                .subscribe { this.user.onNext(it) }
 
             val updateUserNotification = this.userInput
-                    .concatMap<Notification<User>> { this.updateSettings(it) }
+                .concatMap<Notification<User>> { this.updateSettings(it) }
 
             updateUserNotification
-                    .compose(values())
-                    .compose(bindToLifecycle())
-                    .subscribe { this.success(it) }
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe { this.success(it) }
 
             updateUserNotification
-                    .compose(errors())
-                    .compose(bindToLifecycle())
-                    .subscribe(this.unableToSavePreferenceError)
+                .compose(errors())
+                .compose(bindToLifecycle())
+                .subscribe(this.unableToSavePreferenceError)
 
             this.userInput
-                    .compose(bindToLifecycle())
-                    .subscribe(this.user)
+                .compose(bindToLifecycle())
+                .subscribe(this.user)
 
             this.user
-                    .window(2, 1)
-                    .flatMap<List<User>> { it.toList() }
-                    .map<User> { ListUtils.first(it) }
-                    .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.user)
+                .window(2, 1)
+                .flatMap<List<User>> { it.toList() }
+                .map<User> { ListUtils.first(it) }
+                .compose<User>(Transformers.takeWhen<User, Throwable>(this.unableToSavePreferenceError))
+                .compose(bindToLifecycle())
+                .subscribe(this.user)
 
             currentUser
-                    .compose(bindToLifecycle())
-                    .filter(ObjectUtils::isNotNull)
-                    .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
-                    .subscribe(this.hidePrivateProfileRow)
+                .compose(bindToLifecycle())
+                .filter(ObjectUtils::isNotNull)
+                .map { user -> IntegerUtils.isNonZero(user.createdProjectsCount()) }
+                .subscribe(this.hidePrivateProfileRow)
 
             currentUser
-                    .map { u -> u.avatar().medium() }
-                    .subscribe(this.userAvatarUrl)
+                .map { u -> u.avatar().medium() }
+                .subscribe(this.userAvatarUrl)
 
             currentUser
-                    .map { it.name() }
-                    .subscribe(this.userName)
-
+                .map { it.name() }
+                .subscribe(this.userName)
         }
 
         override fun userAvatarUrl(): Observable<String> = this.userAvatarUrl
@@ -126,8 +125,8 @@ interface EditProfileViewModel {
         }
 
         override fun unableToSavePreferenceError(): Observable<String> = this.unableToSavePreferenceError
-                .takeUntil(this.updateSuccess)
-                .map { _ -> null }
+            .takeUntil(this.updateSuccess)
+            .map { _ -> null }
 
         override fun user(): Observable<User> = this.user
 
@@ -140,8 +139,8 @@ interface EditProfileViewModel {
 
         private fun updateSettings(user: User): Observable<Notification<User>>? {
             return this.client.updateUserSettings(user)
-                    .materialize()
-                    .share()
+                .materialize()
+                .share()
         }
     }
 }

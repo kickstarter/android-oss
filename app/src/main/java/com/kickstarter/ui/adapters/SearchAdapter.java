@@ -1,10 +1,18 @@
 package com.kickstarter.ui.adapters;
 
 import android.util.Pair;
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.FeaturedSearchResultViewBinding;
+import com.kickstarter.databinding.ProjectSearchResultViewBinding;
+import com.kickstarter.databinding.SearchPopularTitleViewBinding;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.viewholders.FeaturedSearchResultViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.PopularSearchTitleViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
@@ -12,8 +20,6 @@ import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 import rx.Observable;
 
 public final class SearchAdapter extends KSAdapter {
@@ -86,14 +92,15 @@ public final class SearchAdapter extends KSAdapter {
     }
   }
 
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
+    SearchPopularTitleViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false);
     switch (layout) {
       case R.layout.search_popular_title_view:
-        return new PopularSearchTitleViewHolder(view);
+        return new PopularSearchTitleViewHolder(SearchPopularTitleViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
       case R.layout.featured_search_result_view:
-        return new ProjectSearchResultViewHolder(view, this.delegate);
+        return new FeaturedSearchResultViewHolder(FeaturedSearchResultViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.project_search_result_view:
-        return new ProjectSearchResultViewHolder(view, this.delegate);
+        return new ProjectSearchResultViewHolder(ProjectSearchResultViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       default:
         throw new IllegalStateException("Invalid layout");
     }

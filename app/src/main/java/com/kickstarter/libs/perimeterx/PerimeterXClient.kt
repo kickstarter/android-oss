@@ -11,11 +11,10 @@ import okhttp3.Response
 import rx.Observable
 import rx.subjects.PublishSubject
 import timber.log.Timber
-import java.util.*
-
+import java.util.Date
 
 private const val LOGTAG = "PerimeterXClient"
-open class PerimeterXClient(private val build: Build):PerimeterXClientType {
+open class PerimeterXClient(private val build: Build) : PerimeterXClientType {
 
     private val headers: PublishSubject<HashMap<String, String>> = PublishSubject.create()
     private val isManagerReady: PublishSubject<Boolean> = PublishSubject.create()
@@ -47,14 +46,14 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
 
     private fun initialize() {
         pxManager
-                .setNewHeadersCallback { newHeaders: HashMap<String, String> ->
-                    if (build.isDebug) Timber.d("$LOGTAG NewHeadersCallback :$newHeaders")
-                    this.headers.onNext(newHeaders)
-                }
-                .setManagerReadyCallback { headers: HashMap<String?, String?> ->
-                    if (build.isDebug) Timber.d("$LOGTAG setManagerReadyCallback :$headers")
-                    this.isManagerReady.onNext(true)
-                }
+            .setNewHeadersCallback { newHeaders: HashMap<String, String> ->
+                if (build.isDebug) Timber.d("$LOGTAG NewHeadersCallback :$newHeaders")
+                this.headers.onNext(newHeaders)
+            }
+            .setManagerReadyCallback { headers: HashMap<String?, String?> ->
+                if (build.isDebug) Timber.d("$LOGTAG setManagerReadyCallback :$headers")
+                this.isManagerReady.onNext(true)
+            }
     }
 
     override fun addHeaderTo(builder: Request.Builder?) {
@@ -67,7 +66,7 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
         if (build.isDebug) Timber.d("$LOGTAG headers: $headers added to requestBuilder: ${builder?.toString()}")
     }
 
-    override fun visitorId():String {
+    override fun visitorId(): String {
         val visitorID: String? = pxManager.vid
         return visitorID?.let { it } ?: ""
     }
@@ -82,7 +81,7 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
 
         if (response.code == 403) {
             this.cloneResponse(response).body?.string()?.let {
-                if(this.isChallenged(it)){
+                if (this.isChallenged(it)) {
                     if (build.isDebug) Timber.d("$LOGTAG Response Challenged for Request: ${response.request.url}")
                     this.handleChallengedResponse(it)
                 }
@@ -95,10 +94,10 @@ open class PerimeterXClient(private val build: Build):PerimeterXClientType {
      * Clone the response and access the body via `peekBody` to get a lightweight copy of it
      */
     private fun cloneResponse(response: Response) = response.newBuilder()
-            .code(response.code)
-            .request(response.request)
-            .body(response.peekBody(Long.MAX_VALUE))
-            .build()
+        .code(response.code)
+        .request(response.request)
+        .body(response.peekBody(Long.MAX_VALUE))
+        .build()
 
     override fun isChallenged(body: String): Boolean {
         this.pxResponse = PXManager.checkError(body)

@@ -1,9 +1,16 @@
 package com.kickstarter.ui.adapters;
 
 import android.util.Pair;
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.CommentCardViewBinding;
+import com.kickstarter.databinding.EmptyCommentsLayoutBinding;
+import com.kickstarter.databinding.ProjectContextViewBinding;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -16,8 +23,6 @@ import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 import rx.Observable;
 
 public final class CommentsAdapter extends KSAdapter {
@@ -38,6 +43,7 @@ public final class CommentsAdapter extends KSAdapter {
       return R.layout.empty_comments_layout;
     }
   }
+
 
   public void takeData(final @NonNull CommentsData data) {
     final Project project = data.project();
@@ -61,13 +67,16 @@ public final class CommentsAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  @NonNull
+  @Override
+  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     if (layout == R.layout.project_context_view) {
-      return new ProjectContextViewHolder(view, this.delegate);
+      return new ProjectContextViewHolder(ProjectContextViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     } else if (layout == R.layout.empty_comments_layout) {
-      return new EmptyCommentsViewHolder(view, this.delegate);
+      return new EmptyCommentsViewHolder(EmptyCommentsLayoutBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
     } else {
-      return new CommentViewHolder(view);
+      return new CommentViewHolder(CommentCardViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
+
 }

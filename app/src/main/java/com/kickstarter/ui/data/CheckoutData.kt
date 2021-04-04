@@ -2,7 +2,6 @@ package com.kickstarter.ui.data
 
 import android.os.Parcelable
 import auto.parcel.AutoParcel
-import fragment.Backing
 import type.CreditCardPaymentType
 
 @AutoParcel

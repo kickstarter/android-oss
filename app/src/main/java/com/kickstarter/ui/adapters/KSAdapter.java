@@ -4,6 +4,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.utils.ExceptionUtils;
@@ -13,12 +17,8 @@ import com.trello.rxlifecycle.ActivityEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
-  private List<List<Object>> sections = new ArrayList<>();
+  private final List<List<Object>> sections = new ArrayList<>();
 
   public List<List<Object>> sections() {
     return this.sections;
@@ -52,9 +52,9 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   protected abstract int layout(final @NonNull SectionRow sectionRow);
 
   /**
-   * Returns a new KSViewHolder given a layout and view.
-   */
-  protected abstract @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view);
+  * Returns a new KSViewHolder given a layout and view.
+  */
+  protected abstract @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup);
 
   @Override
   public void onViewDetachedFromWindow(final @NonNull KSViewHolder holder) {
@@ -81,11 +81,8 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
 
   @Override
   public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, final @LayoutRes int layout) {
-    final View view = inflateView(viewGroup, layout);
-    final KSViewHolder viewHolder = viewHolder(layout, view);
-
+    final KSViewHolder viewHolder = viewHolder(layout, viewGroup);
     viewHolder.lifecycleEvent(ActivityEvent.CREATE);
-
     return viewHolder;
   }
 

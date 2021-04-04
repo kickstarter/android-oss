@@ -52,9 +52,9 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), Editorial.GO_REWARDLESS)
 
         val expectedParams = DiscoveryParams.builder()
-                .sort(DiscoveryParams.Sort.MAGIC)
-                .tagId(Editorial.GO_REWARDLESS.tagId)
-                .build()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .tagId(Editorial.GO_REWARDLESS.tagId)
+            .build()
         this.discoveryParams.assertValue(expectedParams)
     }
 
@@ -63,9 +63,9 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment(), Editorial.LIGHTS_ON)
 
         val expectedParams = DiscoveryParams.builder()
-                .sort(DiscoveryParams.Sort.MAGIC)
-                .tagId(557)
-                .build()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .tagId(557)
+            .build()
         this.discoveryParams.assertValue(expectedParams)
     }
 
@@ -89,18 +89,18 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     fun testRetryContainerIsGone() {
         var error = true
         val environment = environment()
-                .toBuilder()
-                .apiClient(object: MockApiClient(){
-                    override fun fetchCategories(): Observable<MutableList<Category>?> {
-                        return when {
-                            error -> Observable.error<MutableList<Category>?>(Throwable("boop"))
-                            else -> {
-                               super.fetchCategories()
-                            }
+            .toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchCategories(): Observable<MutableList<Category>?> {
+                    return when {
+                        error -> Observable.error<MutableList<Category>?>(Throwable("boop"))
+                        else -> {
+                            super.fetchCategories()
                         }
                     }
-                })
-                .build()
+                }
+            })
+            .build()
         setUpEnvironment(environment, Editorial.GO_REWARDLESS)
 
         this.retryContainerIsGone.assertValues(false)
@@ -114,19 +114,27 @@ class EditorialViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testRootCategories() {
         val environment = environment()
-                .toBuilder()
-                .apiClient(object : MockApiClient() {
-                    override fun fetchCategories(): Observable<List<Category>> {
-                        return Observable.just(listOf(CategoryFactory.artCategory(),
-                                CategoryFactory.ceramicsCategory(),
-                                CategoryFactory.gamesCategory()))
-                    }
-                })
-                .build()
+            .toBuilder()
+            .apiClient(object : MockApiClient() {
+                override fun fetchCategories(): Observable<List<Category>> {
+                    return Observable.just(
+                        listOf(
+                            CategoryFactory.artCategory(),
+                            CategoryFactory.ceramicsCategory(),
+                            CategoryFactory.gamesCategory()
+                        )
+                    )
+                }
+            })
+            .build()
         setUpEnvironment(environment, Editorial.GO_REWARDLESS)
 
-        this.rootCategories.assertValue(listOf(CategoryFactory.artCategory(),
-                CategoryFactory.gamesCategory()))
+        this.rootCategories.assertValue(
+            listOf(
+                CategoryFactory.artCategory(),
+                CategoryFactory.gamesCategory()
+            )
+        )
     }
 
     @Test

@@ -49,6 +49,27 @@ public final class BackingFactory {
       .build();
   }
 
+  public static @NonNull Backing backingNull() {
+    return Backing.builder()
+            .amount(0.0f)
+            .backer(null)
+            .backerId(UserFactory.user().id())
+            .backerName(null)
+            .backerUrl(null)
+            .cancelable(true)
+            .id(IdFactory.id())
+            .paymentSource(null)
+            .pledgedAt(DateTime.now())
+            .project(null)
+            .projectId(ProjectFactory.project().id())
+            .reward(null)
+            .rewardId(null)
+            .sequence(1)
+            .shippingAmount(0.0f)
+            .status(Backing.STATUS_PLEDGED)
+            .build();
+  }
+
   public static Backing backing(final @NonNull String status) {
     return backing()
       .toBuilder()

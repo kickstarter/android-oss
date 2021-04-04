@@ -1,8 +1,20 @@
 package com.kickstarter.ui.adapters;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.kickstarter.R;
+import com.kickstarter.databinding.DiscoveryDrawerChildFilterViewBinding;
+import com.kickstarter.databinding.DiscoveryDrawerHeaderBinding;
+import com.kickstarter.databinding.DiscoveryDrawerLoggedInViewBinding;
+import com.kickstarter.databinding.DiscoveryDrawerLoggedOutViewBinding;
+import com.kickstarter.databinding.DiscoveryDrawerParentFilterViewBinding;
+import com.kickstarter.databinding.DiscoveryDrawerTopFilterViewBinding;
+import com.kickstarter.databinding.EmptyViewBinding;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
@@ -18,13 +30,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import rx.Observable;
 
 public class DiscoveryDrawerAdapter extends KSAdapter {
-  private @NonNull Delegate delegate;
+  private @NonNull final Delegate delegate;
   private @NonNull NavigationDrawerData drawerData;
 
   public DiscoveryDrawerAdapter(final @NonNull Delegate delegate) {
@@ -97,23 +106,23 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull ViewGroup viewGroup) {
     switch (layout) {
       case R.layout.discovery_drawer_logged_in_view:
-        return new LoggedInViewHolder(view, this.delegate);
+        return new LoggedInViewHolder(DiscoveryDrawerLoggedInViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.discovery_drawer_logged_out_view:
-        return new LoggedOutViewHolder(view, this.delegate);
+        return new LoggedOutViewHolder(DiscoveryDrawerLoggedOutViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.discovery_drawer_parent_filter_view:
-        return new ParentFilterViewHolder(view, this.delegate);
+        return new ParentFilterViewHolder(DiscoveryDrawerParentFilterViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.discovery_drawer_top_filter_view:
-        return new TopFilterViewHolder(view, this.delegate);
+        return new TopFilterViewHolder(DiscoveryDrawerTopFilterViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.discovery_drawer_child_filter_view:
-        return new ChildFilterViewHolder(view, this.delegate);
+        return new ChildFilterViewHolder(DiscoveryDrawerChildFilterViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false), this.delegate);
       case R.layout.discovery_drawer_header:
-        return new HeaderViewHolder(view);
+        return new HeaderViewHolder(DiscoveryDrawerHeaderBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
       case R.layout.horizontal_line_1dp_view:
       default:
-        return new EmptyViewHolder(view);
+        return new EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false));
     }
   }
 

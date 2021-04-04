@@ -132,21 +132,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
-
-        val expectedProperties = propertiesTest.value
-        assertNull(expectedProperties["discover_category_id"])
-        assertNull(expectedProperties["discover_category_name"])
-        assertEquals(true, expectedProperties["discover_everything"])
-        assertEquals(false, expectedProperties["discover_pwl"])
-        assertEquals(false, expectedProperties["discover_recommended"])
-        assertEquals("discovery", expectedProperties["discover_ref_tag"])
-        assertEquals(null, expectedProperties["discover_search_term"])
-        assertEquals(false, expectedProperties["discover_social"])
-        assertEquals("magic", expectedProperties["discover_sort"])
-        assertNull(expectedProperties["discover_subcategory_id"])
-        assertNull(expectedProperties["discover_subcategory_name"])
-        assertEquals(null, expectedProperties["discover_tag"])
-        assertEquals(false, expectedProperties["discover_watched"])
+        assertDiscoverProperties()
     }
 
     @Test
@@ -168,6 +154,8 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
+        assertDiscoverProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
 
@@ -838,6 +826,23 @@ class SegmentTest : KSRobolectricTestCase() {
         val experiment = experiments[0] as JSONObject
         assertEquals("test_experiment", experiment["optimizely_experiment_slug"])
         assertEquals("unknown", experiment["optimizely_variant_id"])
+    }
+
+    private fun assertDiscoverProperties() {
+        val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["discover_category_id"])
+        assertNull(expectedProperties["discover_category_name"])
+        assertEquals(true, expectedProperties["discover_everything"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("discovery", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("magic", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
     }
 
     private fun assertPledgeProperties() {

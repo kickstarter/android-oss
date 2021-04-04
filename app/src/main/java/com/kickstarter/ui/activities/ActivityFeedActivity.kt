@@ -5,12 +5,21 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
 import com.kickstarter.databinding.ActivityFeedLayoutBinding
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.BaseActivity
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.RecyclerViewPaginator
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.ApplicationUtils
 import com.kickstarter.libs.utils.ObjectUtils
-import com.kickstarter.models.*
+import com.kickstarter.models.Activity
+import com.kickstarter.models.ErroredBacking
+import com.kickstarter.models.Project
+import com.kickstarter.models.SurveyResponse
+import com.kickstarter.models.User
 import com.kickstarter.ui.IntentKey
 import com.kickstarter.ui.adapters.ActivityFeedAdapter
 import com.kickstarter.ui.data.LoginReason
@@ -43,6 +52,11 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
         swipeRefresher = SwipeRefresher(
             this, binding.activityFeedSwipeRefreshLayout, { viewModel.inputs.refresh() }
         ) { viewModel.outputs.isFetchingActivities }
+
+        viewModel.outputs.isFetchingActivities
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.activityFeedSwipeRefreshLayout.isRefreshing = it }
 
         // Only allow refreshing if there's a current user
         currentUser?.observable()

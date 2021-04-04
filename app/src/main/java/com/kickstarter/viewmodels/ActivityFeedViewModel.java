@@ -4,6 +4,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.ErroredBacking;
@@ -108,6 +109,13 @@ public interface ActivityFeedViewModel {
       )
         .map(Activity::project);
 
+      this.goToProject
+              .compose(bindToLifecycle())
+              .subscribe(p ->
+                      this.lake.trackProjectCardClicked(
+                              p,
+                              EventContextValues.ContextPageName.ACTIVITY_FEED.getContextName()));
+
       this.startUpdateActivity = this.projectUpdateClick;
 
       final Observable<Void> refreshOrResume = Observable.merge(this.refresh, this.resume).share();
@@ -181,7 +189,10 @@ public interface ActivityFeedViewModel {
       feedViewed
         .take(1)
         .compose(this.bindToLifecycle())
-        .subscribe(__ -> this.lake.trackActivityFeedViewed());
+        .subscribe(__ -> {
+          this.lake.trackActivityFeedViewed();
+          this.lake.trackActivityFeedPageViewed();
+        });
 
       this.discoverProjectsClick
         .compose(this.bindToLifecycle())

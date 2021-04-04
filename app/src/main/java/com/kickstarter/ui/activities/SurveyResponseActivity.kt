@@ -14,7 +14,7 @@ import com.kickstarter.services.KSUri
 import com.kickstarter.services.RequestHandler
 import com.kickstarter.viewmodels.SurveyResponseViewModel
 import okhttp3.Request
-import java.util.*
+import java.util.Arrays
 
 @RequiresActivityViewModel(SurveyResponseViewModel.ViewModel::class)
 class SurveyResponseActivity : BaseActivity<SurveyResponseViewModel.ViewModel>() {

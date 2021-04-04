@@ -19,7 +19,7 @@ import org.joda.time.DateTime
 import org.junit.Test
 import rx.observers.TestSubscriber
 
-class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
+class RewardsFragmentViewModelTest : KSRobolectricTestCase() {
 
     private lateinit var vm: RewardsFragmentViewModel.ViewModel
     private val backedRewardPosition = TestSubscriber.create<Int>()
@@ -46,7 +46,19 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project))
 
-        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
+        this.vm.isExpanded(true)
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
+    fun init_whenViewModelInstantiated_FragmentCollapsed_shouldNotSendPagedViewedEvent() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.vm.isExpanded(false)
+        this.segmentTrack.assertNoValues()
     }
 
     @Test
@@ -59,20 +71,22 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
         val reward = RewardFactory.reward()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(BackingFactory.backing()
-                        .toBuilder()
-                        .rewardId(reward.id())
-                        .build())
-                .rewards(listOf(RewardFactory.noReward(), reward))
-                .build()
+            .toBuilder()
+            .backing(
+                BackingFactory.backing()
+                    .toBuilder()
+                    .rewardId(reward.id())
+                    .build()
+            )
+            .rewards(listOf(RewardFactory.noReward(), reward))
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
         this.backedRewardPosition.assertValue(1)
 
         val backedSuccessfulProject = backedProject
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject))
         this.backedRewardPosition.assertValue(1)
     }
@@ -96,11 +110,16 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
         val reward = RewardFactory.reward().toBuilder().hasAddons(false).build()
         this.vm.inputs.rewardClicked(reward)
-        this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
-                .reward(reward)
-                .projectData(ProjectDataFactory.project(project))
-                .build(), PledgeReason.PLEDGE))
+        this.showPledgeFragment.assertValue(
+            Pair(
+                PledgeData.builder()
+                    .pledgeFlowContext(PledgeFlowContext.NEW_PLEDGE)
+                    .reward(reward)
+                    .projectData(ProjectDataFactory.project(project))
+                    .build(),
+                PledgeReason.PLEDGE
+            )
+        )
         this.showAddOnsFragment.assertNoValues()
     }
 
@@ -108,25 +127,32 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     fun testShowAlert_whenBackingProject_withAddOns_sameReward() {
         val reward = RewardFactory.rewardWithShipping().toBuilder().hasAddons(true).build()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(BackingFactory.backing()
-                        .toBuilder()
-                        .reward(reward)
-                        .rewardId(reward.id())
-                        .build())
-                .rewards(listOf(RewardFactory.noReward(), reward))
-                .build()
+            .toBuilder()
+            .backing(
+                BackingFactory.backing()
+                    .toBuilder()
+                    .reward(reward)
+                    .rewardId(reward.id())
+                    .build()
+            )
+            .rewards(listOf(RewardFactory.noReward(), reward))
+            .build()
         setUpEnvironment(environment())
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.vm.inputs.rewardClicked(reward)
         this.showPledgeFragment.assertNoValues()
-        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                .reward(reward)
-                .projectData(ProjectDataFactory.project(backedProject))
-                .build(), PledgeReason.UPDATE_REWARD))
+        this.showAddOnsFragment.assertValue(
+            Pair(
+                PledgeData.builder()
+                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                    .reward(reward)
+                    .projectData(ProjectDataFactory.project(backedProject))
+                    .build(),
+                PledgeReason.UPDATE_REWARD
+            )
+        )
         this.showAlert.assertNoValues()
     }
 
@@ -135,14 +161,16 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         val rewarda = RewardFactory.rewardWithShipping().toBuilder().id(4).hasAddons(true).build()
         val rewardb = RewardFactory.rewardHasAddOns().toBuilder().id(2).hasAddons(true).build()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(BackingFactory.backing()
-                        .toBuilder()
-                        .reward(rewardb)
-                        .rewardId(rewardb.id())
-                        .build())
-                .rewards(listOf(RewardFactory.noReward(), rewarda, rewardb))
-                .build()
+            .toBuilder()
+            .backing(
+                BackingFactory.backing()
+                    .toBuilder()
+                    .reward(rewardb)
+                    .rewardId(rewardb.id())
+                    .build()
+            )
+            .rewards(listOf(RewardFactory.noReward(), rewarda, rewardb))
+            .build()
         setUpEnvironment(environment())
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
@@ -150,18 +178,28 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
         this.vm.inputs.rewardClicked(rewarda)
         this.showPledgeFragment.assertNoValues()
         this.showAddOnsFragment.assertNoValues()
-        this.showAlert.assertValue(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                .reward(rewarda)
-                .projectData(ProjectDataFactory.project(backedProject))
-                .build(), PledgeReason.UPDATE_REWARD))
+        this.showAlert.assertValue(
+            Pair(
+                PledgeData.builder()
+                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                    .reward(rewarda)
+                    .projectData(ProjectDataFactory.project(backedProject))
+                    .build(),
+                PledgeReason.UPDATE_REWARD
+            )
+        )
 
         this.vm.inputs.alertButtonPressed()
-        this.showAddOnsFragment.assertValue(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                .reward(rewarda)
-                .projectData(ProjectDataFactory.project(backedProject))
-                .build(), PledgeReason.UPDATE_REWARD))
+        this.showAddOnsFragment.assertValue(
+            Pair(
+                PledgeData.builder()
+                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                    .reward(rewarda)
+                    .projectData(ProjectDataFactory.project(backedProject))
+                    .build(),
+                PledgeReason.UPDATE_REWARD
+            )
+        )
         this.showPledgeFragment.assertNoValues()
     }
 
@@ -174,11 +212,16 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
 
         val reward = RewardFactory.reward()
         this.vm.inputs.rewardClicked(reward)
-        this.showPledgeFragment.assertValue(Pair(PledgeData.builder()
-                .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
-                .reward(reward)
-                .projectData(ProjectDataFactory.project(project))
-                .build(), PledgeReason.UPDATE_REWARD))
+        this.showPledgeFragment.assertValue(
+            Pair(
+                PledgeData.builder()
+                    .pledgeFlowContext(PledgeFlowContext.CHANGE_REWARD)
+                    .reward(reward)
+                    .projectData(ProjectDataFactory.project(project))
+                    .build(),
+                PledgeReason.UPDATE_REWARD
+            )
+        )
     }
 
     @Test
@@ -207,9 +250,9 @@ class RewardsFragmentViewModelTest: KSRobolectricTestCase() {
     @Test
     fun testRewardsCount() {
         val project = ProjectFactory.project()
-                .toBuilder()
-                .rewards(listOf(RewardFactory.noReward(), RewardFactory.reward()))
-                .build()
+            .toBuilder()
+            .rewards(listOf(RewardFactory.noReward(), RewardFactory.reward()))
+            .build()
         setUpEnvironment(environment())
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project))

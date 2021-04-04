@@ -6,9 +6,9 @@ class CreatorDetailsFactory private constructor() {
     companion object {
         fun creatorDetails(): CreatorDetails {
             return CreatorDetails.builder()
-                    .backingsCount(3)
-                    .launchedProjectsCount(2)
-                    .build()
+                .backingsCount(3)
+                .launchedProjectsCount(2)
+                .build()
         }
     }
 }

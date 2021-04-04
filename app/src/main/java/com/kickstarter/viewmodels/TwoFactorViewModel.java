@@ -106,6 +106,7 @@ public interface TwoFactorViewModel {
         .subscribe();
 
       this.lake.trackTwoFactorConfirmationViewed();
+      this.lake.trackTwoFactorAuthPageViewed();
     }
 
     private void success(final @NonNull AccessTokenEnvelope envelope) {

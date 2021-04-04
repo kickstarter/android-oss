@@ -9,7 +9,6 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.ui.viewholders.ExpandableHeaderViewHolder
 import rx.Observable
-import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 
 interface ExpandableHeaderViewHolderViewModel {
@@ -41,27 +40,27 @@ interface ExpandableHeaderViewHolderViewModel {
 
         init {
             val reward = projectAndReward
-                    .map { it.second }
+                .map { it.second }
 
             val project = projectAndReward
-                    .map { it.first }
+                .map { it.first }
 
             reward
-                    .filter { it.isAddOn && ObjectUtils.isNotNull(it.quantity()) && it.quantity()?.let { q -> q > 0 } ?: false }
-                    .map { it.quantity().toString() + " X " + it.title()}
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleForSummary)
+                .filter { it.isAddOn && ObjectUtils.isNotNull(it.quantity()) && it.quantity()?.let { q -> q > 0 } ?: false }
+                .map { it.quantity().toString() + " X " + it.title() }
+                .compose(bindToLifecycle())
+                .subscribe(this.titleForSummary)
 
             reward
-                    .filter { !it.isAddOn }
-                    .map { it.title()}
-                    .compose(bindToLifecycle())
-                    .subscribe(this.titleForSummary)
+                .filter { !it.isAddOn }
+                .map { it.title() }
+                .compose(bindToLifecycle())
+                .subscribe(this.titleForSummary)
 
             projectAndReward
-                    .map { this.ksCurrency.format(it.second.minimum(), it.first)}
-                    .compose(bindToLifecycle())
-                    .subscribe(this.amountForSummary)
+                .map { this.ksCurrency.format(it.second.minimum(), it.first) }
+                .compose(bindToLifecycle())
+                .subscribe(this.amountForSummary)
         }
 
         override fun configureWith(values: Pair<Project, Reward>) = this.projectAndReward.onNext(values)

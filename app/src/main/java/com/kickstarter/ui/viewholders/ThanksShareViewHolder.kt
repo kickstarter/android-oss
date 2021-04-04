@@ -43,7 +43,7 @@ class ThanksShareViewHolder(private val binding: ThanksShareViewBinding) : KSVie
             .subscribe { startShareOnTwitter(it) }
 
         binding.shareButton.setOnClickListener {
-             shareButtonClicked()
+            shareButtonClicked()
         }
         binding.thanksFacebookShareButton.setOnClickListener {
             shareOnFacebookButtonClicked()

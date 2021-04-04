@@ -1,9 +1,12 @@
 package com.kickstarter.services.firebase
 
 import android.content.Context
+import android.os.Bundle
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -32,11 +35,13 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
 
     override fun doWork(): Result {
         (applicationContext as KSApplication).component().inject(this)
-        return handleResponse(this.apiClient
+        return handleResponse(
+            this.apiClient
                 .registerPushToken(this.token)
                 .subscribeOn(Schedulers.io())
                 .toBlocking()
-                .first())
+                .first()
+        )
     }
 
     private fun handleResponse(response: JsonObject): Result {
@@ -64,7 +69,7 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
         if (this.build.isDebug) {
             Timber.d(successMessage)
         }
-        FirebaseCrashlytics.getInstance().log(successMessage)
+        Firebase.analytics.logEvent("Successfully_registered_push_token", Bundle())
     }
 
     private fun logError(errorMessage: String) {

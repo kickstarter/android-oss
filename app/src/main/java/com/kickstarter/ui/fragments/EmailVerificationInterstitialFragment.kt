@@ -31,48 +31,48 @@ class EmailVerificationInterstitialFragment : BaseFragment<EmailVerificationInte
         this.activity?.hideKeyboard()
 
         this.viewModel.outputs.startEmailActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    startActivity(Intent.createChooser(Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL), "Choose Email"))
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                startActivity(Intent.createChooser(Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_EMAIL), "Choose Email"))
+            }
 
         this.viewModel.outputs.isSkipLinkShown()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(email_verification_interstitial_skip, !it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                ViewUtils.setGone(email_verification_interstitial_skip, !it)
+            }
 
         this.viewModel.outputs.dismissInterstitial()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { close() }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { close() }
 
         this.viewModel.outputs.showSnackbarError()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    this.activity?.showErrorSnackBar(view, this.getString(it))
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                this.activity?.showErrorSnackBar(view, this.getString(it))
+            }
 
         this.viewModel.outputs.showSnackbarSuccess()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    this.activity?.showSuccessSnackBar(view, this.getString(it))
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                this.activity?.showSuccessSnackBar(view, this.getString(it))
+            }
 
         this.viewModel.outputs.loadingIndicatorGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe{ ViewUtils.setGone(email_verification_loading_indicator, it)}
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(email_verification_loading_indicator, it) }
 
         email_verification_interstitial_cta_button.setOnClickListener {
             this.viewModel.inputs.openInboxButtonPressed()
         }
 
-        email_verification_interstitial_resend_button.setOnClickListener{
+        email_verification_interstitial_resend_button.setOnClickListener {
             this.viewModel.inputs.resendEmailButtonPressed()
         }
 

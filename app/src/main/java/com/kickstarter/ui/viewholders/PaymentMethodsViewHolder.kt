@@ -22,32 +22,31 @@ class PaymentMethodsViewHolder(private val binding: ItemPaymentMethodBinding, @N
     init {
 
         this.vm.outputs.issuerImage()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.creditCardLogo.setImageResource(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.creditCardLogo.setImageResource(it) }
 
         this.vm.outputs.expirationDate()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setExpirationDateTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setExpirationDateTextView(it) }
 
         this.vm.outputs.id()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.delegate.deleteCardButtonClicked(this, it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.delegate.deleteCardButtonClicked(this, it) }
 
         this.vm.outputs.lastFour()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setLastFourTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setLastFourTextView(it) }
 
         this.vm.outputs.issuer()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { binding.creditCardLogo.contentDescription = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.creditCardLogo.contentDescription = it }
 
         binding.deleteCard.setOnClickListener { this.vm.inputs.deleteIconClicked() }
-
     }
 
     override fun bindData(data: Any?) {
@@ -56,12 +55,13 @@ class PaymentMethodsViewHolder(private val binding: ItemPaymentMethodBinding, @N
     }
 
     private fun setExpirationDateTextView(date: String) {
-        binding.creditCardExpirationDate.text = this.ksString.format(this.creditCardExpirationString,
-                "expiration_date", date)
+        binding.creditCardExpirationDate.text = this.ksString.format(
+            this.creditCardExpirationString,
+            "expiration_date", date
+        )
     }
 
     private fun setLastFourTextView(lastFour: String) {
         binding.creditCardLastFourDigits.text = this.ksString.format(this.cardEndingInString, "last_four", lastFour)
     }
-
 }

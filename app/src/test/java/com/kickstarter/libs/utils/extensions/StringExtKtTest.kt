@@ -42,14 +42,14 @@ class StringExtKtTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun isValidPassword_whenStringIsEmpty_shouldReturnFalse(){
+    fun isValidPassword_whenStringIsEmpty_shouldReturnFalse() {
         assertFalse(EMPTY_STRING.isValidPassword())
         assertFalse(EMPTY_SPACE.isValidPassword())
         assertFalse(EMPTY_MULTI_SPACE.isValidPassword())
     }
 
     @Test
-    fun isValidPassword_whenStringIsLessThanRequiredLength_shouldReturnFalse(){
+    fun isValidPassword_whenStringIsLessThanRequiredLength_shouldReturnFalse() {
         assertFalse(PASSWORD_LENGTH_FIVE.isValidPassword())
     }
 
@@ -61,29 +61,29 @@ class StringExtKtTest : KSRobolectricTestCase() {
 
     @Test
     fun sentenceCase_whenGivenLowerCaseString_shouldReformatToSentenceCase() {
-        assertEquals("K", "k".sentenceCase());
-        assertEquals("Kickstarter", "kickstarter".sentenceCase());
+        assertEquals("K", "k".sentenceCase())
+        assertEquals("Kickstarter", "kickstarter".sentenceCase())
     }
 
     @Test
     fun sentenceCase_whenGivenUpperCaseString_shouldReformatToSentenceCase() {
-        assertEquals("Kickstarter", "KICKSTARTER".sentenceCase());
+        assertEquals("Kickstarter", "KICKSTARTER".sentenceCase())
     }
 
     @Test
     fun sentenceCase_whenGivenMixedCaseString_shouldReformatToSentenceCase() {
-        assertEquals("Kickstarter", "KiCkSTarTer".sentenceCase());
+        assertEquals("Kickstarter", "KiCkSTarTer".sentenceCase())
     }
 
     @Test
     fun sentenceCase_whenGivenTitleCaseString_shouldReformatToSentenceCase() {
-        assertEquals("Kickstarter kickstarter", "Kickstarter Kickstarter".sentenceCase());
-        assertEquals("Kickstarter is great", "Kickstarter Is Great".sentenceCase());
+        assertEquals("Kickstarter kickstarter", "Kickstarter Kickstarter".sentenceCase())
+        assertEquals("Kickstarter is great", "Kickstarter Is Great".sentenceCase())
     }
 
     @Test
     fun sentenceCase_whenGivenEmptyString_shouldEmptyString() {
-        assertEquals(EMPTY_STRING, EMPTY_STRING.sentenceCase());
+        assertEquals(EMPTY_STRING, EMPTY_STRING.sentenceCase())
     }
 
     @Test
@@ -129,7 +129,7 @@ class StringExtKtTest : KSRobolectricTestCase() {
         private const val EMPTY_SPACE = " "
         private const val EMPTY_MULTI_SPACE = "    "
         private const val KICKSTARTER = "kickstarter"
-        private const val KICKSTARTER_PARENTHESES= "(kickstarter)"
+        private const val KICKSTARTER_PARENTHESES = "(kickstarter)"
         private const val PASSWORD_LENGTH_FIVE = "kicks"
         private const val PASSWORD_LENGTH_SIX = "kickst"
         private const val PASSWORD_LENGTH_TEN = "kickstarts"

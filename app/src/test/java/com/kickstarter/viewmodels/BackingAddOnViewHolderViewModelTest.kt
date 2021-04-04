@@ -11,7 +11,6 @@ import com.kickstarter.mock.factories.ShippingRuleFactory
 import com.kickstarter.models.Reward
 import com.kickstarter.models.ShippingRule
 import com.kickstarter.ui.data.ProjectData
-import com.kickstarter.viewmodels.BackingAddOnViewHolderViewModel
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -27,7 +26,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     private val disableIncreaseButton = TestSubscriber.create<Boolean>()
     private val addButtonGone = TestSubscriber.create<Boolean>()
 
-    private fun setupEnvironment(@NonNull environment: Environment ) {
+    private fun setupEnvironment(@NonNull environment: Environment) {
         this.vm = BackingAddOnViewHolderViewModel.ViewModel(environment)
         this.vm.outputs.backerLimitPillIsGone().subscribe(this.backerLimitIsGone)
         this.vm.outputs.remainingQuantityPillIsGone().subscribe(this.remainingQuantityIsGone)
@@ -40,7 +39,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testAddOnBackerLimitPillGone(){
+    fun testAddOnBackerLimitPillGone() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).limit(null).build()
@@ -51,7 +50,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testAddOnRemainingQuantityPillIsGone(){
+    fun testAddOnRemainingQuantityPillIsGone() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).remaining(null).build()
@@ -62,7 +61,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testCountdownPillIsGone(){
+    fun testCountdownPillIsGone() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).endsAt(null).build()
@@ -73,7 +72,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testShippingAmountIsGone(){
+    fun testShippingAmountIsGone() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).shippingRules(emptyList<ShippingRule>()).build()
@@ -85,7 +84,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun testRewardItemsAreGone(){
+    fun testRewardItemsAreGone() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
@@ -124,7 +123,7 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     @Test
-    fun increaseStepper(){
+    fun increaseStepper() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder().isAddOn(true).rewardsItems(emptyList()).build()
@@ -145,10 +144,10 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder()
-                .isAddOn(true)
-                .isAvailable(true)
-                .remaining(3)
-                .rewardsItems(emptyList()).build()
+            .isAddOn(true)
+            .isAvailable(true)
+            .remaining(3)
+            .rewardsItems(emptyList()).build()
 
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
@@ -167,11 +166,11 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder()
-                .isAddOn(true)
-                .isAvailable(false)
-                .remaining(3)
-                .quantity(2)
-                .rewardsItems(emptyList()).build()
+            .isAddOn(true)
+            .isAvailable(false)
+            .remaining(3)
+            .quantity(2)
+            .rewardsItems(emptyList()).build()
 
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
@@ -186,10 +185,10 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         setupEnvironment(environment())
 
         val addOn = RewardFactory.reward().toBuilder()
-                .isAvailable(true)
-                .isAddOn(true)
-                .limit(10)
-                .rewardsItems(emptyList()).build()
+            .isAvailable(true)
+            .isAddOn(true)
+            .limit(10)
+            .rewardsItems(emptyList()).build()
 
         val shippingRule = ShippingRuleFactory.usShippingRule()
         this.vm.inputs.configureWith(Triple<ProjectData, Reward, ShippingRule>(ProjectDataFactory.project(ProjectFactory.project()), addOn, shippingRule))
@@ -207,18 +206,19 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.addButtonGone.assertValues(false, true, true, true, true, true, true, true, true, true, true)
         this.quantityPerId.assertValues(
-                Pair(0, addOn.id()),
-                Pair(1, addOn.id()),
-                Pair(2, addOn.id()),
-                Pair(3, addOn.id()),
-                Pair(4, addOn.id()),
-                Pair(5, addOn.id()),
-                Pair(6, addOn.id()),
-                Pair(7, addOn.id()),
-                Pair(8, addOn.id()),
-                Pair(9, addOn.id()),
-                Pair(10, addOn.id()))
-        this.disableIncreaseButton.assertValues(false, false, false, false, false, false, false,false, false, false, true)
+            Pair(0, addOn.id()),
+            Pair(1, addOn.id()),
+            Pair(2, addOn.id()),
+            Pair(3, addOn.id()),
+            Pair(4, addOn.id()),
+            Pair(5, addOn.id()),
+            Pair(6, addOn.id()),
+            Pair(7, addOn.id()),
+            Pair(8, addOn.id()),
+            Pair(9, addOn.id()),
+            Pair(10, addOn.id())
+        )
+        this.disableIncreaseButton.assertValues(false, false, false, false, false, false, false, false, false, false, true)
     }
 
     @Test
@@ -257,12 +257,13 @@ class BackingAddOnViewHolderViewModelTest : KSRobolectricTestCase() {
 
         this.addButtonGone.assertValues(false, true, true, true, true, true, false)
         this.quantityPerId.assertValues(
-                Pair(0, addOn.id()),
-                Pair(1, addOn.id()),
-                Pair(2, addOn.id()),
-                Pair(3, addOn.id()),
-                Pair(2, addOn.id()),
-                Pair(1, addOn.id()),
-                Pair(0, addOn.id()))
+            Pair(0, addOn.id()),
+            Pair(1, addOn.id()),
+            Pair(2, addOn.id()),
+            Pair(3, addOn.id()),
+            Pair(2, addOn.id()),
+            Pair(1, addOn.id()),
+            Pair(0, addOn.id())
+        )
     }
 }

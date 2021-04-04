@@ -42,6 +42,10 @@ secrets:
 	mkdir -p app/src/main/assets/www/
 	cp vendor/native-secrets/android/WebViewJavascript.html app/src/main/assets/www/WebViewJavascript.html || true
 
+	# Copy Signing files
+	cp vendor/native-secrets/android/signingFiles/signing.gradle app/signing.gradle || cp app/signing.gradle.example app/signing.gradle
+	cp vendor/native-secrets/android/signingFiles/kickstarter.keystore app/kickstarter.keystore || cp app/debug.keystore app/kickstarter.keystore
+
 .PHONY: bootstrap bootstrap-circle dependencies secrets
 
 sync_oss_to_private:
@@ -69,5 +73,17 @@ internal:
 	@git branch -f internal
 	@git push -f private internal
 	@git branch -d internal
+
+	@echo "Deploy has been kicked off to CircleCI!"
+
+release:
+	@echo "Adding remotes..."
+	@git remote add private https://github.com/kickstarter/android-private
+
+	@echo "Deploying private/internal"
+
+	@git branch -f external
+	@git push -f private external
+	@git branch -d external
 
 	@echo "Deploy has been kicked off to CircleCI!"

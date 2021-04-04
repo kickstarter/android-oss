@@ -24,7 +24,7 @@ object RewardUtils {
     /**
      * Returns `true` if the reward has expired.
      */
-    fun isExpired(reward: Reward) = isTimeLimitedEnd(reward) && reward.endsAt()?.let {it.isBeforeNow} ?: false
+    fun isExpired(reward: Reward) = isTimeLimitedEnd(reward) && reward.endsAt()?.let { it.isBeforeNow } ?: false
 
     /**
      * Returns `true` if the reward has started or not limited by starting time.
@@ -41,13 +41,13 @@ object RewardUtils {
 
     /**
      * Returns `true` if the reward is in a valid time range
-     * @return  true if the reward is just limited one one end and that time validation is true
-     * @return  false if the reward is just limited one one end and that time validation is false
-     * @return  true if the reward is limited at both ends and validation is correct
-     * @return  false if the reward is limited at both ends and validation is false
+     * @return true if the reward is just limited one one end and that time validation is true
+     * @return false if the reward is just limited one one end and that time validation is false
+     * @return true if the reward is limited at both ends and validation is correct
+     * @return false if the reward is limited at both ends and validation is false
      */
     fun isValidTimeRange(reward: Reward): Boolean {
-        return hasStarted(reward) && !isExpired(reward);
+        return hasStarted(reward) && !isExpired(reward)
     }
 
     /**
@@ -107,8 +107,10 @@ object RewardUtils {
      */
     fun isDigital(reward: Reward): Boolean {
         val isDigitalV1 = reward.shippingType() != null && reward.shippingType().equals(Reward.SHIPPING_TYPE_NO_SHIPPING, ignoreCase = true)
-        return (reward.shippingPreferenceType() == Reward.ShippingPreference.NONE || reward.shippingPreferenceType() == Reward.ShippingPreference.NOSHIPPING ||
-                isDigitalV1) && !isShippable(reward)
+        return (
+            reward.shippingPreferenceType() == Reward.ShippingPreference.NONE || reward.shippingPreferenceType() == Reward.ShippingPreference.NOSHIPPING ||
+                isDigitalV1
+            ) && !isShippable(reward)
     }
 
     /**
@@ -116,17 +118,17 @@ object RewardUtils {
      */
     fun isTimeLimitedEnd(reward: Reward): Boolean {
 //         TODO: 2019-06-14 remove epoch check after Garrow fixes `current` bug in backend
-        return reward.endsAt() != null && reward.endsAt()?.let {!DateTimeUtils.isEpoch(it)} ?: false
+        return reward.endsAt() != null && reward.endsAt()?.let { !DateTimeUtils.isEpoch(it) } ?: false
     }
 
     /**
      * Returns unit of time remaining in a readable string, e.g. `days to go`, `hours to go`.
      */
     fun deadlineCountdownDetail(reward: Reward, context: Context, ksString: KSString) =
-            ksString.format(
-                    context.getString(R.string.discovery_baseball_card_time_left_to_go),
-                    "time_left", deadlineCountdownUnit(reward, context)
-            )
+        ksString.format(
+            context.getString(R.string.discovery_baseball_card_time_left_to_go),
+            "time_left", deadlineCountdownUnit(reward, context)
+        )
 
     /**
      * Returns the most appropriate unit for the time remaining until the reward
@@ -164,7 +166,7 @@ object RewardUtils {
             Reward.SHIPPING_TYPE_MULTIPLE_LOCATIONS -> Pair.create(R.string.Limited_shipping, null)
             Reward.SHIPPING_TYPE_SINGLE_LOCATION -> {
                 val location = reward.shippingSingleLocation()
-                return location?.localizedName()?.let { Pair.create(R.string.location_name_only, it)} ?: Pair.create(R.string.Limited_shipping, "")
+                return location?.localizedName()?.let { Pair.create(R.string.location_name_only, it) } ?: Pair.create(R.string.Limited_shipping, "")
             }
             else -> null
         }
@@ -174,7 +176,7 @@ object RewardUtils {
      * Returns time until reward reaches deadline in seconds, or 0 if the
      * reward has already finished.
      */
-    //TODO
+    // TODO
     fun timeInSecondsUntilDeadline(reward: Reward) = max(0L, Duration(DateTime(), reward.endsAt()).standardSeconds)
 
     /**
@@ -206,15 +208,15 @@ object RewardUtils {
      */
     fun rewardAmountByVariant(variant: OptimizelyExperiment.Variant?, reward: Reward, minPledge: Int): Double {
         val value =
-                if (isNoReward(reward)) {
-                    when (variant) {
-                        OptimizelyExperiment.Variant.CONTROL -> 1.0
-                        OptimizelyExperiment.Variant.VARIANT_2 -> 10.0
-                        OptimizelyExperiment.Variant.VARIANT_3 -> 20.0
-                        OptimizelyExperiment.Variant.VARIANT_4 -> 50.0
-                        else -> reward.minimum()
-                    }
-                } else reward.minimum()
+            if (isNoReward(reward)) {
+                when (variant) {
+                    OptimizelyExperiment.Variant.CONTROL -> 1.0
+                    OptimizelyExperiment.Variant.VARIANT_2 -> 10.0
+                    OptimizelyExperiment.Variant.VARIANT_3 -> 20.0
+                    OptimizelyExperiment.Variant.VARIANT_4 -> 50.0
+                    else -> reward.minimum()
+                }
+            } else reward.minimum()
         return if (value < minPledge) minPledge.toDouble() else value
     }
 }

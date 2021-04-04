@@ -8,7 +8,7 @@ import com.kickstarter.libs.qualifiers.AutoGson
 @AutoGson
 @AutoParcel
 abstract class ShippingRule : Parcelable {
-    @Nullable abstract fun  id(): Long?
+    @Nullable abstract fun id(): Long?
     abstract fun cost(): Double
     @Nullable abstract fun location(): Location
 
@@ -32,5 +32,4 @@ abstract class ShippingRule : Parcelable {
             return AutoParcel_ShippingRule.Builder()
         }
     }
-
 }

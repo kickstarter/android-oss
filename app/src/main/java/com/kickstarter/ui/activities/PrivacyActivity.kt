@@ -31,33 +31,33 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
         setContentView(R.layout.activity_privacy)
 
         this.viewModel.outputs.hideConfirmFollowingOptOutPrompt()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> SwitchCompatUtils.setCheckedWithoutAnimation(following_switch, true) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { _ -> SwitchCompatUtils.setCheckedWithoutAnimation(following_switch, true) }
 
         this.viewModel.outputs.showConfirmFollowingOptOutPrompt()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> lazyFollowingOptOutConfirmationDialog().show() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { _ -> lazyFollowingOptOutConfirmationDialog().show() }
 
         this.viewModel.errors.unableToSavePreferenceError()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { _ -> ViewUtils.showToast(this, getString(this.unableToSaveString)) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { _ -> ViewUtils.showToast(this, getString(this.unableToSaveString)) }
 
         this.viewModel.outputs.user()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { this.displayPreferences(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { this.displayPreferences(it) }
 
         this.viewModel.outputs.hidePrivateProfileRow()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    ViewUtils.setGone(private_profile_row, it)
-                    ViewUtils.setGone(private_profile_text_view, it)
-                    ViewUtils.setGone(public_profile_text_view, it)
-                }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                ViewUtils.setGone(private_profile_row, it)
+                ViewUtils.setGone(private_profile_text_view, it)
+                ViewUtils.setGone(public_profile_text_view, it)
+            }
 
         following_switch.setOnClickListener { this.viewModel.inputs.optIntoFollowing(following_switch.isChecked) }
         private_profile_switch.setOnClickListener { this.viewModel.inputs.showPublicProfile(private_profile_switch.isChecked) }
@@ -75,12 +75,12 @@ class PrivacyActivity : BaseActivity<PrivacyViewModel.ViewModel>() {
     private fun lazyFollowingOptOutConfirmationDialog(): AlertDialog {
         if (this.followingConfirmationDialog == null) {
             this.followingConfirmationDialog = AlertDialog.Builder(this)
-                    .setCancelable(false)
-                    .setTitle(getString(R.string.Are_you_sure))
-                    .setMessage(getString(R.string.If_you_turn_following_off))
-                    .setNegativeButton(this.cancelString) { _, _ -> this.viewModel.inputs.optOutOfFollowing(false) }
-                    .setPositiveButton(this.yesTurnOffString) { _, _ -> this.viewModel.inputs.optOutOfFollowing(true) }
-                    .create()
+                .setCancelable(false)
+                .setTitle(getString(R.string.Are_you_sure))
+                .setMessage(getString(R.string.If_you_turn_following_off))
+                .setNegativeButton(this.cancelString) { _, _ -> this.viewModel.inputs.optOutOfFollowing(false) }
+                .setPositiveButton(this.yesTurnOffString) { _, _ -> this.viewModel.inputs.optOutOfFollowing(true) }
+                .create()
         }
         return this.followingConfirmationDialog!!
     }

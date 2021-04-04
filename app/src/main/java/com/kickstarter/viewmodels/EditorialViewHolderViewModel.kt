@@ -51,30 +51,30 @@ interface EditorialViewHolderViewModel {
 
         init {
             this.editorialInput
-                    .map { it.backgroundColor }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backgroundColor)
+                .map { it.backgroundColor }
+                .compose(bindToLifecycle())
+                .subscribe(this.backgroundColor)
 
             this.editorialInput
-                    .map { it.ctaTitle }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.ctaTitle)
+                .map { it.ctaTitle }
+                .compose(bindToLifecycle())
+                .subscribe(this.ctaTitle)
 
             this.editorialInput
-                    .map { it.ctaDescription }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.ctaDescription)
+                .map { it.ctaDescription }
+                .compose(bindToLifecycle())
+                .subscribe(this.ctaDescription)
 
             this.editorialInput
-                    .map { it.graphic }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.graphic)
+                .map { it.graphic }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.graphic)
 
             this.editorialInput
-                    .compose<Editorial>(takeWhen(this.editorialClicked))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.editorial)
+                .compose<Editorial>(takeWhen(this.editorialClicked))
+                .compose(bindToLifecycle())
+                .subscribe(this.editorial)
         }
 
         override fun configureWith(editorial: Editorial) = this.editorialInput.onNext(editorial)

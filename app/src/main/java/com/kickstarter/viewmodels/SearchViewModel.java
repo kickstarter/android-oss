@@ -6,6 +6,7 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.utils.EventContextValues;
 import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -115,6 +116,13 @@ public interface SearchViewModel {
         .map(DiscoveryParams::term);
 
       final Observable<List<Project>> projects = Observable.merge(this.popularProjects, this.searchProjects);
+
+      this.projectClicked
+              .compose(bindToLifecycle())
+              .subscribe(p ->
+                      this.lake.trackProjectCardClicked(
+                              p,
+                              EventContextValues.ContextPageName.SEARCH.getContextName()));
 
       this.startProjectActivity = Observable.combineLatest(this.search, projects, Pair::create)
         .compose(takePairWhen(this.projectClicked))

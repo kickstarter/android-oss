@@ -9,24 +9,26 @@ import com.kickstarter.libs.preferences.BooleanPreferenceType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.extensions.SEGMENT_ENABLED
 import com.kickstarter.ui.adapters.FeatureFlagsAdapter
 import com.kickstarter.ui.itemdecorations.TableItemDecoration
+import com.kickstarter.ui.viewholders.FeatureFlagViewHolder
 import com.kickstarter.viewmodels.FeatureFlagsViewModel
 import kotlinx.android.synthetic.internal.activity_feature_flags.*
 import kotlinx.android.synthetic.internal.item_feature_flag_override.view.*
 
 @RequiresActivityViewModel(FeatureFlagsViewModel.ViewModel::class)
-class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {
+class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>(), FeatureFlagViewHolder.Delegate {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feature_flags)
 
-        val configFlagsAdapter = FeatureFlagsAdapter()
+        val configFlagsAdapter = FeatureFlagsAdapter(this)
         config_flags.adapter = configFlagsAdapter
         config_flags.addItemDecoration(TableItemDecoration())
 
-        val optimizelyFlagsAdapter = FeatureFlagsAdapter()
+        val optimizelyFlagsAdapter = FeatureFlagsAdapter(this)
         optimizely_flags.adapter = optimizelyFlagsAdapter
         optimizely_flags.addItemDecoration(TableItemDecoration())
 
@@ -50,6 +52,12 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {
         overrideContainer.setOnClickListener {
             booleanPreferenceType.set(BooleanUtils.negate(booleanPreferenceType.get()))
             switch.isChecked = booleanPreferenceType.get()
+        }
+    }
+    
+    override fun featureOptionToggle(featureName: String, isEnabled: Boolean) {
+        when (featureName) {
+            SEGMENT_ENABLED -> this.viewModel.inputs.updateSegmentFlag(isEnabled)
         }
     }
 }

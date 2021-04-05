@@ -26,6 +26,10 @@ allprojects {
         maven {
             url 'http://dl.bintray.com/optimizely/optimizely'
         }
+
+        maven {
+            url "https://appboy.github.io/appboy-android-sdk/sdk"
+        }
     }
 }
 

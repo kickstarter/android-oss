@@ -240,6 +240,7 @@ dependencies {
 
     // Analytics
     implementation 'com.segment.analytics.android:analytics:4.9.0'
+    implementation 'com.appboy:android-sdk-ui:13.1.+'
 
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.13.1'

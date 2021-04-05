@@ -6,6 +6,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.appboy.Appboy
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
@@ -39,6 +40,8 @@ class DeviceRegistrar(
                     // Get new FCM registration token
                     val token = task.result
                     registerToken(this.context, token)
+                    // Braze register push notification
+                    Appboy.getInstance(this.context).registerAppboyPushMessages(token);
                 }
             )
         }

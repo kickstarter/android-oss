@@ -11,6 +11,9 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.apollographql.apollo.ApolloClient;
+import com.appboy.Appboy;
+import com.appboy.configuration.AppboyConfig;
+import com.appboy.support.AppboyLogger;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -194,6 +197,19 @@ public class ApplicationModule {
               .build();
 
       Analytics.setSingletonInstance(segmentClient);
+
+      // Braze Push notification integration
+      AppboyConfig.Builder appboyConfig = new AppboyConfig.Builder()
+              .setDefaultNotificationChannelName("Braze Push")
+              .setDefaultNotificationChannelDescription("Braze related push")
+              .setPushDeepLinkBackStackActivityEnabled(true)
+              //.setPushDeepLinkBackStackActivityClass(MainActivity.class) --> Needs clarification
+              .setInAppMessageTestPushEagerDisplayEnabled(true)
+              .setHandlePushDeepLinksAutomatically(true);
+      Appboy.configure(context, appboyConfig.build());
+
+      // registerActivityLifecycleCallbacks(new AppboyLifecycleCallbackListener()); --> We should not need this
+      AppboyLogger.setLogLevel(Log.VERBOSE);
     }
 
     return segmentClient;

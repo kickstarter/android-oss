@@ -1361,14 +1361,6 @@ interface PledgeFragmentViewModel {
                     this.lake.trackUpdatePledgePageViewed(it.first, it.second)
                 }
 
-            checkoutAndPledgeData
-                .take(1)
-                .filter { it.second.pledgeFlowContext() == PledgeFlowContext.MANAGE_REWARD }
-                .compose(bindToLifecycle())
-                .subscribe {
-                    this.lake.trackUpdatePledgePageViewed(it.first, it.second)
-                }
-
             fullProjectDataAndPledgeData
                 .take(1)
                 .filter { it.second.pledgeFlowContext() == PledgeFlowContext.NEW_PLEDGE }

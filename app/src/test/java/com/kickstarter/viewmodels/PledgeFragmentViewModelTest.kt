@@ -561,7 +561,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -589,7 +589,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingSummaryIsGone.assertNoValues()
         this.totalDividerIsGone.assertValue(false)
 
-        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -620,7 +620,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.shippingRulesSectionIsGone.assertValues(true, true)
         this.totalDividerIsGone.assertValue(true)
 
-        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -648,7 +648,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
         this.totalDividerIsGone.assertValue(true)
         this.pledgeButtonIsEnabled.assertValue(true)
 
-        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
         this.experimentsTest.assertNoValues()
     }
 
@@ -1327,7 +1327,7 @@ class PledgeFragmentViewModelTest : KSRobolectricTestCase() {
 
         this.vm.inputs.newCardButtonClicked()
         this.showNewCardFragment.assertValue(backedProject)
-        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.PAGE_VIEWED.eventName)
+        this.lakeTest.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test

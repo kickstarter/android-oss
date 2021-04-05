@@ -1,10 +1,10 @@
 package com.kickstarter.libs.utils.extensions
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.ConfigFeatureName.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.mock.factories.ConfigFactory
 import org.json.JSONArray
 import org.junit.Test
-import com.kickstarter.libs.utils.ConfigFeatureName.EMAIL_VERIFICATION_FLOW
 import java.util.Collections
 
 class ConfigExtensionTest : KSRobolectricTestCase() {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Logout;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import static com.kickstarter.libs.utils.extensions.ConfigExtension.SEGMENT_ENABLED;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   protected @Inject ApiClientType client;
@@ -28,6 +30,8 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   private final KSApplication application;
   private boolean isInBackground = true;
+
+  private Config currentConfig;
 
   public ApplicationLifecycleUtil(final @NonNull KSApplication application) {
     this.application = application;
@@ -49,11 +53,23 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity.getApplication());
 
+      //to get the current config for segment feature when app resume from background
+      this.config.observable().subscribe (c ->{
+              this.currentConfig = c;
+      });
+
       // Refresh the config file
       this.client.config()
         .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
         .compose(Transformers.neverError())
-        .subscribe(c -> this.config.config(c));
+        .subscribe(c -> {
+          if(c.features().containsKey(SEGMENT_ENABLED)){
+             boolean isChecked= currentConfig.features().get(SEGMENT_ENABLED);
+            c.features().put(SEGMENT_ENABLED,isChecked);
+          }
+
+          config.config(c);
+      });
 
       // Refresh the user
       final String accessToken = this.currentUser.getAccessToken();

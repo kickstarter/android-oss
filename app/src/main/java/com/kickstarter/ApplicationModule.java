@@ -201,11 +201,10 @@ public class ApplicationModule {
       // Braze Push notification integration
       AppboyConfig.Builder appboyConfig = new AppboyConfig.Builder()
               .setDefaultNotificationChannelName("Braze Push")
-              .setDefaultNotificationChannelDescription("Braze related push")
-              .setPushDeepLinkBackStackActivityEnabled(true)
+              .setDefaultNotificationChannelDescription("Braze related push");
+              //.setPushDeepLinkBackStackActivityEnabled(true)
               //.setPushDeepLinkBackStackActivityClass(MainActivity.class) --> Needs clarification
-              .setInAppMessageTestPushEagerDisplayEnabled(true)
-              .setHandlePushDeepLinksAutomatically(true);
+              //.setHandlePushDeepLinksAutomatically(true);
       Appboy.configure(context, appboyConfig.build());
 
       // registerActivityLifecycleCallbacks(new AppboyLifecycleCallbackListener()); --> We should not need this

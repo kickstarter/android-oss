@@ -1,7 +1,12 @@
 package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.Config
+import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.libs.utils.ConfigFeatureName.SEGMENT_ENABLED
 import com.kickstarter.model.FeatureFlagsModel
 import com.kickstarter.ui.activities.FeatureFlagsActivity
@@ -49,7 +54,7 @@ interface FeatureFlagsViewModel {
                 .map { it?.entries?.toList() ?: listOf<Map.Entry<String, Boolean>>() }
                 .map { it.filter { entry -> entry.key.startsWith("android_") } }
                 .map { it.sortedBy { entry -> entry.key } }
-                .map { it.map { entry -> FeatureFlagsModel(entry.key, entry.value, entry.key.equals(SEGMENT_ENABLED)) }.toList() }
+                .map { it.map { entry -> FeatureFlagsModel(entry.key, entry.value, entry.key.equals(SEGMENT_ENABLED.configFeatureName)) }.toList() }
                 .compose(bindToLifecycle())
                 .subscribe(this.configFeatures)
 

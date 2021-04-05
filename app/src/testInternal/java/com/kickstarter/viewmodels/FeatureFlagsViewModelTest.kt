@@ -1,9 +1,11 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.utils.extensions.SEGMENT_ENABLED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.ConfigFactory
+import com.kickstarter.model.FeatureFlagsModel
 import com.kickstarter.models.User
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -11,11 +13,12 @@ import rx.observers.TestSubscriber
 class FeatureFlagsViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: FeatureFlagsViewModel.ViewModel
 
-    private val configFeatures = TestSubscriber<List<Pair<String, Boolean>>>()
-    private val optimizelyFeatures = TestSubscriber<List<Pair<String, Boolean>>>()
+    private val configFeatures = TestSubscriber<List<FeatureFlagsModel>>()
+    private val optimizelyFeatures = TestSubscriber<List<FeatureFlagsModel>>()
+    val mockConfig = MockCurrentConfig()
 
     private fun setUpEnvironment(features: Map<String, Boolean>?, optimizelyFeatures: List<String>) {
-        val mockConfig = MockCurrentConfig()
+
         mockConfig.config(
             ConfigFactory.config().toBuilder()
                 .features(features)
@@ -55,8 +58,8 @@ class FeatureFlagsViewModelTest : KSRobolectricTestCase() {
 
         this.configFeatures.assertValue(
             listOf(
-                Pair("android_feature_one", true),
-                Pair("android_feature_two", false)
+                FeatureFlagsModel("android_feature_one", true),
+                FeatureFlagsModel("android_feature_two", false)
             )
         )
     }
@@ -65,6 +68,32 @@ class FeatureFlagsViewModelTest : KSRobolectricTestCase() {
     fun testOptimizelyFeatures() {
         setUpEnvironment(null, listOf("android_optimizely_feature"))
 
-        this.optimizelyFeatures.assertValue(listOf(Pair("android_optimizely_feature", true)))
+        this.optimizelyFeatures.assertValue(listOf(FeatureFlagsModel("android_optimizely_feature", true)))
+    }
+
+    @Test
+    fun testSegmentFeatureFlagValueChanged() {
+        var segmentFlagValue = true
+        val features = hashMapOf(
+            Pair(SEGMENT_ENABLED, segmentFlagValue)
+        )
+
+        setUpEnvironment(features, emptyList())
+
+        this.configFeatures.assertValue(
+            listOf(
+                FeatureFlagsModel(SEGMENT_ENABLED, segmentFlagValue, true)
+            )
+        )
+
+        mockConfig.observable().subscribe {
+            segmentFlagValue = it.features()?.get(SEGMENT_ENABLED)!!
+        }
+
+        this.vm.inputs.updateSegmentFlag(false)
+        assertEquals(segmentFlagValue, false)
+
+        this.vm.inputs.updateSegmentFlag(true)
+        assertEquals(segmentFlagValue, true)
     }
 }

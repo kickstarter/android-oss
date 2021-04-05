@@ -114,6 +114,32 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testCampaignDetailsCta_Properties() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackCampaignDetailsCTAClicked(projectData)
+        this.segmentIdentify.assertValue(user.id())
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertProjectProperties(projectData.project())
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("campaign_details", expectedProperties["context_cta"])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
+    @Test
     fun testDiscoveryProperties_AllProjects() {
         val user = user()
         val client = client(user)

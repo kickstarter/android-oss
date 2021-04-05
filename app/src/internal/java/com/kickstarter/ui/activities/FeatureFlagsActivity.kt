@@ -31,14 +31,14 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>() {
         optimizely_flags.addItemDecoration(TableItemDecoration())
 
         this.viewModel.outputs.configFeatures()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { configFlagsAdapter.takeFlags(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { configFlagsAdapter.takeFlags(it) }
 
         this.viewModel.outputs.optimizelyFeatures()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { optimizelyFlagsAdapter.takeFlags(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { optimizelyFlagsAdapter.takeFlags(it) }
     }
 
     private fun displayPreference(@StringRes labelRes: Int, booleanPreferenceType: BooleanPreferenceType, overrideContainer: View) {

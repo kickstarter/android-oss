@@ -27,7 +27,13 @@ class EventContextValues {
         SEARCH("search"),
         DISCOVER("discover"),
         WATCH_PROJECT("watch_project"),
-        CAMPAIGN_DETAILS("campaign_details")
+        LOGIN_INITIATE("log_in_initiate"),
+        CAMPAIGN_DETAILS("campaign_details"),
+        CREATOR_DETAILS("creator_details"),
+        LOGIN_OR_SIGN_UP("log_in_or_sign_up"),
+        LOGIN_SUBMIT("log_in_submit"),
+        SIGN_UP_SUBMIT("sign_up_submit"),
+        SIGN_UP_INITIATE("sign_up_initiate"),
     }
 
     /**
@@ -53,7 +59,13 @@ class EventContextValues {
         REWARDS("rewards"),
         SEARCH("search"),
         THANKS("thanks"),
-        UPDATE_PLEDGE("update_pledge")
+        UPDATE_PLEDGE("update_pledge"),
+        CHANGE_PAYMENT("change_payment"),
+        LOGIN_SIGN_UP("log_in_sign_up"),
+        SIGN_UP("sign_up"),
+        LOGIN("log_in"),
+        MANAGE_PLEDGE("manage_pledge"),
+        TWO_FACTOR_AUTH("two_factor_auth")
     }
 
     /**
@@ -122,6 +134,20 @@ class EventContextValues {
     enum class ContextTypeName(val contextName: String) {
         CREDIT_CARD("credit_card"),
         WATCH("watch"),
-        UNWATCH("unwatch")
+        UNWATCH("unwatch"),
+        FACEBOOK("facebook")
+    }
+
+    /**
+     * Indicates where on the page or screen the event fired based on the type of video.
+     *
+     * @param contextName: The name of the video context.
+     *
+     * LENGTH: Length of video.
+     * POSITION: Index position of the video playhead.
+     */
+    enum class VideoContextName(val contextName: String) {
+        LENGTH("length"),
+        POSITION("position")
     }
 }

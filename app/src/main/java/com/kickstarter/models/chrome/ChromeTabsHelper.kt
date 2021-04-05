@@ -1,6 +1,5 @@
 package com.kickstarter.models.chrome
 
-
 // Copyright 2015 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +22,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
-
 
 /**
  * Helper class for Custom Tabs.
@@ -83,9 +81,10 @@ object ChromeTabsHelper {
             packageNameToUse = null
         } else if (packagesSupportingCustomTabs.size == 1) {
             packageNameToUse = packagesSupportingCustomTabs[0]
-        } else if (!TextUtils.isEmpty(defaultViewHandlerPackageName)
-                && !hasSpecializedHandlerIntents(context, activityIntent)
-                && packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName)) {
+        } else if (!TextUtils.isEmpty(defaultViewHandlerPackageName) &&
+            !hasSpecializedHandlerIntents(context, activityIntent) &&
+            packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName)
+        ) {
             packageNameToUse = defaultViewHandlerPackageName
         } else if (packagesSupportingCustomTabs.contains(STABLE_PACKAGE)) {
             packageNameToUse = STABLE_PACKAGE
@@ -108,8 +107,9 @@ object ChromeTabsHelper {
         try {
             val pm = context.packageManager
             val handlers = pm.queryIntentActivities(
-                    intent,
-                    PackageManager.GET_RESOLVED_FILTER)
+                intent,
+                PackageManager.GET_RESOLVED_FILTER
+            )
             if (handlers == null || handlers.size == 0) {
                 return false
             }

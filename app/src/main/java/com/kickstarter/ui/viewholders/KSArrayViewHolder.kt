@@ -10,7 +10,7 @@ import com.trello.rxlifecycle.RxLifecycle
 import rx.Observable
 import rx.subjects.PublishSubject
 
-abstract class KSArrayViewHolder(private val view: View) :  ActivityLifecycleType {
+abstract class KSArrayViewHolder(private val view: View) : ActivityLifecycleType {
 
     private val lifecycle = PublishSubject.create<ActivityEvent>()
     abstract fun bindData(any: Any?)

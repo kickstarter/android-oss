@@ -7,8 +7,8 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.User
 
 data class MessagesData(
-  val backingOrThread: Either<Backing, MessageThread>,
-  val project: Project,
-  val participant: User,
-  val currentUser: User
+    val backingOrThread: Either<Backing, MessageThread>,
+    val project: Project,
+    val participant: User,
+    val currentUser: User
 )

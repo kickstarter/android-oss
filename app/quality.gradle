@@ -1,9 +1,47 @@
 apply plugin: 'checkstyle'
 
-check.dependsOn 'checkstyle'
-
 checkstyle {
     toolVersion = "6.15"
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint "com.pinterest:ktlint:0.40.0"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    def outputFile = "${buildDir}/reports/checkstyle/ktlint.xml"
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+    args "--reporter=plain", "--reporter=checkstyle,output="+outputFile
+    ignoreExitValue true
+    doLast {
+        def exitValue = executionResult.get().exitValue
+        if(exitValue == 0) {
+            print "ktlint finished successfully"
+        } else {
+            throw new GradleException('Fix style for kotlin code, see report: ' + outputFile)
+        }
+    }
+}
+
+check.dependsOn 'checkstyle','ktlint'
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+    ignoreExitValue true
 }
 
 task checkstyle(type: Checkstyle) {

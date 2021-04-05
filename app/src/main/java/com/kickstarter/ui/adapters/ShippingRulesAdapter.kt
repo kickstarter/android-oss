@@ -23,7 +23,7 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
             constraint?.let {
                 if (it.isNotEmpty()) {
                     val list = (results.values as ArrayList<Pair<ShippingRule, Project>>)
-                            .filter { shippingRule -> shippingRule.first.toString().startsWith(constraint, ignoreCase = true) }
+                        .filter { shippingRule -> shippingRule.first.toString().startsWith(constraint, ignoreCase = true) }
                     results.values = list
                     results.count = list.size
                 }
@@ -59,10 +59,11 @@ class ShippingRulesAdapter(ctx: Context, private val resourceId: Int, val items:
     fun populateShippingRules(rules: List<ShippingRule>, project: Project) {
         this.filteredItems.clear()
 
-        this.filteredItems.addAll(Observable.from(rules)
+        this.filteredItems.addAll(
+            Observable.from(rules)
                 .map { rule -> Pair.create(rule, project) }
-                .toList().toBlocking().single())
+                .toList().toBlocking().single()
+        )
         notifyDataSetChanged()
     }
-
 }

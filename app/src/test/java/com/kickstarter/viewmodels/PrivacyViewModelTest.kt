@@ -22,9 +22,11 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(user: User, environment: Environment = environment()) {
         val currentUser = MockCurrentUser(user)
 
-        this.vm = PrivacyViewModel.ViewModel(environment.toBuilder()
+        this.vm = PrivacyViewModel.ViewModel(
+            environment.toBuilder()
                 .currentUser(currentUser)
-                .build())
+                .build()
+        )
 
         currentUser.observable().subscribe(this.currentUserTest)
         this.vm.outputs.hideConfirmFollowingOptOutPrompt().subscribe(this.hideConfirmFollowingOptOutPrompt)
@@ -126,11 +128,14 @@ class PrivacyViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testUnableToSavePreferenceError() {
-        setUpEnvironment(UserFactory.user(), environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun updateUserSettings(user: User): Observable<User> {
-                return Observable.error(Throwable("Error"))
-            }
-        }).build())
+        setUpEnvironment(
+            UserFactory.user(),
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun updateUserSettings(user: User): Observable<User> {
+                    return Observable.error(Throwable("Error"))
+                }
+            }).build()
+        )
 
         this.vm.inputs.showPublicProfile(true)
         this.unableToSavePreferenceError.assertValueCount(1)

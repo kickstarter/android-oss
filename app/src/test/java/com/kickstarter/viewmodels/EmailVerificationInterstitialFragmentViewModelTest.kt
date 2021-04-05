@@ -50,13 +50,17 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     fun isSkipLinkShown_whenFeatureFlagActive_shouldBeShown() {
 
         val mockConfig = MockCurrentConfig()
-        mockConfig.config(ConfigFactory.configWithFeaturesEnabled(mapOf(
-                Pair(EMAIL_VERIFICATION_SKIP, true)
-        )))
+        mockConfig.config(
+            ConfigFactory.configWithFeaturesEnabled(
+                mapOf(
+                    Pair(EMAIL_VERIFICATION_SKIP, true)
+                )
+            )
+        )
 
         val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .build()
+            .currentConfig(mockConfig)
+            .build()
 
         setUpEnvironment(environment)
 
@@ -68,13 +72,17 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     fun isSkipLinkShown_whenFeatureFlagNotActive_shouldBeShown() {
 
         val mockConfig = MockCurrentConfig()
-        mockConfig.config(ConfigFactory.configWithFeaturesEnabled(mapOf(
-                Pair(EMAIL_VERIFICATION_SKIP, second = false)
-        )))
+        mockConfig.config(
+            ConfigFactory.configWithFeaturesEnabled(
+                mapOf(
+                    Pair(EMAIL_VERIFICATION_SKIP, second = false)
+                )
+            )
+        )
 
         val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .build()
+            .currentConfig(mockConfig)
+            .build()
 
         setUpEnvironment(environment = environment)
 
@@ -94,16 +102,20 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
     @Test
     fun init_whenResendButtonPressedAndSuccessful_shouldEmitSuccesStateToShowSnackbarStreamAndResendEmail() {
         val environmentWithResendSuccess = environment()
-                .toBuilder()
-                .apolloClient(object : MockApolloClient() {
-                    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-                        return Observable
-                                .just(SendEmailVerificationMutation.Data(
-                                        SendEmailVerificationMutation.UserSendEmailVerification(
-                                                "",
-                                                CLIENT_MUTATION_ID)))
-                    }
-                }).build()
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+                    return Observable
+                        .just(
+                            SendEmailVerificationMutation.Data(
+                                SendEmailVerificationMutation.UserSendEmailVerification(
+                                    "",
+                                    CLIENT_MUTATION_ID
+                                )
+                            )
+                        )
+                }
+            }).build()
 
         setUpEnvironment(environmentWithResendSuccess)
 
@@ -115,16 +127,15 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         this.lakeTest.assertValue("Verification Screen Viewed")
     }
 
-
     @Test
     fun init_whenResendButtonPressedAndError_shouldEmitErrorStateToShowSnackbarStream() {
         val environmentWithResendError = environment()
-                .toBuilder()
-                .apolloClient(object : MockApolloClient() {
-                    override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
-                        return Observable.error(Throwable())
-                    }
-                }).build()
+            .toBuilder()
+            .apolloClient(object : MockApolloClient() {
+                override fun sendVerificationEmail(): Observable<SendEmailVerificationMutation.Data> {
+                    return Observable.error(Throwable())
+                }
+            }).build()
 
         setUpEnvironment(environmentWithResendError)
 

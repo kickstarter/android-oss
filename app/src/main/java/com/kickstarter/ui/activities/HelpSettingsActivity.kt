@@ -18,7 +18,7 @@ import com.kickstarter.models.User
 import com.kickstarter.models.chrome.ChromeTabsHelperActivity
 import com.kickstarter.viewmodels.HelpSettingsViewModel
 import rx.android.schedulers.AndroidSchedulers
-import java.util.*
+import java.util.Arrays
 
 @RequiresActivityViewModel(HelpSettingsViewModel.ViewModel::class)
 class HelpSettingsActivity : BaseActivity<HelpSettingsViewModel.ViewModel>() {

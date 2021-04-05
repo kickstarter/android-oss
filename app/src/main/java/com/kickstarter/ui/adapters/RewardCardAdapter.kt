@@ -13,7 +13,11 @@ import com.kickstarter.databinding.ItemRewardUnselectedCardBinding
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.data.CardState
-import com.kickstarter.ui.viewholders.*
+import com.kickstarter.ui.viewholders.EmptyViewHolder
+import com.kickstarter.ui.viewholders.KSViewHolder
+import com.kickstarter.ui.viewholders.RewardAddCardViewHolder
+import com.kickstarter.ui.viewholders.RewardCardSelectedViewHolder
+import com.kickstarter.ui.viewholders.RewardCardUnselectedViewHolder
 import rx.Observable
 
 class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
@@ -46,7 +50,7 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
         return when (layout) {
-            R.layout.item_add_card -> RewardAddCardViewHolder(ItemAddCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup,false), this.delegate)
+            R.layout.item_add_card -> RewardAddCardViewHolder(ItemAddCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
             R.layout.item_reward_selected_card -> RewardCardSelectedViewHolder(ItemRewardSelectedCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
             R.layout.item_reward_unselected_card -> RewardCardUnselectedViewHolder(ItemRewardUnselectedCardBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false), this.delegate)
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
@@ -55,7 +59,8 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
 
     fun takeCards(cards: List<StoredCard>, project: Project) {
         sections().clear()
-        addSection(Observable.from(cards)
+        addSection(
+            Observable.from(cards)
                 .map { Pair(it, project) }
                 .toList().toBlocking().single()
         )
@@ -73,7 +78,7 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
         notifyDataSetChanged()
     }
 
-    fun insertCard(storedCardAndProject: Pair<StoredCard, Project>) : Int {
+    fun insertCard(storedCardAndProject: Pair<StoredCard, Project>): Int {
         val storedCards = sections()[0]
         val position = 0
         storedCards.add(position, storedCardAndProject)
@@ -81,5 +86,4 @@ class RewardCardAdapter(private val delegate: Delegate) : KSAdapter() {
 
         return position
     }
-
 }

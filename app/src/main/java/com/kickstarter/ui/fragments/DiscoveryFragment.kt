@@ -11,7 +11,11 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxbinding.view.RxView
 import com.kickstarter.R
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityRequestCodes
+import com.kickstarter.libs.BaseFragment
+import com.kickstarter.libs.RecyclerViewPaginator
+import com.kickstarter.libs.RefTag
+import com.kickstarter.libs.SwipeRefresher
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.AnimationUtils.crossFadeAndReverse
@@ -23,7 +27,11 @@ import com.kickstarter.models.Project
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.IntentKey
-import com.kickstarter.ui.activities.*
+import com.kickstarter.ui.activities.ActivityFeedActivity
+import com.kickstarter.ui.activities.EditorialActivity
+import com.kickstarter.ui.activities.LoginToutActivity
+import com.kickstarter.ui.activities.ProjectActivity
+import com.kickstarter.ui.activities.UpdateActivity
 import com.kickstarter.ui.adapters.DiscoveryAdapter
 import com.kickstarter.ui.data.Editorial
 import com.kickstarter.ui.data.LoginReason
@@ -148,8 +156,7 @@ class DiscoveryFragment : BaseFragment<DiscoveryFragmentViewModel.ViewModel>() {
             val layoutManager = discovery_recycler_view.layoutManager as? LinearLayoutManager
             val discoveryAdapter = discovery_recycler_view.adapter as? DiscoveryAdapter
             if (layoutManager != null && discoveryAdapter != null) {
-                for (i in layoutManager.findFirstVisibleItemPosition()..
-                          layoutManager.findLastVisibleItemPosition()) {
+                for (i in layoutManager.findFirstVisibleItemPosition()..layoutManager.findLastVisibleItemPosition()) {
                     val childView = layoutManager.getChildAt(i)
                     if (childView != null) {
                         val viewHolder = discovery_recycler_view.getChildViewHolder(childView)

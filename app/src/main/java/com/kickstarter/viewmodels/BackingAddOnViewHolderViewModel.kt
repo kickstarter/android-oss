@@ -137,124 +137,120 @@ class BackingAddOnViewHolderViewModel {
         init {
 
             val addOn = projectDataAndAddOn
-                    .map { it.second }
+                .map { it.second }
 
             addOn
-                    .map { it.title() }
-                    .subscribe(this.title)
+                .map { it.title() }
+                .subscribe(this.title)
 
             addOn
-                    .map { it.description() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .subscribe(this.description)
+                .map { it.description() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .subscribe(this.description)
 
             addOn.map { !RewardUtils.isItemized(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardItemsAreGone)
+                .compose(bindToLifecycle())
+                .subscribe(this.rewardItemsAreGone)
 
             addOn.filter { RewardUtils.isItemized(it) }
-                    .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.rewardItems)
+                .map { if (it.isAddOn) it.addOnsItems() else it.rewardsItems() }
+                .compose(bindToLifecycle())
+                .subscribe(this.rewardItems)
 
             projectDataAndAddOn.map { this.ksCurrency.format(it.second.minimum(), it.first.project()) }
-                    .subscribe(this.minimum)
-
+                .subscribe(this.minimum)
 
             projectDataAndAddOn.map { this.ksCurrency.format(it.second.convertedMinimum(), it.first.project()) }
-                    .subscribe(this.convertedMinimum)
+                .subscribe(this.convertedMinimum)
 
             projectDataAndAddOn.map { it.first.project() }
-                    .map { it.currency() == it.currentCurrency() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.conversionIsGone)
+                .map { it.currency() == it.currentCurrency() }
+                .compose(bindToLifecycle())
+                .subscribe(this.conversionIsGone)
 
             projectDataAndAddOn
-                    .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first.project(), true, RoundingMode.HALF_UP, true) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.conversion)
+                .map { this.ksCurrency.format(it.second.convertedMinimum(), it.first.project(), true, RoundingMode.HALF_UP, true) }
+                .compose(bindToLifecycle())
+                .subscribe(this.conversion)
 
             projectDataAndAddOn
-                    .map { !ObjectUtils.isNotNull(it.second.limit()) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backerLimitPillIsGone)
+                .map { !ObjectUtils.isNotNull(it.second.limit()) }
+                .compose(bindToLifecycle())
+                .subscribe(this.backerLimitPillIsGone)
 
             addOn
-                    .map { !ObjectUtils.isNotNull(it.remaining()) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.remainingQuantityPillIsGone)
+                .map { !ObjectUtils.isNotNull(it.remaining()) }
+                .compose(bindToLifecycle())
+                .subscribe(this.remainingQuantityPillIsGone)
 
             addOn.map { it.limit().toString() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backerLimit)
+                .compose(bindToLifecycle())
+                .subscribe(this.backerLimit)
 
             addOn
-                    .filter { ObjectUtils.isNotNull(it.remaining()) }
-                    .map { it.remaining().toString() }
-                    .subscribe(this.remainingQuantity)
-
+                .filter { ObjectUtils.isNotNull(it.remaining()) }
+                .map { it.remaining().toString() }
+                .subscribe(this.remainingQuantity)
 
             projectDataAndAddOn.map { ObjectUtils.isNotNull(it.second.endsAt()) }
-                    .compose(bindToLifecycle())
-                    .map { !it }
-                    .subscribe(this.deadlineCountdownIsGone)
+                .compose(bindToLifecycle())
+                .map { !it }
+                .subscribe(this.deadlineCountdownIsGone)
 
             projectDataAndAddOn.map { it.second }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.deadlineCountdown)
+                .compose(bindToLifecycle())
+                .subscribe(this.deadlineCountdown)
 
             addOn.map { it.shippingRules()?.isEmpty() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingAmountIsGone)
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingAmountIsGone)
 
             projectDataAndAddOn.map {
                 getShippingCost(it.second.shippingRules(), it.first.project(), it.third)
             }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingAmount)
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingAmount)
 
             addOn
-                    .map { it?.let { it.quantity() } ?: 0 }
-                    .distinctUntilChanged()
-                    .subscribe(this.quantity)
+                .map { it?.let { it.quantity() } ?: 0 }
+                .distinctUntilChanged()
+                .subscribe(this.quantity)
 
             this.quantity
-                    .compose<Int>(takeWhen(this.addButtonPressed))
-                    .map { increase(it) }
-                    .subscribe(this.quantity)
+                .compose<Int>(takeWhen(this.addButtonPressed))
+                .map { increase(it) }
+                .subscribe(this.quantity)
 
             this.quantity
-                    .compose<Int>(takeWhen(this.increaseButtonPressed))
-                    .map { increase(it) }
-                    .subscribe(this.quantity)
+                .compose<Int>(takeWhen(this.increaseButtonPressed))
+                .map { increase(it) }
+                .subscribe(this.quantity)
 
             this.quantity
-                    .compose<Int>(takeWhen(this.decreaseButtonPressed))
-                    .map { if (it > 0 ) decrease(it) else 0}
-                    .subscribe(this.quantity)
-
-
-            this.quantity
-                    .filter { it != null }
-                    .map { it > 0 }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.addButtonIsGone)
+                .compose<Int>(takeWhen(this.decreaseButtonPressed))
+                .map { if (it > 0) decrease(it) else 0 }
+                .subscribe(this.quantity)
 
             this.quantity
-                    .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-                    .map { maxLimitReached(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.disableIncreaseButton)
+                .filter { it != null }
+                .map { it > 0 }
+                .compose(bindToLifecycle())
+                .subscribe(this.addButtonIsGone)
 
             this.quantity
-                    .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
-                    .map { data -> Pair(data.first, data.second.id()) }
-                    .distinctUntilChanged { quantityPerId1, quantityPerId2 ->
-                        quantityPerId1.first == quantityPerId2.first && quantityPerId1.second == quantityPerId2.second
-                    }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.quantityPerId)
+                .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
+                .map { maxLimitReached(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.disableIncreaseButton)
 
+            this.quantity
+                .compose<Pair<Int, Reward>>(combineLatestPair(addOn))
+                .map { data -> Pair(data.first, data.second.id()) }
+                .distinctUntilChanged { quantityPerId1, quantityPerId2 ->
+                    quantityPerId1.first == quantityPerId2.first && quantityPerId1.second == quantityPerId2.second
+                }
+                .compose(bindToLifecycle())
+                .subscribe(this.quantityPerId)
         }
 
         /**
@@ -268,27 +264,25 @@ class BackingAddOnViewHolderViewModel {
          *         false -> still available to choose more
          */
         private fun maxLimitReached(qPerAddOn: Pair<Int, Reward>): Boolean =
-                if (qPerAddOn.second.isAvailable && RewardUtils.isValidTimeRange(qPerAddOn.second))
-                    (qPerAddOn.second.remaining()?.let { qPerAddOn.first == it } ?: false) ||
-                            (qPerAddOn.first == qPerAddOn.second.limit())
-                else qPerAddOn.first == qPerAddOn.second.quantity()
-
+            if (qPerAddOn.second.isAvailable && RewardUtils.isValidTimeRange(qPerAddOn.second))
+                (qPerAddOn.second.remaining()?.let { qPerAddOn.first == it } ?: false) ||
+                    (qPerAddOn.first == qPerAddOn.second.limit())
+            else qPerAddOn.first == qPerAddOn.second.quantity()
 
         private fun decrease(amount: Int) = amount - 1
         private fun increase(amount: Int) = amount + 1
 
         private fun getShippingCost(shippingRules: List<ShippingRule>?, project: Project, selectedShippingRule: ShippingRule) =
-                if (shippingRules.isNullOrEmpty()) ""
-                else shippingRules?.let {
-                    var cost = 0.0
-                    it.filter {
-                        it.location().id() == selectedShippingRule.location().id()
-                    }.map {
-                        cost += it.cost()
-                    }
-                    this.ksCurrency.format(cost, project)
+            if (shippingRules.isNullOrEmpty()) ""
+            else shippingRules?.let {
+                var cost = 0.0
+                it.filter {
+                    it.location().id() == selectedShippingRule.location().id()
+                }.map {
+                    cost += it.cost()
                 }
-
+                this.ksCurrency.format(cost, project)
+            }
 
         // - Inputs
         override fun configureWith(projectDataAndAddOn: Triple<ProjectData, Reward, ShippingRule>) = this.projectDataAndAddOn.onNext(projectDataAndAddOn)

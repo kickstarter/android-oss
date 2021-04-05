@@ -2,7 +2,7 @@ package com.kickstarter.ui.viewholders
 
 import com.kickstarter.databinding.ItemAddCardBinding
 
-class RewardAddCardViewHolder (val binding : ItemAddCardBinding, val delegate : Delegate) : KSViewHolder(binding.root) {
+class RewardAddCardViewHolder(val binding: ItemAddCardBinding, val delegate: Delegate) : KSViewHolder(binding.root) {
 
     init {
         this.binding.addCardButton.setOnClickListener {

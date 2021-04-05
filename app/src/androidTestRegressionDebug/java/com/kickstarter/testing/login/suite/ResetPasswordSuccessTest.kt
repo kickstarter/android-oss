@@ -20,20 +20,20 @@ class ResetPasswordSuccessTest {
 
     @Rule
     @JvmField
-    val activityRule: IntentsTestRule<LoginActivity> = object : IntentsTestRule<LoginActivity>(LoginActivity::class.java){
+    val activityRule: IntentsTestRule<LoginActivity> = object : IntentsTestRule<LoginActivity>(LoginActivity::class.java) {
         override fun getActivityIntent(): Intent {
             val targetContext = InstrumentationRegistry.getInstrumentation()
-                    .targetContext
+                .targetContext
             return Intent(targetContext, LoginActivity::class.java)
-                    .putExtra(IntentKey.EMAIL, "email@test.com")
-                    .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
+                .putExtra(IntentKey.EMAIL, "email@test.com")
+                .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
         }
     }
 
     @Test
     fun testShowingResetPasswordSuccessDialogAndPrefillingEmail() {
-        checkThat.textMatches(R.id.message_text_view,"We’ve sent an email to email@test.com with instructions to reset your password.")
+        checkThat.textMatches(R.id.message_text_view, "We’ve sent an email to email@test.com with instructions to reset your password.")
         events.clickOnView(R.id.ok_button)
-        checkThat.textMatches(R.id.email,"email@test.com")
+        checkThat.textMatches(R.id.email, "email@test.com")
     }
 }

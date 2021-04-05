@@ -22,16 +22,16 @@ class FacebookConfirmationActivity : BaseActivity<FacebookConfirmationViewModel.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FacebookConfirmationLayoutBinding.inflate(layoutInflater)
-    
+
         setContentView(binding.root)
 
         binding.signUpWithFacebookToolbar.loginToolbar.title = getString(R.string.facebook_confirmation_navbar_title)
-        
+
         viewModel.outputs.prefillEmail()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { prefillEmail(it) }
-        
+
         viewModel.outputs.signupSuccess()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
@@ -40,16 +40,16 @@ class FacebookConfirmationActivity : BaseActivity<FacebookConfirmationViewModel.
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(binding.newsletterSwitch, it) }
-        
+
         viewModel.outputs.signupError()
             .compose(bindToLifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { ViewUtils.showDialog(this, getString(R.string.signup_error_title), it) }
-        
+
         RxView.clicks(binding.newsletterSwitch)
             .compose(bindToLifecycle())
             .subscribe { viewModel.inputs.sendNewslettersClick(binding.newsletterSwitch.isChecked) }
-        
+
         binding.createNewAccountButton.setOnClickListener {
             createNewAccountClick()
         }

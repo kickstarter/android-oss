@@ -45,7 +45,5 @@ abstract class Checkout : Parcelable {
                 return AutoParcel_Checkout_Backing.Builder()
             }
         }
-
     }
-
 }

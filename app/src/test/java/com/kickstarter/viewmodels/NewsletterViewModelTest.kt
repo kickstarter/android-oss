@@ -18,8 +18,8 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     private fun setUpEnvironment(user: User) {
         val currentUser = MockCurrentUser(user)
         val environment = environment().toBuilder()
-                .currentUser(currentUser)
-                .build()
+            .currentUser(currentUser)
+            .build()
 
         currentUser.observable().subscribe(this.currentUserTest)
 
@@ -211,9 +211,9 @@ class NewsletterViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testSubscribeAll() {
         val user = UserFactory.user().toBuilder().alumniNewsletter(true).artsCultureNewsletter(true)
-                .filmNewsletter(true).gamesNewsletter(true).inventNewsletter(true)
-                .happeningNewsletter(true).musicNewsletter(true).promoNewsletter(true).publishingNewsletter(true)
-                .weeklyNewsletter(false).build()
+            .filmNewsletter(true).gamesNewsletter(true).inventNewsletter(true)
+            .happeningNewsletter(true).musicNewsletter(true).promoNewsletter(true).publishingNewsletter(true)
+            .weeklyNewsletter(false).build()
 
         setUpEnvironment(user)
 

@@ -45,6 +45,7 @@
           android:layout_marginTop="@dimen/grid_1" />
 
         <include
+            android:id="@+id/project_metadata_view"
           layout="@layout/project_metadata_view" />
 
       </FrameLayout>
@@ -84,6 +85,7 @@
           android:layout_marginTop="@dimen/grid_2" />
 
         <include
+            android:id="@+id/project_card_stats"
           layout="@layout/project_card_stats_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -103,6 +105,7 @@
   </androidx.cardview.widget.CardView>
 
   <include
+      android:id="@+id/friend_row_backing_group"
     layout="@layout/friend_row_backing_group"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

@@ -3,7 +3,7 @@ package com.kickstarter.models
 import com.kickstarter.mock.factories.LocationFactory
 import junit.framework.TestCase
 
-class LocationTest: TestCase() {
+class LocationTest : TestCase() {
 
     fun testEquals_whenSecondLocationNull_returnFalse() {
         val locA = LocationFactory.empty()

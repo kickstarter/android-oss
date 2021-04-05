@@ -15,6 +15,7 @@ import com.kickstarter.models.SurveyResponse;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.viewmodels.ActivityFeedViewModel.ViewModel;
+import com.kickstarter.libs.utils.EventName;
 
 import org.junit.Test;
 
@@ -68,7 +69,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     // Paginate.
     this.vm.inputs.nextPage();
     this.activityList.assertValueCount(1);
-    this.lakeTest.assertValue("Activity Feed Viewed");
+
+    this.lakeTest.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -97,7 +100,23 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
 
     this.startUpdateActivity.assertValueCount(1);
-    this.lakeTest.assertValue("Activity Feed Viewed");
+
+    this.lakeTest.assertValues(
+            "Activity Feed Viewed",
+            EventName.PAGE_VIEWED.getEventName(),
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName());
+    this.segmentTrack.assertValues(
+            "Activity Feed Viewed",
+            EventName.PAGE_VIEWED.getEventName(),
+            EventName.CTA_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName(),
+            EventName.CARD_CLICKED.getEventName());
   }
 
   @Test
@@ -124,7 +143,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.refresh();
     this.erroredBackings.assertValueCount(2);
 
-    this.lakeTest.assertValue("Activity Feed Viewed");
+    this.lakeTest.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test
@@ -135,7 +155,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     this.erroredBackings.assertNoValues();
 
-    this.lakeTest.assertValue("Activity Feed Viewed");
+    this.lakeTest.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
+    this.segmentTrack.assertValues("Activity Feed Viewed", EventName.PAGE_VIEWED.getEventName());
   }
 
   @Test

@@ -14,9 +14,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/login_toolbar" />
+    <include
+        android:id="@+id/login_toolbar"
+        layout="@layout/login_toolbar" />
 
     <include
+        android:id="@+id/two_factor_form_view"
       layout="@layout/two_factor_form_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

@@ -7,8 +7,6 @@ import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
-import com.kickstarter.services.apiresponses.AccessTokenEnvelope
-import com.kickstarter.ui.ArgumentsKey
 import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -71,53 +69,53 @@ class EmailVerificationInterstitialFragmentViewModel {
         init {
 
             this.apolloClient.sendVerificationEmail()
-                    .materialize()
-                    .share()
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.emailSent.onNext(null)
-                    }
+                .materialize()
+                .share()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.emailSent.onNext(null)
+                }
 
             this.currentConfig
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.isSkipLinkShown.onNext(it.isFeatureFlagEnabled(EMAIL_VERIFICATION_SKIP))
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.isSkipLinkShown.onNext(it.isFeatureFlagEnabled(EMAIL_VERIFICATION_SKIP))
+                }
 
             this.openInboxButtonPressed
-                    .compose(bindToLifecycle())
-                    .subscribe(this.startEmailActivity)
+                .compose(bindToLifecycle())
+                .subscribe(this.startEmailActivity)
 
             val sendEmailNotification = this.resendEmailButtonPressed
-                    .compose(bindToLifecycle())
-                    .switchMap {
-                        this.apolloClient.sendVerificationEmail()
-                                .doOnSubscribe{this.loadingIndicatorGone.onNext(false)}
-                                .doAfterTerminate{this.loadingIndicatorGone.onNext(true)}
-                                .materialize()
-                    }
-                    .share()
+                .compose(bindToLifecycle())
+                .switchMap {
+                    this.apolloClient.sendVerificationEmail()
+                        .doOnSubscribe { this.loadingIndicatorGone.onNext(false) }
+                        .doAfterTerminate { this.loadingIndicatorGone.onNext(true) }
+                        .materialize()
+                }
+                .share()
 
             sendEmailNotification
-                    .compose(Transformers.errors())
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.showSnackbarError.onNext(R.string.we_couldnt_resend_this_email_please_try_again)
-                    }
+                .compose(Transformers.errors())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showSnackbarError.onNext(R.string.we_couldnt_resend_this_email_please_try_again)
+                }
 
             sendEmailNotification
-                    .compose(Transformers.values())
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.showSnackbarSuccess.onNext(R.string.verification_email_sent_inbox)
-                    }
+                .compose(Transformers.values())
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.showSnackbarSuccess.onNext(R.string.verification_email_sent_inbox)
+                }
 
             this.skipLinkPressed
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.lake.trackSkipVerificationButtonClicked()
-                        this.dismissInterstitial.onNext(null)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackSkipVerificationButtonClicked()
+                    this.dismissInterstitial.onNext(null)
+                }
 
             this.lake.trackVerificationScreenViewed()
         }
@@ -136,6 +134,4 @@ class EmailVerificationInterstitialFragmentViewModel {
         override fun dismissInterstitial(): Observable<Void> = this.dismissInterstitial
         override fun emailSent(): Observable<Void> = this.emailSent
     }
-
 }
-

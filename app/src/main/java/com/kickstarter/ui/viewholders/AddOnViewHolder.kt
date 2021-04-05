@@ -4,6 +4,7 @@ import android.util.Pair
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
+import com.kickstarter.databinding.ItemAddOnBinding
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.RewardViewUtils
 import com.kickstarter.libs.utils.ViewUtils
@@ -11,11 +12,8 @@ import com.kickstarter.models.Reward
 import com.kickstarter.ui.adapters.RewardItemsAdapter
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.viewmodels.AddOnViewHolderViewModel
-import kotlinx.android.synthetic.main.add_on_items.view.*
-import kotlinx.android.synthetic.main.add_on_title.view.*
-import kotlinx.android.synthetic.main.item_add_on.view.*
 
-class AddOnViewHolder(private val view: View) : KSViewHolder(view) {
+class AddOnViewHolder(private val binding: ItemAddOnBinding) : KSViewHolder(binding.root) {
 
     private var viewModel = AddOnViewHolderViewModel.ViewModel(environment())
     private val currencyConversionString = context().getString(R.string.About_reward_amount)
@@ -25,68 +23,72 @@ class AddOnViewHolder(private val view: View) : KSViewHolder(view) {
         val rewardItemAdapter = setUpItemAdapter()
 
         this.viewModel.outputs.conversionIsGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(this.view.add_on_conversion_text_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.addOnConversionTextView))
 
         this.viewModel.outputs.conversion()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.add_on_conversion_text_view.text = this.ksString.format(this.currencyConversionString,
-                        "reward_amount", it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                binding.addOnConversionTextView.text = this.ksString.format(
+                    this.currencyConversionString,
+                    "reward_amount", it
+                )
+            }
 
         this.viewModel.outputs.descriptionForNoReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.add_on_description_text_view.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.addOnDescriptionTextView.setText(it) }
 
         this.viewModel.outputs.titleForNoReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.add_on_title_no_spannable.setText(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.titleContainer.addOnTitleNoSpannable.setText(it) }
 
         this.viewModel.outputs.descriptionForReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.add_on_description_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.addOnDescriptionTextView.text = it }
 
         this.viewModel.outputs.minimumAmountTitle()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.add_on_minimum_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.addOnMinimumTextView.text = it }
 
         this.viewModel.outputs.rewardItems()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { rewardItemAdapter.rewardsItems(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { rewardItemAdapter.rewardsItems(it) }
 
         this.viewModel.outputs.rewardItemsAreGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(this.view.items_container))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(binding.addOnItemsContainer.addOnItemLayout))
 
         this.viewModel.outputs.isAddonTitleGone()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { shouldHideAddonAmount ->
-                    if (shouldHideAddonAmount) {
-                        this.view.add_on_title_text_view.visibility = View.GONE
-                        this.view.add_on_title_no_spannable.visibility = View.VISIBLE
-                    } else {
-                        this.view.add_on_title_no_spannable.visibility = View.GONE
-                        this.view.add_on_title_text_view.visibility = View.VISIBLE
-                    }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { shouldHideAddonAmount ->
+                if (shouldHideAddonAmount) {
+                    binding.titleContainer.addOnTitleTextView.visibility = View.GONE
+                    binding.titleContainer.addOnTitleNoSpannable.visibility = View.VISIBLE
+                } else {
+                    binding.titleContainer.addOnTitleNoSpannable.visibility = View.GONE
+                    binding.titleContainer.addOnTitleTextView.visibility = View.VISIBLE
                 }
+            }
 
         this.viewModel.outputs.titleForReward()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.add_on_title_no_spannable.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.titleContainer.addOnTitleNoSpannable.text = it }
 
         this.viewModel.outputs.titleForAddOn()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.add_on_title_text_view.text = RewardViewUtils.styleTitleForAddOns(context(), it.first, it.second) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.titleContainer.addOnTitleTextView.text = RewardViewUtils.styleTitleForAddOns(context(), it.first, it.second) }
     }
 
     override fun bindData(data: Any?) {
@@ -103,10 +105,9 @@ class AddOnViewHolder(private val view: View) : KSViewHolder(view) {
 
     private fun setUpItemAdapter(): RewardItemsAdapter {
         val rewardItemAdapter = RewardItemsAdapter()
-        val itemRecyclerView = view.add_on_item_recycler_view
+        val itemRecyclerView = binding.addOnItemsContainer.addOnItemRecyclerView
         itemRecyclerView.adapter = rewardItemAdapter
         itemRecyclerView.layoutManager = LinearLayoutManager(context())
         return rewardItemAdapter
     }
-
 }

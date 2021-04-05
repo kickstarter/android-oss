@@ -43,11 +43,13 @@ class MessageCreatorViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSendingMessageError() {
-        setUpEnvironment(environment().toBuilder().apolloClient(object : MockApolloClient() {
-            override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {
-                return Observable.error(Throwable("error"))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apolloClient(object : MockApolloClient() {
+                override fun sendMessage(project: Project, recipient: User, body: String): Observable<Long> {
+                    return Observable.error(Throwable("error"))
+                }
+            }).build()
+        )
 
         this.vm.inputs.messageBodyChanged("message")
         this.vm.inputs.sendButtonClicked()
@@ -60,11 +62,13 @@ class MessageCreatorViewModelTest : KSRobolectricTestCase() {
 
     @Test
     fun testSendingMessageSuccess() {
-        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun fetchMessagesForThread(messageThreadId: Long): Observable<MessageThreadEnvelope> {
-                return Observable.error(Throwable("error"))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun fetchMessagesForThread(messageThreadId: Long): Observable<MessageThreadEnvelope> {
+                    return Observable.error(Throwable("error"))
+                }
+            }).build()
+        )
 
         this.vm.inputs.messageBodyChanged("message")
         this.vm.inputs.sendButtonClicked()

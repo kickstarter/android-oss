@@ -23,6 +23,7 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
 
     private var forgotPasswordString = R.string.forgot_password_title
     private var errorMessageString = R.string.forgot_password_error
+    private var errorGenericString = R.string.Something_went_wrong_please_try_again
     private var errorTitleString = R.string.general_error_oops
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,35 +33,35 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
         login_toolbar.setTitle(getString(this.forgotPasswordString))
 
         this.viewModel.outputs.resetSuccess()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { onResetSuccess() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { onResetSuccess() }
 
         this.viewModel.outputs.isFormSubmitting()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.setFormDisabled(it) })
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ this.setFormDisabled(it) })
 
         this.viewModel.outputs.isFormValid()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ this.setFormEnabled(it) })
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ this.setFormEnabled(it) })
 
         this.viewModel.outputs.resetError()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), getString(this.errorMessageString)) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.showDialog(this, getString(this.errorTitleString), it) }
 
         reset_password_button.setOnClickListener { this.viewModel.inputs.resetPasswordClick() }
 
         email.onChange { this.viewModel.inputs.email(it) }
 
         this.viewModel.outputs.prefillEmail()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    email.setText(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                email.setText(it)
+            }
     }
 
     override fun exitTransition(): Pair<Int, Int>? {
@@ -70,8 +71,8 @@ class ResetPasswordActivity : BaseActivity<ResetPasswordViewModel.ViewModel>() {
     private fun onResetSuccess() {
         setFormEnabled(false)
         val intent = Intent(this, LoginActivity::class.java)
-                .putExtra(IntentKey.EMAIL, email.text())
-                .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
+            .putExtra(IntentKey.EMAIL, email.text())
+            .putExtra(IntentKey.LOGIN_REASON, LoginReason.RESET_PASSWORD)
         startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right)
     }
 

@@ -12,19 +12,19 @@ class FeatureFlagViewHolder(val view: View) : KSViewHolder(view) {
 
     init {
         this.vm.outputs.key()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.flag_key.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.view.flag_key.text = it }
 
         this.vm.outputs.value()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.flag_value.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.view.flag_value.text = it }
 
         this.vm.outputs.valueTextColor()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.flag_value.setTextColor(ContextCompat.getColor(context(), it)) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.view.flag_value.setTextColor(ContextCompat.getColor(context(), it)) }
     }
 
     override fun bindData(data: Any?) {

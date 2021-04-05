@@ -1,18 +1,16 @@
 package com.kickstarter.ui.viewholders
 
 import android.util.Pair
-import android.view.View
 import com.kickstarter.R
+import com.kickstarter.databinding.ItemRewardSelectedCardBinding
 import com.kickstarter.libs.KSString
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.StoredCard
 import com.kickstarter.viewmodels.RewardCardSelectedViewHolderViewModel
-import kotlinx.android.synthetic.main.retry_card_warning.view.*
-import kotlinx.android.synthetic.main.reward_card_details.view.*
 
-class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
+class RewardCardSelectedViewHolder(val binding: ItemRewardSelectedCardBinding) : KSViewHolder(binding.root) {
 
     private val creditCardExpirationString = this.context().getString(R.string.Credit_card_expiration)
     private val lastFourString = this.context().getString(R.string.payment_method_last_four)
@@ -23,29 +21,29 @@ class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
     init {
 
         this.viewModel.outputs.expirationDate()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setExpirationDateTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setExpirationDateTextView(it) }
 
         this.viewModel.outputs.issuerImage()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_card_logo.setImageResource(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.rewardCardDetails.rewardCardLogo.setImageResource(it) }
 
         this.viewModel.outputs.issuer()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.view.reward_card_logo.contentDescription = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { binding.rewardCardDetails.rewardCardLogo.contentDescription = it }
 
         this.viewModel.outputs.lastFour()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setLastFourTextView(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setLastFourTextView(it) }
 
         this.viewModel.outputs.retryCopyIsVisible()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { ViewUtils.setGone(this.view.retry_card_warning, !it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { ViewUtils.setGone(binding.retryCardWarning.retryCardWarning, !it) }
     }
 
     override fun bindData(data: Any?) {
@@ -55,14 +53,17 @@ class RewardCardSelectedViewHolder(val view : View) : KSViewHolder(view) {
     }
 
     private fun setExpirationDateTextView(date: String) {
-        this.view.reward_card_expiration_date.text = this.ksString.format(this.creditCardExpirationString,
-                "expiration_date", date)
+        binding.rewardCardDetails.rewardCardExpirationDate.text = this.ksString.format(
+            this.creditCardExpirationString,
+            "expiration_date", date
+        )
     }
 
     private fun setLastFourTextView(lastFour: String) {
-        this.view.reward_card_last_four.text = this.ksString.format(this.lastFourString,
-                "last_four",
-                lastFour)
+        binding.rewardCardDetails.rewardCardLastFour.text = this.ksString.format(
+            this.lastFourString,
+            "last_four",
+            lastFour
+        )
     }
-
 }

@@ -4,24 +4,20 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:background="@color/kds_white"
+  android:id="@+id/project_scroll_view"
   android:orientation="vertical">
 
-  <include layout="@layout/project_creator_dashboard_header" />
+  <include
+      android:id="@+id/project_creator_dashboard_header"
+      layout="@layout/project_creator_dashboard_header" />
 
   <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/project_media_header" />
-
-    <FrameLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom"
-      android:layout_marginStart="@dimen/grid_1">
-
-      <include layout="@layout/project_metadata_view" />
-    </FrameLayout>
+    <include
+        android:id="@+id/project_media_header_layout"
+        layout="@layout/project_media_header" />
 
   </FrameLayout>
 
@@ -110,7 +106,9 @@
         tools:ignore="InconsistentLayout"
         tools:visibility="visible">
 
-        <include layout="@layout/creator_avatar_verified" />
+        <include
+            android:id="@+id/creator_avatar_verified"
+            layout="@layout/creator_avatar_verified" />
 
         <LinearLayout
           android:layout_width="0dp"
@@ -139,6 +137,7 @@
       </LinearLayout>
 
       <include
+          android:id="@+id/loading_placeholder_creator_info_layout"
         layout="@layout/loading_placeholder_creator_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -321,7 +320,9 @@
       android:layout_marginBottom="@dimen/grid_5"
       android:orientation="vertical">
 
-      <include layout="@layout/project_stats_view" />
+      <include
+          android:id="@+id/stats_view"
+          layout="@layout/project_stats_view" />
 
       <TextView
         android:id="@+id/usd_conversion_text_view"
@@ -366,6 +367,8 @@
 
   </LinearLayout>
 
-  <include layout="@layout/project_creator_info" />
+  <include
+      android:id="@+id/project_creator_info_layout"
+      layout="@layout/project_creator_info" />
 
 </LinearLayout>

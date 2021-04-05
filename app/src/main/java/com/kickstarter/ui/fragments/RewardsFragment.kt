@@ -39,42 +39,42 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         createDialog()
 
         this.viewModel.outputs.projectData()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { rewardsAdapter.populateRewards(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { rewardsAdapter.populateRewards(it) }
 
         this.viewModel.outputs.backedRewardPosition()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { scrollToReward(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { scrollToReward(it) }
 
         this.viewModel.outputs.showPledgeFragment()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    dialog.dismiss()
-                    showPledgeFragment(it.first, it.second)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                dialog.dismiss()
+                showPledgeFragment(it.first, it.second)
+            }
 
         this.viewModel.outputs.showAddOnsFragment()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    dialog.dismiss()
-                    showAddonsFragment(it)
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                dialog.dismiss()
+                showAddonsFragment(it)
+            }
 
         this.viewModel.outputs.rewardsCount()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { setRewardsCount(it) }
-        
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { setRewardsCount(it) }
+
         this.viewModel.outputs.showAlert()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {
-                    showAlert()
-                }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe {
+                showAlert()
+            }
 
         context?.apply {
             ViewUtils.setGone(rewards_count, ViewUtils.isLandscape(this))
@@ -84,13 +84,13 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     private fun createDialog() {
         context?.let { context ->
             dialog = AlertDialog.Builder(context, R.style.AlertDialog)
-                    .setCancelable(false)
-                    .setTitle(getString(R.string.Continue_with_this_reward))
-                    .setMessage(getString(R.string.It_may_not_offer_some_or_all_of_your_add_ons))
-                    .setNegativeButton(getString(R.string.No_go_back)) { _, _ -> {} }
-                    .setPositiveButton(getString(R.string.Yes_continue)) { _, _ ->
-                        this.viewModel.inputs.alertButtonPressed()
-                    }.create()
+                .setCancelable(false)
+                .setTitle(getString(R.string.Continue_with_this_reward))
+                .setMessage(getString(R.string.It_may_not_offer_some_or_all_of_your_add_ons))
+                .setNegativeButton(getString(R.string.No_go_back)) { _, _ -> {} }
+                .setPositiveButton(getString(R.string.Yes_continue)) { _, _ ->
+                    this.viewModel.inputs.alertButtonPressed()
+                }.create()
         }
     }
 
@@ -111,8 +111,10 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
     }
 
     private fun setRewardsCount(count: Int) {
-        val rewardsCountString = this.viewModel.environment.ksString().format("Rewards_count_rewards", count,
-                "rewards_count", NumberUtils.format(count))
+        val rewardsCountString = this.viewModel.environment.ksString().format(
+            "Rewards_count_rewards", count,
+            "rewards_count", NumberUtils.format(count)
+        )
         rewards_count.text = rewardsCountString
     }
 
@@ -145,12 +147,14 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         if (this.isVisible && this.fragmentManager?.findFragmentByTag(PledgeFragment::class.java.simpleName) == null) {
             val pledgeFragment = PledgeFragment.newInstance(pledgeData, pledgeReason)
             this.fragmentManager?.beginTransaction()
-                    ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    ?.add(R.id.fragment_container,
-                            pledgeFragment,
-                            PledgeFragment::class.java.simpleName)
-                    ?.addToBackStack(PledgeFragment::class.java.simpleName)
-                    ?.commit()
+                ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                ?.add(
+                    R.id.fragment_container,
+                    pledgeFragment,
+                    PledgeFragment::class.java.simpleName
+                )
+                ?.addToBackStack(PledgeFragment::class.java.simpleName)
+                ?.commit()
         }
     }
 
@@ -158,12 +162,14 @@ class RewardsFragment : BaseFragment<RewardsFragmentViewModel.ViewModel>(), Rewa
         if (this.isVisible && this.fragmentManager?.findFragmentByTag(BackingAddOnsFragment::class.java.simpleName) == null) {
             val addOnsFragment = BackingAddOnsFragment.newInstance(pledgeDataAndReason)
             this.fragmentManager?.beginTransaction()
-                    ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
-                    ?.add(R.id.fragment_container,
-                            addOnsFragment,
-                            BackingAddOnsFragment::class.java.simpleName)
-                    ?.addToBackStack(BackingAddOnsFragment::class.java.simpleName)
-                    ?.commit()
+                ?.setCustomAnimations(R.anim.slide_in_right, 0, 0, R.anim.slide_out_right)
+                ?.add(
+                    R.id.fragment_container,
+                    addOnsFragment,
+                    BackingAddOnsFragment::class.java.simpleName
+                )
+                ?.addToBackStack(BackingAddOnsFragment::class.java.simpleName)
+                ?.commit()
         }
     }
 }

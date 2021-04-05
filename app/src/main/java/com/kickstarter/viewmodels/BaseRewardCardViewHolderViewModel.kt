@@ -53,42 +53,41 @@ interface BaseRewardCardViewHolderViewModel {
         init {
 
             val card = cardAndProject
-                    .map { it.first }
+                .map { it.first }
 
             card
-                    .map { it.expiration() }
-                    .map { sdf.format(it).toString() }
-                    .subscribe(this.expirationDate)
+                .map { it.expiration() }
+                .map { sdf.format(it).toString() }
+                .subscribe(this.expirationDate)
 
             card
-                    .map { it.lastFourDigits() }
-                    .subscribe(this.lastFour)
+                .map { it.lastFourDigits() }
+                .subscribe(this.lastFour)
 
             card
-                    .map { it.type() }
-                    .map { StoredCard.getCardTypeDrawable(it) }
-                    .subscribe(this.issuerImage)
+                .map { it.type() }
+                .map { StoredCard.getCardTypeDrawable(it) }
+                .subscribe(this.issuerImage)
 
             card
-                    .map { it.type() }
-                    .map { StoredCard.issuer(it) }
-                    .subscribe(this.issuer)
+                .map { it.type() }
+                .map { StoredCard.issuer(it) }
+                .subscribe(this.issuer)
 
             val project = this.cardAndProject
-                    .map { it.second }
+                .map { it.second }
 
             val backing = project
-                    .map { it.backing() }
+                .map { it.backing() }
 
             val isBackingPaymentSource = backing
-                    .compose<Pair<Backing?, StoredCard>>(combineLatestPair(card))
-                    .map { backingAndCard -> backingAndCard.first?.let { b -> b.paymentSource()?.let { it.id() == backingAndCard.second.id() } }?: false }
+                .compose<Pair<Backing?, StoredCard>>(combineLatestPair(card))
+                .map { backingAndCard -> backingAndCard.first?.let { b -> b.paymentSource()?.let { it.id() == backingAndCard.second.id() } } ?: false }
 
             isBackingPaymentSource
-                    .compose<Pair<Boolean, Backing?>>(combineLatestPair(backing))
-                    .map { it.first && it.second?.isErrored() ?: false }
-                    .subscribe(this.retryCopyIsVisible)
-
+                .compose<Pair<Boolean, Backing?>>(combineLatestPair(backing))
+                .map { it.first && it.second?.isErrored() ?: false }
+                .subscribe(this.retryCopyIsVisible)
         }
         override fun configureWith(cardAndProject: Pair<StoredCard, Project>) = this.cardAndProject.onNext(cardAndProject)
 

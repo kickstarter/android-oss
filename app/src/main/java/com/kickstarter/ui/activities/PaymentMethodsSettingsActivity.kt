@@ -7,13 +7,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kickstarter.R
-import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.libs.ActivityRequestCodes
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.StoredCard
 import com.kickstarter.ui.adapters.PaymentMethodsAdapter
+import com.kickstarter.ui.extensions.showSnackbar
 import com.kickstarter.viewmodels.PaymentMethodsViewModel
 import kotlinx.android.synthetic.main.activity_settings_payment_methods.*
 import kotlinx.android.synthetic.main.payment_methods_toolbar.*
@@ -32,38 +32,41 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
         setUpRecyclerView()
 
         this.viewModel.outputs.cards()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { setCards(it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { setCards(it) }
 
         this.viewModel.outputs.dividerIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(payments_divider, !it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(payments_divider, !it) }
 
         this.viewModel.outputs.error()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(payment_methods_toolbar, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showSnackbar(payment_methods_toolbar, it) }
 
         this.viewModel.outputs.progressBarIsVisible()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.setGone(progress_bar, !it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.setGone(progress_bar, !it) }
 
         this.viewModel.outputs.showDeleteCardDialog()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { lazyDeleteCardConfirmationDialog().show() }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { lazyDeleteCardConfirmationDialog().show() }
 
         this.viewModel.success()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { showSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { showSnackbar(payment_methods_toolbar, R.string.Got_it_your_changes_have_been_saved) }
 
-        add_new_card.setOnClickListener { startActivityForResult(Intent(this, NewCardActivity::class.java),
-                ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD) }
-
+        add_new_card.setOnClickListener {
+            startActivityForResult(
+                Intent(this, NewCardActivity::class.java),
+                ActivityRequestCodes.SAVE_NEW_PAYMENT_METHOD
+            )
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -77,12 +80,12 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private fun lazyDeleteCardConfirmationDialog(): AlertDialog {
         if (this.showDeleteCardDialog == null) {
             this.showDeleteCardDialog = AlertDialog.Builder(this, R.style.AlertDialog)
-                    .setCancelable(false)
-                    .setTitle(R.string.Remove_this_card)
-                    .setMessage(R.string.Are_you_sure_you_wish_to_remove_this_card)
-                    .setNegativeButton(R.string.No_nevermind) { _, _ -> lazyDeleteCardConfirmationDialog().dismiss() }
-                    .setPositiveButton(R.string.Yes_remove) { _, _ -> this.viewModel.inputs.confirmDeleteCardClicked() }
-                    .create()
+                .setCancelable(false)
+                .setTitle(R.string.Remove_this_card)
+                .setMessage(R.string.Are_you_sure_you_wish_to_remove_this_card)
+                .setNegativeButton(R.string.No_nevermind) { _, _ -> lazyDeleteCardConfirmationDialog().dismiss() }
+                .setPositiveButton(R.string.Yes_remove) { _, _ -> this.viewModel.inputs.confirmDeleteCardClicked() }
+                .create()
         }
         return this.showDeleteCardDialog!!
     }
@@ -90,21 +93,23 @@ class PaymentMethodsSettingsActivity : BaseActivity<PaymentMethodsViewModel.View
     private fun setCards(cards: List<StoredCard>) = this.adapter.populateCards(cards)
 
     private fun setUpRecyclerView() {
-        this.adapter = PaymentMethodsAdapter(this.viewModel, object: DiffUtil.ItemCallback<Any>() {
-            override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
-            }
+        this.adapter = PaymentMethodsAdapter(
+            this.viewModel,
+            object : DiffUtil.ItemCallback<Any>() {
+                override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+                    return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
+                }
 
-            override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-                return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
-            }
+                override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+                    return areCardsTheSame(oldItem as StoredCard, newItem as StoredCard)
+                }
 
-            private fun areCardsTheSame(oldCard: StoredCard, newCard: StoredCard): Boolean {
-                return oldCard.id() == newCard.id()
+                private fun areCardsTheSame(oldCard: StoredCard, newCard: StoredCard): Boolean {
+                    return oldCard.id() == newCard.id()
+                }
             }
-        })
+        )
         recycler_view.adapter = this.adapter
         recycler_view.layoutManager = LinearLayoutManager(this)
     }
-
 }

@@ -4,7 +4,7 @@ import com.kickstarter.libs.utils.AnalyticEventsUtils.userProperties
 import com.kickstarter.libs.utils.MapUtils
 import com.kickstarter.models.User
 import org.json.JSONArray
-import java.util.*
+import java.util.Locale
 
 abstract class TrackingClientType {
     enum class Type(val tag: String) {
@@ -20,7 +20,7 @@ abstract class TrackingClientType {
 
     protected abstract fun brand(): String
     protected abstract fun buildNumber(): Int
-    protected abstract fun currentVariants(): JSONArray?
+    protected abstract fun currentVariants(): Array<String>?
     protected abstract fun deviceDistinctId(): String
     protected abstract fun deviceFormat(): String
     protected abstract fun deviceOrientation(): String
@@ -28,6 +28,7 @@ abstract class TrackingClientType {
     protected abstract fun manufacturer(): String
     protected abstract fun model(): String
     protected abstract fun OSVersion(): String
+    protected abstract fun sessionCountry(): String
     protected abstract fun time(): Long
     abstract fun type(): Type
     protected abstract fun userAgent(): String?
@@ -71,9 +72,10 @@ abstract class TrackingClientType {
         properties.apply {
             this["app_build_number"] = buildNumber()
             this["app_release_version"] = versionName()
-            this["platform"] = "android"
+            this["platform"] = "native_android"
             this["client"] = "native"
-            this["current_variants"] = currentVariants() ?: ""
+            this["variants_internal"] = currentVariants() ?: ""
+            this["country"] = sessionCountry()
             this["device_distinct_id"] = deviceDistinctId()
             this["device_type"] = deviceFormat()
             this["device_manufacturer"] = manufacturer()
@@ -83,7 +85,7 @@ abstract class TrackingClientType {
             this["enabled_features"] = enabledFeatureFlags()
             this["is_voiceover_running"] = isTalkBackOn
             this["mp_lib"] = "kickstarter_android"
-            this["os"] = "Android"
+            this["os"] = "android"
             this["os_version"] = OSVersion()
             this["user_agent"] = userAgent() ?: ""
             this["user_is_logged_in"] = userIsLoggedIn

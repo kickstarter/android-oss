@@ -5,8 +5,8 @@ import androidx.work.NetworkType
 
 object WorkUtils {
     val baseConstraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build()
 
     fun uniqueWorkName(tag: String) = tag + System.currentTimeMillis()
 }

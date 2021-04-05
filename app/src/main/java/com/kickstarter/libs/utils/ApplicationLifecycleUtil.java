@@ -6,6 +6,9 @@ import android.content.ComponentCallbacks2;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Config;
@@ -16,10 +19,10 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import static com.kickstarter.libs.utils.extensions.ConfigExtension.SEGMENT_ENABLED;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
@@ -48,36 +51,34 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   @Override
   public void onActivityResumed(final @NonNull Activity activity) {
-    if(this.isInBackground){
-
+    if(this.isInBackground) {
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity.getApplication());
 
       //to get the current config for segment feature when app resume from background
-      this.config.observable().subscribe (c ->{
-              this.currentConfig = c;
+      this.config.observable().subscribe(c -> {
+        this.currentConfig = c;
       });
 
       // Refresh the config file
       this.client.config()
-        .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
-        .compose(Transformers.neverError())
-        .subscribe(c -> {
-          if(c.features().containsKey(SEGMENT_ENABLED)){
-             boolean isChecked= currentConfig.features().get(SEGMENT_ENABLED);
-            c.features().put(SEGMENT_ENABLED,isChecked);
-          }
+              .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
+              .compose(Transformers.neverError())
+              .subscribe(c -> {
+                if (Objects.requireNonNull(c.features()).containsKey(SEGMENT_ENABLED)) {
+                  final boolean isChecked = Objects.requireNonNull(this.currentConfig.features()).get(SEGMENT_ENABLED);
+                  Objects.requireNonNull(c.features()).put(SEGMENT_ENABLED, isChecked);
+                }
 
-          config.config(c);
-      });
+                this.config.config(c);
+              });
 
       // Refresh the user
       final String accessToken = this.currentUser.getAccessToken();
-
       if (ObjectUtils.isNotNull(accessToken)) {
         this.client.fetchCurrentUser()
-          .compose(Transformers.neverError())
-          .subscribe(u -> this.currentUser.refresh(u));
+                .compose(Transformers.neverError())
+                .subscribe(u -> this.currentUser.refresh(u));
       }
 
       this.isInBackground = false;

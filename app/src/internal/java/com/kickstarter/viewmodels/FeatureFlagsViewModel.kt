@@ -2,7 +2,7 @@ package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
 import com.kickstarter.libs.*
-import com.kickstarter.libs.utils.extensions.SEGMENT_ENABLED
+import com.kickstarter.libs.utils.ConfigFeatureName.SEGMENT_ENABLED
 import com.kickstarter.model.FeatureFlagsModel
 import com.kickstarter.ui.activities.FeatureFlagsActivity
 import rx.Observable
@@ -63,7 +63,7 @@ interface FeatureFlagsViewModel {
             this.updateSegmentFlag
                 .compose(bindToLifecycle())
                 .subscribe {
-                    config?.features()?.put(SEGMENT_ENABLED, it)
+                    config?.features()?.put(SEGMENT_ENABLED.configFeatureName, it)
                     environment.currentConfig().config(config)
                 }
         }

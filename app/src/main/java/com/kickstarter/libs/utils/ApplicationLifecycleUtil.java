@@ -23,8 +23,6 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import static com.kickstarter.libs.utils.extensions.ConfigExtension.SEGMENT_ENABLED;
-
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   protected @Inject ApiClientType client;
   protected @Inject CurrentConfigType config;
@@ -65,9 +63,9 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
               .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
               .compose(Transformers.neverError())
               .subscribe(c -> {
-                if (Objects.requireNonNull(c.features()).containsKey(SEGMENT_ENABLED)) {
-                  final boolean isChecked = Objects.requireNonNull(this.currentConfig.features()).get(SEGMENT_ENABLED);
-                  Objects.requireNonNull(c.features()).put(SEGMENT_ENABLED, isChecked);
+                if (Objects.requireNonNull(c.features()).containsKey(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName())) {
+                  final boolean isChecked = Objects.requireNonNull(this.currentConfig.features()).get(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName());
+                  Objects.requireNonNull(c.features()).put(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName(), isChecked);
                 }
 
                 this.config.config(c);

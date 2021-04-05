@@ -119,8 +119,8 @@ abstract class TrackingClient(
      * Derives the device's orientation (portrait/landscape) from the `context`.
      */
     override fun deviceOrientation(): String =
-        if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "Landscape"
-        else "Portrait"
+        if (this.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) "landscape"
+        else "portrait"
 
     // TODO: will be deleted on https://kickstarter.atlassian.net/browse/EP-187
     override fun enabledFeatureFlags(): JSONArray {

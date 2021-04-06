@@ -85,6 +85,7 @@ import com.kickstarter.services.interceptors.WebRequestInterceptor;
 import com.kickstarter.ui.SharedPreferenceKey;
 import com.optimizely.ab.android.sdk.OptimizelyManager;
 import com.segment.analytics.Analytics;
+import com.segment.analytics.android.integrations.appboy.AppboyIntegration;
 import com.stripe.android.Stripe;
 
 import org.joda.time.DateTime;
@@ -190,6 +191,7 @@ public class ApplicationModule {
 
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
       segmentClient = new Analytics.Builder(context, apiKey)
+              .use(AppboyIntegration.FACTORY)
               .trackApplicationLifecycleEvents()
               .build();
 

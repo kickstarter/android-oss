@@ -8,18 +8,20 @@ class ShippingRulesEnvelopeFactory private constructor() {
 
         fun shippingRules(): ShippingRulesEnvelope {
             return ShippingRulesEnvelope.builder()
-                    .shippingRules(listOf(
-                            ShippingRuleFactory.usShippingRule(),
-                            ShippingRuleFactory.germanyShippingRule(),
-                            ShippingRuleFactory.mexicoShippingRule())
+                .shippingRules(
+                    listOf(
+                        ShippingRuleFactory.usShippingRule(),
+                        ShippingRuleFactory.germanyShippingRule(),
+                        ShippingRuleFactory.mexicoShippingRule()
                     )
-                    .build()
+                )
+                .build()
         }
 
         fun emptyShippingRules(): ShippingRulesEnvelope {
             return ShippingRulesEnvelope.builder()
-                    .shippingRules(listOf())
-                    .build()
+                .shippingRules(listOf())
+                .build()
         }
     }
 }

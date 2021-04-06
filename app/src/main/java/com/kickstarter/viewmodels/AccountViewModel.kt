@@ -67,47 +67,46 @@ interface AccountViewModel {
         init {
 
             val userPrivacy = this.apolloClient.userPrivacy()
-                    .compose(Transformers.neverError())
-
-
-            userPrivacy
-                    .map { it.me()?.chosenCurrency() }
-                    .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
-                    .compose(bindToLifecycle())
-                    .subscribe { this.chosenCurrency.onNext(it) }
+                .compose(Transformers.neverError())
 
             userPrivacy
-                    .map { it?.me()?.email() }
-                    .subscribe { this.email.onNext(it) }
+                .map { it.me()?.chosenCurrency() }
+                .map { ObjectUtils.coalesce(it, CurrencyCode.USD.rawValue()) }
+                .compose(bindToLifecycle())
+                .subscribe { this.chosenCurrency.onNext(it) }
 
             userPrivacy
-                    .map { it?.me()?.hasPassword() ?: false }
-                    .subscribe { this.passwordRequiredContainerIsVisible.onNext(it) }
+                .map { it?.me()?.email() }
+                .subscribe { this.email.onNext(it) }
 
             userPrivacy
-                    .map { showEmailErrorImage(it) }
-                    .subscribe { this.showEmailErrorIcon.onNext(it) }
+                .map { it?.me()?.hasPassword() ?: false }
+                .subscribe { this.passwordRequiredContainerIsVisible.onNext(it) }
+
+            userPrivacy
+                .map { showEmailErrorImage(it) }
+                .subscribe { this.showEmailErrorIcon.onNext(it) }
 
             val updateCurrencyNotification = this.onSelectedCurrency
-                    .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
-                    .filter { it.first.rawValue() != it.second }
-                    .map<CurrencyCode> { it.first }
-                    .switchMap { updateUserCurrency(it).materialize() }
-                    .compose(bindToLifecycle())
-                    .share()
+                .compose(combineLatestPair<CurrencyCode, String>(this.chosenCurrency))
+                .filter { it.first.rawValue() != it.second }
+                .map<CurrencyCode> { it.first }
+                .switchMap { updateUserCurrency(it).materialize() }
+                .compose(bindToLifecycle())
+                .share()
 
             updateCurrencyNotification
-                    .compose(values())
-                    .map { it.updateUserProfile()?.user()?.chosenCurrency() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .subscribe {
-                        this.chosenCurrency.onNext(it)
-                        this.success.onNext(it)
-                    }
+                .compose(values())
+                .map { it.updateUserProfile()?.user()?.chosenCurrency() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .subscribe {
+                    this.chosenCurrency.onNext(it)
+                    this.success.onNext(it)
+                }
 
             updateCurrencyNotification
-                    .compose(Transformers.errors())
-                    .subscribe { this.error.onNext(it.localizedMessage) }
+                .compose(Transformers.errors())
+                .subscribe { this.error.onNext(it.localizedMessage) }
         }
 
         override fun onSelectedCurrency(currencyCode: CurrencyCode) {
@@ -144,9 +143,8 @@ interface AccountViewModel {
 
         private fun updateUserCurrency(currencyCode: CurrencyCode): Observable<UpdateUserCurrencyMutation.Data> {
             return this.apolloClient.updateUserCurrencyPreference(currencyCode)
-                    .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
-                    .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
-
+                .doOnSubscribe { this.progressBarIsVisible.onNext(true) }
+                .doAfterTerminate { this.progressBarIsVisible.onNext(false) }
         }
     }
 }

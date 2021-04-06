@@ -63,7 +63,9 @@ class EventContextValues {
         CHANGE_PAYMENT("change_payment"),
         LOGIN_SIGN_UP("log_in_sign_up"),
         SIGN_UP("sign_up"),
-        LOGIN("log_in")
+        LOGIN("log_in"),
+        MANAGE_PLEDGE("manage_pledge"),
+        TWO_FACTOR_AUTH("two_factor_auth")
     }
 
     /**
@@ -134,5 +136,18 @@ class EventContextValues {
         WATCH("watch"),
         UNWATCH("unwatch"),
         FACEBOOK("facebook")
+    }
+
+    /**
+     * Indicates where on the page or screen the event fired based on the type of video.
+     *
+     * @param contextName: The name of the video context.
+     *
+     * LENGTH: Length of video.
+     * POSITION: Index position of the video playhead.
+     */
+    enum class VideoContextName(val contextName: String) {
+        LENGTH("length"),
+        POSITION("position")
     }
 }

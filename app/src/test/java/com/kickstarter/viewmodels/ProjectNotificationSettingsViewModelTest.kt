@@ -8,7 +8,7 @@ import com.kickstarter.models.ProjectNotification
 import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Collections
 
 class ProjectNotificationSettingsViewModelTest : KSRobolectricTestCase() {
 
@@ -27,22 +27,26 @@ class ProjectNotificationSettingsViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProjectNotifications() {
         val projectNotifications = Collections.singletonList(ProjectNotificationFactory.disabled())
-        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun fetchProjectNotifications(): Observable<MutableList<ProjectNotification>> {
-                return Observable.just(projectNotifications)
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun fetchProjectNotifications(): Observable<MutableList<ProjectNotification>> {
+                    return Observable.just(projectNotifications)
+                }
+            }).build()
+        )
 
         this.projectNotifications.assertValue(projectNotifications)
     }
 
     @Test
     fun testUnableToFetchProjectNotificationsError() {
-        setUpEnvironment(environment().toBuilder().apiClient(object : MockApiClient() {
-            override fun fetchProjectNotifications(): Observable<MutableList<ProjectNotification>> {
-                return Observable.error(Throwable("error"))
-            }
-        }).build())
+        setUpEnvironment(
+            environment().toBuilder().apiClient(object : MockApiClient() {
+                override fun fetchProjectNotifications(): Observable<MutableList<ProjectNotification>> {
+                    return Observable.error(Throwable("error"))
+                }
+            }).build()
+        )
 
         this.unableToFetchProjectNotificationsError.assertValueCount(1)
     }

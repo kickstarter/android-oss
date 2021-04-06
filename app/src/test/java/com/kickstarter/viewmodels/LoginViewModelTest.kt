@@ -15,7 +15,6 @@ import org.junit.Test
 import rx.Observable
 import rx.observers.TestSubscriber
 
-
 class LoginViewModelTest : KSRobolectricTestCase() {
     private lateinit var vm: LoginViewModel.ViewModel
     private val genericLoginError = TestSubscriber<String>()
@@ -36,8 +35,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.prefillEmail().subscribe(this.preFillEmail)
         this.vm.outputs.showChangedPasswordSnackbar().subscribe(this.showChangedPasswordSnackbar)
         this.vm.outputs.showResetPasswordSuccessDialog()
-                .map { showAndEmail -> showAndEmail.first }
-                .subscribe(this.showResetPasswordSuccessDialog)
+            .map { showAndEmail -> showAndEmail.first }
+            .subscribe(this.showResetPasswordSuccessDialog)
         this.vm.outputs.tfaChallenge().subscribe(this.tfaChallenge)
     }
 
@@ -71,9 +70,9 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         mockConfig.config(config())
 
         val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .apiClient(apiClient)
-                .build()
+            .currentConfig(mockConfig)
+            .apiClient(apiClient)
+            .build()
 
         setUpEnvironment(environment)
 
@@ -84,8 +83,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.genericLoginError.assertValueCount(1)
-        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
-        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 
     @Test
@@ -100,9 +99,9 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         mockConfig.config(config())
 
         val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .apiClient(apiClient)
-                .build()
+            .currentConfig(mockConfig)
+            .apiClient(apiClient)
+            .build()
 
         setUpEnvironment(environment)
 
@@ -113,8 +112,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.invalidLoginError.assertValueCount(1)
-        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
-        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 
     @Test
@@ -129,9 +128,9 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         mockConfig.config(config())
 
         val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .apiClient(apiClient)
-                .build()
+            .currentConfig(mockConfig)
+            .apiClient(apiClient)
+            .build()
 
         setUpEnvironment(environment)
 
@@ -142,8 +141,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
 
         this.loginSuccess.assertNoValues()
         this.tfaChallenge.assertValueCount(1)
-        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
-        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 
     @Test
@@ -184,8 +183,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showChangedPasswordSnackbar().subscribe(rotatedShowChangedPasswordSnackbar)
         val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
         this.vm.outputs.showResetPasswordSuccessDialog()
-                .map { showAndEmail -> showAndEmail.first }
-                .subscribe(rotatedShowResetPasswordSuccessDialog)
+            .map { showAndEmail -> showAndEmail.first }
+            .subscribe(rotatedShowResetPasswordSuccessDialog)
 
         // Email should still be pre-filled.
         rotatedPrefillEmail.assertValue("hello@kickstarter.com")
@@ -217,8 +216,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.outputs.showChangedPasswordSnackbar().subscribe(rotatedShowChangedPasswordSnackbar)
         val rotatedShowResetPasswordSuccessDialog = TestSubscriber<Boolean>()
         this.vm.outputs.showResetPasswordSuccessDialog()
-                .map { showAndEmail -> showAndEmail.first }
-                .subscribe(rotatedShowResetPasswordSuccessDialog)
+            .map { showAndEmail -> showAndEmail.first }
+            .subscribe(rotatedShowResetPasswordSuccessDialog)
 
         // Email should still be pre-filled.
         rotatedPrefillEmail.assertValue("hello@kickstarter.com")
@@ -234,8 +233,8 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         mockConfig.config(config())
 
         val environment = environment().toBuilder()
-                .currentConfig(mockConfig)
-                .build()
+            .currentConfig(mockConfig)
+            .build()
 
         setUpEnvironment(environment)
 
@@ -247,7 +246,7 @@ class LoginViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.loginClick()
 
         this.loginSuccess.assertValues(null, null)
-        this.lakeTest.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
-        this.segmentTrack.assertValues(EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.lakeTest.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
+        this.segmentTrack.assertValues(EventName.PAGE_VIEWED.eventName, EventName.CTA_CLICKED.eventName, "Log In Submit Button Clicked")
     }
 }

@@ -27,7 +27,7 @@ class ResetDeviceIdWorker(@ApplicationContext applicationContext: Context, param
             logSuccess()
             applicationContext.sendBroadcast(Intent(BROADCAST))
             Result.success()
-        } catch (e: IOException){
+        } catch (e: IOException) {
             logError(e)
             Result.failure()
         }

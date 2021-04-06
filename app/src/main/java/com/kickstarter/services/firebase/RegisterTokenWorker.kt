@@ -35,11 +35,13 @@ class RegisterTokenWorker(@ApplicationContext applicationContext: Context, priva
 
     override fun doWork(): Result {
         (applicationContext as KSApplication).component().inject(this)
-        return handleResponse(this.apiClient
+        return handleResponse(
+            this.apiClient
                 .registerPushToken(this.token)
                 .subscribeOn(Schedulers.io())
                 .toBlocking()
-                .first())
+                .first()
+        )
     }
 
     private fun handleResponse(response: JsonObject): Result {

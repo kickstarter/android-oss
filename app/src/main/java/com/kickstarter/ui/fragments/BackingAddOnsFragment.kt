@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kickstarter.R
-import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.libs.BaseFragment
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
@@ -24,6 +23,7 @@ import com.kickstarter.ui.adapters.ShippingRulesAdapter
 import com.kickstarter.ui.data.PledgeData
 import com.kickstarter.ui.data.PledgeReason
 import com.kickstarter.ui.data.ProjectData
+import com.kickstarter.ui.extensions.hideKeyboard
 import com.kickstarter.ui.viewholders.BackingAddOnViewHolder
 import com.kickstarter.viewmodels.BackingAddOnsFragmentViewModel
 import kotlinx.android.synthetic.main.fragment_backing_addons.*
@@ -49,61 +49,61 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         setupErrorDialog()
 
         this.viewModel.outputs.showPledgeFragment()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { showPledgeFragment(it.first, it.second) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { showPledgeFragment(it.first, it.second) }
 
         this.viewModel.outputs.addOnsList()
-                .compose(bindToLifecycle())
-                .throttleWithTimeout(50, TimeUnit.MILLISECONDS)
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    populateAddOns(it)
-                }
+            .compose(bindToLifecycle())
+            .throttleWithTimeout(50, TimeUnit.MILLISECONDS)
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                populateAddOns(it)
+            }
 
         this.viewModel.outputs.isEmptyState()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { showEmptyState(it) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { showEmptyState(it) }
 
         this.viewModel.outputs.selectedShippingRule()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { fragment_backing_addons_shipping_rules.setText(it.toString()) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { fragment_backing_addons_shipping_rules.setText(it.toString()) }
 
         this.viewModel.outputs.showErrorDialog()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe { showErrorDialog() }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { showErrorDialog() }
 
         this.viewModel.outputs.shippingRulesAndProject()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .filter { ObjectUtils.isNotNull(context) }
-                .subscribe { displayShippingRules(it.first, it.second) }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .filter { ObjectUtils.isNotNull(context) }
+            .subscribe { displayShippingRules(it.first, it.second) }
 
         this.viewModel.outputs.totalSelectedAddOns()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .filter { ObjectUtils.isNotNull(it) }
-                .subscribe { total ->
-                    backing_addons_footer_button.text = selectProperString(total)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .filter { ObjectUtils.isNotNull(it) }
+            .subscribe { total ->
+                backing_addons_footer_button.text = selectProperString(total)
+            }
 
         this.viewModel.outputs.shippingSelectorIsGone()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    ViewUtils.setGone(fragment_backing_addons_shipping_rules, it)
-                    ViewUtils.setGone(fragment_backing_addons_call_out, it)
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                ViewUtils.setGone(fragment_backing_addons_shipping_rules, it)
+                ViewUtils.setGone(fragment_backing_addons_call_out, it)
+            }
 
         this.viewModel.outputs.isEnabledCTAButton()
-                .compose(bindToLifecycle())
-                .compose(Transformers.observeForUI())
-                .subscribe {
-                    backing_addons_footer_button.isEnabled = it
-                }
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe {
+                backing_addons_footer_button.isEnabled = it
+            }
 
         backing_addons_footer_button.setOnClickListener {
             this.viewModel.inputs.continueButtonPressed()
@@ -113,9 +113,9 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
     private fun selectProperString(totalSelected: Int): String {
         val ksString = this.viewModel.environment.ksString()
         return when {
-            totalSelected == 0 -> ksString.format(getString(R.string.Skip_add_ons),"","")
-            totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_one),"quantity_count", totalSelected.toString())
-            totalSelected > 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_many),"quantity_count", totalSelected.toString())
+            totalSelected == 0 -> ksString.format(getString(R.string.Skip_add_ons), "", "")
+            totalSelected == 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_one), "quantity_count", totalSelected.toString())
+            totalSelected > 1 -> ksString.format(getString(R.string.Continue_with_quantity_count_add_ons_many), "quantity_count", totalSelected.toString())
             else -> ""
         }
     }
@@ -134,10 +134,10 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
         val projectData = projectDataAndAddOnList.first
         val selectedShippingRule = projectDataAndAddOnList.third
         val list = projectDataAndAddOnList
-                .second
-                .map {
-                    Triple(projectData, it, selectedShippingRule)
-                }.toList()
+            .second
+            .map {
+                Triple(projectData, it, selectedShippingRule)
+            }.toList()
 
         backingAddonsAdapter.populateDataForAddOns(list)
     }
@@ -160,22 +160,23 @@ class BackingAddOnsFragment : BaseFragment<BackingAddOnsFragmentViewModel.ViewMo
 
     private fun showPledgeFragment(pledgeData: PledgeData, pledgeReason: PledgeReason) {
         fragmentManager
-                ?.beginTransaction()
-                ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
-                ?.add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
-                ?.addToBackStack(NewCardFragment::class.java.simpleName)
-                ?.commit()
+            ?.beginTransaction()
+            ?.setCustomAnimations(R.anim.slide_up, 0, 0, R.anim.slide_down)
+            ?.add(R.id.fragment_container, PledgeFragment.newInstance(pledgeData, pledgeReason), PledgeFragment::class.java.simpleName)
+            ?.addToBackStack(NewCardFragment::class.java.simpleName)
+            ?.commit()
     }
 
     private fun setupErrorDialog() {
         context?.let { context ->
             errorDialog = AlertDialog.Builder(context, R.style.AlertDialog)
-                    .setCancelable(false)
-                    .setTitle(getString(R.string.Something_went_wrong_please_try_again))
-                    .setPositiveButton(getString(R.string.Retry)) { _, _ ->
-                        this.viewModel.inputs.retryButtonPressed() }
-                    .setNegativeButton(getString(R.string.general_navigation_buttons_close)) { _, _ -> dismissErrorDialog()}
-                    .create()
+                .setCancelable(false)
+                .setTitle(getString(R.string.Something_went_wrong_please_try_again))
+                .setPositiveButton(getString(R.string.Retry)) { _, _ ->
+                    this.viewModel.inputs.retryButtonPressed()
+                }
+                .setNegativeButton(getString(R.string.general_navigation_buttons_close)) { _, _ -> dismissErrorDialog() }
+                .create()
         }
     }
 

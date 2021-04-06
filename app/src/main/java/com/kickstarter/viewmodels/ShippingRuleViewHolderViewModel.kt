@@ -34,10 +34,10 @@ interface ShippingRuleViewHolderViewModel {
 
         init {
             this.shippingRuleAndProject
-                    .filter { ObjectUtils.isNotNull(it.first) }
-                    .map { it.first.location().displayableName() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingRuleText)
+                .filter { ObjectUtils.isNotNull(it.first) }
+                .map { it.first.location().displayableName() }
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingRuleText)
         }
 
         override fun configureWith(shippingRule: ShippingRule, project: Project) = this.shippingRuleAndProject.onNext(Pair.create(shippingRule, project))

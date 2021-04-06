@@ -21,14 +21,22 @@ interface ExperimentsClientType {
      */
     fun optimizelyProperties(experimentData: ExperimentData): Map<String, Any> {
         val experiments = JSONArray()
-        val properties = mapOf("optimizely_api_key" to optimizelyEnvironment().sdkKey,
-                "optimizely_environment_key" to optimizelyEnvironment().environmentKey,
-                "optimizely_experiments" to experiments)
+        val properties = mapOf(
+            "optimizely_api_key" to optimizelyEnvironment().sdkKey,
+            "optimizely_environment_key" to optimizelyEnvironment().environmentKey,
+            "optimizely_experiments" to experiments
+        )
 
         for (experiment in OptimizelyExperiment.Key.values()) {
             val variation = trackingVariation(experiment.key, experimentData) ?: "unknown"
-            experiments.put(JSONObject(mutableMapOf<Any?, Any?>("optimizely_experiment_slug" to experiment.key,
-                    "optimizely_variant_id" to variation)))
+            experiments.put(
+                JSONObject(
+                    mutableMapOf<Any?, Any?>(
+                        "optimizely_experiment_slug" to experiment.key,
+                        "optimizely_variant_id" to variation
+                    )
+                )
+            )
         }
 
         return properties
@@ -41,7 +49,7 @@ interface ExperimentsClientType {
     fun OSVersion(): String
     fun track(eventKey: String, experimentData: ExperimentData)
     fun trackingVariation(experimentKey: String, experimentData: ExperimentData): String?
-    fun userId() : String
+    fun userId(): String
     fun variant(experiment: OptimizelyExperiment.Key, experimentData: ExperimentData): OptimizelyExperiment.Variant?
 
     /**

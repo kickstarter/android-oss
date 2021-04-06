@@ -10,7 +10,7 @@ import com.kickstarter.ui.fragments.NewCardFragment
 import com.kickstarter.viewmodels.NewCardViewModel
 
 @RequiresActivityViewModel(NewCardViewModel.ViewModel::class)
-class NewCardActivity  : BaseActivity<NewCardViewModel.ViewModel>(), NewCardFragment.OnCardSavedListener {
+class NewCardActivity : BaseActivity<NewCardViewModel.ViewModel>(), NewCardFragment.OnCardSavedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -8,12 +8,14 @@ import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.EventContextValues
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.ACTIVITY_FEED
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
 import com.kickstarter.mock.factories.AvatarFactory
+import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.CategoryFactory
 import com.kickstarter.mock.factories.CheckoutDataFactory
 import com.kickstarter.mock.factories.ConfigFactory
@@ -107,6 +109,34 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(0, expectedProperties["user_launched_projects_count"])
         assertEquals("12", expectedProperties["user_uid"])
         assertEquals("US", expectedProperties["user_country"])
+        assertEquals(0, expectedProperties["user_created_projects_count"])
+        assertEquals(false, expectedProperties["user_facebook_connected"])
+        assertEquals(0, expectedProperties["user_watched_projects_count"])
+    }
+
+    @Test
+    fun testCampaignDetailsCta_Properties() {
+        val user = user()
+        val project = project()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackCampaignDetailsCTAClicked(projectData)
+        this.segmentIdentify.assertValue(user.id())
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertProjectProperties(projectData.project())
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals("campaign_details", expectedProperties["context_cta"])
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -128,21 +158,36 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertSessionProperties(user)
         assertContextProperties()
+        assertDiscoverProperties()
+    }
+
+    @Test
+    fun testDiscoveryPageViewed() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val params = DiscoveryParams
+            .builder()
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
+
+        segment.trackDiscoveryPageViewed(params)
+        this.segmentIdentify.assertValue(user.id())
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertDiscoverProperties()
+        assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
-        assertNull(expectedProperties["discover_category_id"])
-        assertNull(expectedProperties["discover_category_name"])
-        assertEquals(true, expectedProperties["discover_everything"])
-        assertEquals(false, expectedProperties["discover_pwl"])
-        assertEquals(false, expectedProperties["discover_recommended"])
-        assertEquals("discovery", expectedProperties["discover_ref_tag"])
-        assertEquals(null, expectedProperties["discover_search_term"])
-        assertEquals(false, expectedProperties["discover_social"])
-        assertEquals("magic", expectedProperties["discover_sort"])
-        assertNull(expectedProperties["discover_subcategory_id"])
-        assertNull(expectedProperties["discover_subcategory_name"])
-        assertEquals(null, expectedProperties["discover_tag"])
-        assertEquals(false, expectedProperties["discover_watched"])
+
+        assertEquals("magic", expectedProperties[EventContextValues.CtaContextName.DISCOVER_SORT.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
     @Test
@@ -182,6 +227,29 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["discover_watched"])
 
         this.segmentIdentify.assertValue(user.id())
+    }
+
+    @Test
+    fun testDiscoveryActivity_CTA_Clicked_Properties() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackDiscoverProjectCTAClicked()
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(ACTIVITY_FEED.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test
@@ -518,6 +586,60 @@ class SegmentTest : KSRobolectricTestCase() {
     }
 
     @Test
+    fun testManagePledgePageViewed() {
+        val project = ProjectFactory.backedProject()
+            .toBuilder()
+            .id(4)
+            .category(CategoryFactory.ceramicsCategory())
+            .commentsCount(3)
+            .creator(creator())
+            .location(LocationFactory.unitedStates())
+            .updatesCount(5)
+            .build()
+
+        val addOn1 = RewardFactory.addOn()
+        val addOn2 = RewardFactory.addOnMultiple()
+
+        val backing = BackingFactory.backing().toBuilder()
+            .project(project)
+            .addOns(listOf(addOn1, addOn2))
+            .bonusAmount(35.0)
+            .shippingAmount(20f)
+            .location(LocationFactory.germany())
+            .locationId(LocationFactory.germany().id())
+            .build()
+
+        val creator = creator()
+        val client = client(creator)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        val segment = AnalyticEvents(listOf(client))
+
+        val projectData = ProjectDataFactory.project(project, RefTag.discovery(), RefTag.recommended())
+
+        segment.trackManagePledgePageViewed(backing = backing, projectData = projectData)
+
+        assertSessionProperties(creator)
+        assertProjectProperties(project)
+        assertContextProperties()
+
+        val expectedProperties = this.propertiesTest.value
+
+        // - we test asserting this properties all methods in SharedFunctions.kt
+        assertEquals(10.0, expectedProperties["checkout_amount"])
+        assertEquals("credit_card", expectedProperties["checkout_payment_type"])
+        assertEquals(30.0, expectedProperties["checkout_amount_total_usd"])
+        assertEquals(20.0, expectedProperties["checkout_shipping_amount_usd"])
+        assertEquals(5, expectedProperties["checkout_add_ons_count_total"])
+        assertEquals(2, expectedProperties["checkout_add_ons_count_unique"])
+        assertEquals(100.0, expectedProperties["checkout_add_ons_minimum_usd"])
+        assertEquals(35.0, expectedProperties["checkout_bonus_amount_usd"])
+        assertEquals(MANAGE_PLEDGE.contextName, expectedProperties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    @Test
     fun testCheckoutProperties_whenFixingPledge() {
         val project = ProjectFactory.backedProject()
             .toBuilder()
@@ -807,6 +929,23 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("unknown", experiment["optimizely_variant_id"])
     }
 
+    private fun assertDiscoverProperties() {
+        val expectedProperties = propertiesTest.value
+        assertNull(expectedProperties["discover_category_id"])
+        assertNull(expectedProperties["discover_category_name"])
+        assertEquals(true, expectedProperties["discover_everything"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("discovery", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("magic", expectedProperties["discover_sort"])
+        assertNull(expectedProperties["discover_subcategory_id"])
+        assertNull(expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+    }
+
     private fun assertPledgeProperties() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(DateTime.parse("2019-03-26T19:26:09Z"), expectedProperties["checkout_reward_estimated_delivery_on"])
@@ -866,7 +1005,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("phone", expectedProperties["session_device_type"])
         assertEquals("Google", expectedProperties["session_device_manufacturer"])
         assertEquals("Pixel 3", expectedProperties["session_device_model"])
-        assertEquals("Portrait", expectedProperties["session_device_orientation"])
+        assertEquals("portrait", expectedProperties["session_device_orientation"])
         assertEquals("en", expectedProperties["session_display_language"])
         assertEquals(JSONArray().put("optimizely_feature").put("android_example_feature"), expectedProperties["session_enabled_features"])
         assertEquals(false, expectedProperties["session_is_voiceover_running"])
@@ -884,6 +1023,9 @@ class SegmentTest : KSRobolectricTestCase() {
         val expectedProperties = this.propertiesTest.value
         assertEquals(3, expectedProperties["user_backed_projects_count"])
         assertEquals(5, expectedProperties["user_launched_projects_count"])
+        assertEquals(6, expectedProperties["user_created_projects_count"])
+        assertEquals(true, expectedProperties["user_facebook_connected"])
+        assertEquals(10, expectedProperties["user_watched_projects_count"])
         assertEquals("15", expectedProperties["user_uid"])
         assertEquals("NG", expectedProperties["user_country"])
         assertEquals(isAdmin, expectedProperties["user_is_admin"])
@@ -943,6 +1085,8 @@ class SegmentTest : KSRobolectricTestCase() {
             .backedProjectsCount(3)
             .memberProjectsCount(5)
             .createdProjectsCount(2)
+            .facebookConnected(true)
+            .createdProjectsCount(6)
             .location(LocationFactory.nigeria())
             .starredProjectsCount(10)
             .build()

@@ -8,6 +8,7 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.factories.BackingFactory
 import com.kickstarter.mock.factories.LocationFactory
 import com.kickstarter.mock.factories.PaymentSourceFactory
@@ -1196,6 +1197,35 @@ class BackingFragmentViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject))
 
         this.totalAmount.assertValue(expectedCurrency(environment, backedProject, amount))
+    }
+
+    /*
+    * Page viewed event is expected when fragment is visible --> isExpanded = true
+    */
+    @Test
+    fun testManagePledgePageViewed_withExpanded_True() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+        this.vm.isExpanded(true)
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
+    /*
+     * No event is expected when fragment is not visible --> isExpanded = false
+     */
+    @Test
+    fun testManagePledgePageViewed_withExpanded_False() {
+        val project = ProjectFactory.project()
+        setUpEnvironment(environment())
+
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project))
+
+        this.vm.isExpanded(false)
+
+        this.segmentTrack.assertNoValues()
     }
 
     @Test

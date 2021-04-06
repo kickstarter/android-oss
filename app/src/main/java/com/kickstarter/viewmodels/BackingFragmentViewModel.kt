@@ -380,6 +380,16 @@ interface BackingFragmentViewModel {
                 .share()
                 .subscribe()
 
+            this.isExpanded
+                .filter { it }
+                .compose(combineLatestPair(backing))
+                .map { it.second }
+                .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackManagePledgePageViewed(it.first, it.second)
+                }
+
             val rewardIsReceivable = backing
                 .map { ObjectUtils.isNotNull(it.rewardId()) }
 

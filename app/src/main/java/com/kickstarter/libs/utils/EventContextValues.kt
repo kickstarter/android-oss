@@ -64,6 +64,7 @@ class EventContextValues {
         LOGIN_SIGN_UP("log_in_sign_up"),
         SIGN_UP("sign_up"),
         LOGIN("log_in"),
+        MANAGE_PLEDGE("manage_pledge"),
         TWO_FACTOR_AUTH("two_factor_auth")
     }
 

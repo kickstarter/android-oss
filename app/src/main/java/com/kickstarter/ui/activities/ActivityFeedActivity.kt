@@ -53,6 +53,11 @@ class ActivityFeedActivity : BaseActivity<ActivityFeedViewModel.ViewModel>() {
             this, binding.activityFeedSwipeRefreshLayout, { viewModel.inputs.refresh() }
         ) { viewModel.outputs.isFetchingActivities }
 
+        viewModel.outputs.isFetchingActivities
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.activityFeedSwipeRefreshLayout.isRefreshing = it }
+
         // Only allow refreshing if there's a current user
         currentUser?.observable()
             ?.map { `object`: User? -> ObjectUtils.isNotNull(`object`) }

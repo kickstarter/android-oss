@@ -21,7 +21,7 @@ open class HelpActivity : BaseActivity<HelpViewModel>() {
     private var helpType = 0
 
     @WebEndpoint
-    private val webEndpoint: String? = null
+    private lateinit var webEndpoint: String
 
     protected fun helpType(@HelpType helpType: Int) {
         this.helpType = helpType
@@ -54,6 +54,7 @@ open class HelpActivity : BaseActivity<HelpViewModel>() {
     private lateinit var binding: HelpLayoutBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        webEndpoint = environment().webEndpoint()
         binding = HelpLayoutBinding.inflate(layoutInflater)
 
         setContentView(binding.root)

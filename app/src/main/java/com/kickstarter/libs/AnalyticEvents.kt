@@ -20,6 +20,7 @@ import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHANGE_PAYM
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.CHECKOUT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.LOGIN_SIGN_UP
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName.MANAGE_PLEDGE
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.PROJECT
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.REWARDS
 import com.kickstarter.libs.utils.EventContextValues.ContextPageName.SIGN_UP
@@ -60,7 +61,9 @@ import com.kickstarter.libs.utils.EventName.PAGE_VIEWED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_COMPLETED
 import com.kickstarter.libs.utils.EventName.VIDEO_PLAYBACK_STARTED
 import com.kickstarter.libs.utils.ExperimentData
+import com.kickstarter.libs.utils.checkoutProperties
 import com.kickstarter.models.Activity
+import com.kickstarter.models.Backing
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
@@ -913,6 +916,27 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(MANAGE_PLEDGE_BUTTON_CLICKED, props)
     }
 
+    /**
+     * Sends data associated with page view event to the client.
+     *
+     * @param backing Information regarding the backing
+     * @param projectData Information regarding projectData
+     */
+    fun trackManagePledgePageViewed(backing: Backing, projectData: ProjectData) {
+        val checkoutData = checkoutProperties(
+            amount = backing.amount(),
+            checkoutId = null,
+            bonus = backing.bonusAmount(),
+            shippingAmount = backing.shippingAmount().toDouble()
+        )
+
+        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to MANAGE_PLEDGE.contextName)
+        props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.checkoutProperties(checkoutData, projectData.project(), backing.addOns()))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
+        client.track(PAGE_VIEWED.eventName, props)
+    }
+
     fun trackProjectPagePledgeButtonClicked(projectData: ProjectData, pledgeFlowContext: PledgeFlowContext?) {
         val props = AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser())
         props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
@@ -1128,6 +1152,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CAMPAIGN_DETAILS.contextName)
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         client.track(CTA_CLICKED.eventName, props)
     }
 

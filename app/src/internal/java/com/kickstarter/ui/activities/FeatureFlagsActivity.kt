@@ -54,7 +54,7 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>(), Fe
             switch.isChecked = booleanPreferenceType.get()
         }
     }
-    
+
     override fun featureOptionToggle(featureName: String, isEnabled: Boolean) {
         when (featureName) {
             SEGMENT_ENABLED.configFeatureName -> this.viewModel.inputs.updateSegmentFlag(isEnabled)

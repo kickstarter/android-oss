@@ -18,7 +18,7 @@ interface FeatureFlagsViewModel {
         /** call function to edit segment feature flag in internal tool */
         fun updateSegmentFlag(flag: Boolean)
     }
-    
+
     interface Outputs {
         /** Emits "android_" prefixed feature flags from the [Config]. */
         fun configFeatures(): Observable<List<FeatureFlagsModel>>

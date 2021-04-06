@@ -28,7 +28,7 @@ interface FeatureFlagViewHolderViewModel {
 
         /** Emits the if the flag value can be changed  */
         fun isClickable(): Observable<Boolean>
-        
+
         fun featureAlpha(): Observable<Float>
 
         /** Emits when we should notify the delegate the feature state changed . */

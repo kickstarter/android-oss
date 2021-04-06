@@ -65,7 +65,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
               .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
               .compose(Transformers.neverError())
               .subscribe(c -> {
-                if (build.isDebug() || Build.isInternal()) {
+                if (this.build.isDebug() || Build.isInternal()) {
                   if (Objects.requireNonNull(c.features()).containsKey(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName())) {
                     final boolean isChecked = Objects.requireNonNull(this.currentConfig.features()).get(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName());
                     Objects.requireNonNull(c.features()).put(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName(), isChecked);

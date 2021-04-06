@@ -143,7 +143,7 @@ public interface SearchViewModel {
         .subscribe(this.lake::trackSearchResultsLoaded);
 
       this.lake.trackSearchButtonClicked();
-      this.lake.trackSearchCTAButtonClicked(defaultParams);
+      this.lake.trackSearchCTAButtonClicked();
       this.lake.trackSearchPageViewed(defaultParams);
     }
 

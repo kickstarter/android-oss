@@ -252,13 +252,7 @@ class SegmentTest : KSRobolectricTestCase() {
         client.identifiedId.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
-        val params = DiscoveryParams
-            .builder()
-            .category(CategoryFactory.ceramicsCategory())
-            .sort(DiscoveryParams.Sort.MAGIC)
-            .build()
-
-        segment.trackSearchCTAButtonClicked(params)
+        segment.trackSearchCTAButtonClicked()
 
         assertSessionProperties(user)
         assertContextProperties()

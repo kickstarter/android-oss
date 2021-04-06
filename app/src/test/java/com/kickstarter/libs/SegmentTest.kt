@@ -220,7 +220,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("recommended_popular", expectedProperties["discover_ref_tag"])
         assertEquals(null, expectedProperties["discover_search_term"])
         assertEquals(false, expectedProperties["discover_social"])
-        assertEquals("popularity", expectedProperties["discover_sort"])
+        assertEquals("popular", expectedProperties["discover_sort"])
         assertNull(expectedProperties["discover_subcategory_id"])
         assertNull(expectedProperties["discover_subcategory_name"])
         assertEquals(null, expectedProperties["discover_tag"])
@@ -825,6 +825,58 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
+    @Test
+    fun discoveryParamProperties_whenAllFieldsPopulated_shouldReturnExpectedProps() {
+        val user = user()
+        val client = client(user)
+
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackDiscoveryPageViewed(discoveryParams())
+
+        val properties = this.propertiesTest.value
+
+        assertEquals(false, properties["discover_everything"])
+        assertEquals(true, properties["discover_pwl"])
+        assertEquals(false, properties["discover_recommended"])
+        assertEquals("category_ending_soon", properties["discover_ref_tag"])
+        assertEquals("hello world", properties["discover_search_term"])
+        assertEquals(true, properties["discover_social"])
+        assertEquals("ending_soon", properties["discover_sort"])
+        assertEquals(123, properties["discover_tag"])
+        assertEquals(true, properties["discover_watched"])
+        assertEquals("Art", properties["discover_category_name"])
+        assertEquals("Ceramics", properties["discover_subcategory_name"])
+    }
+
+    @Test
+    fun testTrackDiscoverSortCTA() {
+        val user = user()
+        val client = client(user)
+
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+
+        segment.trackDiscoverSortCTA(DiscoveryParams.Sort.POPULAR, discoveryParams())
+
+        val properties = this.propertiesTest.value
+
+        assertContextProperties()
+        assertUserProperties(false)
+        assertSessionProperties(user)
+
+        assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, properties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.DISCOVER_SORT.contextName, properties[CONTEXT_CTA.contextName])
+        assertEquals("ending_soon", properties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals("popular", properties["discover_sort"])
+    }
+
     private fun client(user: User?) = MockTrackingClient(
         user?.let { MockCurrentUser(it) }
             ?: MockCurrentUser(),
@@ -1037,5 +1089,19 @@ class SegmentTest : KSRobolectricTestCase() {
             .createdProjectsCount(6)
             .location(LocationFactory.nigeria())
             .starredProjectsCount(10)
+            .build()
+
+    private fun discoveryParams() =
+        DiscoveryParams
+            .builder()
+            .staffPicks(true)
+            .recommended(false)
+            .location(LocationFactory.germany())
+            .starred(1)
+            .term("hello world")
+            .social(2)
+            .sort(DiscoveryParams.Sort.ENDING_SOON)
+            .tagId(123)
+            .category(CategoryFactory.ceramicsCategory())
             .build()
 }

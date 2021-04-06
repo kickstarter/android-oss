@@ -240,12 +240,13 @@ dependencies {
 
     // Analytics
     implementation 'com.segment.analytics.android:analytics:4.9.0'
+    implementation "com.appboy:appboy-segment-integration:7.0.0"
 
     // Security
     implementation 'com.perimeterx.sdk:msdk:1.13.1'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+    implementation platform('com.google.firebase:firebase-bom:26.7.0')
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-perf-ktx'

@@ -733,11 +733,18 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      *
      * @param discoveryParams: The discovery parameters.
      */
-    fun trackDiscoverSortCTA(discoveryParams: DiscoveryParams) {
+    fun trackDiscoverSortCTA(currentSort: DiscoveryParams.Sort, discoverParams: DiscoveryParams) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
         props[CONTEXT_LOCATION.contextName] = DISCOVER_ADVANCED.contextName
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
-        props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoveryParams))
+        props[CONTEXT_TYPE.contextName] = discoverParams.sort()?.let {
+            when (it) {
+                DiscoveryParams.Sort.POPULAR -> "popular"
+                DiscoveryParams.Sort.ENDING_SOON -> "ending_soon"
+                else -> it.toString()
+            }
+        } ?: ""
+        props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoverParams, currentSort))
         client.track(CTA_CLICKED.eventName, props)
     }
 
@@ -1149,6 +1156,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to CAMPAIGN_DETAILS.contextName)
         props[CONTEXT_PAGE.contextName] = PROJECT.contextName
         props.putAll(AnalyticEventsUtils.projectProperties(projectData.project(), client.loggedInUser()))
+        props.putAll(AnalyticEventsUtils.refTagProperties(projectData.refTagFromIntent(), projectData.refTagFromCookie()))
         client.track(CTA_CLICKED.eventName, props)
     }
 

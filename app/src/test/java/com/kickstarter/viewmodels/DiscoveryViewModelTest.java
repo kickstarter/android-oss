@@ -162,7 +162,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.sortClicked(1);
     this.vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
-    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName());
+    this.lakeTest.assertValues(EventName.CTA_CLICKED.getEventName(), "Explore Sort Clicked");
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true);
@@ -177,7 +177,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true);
-    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", EventName.CTA_CLICKED.getEventName());
+    this.lakeTest.assertValues(EventName.CTA_CLICKED.getEventName(), "Explore Sort Clicked", "Filter Clicked", EventName.CTA_CLICKED.getEventName());
 
     // Select ART category from drawer.
     this.vm.inputs.childFilterViewHolderRowClick(null,
@@ -188,7 +188,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Sort tab should be expanded.
     this.expandSortTabLayout.assertValues(true, true, true, true);
-    this.lakeTest.assertValues("Explore Sort Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", EventName.CTA_CLICKED.getEventName());
+    this.lakeTest.assertValues(EventName.CTA_CLICKED.getEventName(), "Explore Sort Clicked", "Filter Clicked", EventName.CTA_CLICKED.getEventName(), "Filter Clicked", EventName.CTA_CLICKED.getEventName());
 
     // Simulate rotating the device and hitting initial inputs again.
     this.vm.outputs.updateToolbarWithParams().subscribe(this.rotatedUpdateToolbarWithParams);

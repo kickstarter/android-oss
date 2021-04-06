@@ -62,33 +62,33 @@ interface ResetPasswordViewModel {
 
         init {
             intent()
-                    .filter { it.hasExtra(IntentKey.EMAIL) }
-                    .map {
-                        it.getStringExtra(IntentKey.EMAIL)
-                    }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.prefillEmail)
+                .filter { it.hasExtra(IntentKey.EMAIL) }
+                .map {
+                    it.getStringExtra(IntentKey.EMAIL)
+                }
+                .compose(bindToLifecycle())
+                .subscribe(this.prefillEmail)
 
             this.email
-                    .map { it.isEmail() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.isFormValid)
+                .map { it.isEmail() }
+                .compose(bindToLifecycle())
+                .subscribe(this.isFormValid)
 
             val resetPasswordNotification = this.email
-                    .compose<String>(Transformers.takeWhen(this.resetPasswordClick))
-                    .switchMap(this::submitEmail)
-                    .share()
+                .compose<String>(Transformers.takeWhen(this.resetPasswordClick))
+                .switchMap(this::submitEmail)
+                .share()
 
             resetPasswordNotification
-                    .compose(values())
-                    .compose(bindToLifecycle())
-                    .subscribe { success() }
+                .compose(values())
+                .compose(bindToLifecycle())
+                .subscribe { success() }
 
             resetPasswordNotification
-                    .compose(errors())
-                    .map { ErrorEnvelope.fromThrowable(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.resetError)
+                .compose(errors())
+                .map { ErrorEnvelope.fromThrowable(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.resetError)
 
             this.lake.trackForgotPasswordPageViewed()
         }
@@ -99,10 +99,10 @@ interface ResetPasswordViewModel {
 
         private fun submitEmail(email: String): Observable<Notification<User>> {
             return this.client.resetPassword(email)
-                    .doOnSubscribe { this.isFormSubmitting.onNext(true) }
-                    .doAfterTerminate { this.isFormSubmitting.onNext(false) }
-                    .materialize()
-                    .share()
+                .doOnSubscribe { this.isFormSubmitting.onNext(true) }
+                .doAfterTerminate { this.isFormSubmitting.onNext(false) }
+                .materialize()
+                .share()
         }
 
         override fun email(emailInput: String) {
@@ -127,8 +127,8 @@ interface ResetPasswordViewModel {
 
         override fun resetError(): Observable<String> {
             return this.resetError
-                    .takeUntil(this.resetSuccess)
-                    .map {  it?.errorMessage() ?: ERROR_GENERIC }
+                .takeUntil(this.resetSuccess)
+                .map { it?.errorMessage() ?: ERROR_GENERIC }
         }
 
         override fun prefillEmail(): BehaviorSubject<String> = this.prefillEmail

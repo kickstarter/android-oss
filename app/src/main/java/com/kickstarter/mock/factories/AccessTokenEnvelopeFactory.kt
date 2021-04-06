@@ -7,9 +7,9 @@ class AccessTokenEnvelopeFactory private constructor() {
     companion object {
         fun envelope(user: User, token: String): AccessTokenEnvelope {
             return AccessTokenEnvelope.builder()
-                    .user(user)
-                    .accessToken(token)
-                    .build()
+                .user(user)
+                .accessToken(token)
+                .build()
         }
 
         fun envelope(): AccessTokenEnvelope {

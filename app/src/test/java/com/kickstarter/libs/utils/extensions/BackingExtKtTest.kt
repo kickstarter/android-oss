@@ -23,10 +23,10 @@ class BackingExtKtTest : KSRobolectricTestCase() {
     fun setup() {
         backing = BackingFactory.backing()
         backingWithId =
-                backing
-                        .toBuilder()
-                        .rewardId(ID_MATCHING)
-                        .build()
+            backing
+                .toBuilder()
+                .rewardId(ID_MATCHING)
+                .build()
         project = ProjectFactory.project()
         reward = RewardFactory.reward()
         backingWithReward = BackingFactory.backing(reward)
@@ -70,10 +70,10 @@ class BackingExtKtTest : KSRobolectricTestCase() {
     @Test
     fun testIsShippable() {
         val backingWithShipping =
-                backing
-                        .toBuilder()
-                        .reward(RewardFactory.rewardWithShipping())
-                        .build()
+            backing
+                .toBuilder()
+                .reward(RewardFactory.rewardWithShipping())
+                .build()
 
         assertFalse(backing.isShippable())
         assertTrue(backingWithShipping.isShippable())
@@ -89,15 +89,15 @@ class BackingExtKtTest : KSRobolectricTestCase() {
     @Test
     fun backedReward_whenIdNotMatching_shouldReturnNull() {
         val rewardMismatchId =
-                reward
-                        .toBuilder()
-                        .id(ID_NOT_MATCHING)
-                        .build()
+            reward
+                .toBuilder()
+                .id(ID_NOT_MATCHING)
+                .build()
         val projectWithRewards =
-                project
-                        .toBuilder()
-                        .rewards(listOf(rewardMismatchId, rewardMismatchId))
-                        .build()
+            project
+                .toBuilder()
+                .rewards(listOf(rewardMismatchId, rewardMismatchId))
+                .build()
 
         assertNull(backingWithId.backedReward(projectWithRewards))
     }
@@ -105,20 +105,20 @@ class BackingExtKtTest : KSRobolectricTestCase() {
     @Test
     fun backedReward_whenIdMatching_shouldReturnReward() {
         val rewardIdMatching =
-                reward
-                        .toBuilder()
-                        .id(ID_MATCHING)
-                        .build()
+            reward
+                .toBuilder()
+                .id(ID_MATCHING)
+                .build()
         val rewardMismatchId =
-                reward
-                        .toBuilder()
-                        .id(ID_NOT_MATCHING)
-                        .build()
+            reward
+                .toBuilder()
+                .id(ID_NOT_MATCHING)
+                .build()
         val projectWithRewards =
-                project
-                        .toBuilder()
-                        .rewards(listOf(rewardMismatchId, rewardIdMatching))
-                        .build()
+            project
+                .toBuilder()
+                .rewards(listOf(rewardMismatchId, rewardIdMatching))
+                .build()
 
         assertEquals(rewardIdMatching, backingWithId.backedReward(projectWithRewards))
     }

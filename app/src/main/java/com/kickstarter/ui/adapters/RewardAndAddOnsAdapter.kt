@@ -20,20 +20,20 @@ class RewardAndAddOnsAdapter : KSAdapter() {
         insertSection(SECTION_ADD_ONS_CARD, emptyList<Reward>())
     }
 
-    override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()){
+    override fun layout(sectionRow: SectionRow): Int = when (sectionRow.section()) {
         SECTION_REWARD_CARD,
         SECTION_ADD_ONS_CARD -> R.layout.item_add_on
         else -> 0
     }
 
     override fun viewHolder(@LayoutRes layout: Int, viewGroup: ViewGroup): KSViewHolder {
-        return when(layout) {
+        return when (layout) {
             R.layout.item_add_on -> AddOnViewHolder(ItemAddOnBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
             else -> EmptyViewHolder(EmptyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
         }
     }
 
-    fun populateDataForAddOns(rewards: List<Pair<ProjectData,Reward>>) {
+    fun populateDataForAddOns(rewards: List<Pair<ProjectData, Reward>>) {
         setSection(SECTION_ADD_ONS_CARD, rewards)
         notifyDataSetChanged()
     }

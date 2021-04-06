@@ -111,54 +111,55 @@ interface ProfileViewModel {
         init {
 
             val freshUser = this.client.fetchCurrentUser()
-                    .retry(2)
-                    .compose(neverError())
+                .retry(2)
+                .compose(neverError())
             freshUser.subscribe { this.currentUser.refresh(it) }
 
             val params = DiscoveryParams.builder()
-                    .backed(1)
-                    .perPage(18)
-                    .sort(DiscoveryParams.Sort.ENDING_SOON)
-                    .build()
+                .backed(1)
+                .perPage(18)
+                .sort(DiscoveryParams.Sort.ENDING_SOON)
+                .build()
 
             val paginator = ApiPaginator.builder<Project, DiscoverEnvelope, DiscoveryParams>()
-                    .nextPage(this.nextPage)
-                    .envelopeToListOfData { it.projects() }
-                    .envelopeToMoreUrl { env -> env.urls().api().moreProjects() }
-                    .loadWithParams { this.client.fetchProjects(params) }
-                    .loadWithPaginationPath { this.client.fetchProjects(it) }
-                    .build()
-            
+                .nextPage(this.nextPage)
+                .envelopeToListOfData { it.projects() }
+                .envelopeToMoreUrl { env -> env.urls().api().moreProjects() }
+                .loadWithParams { this.client.fetchProjects(params) }
+                .loadWithPaginationPath { this.client.fetchProjects(it) }
+                .build()
+
             paginator.isFetching
-                    .compose(bindToLifecycle())
-                    .subscribe(this.isFetchingProjects)
-            
+                .compose(bindToLifecycle())
+                .subscribe(this.isFetchingProjects)
+
             val loggedInUser = this.currentUser.loggedInUser()
 
             this.avatarImageViewUrl = loggedInUser.map { u -> u.avatar().medium() }
 
             this.backedCountTextViewHidden = loggedInUser
-                    .map { u -> IntegerUtils.isZero(u.backedProjectsCount()) }
+                .map { u -> IntegerUtils.isZero(u.backedProjectsCount()) }
             this.backedTextViewHidden = this.backedCountTextViewHidden
 
             this.backedCountTextViewText = loggedInUser
-                    .map<Int> { it.backedProjectsCount() }
-                    .filter { IntegerUtils.isNonZero(it) }
-                    .map { NumberUtils.format(it) }
+                .map<Int> { it.backedProjectsCount() }
+                .filter { IntegerUtils.isNonZero(it) }
+                .map { NumberUtils.format(it) }
 
             this.createdCountTextViewHidden = loggedInUser
-                    .map { u -> IntegerUtils.isZero(u.createdProjectsCount()) }
+                .map { u -> IntegerUtils.isZero(u.createdProjectsCount()) }
             this.createdTextViewHidden = this.createdCountTextViewHidden
 
             this.createdCountTextViewText = loggedInUser
-                    .map<Int> { it.createdProjectsCount() }
-                    .filter { IntegerUtils.isNonZero(it) }
-                    .map { NumberUtils.format(it) }
+                .map<Int> { it.createdProjectsCount() }
+                .filter { IntegerUtils.isNonZero(it) }
+                .map { NumberUtils.format(it) }
 
             this.dividerViewHidden = Observable.combineLatest<Boolean, Boolean, Pair<Boolean, Boolean>>(
-                    this.backedTextViewHidden,
-                    this.createdTextViewHidden) { a, b -> Pair.create(a, b) }
-                    .map { p -> p.first || p.second }
+                this.backedTextViewHidden,
+                this.createdTextViewHidden
+            ) { a, b -> Pair.create(a, b) }
+                .map { p -> p.first || p.second }
 
             this.projectList = paginator.paginatedData()
             this.resumeDiscoveryActivity = this.exploreProjectsButtonClicked
@@ -167,8 +168,8 @@ interface ProfileViewModel {
             this.userNameTextViewText = loggedInUser.map { it.name() }
 
             projectCardClicked
-                    .compose(bindToLifecycle())
-                    .subscribe{ lake.trackProjectCardClicked(it, EventContextValues.ContextPageName.PROFILE.contextName) }
+                .compose(bindToLifecycle())
+                .subscribe { lake.trackProjectCardClicked(it, EventContextValues.ContextPageName.PROFILE.contextName) }
         }
 
         override fun emptyProfileViewHolderExploreProjectsClicked(viewHolder: EmptyProfileViewHolder) = this.exploreProjectsButtonClicked()

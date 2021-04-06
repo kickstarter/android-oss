@@ -33,24 +33,24 @@ class NewsletterActivity : BaseActivity<NewsletterViewModel.ViewModel>() {
         this.ksString = environment().ksString()
 
         this.viewModel.outputs.user()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::displayPreferences)
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::displayPreferences)
 
         this.viewModel.errors.unableToSavePreferenceError()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { ViewUtils.showToast(this, getString(R.string.profile_settings_error)) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ViewUtils.showToast(this, getString(R.string.profile_settings_error)) }
 
         this.viewModel.outputs.showOptInPrompt()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showOptInPrompt)
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::showOptInPrompt)
 
         this.viewModel.outputs.subscribeAll()
-                .compose(bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(subscribe_all_switch, it) }
+            .compose(bindToLifecycle())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { SwitchCompatUtils.setCheckedWithoutAnimation(subscribe_all_switch, it) }
 
         alumni_switch.setOnClickListener { viewModel.inputs.sendAlumniNewsletter(alumni_switch.isChecked) }
         arts_news_switch.setOnClickListener { viewModel.inputs.sendArtsNewsNewsletter(arts_news_switch.isChecked) }

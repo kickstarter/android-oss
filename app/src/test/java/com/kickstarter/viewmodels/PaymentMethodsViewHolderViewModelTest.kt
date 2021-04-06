@@ -7,7 +7,8 @@ import com.kickstarter.mock.factories.StoredCardFactory
 import com.stripe.android.model.Card
 import org.junit.Test
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Date
+import java.util.GregorianCalendar
 
 class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
 
@@ -36,9 +37,9 @@ class PaymentMethodsViewHolderViewModelTest : KSRobolectricTestCase() {
         val date: Date = calendar.time
 
         val creditCard = StoredCardFactory.discoverCard()
-                .toBuilder()
-                .expiration(date)
-                .build()
+            .toBuilder()
+            .expiration(date)
+            .build()
 
         this.vm.inputs.card(creditCard)
 

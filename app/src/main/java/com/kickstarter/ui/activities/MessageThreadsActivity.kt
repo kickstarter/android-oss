@@ -97,6 +97,11 @@ class MessageThreadsActivity : BaseActivity<MessageThreadsViewModel.ViewModel>()
             .compose(Transformers.observeForUI())
             .subscribe { ViewUtils.setGone(binding.unreadCountTextView, it) }
 
+        viewModel.outputs.isFetchingMessageThreads
+            .compose(bindToLifecycle())
+            .compose(Transformers.observeForUI())
+            .subscribe { binding.messageThreadsSwipeRefreshLayout.isRefreshing = it }
+
         binding.switchMailboxButton.setOnClickListener {
             mailboxSwitchClicked()
         }

@@ -50,5 +50,4 @@ class ErroredBackingViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.manageButtonClicked()
         this.notifyDelegateToStartFixPaymentMethod.assertValue("slug")
     }
-
 }

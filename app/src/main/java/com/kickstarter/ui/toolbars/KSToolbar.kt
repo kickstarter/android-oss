@@ -29,7 +29,7 @@ open class KSToolbar @JvmOverloads constructor(
 
     @WebEndpoint
     private var webEndpoint: String? = null
-    
+
     private val subscriptions = CompositeSubscription()
 
     init {

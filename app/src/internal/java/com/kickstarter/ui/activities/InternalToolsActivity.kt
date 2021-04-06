@@ -1,7 +1,11 @@
 package com.kickstarter.ui.activities
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,7 +29,11 @@ import com.kickstarter.libs.Logout
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.LoginHelper
+import com.kickstarter.libs.utils.Secrets
+import com.kickstarter.libs.utils.TransitionUtils
+import com.kickstarter.libs.utils.ViewUtils
+import com.kickstarter.libs.utils.WorkUtils
 import com.kickstarter.services.firebase.ResetDeviceIdWorker
 import com.kickstarter.ui.fragments.Callbacks
 import com.kickstarter.viewmodels.InternalToolsViewModel
@@ -49,7 +57,7 @@ class InternalToolsActivity : BaseActivity<InternalToolsViewModel>() {
     var logout: Logout? = null
 
     private lateinit var binding: InternalToolsLayoutBinding
-    
+
     private val resetDeviceIdReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             showDeviceId(true)

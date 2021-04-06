@@ -14,7 +14,12 @@ import com.kickstarter.databinding.ProjectMainLayoutBinding
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.transformations.CircleTransformation
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.SocialUtils
+import com.kickstarter.libs.utils.ViewUtils
 import com.kickstarter.models.Photo
 import com.kickstarter.models.Project
 import com.kickstarter.models.User

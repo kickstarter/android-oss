@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
@@ -28,6 +29,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   protected @Inject CurrentConfigType config;
   protected @Inject CurrentUserType currentUser;
   protected @Inject Logout logout;
+  protected @Inject Build build;
 
   private final KSApplication application;
   private boolean isInBackground = true;
@@ -63,9 +65,11 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
               .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
               .compose(Transformers.neverError())
               .subscribe(c -> {
-                if (Objects.requireNonNull(c.features()).containsKey(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName())) {
-                  final boolean isChecked = Objects.requireNonNull(this.currentConfig.features()).get(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName());
-                  Objects.requireNonNull(c.features()).put(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName(), isChecked);
+                if (build.isDebug() || Build.isInternal()) {
+                  if (Objects.requireNonNull(c.features()).containsKey(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName())) {
+                    final boolean isChecked = Objects.requireNonNull(this.currentConfig.features()).get(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName());
+                    Objects.requireNonNull(c.features()).put(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName(), isChecked);
+                  }
                 }
 
                 this.config.config(c);

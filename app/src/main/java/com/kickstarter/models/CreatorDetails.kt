@@ -23,5 +23,4 @@ abstract class CreatorDetails : Parcelable {
             return AutoParcel_CreatorDetails.Builder()
         }
     }
-
 }

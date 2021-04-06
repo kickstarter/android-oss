@@ -1,7 +1,11 @@
 package com.kickstarter.viewmodels
 
 import androidx.annotation.NonNull
-import com.kickstarter.libs.*
+import com.kickstarter.libs.ActivityViewModel
+import com.kickstarter.libs.CurrentConfigType
+import com.kickstarter.libs.CurrentUserType
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.ExperimentsClientType
 import com.kickstarter.ui.activities.FeatureFlagsActivity
 import rx.Observable
 import rx.subjects.BehaviorSubject
@@ -30,21 +34,21 @@ interface FeatureFlagsViewModel {
 
         init {
             this.currentConfig
-                    .observable()
-                    .map { it.features() }
-                    .map { it?.entries?.toList()?: listOf<Map.Entry<String, Boolean>>() }
-                    .map { it.filter { entry -> entry.key.startsWith("android_") } }
-                    .map { it.sortedBy { entry -> entry.key } }
-                    .map { it.map { entry -> Pair(entry.key, entry.value) }.toList() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.configFeatures)
+                .observable()
+                .map { it.features() }
+                .map { it?.entries?.toList() ?: listOf<Map.Entry<String, Boolean>>() }
+                .map { it.filter { entry -> entry.key.startsWith("android_") } }
+                .map { it.sortedBy { entry -> entry.key } }
+                .map { it.map { entry -> Pair(entry.key, entry.value) }.toList() }
+                .compose(bindToLifecycle())
+                .subscribe(this.configFeatures)
 
             this.currentUser
-                    .observable()
-                    .map { this.optimizely.enabledFeatures(it) }
-                    .map { it.map { entry -> Pair(entry, true) }.toList() }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.optimizelyFeatures)
+                .observable()
+                .map { this.optimizely.enabledFeatures(it) }
+                .map { it.map { entry -> Pair(entry, true) }.toList() }
+                .compose(bindToLifecycle())
+                .subscribe(this.optimizelyFeatures)
         }
 
         override fun configFeatures(): Observable<List<Pair<String, Boolean>>> = this.configFeatures

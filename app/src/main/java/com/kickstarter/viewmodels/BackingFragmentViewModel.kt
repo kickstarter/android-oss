@@ -7,12 +7,24 @@ import com.kickstarter.libs.Either
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.KSString
-import com.kickstarter.libs.rx.transformers.Transformers.*
-import com.kickstarter.libs.utils.*
+import com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair
+import com.kickstarter.libs.rx.transformers.Transformers.neverError
+import com.kickstarter.libs.rx.transformers.Transformers.takePairWhen
+import com.kickstarter.libs.utils.BooleanUtils
+import com.kickstarter.libs.utils.DateTimeUtils
+import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.libs.utils.ObjectUtils
+import com.kickstarter.libs.utils.ProjectUtils
+import com.kickstarter.libs.utils.ProjectViewUtils
+import com.kickstarter.libs.utils.RewardUtils
 import com.kickstarter.libs.utils.extensions.backedReward
 import com.kickstarter.libs.utils.extensions.isErrored
 import com.kickstarter.mock.factories.RewardFactory
-import com.kickstarter.models.*
+import com.kickstarter.models.Backing
+import com.kickstarter.models.Project
+import com.kickstarter.models.Reward
+import com.kickstarter.models.StoredCard
+import com.kickstarter.models.User
 import com.kickstarter.ui.data.PledgeStatusData
 import com.kickstarter.ui.data.ProjectData
 import com.kickstarter.ui.fragments.BackingFragment
@@ -24,7 +36,7 @@ import rx.subjects.PublishSubject
 import type.CreditCardPaymentType
 import type.CreditCardTypes
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 interface BackingFragmentViewModel {
@@ -135,7 +147,6 @@ interface BackingFragmentViewModel {
 
         /** Emits a boolean determining if the delivery disclaimer section is visible **/
         fun deliveryDisclaimerSectionIsGone(): Observable<Boolean>
-
     }
 
     class ViewModel(@NonNull val environment: Environment) : FragmentViewModel<BackingFragment>(environment), Inputs, Outputs {
@@ -189,263 +200,271 @@ interface BackingFragmentViewModel {
         init {
 
             this.pledgeSuccessfullyCancelled
-                    .compose(bindToLifecycle())
-                    .subscribe(this.showUpdatePledgeSuccess)
+                .compose(bindToLifecycle())
+                .subscribe(this.showUpdatePledgeSuccess)
 
             this.projectDataInput
-                    .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
-                    .map { projectData -> joinProjectDataAndReward(projectData) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.projectDataAndReward)
+                .filter { it.project().isBacking || ProjectUtils.userIsCreator(it.project(), it.user()) }
+                .map { projectData -> joinProjectDataAndReward(projectData) }
+                .compose(bindToLifecycle())
+                .subscribe(this.projectDataAndReward)
 
             val backedProject = this.projectDataInput
-                    .map { it.project() }
+                .map { it.project() }
 
             val backing = this.projectDataInput
-                    .switchMap { getBackingInfo(it) }
-                    .compose(neverError())
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .share()
+                .switchMap { getBackingInfo(it) }
+                .compose(neverError())
+                .filter { ObjectUtils.isNotNull(it) }
+                .share()
 
             val isCreator = Observable.combineLatest(this.currentUser.observable(), backedProject) { user, project ->
                 Pair(user, project)
             }
-                    .map { ProjectUtils.userIsCreator(it.second, it.first) }
+                .map { ProjectUtils.userIsCreator(it.second, it.first) }
 
             backing
-                    .map { it.backerName() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backerName)
+                .map { it.backerName() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.backerName)
 
             backing
-                    .map { it.backerUrl() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backerAvatar)
+                .map { it.backerUrl() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.backerAvatar)
 
             backing
-                    .map { NumberUtils.format(it.sequence().toFloat()) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.backerNumber)
+                .map { NumberUtils.format(it.sequence().toFloat()) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.backerNumber)
 
             backing
-                    .filter { ObjectUtils.isNotNull(it.pledgedAt()) }
-                    .map { DateTimeUtils.longDate(ObjectUtils.requireNonNull(it.pledgedAt())) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeDate)
+                .filter { ObjectUtils.isNotNull(it.pledgedAt()) }
+                .map { DateTimeUtils.longDate(ObjectUtils.requireNonNull(it.pledgedAt())) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.pledgeDate)
 
             backing
-                    .map { it.amount() - it.shippingAmount() - it.bonusAmount() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
-                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeAmount)
+                .map { it.amount() - it.shippingAmount() - it.bonusAmount() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
+                .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.pledgeAmount)
 
             backing
-                    .map { ObjectUtils.isNull(it.locationId()) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.shippingSummaryIsGone.onNext(it)
-                    }
+                .map { ObjectUtils.isNull(it.locationId()) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.shippingSummaryIsGone.onNext(it)
+                }
 
             backing
-                    .map { ObjectUtils.isNull(it.reward()) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.pledgeSummaryIsGone.onNext(it)
-                    }
+                .map { ObjectUtils.isNull(it.reward()) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.pledgeSummaryIsGone.onNext(it)
+                }
 
             Observable.combineLatest(backedProject, backing, this.currentUser.loggedInUser()) { p, b, user -> Triple(p, b, user) }
-                    .map { pledgeStatusData(it.first, it.second, it.third) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.pledgeStatusData)
+                .map { pledgeStatusData(it.first, it.second, it.third) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.pledgeStatusData)
 
             backing
-                    .map { it.shippingAmount() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
-                    .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingAmount)
+                .map { it.shippingAmount() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<Float, Project>>(combineLatestPair(backedProject))
+                .map { ProjectViewUtils.styleCurrency(it.first.toDouble(), it.second, this.ksCurrency) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingAmount)
 
             backing
-                    .map { it.locationName()?.let { name -> name } }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.shippingLocation)
-
-
-            backing
-                    .map { it.amount()}
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
-                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.totalAmount)
-
+                .map { it.locationName()?.let { name -> name } }
+                .filter { ObjectUtils.isNotNull(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.shippingLocation)
 
             backing
-                    .map { it.paymentSource() }
-                    .map { CreditCardPaymentType.safeValueOf(it?.paymentType()) }
-                    .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.paymentMethodIsGone)
+                .map { it.amount() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
+                .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.totalAmount)
+
+            backing
+                .map { it.paymentSource() }
+                .map { CreditCardPaymentType.safeValueOf(it?.paymentType()) }
+                .map { it == CreditCardPaymentType.ANDROID_PAY || it == CreditCardPaymentType.APPLE_PAY || it == CreditCardPaymentType.CREDIT_CARD }
+                .map { BooleanUtils.negate(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.paymentMethodIsGone)
 
             val paymentSource = backing
-                    .map { it.paymentSource() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .ofType(Backing.PaymentSource::class.java)
+                .map { it.paymentSource() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .ofType(Backing.PaymentSource::class.java)
 
             val simpleDateFormat = SimpleDateFormat(StoredCard.DATE_FORMAT, Locale.getDefault())
 
             paymentSource
-                    .map { source ->
-                        source.expirationDate()?.let { simpleDateFormat.format(it) } ?: ""
-                    }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cardExpiration)
+                .map { source ->
+                    source.expirationDate()?.let { simpleDateFormat.format(it) } ?: ""
+                }
+                .filter { ObjectUtils.isNotNull(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.cardExpiration)
 
             paymentSource
-                    .map { cardIssuer(it) }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cardIssuer)
+                .map { cardIssuer(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.cardIssuer)
 
             paymentSource
-                    .map { it.lastFour() ?: "" }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cardLastFour)
+                .map { it.lastFour() ?: "" }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.cardLastFour)
 
             paymentSource
-                    .map { cardLogo(it) }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.cardLogo)
+                .map { cardLogo(it) }
+                .filter { ObjectUtils.isNotNull(it) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.cardLogo)
 
             val backingIsNotErrored = backing
-                    .map { it.isErrored() }
-                    .distinctUntilChanged()
-                    .map { BooleanUtils.negate(it) }
+                .map { it.isErrored() }
+                .distinctUntilChanged()
+                .map { BooleanUtils.negate(it) }
 
             backingIsNotErrored
-                    .compose(bindToLifecycle())
-                    .subscribe { this.fixPaymentMethodButtonIsGone.onNext(it) }
+                .compose(bindToLifecycle())
+                .subscribe { this.fixPaymentMethodButtonIsGone.onNext(it) }
 
             backingIsNotErrored
-                    .compose(bindToLifecycle())
-                    .subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }
+                .compose(bindToLifecycle())
+                .subscribe { this.fixPaymentMethodMessageIsGone.onNext(it) }
 
             this.fixPaymentMethodButtonClicked
-                    .compose(bindToLifecycle())
-                    .subscribe { this.notifyDelegateToShowFixPledge.onNext(null) }
+                .compose(bindToLifecycle())
+                .subscribe { this.notifyDelegateToShowFixPledge.onNext(null) }
 
             backing
-                    .map { it.completedByBacker() }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle<Boolean>())
-                    .subscribe(this.receivedCheckboxChecked)
+                .map { it.completedByBacker() }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle<Boolean>())
+                .subscribe(this.receivedCheckboxChecked)
 
             backing
-                    .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
-                    .compose(takePairWhen<Pair<Backing, Project>, Boolean>(this.receivedCheckboxToggled))
-                    .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverError()) }
-                    .compose(bindToLifecycle())
-                    .share()
-                    .subscribe()
+                .compose<Pair<Backing, Project>>(combineLatestPair(backedProject))
+                .compose(takePairWhen<Pair<Backing, Project>, Boolean>(this.receivedCheckboxToggled))
+                .switchMap { this.apiClient.postBacking(it.first.second, it.first.first, it.second).compose(neverError()) }
+                .compose(bindToLifecycle())
+                .share()
+                .subscribe()
+
+            this.isExpanded
+                .filter { it }
+                .compose(combineLatestPair(backing))
+                .map { it.second }
+                .compose<Pair<Backing, ProjectData>>(combineLatestPair(projectDataInput))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.lake.trackManagePledgePageViewed(it.first, it.second)
+                }
 
             val rewardIsReceivable = backing
-                    .map { ObjectUtils.isNotNull(it.rewardId()) }
+                .map { ObjectUtils.isNotNull(it.rewardId()) }
 
             val backingIsCollected = backing
-                    .map { it.status() }
-                    .map { it == Backing.STATUS_COLLECTED }
+                .map { it.status() }
+                .map { it == Backing.STATUS_COLLECTED }
 
             val sectionShouldBeGone = rewardIsReceivable
-                    .compose(combineLatestPair<Boolean, Boolean>(backingIsCollected))
-                    .map { it.first && it.second }
-                    .map { BooleanUtils.negate(it) }
-                    .distinctUntilChanged()
+                .compose(combineLatestPair<Boolean, Boolean>(backingIsCollected))
+                .map { it.first && it.second }
+                .map { BooleanUtils.negate(it) }
+                .distinctUntilChanged()
 
             sectionShouldBeGone
-                    .compose<Pair<Boolean, Boolean>>(combineLatestPair(isCreator))
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        val isUserCreator = it.second
-                        val shouldBeGone = it.first
+                .compose<Pair<Boolean, Boolean>>(combineLatestPair(isCreator))
+                .compose(bindToLifecycle())
+                .subscribe {
+                    val isUserCreator = it.second
+                    val shouldBeGone = it.first
 
-                        if (isUserCreator) {
-                            this.receivedSectionIsGone.onNext(true)
-                            this.receivedSectionCreatorIsGone.onNext(shouldBeGone)
-                        } else {
-                            this.receivedSectionIsGone.onNext(shouldBeGone)
-                            this.receivedSectionCreatorIsGone.onNext(true)
-                        }
+                    if (isUserCreator) {
+                        this.receivedSectionIsGone.onNext(true)
+                        this.receivedSectionCreatorIsGone.onNext(shouldBeGone)
+                    } else {
+                        this.receivedSectionIsGone.onNext(shouldBeGone)
+                        this.receivedSectionCreatorIsGone.onNext(true)
                     }
+                }
 
             this.refreshProject
-                    .compose(bindToLifecycle())
-                    .subscribe {
-                        this.notifyDelegateToRefreshProject.onNext(null)
-                        this.swipeRefresherProgressIsVisible.onNext(true)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe {
+                    this.notifyDelegateToRefreshProject.onNext(null)
+                    this.swipeRefresherProgressIsVisible.onNext(true)
+                }
 
             val refreshTimeout = this.notifyDelegateToRefreshProject
-                    .delay(10, TimeUnit.SECONDS)
+                .delay(10, TimeUnit.SECONDS)
 
             Observable.merge(refreshTimeout, backedProject.skip(1))
-                    .map { false }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.swipeRefresherProgressIsVisible)
+                .map { false }
+                .compose(bindToLifecycle())
+                .subscribe(this.swipeRefresherProgressIsVisible)
 
             val addOns = backing
-                    .map { it.addOns()?.toList() ?: emptyList() }
-                    .compose(bindToLifecycle())
+                .map { it.addOns()?.toList() ?: emptyList() }
+                .compose(bindToLifecycle())
 
             projectDataInput
-                    .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addOns))
-                    .compose(bindToLifecycle())
-                    .subscribe(this.addOnsList)
+                .compose<Pair<ProjectData, List<Reward>>>(combineLatestPair(addOns))
+                .compose(bindToLifecycle())
+                .subscribe(this.addOnsList)
 
             backing
-                    .map { it.bonusAmount() }
-                    .filter { ObjectUtils.isNotNull(it) }
-                    .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
-                    .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
-                    .distinctUntilChanged()
-                    .compose(bindToLifecycle())
-                    .subscribe(this.bonusSupport)
+                .map { it.bonusAmount() }
+                .filter { ObjectUtils.isNotNull(it) }
+                .compose<Pair<Double, Project>>(combineLatestPair(backedProject))
+                .map { ProjectViewUtils.styleCurrency(it.first, it.second, this.ksCurrency) }
+                .distinctUntilChanged()
+                .compose(bindToLifecycle())
+                .subscribe(this.bonusSupport)
 
             val reward = this.projectDataAndReward
-                    .map { it.second }
+                .map { it.second }
 
             reward
-                    .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
-                    .map<DateTime> { it.estimatedDeliveryOn() }
-                    .map { DateTimeUtils.estimatedDeliveryOn(it) }
-                    .compose(bindToLifecycle())
-                    .subscribe(this.estimatedDelivery)
+                .filter { RewardUtils.isReward(it) && ObjectUtils.isNotNull(it.estimatedDeliveryOn()) }
+                .map<DateTime> { it.estimatedDeliveryOn() }
+                .map { DateTimeUtils.estimatedDeliveryOn(it) }
+                .compose(bindToLifecycle())
+                .subscribe(this.estimatedDelivery)
 
             isCreator
-                    .compose(bindToLifecycle())
-                    .subscribe(this.deliveryDisclaimerSectionIsGone)
+                .compose(bindToLifecycle())
+                .subscribe(this.deliveryDisclaimerSectionIsGone)
         }
 
         private fun getBackingInfo(it: ProjectData): Observable<Backing> {
@@ -458,14 +477,13 @@ interface BackingFragmentViewModel {
 
         private fun joinProjectDataAndReward(projectData: ProjectData): Pair<ProjectData, Reward> {
             val reward = projectData.backing()?.reward()
-                    ?: projectData.project().backing()?.backedReward(projectData.project())
-                    ?: RewardFactory.noReward().toBuilder()
-                            .minimum(projectData.backing()?.amount() ?: 1.0)
-                            .build()
+                ?: projectData.project().backing()?.backedReward(projectData.project())
+                ?: RewardFactory.noReward().toBuilder()
+                    .minimum(projectData.backing()?.amount() ?: 1.0)
+                    .build()
 
             return Pair(projectData, reward)
         }
-
 
         private fun cardIssuer(paymentSource: Backing.PaymentSource): Either<String, Int> {
             return when (CreditCardPaymentType.safeValueOf(paymentSource.paymentType())) {
@@ -519,7 +537,6 @@ interface BackingFragmentViewModel {
                     }
                 }
             }
-
 
             val projectDeadline = project.deadline()?.let { DateTimeUtils.longDate(it) }
             val pledgeTotal = backing.amount()

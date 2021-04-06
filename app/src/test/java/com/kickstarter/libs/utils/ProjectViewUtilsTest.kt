@@ -25,17 +25,17 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
         assertEquals(R.color.button_pledge_ended, ProjectViewUtils.pledgeActionButtonColor(ProjectFactory.successfulProject(), null))
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         assertEquals(R.color.button_pledge_ended, ProjectViewUtils.pledgeActionButtonColor(backedSuccessfulProject, UserFactory.user()))
         assertEquals(R.color.button_pledge_ended, ProjectViewUtils.pledgeActionButtonColor(backedSuccessfulProject, null))
 
         val creator = UserFactory.creator()
         val creatorProject = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .build()
         assertEquals(R.color.button_pledge_ended, ProjectViewUtils.pledgeActionButtonColor(creatorProject, creator))
     }
 
@@ -55,17 +55,17 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
         assertEquals(R.string.View_rewards, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.successfulProject(), UserFactory.user()))
         assertEquals(R.string.View_rewards, ProjectViewUtils.pledgeActionButtonText(ProjectFactory.successfulProject(), null))
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         assertEquals(R.string.View_your_pledge, ProjectViewUtils.pledgeActionButtonText(backedSuccessfulProject, UserFactory.user()))
         assertEquals(R.string.View_your_pledge, ProjectViewUtils.pledgeActionButtonText(backedSuccessfulProject, null))
 
         val creator = UserFactory.creator()
         val creatorProject = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .build()
         assertEquals(R.string.View_your_rewards, ProjectViewUtils.pledgeActionButtonText(creatorProject, creator))
     }
 
@@ -81,17 +81,17 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
         assertEquals(R.string.View_rewards, ProjectViewUtils.pledgeToolbarTitle(ProjectFactory.successfulProject(), null))
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         assertEquals(R.string.View_your_pledge, ProjectViewUtils.pledgeToolbarTitle(backedSuccessfulProject, UserFactory.user()))
         assertEquals(R.string.View_your_pledge, ProjectViewUtils.pledgeToolbarTitle(backedSuccessfulProject, null))
 
         val creator = UserFactory.creator()
         val creatorProject = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .build()
         assertEquals(R.string.View_your_rewards, ProjectViewUtils.pledgeToolbarTitle(creatorProject, creator))
     }
 
@@ -113,8 +113,8 @@ class ProjectViewUtilsTest : KSRobolectricTestCase() {
 
     private fun createKSCurrency(countryCode: String): KSCurrency {
         val config = ConfigFactory.config().toBuilder()
-                .countryCode(countryCode)
-                .build()
+            .countryCode(countryCode)
+            .build()
 
         val currentConfig = MockCurrentConfig()
         currentConfig.config(config)

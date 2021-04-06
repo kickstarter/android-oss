@@ -3,7 +3,7 @@ package com.kickstarter.models
 import com.kickstarter.mock.factories.UserFactory
 import junit.framework.TestCase
 
-class UserTest: TestCase() {
+class UserTest : TestCase() {
     fun testEquals_whenSecondUserNull_returnFalse() {
         val userA = UserFactory.user()
         val userB: User? = null

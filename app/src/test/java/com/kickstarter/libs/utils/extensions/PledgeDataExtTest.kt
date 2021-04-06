@@ -14,8 +14,10 @@ class PledgeDataExtTest : TestCase() {
         val project = ProjectFactory.project()
         val rw = RewardFactory.reward()
         val addOns = emptyList<Reward>() as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         assertEquals(pledgeData.totalCountUnique(), 0)
         assertEquals(pledgeData.totalQuantity(), 0)
@@ -26,8 +28,10 @@ class PledgeDataExtTest : TestCase() {
         val rw = RewardFactory.rewardHasAddOns()
         val addOn = RewardFactory.addOnSingle()
         val addOns = listOf(addOn, addOn) as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         assertEquals(pledgeData.totalCountUnique(), addOns.size)
         assertEquals(pledgeData.totalQuantity(), 2)
@@ -38,8 +42,10 @@ class PledgeDataExtTest : TestCase() {
         val rw = RewardFactory.rewardHasAddOns()
         val addOn = RewardFactory.addOnMultiple()
         val addOns = listOf(addOn, addOn) as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         assertEquals(pledgeData.totalCountUnique(), addOns.size)
         assertEquals(pledgeData.totalQuantity(), 10)
@@ -51,8 +57,10 @@ class PledgeDataExtTest : TestCase() {
         val addOnSingle = RewardFactory.addOnSingle()
         val addOnMultiple = RewardFactory.addOnMultiple()
         val addOns = listOf(addOnSingle, addOnMultiple) as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         assertEquals(pledgeData.totalCountUnique(), addOns.size)
         assertEquals(pledgeData.totalQuantity(), 6)
@@ -64,8 +72,10 @@ class PledgeDataExtTest : TestCase() {
         val addOnSingle = RewardFactory.addOnSingle().toBuilder().minimum(30.0).build()
         val addOnMultiple = RewardFactory.addOnMultiple().toBuilder().minimum(5.0).build()
         val addOns = listOf(addOnSingle, addOnMultiple) as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         val expectedValue = 30.0 + (5.0 * 5)
         assertEquals(pledgeData.addOnsCost(project.staticUsdRate()), expectedValue)
@@ -79,8 +89,10 @@ class PledgeDataExtTest : TestCase() {
         // - quantity = 5 on addOnMultiple
         val addOnMultiple = RewardFactory.addOnMultiple().toBuilder().minimum(5.0).build()
         val addOns = listOf(addOnSingle, addOnMultiple) as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         val expectedValue = (30.0 + (5.0 * 5)) * project.staticUsdRate()
         assertEquals(pledgeData.addOnsCost(project.staticUsdRate()), expectedValue)
@@ -90,8 +102,10 @@ class PledgeDataExtTest : TestCase() {
         val project = ProjectFactory.project()
         val rw = RewardFactory.rewardHasAddOns()
         val addOns = emptyList<Reward>() as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         assertEquals(pledgeData.rewardCost(project.staticUsdRate()), rw.minimum())
     }
@@ -100,8 +114,10 @@ class PledgeDataExtTest : TestCase() {
         val project = ProjectFactory.caProject()
         val rw = RewardFactory.rewardHasAddOns()
         val addOns = emptyList<Reward>() as java.util.List<Reward>
-        val pledgeData = with(PledgeFlowContext.NEW_PLEDGE,
-                project(project), rw, addOns, null)
+        val pledgeData = with(
+            PledgeFlowContext.NEW_PLEDGE,
+            project(project), rw, addOns, null
+        )
 
         val expectedValue = rw.minimum() * project.staticUsdRate()
         assertEquals(pledgeData.rewardCost(project.staticUsdRate()), expectedValue)

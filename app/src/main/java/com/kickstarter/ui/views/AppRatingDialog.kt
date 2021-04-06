@@ -19,29 +19,29 @@ class AppRatingDialog(context: Context) : AppCompatDialog(context) {
     var hasSeenAppRatingPreference: BooleanPreferenceType? = null
 
     private lateinit var binding: AppRatingPromptBinding
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         binding = AppRatingPromptBinding.inflate(layoutInflater)
-        
+
         setContentView(binding.root)
-        
+
         (context.applicationContext as KSApplication).component().inject(this)
 
         binding.noThanksButton.setOnClickListener {
             noThanksButtonClick()
         }
-        
+
         binding.rateButton.setOnClickListener {
             rateButtonClick()
         }
-        
+
         binding.remindButton.setOnClickListener {
             remindButtonClick()
         }
     }
-    
+
     private fun rateButtonClick() {
         hasSeenAppRatingPreference?.set(true)
         dismiss()

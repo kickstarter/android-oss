@@ -32,10 +32,12 @@ class ChromeTabsHelperActivity {
          * @param uri the Uri to be opened.
          * @param fallback a CustomTabFallback to be used if Custom Tabs is not available.
          */
-        fun openCustomTab(activity: Activity,
-                          customTabsIntent: CustomTabsIntent,
-                          uri: Uri,
-                          fallback: CustomTabFallback?) {
+        fun openCustomTab(
+            activity: Activity,
+            customTabsIntent: CustomTabsIntent,
+            uri: Uri,
+            fallback: CustomTabFallback?
+        ) {
             val packageName = ChromeTabsHelper.getPackageNameToUse(activity)
 
             // If we can't find a package name, it means there's no browser that supports Chrome Custom Tabs installed.
@@ -65,5 +67,4 @@ class ChromeTabsHelperActivity {
          */
         fun openUri(activity: Activity, uri: Uri)
     }
-
 }

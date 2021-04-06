@@ -9,7 +9,12 @@ import com.kickstarter.libs.MockCurrentUser
 import com.kickstarter.libs.models.OptimizelyExperiment
 import com.kickstarter.libs.utils.EventName
 import com.kickstarter.mock.MockExperimentsClientType
-import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.factories.BackingFactory
+import com.kickstarter.mock.factories.LocationFactory
+import com.kickstarter.mock.factories.ProjectDataFactory
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.RewardFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.RewardsItem
@@ -87,9 +92,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .backersCount(30)
-                .build()
+            .toBuilder()
+            .backersCount(30)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
         this.backersCount.assertValue(30)
@@ -102,12 +107,12 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         // - Digital reward
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .shippingPreference("unrestricted")
-                .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
-                .hasAddons(true)
-                .backersCount(30)
-                .build()
+            .toBuilder()
+            .shippingPreference("unrestricted")
+            .shippingType(Reward.SHIPPING_TYPE_NO_SHIPPING)
+            .hasAddons(true)
+            .backersCount(30)
+            .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
@@ -120,9 +125,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .backersCount(0)
-                .build()
+            .toBuilder()
+            .backersCount(0)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
         this.backersCount.assertNoValues()
@@ -248,8 +253,11 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val backedLiveProject = ProjectFactory.backedProject()
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()
-                ?: RewardFactory.reward())
+        this.vm.inputs.configureWith(
+            ProjectDataFactory.project(backedLiveProject),
+            backedLiveProject.backing()?.reward()
+                ?: RewardFactory.reward()
+        )
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValuesAndClear(R.string.Selected)
     }
@@ -259,8 +267,11 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val backedLiveProject = ProjectFactory.backedProject()
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), backedLiveProject.backing()?.reward()
-                ?: RewardFactory.reward())
+        this.vm.inputs.configureWith(
+            ProjectDataFactory.project(backedLiveProject),
+            backedLiveProject.backing()?.reward()
+                ?: RewardFactory.reward()
+        )
         this.selectedRewardTagIsGone.assertValue(false)
     }
 
@@ -269,7 +280,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val backedLiveProject = ProjectFactory.backedProject()
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject),  RewardFactory.reward())
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedLiveProject), RewardFactory.reward())
         this.selectedRewardTagIsGone.assertValue(true)
     }
 
@@ -278,7 +289,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val project = ProjectFactory.project()
-        this.vm.inputs.configureWith(ProjectDataFactory.project(project),  RewardFactory.reward())
+        this.vm.inputs.configureWith(ProjectDataFactory.project(project), RewardFactory.reward())
         this.selectedRewardTagIsGone.assertValue(true)
     }
 
@@ -314,9 +325,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val successfulProject = ProjectFactory.successfulProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(successfulProject), RewardFactory.reward())
         this.buttonIsGone.assertValue(true)
         this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
@@ -327,9 +338,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject), RewardFactory.reward())
         this.buttonIsGone.assertValue(true)
         this.buttonCTA.assertValuesAndClear(R.string.No_longer_available)
@@ -339,9 +350,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testButtonUIOutputs_whenProjectIsEndedAndBacked_noReward() {
         setUpEnvironment(environment())
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject), RewardFactory.noReward())
         this.buttonIsGone.assertValue(true)
@@ -352,12 +363,15 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testButtonUIOutputs_whenProjectIsEndedAndBacked_backedReward() {
         setUpEnvironment(environment())
         val backedSuccessfulProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
 
-        this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject), backedSuccessfulProject.backing()?.reward()
-                ?: RewardFactory.reward())
+        this.vm.inputs.configureWith(
+            ProjectDataFactory.project(backedSuccessfulProject),
+            backedSuccessfulProject.backing()?.reward()
+                ?: RewardFactory.reward()
+        )
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValue(R.string.Selected)
     }
@@ -366,11 +380,11 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testButtonUIOutputs_whenProjectIsEndedAndBacked_backedNoReward() {
         setUpEnvironment(environment())
         val backedNoRewardSuccessfulProject = ProjectFactory.backedProjectWithNoReward()
-                .toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .toBuilder()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
 
-         this.vm.inputs.configureWith(ProjectDataFactory.project(backedNoRewardSuccessfulProject), RewardFactory.noReward())
+        this.vm.inputs.configureWith(ProjectDataFactory.project(backedNoRewardSuccessfulProject), RewardFactory.noReward())
         this.buttonIsGone.assertValue(false)
         this.buttonCTA.assertValue(R.string.Selected)
     }
@@ -380,14 +394,14 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         val creator = UserFactory.creator()
 
         val project = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .build()
 
         val environment = environment()
-                .toBuilder()
-                .currentUser(MockCurrentUser(creator))
-                .build()
+            .toBuilder()
+            .currentUser(MockCurrentUser(creator))
+            .build()
         setUpEnvironment(environment)
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), RewardFactory.reward())
@@ -400,14 +414,14 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         val creator = UserFactory.creator()
 
         val project = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .build()
 
         val environment = environment()
-                .toBuilder()
-                .currentUser(MockCurrentUser(creator))
-                .build()
+            .toBuilder()
+            .currentUser(MockCurrentUser(creator))
+            .build()
         setUpEnvironment(environment)
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), RewardFactory.noReward())
@@ -421,15 +435,15 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         val usProject = ProjectFactory.project()
-                .toBuilder()
-                .currentCurrency("USD")
-                .build()
+            .toBuilder()
+            .currentCurrency("USD")
+            .build()
         val minimum = 50.0
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .minimum(minimum)
-                .convertedMinimum(minimum)
-                .build()
+            .toBuilder()
+            .minimum(minimum)
+            .convertedMinimum(minimum)
+            .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(usProject), reward)
         this.conversion.assertValue(expectedConvertedCurrency(environment, usProject, minimum))
@@ -442,16 +456,16 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         val caProject = ProjectFactory.caProject()
-                .toBuilder()
-                .currentCurrency("USD")
-                .build()
+            .toBuilder()
+            .currentCurrency("USD")
+            .build()
 
         val convertedMinimum = 40.0
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .minimum(50.0)
-                .convertedMinimum(convertedMinimum)
-                .build()
+            .toBuilder()
+            .minimum(50.0)
+            .convertedMinimum(convertedMinimum)
+            .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(caProject), reward)
         this.conversion.assertValue(expectedConvertedCurrency(environment, caProject, convertedMinimum))
@@ -462,7 +476,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testDescriptionOutputs_whenReward_hasNoDescription() {
         setUpEnvironment(environment())
 
-        //Reward with empty description
+        // Reward with empty description
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noDescription())
         this.descriptionForNoReward.assertNoValues()
         this.descriptionForReward.assertValue("")
@@ -473,11 +487,11 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testDescriptionOutputs_whenReward_hasNullDescription() {
         setUpEnvironment(environment())
 
-        //Reward with empty description
+        // Reward with empty description
         val reward = RewardFactory.noDescription()
-                .toBuilder()
-                .description(null)
-                .build()
+            .toBuilder()
+            .description(null)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
         this.descriptionForNoReward.assertNoValues()
         this.descriptionForReward.assertValue(null)
@@ -488,7 +502,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testDescriptionOutputs_whenReward_hasDescription() {
         setUpEnvironment(environment())
 
-        //Reward with description
+        // Reward with description
         val reward = RewardFactory.reward()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
         this.descriptionForNoReward.assertNoValues()
@@ -500,7 +514,7 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     fun testDescriptionOutputs_whenNoReward() {
         setUpEnvironment(environment())
 
-        //No reward
+        // No reward
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), RewardFactory.noReward())
         this.descriptionForNoReward.assertValue(R.string.Back_it_because_you_believe_in_it)
         this.descriptionForReward.assertNoValues()
@@ -512,14 +526,14 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val noRewardBacking = BackingFactory.backing()
-                .toBuilder()
-                .reward(RewardFactory.noReward())
-                .rewardId(null)
-                .build()
+            .toBuilder()
+            .reward(RewardFactory.noReward())
+            .rewardId(null)
+            .build()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(noRewardBacking)
-                .build()
+            .toBuilder()
+            .backing(noRewardBacking)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
         this.descriptionForNoReward.assertValue(R.string.Thanks_for_bringing_this_project_one_step_closer_to_becoming_a_reality)
         this.descriptionForReward.assertNoValues()
@@ -535,17 +549,17 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.endDateSectionIsGone.assertValue(true)
 
         val expiredReward = RewardFactory.reward()
-                .toBuilder()
-                .endsAt(DateTime.now().minusDays(2))
-                .build()
+            .toBuilder()
+            .endsAt(DateTime.now().minusDays(2))
+            .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), expiredReward)
         this.endDateSectionIsGone.assertValue(true)
 
         val expiringReward = RewardFactory.reward()
-                .toBuilder()
-                .endsAt(DateTime.now().plusDays(2))
-                .build()
+            .toBuilder()
+            .endsAt(DateTime.now().plusDays(2))
+            .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), expiringReward)
         this.endDateSectionIsGone.assertValues(true, false)
@@ -559,9 +573,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .estimatedDeliveryOn(DateTime.parse("2019-09-11T20:12:47+00:00"))
-                .build()
+            .toBuilder()
+            .estimatedDeliveryOn(DateTime.parse("2019-09-11T20:12:47+00:00"))
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
         this.estimatedDelivery.assertValue("September 2019")
@@ -573,9 +587,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .estimatedDeliveryOn(null)
-                .build()
+            .toBuilder()
+            .estimatedDeliveryOn(null)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), reward)
 
         this.estimatedDelivery.assertNoValues()
@@ -607,8 +621,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testShowPledgeFragment_WhenProjectIsSuccessfulAndHasBeenBacked() {
         val project = ProjectFactory.backedProject().toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         val reward = project.backing()?.reward() as Reward
         setUpEnvironment(environment())
 
@@ -668,8 +682,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         // A backed reward from an ended project should not be enabled.
         val backedSuccessfulProject = ProjectFactory.backedProject().toBuilder()
-                .state(Project.STATE_SUCCESSFUL)
-                .build()
+            .state(Project.STATE_SUCCESSFUL)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedSuccessfulProject), backedSuccessfulProject.backing()?.reward()!!)
         this.buttonIsEnabled.assertValues(true, false, true, false)
 
@@ -831,9 +845,9 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val rewardWithShipping = RewardFactory.reward()
-                .toBuilder()
-                .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
-                .build()
+            .toBuilder()
+            .shippingType(Reward.SHIPPING_TYPE_SINGLE_LOCATION)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(project), rewardWithShipping)
         this.shippingSummary.assertValue(Pair(R.string.Limited_shipping, ""))
         this.shippingSummaryIsGone.assertValues(false)
@@ -856,8 +870,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
 
         // Reward with no title should be hidden.
         val rewardWithNoTitle = RewardFactory.reward().toBuilder()
-                .title(null)
-                .build()
+            .title(null)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(ProjectFactory.project()), rewardWithNoTitle)
         this.titleIsGone.assertValue(true)
         this.titleForReward.assertValue(null)
@@ -905,14 +919,14 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment())
 
         val noRewardBacking = BackingFactory.backing()
-                .toBuilder()
-                .reward(RewardFactory.noReward())
-                .rewardId(null)
-                .build()
+            .toBuilder()
+            .reward(RewardFactory.noReward())
+            .rewardId(null)
+            .build()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(noRewardBacking)
-                .build()
+            .toBuilder()
+            .backing(noRewardBacking)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
         this.titleIsGone.assertValue(false)
         this.titleForReward.assertNoValues()
@@ -922,20 +936,20 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testNoRewardSuggestedAmountExperimentVariant4() {
         val environment = environment()
-                .toBuilder()
-                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_4))
-                .build()
+            .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_4))
+            .build()
         setUpEnvironment(environment)
 
         val noRewardBacking = BackingFactory.backing()
-                .toBuilder()
-                .reward(RewardFactory.noReward())
-                .rewardId(null)
-                .build()
+            .toBuilder()
+            .reward(RewardFactory.noReward())
+            .rewardId(null)
+            .build()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(noRewardBacking)
-                .build()
+            .toBuilder()
+            .backing(noRewardBacking)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
 
         this.titleIsGone.assertValue(false)
@@ -947,20 +961,20 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testNoRewardSuggestedAmountExperimentVariant2() {
         val environment = environment()
-                .toBuilder()
-                .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
-                .build()
+            .toBuilder()
+            .optimizely(MockExperimentsClientType(OptimizelyExperiment.Variant.VARIANT_2))
+            .build()
         setUpEnvironment(environment)
 
         val noRewardBacking = BackingFactory.backing()
-                .toBuilder()
-                .reward(RewardFactory.noReward())
-                .rewardId(null)
-                .build()
+            .toBuilder()
+            .reward(RewardFactory.noReward())
+            .rewardId(null)
+            .build()
         val backedProject = ProjectFactory.backedProject()
-                .toBuilder()
-                .backing(noRewardBacking)
-                .build()
+            .toBuilder()
+            .backing(noRewardBacking)
+            .build()
         this.vm.inputs.configureWith(ProjectDataFactory.project(backedProject), RewardFactory.noReward())
 
         this.titleIsGone.assertValue(false)
@@ -970,8 +984,8 @@ class RewardViewHolderViewModelTest : KSRobolectricTestCase() {
     }
 
     private fun expectedConvertedCurrency(environment: Environment, project: Project, amount: Double): String =
-            environment.ksCurrency().format(amount, project, true, RoundingMode.HALF_UP, true)
+        environment.ksCurrency().format(amount, project, true, RoundingMode.HALF_UP, true)
 
     private fun expectedCurrency(environment: Environment, project: Project, amount: Double): String =
-            environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
+        environment.ksCurrency().format(amount, project, RoundingMode.HALF_UP)
 }

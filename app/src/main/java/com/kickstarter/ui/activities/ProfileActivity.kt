@@ -35,73 +35,75 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         recycler_view.layoutManager = GridLayoutManager(this, spanCount)
         recycler_view.adapter = this.adapter
 
-        this.paginator = RecyclerViewPaginator(recycler_view, { this.viewModel.inputs.nextPage() },
-                this.viewModel.outputs.isFetchingProjects())
+        this.paginator = RecyclerViewPaginator(
+            recycler_view, { this.viewModel.inputs.nextPage() },
+            this.viewModel.outputs.isFetchingProjects()
+        )
 
         this.viewModel.outputs.avatarImageViewUrl()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { url ->  Picasso.get().load(url).transform(CircleTransformation()).into(avatar_image_view) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { url -> Picasso.get().load(url).transform(CircleTransformation()).into(avatar_image_view) }
 
         this.viewModel.outputs.backedCountTextViewHidden()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(backed_count_text_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(backed_count_text_view))
 
         this.viewModel.outputs.backedCountTextViewText()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { backed_count_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { backed_count_text_view.text = it }
 
         this.viewModel.outputs.backedTextViewHidden()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(backed_text_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(backed_text_view))
 
         this.viewModel.outputs.createdCountTextViewHidden()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(created_count_text_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(created_count_text_view))
 
         this.viewModel.outputs.createdCountTextViewText()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { created_count_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { created_count_text_view.text = it }
 
         this.viewModel.outputs.createdTextViewHidden()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(created_text_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(created_text_view))
 
         this.viewModel.outputs.dividerViewHidden()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe(ViewUtils.setGone(divider_view))
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe(ViewUtils.setGone(divider_view))
 
         this.viewModel.outputs.projectList()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe({ this.loadProjects(it) })
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe({ this.loadProjects(it) })
 
         this.viewModel.outputs.resumeDiscoveryActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe {resumeDiscoveryActivity() }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { resumeDiscoveryActivity() }
 
         this.viewModel.outputs.startMessageThreadsActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.startMessageThreadsActivity() }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.startMessageThreadsActivity() }
 
         this.viewModel.outputs.startProjectActivity()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { this.startProjectActivity(it) }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { this.startProjectActivity(it) }
 
         this.viewModel.outputs.userNameTextViewText()
-                .compose(bindToLifecycle())
-                .compose(observeForUI())
-                .subscribe { user_name_text_view.text = it }
+            .compose(bindToLifecycle())
+            .compose(observeForUI())
+            .subscribe { user_name_text_view.text = it }
 
         messages_button.setOnClickListener { this.viewModel.inputs.messagesButtonClicked() }
     }
@@ -116,7 +118,7 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
         if (projects.isEmpty()) {
             recycler_view.layoutManager = LinearLayoutManager(this)
             recycler_view.setPadding(
-                    0, recycler_view.paddingTop, recycler_view.paddingRight, recycler_view.paddingBottom
+                0, recycler_view.paddingTop, recycler_view.paddingRight, recycler_view.paddingBottom
             )
 
             if (ViewUtils.isPortrait(this)) {
@@ -137,13 +139,13 @@ class ProfileActivity : BaseActivity<ProfileViewModel.ViewModel>() {
 
     private fun startMessageThreadsActivity() {
         val intent = Intent(this, MessageThreadsActivity::class.java)
-                .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.PROFILE)
+            .putExtra(IntentKey.KOALA_CONTEXT, KoalaContext.Mailbox.PROFILE)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 
     private fun startProjectActivity(project: Project) {
         val intent = Intent(this, ProjectActivity::class.java)
-                .putExtra(IntentKey.PROJECT, project)
+            .putExtra(IntentKey.PROJECT, project)
         startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left)
     }
 }

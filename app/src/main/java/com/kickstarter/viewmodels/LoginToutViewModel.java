@@ -12,6 +12,8 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.EventContextValues.ContextTypeName;
+import com.kickstarter.libs.utils.EventContextValues.ContextPageName;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -99,7 +101,10 @@ public interface LoginToutViewModel {
         .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
         .ofType(LoginReason.class)
         .compose(bindToLifecycle())
-        .subscribe(this.loginReason::onNext);
+        .subscribe(it -> {
+          this.loginReason.onNext(it);
+          this.lake.trackLoginOrSignUpPagedViewed();
+        });
 
       activityResult()
         .compose(bindToLifecycle())
@@ -146,7 +151,10 @@ public interface LoginToutViewModel {
       this.facebookLoginClick
         .compose(ignoreValues())
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.lake.trackFacebookLogInSignUpButtonClicked());
+        .subscribe(__ -> {
+          this.lake.trackFacebookLogInSignUpButtonClicked();
+          this.lake.trackLoginOrSignUpCtaClicked(ContextTypeName.FACEBOOK.getContextName(), ContextPageName.LOGIN_SIGN_UP.getContextName());
+        });
 
       this.loginClick
         .compose(bindToLifecycle())

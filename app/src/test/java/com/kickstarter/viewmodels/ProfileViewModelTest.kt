@@ -1,21 +1,18 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.Environment
+import com.kickstarter.libs.utils.EventName
+import com.kickstarter.libs.utils.NumberUtils
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory
 import com.kickstarter.mock.factories.ProjectFactory
 import com.kickstarter.mock.factories.UserFactory
-import com.kickstarter.libs.Environment
-import com.kickstarter.libs.KoalaEvent
-import com.kickstarter.libs.utils.EventName
-import com.kickstarter.libs.utils.NumberUtils
+import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.models.Project
 import com.kickstarter.models.User
 import com.kickstarter.services.DiscoveryParams
-import com.kickstarter.mock.services.MockApiClient
 import com.kickstarter.services.apiresponses.DiscoverEnvelope
-
 import org.junit.Test
-
 import rx.Observable
 import rx.observers.TestSubscriber
 
@@ -56,9 +53,9 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProfileViewModel_EmitsBackedAndCreatedProjectsData() {
         val user = UserFactory.user().toBuilder()
-                .backedProjectsCount(15)
-                .createdProjectsCount(2)
-                .build()
+            .backedProjectsCount(15)
+            .createdProjectsCount(2)
+            .build()
 
         val apiClient = object : MockApiClient() {
             override fun fetchCurrentUser(): Observable<User> {
@@ -85,9 +82,9 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProfileViewModel_EmitsBackedProjectsData() {
         val user = UserFactory.user().toBuilder()
-                .backedProjectsCount(5)
-                .createdProjectsCount(0)
-                .build()
+            .backedProjectsCount(5)
+            .createdProjectsCount(0)
+            .build()
 
         val apiClient = object : MockApiClient() {
             override fun fetchCurrentUser(): Observable<User> {
@@ -114,9 +111,9 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
     @Test
     fun testProfileViewModel_EmitsCreatedProjectsData() {
         val user = UserFactory.user().toBuilder()
-                .backedProjectsCount(0)
-                .createdProjectsCount(2)
-                .build()
+            .backedProjectsCount(0)
+            .createdProjectsCount(2)
+            .build()
 
         val apiClient = object : MockApiClient() {
             override fun fetchCurrentUser(): Observable<User> {
@@ -145,7 +142,7 @@ class ProfileViewModelTest : KSRobolectricTestCase() {
         val apiClient = object : MockApiClient() {
             override fun fetchProjects(params: DiscoveryParams): Observable<DiscoverEnvelope> {
                 return Observable.just(
-                        DiscoverEnvelopeFactory.discoverEnvelope(listOf(ProjectFactory.project()))
+                    DiscoverEnvelopeFactory.discoverEnvelope(listOf(ProjectFactory.project()))
                 )
             }
         }

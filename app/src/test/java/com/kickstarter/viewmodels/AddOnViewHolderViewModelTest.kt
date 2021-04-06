@@ -91,15 +91,15 @@ class AddOnViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         val usProject = ProjectFactory.project()
-                .toBuilder()
-                .currentCurrency("USD")
-                .build()
+            .toBuilder()
+            .currentCurrency("USD")
+            .build()
         val minimum = 50.0
         val reward = RewardFactory.reward()
-                .toBuilder()
-                .minimum(minimum)
-                .convertedMinimum(minimum)
-                .build()
+            .toBuilder()
+            .minimum(minimum)
+            .convertedMinimum(minimum)
+            .build()
 
         this.vm.inputs.configureWith(ProjectDataFactory.project(usProject), reward)
 

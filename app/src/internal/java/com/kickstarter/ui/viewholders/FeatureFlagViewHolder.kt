@@ -12,35 +12,36 @@ class FeatureFlagViewHolder(val binding: ItemFeatureFlagBinding, val delegate: D
     interface Delegate {
         fun featureOptionToggle(featureName: String, isEnabled: Boolean)
     }
+
     init {
         this.vm.outputs.key()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { binding.flagKey.text = it }
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { binding.flagKey.text = it }
 
         this.vm.outputs.value()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { binding.flagValue.isChecked = it }
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { binding.flagValue.isChecked = it }
 
         this.vm.outputs.isClickable()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { 
-                binding.flagValue.isClickable = it
-            }
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    binding.flagValue.isClickable = it
+                }
 
         this.vm.outputs.featureAlpha()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe {
-                binding.root.alpha = it
-            }
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe {
+                    binding.root.alpha = it
+                }
 
         this.vm.outputs.notifyDelegateFeatureStateChanged()
-            .compose(bindToLifecycle())
-            .compose(observeForUI())
-            .subscribe { this.delegate.featureOptionToggle(it.first, it.second) }
+                .compose(bindToLifecycle())
+                .compose(observeForUI())
+                .subscribe { this.delegate.featureOptionToggle(it.first, it.second) }
 
         binding.flagValue.setOnCheckedChangeListener { _, isChecked ->
             this.vm.inputs.featureFlagCheckedChange(isChecked)

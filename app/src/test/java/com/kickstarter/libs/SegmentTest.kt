@@ -751,7 +751,7 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(EventContextValues.LocationContextName.DISCOVER_ADVANCED.contextName, properties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
         assertEquals(EventContextValues.CtaContextName.DISCOVER.contextName, properties[CONTEXT_PAGE.contextName])
         assertEquals(EventContextValues.CtaContextName.DISCOVER_SORT.contextName, properties[CONTEXT_CTA.contextName])
-        assertEquals(DiscoveryParams.Sort.ENDING_SOON.toString(), properties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
+        assertEquals("ending_soon", properties[ContextPropertyKeyName.CONTEXT_TYPE.contextName])
         assertEquals("popular", properties["discover_sort"])
     }
 

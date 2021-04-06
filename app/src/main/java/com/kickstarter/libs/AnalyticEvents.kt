@@ -734,7 +734,13 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         val props: HashMap<String, Any> = hashMapOf(CONTEXT_CTA.contextName to DISCOVER_SORT.contextName)
         props[CONTEXT_LOCATION.contextName] = DISCOVER_ADVANCED.contextName
         props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
-        props[CONTEXT_TYPE.contextName] = discoverParams.sort().toString()
+        props[CONTEXT_TYPE.contextName] = discoverParams.sort()?.let {
+            when (it) {
+                DiscoveryParams.Sort.POPULAR -> "popular"
+                DiscoveryParams.Sort.ENDING_SOON -> "ending_soon"
+                else -> it.toString()
+            }
+        } ?: ""
         props.putAll(AnalyticEventsUtils.discoveryParamsProperties(discoverParams, currentSort))
         client.track(CTA_CLICKED.eventName, props)
     }

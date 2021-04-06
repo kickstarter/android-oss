@@ -2,6 +2,7 @@ package com.kickstarter.libs
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.models.OptimizelyEnvironment
+import com.kickstarter.libs.utils.ContextPropertyKeyName
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_CTA
 import com.kickstarter.libs.utils.ContextPropertyKeyName.CONTEXT_PAGE
 import com.kickstarter.libs.utils.EventContextValues
@@ -240,6 +241,34 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals(false, expectedProperties["discover_watched"])
 
         this.segmentIdentify.assertValue(user.id())
+    }
+
+    @Test
+    fun testSearchCta_Properties() {
+        val user = user()
+        val client = client(user)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+        client.identifiedId.subscribe(this.segmentIdentify)
+        val segment = AnalyticEvents(listOf(client))
+
+        val params = DiscoveryParams
+            .builder()
+            .category(CategoryFactory.ceramicsCategory())
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
+
+        segment.trackSearchCTAButtonClicked(params)
+
+        assertSessionProperties(user)
+        assertContextProperties()
+        assertUserProperties(false)
+
+        val expectedProperties = propertiesTest.value
+        assertEquals(EventContextValues.CtaContextName.SEARCH.contextName, expectedProperties[CONTEXT_CTA.contextName])
+        assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
     }
 
     @Test

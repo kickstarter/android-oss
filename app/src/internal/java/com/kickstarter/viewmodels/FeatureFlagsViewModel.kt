@@ -15,6 +15,7 @@ import rx.subjects.BehaviorSubject
 
 interface FeatureFlagsViewModel {
     interface Inputs {
+        /** call function to edit segment feature flag in internal tool */
         fun updateSegmentFlag(flag: Boolean)
     }
     

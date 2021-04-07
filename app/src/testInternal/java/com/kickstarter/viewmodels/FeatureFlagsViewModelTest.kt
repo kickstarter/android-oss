@@ -92,7 +92,6 @@ class FeatureFlagsViewModelTest : KSRobolectricTestCase() {
         }
         
         val featuresFlagPreference = MockStringPreference()
-        
         this.vm.inputs.updateSegmentFlag(false, featuresFlagPreference)
         assertEquals(segmentFlagValue, false)
 

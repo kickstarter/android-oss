@@ -40,7 +40,8 @@ class DeviceRegistrar(
                     // Get new FCM registration token
                     val token = task.result
                     registerToken(this.context, token)
-                    // Braze register push notification
+
+                    // Braze register push notification token
                     Appboy.getInstance(this.context).registerAppboyPushMessages(token);
                 }
             )

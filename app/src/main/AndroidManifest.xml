@@ -268,7 +268,8 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service> <!-- Processes token refresh events from Friebase (e.g. token expired). Registers a new token. -->
+        </service>
+        <!-- Processes token refresh events from Firebase (e.g. token expired). Registers a new token. -->
         <service
             android:name=".services.firebase.TokenListenerService"
             android:exported="false">
@@ -276,12 +277,14 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <!-- Braze Service for messaging, it should substitute the FirebaseOne -->
+        <!-- Braze Service for messaging -->
+        <!--
         <service android:name="com.appboy.AppboyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        -->
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
@@ -304,5 +307,4 @@
             android:name="firebase_performance_logcat_enabled"
             android:value="${performanceLogs}" />
     </application>
-
 </manifest>

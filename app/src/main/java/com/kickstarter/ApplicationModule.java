@@ -183,6 +183,7 @@ public class ApplicationModule {
   @Singleton
   static Analytics provideSegment(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     String apiKey = "";
+
     Analytics segmentClient = null;
 
     if (build.isRelease() && Build.isExternal()) {
@@ -202,14 +203,15 @@ public class ApplicationModule {
 
       // Braze Push notification integration
       AppboyConfig.Builder appboyConfig = new AppboyConfig.Builder()
-              //.setDefaultNotificationChannelName("Braze Push")
+              //.setIsFirebaseCloudMessagingRegistrationEnabled(true)
+              //.setFirebaseCloudMessagingSenderIdKey("136483653139")
+              //.setDefaultNotificationChannelName("General")
               //.setDefaultNotificationChannelDescription("Braze related push")
               //.setPushDeepLinkBackStackActivityEnabled(true)
               //.setPushDeepLinkBackStackActivityClass(MainActivity.class) --> Needs clarification
               .setHandlePushDeepLinksAutomatically(false);
       Appboy.configure(context, appboyConfig.build());
 
-      // registerActivityLifecycleCallbacks(new AppboyLifecycleCallbackListener()); --> We should not need this
       AppboyLogger.setLogLevel(Log.VERBOSE);
     }
 

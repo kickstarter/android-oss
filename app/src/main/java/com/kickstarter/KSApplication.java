@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import android.text.TextUtils;
 
+import com.appboy.AppboyLifecycleCallbackListener;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -66,6 +67,9 @@ public class KSApplication extends MultiDexApplication {
     final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
     registerActivityLifecycleCallbacks(appUtil);
     registerComponentCallbacks(appUtil);
+
+    // - Register lifecycle callback for Braze
+    registerActivityLifecycleCallbacks(new AppboyLifecycleCallbackListener(true, false));
   }
 
   public ApplicationComponent component() {

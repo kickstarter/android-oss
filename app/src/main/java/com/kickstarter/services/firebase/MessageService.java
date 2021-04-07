@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.appboy.AppboyFirebaseMessagingService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -43,31 +44,35 @@ public class MessageService extends FirebaseMessagingService {
   @Override
   public void onMessageReceived(final RemoteMessage remoteMessage) {
     super.onMessageReceived(remoteMessage);
+    if (AppboyFirebaseMessagingService.handleBrazeRemoteMessage(this, remoteMessage)) {
+      // This Remote Message originated from Braze and a push notification was displayed.
+      // No further action is needed.
+    } else {
+      final String senderId = getString(R.string.gcm_defaultSenderId);
+      final String from = remoteMessage.getFrom();
+      if (!TextUtils.equals(from, senderId)) {
+        Timber.e("Received a message from %s, expecting %s", from, senderId);
+        return;
+      }
 
-    final String senderId = getString(R.string.gcm_defaultSenderId);
-    final String from = remoteMessage.getFrom();
-    if (!TextUtils.equals(from, senderId)) {
-      Timber.e("Received a message from %s, expecting %s", from, senderId);
-      return;
+      final Map<String, String> data = remoteMessage.getData();
+
+      final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
+              .activity(this.gson.fromJson(data.get("activity"), Activity.class))
+              .erroredPledge(this.gson.fromJson(data.get("errored_pledge"), PushNotificationEnvelope.ErroredPledge.class))
+              .gcm(this.gson.fromJson(data.get("gcm"), GCM.class))
+              .message(this.gson.fromJson(data.get("message"), PushNotificationEnvelope.Message.class))
+              .project(this.gson.fromJson(data.get("project"), PushNotificationEnvelope.Project.class))
+              .survey(this.gson.fromJson(data.get("survey"), PushNotificationEnvelope.Survey.class))
+              .build();
+
+      if (envelope == null) {
+        Timber.e("Cannot parse message, malformed or unexpected data: %s", data.toString());
+        return;
+      }
+
+      Timber.d("Received message: %s", envelope.toString());
+      this.pushNotifications.add(envelope);
     }
-
-    final Map<String, String> data = remoteMessage.getData();
-
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(this.gson.fromJson(data.get("activity"), Activity.class))
-      .erroredPledge(this.gson.fromJson(data.get("errored_pledge"), PushNotificationEnvelope.ErroredPledge.class))
-      .gcm(this.gson.fromJson(data.get("gcm"), GCM.class))
-      .message(this.gson.fromJson(data.get("message"), PushNotificationEnvelope.Message.class))
-      .project(this.gson.fromJson(data.get("project"), PushNotificationEnvelope.Project.class))
-      .survey(this.gson.fromJson(data.get("survey"), PushNotificationEnvelope.Survey.class))
-      .build();
-
-    if (envelope == null) {
-      Timber.e("Cannot parse message, malformed or unexpected data: %s", data.toString());
-      return;
-    }
-
-    Timber.d("Received message: %s", envelope.toString());
-    this.pushNotifications.add(envelope);
   }
 }

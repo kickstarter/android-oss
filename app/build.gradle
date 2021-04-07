@@ -238,9 +238,8 @@ dependencies {
     implementation "net.danlew:android.joda:2.9.3"
     implementation "org.jsoup:jsoup:1.12.1"
 
-    // Analytics
+    // Analytics Segment-Braze
     implementation 'com.segment.analytics.android:analytics:4.9.0'
-    api 'com.appboy:android-sdk-ui:13.1.0'
     implementation 'com.appboy:appboy-segment-integration:7.0.0'
 
     // Security

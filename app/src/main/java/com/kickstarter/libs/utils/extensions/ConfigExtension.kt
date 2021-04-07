@@ -7,7 +7,6 @@ import com.kickstarter.libs.Config
 import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.ConfigFeatureName
 import org.json.JSONArray
-import java.util.*
 
 /**
  * Helper method to know if a feature flag is enabled
@@ -18,7 +17,7 @@ import java.util.*
  */
 fun Config.isFeatureFlagEnabled(text: String): Boolean {
     val isEnabled = this
-        ?.features()
+        .features()
         ?.get(text)
 
     return isEnabled ?: false
@@ -29,7 +28,7 @@ fun Config.isFeatureFlagEnabled(text: String): Boolean {
  */
 fun Config.currentVariants(): Array<String>? {
     return this
-        ?.abExperiments()
+        .abExperiments()
         ?.toSortedMap()
         ?.let {
             mutableListOf<String>().apply {
@@ -46,7 +45,7 @@ fun Config.currentVariants(): Array<String>? {
  */
 fun Config.enabledFeatureFlags(): JSONArray? {
     return this
-        ?.features()
+        .features()
         ?.filter { it.key.startsWith("android_") && it.value }
         ?.keys
         ?.sorted()

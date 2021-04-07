@@ -252,13 +252,34 @@ class SegmentTest : KSRobolectricTestCase() {
         client.identifiedId.subscribe(this.segmentIdentify)
         val segment = AnalyticEvents(listOf(client))
 
-        segment.trackSearchCTAButtonClicked()
+        val params = DiscoveryParams
+            .builder()
+            .category(CategoryFactory.ceramicsCategory())
+            .sort(DiscoveryParams.Sort.MAGIC)
+            .build()
+
+        segment.trackSearchCTAButtonClicked(params)
 
         assertSessionProperties(user)
         assertContextProperties()
         assertUserProperties(false)
 
         val expectedProperties = propertiesTest.value
+
+        assertEquals("1", expectedProperties["discover_category_id"])
+        assertEquals("Art", expectedProperties["discover_category_name"])
+        assertEquals(false, expectedProperties["discover_everything"])
+        assertEquals(false, expectedProperties["discover_pwl"])
+        assertEquals(false, expectedProperties["discover_recommended"])
+        assertEquals("category", expectedProperties["discover_ref_tag"])
+        assertEquals(null, expectedProperties["discover_search_term"])
+        assertEquals(false, expectedProperties["discover_social"])
+        assertEquals("magic", expectedProperties["discover_sort"])
+        assertEquals("287", expectedProperties["discover_subcategory_id"])
+        assertEquals("Ceramics", expectedProperties["discover_subcategory_name"])
+        assertEquals(null, expectedProperties["discover_tag"])
+        assertEquals(false, expectedProperties["discover_watched"])
+
         assertEquals(EventContextValues.CtaContextName.SEARCH.contextName, expectedProperties[CONTEXT_CTA.contextName])
         assertEquals(EventContextValues.LocationContextName.GLOBAL_NAV.contextName, expectedProperties[ContextPropertyKeyName.CONTEXT_LOCATION.contextName])
 

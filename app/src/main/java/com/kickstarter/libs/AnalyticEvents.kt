@@ -836,10 +836,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     /**
      * Sends data associated with the search CTA click event to the client.
-     *
+     * @param discoveryParams: DiscoveryParams
      */
-    fun trackSearchCTAButtonClicked() {
-        val props: HashMap<String, Any> = hashMapOf(CONTEXT_PAGE.contextName to DISCOVER.contextName)
+    fun trackSearchCTAButtonClicked(discoveryParams: DiscoveryParams) {
+        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
+        props[CONTEXT_PAGE.contextName] = DISCOVER.contextName
         props[CONTEXT_CTA.contextName] = SEARCH.contextName
         props[CONTEXT_LOCATION.contextName] = GLOBAL_NAV.contextName
         client.track(CTA_CLICKED.eventName, props)

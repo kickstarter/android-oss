@@ -1,8 +1,14 @@
 @file:JvmName("ConfigExtension")
 package com.kickstarter.libs.utils.extensions
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.kickstarter.libs.Config
+import com.kickstarter.libs.preferences.StringPreferenceType
+import com.kickstarter.libs.utils.ConfigFeatureName
 import org.json.JSONArray
+import java.util.*
+
 /**
  * Helper method to know if a feature flag is enabled
  *
@@ -51,4 +57,43 @@ fun Config.enabledFeatureFlags(): JSONArray? {
                 }
             }
         }
+}
+
+/**
+ * set the saved feature flags in to config feature object
+ */
+
+fun Config.syncUserFeatureFlagsFromPref(featuresFlagPreference: StringPreferenceType) {
+    val featuresFlagsMap = Gson().fromJson<Map<String?, Boolean?>>(
+        featuresFlagPreference.get(), object : TypeToken<HashMap<String?, Boolean?>>() {}.type
+    )
+
+    featuresFlagsMap[ConfigFeatureName.SEGMENT_ENABLED.configFeatureName]?.let {
+        this.features()?.put(ConfigFeatureName.SEGMENT_ENABLED.configFeatureName, it)
+    }
+}
+
+/**
+ * set the saved feature flags in to config feature object
+ */
+
+fun Config.setUserFeatureFlagsPrefWithFeatureFlag(
+    featuresFlagPreference: StringPreferenceType?,
+    featureName: String,
+    isEnabled: Boolean
+) {
+    featuresFlagPreference?.let {
+        val jsonString = it.get()
+        val featuresFlagsMap = if (jsonString.isNullOrEmpty()) {
+            mutableMapOf()
+        } else {
+            Gson().fromJson<Map<String?, Boolean?>>(
+                it.get(), object : TypeToken<HashMap<String?, Boolean?>>() {}.type
+            ).toMutableMap()
+        }
+        featuresFlagsMap[featureName] = isEnabled
+        it.set(Gson().toJson(featuresFlagsMap).toString())
+    }
+
+    this.features()?.set(featureName, isEnabled)
 }

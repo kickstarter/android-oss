@@ -90,7 +90,7 @@ class FeatureFlagsViewModelTest : KSRobolectricTestCase() {
         mockConfig.observable().subscribe {
             segmentFlagValue = it.features()?.get(SEGMENT_ENABLED.configFeatureName)!!
         }
-        
+
         val featuresFlagPreference = MockStringPreference()
         this.vm.inputs.updateSegmentFlag(false, featuresFlagPreference)
         assertEquals(segmentFlagValue, false)

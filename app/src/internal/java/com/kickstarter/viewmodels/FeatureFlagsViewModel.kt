@@ -7,7 +7,9 @@ import com.kickstarter.libs.CurrentConfigType
 import com.kickstarter.libs.CurrentUserType
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.ExperimentsClientType
+import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.utils.ConfigFeatureName.SEGMENT_ENABLED
+import com.kickstarter.libs.utils.extensions.setUserFeatureFlagsPrefWithFeatureFlag
 import com.kickstarter.model.FeatureFlagsModel
 import com.kickstarter.ui.activities.FeatureFlagsActivity
 import rx.Observable
@@ -16,7 +18,7 @@ import rx.subjects.BehaviorSubject
 interface FeatureFlagsViewModel {
     interface Inputs {
         /** call function to edit segment feature flag in internal tool */
-        fun updateSegmentFlag(flag: Boolean)
+        fun updateSegmentFlag(flag: Boolean, featuresFlagPreference: StringPreferenceType?)
     }
 
     interface Outputs {
@@ -35,7 +37,7 @@ interface FeatureFlagsViewModel {
 
         private val configFeatures = BehaviorSubject.create<List<FeatureFlagsModel>>()
         private val optimizelyFeatures = BehaviorSubject.create<List<FeatureFlagsModel>>()
-        private val updateSegmentFlag = BehaviorSubject.create<Boolean>()
+        private val updateSegmentFlag = BehaviorSubject.create<Pair<Boolean, StringPreferenceType?>>()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -69,7 +71,11 @@ interface FeatureFlagsViewModel {
             this.updateSegmentFlag
                 .compose(bindToLifecycle())
                 .subscribe {
-                    config?.features()?.put(SEGMENT_ENABLED.configFeatureName, it)
+                    config?.setUserFeatureFlagsPrefWithFeatureFlag(
+                        it.second,
+                        SEGMENT_ENABLED.configFeatureName,
+                        it.first
+                    )
                     environment.currentConfig().config(config)
                 }
         }
@@ -78,6 +84,7 @@ interface FeatureFlagsViewModel {
 
         override fun optimizelyFeatures(): Observable<List<FeatureFlagsModel>> = this.optimizelyFeatures
 
-        override fun updateSegmentFlag(flag: Boolean) = this.updateSegmentFlag.onNext(flag)
+        override fun updateSegmentFlag(flag: Boolean, featuresFlagPreference: StringPreferenceType?) =
+            this.updateSegmentFlag.onNext(Pair(flag, featuresFlagPreference))
     }
 }

@@ -404,6 +404,13 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @NonNull
+  static  StringPreferenceType providesFeaturesFlagsPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, SharedPreferenceKey.FEATURE_FLAG);
+  }
+
+  @Provides
+  @Singleton
   @ActivitySamplePreference
   @NonNull
   static IntPreferenceType provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {

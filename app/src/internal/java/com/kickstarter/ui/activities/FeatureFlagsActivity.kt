@@ -3,9 +3,11 @@ package com.kickstarter.ui.activities
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
+import com.kickstarter.KSApplication
 import com.kickstarter.R
 import com.kickstarter.libs.BaseActivity
 import com.kickstarter.libs.preferences.BooleanPreferenceType
+import com.kickstarter.libs.preferences.StringPreferenceType
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel
 import com.kickstarter.libs.rx.transformers.Transformers.observeForUI
 import com.kickstarter.libs.utils.BooleanUtils
@@ -16,13 +18,20 @@ import com.kickstarter.ui.viewholders.FeatureFlagViewHolder
 import com.kickstarter.viewmodels.FeatureFlagsViewModel
 import kotlinx.android.synthetic.internal.activity_feature_flags.*
 import kotlinx.android.synthetic.internal.item_feature_flag_override.view.*
+import javax.inject.Inject
 
 @RequiresActivityViewModel(FeatureFlagsViewModel.ViewModel::class)
 class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>(), FeatureFlagViewHolder.Delegate {
 
+    @JvmField
+    @Inject
+    var featuresFlagPreference: StringPreferenceType? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feature_flags)
+
+        (applicationContext as KSApplication).component().inject(this)
 
         val configFlagsAdapter = FeatureFlagsAdapter(this)
         config_flags.adapter = configFlagsAdapter
@@ -56,8 +65,11 @@ class FeatureFlagsActivity : BaseActivity<FeatureFlagsViewModel.ViewModel>(), Fe
     }
 
     override fun featureOptionToggle(featureName: String, isEnabled: Boolean) {
+
         when (featureName) {
-            SEGMENT_ENABLED.configFeatureName -> this.viewModel.inputs.updateSegmentFlag(isEnabled)
+            SEGMENT_ENABLED.configFeatureName -> {
+                this.viewModel.inputs.updateSegmentFlag(isEnabled, featuresFlagPreference)
+            }
         }
     }
 }

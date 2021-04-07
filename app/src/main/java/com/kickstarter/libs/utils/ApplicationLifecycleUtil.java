@@ -12,15 +12,14 @@ import androidx.annotation.Nullable;
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -30,11 +29,10 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   protected @Inject CurrentUserType currentUser;
   protected @Inject Logout logout;
   protected @Inject Build build;
+  protected @Inject StringPreferenceType featuresFlagPreference;
 
   private final KSApplication application;
   private boolean isInBackground = true;
-
-  private Config currentConfig;
 
   public ApplicationLifecycleUtil(final @NonNull KSApplication application) {
     this.application = application;
@@ -55,25 +53,18 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity.getApplication());
 
-      //to get the current config for segment feature when app resume from background
-      this.config.observable().subscribe(c -> {
-        this.currentConfig = c;
-      });
-
       // Refresh the config file
       this.client.config()
               .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
               .compose(Transformers.neverError())
               .subscribe(c -> {
+                //sync save features flags in the config object
                 if (this.build.isDebug() || Build.isInternal()) {
-                  if (Objects.requireNonNull(c.features()).containsKey(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName())) {
-                    final boolean isChecked = Objects.requireNonNull(this.currentConfig.features()).get(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName());
-                    Objects.requireNonNull(c.features()).put(ConfigFeatureName.SEGMENT_ENABLED.getConfigFeatureName(), isChecked);
-                  }
+                  ConfigExtension.syncUserFeatureFlagsFromPref(c, this.featuresFlagPreference);
                 }
-
                 this.config.config(c);
               });
+
 
       // Refresh the user
       final String accessToken = this.currentUser.getAccessToken();

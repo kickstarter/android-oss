@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
+import com.kickstarter.libs.preferences.MockStringPreference
 import com.kickstarter.libs.utils.ConfigFeatureName.SEGMENT_ENABLED
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.MockExperimentsClientType
@@ -89,11 +90,13 @@ class FeatureFlagsViewModelTest : KSRobolectricTestCase() {
         mockConfig.observable().subscribe {
             segmentFlagValue = it.features()?.get(SEGMENT_ENABLED.configFeatureName)!!
         }
-
-        this.vm.inputs.updateSegmentFlag(false)
+        
+        val featuresFlagPreference = MockStringPreference()
+        
+        this.vm.inputs.updateSegmentFlag(false, featuresFlagPreference)
         assertEquals(segmentFlagValue, false)
 
-        this.vm.inputs.updateSegmentFlag(true)
+        this.vm.inputs.updateSegmentFlag(true, featuresFlagPreference)
         assertEquals(segmentFlagValue, true)
     }
 }

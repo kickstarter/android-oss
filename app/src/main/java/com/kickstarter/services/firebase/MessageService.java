@@ -4,13 +4,13 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.appboy.AppboyFirebaseMessagingService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.braze.BrazeClient;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
@@ -38,16 +38,17 @@ public class MessageService extends FirebaseMessagingService {
 
   /**
    * Called when a message is received from Firebase.
+   * - If the message comes from braze it will be handle on BrazeClient.Companion.handleRemoteMessage
+   * - If the message is from Kickstarter it will be process here
    *
    * @param remoteMessage Object containing message information.
    */
   @Override
   public void onMessageReceived(final RemoteMessage remoteMessage) {
     super.onMessageReceived(remoteMessage);
-    if (AppboyFirebaseMessagingService.handleBrazeRemoteMessage(this, remoteMessage)) {
-      // This Remote Message originated from Braze and a push notification was displayed.
-      // No further action is needed.
-    } else {
+    final Boolean isBrazeMessage = BrazeClient.Companion.handleRemoteMessage(this, remoteMessage);
+
+    if (!isBrazeMessage) {
       final String senderId = getString(R.string.gcm_defaultSenderId);
       final String from = remoteMessage.getFrom();
       if (!TextUtils.equals(from, senderId)) {

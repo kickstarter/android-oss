@@ -6,10 +6,10 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import com.appboy.Appboy
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
+import com.kickstarter.libs.braze.BrazeClient
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.PlayServicesCapability
 import com.kickstarter.libs.utils.WorkUtils
@@ -19,8 +19,9 @@ import com.kickstarter.ui.IntentKey
 import java.util.concurrent.TimeUnit
 
 class DeviceRegistrar(
-    private val playServicesCapability: PlayServicesCapability,
-    @param:ApplicationContext @field:ApplicationContext private val context: Context
+        private val playServicesCapability: PlayServicesCapability,
+        @param:ApplicationContext @field:ApplicationContext private val context: Context,
+        private val brazeClient: BrazeClient
 ) : DeviceRegistrarType {
 
     /**
@@ -41,8 +42,8 @@ class DeviceRegistrar(
                     val token = task.result
                     registerToken(this.context, token)
 
-                    // Braze register push notification token
-                    Appboy.getInstance(this.context).registerAppboyPushMessages(token);
+                    // - Braze register push notification token
+                    this.brazeClient.registerPushMessages(this.context, token);
                 }
             )
         }

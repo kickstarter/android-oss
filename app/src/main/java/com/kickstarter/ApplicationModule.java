@@ -43,6 +43,7 @@ import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.TrackingClientType;
+import com.kickstarter.libs.braze.BrazeClient;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -97,6 +98,7 @@ import java.net.CookieManager;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
@@ -200,22 +202,22 @@ public class ApplicationModule {
               .build();
 
       Analytics.setSingletonInstance(segmentClient);
-
-      // Braze Push notification integration
-      AppboyConfig.Builder appboyConfig = new AppboyConfig.Builder()
-              //.setIsFirebaseCloudMessagingRegistrationEnabled(true)
-              //.setFirebaseCloudMessagingSenderIdKey("136483653139")
-              //.setDefaultNotificationChannelName("General")
-              //.setDefaultNotificationChannelDescription("Braze related push")
-              //.setPushDeepLinkBackStackActivityEnabled(true)
-              //.setPushDeepLinkBackStackActivityClass(MainActivity.class) --> Needs clarification
-              .setHandlePushDeepLinksAutomatically(false);
-      Appboy.configure(context, appboyConfig.build());
-
-      AppboyLogger.setLogLevel(Log.VERBOSE);
     }
 
     return segmentClient;
+  }
+
+  @Provides
+  @Nonnull
+  @Singleton
+  static BrazeClient provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    final BrazeClient brazeClient = new BrazeClient(context, build);
+
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      brazeClient.init();
+    }
+
+    return brazeClient;
   }
 
   @Provides
@@ -523,8 +525,9 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static DeviceRegistrarType provideDeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
-                                                    final @ApplicationContext @NonNull Context context) {
-    return new DeviceRegistrar(playServicesCapability, context);
+                                                    final @ApplicationContext @NonNull Context context,
+                                                    final @NonNull BrazeClient brazeClient) {
+    return new DeviceRegistrar(playServicesCapability, context, brazeClient);
   }
 
   @Provides

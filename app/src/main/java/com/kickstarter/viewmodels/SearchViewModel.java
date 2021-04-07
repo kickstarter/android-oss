@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels;
 
+import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -82,13 +83,19 @@ public interface SearchViewModel {
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .startOverWith(params)
-          .envelopeToListOfData(DiscoverEnvelope::projects)
+          .envelopeToListOfData(
+                  envelope -> {
+                    Log.e("HERE", envelope.stats().count() + "COUNT");
+                    return envelope.projects();
+                  }
+          )
           .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
           .clearWhenStartingOver(true)
           .concater(ListUtils::concatDistinct)
           .loadWithParams(apiClient::fetchProjects)
           .loadWithPaginationPath(apiClient::fetchProjects)
           .build();
+
 
       paginator.isFetching()
         .compose(bindToLifecycle())
@@ -107,9 +114,14 @@ public interface SearchViewModel {
           if (paramsAndProjects.first.sort() == defaultSort) {
             this.popularProjects.onNext(paramsAndProjects.second);
           } else {
+           // Log.e("HERE", "COUNT: " + paramsAndProjects.second.size());
             this.searchProjects.onNext(paramsAndProjects.second);
           }
         });
+
+//      params
+//            .compose(takePairWhen(paginator.envelopeToListOfData()))
+//            .
 
       final Observable<Integer> pageCount = paginator.loadingPage();
       final Observable<String> query = params
@@ -140,7 +152,10 @@ public interface SearchViewModel {
         .map(paramsAndPageCount -> paramsAndPageCount.first)
         .observeOn(Schedulers.io())
         .compose(bindToLifecycle())
-        .subscribe(this.lake::trackSearchResultsLoaded);
+        .subscribe(it -> {
+          Log.e("HERE", "SEARCH -> " + it.term());
+          this.lake.trackSearchResultsLoaded(it);
+        });
 
       this.lake.trackSearchButtonClicked();
       this.lake.trackSearchCTAButtonClicked(defaultParams);

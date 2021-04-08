@@ -958,6 +958,26 @@ class SegmentTest : KSRobolectricTestCase() {
         assertEquals("popular", properties["discover_sort"])
     }
 
+    @Test
+    fun testSignUpInitiateCtaClicked_Properties() {
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackSignUpInitiateCtaClicked()
+
+        assertSessionProperties(null)
+        assertContextProperties()
+
+        val properties = this.propertiesTest.value
+        assertNull(properties["user_uid"])
+        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+        assertEquals(EventContextValues.CtaContextName.SIGN_UP_INITIATE.contextName, properties[CONTEXT_CTA.contextName])
+
+        this.segmentTrack.assertValue(EventName.CTA_CLICKED.eventName)
+    }
+
     private fun client(user: User?) = MockTrackingClient(
         user?.let { MockCurrentUser(it) }
             ?: MockCurrentUser(),

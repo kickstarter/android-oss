@@ -15,7 +15,7 @@ import com.kickstarter.libs.utils.Secrets
 /**
  * Braze SDK wrapper class.
  * @param context It needs the application context to be initialized,
- * @param build  the type of build will depetermine the IdSender from Firebase and the logs mode
+ * @param build  the type of build will determine the IdSender from Firebase and the logs mode
  */
 class BrazeClient(
         private val context: Context,
@@ -30,7 +30,7 @@ class BrazeClient(
                 //.setDefaultNotificationChannelDescription("Braze related push")
                 //.setPushDeepLinkBackStackActivityEnabled(true) ---> TODO: Define backstack behaviour
                 //.setPushDeepLinkBackStackActivityClass(MainActivity.class)
-                .setHandlePushDeepLinksAutomatically(false)
+                .setHandlePushDeepLinksAutomatically(true)
                 .build()
         Appboy.configure(context, appboyConfig)
 
@@ -58,7 +58,7 @@ class BrazeClient(
         Appboy.getInstance(context).registerAppboyPushMessages(token)
     }
 
-    // - Access to static methods without the braze client instance
+    // - Access to braze static methods without the braze client instance
     companion object {
 
         /**

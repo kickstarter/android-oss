@@ -31,7 +31,7 @@
     android:paddingStart="@dimen/grid_2">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
+        android:id="@+id/pledged_via_kickstarter_bar_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -119,7 +119,7 @@
       app:layout_constraintEnd_toStartOf="@+id/pledged_via_custom_bar"
       app:layout_constraintHorizontal_weight="1"
       app:layout_constraintStart_toEndOf="@+id/pledged_via_kickstarter_bar"
-      app:layout_constraintTop_toBottomOf="@id/guideline" />
+      app:layout_constraintTop_toBottomOf="@id/pledged_via_kickstarter_bar_guideline" />
 
     <LinearLayout
       android:id="@+id/pledged_via_external"

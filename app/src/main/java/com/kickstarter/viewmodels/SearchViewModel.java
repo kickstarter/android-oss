@@ -59,8 +59,11 @@ public interface SearchViewModel {
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
 
+    private PublishSubject<DiscoverEnvelope> discoverEnvelope = PublishSubject.create();
+
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
+
 
       final ApiClientType apiClient = environment.apiClient();
       final Scheduler scheduler = environment.scheduler();
@@ -70,6 +73,8 @@ public interface SearchViewModel {
         .filter(StringExt::isPresent)
         .debounce(300, TimeUnit.MILLISECONDS, scheduler)
         .map(s -> DiscoveryParams.builder().term(s).build());
+
+
 
       final Observable<DiscoveryParams> popularParams = this.search
         .filter(ObjectUtils::isNotNull)
@@ -85,7 +90,7 @@ public interface SearchViewModel {
           .startOverWith(params)
           .envelopeToListOfData(
                   envelope -> {
-                    Log.e("HERE", envelope.stats().count() + "COUNT");
+                    discoverEnvelope.onNext(envelope);
                     return envelope.projects();
                   }
           )

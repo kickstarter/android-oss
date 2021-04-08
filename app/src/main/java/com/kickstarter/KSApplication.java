@@ -8,7 +8,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.PushNotifications;
-import com.kickstarter.libs.braze.BrazeClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.libs.utils.Secrets;
@@ -71,7 +70,7 @@ public class KSApplication extends MultiDexApplication {
     registerComponentCallbacks(appUtil);
 
     // - Register lifecycle callback for Braze
-    registerActivityLifecycleCallbacks(remotePushClientType.getLifeCycleCallbacks());
+    registerActivityLifecycleCallbacks(this.remotePushClientType.getLifeCycleCallbacks());
   }
 
   public ApplicationComponent component() {

@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.PushNotifications;
-import com.kickstarter.libs.braze.BrazeClient;
 import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
@@ -49,7 +48,7 @@ public class MessageService extends FirebaseMessagingService {
   @Override
   public void onMessageReceived(final RemoteMessage remoteMessage) {
     super.onMessageReceived(remoteMessage);
-    final Boolean isBrazeMessage = remotePushClientType.handleRemoteMessages(this, remoteMessage);
+    final Boolean isBrazeMessage = this.remotePushClientType.handleRemoteMessages(this, remoteMessage);
 
     if (!isBrazeMessage) {
       final String senderId = getString(R.string.gcm_defaultSenderId);

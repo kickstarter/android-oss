@@ -11,9 +11,6 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.apollographql.apollo.ApolloClient;
-import com.appboy.Appboy;
-import com.appboy.configuration.AppboyConfig;
-import com.appboy.support.AppboyLogger;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

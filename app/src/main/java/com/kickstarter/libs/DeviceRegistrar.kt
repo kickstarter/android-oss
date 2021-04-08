@@ -19,9 +19,9 @@ import com.kickstarter.ui.IntentKey
 import java.util.concurrent.TimeUnit
 
 class DeviceRegistrar(
-        private val playServicesCapability: PlayServicesCapability,
-        @param:ApplicationContext @field:ApplicationContext private val context: Context,
-        private val brazeClient: BrazeClient
+    private val playServicesCapability: PlayServicesCapability,
+    @param:ApplicationContext @field:ApplicationContext private val context: Context,
+    private val brazeClient: BrazeClient
 ) : DeviceRegistrarType {
 
     /**
@@ -43,7 +43,7 @@ class DeviceRegistrar(
                     registerToken(this.context, token)
 
                     // - Braze register push notification token
-                    this.brazeClient.registerPushMessages(this.context, token);
+                    this.brazeClient.registerPushMessages(this.context, token)
                 }
             )
         }

@@ -53,7 +53,7 @@ interface RemotePushClientType {
  * @param context It needs the application context to be initialized,
  * @param build  the type of build will determine the IdSender from Firebase and the logs mode
  */
-class BrazeClient(
+open class BrazeClient(
     private val context: Context,
     private val build: Build
 ) : RemotePushClientType {
@@ -92,6 +92,6 @@ class BrazeClient(
     override fun handleRemoteMessages(context: Context, message: RemoteMessage) =
         AppboyFirebaseMessagingService.handleBrazeRemoteMessage(context, message)
 
-    override fun getLifeCycleCallbacks() =
+    override fun getLifeCycleCallbacks(): Application.ActivityLifecycleCallbacks =
         AppboyLifecycleCallbackListener(true, false)
 }

@@ -854,6 +854,11 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
+    fun trackSearchResultPageViewed(discoveryParams: DiscoveryParams) {
+        val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams)
+        client.track(SEARCH_PAGE_VIEWED, props)
+    }
+
     fun trackSearchPageViewed(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams)
         client.track(SEARCH_PAGE_VIEWED, props)

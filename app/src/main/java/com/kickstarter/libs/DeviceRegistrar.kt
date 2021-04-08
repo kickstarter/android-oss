@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kickstarter.libs.braze.BrazeClient
+import com.kickstarter.libs.braze.RemotePushClientType
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.PlayServicesCapability
 import com.kickstarter.libs.utils.WorkUtils
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class DeviceRegistrar(
     private val playServicesCapability: PlayServicesCapability,
     @param:ApplicationContext @field:ApplicationContext private val context: Context,
-    private val brazeClient: BrazeClient
+    private val brazeClient: RemotePushClientType
 ) : DeviceRegistrarType {
 
     /**

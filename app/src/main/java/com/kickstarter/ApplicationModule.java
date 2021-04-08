@@ -41,6 +41,7 @@ import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.TrackingClientType;
 import com.kickstarter.libs.braze.BrazeClient;
+import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -207,7 +208,7 @@ public class ApplicationModule {
   @Provides
   @Nonnull
   @Singleton
-  static BrazeClient provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+  static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     final BrazeClient brazeClient = new BrazeClient(context, build);
 
     if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
@@ -523,7 +524,7 @@ public class ApplicationModule {
   @NonNull
   static DeviceRegistrarType provideDeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
                                                     final @ApplicationContext @NonNull Context context,
-                                                    final @NonNull BrazeClient brazeClient) {
+                                                    final @NonNull RemotePushClientType brazeClient) {
     return new DeviceRegistrar(playServicesCapability, context, brazeClient);
   }
 

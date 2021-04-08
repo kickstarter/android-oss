@@ -11,6 +11,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.braze.BrazeClient;
+import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
@@ -24,6 +25,7 @@ import timber.log.Timber;
 public class MessageService extends FirebaseMessagingService {
   @Inject protected Gson gson;
   @Inject protected PushNotifications pushNotifications;
+  @Inject protected RemotePushClientType remotePushClientType;
 
   @Override
   public void onNewToken(@NonNull final String s) {
@@ -38,7 +40,8 @@ public class MessageService extends FirebaseMessagingService {
 
   /**
    * Called when a message is received from Firebase.
-   * - If the message comes from braze it will be handle on BrazeClient.Companion.handleRemoteMessage
+   * - If the message comes from braze it will be handle on:
+   * - @see RemotePushClientType#handleRemoteMessages(android.content.Context, com.google.firebase.messaging.RemoteMessage)
    * - If the message is from Kickstarter it will be process here
    *
    * @param remoteMessage Object containing message information.
@@ -46,7 +49,7 @@ public class MessageService extends FirebaseMessagingService {
   @Override
   public void onMessageReceived(final RemoteMessage remoteMessage) {
     super.onMessageReceived(remoteMessage);
-    final Boolean isBrazeMessage = BrazeClient.Companion.handleRemoteMessage(this, remoteMessage);
+    final Boolean isBrazeMessage = remotePushClientType.handleRemoteMessages(this, remoteMessage);
 
     if (!isBrazeMessage) {
       final String senderId = getString(R.string.gcm_defaultSenderId);

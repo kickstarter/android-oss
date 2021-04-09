@@ -859,10 +859,9 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
      * @param count: Int
      * @param sort: DiscoveryParams.Sort
      */
-    fun trackSearchResultPageViewed(discoveryParams: DiscoveryParams, count: Int, sort: DiscoveryParams.Sort) {
+    fun trackSearchResultPageViewed(discoveryParams: DiscoveryParams, count: Int) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
         props[CONTEXT_PAGE.contextName] = SEARCH.contextName
-        props[DISCOVER_SORT.contextName] = sort.name.toLowerCase(Locale.ROOT)
         discoveryParams.term()?.let { props["discover_search_term"] = it }
         props["discover_search_results_count"] = count
         client.track(PAGE_VIEWED.eventName, props)

@@ -1,22 +1,18 @@
 package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.libs.utils.EventName;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -83,14 +79,13 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertValues(false, true);
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", "Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
 
     // Typing more search terms doesn't emit more values
     this.vm.inputs.search("hello world!");
     this.searchProjectsPresent.assertValues(false, true);
-    scheduler.advanceTimeBy(2000, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", EventName.PAGE_VIEWED.getEventName(),
-            "Search Results Loaded", EventName.PAGE_VIEWED.getEventName());
+    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", "Search Results Loaded", EventName.PAGE_VIEWED.getEventName());
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS);

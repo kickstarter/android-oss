@@ -144,6 +144,14 @@ public interface SearchViewModel {
 
       params
           .compose(takePairWhen(pageCount))
+          .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
+          .map(paramsAndPageCount -> paramsAndPageCount.first)
+          .observeOn(Schedulers.io())
+          .compose(bindToLifecycle())
+          .subscribe(this.lake::trackSearchResultsLoaded);
+
+      params
+          .compose(takePairWhen(pageCount))
           .compose(takePairWhen(this.discoverEnvelope))
           .observeOn(Schedulers.io())
           .compose(bindToLifecycle())
@@ -151,14 +159,6 @@ public interface SearchViewModel {
           .subscribe(it -> {
             this.lake.trackSearchResultPageViewed(it.first.first, it.second.stats().count(), defaultSort);
           });
-
-      params
-          .compose(takePairWhen(pageCount))
-          .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
-          .map(paramsAndPageCount -> paramsAndPageCount.first)
-          .observeOn(Schedulers.io())
-          .compose(bindToLifecycle())
-          .subscribe(this.lake::trackSearchResultsLoaded);
 
       this.lake.trackSearchButtonClicked();
       this.lake.trackSearchCTAButtonClicked(defaultParams);

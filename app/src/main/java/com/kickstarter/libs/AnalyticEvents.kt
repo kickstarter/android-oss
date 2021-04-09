@@ -853,6 +853,12 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
         client.track(CTA_CLICKED.eventName, props)
     }
 
+    /**
+     * Sends data associated with the search results page viewed to segment.
+     * @param discoveryParams: DiscoveryParams
+     * @param count: Int
+     * @param sort: DiscoveryParams.Sort
+     */
     fun trackSearchResultPageViewed(discoveryParams: DiscoveryParams, count: Int, sort: DiscoveryParams.Sort) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()
         props[CONTEXT_PAGE.contextName] = SEARCH.contextName

@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
@@ -64,7 +63,6 @@ public interface SearchViewModel {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-
       final ApiClientType apiClient = environment.apiClient();
       final Scheduler scheduler = environment.scheduler();
 
@@ -73,8 +71,6 @@ public interface SearchViewModel {
         .filter(StringExt::isPresent)
         .debounce(300, TimeUnit.MILLISECONDS, scheduler)
         .map(s -> DiscoveryParams.builder().term(s).build());
-
-
 
       final Observable<DiscoveryParams> popularParams = this.search
         .filter(ObjectUtils::isNotNull)
@@ -88,11 +84,10 @@ public interface SearchViewModel {
         ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
           .nextPage(this.nextPage)
           .startOverWith(params)
-          .envelopeToListOfData(
-                  envelope -> {
-                    discoverEnvelope.onNext(envelope);
-                    return envelope.projects();
-                  }
+          .envelopeToListOfData(envelope -> {
+              this.discoverEnvelope.onNext(envelope);
+              return envelope.projects();
+              }
           )
           .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
           .clearWhenStartingOver(true)
@@ -119,14 +114,10 @@ public interface SearchViewModel {
           if (paramsAndProjects.first.sort() == defaultSort) {
             this.popularProjects.onNext(paramsAndProjects.second);
           } else {
-           // Log.e("HERE", "COUNT: " + paramsAndProjects.second.size());
             this.searchProjects.onNext(paramsAndProjects.second);
           }
         });
 
-//      params
-//            .compose(takePairWhen(paginator.envelopeToListOfData()))
-//            .
 
       final Observable<Integer> pageCount = paginator.loadingPage();
       final Observable<String> query = params
@@ -152,15 +143,22 @@ public interface SearchViewModel {
         });
 
       params
-        .compose(takePairWhen(pageCount))
-        .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
-        .map(paramsAndPageCount -> paramsAndPageCount.first)
-        .observeOn(Schedulers.io())
-        .compose(bindToLifecycle())
-        .subscribe(it -> {
-          Log.e("HERE", "SEARCH -> " + it.term());
-          this.lake.trackSearchResultsLoaded(it);
-        });
+          .compose(takePairWhen(pageCount))
+          .compose(takePairWhen(this.discoverEnvelope))
+          .observeOn(Schedulers.io())
+          .compose(bindToLifecycle())
+          .filter(it -> ObjectUtils.isNotNull(it.first.first.term()) && IntegerUtils.intValueOrZero(it.first.second) == 1)
+          .subscribe(it -> {
+            this.lake.trackSearchResultPageViewed(it.first.first, it.second.stats().count(), defaultSort);
+          });
+
+      params
+          .compose(takePairWhen(pageCount))
+          .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
+          .map(paramsAndPageCount -> paramsAndPageCount.first)
+          .observeOn(Schedulers.io())
+          .compose(bindToLifecycle())
+          .subscribe(this.lake::trackSearchResultsLoaded);
 
       this.lake.trackSearchButtonClicked();
       this.lake.trackSearchCTAButtonClicked(defaultParams);

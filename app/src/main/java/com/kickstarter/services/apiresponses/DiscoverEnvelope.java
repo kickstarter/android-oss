@@ -14,13 +14,13 @@ import auto.parcel.AutoParcel;
 public abstract class DiscoverEnvelope implements Parcelable {
   public abstract List<Project> projects();
   public abstract UrlsEnvelope urls();
-  public abstract UrlsEnvelope.StatsEnvelop stats();
+  public abstract StatsEnvelope stats();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder projects(List<Project> __);
     public abstract Builder urls(UrlsEnvelope __);
-    public abstract Builder stats(UrlsEnvelope.StatsEnvelop __);
+    public abstract Builder stats(StatsEnvelope __);
     public abstract DiscoverEnvelope build();
   }
 
@@ -63,19 +63,21 @@ public abstract class DiscoverEnvelope implements Parcelable {
       }
     }
 
-    @AutoGson
-    @AutoParcel
-    public abstract static class StatsEnvelop implements Parcelable {
-      public abstract Integer count();
+  }
 
-      @AutoParcel.Builder
-      public abstract static class Builder {
-        public abstract Builder count(Integer __);
-        public abstract StatsEnvelop build();
-      }
-      public static Builder builder() {
-        return new AutoParcel_DiscoverEnvelope_UrlsEnvelope_StatsEnvelop.Builder();
-      }
+  @AutoGson
+  @AutoParcel
+  public abstract static class StatsEnvelope implements Parcelable {
+    public abstract Integer count();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder count(Integer __);
+      public abstract StatsEnvelope build();
+    }
+    public static Builder builder() {
+      return new AutoParcel_DiscoverEnvelope_StatsEnvelope.Builder();
     }
   }
+
 }

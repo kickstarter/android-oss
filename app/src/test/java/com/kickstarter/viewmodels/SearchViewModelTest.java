@@ -78,7 +78,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertValues(false, true);
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked",  EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
 
     // Typing more search terms doesn't emit more values
     this.vm.inputs.search("hello world!");

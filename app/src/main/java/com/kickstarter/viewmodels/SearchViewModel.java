@@ -58,7 +58,7 @@ public interface SearchViewModel {
 
   final class ViewModel extends ActivityViewModel<SearchActivity> implements Inputs, Outputs {
 
-    private PublishSubject<DiscoverEnvelope> discoverEnvelope = PublishSubject.create();
+    private final PublishSubject<DiscoverEnvelope> discoverEnvelope = PublishSubject.create();
 
     public ViewModel(final @NonNull Environment environment) {
       super(environment);

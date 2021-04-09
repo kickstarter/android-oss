@@ -1,18 +1,22 @@
 package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.mock.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.mock.factories.ProjectFactory;
 import com.kickstarter.mock.services.MockApiClient;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.libs.utils.EventName;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +44,33 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.searchProjects().subscribe(this.searchProjects);
     this.vm.outputs.popularProjects().map(ps -> ps.size() > 0).subscribe(this.popularProjectsPresent);
     this.vm.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(this.searchProjectsPresent);
+  }
+
+  @Test
+  public void testSearchResultPageViewed () {
+
+    final CurrentUserType currentUser = new MockCurrentUser();
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+        if (params.isSavedProjects()) {
+          return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(new ArrayList<>()));
+        } else {
+          return super.fetchProjects(params);
+        }
+      }
+    };
+
+    final Environment environment = environment().toBuilder()
+            .apiClient(apiClient)
+            .currentUser(currentUser)
+            .build();
+
+    setUpEnvironment(environment);
+
+    this.vm.search("hello");
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), EventName.PAGE_VIEWED.getEventName(), "Search Results Loaded");
+
   }
 
   @Test
@@ -84,7 +115,7 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.vm.inputs.search("hello world!");
     this.searchProjectsPresent.assertValues(false, true);
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", "Search Results Loaded");
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", "Search Results Loaded", EventName.PAGE_VIEWED.getEventName());
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS);

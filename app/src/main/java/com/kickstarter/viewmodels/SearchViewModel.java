@@ -147,7 +147,7 @@ public interface SearchViewModel {
           .compose(takePairWhen(this.discoverEnvelope))
           .observeOn(Schedulers.io())
           .compose(bindToLifecycle())
-          .filter(it -> ObjectUtils.isNotNull(it.first.first.term()) && IntegerUtils.intValueOrZero(it.first.second) == 1)
+          .filter(it -> ObjectUtils.isNotNull(it.first.first.term()) && IntegerUtils.intValueOrZero(it.first.second) == 1 )
           .subscribe(it -> {
             this.lake.trackSearchResultPageViewed(it.first.first, it.second.stats().count(), defaultSort);
           });
@@ -158,7 +158,9 @@ public interface SearchViewModel {
           .map(paramsAndPageCount -> paramsAndPageCount.first)
           .observeOn(Schedulers.io())
           .compose(bindToLifecycle())
-          .subscribe(this.lake::trackSearchResultsLoaded);
+          .subscribe( it -> {
+            this.lake.trackSearchResultsLoaded(it);
+          });
 
       this.lake.trackSearchButtonClicked();
       this.lake.trackSearchCTAButtonClicked(defaultParams);

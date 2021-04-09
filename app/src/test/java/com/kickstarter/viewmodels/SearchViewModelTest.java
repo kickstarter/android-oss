@@ -46,32 +46,6 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     this.vm.outputs.searchProjects().map(ps -> ps.size() > 0).subscribe(this.searchProjectsPresent);
   }
 
-  @Test
-  public void testSearchResultPageViewed () {
-
-    final CurrentUserType currentUser = new MockCurrentUser();
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-        if (params.isSavedProjects()) {
-          return Observable.just(DiscoverEnvelopeFactory.discoverEnvelope(new ArrayList<>()));
-        } else {
-          return super.fetchProjects(params);
-        }
-      }
-    };
-
-    final Environment environment = environment().toBuilder()
-            .apiClient(apiClient)
-            .currentUser(currentUser)
-            .build();
-
-    setUpEnvironment(environment);
-
-    this.vm.search("hello");
-    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), EventName.PAGE_VIEWED.getEventName(), "Search Results Loaded");
-
-  }
 
   @Test
   public void testPopularProjectsLoadImmediately() {
@@ -109,13 +83,14 @@ public class SearchViewModelTest extends KSRobolectricTestCase {
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
     this.searchProjectsPresent.assertValues(false, true);
     scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed");
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", "Page Viewed");
 
     // Typing more search terms doesn't emit more values
     this.vm.inputs.search("hello world!");
     this.searchProjectsPresent.assertValues(false, true);
-    scheduler.advanceTimeBy(300, TimeUnit.MILLISECONDS);
-    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", "Search Results Loaded", EventName.PAGE_VIEWED.getEventName());
+    scheduler.advanceTimeBy(2000, TimeUnit.MILLISECONDS);
+    this.lakeTest.assertValues("Search Button Clicked", EventName.CTA_CLICKED.getEventName(), "Search Page Viewed", EventName.PAGE_VIEWED.getEventName(),
+            "Search Results Loaded", EventName.PAGE_VIEWED.getEventName());
 
     // Waiting enough time emits search results
     scheduler.advanceTimeBy(500, TimeUnit.MILLISECONDS);

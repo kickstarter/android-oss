@@ -37,6 +37,7 @@ public abstract class Project implements Parcelable, Relay {
   public abstract String currencySymbol(); // e.g.: $
   public abstract String currentCurrency(); // e.g.: User's Preferred currency USD
   public abstract boolean currencyTrailingCode();
+  public abstract @Nullable Boolean displayPrelaunch();
   public abstract @Nullable DateTime featuredAt();
   public abstract @Nullable List<User> friends();
   public abstract Float fxRate();
@@ -81,6 +82,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder currencySymbol(String __);
     public abstract Builder currentCurrency(String __);
     public abstract Builder currencyTrailingCode(boolean __);
+    public abstract Builder displayPrelaunch(boolean __);
     public abstract Builder deadline(DateTime __);
     public abstract Builder featuredAt(DateTime __);
     public abstract Builder friends(List<User> __);

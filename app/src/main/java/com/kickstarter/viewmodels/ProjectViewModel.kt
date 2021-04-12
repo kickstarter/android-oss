@@ -373,13 +373,13 @@ interface ProjectViewModel {
                 .compose(errors())
 
             mappedProjectValues
-                .filter { BooleanUtils.isTrue(it.prelaunchActivated()) }
+                .filter { BooleanUtils.isTrue(it.displayPrelaunch()) }
                 .map { it.webProjectUrl() }
                 .compose(bindToLifecycle())
                 .subscribe(this.prelaunchUrl)
 
             val initialProject = mappedProjectValues
-                .filter { BooleanUtils.isFalse(it.prelaunchActivated()) }
+                .filter { BooleanUtils.isFalse(it.displayPrelaunch()) }
 
             // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
             val cookieRefTag = initialProject

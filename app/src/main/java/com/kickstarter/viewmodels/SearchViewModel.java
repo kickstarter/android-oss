@@ -7,7 +7,6 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.EventContextValues;
-import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.extensions.StringExt;
@@ -143,23 +142,14 @@ public interface SearchViewModel {
           return this.projectAndRefTag(searchTerm, currentProjects, projectClicked);
         });
 
-      searchParams
-          .compose(takePairWhen(pageCount))
+      this.search
           .compose(takePairWhen(this.discoverEnvelope))
           .observeOn(Schedulers.io())
           .compose(bindToLifecycle())
-          .filter(it -> ObjectUtils.isNotNull(it.first.first.term()) && IntegerUtils.intValueOrZero(it.first.second) == 1)
+          .filter(it -> ObjectUtils.isNotNull(it.first) && StringExt.isPresent(it.first))
           .subscribe(it -> {
-            this.lake.trackSearchResultPageViewed(it.first.first, it.second.stats().count());
+            this.lake.trackSearchResultPageViewed(defaultParams, it.second.stats().count(), defaultSort);
           });
-
-      params
-          .compose(takePairWhen(pageCount))
-          .filter(paramsAndPageCount -> paramsAndPageCount.first.sort() != defaultSort && IntegerUtils.intValueOrZero(paramsAndPageCount.second) == 1)
-          .map(paramsAndPageCount -> paramsAndPageCount.first)
-          .observeOn(Schedulers.io())
-          .compose(bindToLifecycle())
-          .subscribe(this.lake::trackSearchResultsLoaded);
 
       this.lake.trackSearchButtonClicked();
       this.lake.trackSearchCTAButtonClicked(defaultParams);

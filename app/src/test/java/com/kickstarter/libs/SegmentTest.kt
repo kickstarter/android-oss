@@ -208,7 +208,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .staffPicks(true)
             .build()
 
-        segment.trackSearchResultPageViewed(params, 200)
+        segment.trackSearchResultPageViewed(params, 200, DiscoveryParams.Sort.POPULAR)
 
         assertSessionProperties(user)
         assertContextProperties()

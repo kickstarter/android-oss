@@ -464,7 +464,7 @@ class SegmentTest : KSRobolectricTestCase() {
 
         assertEquals(17, expectedProperties["user_backed_projects_count"])
         assertEquals(false, expectedProperties["user_is_admin"])
-        assertEquals(10, expectedProperties["user_launched_projects_count"])
+        assertEquals(5, expectedProperties["user_launched_projects_count"])
         assertEquals("3", expectedProperties["user_uid"])
         assertEquals("US", expectedProperties["user_country"])
 
@@ -1100,8 +1100,8 @@ class SegmentTest : KSRobolectricTestCase() {
     private fun assertUserProperties(isAdmin: Boolean) {
         val expectedProperties = this.propertiesTest.value
         assertEquals(3, expectedProperties["user_backed_projects_count"])
-        assertEquals(5, expectedProperties["user_launched_projects_count"])
-        assertEquals(6, expectedProperties["user_created_projects_count"])
+        assertEquals(6, expectedProperties["user_launched_projects_count"])
+        assertEquals(9, expectedProperties["user_created_projects_count"])
         assertEquals(true, expectedProperties["user_facebook_connected"])
         assertEquals(10, expectedProperties["user_watched_projects_count"])
         assertEquals("15", expectedProperties["user_uid"])
@@ -1162,7 +1162,7 @@ class SegmentTest : KSRobolectricTestCase() {
             .id(15)
             .backedProjectsCount(3)
             .memberProjectsCount(5)
-            .createdProjectsCount(2)
+            .draftProjectsCount(3)
             .facebookConnected(true)
             .createdProjectsCount(6)
             .location(LocationFactory.nigeria())

@@ -140,14 +140,15 @@ object AnalyticEventsUtils {
 
     @JvmOverloads
     fun userProperties(user: User, prefix: String = "user_"): Map<String, Any> {
+        val user2 = user.toBuilder().createdProjectsCount(4).draftProjectsCount(5).starredProjectsCount(12).build()
         val properties = HashMap<String, Any>()
-        properties["backed_projects_count"] = user.backedProjectsCount() ?: 0
-        properties["launched_projects_count"] = user.memberProjectsCount() ?: 0
-        properties["created_projects_count"] = user.createdProjectsCount() ?: 0
-        properties["facebook_connected"] = user.facebookConnected() ?: false
-        properties["watched_projects_count"] = user.starredProjectsCount() ?: 0
-        properties["uid"] = user.id().toString()
-        properties["is_admin"] = user.isAdmin ?: false
+        properties["backed_projects_count"] = user2.backedProjectsCount() ?: 0
+        properties["launched_projects_count"] = user2.createdProjectsCount() ?: 0
+        properties["created_projects_count"] = (user2.createdProjectsCount() ?: 0) + (user2.draftProjectsCount() ?: 0)
+        properties["facebook_connected"] = user2.facebookConnected() ?: false
+        properties["watched_projects_count"] = user2.starredProjectsCount() ?: 0
+        properties["uid"] = user2.id().toString()
+        properties["is_admin"] = user2.isAdmin ?: false
 
         return MapUtils.prefixKeys(properties, prefix)
     }

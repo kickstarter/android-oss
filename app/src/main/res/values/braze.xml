@@ -1,4 +1,4 @@
 <resources>
     <drawable name="com_appboy_push_small_notification_icon">@drawable/ic_kickstarter_micro_k</drawable>
-    <integer name="com_appboy_default_notification_accent_color">@color/kds_create_700</integer>
+    <item type="color" name="com_appboy_default_notification_accent_color">@color/kds_create_700</item>
 </resources>

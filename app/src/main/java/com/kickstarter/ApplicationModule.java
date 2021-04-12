@@ -40,6 +40,8 @@ import com.kickstarter.libs.OptimizelyExperimentsClient;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.SegmentTrackingClient;
 import com.kickstarter.libs.TrackingClientType;
+import com.kickstarter.libs.braze.BrazeClient;
+import com.kickstarter.libs.braze.RemotePushClientType;
 import com.kickstarter.libs.graphql.DateAdapter;
 import com.kickstarter.libs.graphql.DateTimeAdapter;
 import com.kickstarter.libs.graphql.Iso8601DateTimeAdapter;
@@ -94,6 +96,7 @@ import java.net.CookieManager;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import androidx.annotation.NonNull;
@@ -180,6 +183,7 @@ public class ApplicationModule {
   @Singleton
   static Analytics provideSegment(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
     String apiKey = "";
+
     Analytics segmentClient = null;
 
     if (build.isRelease() && Build.isExternal()) {
@@ -199,6 +203,19 @@ public class ApplicationModule {
     }
 
     return segmentClient;
+  }
+
+  @Provides
+  @Nonnull
+  @Singleton
+  static RemotePushClientType provideBrazeClient(final @NonNull Build build, final @ApplicationContext @NonNull Context context) {
+    final BrazeClient brazeClient = new BrazeClient(context, build);
+
+    if (context instanceof KSApplication && !((KSApplication) context).isInUnitTests()) {
+      brazeClient.init();
+    }
+
+    return brazeClient;
   }
 
   @Provides
@@ -513,8 +530,9 @@ public class ApplicationModule {
   @Singleton
   @NonNull
   static DeviceRegistrarType provideDeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
-                                                    final @ApplicationContext @NonNull Context context) {
-    return new DeviceRegistrar(playServicesCapability, context);
+                                                    final @ApplicationContext @NonNull Context context,
+                                                    final @NonNull RemotePushClientType brazeClient) {
+    return new DeviceRegistrar(playServicesCapability, context, brazeClient);
   }
 
   @Provides

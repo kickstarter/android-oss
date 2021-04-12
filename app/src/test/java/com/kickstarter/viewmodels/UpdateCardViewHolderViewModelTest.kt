@@ -85,7 +85,7 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         setUpEnvironment(environment)
 
         this.vm.inputs.configureWith(project, UpdateFactory.backersOnlyUpdate())
-        
+
         this.backersOnlyContainerIsVisible.assertValue(false)
     }
 

@@ -5,7 +5,7 @@ import androidx.annotation.NonNull
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.R
 import com.kickstarter.libs.Environment
-import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
+import com.kickstarter.libs.utils.ConfigFeatureName.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.mock.MockCurrentConfig
 import com.kickstarter.mock.factories.ConfigFactory
 import com.kickstarter.mock.services.MockApolloClient
@@ -53,7 +53,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         mockConfig.config(
             ConfigFactory.configWithFeaturesEnabled(
                 mapOf(
-                    Pair(EMAIL_VERIFICATION_SKIP, true)
+                    Pair(EMAIL_VERIFICATION_SKIP.configFeatureName, true)
                 )
             )
         )
@@ -75,7 +75,7 @@ class EmailVerificationInterstitialFragmentViewModelTest : KSRobolectricTestCase
         mockConfig.config(
             ConfigFactory.configWithFeaturesEnabled(
                 mapOf(
-                    Pair(EMAIL_VERIFICATION_SKIP, second = false)
+                    Pair(EMAIL_VERIFICATION_SKIP.configFeatureName, second = false)
                 )
             )
         )

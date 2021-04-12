@@ -5,7 +5,7 @@ import com.kickstarter.R
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.FragmentViewModel
 import com.kickstarter.libs.rx.transformers.Transformers
-import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_SKIP
+import com.kickstarter.libs.utils.ConfigFeatureName.EMAIL_VERIFICATION_SKIP
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.ui.fragments.EmailVerificationInterstitialFragment
 import rx.Observable
@@ -79,7 +79,7 @@ class EmailVerificationInterstitialFragmentViewModel {
             this.currentConfig
                 .compose(bindToLifecycle())
                 .subscribe {
-                    this.isSkipLinkShown.onNext(it.isFeatureFlagEnabled(EMAIL_VERIFICATION_SKIP))
+                    this.isSkipLinkShown.onNext(it.isFeatureFlagEnabled(EMAIL_VERIFICATION_SKIP.configFeatureName))
                 }
 
             this.openInboxButtonPressed

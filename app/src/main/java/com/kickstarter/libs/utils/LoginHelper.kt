@@ -3,7 +3,7 @@ package com.kickstarter.libs.utils
 import androidx.fragment.app.FragmentManager
 import com.kickstarter.R
 import com.kickstarter.libs.Config
-import com.kickstarter.libs.utils.extensions.EMAIL_VERIFICATION_FLOW
+import com.kickstarter.libs.utils.ConfigFeatureName.EMAIL_VERIFICATION_FLOW
 import com.kickstarter.libs.utils.extensions.isFeatureFlagEnabled
 import com.kickstarter.models.User
 import com.kickstarter.models.extensions.isUserEmailVerified
@@ -31,7 +31,7 @@ object LoginHelper {
             return null
         }
 
-        return if (config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW)) {
+        return if (config.isFeatureFlagEnabled(EMAIL_VERIFICATION_FLOW.configFeatureName)) {
             user.isUserEmailVerified()
         } else true
     }

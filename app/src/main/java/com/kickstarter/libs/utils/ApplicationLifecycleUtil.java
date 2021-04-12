@@ -6,25 +6,30 @@ import android.content.ComponentCallbacks2;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.extensions.ConfigExtension;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   protected @Inject ApiClientType client;
   protected @Inject CurrentConfigType config;
   protected @Inject CurrentUserType currentUser;
   protected @Inject Logout logout;
+  protected @Inject Build build;
+  protected @Inject StringPreferenceType featuresFlagPreference;
 
   private final KSApplication application;
   private boolean isInBackground = true;
@@ -44,24 +49,29 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
   @Override
   public void onActivityResumed(final @NonNull Activity activity) {
-    if(this.isInBackground){
-
+    if(this.isInBackground) {
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity.getApplication());
 
       // Refresh the config file
       this.client.config()
-        .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
-        .compose(Transformers.neverError())
-        .subscribe(c -> this.config.config(c));
+              .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
+              .compose(Transformers.neverError())
+              .subscribe(c -> {
+                //sync save features flags in the config object
+                if (this.build.isDebug() || Build.isInternal()) {
+                  ConfigExtension.syncUserFeatureFlagsFromPref(c, this.featuresFlagPreference);
+                }
+                this.config.config(c);
+              });
+
 
       // Refresh the user
       final String accessToken = this.currentUser.getAccessToken();
-
       if (ObjectUtils.isNotNull(accessToken)) {
         this.client.fetchCurrentUser()
-          .compose(Transformers.neverError())
-          .subscribe(u -> this.currentUser.refresh(u));
+                .compose(Transformers.neverError())
+                .subscribe(u -> this.currentUser.refresh(u));
       }
 
       this.isInBackground = false;

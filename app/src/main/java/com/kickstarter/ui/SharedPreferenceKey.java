@@ -11,4 +11,5 @@ public final class SharedPreferenceKey {
   public static final String LAST_SEEN_ACTIVITY_ID = "last_seen_activity_id";
   public static final String MESSAGE_THREAD_HAS_UNREAD_MESSAGES = "message_thread_has_unread_messages";
   public static final String USER = "user";
+  public static final String FEATURE_FLAG = "feature_flags";
 }

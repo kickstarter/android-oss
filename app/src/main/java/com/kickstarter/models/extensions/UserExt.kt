@@ -20,3 +20,10 @@ fun User.isLocationGermany(): Boolean {
     val location = this.location() ?: return false
     return I18nUtils.isCountryGermany(location.country())
 }
+
+/**
+ * Returns the sum of created projects and draft projects from the user payload.
+ */
+fun User.getCreatedAndDraftProjectsCount(): Int {
+    return (this.createdProjectsCount() ?: 0) + (this.draftProjectsCount() ?: 0)
+}

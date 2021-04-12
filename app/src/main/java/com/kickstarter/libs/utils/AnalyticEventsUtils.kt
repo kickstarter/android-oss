@@ -20,6 +20,7 @@ import com.kickstarter.models.Project
 import com.kickstarter.models.Reward
 import com.kickstarter.models.Update
 import com.kickstarter.models.User
+import com.kickstarter.models.extensions.getCreatedAndDraftProjectsCount
 import com.kickstarter.services.DiscoveryParams
 import com.kickstarter.ui.data.CheckoutData
 import com.kickstarter.ui.data.PledgeData
@@ -143,7 +144,7 @@ object AnalyticEventsUtils {
         val properties = HashMap<String, Any>()
         properties["backed_projects_count"] = user.backedProjectsCount() ?: 0
         properties["launched_projects_count"] = user.createdProjectsCount() ?: 0
-        properties["created_projects_count"] = (user.createdProjectsCount() ?: 0) + (user.draftProjectsCount() ?: 0)
+        properties["created_projects_count"] = user.getCreatedAndDraftProjectsCount()
         properties["facebook_connected"] = user.facebookConnected() ?: false
         properties["watched_projects_count"] = user.starredProjectsCount() ?: 0
         properties["uid"] = user.id().toString()

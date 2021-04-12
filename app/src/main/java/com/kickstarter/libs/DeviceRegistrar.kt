@@ -9,6 +9,7 @@ import androidx.work.workDataOf
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
+import com.kickstarter.libs.braze.RemotePushClientType
 import com.kickstarter.libs.qualifiers.ApplicationContext
 import com.kickstarter.libs.utils.PlayServicesCapability
 import com.kickstarter.libs.utils.WorkUtils
@@ -19,7 +20,8 @@ import java.util.concurrent.TimeUnit
 
 class DeviceRegistrar(
     private val playServicesCapability: PlayServicesCapability,
-    @param:ApplicationContext @field:ApplicationContext private val context: Context
+    @param:ApplicationContext @field:ApplicationContext private val context: Context,
+    private val pushClientType: RemotePushClientType
 ) : DeviceRegistrarType {
 
     /**
@@ -39,6 +41,9 @@ class DeviceRegistrar(
                     // Get new FCM registration token
                     val token = task.result
                     registerToken(this.context, token)
+
+                    // - Braze register push notification token
+                    this.pushClientType.registerPushMessages(this.context, token)
                 }
             )
         }

@@ -3,7 +3,9 @@ package com.kickstarter.viewmodels
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
 import com.kickstarter.libs.MockCurrentUser
-import com.kickstarter.mock.factories.*
+import com.kickstarter.mock.factories.ProjectFactory
+import com.kickstarter.mock.factories.UpdateFactory
+import com.kickstarter.mock.factories.UserFactory
 import com.kickstarter.models.Update
 import org.joda.time.DateTime
 import org.junit.Test
@@ -92,14 +94,14 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         val creator = UserFactory.creator()
 
         val project = ProjectFactory.project()
-                .toBuilder()
-                .creator(creator)
-                .build()
+            .toBuilder()
+            .creator(creator)
+            .build()
 
         val environment = environment()
-                .toBuilder()
-                .currentUser(MockCurrentUser(UserFactory.user()))
-                .build()
+            .toBuilder()
+            .currentUser(MockCurrentUser(UserFactory.user()))
+            .build()
 
         setUpEnvironment(environment)
 

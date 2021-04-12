@@ -2,8 +2,8 @@ package com.kickstarter.viewmodels
 
 import com.kickstarter.KSRobolectricTestCase
 import com.kickstarter.libs.Environment
-import com.kickstarter.mock.factories.ProjectFactory
-import com.kickstarter.mock.factories.UpdateFactory
+import com.kickstarter.libs.MockCurrentUser
+import com.kickstarter.mock.factories.*
 import com.kickstarter.models.Update
 import org.joda.time.DateTime
 import org.junit.Test
@@ -64,6 +64,48 @@ class UpdateCardViewHolderViewModelTest : KSRobolectricTestCase() {
         this.vm.inputs.configureWith(ProjectFactory.backedProject(), UpdateFactory.backersOnlyUpdate())
 
         this.backersOnlyContainerIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testBackersOnlyContainerIsVisible_whenUpdateIsNotPublic_ProjectIsNotBacked_currentUserIsCreator() {
+        val creator = UserFactory.creator()
+
+        val project = ProjectFactory.project()
+            .toBuilder()
+            .creator(creator)
+            .build()
+
+        val environment = environment()
+            .toBuilder()
+            .currentUser(MockCurrentUser(creator))
+            .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.configureWith(project, UpdateFactory.backersOnlyUpdate())
+        
+        this.backersOnlyContainerIsVisible.assertValue(false)
+    }
+
+    @Test
+    fun testBackersOnlyContainerIsVisible_whenUpdateIsNotPublic_ProjectIsNotBacked_currentUserIsNotCreator() {
+        val creator = UserFactory.creator()
+
+        val project = ProjectFactory.project()
+                .toBuilder()
+                .creator(creator)
+                .build()
+
+        val environment = environment()
+                .toBuilder()
+                .currentUser(MockCurrentUser(UserFactory.user()))
+                .build()
+
+        setUpEnvironment(environment)
+
+        this.vm.inputs.configureWith(project, UpdateFactory.backersOnlyUpdate())
+
+        this.backersOnlyContainerIsVisible.assertValue(true)
     }
 
     @Test

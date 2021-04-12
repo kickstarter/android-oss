@@ -4,9 +4,11 @@ import android.util.Pair
 import androidx.annotation.NonNull
 import com.kickstarter.libs.ActivityViewModel
 import com.kickstarter.libs.Environment
+import com.kickstarter.libs.rx.transformers.Transformers
 import com.kickstarter.libs.rx.transformers.Transformers.takeWhen
 import com.kickstarter.libs.utils.BooleanUtils
 import com.kickstarter.libs.utils.IntegerUtils
+import com.kickstarter.libs.utils.ProjectUtils
 import com.kickstarter.models.Project
 import com.kickstarter.models.Update
 import com.kickstarter.ui.viewholders.UpdateCardViewHolder
@@ -71,6 +73,7 @@ interface UpdateCardViewHolderViewModel {
         private val sequence = BehaviorSubject.create<Int>()
         private val showUpdateDetails = PublishSubject.create<Update>()
         private val title = BehaviorSubject.create<String>()
+        private val currentUser = environment.currentUser()
 
         val inputs: Inputs = this
         val outputs: Outputs = this
@@ -80,11 +83,19 @@ interface UpdateCardViewHolderViewModel {
             val update = this.projectAndUpdate
                 .map { it.second }
 
+            val project = this.projectAndUpdate
+                .map { it.first }
+
+            val isCreator = Observable.combineLatest(this.currentUser.observable(), project) { user, project ->
+                Pair(user, project)
+            }.map { ProjectUtils.userIsCreator(it.second, it.first) }
+
             this.projectAndUpdate
+                .compose<Pair<Pair<Project, Update>, Boolean>>(Transformers.combineLatestPair(isCreator))
                 .map {
                     when {
-                        it.first.isBacking -> false
-                        else -> BooleanUtils.negate(it.second.isPublic ?: false)
+                        it.first.first.isBacking || it.second -> false
+                        else -> BooleanUtils.negate(it.first.second.isPublic ?: false)
                     }
                 }
                 .compose(bindToLifecycle())

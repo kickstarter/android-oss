@@ -843,8 +843,7 @@ class AnalyticEvents(trackingClients: List<TrackingClientType?>) {
 
     /**
      * Sends data associated with the search CTA click event to the client.
-     *
-     * @param discoveryParams: The discovery data.
+     * @param discoveryParams: DiscoveryParams
      */
     fun trackSearchCTAButtonClicked(discoveryParams: DiscoveryParams) {
         val props = AnalyticEventsUtils.discoveryParamsProperties(discoveryParams).toMutableMap()

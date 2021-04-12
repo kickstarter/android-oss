@@ -144,7 +144,6 @@ public interface SearchViewModel {
 
       this.search
           .compose(takePairWhen(this.discoverEnvelope))
-          .observeOn(Schedulers.io())
           .compose(bindToLifecycle())
           .filter(it -> ObjectUtils.isNotNull(it.first) && StringExt.isPresent(it.first))
           .subscribe(it -> {

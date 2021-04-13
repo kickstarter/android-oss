@@ -28,6 +28,9 @@ class BrazeClientTest : KSRobolectricTestCase() {
     fun testInitialize_whenEnabledFeatureFlag() {
         val mockConfig = mockCurrentConfig(enabledFeatureFlag = true)
         val mockClient = MockBrazeClient(build, context, mockConfig)
+
+        mockClient.init()
+        assertTrue(mockClient.isSDKEnabled())
         assertEquals(mockSenderId, mockClient.getIdSender())
         assertNotNull(mockClient.getLifeCycleCallbacks())
         assertTrue(mockClient.isInitialized)
@@ -37,7 +40,10 @@ class BrazeClientTest : KSRobolectricTestCase() {
     fun testInitialize_whenDisabledFeatureFlag() {
         val mockConfig = mockCurrentConfig(enabledFeatureFlag = false)
         val mockClient = MockBrazeClient(build, context, mockConfig)
-        assertEquals(mockSenderId, "")
+
+        mockClient.init()
+        assertFalse(mockClient.isSDKEnabled())
+        assertEquals(mockSenderId, mockClient.getIdSender())
         assertFalse(mockClient.isInitialized)
     }
 
@@ -45,6 +51,9 @@ class BrazeClientTest : KSRobolectricTestCase() {
     fun testHandleMessageNotBraze_whenEnabledFeatureFlag() {
         val mockConfig = mockCurrentConfig(enabledFeatureFlag = true)
         val mockClient = MockBrazeClient(build, context, mockConfig)
+
+        mockClient.init()
+        assertTrue(mockClient.isSDKEnabled())
         assertEquals(mockSenderId, mockClient.getIdSender())
         assertNotNull(mockClient.getLifeCycleCallbacks())
         assertTrue(mockClient.isInitialized)
@@ -57,6 +66,9 @@ class BrazeClientTest : KSRobolectricTestCase() {
     fun testHandleMessageNotBraze_whenDisabledFeatureFlag() {
         val mockConfig = mockCurrentConfig(enabledFeatureFlag = false)
         val mockClient = MockBrazeClient(build, context, mockConfig)
+
+        mockClient.init()
+        assertFalse(mockClient.isSDKEnabled())
         assertEquals(mockSenderId, mockClient.getIdSender())
         assertNotNull(mockClient.getLifeCycleCallbacks())
 

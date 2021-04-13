@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
-
-import kotlin.Triple;
 import rx.Observable;
 import rx.Scheduler;
 import rx.subjects.BehaviorSubject;

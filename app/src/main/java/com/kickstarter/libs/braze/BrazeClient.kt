@@ -10,7 +10,6 @@ import com.appboy.configuration.AppboyConfig
 import com.appboy.support.AppboyLogger
 import com.google.firebase.messaging.RemoteMessage
 import com.kickstarter.libs.Build
-import com.kickstarter.libs.utils.Secrets
 
 /**
  * Remote PushNotifications specification
@@ -76,10 +75,10 @@ open class BrazeClient(
     override fun getIdSender(): String {
         var senderId = ""
         if (build.isRelease && Build.isExternal()) {
-            //senderId = Secrets.FirebaseSenderID.PRODUCTION
+            // senderId = Secrets.FirebaseSenderID.PRODUCTION
         }
         if (build.isDebug || Build.isInternal()) {
-            //senderId = Secrets.FirebaseSenderID.STAGING
+            // senderId = Secrets.FirebaseSenderID.STAGING
         }
 
         return senderId

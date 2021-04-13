@@ -82,7 +82,7 @@ public abstract class Project implements Parcelable, Relay {
     public abstract Builder currencySymbol(String __);
     public abstract Builder currentCurrency(String __);
     public abstract Builder currencyTrailingCode(boolean __);
-    public abstract Builder displayPrelaunch(boolean __);
+    public abstract Builder displayPrelaunch(Boolean __);
     public abstract Builder deadline(DateTime __);
     public abstract Builder featuredAt(DateTime __);
     public abstract Builder friends(List<User> __);

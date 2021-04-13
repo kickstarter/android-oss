@@ -998,6 +998,26 @@ class SegmentTest : KSRobolectricTestCase() {
         this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
     }
 
+    @Test
+    fun testLoginOrSignUpPageViewed_Properties() {
+
+        val client = client(null)
+        client.eventNames.subscribe(this.segmentTrack)
+        client.eventProperties.subscribe(this.propertiesTest)
+
+        val segment = AnalyticEvents(listOf(client))
+        segment.trackLoginOrSignUpPagedViewed()
+
+        assertSessionProperties(null)
+        assertContextProperties()
+
+        val properties = this.propertiesTest.value
+        assertNull(properties["user_uid"])
+        assertEquals(EventContextValues.ContextPageName.LOGIN_SIGN_UP.contextName, properties[CONTEXT_PAGE.contextName])
+
+        this.segmentTrack.assertValue(EventName.PAGE_VIEWED.eventName)
+    }
+
     private fun client(user: User?) = MockTrackingClient(
         user?.let { MockCurrentUser(it) }
             ?: MockCurrentUser(),

@@ -74,12 +74,12 @@ interface RemotePushClientType {
  * Braze client SDK wrapper class.
  * @param context It needs the application context to be initialized,
  * @param build the type of build will determine the IdSender from Firebase and the logs mode
- * @param configObserver current configuration, it will be used mainly to check feature flag enable/disable
+ * @param configuration current configuration, it will be used mainly to check feature flag enable/disable
  */
 open class BrazeClient(
     private val context: Context,
     private val build: Build,
-    private val configObserver: CurrentConfigType
+    private val configuration: CurrentConfigType
 ) : RemotePushClientType {
 
     private var config: Config? = null
@@ -89,7 +89,7 @@ open class BrazeClient(
         get() = initialized
 
     init {
-        this.configObserver.observable()
+        this.configuration.observable()
             .distinctUntilChanged()
             .subscribe { c ->
                 // - Cache the most recent config
@@ -109,7 +109,7 @@ open class BrazeClient(
     }
 
     override fun init() {
-        if (isSDKEnabled()) {
+        if (isSDKEnabled() && !this.initialized) {
             val appBoyConfig = AppboyConfig.Builder()
                 .setIsFirebaseCloudMessagingRegistrationEnabled(true)
                 .setFirebaseCloudMessagingSenderIdKey(getIdSender())
